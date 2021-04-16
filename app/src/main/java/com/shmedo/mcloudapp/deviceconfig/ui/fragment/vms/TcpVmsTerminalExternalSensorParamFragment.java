@@ -34,6 +34,7 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.LinearParamView;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.ModulusView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -74,15 +75,22 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     @BindView(R.id.polynomialParamView)
     PolynomialParamView polynomialParamView;//多项式参数
 
+    @BindView(R.id.modulusView)
+    ModulusView modulusView;//模数解算参数
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
     private VmsTerminalSensorInfo sensorInfo;
 
-    private List<String> calculationList = Arrays.asList("直线式", "多项式", "MEMS");
+    private List<String> calculationList = Arrays.asList("直线式", "多项式", "MEMS", "模数");
     private List<String> sensorNameList = new ArrayList<>();
+    //直线式和多项式结算方式下支持的传感器
     private List<String> vibratingWireSensorNameList = Arrays.asList("裂缝计", "轴力计", "水压力计", "水位计", "渗压计");
+    //MEMS结算方式下支持的传感器
     private List<String> digitalSensorNameList = Arrays.asList("加速度计", "倾角计", "崩滑仪");
+    //模数结算方式下支持的传感器
+    private List<String> modulusSensorNameList = Arrays.asList("轴力计");
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
@@ -143,6 +151,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             mTvSensorCalculation.setText(calculationList.get(0));
             linearParamView.setVisibility(View.VISIBLE);
             polynomialParamView.setVisibility(View.GONE);
+            modulusView.setVisibility(View.GONE);
             linearParamView.initData(sensorInfo);
 
             sensorNameList.clear();
@@ -153,16 +162,29 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             mTvSensorCalculation.setText(calculationList.get(1));
             linearParamView.setVisibility(View.GONE);
             polynomialParamView.setVisibility(View.VISIBLE);
+            modulusView.setVisibility(View.GONE);
             polynomialParamView.initData(sensorInfo);
 
             sensorNameList.clear();
             sensorNameList.addAll(vibratingWireSensorNameList);
-        } else if (sensorCalculation == VmsSensorCalculation.MEMS) {//数字式
+        } else if (sensorCalculation == VmsSensorCalculation.MEMS) {//MEMS
             calculationPosOld = 2;
             calculationPos = 2;
             mTvSensorCalculation.setText(calculationList.get(2));
             linearParamView.setVisibility(View.GONE);
             polynomialParamView.setVisibility(View.GONE);
+            modulusView.setVisibility(View.GONE);
+
+            sensorNameList.clear();
+            sensorNameList.addAll(digitalSensorNameList);
+        } else if (sensorCalculation == VmsSensorCalculation.MODULUS) {//模数
+            calculationPosOld = 3;
+            calculationPos = 3;
+            mTvSensorCalculation.setText(calculationList.get(3));
+            linearParamView.setVisibility(View.GONE);
+            polynomialParamView.setVisibility(View.GONE);
+            modulusView.setVisibility(View.VISIBLE);
+            modulusView.initData(sensorInfo);
 
             sensorNameList.clear();
             sensorNameList.addAll(digitalSensorNameList);
@@ -298,20 +320,30 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                                     sensorCalculation = VmsSensorCalculation.LINEAR;
                                     linearParamView.setVisibility(View.VISIBLE);
                                     polynomialParamView.setVisibility(View.GONE);
+                                    modulusView.setVisibility(View.GONE);
                                     sensorNameList.clear();
                                     sensorNameList.addAll(vibratingWireSensorNameList);
                                 } else if (text.contains("多项式")) {
                                     sensorCalculation = VmsSensorCalculation.POLYNOMIAL;
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.VISIBLE);
+                                    modulusView.setVisibility(View.GONE);
                                     sensorNameList.clear();
                                     sensorNameList.addAll(vibratingWireSensorNameList);
                                 } else if (text.contains("MEMS")) {
                                     sensorCalculation = VmsSensorCalculation.MEMS;
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.GONE);
+                                    modulusView.setVisibility(View.GONE);
                                     sensorNameList.clear();
                                     sensorNameList.addAll(digitalSensorNameList);
+                                } else if (text.contains("模数")) {
+                                    sensorCalculation = VmsSensorCalculation.MODULUS;
+                                    linearParamView.setVisibility(View.GONE);
+                                    polynomialParamView.setVisibility(View.GONE);
+                                    modulusView.setVisibility(View.VISIBLE);
+                                    sensorNameList.clear();
+                                    sensorNameList.addAll(modulusSensorNameList);
                                 }
 
                                 //如果传感器类型不支持选中的计算方式，则重置等待重新选择
@@ -376,6 +408,10 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
             case POLYNOMIAL:
                 updateDataSuccess = polynomialParamView.updateSensorData(entity);
+                break;
+
+            case MODULUS:
+                updateDataSuccess = modulusView.updateSensorData(entity);
                 break;
         }
         if (!updateDataSuccess) {
@@ -471,6 +507,8 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             return linearParamView.checkValueIsChange();
         } else if (sensorCalculation == VmsSensorCalculation.POLYNOMIAL) {
             return polynomialParamView.checkValueIsChange();
+        }else if (sensorCalculation == VmsSensorCalculation.MODULUS) {
+            return modulusView.checkValueIsChange();
         }
         return false;
     }

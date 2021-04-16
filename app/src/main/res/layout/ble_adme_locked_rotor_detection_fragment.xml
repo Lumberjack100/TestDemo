@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:text="下放堵转缓停"
+                    android:text="下放堵转检测"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17"
                     android:textStyle="bold" />
@@ -199,9 +199,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="缓停区间(%)"
+                        android:text="下放缓停区间(%)"
                         android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
+                        android:textSize="@dimen/text_size_17"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_decentralized_slow_stop_interval"
@@ -244,7 +245,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:text="上拉堵转缓停"
+                    android:text="上拉堵转检测"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17"
                     android:textStyle="bold" />
@@ -331,9 +332,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="缓停区间(%)"
+                        android:text="上拉缓停区间(%)"
                         android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
+                        android:textSize="@dimen/text_size_17"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_pull_up_slow_stop_interval"

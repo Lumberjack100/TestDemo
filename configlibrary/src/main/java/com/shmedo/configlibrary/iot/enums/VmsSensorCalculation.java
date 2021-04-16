@@ -19,7 +19,12 @@ public enum VmsSensorCalculation {
     /**
      * 数字式
      */
-    MEMS("80");
+    MEMS("80"),
+
+    /**
+     * 模数
+     */
+    MODULUS("81");
 
     private String type;
 
@@ -41,6 +46,9 @@ public enum VmsSensorCalculation {
 
             case "80":
                 return MEMS;
+
+            case "81":
+                return MODULUS;
 
             default:
                 return null;

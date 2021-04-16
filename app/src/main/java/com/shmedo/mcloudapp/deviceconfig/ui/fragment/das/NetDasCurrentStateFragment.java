@@ -10,11 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.configlibrary.ble.cmd.CommandManager;
-import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -225,7 +224,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         initAdapter();
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
-        queryStatusOne();
+        queryDeviceBaseInfo();
     }
 
     private void initRefreshLayout() {
@@ -233,7 +232,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                queryStatusOne();
+                queryDeviceBaseInfo();
             }
         });
     }
@@ -269,17 +268,53 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         sensorRecyclerView.setAdapter(sensorAdapter);
     }
 
-    private void queryStatusOne() {
-        String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_1);
+    /**
+     * 获取基本信息
+     */
+    private void queryDeviceBaseInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DEVICE_BASE);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-        Timber.i("查询设备状态1：%s", command);
     }
 
     /**
-     * 获取设备的当前状态
+     * 获取数据中心状态
      */
-    private void queryStateInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
+    private void queryNetStatus(int index) {
+        IndexEntity entity = new IndexEntity(index);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_NET_STATUS, entity);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 获取太阳能控制器状态
+     */
+    private void querySolarStatus() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SOLAR_STATUS);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 获取温湿度状态
+     */
+    private void queryTemperatureAndHumidityStatus() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 获取主传感器状态
+     */
+    private void querySensorStatus(int index) {
+        IndexEntity entity = new IndexEntity(index);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SENSOR_STATUS, entity);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 获取辅传感器状态
+     */
+    private void querySubSensorStatus() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -336,7 +371,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultSuccess(queryCmdResult);
-        swipeRefresh.setRefreshing(false);
         setResultData(queryCmdResult);
     }
 
@@ -344,23 +378,86 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case QUERY_DEVICE_STATUS: {
+            case DAS_MD_GET_DEVICE_BASE: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
+                    swipeRefresh.setRefreshing(false);
+                    String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                String content = commandResult.getResult();
-                content = content.replace("\\", "");
-                content = content.replace("000_1:", "");
-                try {
-//                    devcieCurrentState = GsonFactory.getGson().fromJson(content, DevcieCurrentState.class);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+
+                queryNetStatus(0);
+            }
+            break;
+
+            case DAS_MD_GET_NET_STATUS: {
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    swipeRefresh.setRefreshing(false);
+                    String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
                 }
-                initStatusInfo();
+
+                querySolarStatus();
+            }
+            break;
+
+            case DAS_MD_GET_SOLAR_STATUS: {
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    swipeRefresh.setRefreshing(false);
+                    String errMsg = String.format("%s %s", "查询太阳能控制器状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+
+                queryTemperatureAndHumidityStatus();
+            }
+            break;
+
+            case DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS: {
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    swipeRefresh.setRefreshing(false);
+                    String errMsg = String.format("%s %s", "查询温湿度状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+
+                querySensorStatus(0);
+            }
+            break;
+
+            case DAS_MD_GET_SENSOR_STATUS: {
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    swipeRefresh.setRefreshing(false);
+                    String errMsg = String.format("%s %s", "查询主传感器状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+
+                querySubSensorStatus();
+            }
+            break;
+
+            case DAS_MD_GET_SUB_SENSOR_STATUS: {
+                swipeRefresh.setRefreshing(false);
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询辅传感器状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+
             }
             break;
 
@@ -369,76 +466,29 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-    private void initStatusInfo() {
-//        if (devcieCurrentState != null) {
-//            mTvDeviceSn.setText(projectDeviceInfo.getToken());
-//            mTVSimCardNumber.setText("--");
-//            if (projectDeviceInfo.getDeviceSimList() != null && projectDeviceInfo.getDeviceSimList().size() != 0) {
-//                ProjectDeviceInfo.DeviceSimListBean simListBean = projectDeviceInfo.getDeviceSimList().get(0);
-//                if (simListBean != null) {
-//                    mTVSimCardNumber.setText(simListBean.getCcid());
-//                }
-//            }
-//            mTvImeiNumber.setText(devcieCurrentState.getIMEI());
-//            mTvDeviceStartCode.setText("--");
-//            mTvFirmwareVersion.setText(devcieCurrentState.getSw_version());
-//            mTvInstallPosition.setText(devcieCurrentState.getLocation());
-//
-//            mTvSignalStrength.setText("--");
-//            if (projectDeviceInfo.getDeviceSimList() != null && projectDeviceInfo.getDeviceSimList().size() != 0) {
-//                ProjectDeviceInfo.DeviceSimListBean simListBean = projectDeviceInfo.getDeviceSimList().get(0);
-//                if (simListBean != null) {
-//                    mTvSignalStrength.setText(simListBean.getSimIsp());
-//                }
-//            }
-//
-//            //数据中心
-//            mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByRSSIValue(devcieCurrentState.get_$4g_signal()), 0);
-//            mTvLinkOneStatus.setText("--");
-//            mTvLinkOneSendData.setText("--");
-//            mTvLinkOneUnsendData.setText("--");
-//            mTvLinkOneOnlineRate.setText("--");
-//
-//            mTvLinkTwoStatus.setText("--");
-//            mTvLinkTwoSendData.setText("--");
-//            mTvLinkTwoUnsendData.setText("--");
-//            mTvLinkTwoOnlineRate.setText("--");
-//
-//            mTvLinkThreeStatus.setText("--");
-//            mTvLinkThreeSendData.setText("--");
-//            mTvLinkThreeoUnsendData.setText("--");
-//            mTvLinkThreeOnlineRate.setText("--");
-//
-//            //太阳能控制器
-//            mTvSolarStatus.setText("--");
-//            mTvSolarVoltage.setText(String.format("%sV", devcieCurrentState.getSolar_volt()));
-//            mTvBatteryVoltage.setText(String.format("%sV", devcieCurrentState.getBattery_volt()));
-//            mTvSupplyPower.setText(String.format("%sW", devcieCurrentState.getSupply_power()));
-//            mTvConsumePower.setText(String.format("%sW", devcieCurrentState.getConsume_power()));
-//
-//            //机箱内部温湿度
-//            mTvInternalStatus.setText("--");
-//            mTvInternalTemperature.setText(String.format("%s°", devcieCurrentState.getTemp()));
-//            mTvInternalHumidity.setText(devcieCurrentState.getHumidity() + "%");
-//
-//            //机箱外部温湿度
-//            mTvExternalStatus.setText("--");
-//            mTvExternalTemperature.setText(String.format("%s°", devcieCurrentState.getTemp_out()));
-//            mTvExternalHumidity.setText(devcieCurrentState.getHumidity_out() + "%");
-//
-//            //设备电压
-//            String powerStr = DeviceCurrentRunStateUtils.setDeviceInternalBattery(devcieCurrentState.getInner_power_volt());
-//            double power = Double.parseDouble(powerStr.replace("%", ""));
-//            SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-//            ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
-//            builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            mTvDeviceInternalPower.setText(builder);
-//
-//            double voltage = devcieCurrentState.getExt_power_volt();
-//            builder = new SpannableStringBuilder(voltage + "V");
-//            colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
-//            builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            mTvDeviceExternalVoltage.setText(builder);
-//        }
+    private void initBaseInfo() {
+
     }
+
+    private void initNetStatus() {
+
+    }
+
+    private void initSolarStatus() {
+
+    }
+
+    private void initTemperatureAndHumidityStatus() {
+
+    }
+
+    private void initSensorStatus() {
+
+    }
+
+    private void initSubSensorStatus() {
+
+    }
+
+
 }

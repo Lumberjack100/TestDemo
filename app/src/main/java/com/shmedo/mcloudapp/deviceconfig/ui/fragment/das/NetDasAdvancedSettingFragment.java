@@ -12,14 +12,12 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -67,16 +65,13 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         super.onActivityCreated(savedInstanceState);
     }
 
-    @OnClick({R.id.dataCenterConfigLayout, R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})
+    @OnClick({R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
         }
         int id = v.getId();
-        if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.DAS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
-
-        } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
+        if (id == R.id.firmwareUpgradeLayout) {//固件升级
             FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);
             newFragment.show(getChildFragmentManager(), "dialog");

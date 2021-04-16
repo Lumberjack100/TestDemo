@@ -145,6 +145,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.ModulusView
+                android:id="@+id/modulusView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"

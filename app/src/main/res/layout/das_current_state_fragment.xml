@@ -38,7 +38,6 @@
                 <TextView
                     android:id="@+id/tv_device_sn"
                     style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    android:textColor="@color/text_color_3AD094"
                     tools:text="19F00L" />
 
             </LinearLayout>

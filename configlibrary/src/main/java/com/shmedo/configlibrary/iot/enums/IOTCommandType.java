@@ -80,6 +80,31 @@ public enum IOTCommandType {
 
     /*　DAS 指令  */
     /**
+     * 获取基本信息
+     */
+    DAS_MD_GET_DEVICE_BASE("md_getdevicebase"),
+    /**
+     * 获取数据中心状态
+     */
+    DAS_MD_GET_NET_STATUS("md_getnetstatus"),
+    /**
+     *
+     * 获取太阳能控制器状态
+     */
+    DAS_MD_GET_SOLAR_STATUS("md_getsloarstatus"),
+    /**
+     * 获取温湿度状态
+     */
+    DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS("md_thmstatus"),
+    /**
+     * 获取主传感器状态
+     */
+    DAS_MD_GET_SENSOR_STATUS("md_getsensorstatus"),
+    /**
+     * 获取辅传感器状态
+     */
+    DAS_MD_GET_SUB_SENSOR_STATUS("md_getsubsensorstatus"),
+    /**
      * 获取激活模式
      */
     DAS_MD_GET_ACTIVE("md_getactive"),
