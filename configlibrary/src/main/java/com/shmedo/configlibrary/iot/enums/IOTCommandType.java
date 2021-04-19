@@ -124,6 +124,24 @@ public enum IOTCommandType {
      */
     DAS_MD_SET_COLLECTOR_CONTROL("md_setcollctrl"),
 
+    /**
+     * 获取开关量传感器信息
+     */
+    DAS_MD_GET_IO_SENSOR_INFO("md_getioctrl"),
+    /**
+     * 设置开关量传感器信息
+     */
+    DAS_MD_SET_IO_SENSOR_INFO("md_setioctrl"),
+
+    /**
+     * 获取数字渗压计信息
+     */
+    DAS_MD_GET_DIGITAL_PIEZOMETER_INFO("md_getdigtalosm"),
+    /**
+     * 设置数字渗压计信息
+     */
+    DAS_MD_SET_DIGITAL_PIEZOMETER_INFO("md_setdigtalosm"),
+
     /*　VMS-LoRa网关指令  */
     /**
      * 获取网关的基本信息

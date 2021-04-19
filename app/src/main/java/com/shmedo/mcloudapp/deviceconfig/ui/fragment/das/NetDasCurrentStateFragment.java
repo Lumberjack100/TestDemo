@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -26,6 +28,7 @@ import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
+import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -154,7 +157,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.dasDigitalPiezometerInfo)
     View dasDigitalPiezometerLayout;
 
-    @BindView(R.id.tv_digitalPiezometer_value)
+    @BindView(R.id.tv_digitalPiezometer_status)
     TextView mTvDigitalPiezometerStatus;
 
     @BindView(R.id.tv_digitalPiezometer_value)
@@ -400,7 +403,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case DAS_MD_GET_NET_STATUS: {
-                IOTCommandResult<List<DasNetStatusInfo>> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
@@ -408,9 +411,11 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                if (commandResult.getResult() != null) {
+                if (!TextUtils.isEmpty(commandResult.getResult())) {
+                    List<DasNetStatusInfo> tempList = GsonFactory.getGson().fromJson(commandResult.getResult(), new TypeToken<List<DasNetStatusInfo>>() {
+                    }.getType());
                     netStatusInfoList.clear();
-                    netStatusInfoList.addAll(commandResult.getResult());
+                    netStatusInfoList.addAll(tempList);
                     dataCenterAdapter.notifyDataSetChanged();
                 }
                 querySolarStatus();
@@ -443,14 +448,44 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 DasTemperatureAndHumidityStatusinfo dasTemperatureAndHumidityStatusinfo = commandResult.getResult();
                 initTemperatureAndHumidityStatus(dasTemperatureAndHumidityStatusinfo);
+                querySubSensorStatus();
+
+            }
+            break;
+
+            case DAS_MD_GET_SUB_SENSOR_STATUS: {
+                IOTCommandResult<DasSubSensorStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    swipeRefresh.setRefreshing(false);
+                    String errMsg = String.format("%s %s", "查询辅传感器状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                DasSubSensorStatusInfo dasSubSensorStatusInfo = commandResult.getResult();
+                initSubSensorStatus(dasSubSensorStatusInfo);
                 querySensorStatus(0);
             }
             break;
 
             case DAS_MD_GET_SENSOR_STATUS: {
+                swipeRefresh.setRefreshing(false);
+//                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+//                if (!commandResult.isSuccess()) {
+//                    String errMsg = String.format("%s %s", "查询主传感器状态出错!", commandResult.getMessage());
+//                    Timber.e(errMsg);
+//                    ToastUtils.show(errMsg);
+//                    return;
+//                }
+//                if (!TextUtils.isEmpty(commandResult.getResult())) {
+//                    List<DasSensorStatusInfo> tempList = GsonFactory.getGson().fromJson(commandResult.getResult(), new TypeToken<List<DasSensorStatusInfo>>() {
+//                    }.getType());
+//                    sensorList.clear();
+//                    sensorList.addAll(tempList);
+//                    sensorAdapter.notifyDataSetChanged();
+//                }
                 IOTCommandResult<List<DasSensorStatusInfo>> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询主传感器状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -461,21 +496,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     sensorList.addAll(commandResult.getResult());
                     sensorAdapter.notifyDataSetChanged();
                 }
-                querySubSensorStatus();
-            }
-            break;
-
-            case DAS_MD_GET_SUB_SENSOR_STATUS: {
-                swipeRefresh.setRefreshing(false);
-                IOTCommandResult<DasSubSensorStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询辅传感器状态出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                DasSubSensorStatusInfo dasSubSensorStatusInfo = commandResult.getResult();
-                initSubSensorStatus(dasSubSensorStatusInfo);
             }
             break;
 
