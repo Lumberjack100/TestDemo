@@ -29,6 +29,7 @@ public class DasDigitalPiezometerInfoParser implements IOTResultParser<DasDigita
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
+            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
             info.setSw(TextUtils.isEmpty(keyValueMap.get("sw")) ? "" : keyValueMap.get("sw"));
             info.setThreshold(TextUtils.isEmpty(keyValueMap.get("threshold")) ? "" : keyValueMap.get("threshold"));
             info.setCorrval(TextUtils.isEmpty(keyValueMap.get("corrval")) ? "" : keyValueMap.get("corrval"));

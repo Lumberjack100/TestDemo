@@ -11,6 +11,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  */
 public class DasDigitalPiezometerEntity implements Validater {
     private String sw;//0：关闭数字式渗压计采集功能 1：打开数字式渗压计采集功能
+    private String addr;//地址
     private String threshold;//触发阈值
     private String corrval;//修正值
     private String ropelen;//绳长（渗压计到管口的距离）
@@ -18,6 +19,10 @@ public class DasDigitalPiezometerEntity implements Validater {
 
     public void setSw(String sw) {
         this.sw = sw;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
     }
 
     public void setThreshold(String threshold) {
@@ -47,6 +52,10 @@ public class DasDigitalPiezometerEntity implements Validater {
         stringBuilder.append("sw=" + sw);
         stringBuilder.append("&");
 
+        if (!TextUtils.isEmpty(addr)) {
+            stringBuilder.append("addr=" + addr);
+            stringBuilder.append("&");
+        }
         if (!TextUtils.isEmpty(threshold)) {
             stringBuilder.append("threshold=" + threshold);
             stringBuilder.append("&");

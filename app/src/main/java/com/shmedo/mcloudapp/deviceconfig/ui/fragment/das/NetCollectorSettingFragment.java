@@ -94,6 +94,9 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 
     @OnClick({R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
@@ -129,43 +132,55 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
             return false;
         }
 
-        if (TextUtils.isEmpty(calculatTime)) {
-            ToastUtils.show("请输入解算时间!");
-            mEtCalculatingTime.requestFocus();
-            return false;
-        }
-        try {
-            int value = Integer.parseInt(calculatTime);
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的解算时间!");
-            mEtCalculatingTime.requestFocus();
-            return false;
-        }
-
-        if (TextUtils.isEmpty(standbyTime)) {
-            ToastUtils.show("请输入待机时间!");
-            mEtStandbyTime.requestFocus();
-            return false;
-        }
-        try {
-            int value = Integer.parseInt(standbyTime);
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的待机时间!");
-            mEtStandbyTime.requestFocus();
-            return false;
+        if (!collectorInfo.getCalcgap().equals(calculatTime)) {
+            if (TextUtils.isEmpty(calculatTime)) {
+                ToastUtils.show("请输入解算时间!");
+                mEtCalculatingTime.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(calculatTime);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的解算时间!");
+                mEtCalculatingTime.requestFocus();
+                return false;
+            }
+        } else {
+            calculatTime = "";
         }
 
-        if (TextUtils.isEmpty(collectTime)) {
-            ToastUtils.show("请输入采集时间!");
-            mEtCollectTime.requestFocus();
-            return false;
+        if (!collectorInfo.getStandbygap().equals(standbyTime)) {
+            if (TextUtils.isEmpty(standbyTime)) {
+                ToastUtils.show("请输入待机时间!");
+                mEtStandbyTime.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(standbyTime);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的待机时间!");
+                mEtStandbyTime.requestFocus();
+                return false;
+            }
+        } else {
+            standbyTime = "";
         }
-        try {
-            int value = Integer.parseInt(collectTime);
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的采集时间!");
-            mEtStandbyTime.requestFocus();
-            return false;
+
+        if (!collectorInfo.getCollgap().equals(collectTime)) {
+            if (TextUtils.isEmpty(collectTime)) {
+                ToastUtils.show("请输入采集时间!");
+                mEtCollectTime.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(collectTime);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的采集时间!");
+                mEtStandbyTime.requestFocus();
+                return false;
+            }
+        } else {
+            collectTime = "";
         }
 
         return true;
@@ -209,7 +224,6 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
      * 指令下发失败弹框
      */
     private void showDispatchFailedDialog() {
-        mBtnSave.setEnabled(true);
         ToastUtils.show("下发指令失败");
     }
 
@@ -221,7 +235,6 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mBtnSave.setEnabled(true);
         ToastUtils.show("指令响应错误");
     }
 
@@ -233,7 +246,6 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mBtnSave.setEnabled(true);
         ToastUtils.show("指令响应超时");
     }
 
@@ -271,7 +283,6 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
                     String errMsg = String.format("%s %s", "设置采集器参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
                     return;
                 }
                 doAfterSetting();
@@ -284,8 +295,11 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        mBtnSave.setEnabled(true);
         ToastUtils.show("保存成功");
+        collectorAddress = mEtCollectorAddress.getText().toString().trim();
+        calculatTime = mEtCalculatingTime.getText().toString().trim();
+        standbyTime = mEtStandbyTime.getText().toString().trim();
+        collectTime = mEtCollectTime.getText().toString().trim();
     }
 
     private void initCollectorInfo() {

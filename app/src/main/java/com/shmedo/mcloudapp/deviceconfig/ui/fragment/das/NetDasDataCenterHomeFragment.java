@@ -77,9 +77,6 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private String reportingInterval;
     private String bdCardNumber;
 
-    private String cmdDataReport;//数据上报间隔
-    private String cmdBDCardNumber;//北斗卡号
-
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;
     private static final int SERVER_NUMBER_THREE = 0x1003;

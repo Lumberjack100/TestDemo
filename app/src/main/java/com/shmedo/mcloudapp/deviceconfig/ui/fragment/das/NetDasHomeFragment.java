@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasSwitchSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
@@ -78,7 +79,13 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
         configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "传感器配置", "传感器参数配置");
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "主传感器配置", "传感器参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "开关量传感器配置", "开关量传感器配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "数字式渗压计配置", "数字式渗压计配置");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "MQTT协议配置");
@@ -124,8 +131,15 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 showWarnDialog("温馨提示", "确定重启设备吗？", REBOOT);
                 break;
 
-            case "采集器配置":
+            case "主传感器配置":
                 DasCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo);
+                break;
+
+            case "开关量传感器配置":
+                DasSwitchSensorActivity.startActivity(mActivity, projectDeviceInfo);
+                break;
+
+            case "数字式渗压计配置":
                 break;
 
             case "数据中心":

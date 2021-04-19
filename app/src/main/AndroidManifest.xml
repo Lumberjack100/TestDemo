@@ -30,7 +30,6 @@
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
-
     <uses-permission android:name="no.nordicsemi.android.LOG" />
 
     <uses-feature
@@ -67,21 +66,22 @@
         <activity android:name="com.pgyersdk.feedback.FeedbackActivity" /> <!-- 蒲公英配置 -->
         <meta-data
             android:name="PGYER_APPID"
-            android:value="${pgyerKey}" />
-
-        <!-- 配置APP ID -->
+            android:value="${pgyerKey}" /> <!-- 配置APP ID -->
         <meta-data
             android:name="BUGLY_APPID"
-            android:value="${buglyAppId}" />
-        <!-- 配置APP版本号 -->
-     <!--   <meta-data
+            android:value="${buglyAppId}" /> <!-- 配置APP版本号 -->
+        <!--
+   <meta-data
             android:name="BUGLY_APP_VERSION"
-            android:value="<APP_Version>" />-->
+            android:value="<APP_Version>" />
+        -->
         <!-- 配置APP渠道号 -->
-      <!--  <meta-data
+        <!--
+  <meta-data
             android:name="BUGLY_APP_CHANNEL"
-            android:value="<APP_Channel>" />-->
-        <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。-->
+            android:value="<APP_Channel>" />
+        -->
+        <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
             android:value="false" />
@@ -163,40 +163,40 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".user.ui.activity.UserHomePageActivity"
-            android:maxAspectRatio="2.4"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.ui.activity.CompanyHomePageActivity"
-            android:maxAspectRatio="2.4"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.ui.activity.AboutAppActivity"
-            android:maxAspectRatio="2.4"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.ui.activity.UpdatePasswordActivity"
-            android:maxAspectRatio="2.4"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.ui.activity.UpdatePhoneActivity"
-            android:maxAspectRatio="2.4"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
         <activity android:name=".common.ui.activity.WebViewActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@style/CropImageActivity" />
         <activity
             android:name=".projects.ui.activity.ViewProjectsInMapActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".projects.ui.activity.ProjectSearchActivity"
@@ -383,14 +383,12 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -409,23 +407,32 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.e40.E40CORSServiceActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.e40.E40BoardSolutionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.e40.E40EthernetActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.das.sensor.DasSwitchSensorActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.das.sensor.DasDigitalPiezometerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
