@@ -194,7 +194,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
             modulusView.initData(sensorInfo);
 
             sensorNameList.clear();
-            sensorNameList.addAll(digitalSensorNameList);
+            sensorNameList.addAll(modulusSensorNameList);
         }
         //解析出传感器名称
         sensorName = IOTSensorUtil.getInstance().getSensorNameByTypeCode(sensorInfo.getName());

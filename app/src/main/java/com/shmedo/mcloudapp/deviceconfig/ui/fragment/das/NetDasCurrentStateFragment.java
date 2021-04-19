@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,19 +11,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
-import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.das.DasBaseInfo;
+import com.shmedo.configlibrary.iot.model.das.DasNetStatusInfo;
+import com.shmedo.configlibrary.iot.model.das.DasSensorStatusInfo;
+import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo;
+import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
+import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
+import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.util.DensityUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
@@ -62,49 +71,20 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_install_position)
     TextView mTvInstallPosition;
 
+    @BindView(R.id.tv_device_internal_power)
+    TextView mTvDeviceInternalPower;//设备内部电量
+
+    @BindView(R.id.tv_device_external_voltage)
+    TextView mTvDeviceExternalVoltage;//设备外部电压
+
     /**
      * 数据中心
      */
     @BindView(R.id.tv_signal_strength)
     TextView mTvSignalStrength;
 
-    @BindView(R.id.tv_link_one_status)
-    TextView mTvLinkOneStatus;
-
-    @BindView(R.id.tv_link_one_send_data)
-    TextView mTvLinkOneSendData;
-
-    @BindView(R.id.tv_link_one_unsend_data)
-    TextView mTvLinkOneUnsendData;
-
-    @BindView(R.id.tv_link_one_online_rate)
-    TextView mTvLinkOneOnlineRate;
-
-
-    @BindView(R.id.tv_link_two_status)
-    TextView mTvLinkTwoStatus;
-
-    @BindView(R.id.tv_link_two_send_data)
-    TextView mTvLinkTwoSendData;
-
-    @BindView(R.id.tv_link_two_unsend_data)
-    TextView mTvLinkTwoUnsendData;
-
-    @BindView(R.id.tv_link_two_online_rate)
-    TextView mTvLinkTwoOnlineRate;
-
-
-    @BindView(R.id.tv_link_three_status)
-    TextView mTvLinkThreeStatus;
-
-    @BindView(R.id.tv_link_three_send_data)
-    TextView mTvLinkThreeSendData;
-
-    @BindView(R.id.tv_link_three_unsend_data)
-    TextView mTvLinkThreeoUnsendData;
-
-    @BindView(R.id.tv_link_three_online_rate)
-    TextView mTvLinkThreeOnlineRate;
+    @BindView(R.id.data_center_recyclerView)
+    RecyclerView dataCenterRecyclerView;
 
     /**
      * 太阳能控制器
@@ -149,37 +129,14 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     TextView mTvExternalHumidity;
 
     /**
-     * Das倾角计
+     * 辅传感器
      */
-    @BindView(R.id.dasInclinometerInfo)
-    View inclinometerLayout;
+    // 开关量
+    @BindView(R.id.dasIOSensorInfo)
+    View ioSensorLayout;
 
-    @BindView(R.id.tv_inclinometer_status)
-    TextView mTvInclinometerStatus;
-
-    @BindView(R.id.tv_inclinometer_x_axis)
-    TextView mTvInclinometerXaxis;
-
-    @BindView(R.id.tv_inclinometer_y_axis)
-    TextView mTvInclinometerYaxis;
-
-    @BindView(R.id.tv_inclinometer_z_axis)
-    TextView mTvInclinometerZaxis;
-
-    /**
-     * 设备电压
-     */
-    @BindView(R.id.tv_device_internal_power)
-    TextView mTvDeviceInternalPower;//设备内部电量
-
-    @BindView(R.id.tv_device_external_voltage)
-    TextView mTvDeviceExternalVoltage;//设备外部电压
-
-    /**
-     * 传感器
-     */
-    @BindView(R.id.tv_switch_type)
-    TextView mTvSwitchType;// 开关量值
+    @BindView(R.id.tv_switch_status)
+    TextView mTvSwitchStatus;
 
     @BindView(R.id.ll_rain)
     View rainLayout;
@@ -193,15 +150,34 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_alarm_status)
     TextView mTvAlarmStatus;//断线报警器状态
 
+    //数字式渗压计
+    @BindView(R.id.dasDigitalPiezometerInfo)
+    View dasDigitalPiezometerLayout;
+
+    @BindView(R.id.tv_digitalPiezometer_value)
+    TextView mTvDigitalPiezometerStatus;
+
+    @BindView(R.id.tv_digitalPiezometer_value)
+    TextView mTvDigitalPiezometerValue;
+
+    //Das倾角计
+    @BindView(R.id.dasInclinometerInfo)
+    View inclinometerLayout;
+
+    @BindView(R.id.tv_inclinometer_status)
+    TextView mTvInclinometerStatus;
+
+    @BindView(R.id.tv_inclinometer_axis)
+    TextView mTvInclinometerAxis;
+
     @BindView(R.id.sensor_recyclerView)
     RecyclerView sensorRecyclerView;
 
     private String collectorModel = "";//采集器类型
 
-    private List<String> sensorList = new ArrayList<>();
-    private CommonAdapter sensorAdapter;
-
-    private VersionMessageInfo versionMessageInfo;
+    private List<DasNetStatusInfo> netStatusInfoList = new ArrayList<>();
+    private List<DasSensorStatusInfo> sensorList = new ArrayList<>();
+    private CommonAdapter dataCenterAdapter, sensorAdapter;
 
 
     public static NetDasCurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
@@ -214,14 +190,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.das_current_state_fragment;
+        return R.layout.das_current_state_fragment_test;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRefreshLayout();
-        initAdapter();
+        initDataCenterAdapter();
+        initSensorAdapter();
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
         queryDeviceBaseInfo();
@@ -237,30 +214,59 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         });
     }
 
-    private void initAdapter() {
+    private void initDataCenterAdapter() {
+        dataCenterRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
+        dataCenterAdapter = new CommonAdapter<DasNetStatusInfo>(getActivity(), R.layout.item_das_data_center_status, netStatusInfoList) {
+            @Override
+            protected void convert(CommonViewHolder holder, DasNetStatusInfo netStatusInfo, int position) {
+                holder.setText(R.id.tv_center_title, "中心" + netStatusInfo.getIndex());
+                holder.setText(R.id.tv_link_send_data, String.valueOf(netStatusInfo.getSend()));
+                holder.setText(R.id.tv_link_unsend_data, String.valueOf(netStatusInfo.getUnsend()));
+                holder.setText(R.id.tv_link_online_rate, netStatusInfo.getRate() + "%");
+
+                //未开启
+                if (netStatusInfo.getErrno() == 0) {
+                    holder.setText(R.id.tv_link_status, "未开启");
+                    holder.setTextColorRes(R.id.tv_link_status, Color.GRAY);
+                    holder.setText(R.id.tv_link_send_data, "0");
+                    holder.setText(R.id.tv_link_unsend_data, "0");
+                    holder.setText(R.id.tv_link_online_rate, "0");
+
+                } else if (netStatusInfo.getErrno() == 1) {//上线
+                    holder.setText(R.id.tv_link_status, "已上线");
+                    holder.setTextColorRes(R.id.tv_link_status, R.color.text_color_3AD094);
+
+                } else if (netStatusInfo.getErrno() == 2) {//离线
+                    holder.setText(R.id.tv_link_status, "离线");
+                    holder.setTextColorRes(R.id.tv_link_status, Color.RED);
+                }
+            }
+        };
+        dataCenterRecyclerView.setAdapter(dataCenterAdapter);
+    }
+
+    private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
-        sensorAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_sensor_status, sensorList) {
+        sensorAdapter = new CommonAdapter<DasSensorStatusInfo>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
-            protected void convert(CommonViewHolder holder, String string, int position) {
-                //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
-                String[] result = string.split(":");
-                holder.setText(R.id.tv_address, "通道" + result[0]);
+            protected void convert(CommonViewHolder holder, DasSensorStatusInfo sensorStatusInfo, int position) {
+                holder.setText(R.id.tv_address, "通道" + sensorStatusInfo.getAddr());
+//                if (collectorModel.equals("3")) {
+//                    holder.setText(R.id.tv_value, sensorStatusInfo.getVal() + "%rh");
+//                } else if (collectorModel.equals("21")) {
+//                    holder.setText(R.id.tv_value, sensorStatusInfo.getVal()  + "Hz");
+//                } else {
+//                    holder.setText(R.id.tv_value, sensorStatusInfo.getVal()  + "mm");
+//                }
+                holder.setText(R.id.tv_value, sensorStatusInfo.getVal() + "");
+                holder.setText(R.id.tv_status, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(sensorStatusInfo.getErrno())));
 
-                if (result[1].equals("0")) {
-                    holder.setText(R.id.tv_status, "正常");
+                if (sensorStatusInfo.getErrno() == 0) {
                     holder.setTextColorRes(R.id.tv_status, R.color.text_color_3AD094);
-                } else if (result[1].equals("1")) {
-                    holder.setText(R.id.tv_status, "异常");
-                    holder.setTextColorRes(R.id.tv_status, R.color.red);
-                }
-
-                if (collectorModel.equals("3")) {
-                    holder.setText(R.id.tv_value, result[2] + "%rh");
-                } else if (collectorModel.equals("21")) {
-                    holder.setText(R.id.tv_value, result[2] + "Hz");
                 } else {
-                    holder.setText(R.id.tv_value, result[2] + "mm");
+                    holder.setTextColorRes(R.id.tv_status, R.color.red);
                 }
             }
         };
@@ -370,7 +376,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
         setResultData(queryCmdResult);
     }
 
@@ -379,7 +385,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case DAS_MD_GET_DEVICE_BASE: {
-                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<DasBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
@@ -387,13 +393,14 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-
+                DasBaseInfo dasBaseInfo = commandResult.getResult();
+                initBaseInfo(dasBaseInfo);
                 queryNetStatus(0);
             }
             break;
 
             case DAS_MD_GET_NET_STATUS: {
-                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<List<DasNetStatusInfo>> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
@@ -401,13 +408,17 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-
+                if (commandResult.getResult() != null) {
+                    netStatusInfoList.clear();
+                    netStatusInfoList.addAll(commandResult.getResult());
+                    dataCenterAdapter.notifyDataSetChanged();
+                }
                 querySolarStatus();
             }
             break;
 
             case DAS_MD_GET_SOLAR_STATUS: {
-                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<DasSolarStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询太阳能控制器状态出错!", commandResult.getMessage());
@@ -415,13 +426,14 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-
+                DasSolarStatusInfo dasSolarStatusInfo = commandResult.getResult();
+                initSolarStatus(dasSolarStatusInfo);
                 queryTemperatureAndHumidityStatus();
             }
             break;
 
             case DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS: {
-                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<DasTemperatureAndHumidityStatusinfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询温湿度状态出错!", commandResult.getMessage());
@@ -429,13 +441,14 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-
+                DasTemperatureAndHumidityStatusinfo dasTemperatureAndHumidityStatusinfo = commandResult.getResult();
+                initTemperatureAndHumidityStatus(dasTemperatureAndHumidityStatusinfo);
                 querySensorStatus(0);
             }
             break;
 
             case DAS_MD_GET_SENSOR_STATUS: {
-                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<List<DasSensorStatusInfo>> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询主传感器状态出错!", commandResult.getMessage());
@@ -443,21 +456,26 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-
+                if (commandResult.getResult() != null) {
+                    sensorList.clear();
+                    sensorList.addAll(commandResult.getResult());
+                    sensorAdapter.notifyDataSetChanged();
+                }
                 querySubSensorStatus();
             }
             break;
 
             case DAS_MD_GET_SUB_SENSOR_STATUS: {
                 swipeRefresh.setRefreshing(false);
-                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<DasSubSensorStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询辅传感器状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-
+                DasSubSensorStatusInfo dasSubSensorStatusInfo = commandResult.getResult();
+                initSubSensorStatus(dasSubSensorStatusInfo);
             }
             break;
 
@@ -466,29 +484,140 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-    private void initBaseInfo() {
+    /**
+     * 基本信息
+     *
+     * @param dasBaseInfo
+     */
+    private void initBaseInfo(DasBaseInfo dasBaseInfo) {
+        if (dasBaseInfo == null) {
+            Timber.e("DasBaseInfo 为空!");
+            return;
+        }
+        mTvDeviceSn.setText(dasBaseInfo.getSn());
+        mTVSimCardNumber.setText(dasBaseInfo.getIccid());
+        mTvImeiNumber.setText(dasBaseInfo.getImei());
+        mTvDeviceStartCode.setText(dasBaseInfo.getCode());
+        mTvFirmwareVersion.setText(dasBaseInfo.getVer());
+        mTvInstallPosition.setText(dasBaseInfo.getLocal());
 
+        mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(dasBaseInfo.getCsq())), 0);
+        mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType(dasBaseInfo.getIsp()));
+
+        mTvDeviceInternalPower.setText(dasBaseInfo.getInvolt());
+        mTvDeviceExternalVoltage.setText(dasBaseInfo.getOutvolt());
     }
 
-    private void initNetStatus() {
-
+    /**
+     * 太阳能控制器
+     *
+     * @param dasSolarStatusInfo
+     */
+    private void initSolarStatus(DasSolarStatusInfo dasSolarStatusInfo) {
+        if (dasSolarStatusInfo == null) {
+            Timber.e("DasSolarStatusInfo 为空!");
+            return;
+        }
+        if (dasSolarStatusInfo.getSolar() == null) {
+            Timber.e("SolarBean 为空!");
+            return;
+        }
+        setDeviceStatus(mTvSolarStatus, dasSolarStatusInfo.getSolar().getErrno());
+        mTvSolarVoltage.setText(dasSolarStatusInfo.getSolar().getSolarvolt() + "V");
+        mTvBatteryVoltage.setText(dasSolarStatusInfo.getSolar().getBatvolt() + "V");
+        mTvSupplyPower.setText(dasSolarStatusInfo.getSolar().getSolarpwr() + "W");
+        mTvConsumePower.setText(dasSolarStatusInfo.getSolar().getLoadpwr() + "W");
     }
 
-    private void initSolarStatus() {
+    /**
+     * 温湿度状态
+     *
+     * @param dasTemperatureAndHumidityStatusinfo
+     */
+    private void initTemperatureAndHumidityStatus(DasTemperatureAndHumidityStatusinfo dasTemperatureAndHumidityStatusinfo) {
+        if (dasTemperatureAndHumidityStatusinfo == null) {
+            Timber.e("DasTemperatureAndHumidityStatusinfo 为空!");
+            return;
+        }
 
+        if (dasTemperatureAndHumidityStatusinfo.getInth() != null) {
+            //机箱内部温湿度
+            setDeviceStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
+            mTvInternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getInth().getTemp() + "°");
+            mTvInternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getInth().getHumi() + "%");
+        }
+
+        if (dasTemperatureAndHumidityStatusinfo.getOutth() != null) {
+            //机箱外部温湿度
+            setDeviceStatus(mTvExternalStatus, dasTemperatureAndHumidityStatusinfo.getOutth().getErrno());
+            mTvExternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp() + "°");
+            mTvExternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getHumi() + "%");
+        }
     }
 
-    private void initTemperatureAndHumidityStatus() {
+    /**
+     * 辅传感器状态
+     *
+     * @param dasSubSensorStatusInfo
+     */
+    private void initSubSensorStatus(DasSubSensorStatusInfo dasSubSensorStatusInfo) {
+        if (dasSubSensorStatusInfo == null) {
+            Timber.e("DasSubSensorStatusInfo 为空!");
+            return;
+        }
 
+        if (dasSubSensorStatusInfo.getIo() != null) {
+            ioSensorLayout.setVisibility(View.VISIBLE);
+
+            if (dasSubSensorStatusInfo.getIo().getType() == 1) {
+                rainLayout.setVisibility(View.VISIBLE);
+                wireBreakAlarmLayout.setVisibility(View.GONE);
+                mTvSwitchStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getIo().getErrno())));
+                setDeviceStatus(mTvSwitchStatus, dasSubSensorStatusInfo.getIo().getErrno());
+                mTvRain.setText(dasSubSensorStatusInfo.getIo().getVaule() + "mm");
+
+            } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
+                rainLayout.setVisibility(View.GONE);
+                wireBreakAlarmLayout.setVisibility(View.GONE);
+                mTvSwitchStatus.setText("关闭");
+
+            } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
+                rainLayout.setVisibility(View.GONE);
+                wireBreakAlarmLayout.setVisibility(View.VISIBLE);
+                mTvSwitchStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getIo().getErrno())));
+                setDeviceStatus(mTvSwitchStatus, dasSubSensorStatusInfo.getIo().getErrno());
+                if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
+                    mTvAlarmStatus.setText("断开");
+                    mTvAlarmStatus.setTextColor(Color.RED);
+                } else if (dasSubSensorStatusInfo.getIo().getVaule() == 0) {
+                    mTvAlarmStatus.setText("闭合");
+                    mTvAlarmStatus.setTextColor(getResources().getColor(R.color.text_color_3AD094));
+                }
+            }
+        }
+
+        if (dasSubSensorStatusInfo.getVwp() != null) {
+            dasDigitalPiezometerLayout.setVisibility(View.VISIBLE);
+            mTvDigitalPiezometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
+            setDeviceStatus(mTvDigitalPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());
+            mTvDigitalPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue() + "");
+        }
+
+        if (dasSubSensorStatusInfo.getMems() != null) {
+            inclinometerLayout.setVisibility(View.VISIBLE);
+            mTvInclinometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
+            setDeviceStatus(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
+            mTvInclinometerAxis.setText(dasSubSensorStatusInfo.getMems().getValue());
+        }
     }
 
-    private void initSensorStatus() {
-
+    private void setDeviceStatus(TextView textView, int status) {
+        if (status == 0) {
+            textView.setText("异常");
+            textView.setTextColor(Color.RED);
+        } else if (status == 1) {
+            textView.setText("正常");
+            textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+        }
     }
-
-    private void initSubSensorStatus() {
-
-    }
-
-
 }

@@ -6,8 +6,31 @@ package com.shmedo.configlibrary.iot.model.das;
  * 描述：      DAS 状态页面辅传感器状态
  */
 public class DasSubSensorStatusInfo {
-    private String addr;//传感器地址
-    private String errno;//错误码
-    private String val;//传感器数据
+    private IoBean io;
+    private VwpBean vwp;
+    private MemsBean mems;
 
+    public IoBean getIo() {
+        return io;
+    }
+
+    public void setIo(IoBean io) {
+        this.io = io;
+    }
+
+    public VwpBean getVwp() {
+        return vwp;
+    }
+
+    public void setVwp(VwpBean vwp) {
+        this.vwp = vwp;
+    }
+
+    public MemsBean getMems() {
+        return mems;
+    }
+
+    public void setMems(MemsBean mems) {
+        this.mems = mems;
+    }
 }

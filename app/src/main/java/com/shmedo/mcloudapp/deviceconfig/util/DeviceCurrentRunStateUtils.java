@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.util;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.shmedo.core.util.GlobalUtil;
@@ -82,7 +81,7 @@ public class DeviceCurrentRunStateUtils {
         if (enable.equals("1")) {
             if (status.equals("1")) {
                 tvLinkStatus.setText("已上线");
-                tvLinkStatus.setTextColor( GlobalUtil.getColor(R.color.text_color_3AD094));
+                tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
             } else if (status.equals("0")) {
                 tvLinkStatus.setText("未上线");
                 tvLinkStatus.setTextColor(Color.RED);
@@ -136,26 +135,30 @@ public class DeviceCurrentRunStateUtils {
     }
 
     /**
-     * 设置信号强度
-     * 1~11为1格信号，12~18为2格信号，19~25为3格信号，26~31为4格信号
+     * 返回运营商类型
      *
-     * @param imageView
-     * @param status
+     * @param type
+     * @return
      */
-    public static void setSignalStrength(ImageView imageView, int status) {
-        if (status >= 1 && status <= 11) {
-            imageView.setBackgroundResource(R.drawable.signalstrengthone);
-        } else if (status >= 12 && status <= 18) {
-            imageView.setBackgroundResource(R.drawable.signalstrengthtwo);
-        } else if (status >= 19 && status <= 25) {
-            imageView.setBackgroundResource(R.drawable.signalstrengththree);
-        } else if (status >= 26 && status <= 31) {
-            imageView.setBackgroundResource(R.drawable.signalstrengthfour);
+    public static String getOperatorType(String type) {
+        switch (type) {
+            case "1":
+                return "移动";
+
+            case "2":
+                return "联通";
+
+            case "3":
+                return "电信";
+
+            default:
+                return "";
         }
     }
 
     /**
      * 根据  RSSI(=2CSQ-113) 值判断信号强度
+     *
      * @param value
      * @return
      */
@@ -173,6 +176,7 @@ public class DeviceCurrentRunStateUtils {
 
     /**
      * 根据  CSQ 值判断信号强度
+     *
      * @param value
      * @return
      */

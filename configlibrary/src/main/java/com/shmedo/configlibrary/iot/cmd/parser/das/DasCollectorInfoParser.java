@@ -13,7 +13,7 @@ import java.util.HashMap;
  * 创建时间:  4/12/21 <br/>
  * 描述：     解析DAS 采集器参数
  */
-public class CollectorInfoParser implements IOTResultParser<DasCollectorInfo> {
+public class DasCollectorInfoParser implements IOTResultParser<DasCollectorInfo> {
     @Override
     public DasCollectorInfo parse(String result) {
         DasCollectorInfo info = new DasCollectorInfo();

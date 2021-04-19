@@ -6,7 +6,6 @@ package com.shmedo.configlibrary.iot.model.das;
  * 描述：      DAS 状态页面数据中心状态
  */
 public class DasNetStatusInfo {
-
     private int index;//中心编号
     private int errno;//错误码
     private int send;//已发送

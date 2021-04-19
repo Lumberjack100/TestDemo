@@ -1,23 +1,21 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
-import com.google.gson.reflect.TypeToken;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.das.DasNetStatusInfo;
+import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.core.util.GsonFactory;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/4/16 <br/>
- * 描述：      解析DAS状态页面数据中心状态参数
+ * 描述：     TODO
  */
-public class DasNetStatusInfoParser implements IOTResultParser<List<DasNetStatusInfo>> {
+public class DasSubSensorStatusInfoParser implements IOTResultParser<DasSubSensorStatusInfo> {
     @Override
-    public List<DasNetStatusInfo> parse(String result) {
-        List<DasNetStatusInfo> netStatusInfoList = null;
+    public DasSubSensorStatusInfo parse(String result) {
+        DasSubSensorStatusInfo info = null;
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -31,10 +29,9 @@ public class DasNetStatusInfoParser implements IOTResultParser<List<DasNetStatus
                 }
             }
             String status = keyValueMap.get("status");
-            netStatusInfoList = GsonFactory.getGson().fromJson(status, new TypeToken<List<DasNetStatusInfo>>() {
-            }.getType());
+            info = GsonFactory.getGson().fromJson(status, DasSubSensorStatusInfo.class);
 
-            return netStatusInfoList;
+            return info;
         } catch (Exception ex) {
             ex.printStackTrace();
             return null;
@@ -48,6 +45,6 @@ public class DasNetStatusInfoParser implements IOTResultParser<List<DasNetStatus
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.DAS_MD_GET_NET_STATUS;
+        return IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS;
     }
 }
