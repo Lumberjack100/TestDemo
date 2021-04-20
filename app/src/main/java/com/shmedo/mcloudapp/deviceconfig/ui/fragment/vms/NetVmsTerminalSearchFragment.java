@@ -123,7 +123,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         adapter = new VmsTerminalInfoAdapter(vmsTerminalInfoList);
-        adapter.setAnimationEnable(true);
+        adapter.setAnimationEnable(false);
         adapter.setAnimationFirstOnly(false);
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override

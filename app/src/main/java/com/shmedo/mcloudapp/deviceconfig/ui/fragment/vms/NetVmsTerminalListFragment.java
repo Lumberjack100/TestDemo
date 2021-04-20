@@ -81,8 +81,8 @@ public class NetVmsTerminalListFragment extends BaseFragment {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         adapter = new VmsTerminalInfoAdapter(vmsTerminalInfoList);
-        adapter.setAnimationEnable(false);
-        adapter.setAnimationFirstOnly(false);
+//        adapter.setAnimationEnable(false);
+//        adapter.setAnimationFirstOnly(false);
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
