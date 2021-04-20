@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.annotation.Nullable;
 
@@ -16,11 +18,14 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasDigitalPiezometerEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.das.DasIOSensorEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.das.DasDigitalPiezometerInfo;
+import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
@@ -36,7 +41,33 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragment {
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2021/4/20 <br/>
+ * 描述：     TODO
+ */
+public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
+    @BindView(R.id.radio_close_switch_sensor)
+    RadioButton rbCloseSwitchSensor;//关闭开关量传感器
+
+    @BindView(R.id.radio_rain_gauge)
+    RadioButton rbRainGauge;
+
+    @BindView(R.id.rainPrecisionEt)
+    EditText mEtRainPrecision;//雨量计精度
+
+    @BindView(R.id.radio_break_alarm)
+    RadioButton rbBreakAlarm;
+
+    @BindView(R.id.rg_break_alarm_items)
+    RadioGroup rgBreakAlarmItems;//断线报警器状态单选按钮组
+
+    @BindView(R.id.radio_break_alarm_open)
+    RadioButton rbBreakAlarmOpen;//断线报警器常开
+
+    @BindView(R.id.radio_break_alarm_close)
+    RadioButton rbBreakAlarmClose;//断线报警器常闭
+
     @BindView(R.id.digitalOsmometerEnableSBtn)
     SwitchButton mSbDigitalOsmometerEnable;
 
@@ -63,16 +94,20 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-    private DasDigitalPiezometerInfo digitalPiezometerInfo;
+    private DasIOSensorInfo ioSensorInfo;
+    private String rainPrecision;
 
+    private DasDigitalPiezometerInfo digitalPiezometerInfo;
     private String osmometerAddress;
     private String depthTriggerValue;
     private String depthCorrection;
     private String osmometerLength;
     private String nozzelHeight;
 
-    public static NetDasDigitalPiezometerFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
-        NetDasDigitalPiezometerFragment fragment = new NetDasDigitalPiezometerFragment();
+    private boolean isDigitalPiezometerChange = false;
+
+    public static NetDasSensorConfigFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetDasSensorConfigFragment fragment = new NetDasSensorConfigFragment();
         Bundle args = new Bundle();
         args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
@@ -81,24 +116,103 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
 
     @Override
     protected int getLayoutId() {
-        return R.layout.das_digital_piezometer_fragment;
+        return R.layout.fragment_das_sensor;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setFilter();
+        setRadioButtonListener();
         setSwitchViewListener();
-        queryDigitalPiezometerInfo();
+        querySwitchSensorInfo();
     }
 
     private void setFilter() {
+        mEtRainPrecision.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtOsmometerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtWaterAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtWaterRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtOsmometerCord.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtNozzelHeight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
     }
+
+    /**
+     * 单选框事件
+     */
+    private void setRadioButtonListener() {
+        //关闭单选按钮
+        rbCloseSwitchSensor.setOnCheckedChangeListener(onCheckedChangeListener);
+        //雨量计单选按钮
+        rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
+        //断线报警器单选按钮
+        rbBreakAlarm.setOnCheckedChangeListener(onCheckedChangeListener);
+        rgBreakAlarmItems.setOnCheckedChangeListener(breakAlarmOnCheckedChangeListener);
+    }
+
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            int id = buttonView.getId();
+            if (id == R.id.radio_close_switch_sensor) {//关闭开关传感器单选按钮
+                if (isChecked) {
+                    rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
+                    rbRainGauge.setChecked(false);
+                    rbBreakAlarm.setChecked(false);
+                    if (!mSbDigitalOsmometerEnable.isChecked()) {
+                        btnConfirm.setVisibility(View.GONE);
+                    }
+
+                    //发送关闭传感器指令
+                    DasIOSensorEntity entity = new DasIOSensorEntity();
+                    entity.setType("0");
+                    setSwitchSensorInfo(entity);
+                } else {
+                    rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                }
+            } else if (id == R.id.radio_rain_gauge) {//雨量计单选按钮
+                if (isChecked) {
+                    rbCloseSwitchSensor.setChecked(false);
+                    rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
+                    mEtRainPrecision.setEnabled(true);
+                    rbBreakAlarm.setChecked(false);
+                    btnConfirm.setVisibility(View.VISIBLE);
+                } else {
+                    rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                    mEtRainPrecision.setEnabled(false);
+                }
+            } else if (id == R.id.radio_break_alarm) {  //断线报警器单选按钮
+                if (isChecked) {
+                    rbCloseSwitchSensor.setChecked(false);
+                    rbRainGauge.setChecked(false);
+                    rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
+                    rgBreakAlarmItems.setVisibility(View.VISIBLE);
+                    if (!mSbDigitalOsmometerEnable.isChecked()) {
+                        btnConfirm.setVisibility(View.GONE);
+                    }
+                } else {
+                    rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                    rgBreakAlarmItems.setVisibility(View.GONE);
+                }
+            }
+        }
+    };
+
+    private RadioGroup.OnCheckedChangeListener breakAlarmOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            DasIOSensorEntity entity = new DasIOSensorEntity();
+            entity.setType("2");
+            //断线报警器常开
+            if (checkedId == R.id.radio_break_alarm_open) {
+                entity.setValue("0");
+
+            } else if (checkedId == R.id.radio_break_alarm_close) {
+                entity.setValue("1");
+            }
+            setSwitchSensorInfo(entity);
+        }
+    };
 
     /**
      * 开关控件事件
@@ -110,11 +224,34 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     digitalOsmometerChildsLayout.setVisibility(View.VISIBLE);
+                    btnConfirm.setVisibility(View.VISIBLE);
                 } else {
                     digitalOsmometerChildsLayout.setVisibility(View.GONE);
+                    //判断是否禁用保存按钮
+                    if (!rbRainGauge.isChecked()) {
+                        btnConfirm.setVisibility(View.GONE);
+                    }
                 }
             }
         });
+    }
+
+    /**
+     * 查询开关量传感器信息
+     */
+    private void querySwitchSensorInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 设置开关量传感器信息
+     */
+    private void setSwitchSensorInfo(DasIOSensorEntity entity) {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -126,13 +263,18 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
-
-    @OnClick({R.id.btn_confirm})
+    @OnClick({R.id.extendSensorLayout, R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
-        if (id == R.id.btn_confirm) {
+        if (id == R.id.extendSensorLayout) {
+//            DasExternalSensorHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
+
+        } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-            if (!checkValueIsValid()) {
+            if (!checkRainPrecisionParam() || !checksDigitalOsmometerParam()) {
                 Timber.w("参数存在错误!");
                 return;
             }
@@ -140,7 +282,30 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
         }
     }
 
-    private boolean checkValueIsValid() {
+    private boolean checkRainPrecisionParam() {
+        rainPrecision = mEtRainPrecision.getText().toString().trim();
+
+        if (TextUtils.isEmpty(rainPrecision)) {
+            ToastUtils.show("请输入雨量计精度!");
+            mEtRainPrecision.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(rainPrecision);
+            if (value >= 1) {
+                ToastUtils.show("请输入正确的雨量计精度!");
+                mEtRainPrecision.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的雨量计精度!");
+            mEtRainPrecision.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checksDigitalOsmometerParam() {
         osmometerAddress = mEtOsmometerAddress.getText().toString().trim();
         depthTriggerValue = mEtWaterAlarmValue.getText().toString().trim();
         depthCorrection = mEtWaterRevised.getText().toString().trim();
@@ -199,7 +364,7 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
                 mEtWaterRevised.requestFocus();
                 return false;
             }
-        }else {
+        } else {
             depthCorrection = "";
         }
 
@@ -216,7 +381,7 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
                 mEtOsmometerCord.requestFocus();
                 return false;
             }
-        }else {
+        } else {
             osmometerLength = "";
         }
 
@@ -233,13 +398,28 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
                 mEtNozzelHeight.requestFocus();
                 return false;
             }
-        }else {
+        } else {
             nozzelHeight = "";
         }
+
+        isDigitalPiezometerChange = true;
         return true;
     }
 
     private void processSave() {
+        if (rbRainGauge.isChecked()) {
+            DasIOSensorEntity entity = new DasIOSensorEntity();
+            entity.setType("1");
+            int precision = (int) (Double.parseDouble(rainPrecision) * 100);
+            entity.setValue(precision + "");
+            setSwitchSensorInfo(entity);
+        } else if (mSbDigitalOsmometerEnable.isChecked()) {
+            setDigitalOsmometerParam();
+            showProgressDialog("处理中...");
+        }
+    }
+
+    private void setDigitalOsmometerParam() {
         DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
         entity.setAddr(osmometerAddress);
         entity.setThreshold(depthTriggerValue);
@@ -248,7 +428,6 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
         entity.setTubealti(nozzelHeight);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
-        showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -309,7 +488,7 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
      */
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
         setResultData(queryCmdResult);
     }
 
@@ -317,7 +496,23 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
+            case DAS_MD_GET_IO_SENSOR_INFO: {//
+                IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    dismissProgressDialog();
+                    String errMsg = String.format("%s %s", "查询开关量传感器参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ioSensorInfo = commandResult.getResult();
+                initSwitchSensor();
+                queryDigitalPiezometerInfo();
+            }
+            break;
+
             case DAS_MD_GET_DIGITAL_PIEZOMETER_INFO: {//
+                dismissProgressDialog();
                 IOTCommandResult<DasDigitalPiezometerInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询数字渗压计参数出错!", commandResult.getMessage());
@@ -330,7 +525,26 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
             }
             break;
 
+            case DAS_MD_SET_IO_SENSOR_INFO: {//
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "设置开关量传感器参数出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+
+                if (mSbDigitalOsmometerEnable.isChecked() && isDigitalPiezometerChange) {
+                    setDigitalOsmometerParam();
+                } else {
+                    dismissProgressDialog();
+                    ToastUtils.show("保存成功");
+                }
+            }
+            break;
+
             case DAS_MD_SET_DIGITAL_PIEZOMETER_INFO: {//
+                dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置数字渗压计参数出错!", cmdResult.getReason());
@@ -347,17 +561,81 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
         }
     }
 
+    private void initSwitchSensor() {
+        if (ioSensorInfo == null) {
+            Timber.e("DasIOSensorInfo 为空!");
+            ioSensorInfo = new DasIOSensorInfo();
+            return;
+        }
+        switch (ioSensorInfo.getType()) {
+            case "0":
+                //初始化时不需要触发 OnCheckedChangeListener 事件
+                rbCloseSwitchSensor.setOnCheckedChangeListener(null);
+                rbCloseSwitchSensor.setChecked(true);
+                rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                mEtRainPrecision.setEnabled(false);
+                rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rgBreakAlarmItems.setVisibility(View.GONE);
+                rbCloseSwitchSensor.setOnCheckedChangeListener(onCheckedChangeListener);
+                break;
+
+            case "1": {//雨量站开启
+                //初始化时不需要触发 OnCheckedChangeListener 事件
+                rbRainGauge.setOnCheckedChangeListener(null);
+                rbRainGauge.setChecked(true);
+                rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rgBreakAlarmItems.setVisibility(View.GONE);
+                btnConfirm.setVisibility(View.VISIBLE);
+                rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
+
+                try {
+                    rainPrecision = decimalFormat.format(Double.parseDouble(ioSensorInfo.getValue()) / 10000);
+                    mEtRainPrecision.setText(rainPrecision);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            break;
+
+            case "2": {//断线报警器开启
+                //初始化时不需要触发 OnCheckedChangeListener 事件
+                rbBreakAlarm.setOnCheckedChangeListener(null);
+                rbBreakAlarm.setChecked(true);
+                rgBreakAlarmItems.setOnCheckedChangeListener(null);
+                rgBreakAlarmItems.setVisibility(View.VISIBLE);
+                rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                mEtRainPrecision.setEnabled(false);
+                if (ioSensorInfo.getValue().equals("0")) {
+                    rbBreakAlarmOpen.setChecked(true);
+                } else if (ioSensorInfo.getValue().equals("1")) {
+                    rbBreakAlarmClose.setChecked(true);
+                }
+                rbBreakAlarm.setOnCheckedChangeListener(onCheckedChangeListener);
+                rgBreakAlarmItems.setOnCheckedChangeListener(breakAlarmOnCheckedChangeListener);
+            }
+            break;
+        }
+    }
+
     private void initDigitalPiezometerInfo() {
         if (digitalPiezometerInfo == null) {
             Timber.e("DasDigitalPiezometerInfo 为空!");
             digitalPiezometerInfo = new DasDigitalPiezometerInfo();
             mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(false);
             digitalOsmometerChildsLayout.setVisibility(View.GONE);
+            if (!rbRainGauge.isChecked()) {
+                btnConfirm.setVisibility(View.GONE);
+            }
             return;
         }
         if (digitalPiezometerInfo.getSw().equals("0")) {
             mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(false);
             digitalOsmometerChildsLayout.setVisibility(View.GONE);
+            if (!rbRainGauge.isChecked()) {
+                btnConfirm.setVisibility(View.GONE);
+            }
         } else {
             mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(true);
             digitalOsmometerChildsLayout.setVisibility(View.VISIBLE);
@@ -381,6 +659,8 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
 
     private void doAfterSetting() {
         ToastUtils.show("保存成功");
+        isDigitalPiezometerChange = false;
+
         osmometerAddress = mEtOsmometerAddress.getText().toString().trim();
         depthTriggerValue = mEtWaterAlarmValue.getText().toString().trim();
         depthCorrection = mEtWaterRevised.getText().toString().trim();
@@ -399,6 +679,13 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
     }
 
     private boolean checkValueIsChange() {
+        if (rbRainGauge.isChecked() && rainPrecision != null && !rainPrecision.equals(mEtRainPrecision.getText().toString().trim())) {
+            return true;
+        }
+
+        if (!mSbDigitalOsmometerEnable.isChecked()) {
+            return false;
+        }
         if (osmometerAddress != null && !osmometerAddress.equals(mEtOsmometerAddress.getText().toString().trim())) {
             return true;
         }
@@ -416,4 +703,5 @@ public class NetDasDigitalPiezometerFragment extends BaseNetIotCommunicateFragme
         }
         return false;
     }
+
 }

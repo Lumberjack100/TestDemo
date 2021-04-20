@@ -130,7 +130,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_d_a_s_sensor;
+        return R.layout.fragment_das_sensor;
     }
 
     @Override
