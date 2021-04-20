@@ -26,7 +26,9 @@ import okhttp3.RequestBody;
  */
 public class DeviceRepository {
     private static final DeviceRepository instance = new DeviceRepository();
-    private UnPeekLiveData<String> deviceApiKey;
+    private UnPeekLiveData<String> deviceApiKey = new UnPeekLiveData.Builder<String>()
+            .setAllowNullValue(true)
+            .create();
 
     public static DeviceRepository getInstance() {
         return instance;
@@ -43,7 +45,9 @@ public class DeviceRepository {
     }
 
     public void clearDeviceApiKey() {
-        deviceApiKey.postValue(null);
+        if (deviceApiKey != null) {
+            deviceApiKey.postValue(null);
+        }
     }
 
     /**
@@ -55,7 +59,7 @@ public class DeviceRepository {
         String apiKey = DeviceDao.getInstance().getCachedDeviceApiKeyBySn(sn);
         if (apiKey == null) {
             queryCompanyDevice(sn);
-        }else {
+        } else {
             deviceApiKey.postValue(apiKey);
         }
     }
