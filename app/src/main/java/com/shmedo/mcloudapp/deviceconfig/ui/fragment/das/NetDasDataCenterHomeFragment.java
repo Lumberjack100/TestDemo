@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -16,16 +17,22 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.das.DasBdTerminalEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.das.DasDataReportEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
+import com.shmedo.configlibrary.iot.model.das.DasBdTerminalInfo;
+import com.shmedo.configlibrary.iot.model.das.DasDataReportInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
@@ -50,17 +57,21 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment {
-    @BindView(R.id.tv_communication_method)
-    TextView mTvCommunicationMethod;
-
     @BindView(R.id.reportingIntervalET)
     EditText mEtReportingInterval;
 
-    @BindView(R.id.bdCardNumberET)
-    EditText mEtBdCardNumber;
+    @BindView(R.id.beiDouEnableSBtn)
+    SwitchButton mSbBeiDouEnable;
 
-    @BindView(R.id.ll_bd_card_number)
-    View bdCardNumberLayout;
+    @BindView(R.id.beiDouChildsLayout)
+    View beiDouChildsLayout;
+
+    @BindView(R.id.targetAddressEt)
+    EditText mEtTargetAddress;
+
+    @BindView(R.id.tv_baudRate)
+    TextView mTvBaudRate;
+
 
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
@@ -71,11 +82,19 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @BindView(R.id.tv_data_center_three)
     TextView mTvDataCenterThree;
 
-    private int pos = 1;
-    private String dataCommunicationModeOld;
-    private String dataCommunicationMode;
     private String reportingInterval;
-    private String bdCardNumber;
+
+    private int baudRatePos;
+    private String targetAddr;
+    private String baudRateOld;
+    private String baudRate;
+
+    private DasDataReportInfo dataReportInfo;
+    private DasBdTerminalInfo bdTerminalInfo;
+
+    private boolean isBdTerminalParamChange = false;//判断有没有修改北斗数传终端参数
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭北斗数传终端操作
+
 
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;
@@ -128,20 +147,70 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_das_data_center_home;
+        return R.layout.fragment_das_data_center_home_test;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setFilter();
+        setSwitchViewListener();
         showProgressDialog("加载中...");
-        getDataCenterStatus(ServerNumber.NUMBER_ONE);
+        getReportingTimeInfo();
     }
 
     private void setFilter() {
         mEtReportingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtBdCardNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtTargetAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+    }
+
+    /**
+     * 开关控件事件
+     */
+    private void setSwitchViewListener() {
+        //北斗数传终端启用开关事件
+        mSbBeiDouEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mSbBeiDouEnable.setCheckedImmediatelyNoEvent(true);
+                    beiDouChildsLayout.setVisibility(View.VISIBLE);
+                } else {
+                    mSbBeiDouEnable.setCheckedImmediatelyNoEvent(false);
+                    beiDouChildsLayout.setVisibility(View.GONE);
+                    disableBdTerminal();
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取上报时间信息
+     */
+    private void getReportingTimeInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DATA_REPORT_TIME);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 获取北斗数传终端信息
+     */
+    private void getBdTerminalInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_BD_TERMINAL);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 关闭北斗数传终端信息
+     */
+    private void disableBdTerminal() {
+        DasBdTerminalEntity entity = new DasBdTerminalEntity();
+        entity.setSw("0");
+
+        isSaveParamOperation = false;
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -153,48 +222,15 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
-    @OnClick({R.id.communicationMethodLayout, R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.btn_confirm})
+    @OnClick({R.id.ll_baudRate, R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
         }
         int id = view.getId();
-        if (id == R.id.communicationMethodLayout) {
-            XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
-            new XPopup.Builder(mActivity)
-                    .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                    .asBottomList("", new String[]{"4G", "SMS", "BD", "BD+4G"},
-                            null, pos, true,
-                            new OnSelectListener() {
-                                @Override
-                                public void onSelect(int position, String text) {
-                                    pos = position;
-                                    mTvCommunicationMethod.setText(text);
+        if (id == R.id.ll_baudRate) {
+            showBaudRateDialog();
 
-                                    switch (text) {
-                                        case "4G":
-                                            dataCommunicationMode = "1";
-                                            bdCardNumberLayout.setVisibility(View.GONE);
-                                            break;
-
-                                        case "SMS":
-                                            dataCommunicationMode = "2";
-                                            bdCardNumberLayout.setVisibility(View.GONE);
-                                            break;
-
-                                        case "BD":
-                                            dataCommunicationMode = "3";
-                                            bdCardNumberLayout.setVisibility(View.VISIBLE);
-                                            break;
-
-                                        case "BD+4G":
-                                            dataCommunicationMode = "4";
-                                            bdCardNumberLayout.setVisibility(View.VISIBLE);
-                                            break;
-                                    }
-                                }
-                            }, 0, R.layout.custom_xpopup_adapter_text_match)
-                    .show();
         } else if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
@@ -214,6 +250,26 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             }
             processSave();
         }
+    }
+
+    /**
+     * 选择波特率弹框
+     */
+    private void showBaudRateDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", new String[]{"9600", "115200"},
+                        null, baudRatePos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                baudRatePos = position;
+                                mTvBaudRate.setText(text);
+                                baudRate = text;
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
     }
 
     private boolean checkValueIsValid() {
@@ -237,29 +293,31 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             return false;
         }
 
-        if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
-            bdCardNumber = mEtBdCardNumber.getText().toString().trim();
-            if (TextUtils.isEmpty(bdCardNumber)) {
-                ToastUtils.show("请输入北斗卡号!");
-                mEtBdCardNumber.requestFocus();
-                return false;
-            }
-            if (!ValidateUtil.isNumberSix(bdCardNumber)) {
-                ToastUtils.show("请输入正确的北斗卡号!");
-                mEtBdCardNumber.requestFocus();
-                return false;
-            }
+        if (!mSbBeiDouEnable.isChecked())
+            return true;
 
-            //设置六位目标北斗卡号
-//            SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdCardNumber);
-//            cmdBDCardNumber = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
+        targetAddr = mEtTargetAddress.getText().toString().trim();
+        if (TextUtils.isEmpty(targetAddr)) {
+            ToastUtils.show("请输入北斗目标地址!");
+            mEtTargetAddress.requestFocus();
+            return false;
+        }
+        if (!ValidateUtil.isNumberSix(targetAddr)) {
+            ToastUtils.show("请输入正确的北斗目标地址!");
+            mEtTargetAddress.requestFocus();
+            return false;
         }
 
+        isBdTerminalParamChange = true;
         return true;
     }
 
     private void processSave() {
-
+        DasDataReportEntity entity = new DasDataReportEntity();
+        entity.setReport_intv(reportingInterval);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DATA_REPORT_TIME, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
 
@@ -320,6 +378,36 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
+            case DAS_MD_GET_DATA_REPORT_TIME: {//
+                IOTCommandResult<DasDataReportInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    dismissProgressDialog();
+                    String errMsg = String.format("%s %s", "查询数据上报时间出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                dataReportInfo = commandResult.getResult();
+                initDataReportTime();
+                getBdTerminalInfo();
+            }
+            break;
+
+            case DAS_MD_GET_BD_TERMINAL: {//
+                IOTCommandResult<DasBdTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    dismissProgressDialog();
+                    String errMsg = String.format("%s %s", "查询北斗数传终端参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                bdTerminalInfo = commandResult.getResult();
+                initBdTerminalInfo();
+                getDataCenterStatus(ServerNumber.NUMBER_ONE);
+            }
+            break;
+
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -358,9 +446,94 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             }
             break;
 
+            case DAS_MD_SET_DATA_REPORT_TIME: {//
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    dismissProgressDialog();
+                    String errMsg = String.format("%s %s", "设置数据上报时间出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+
+                if (mSbBeiDouEnable.isChecked() && isBdTerminalParamChange) {
+                    DasBdTerminalEntity entity = new DasBdTerminalEntity();
+                    entity.setSw("1");
+                    entity.setDstaddr(targetAddr);
+                    entity.setBaud(baudRate);
+
+                    isSaveParamOperation = true;
+                    String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
+                    doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                } else {
+                    dismissProgressDialog();
+                    ToastUtils.show("保存成功");
+                }
+            }
+            break;
+
+            case DAS_MD_SET_BD_TERMINAL: {//
+                dismissProgressDialog();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "设置北斗数传终端参数出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                if (isSaveParamOperation) {
+                    ToastUtils.show("保存成功");
+                    baudRateOld = baudRate;
+                }
+            }
+            break;
+
             default:
                 break;
         }
+    }
+
+    private void initDataReportTime() {
+        if (dataReportInfo == null) {
+            Timber.e("DasDataReportInfo 为空!");
+            dataReportInfo = new DasDataReportInfo();
+            return;
+        }
+
+        reportingInterval = dataReportInfo.getReport_intv();
+        mEtReportingInterval.setText(reportingInterval);
+    }
+
+    private void initBdTerminalInfo() {
+        if (bdTerminalInfo == null) {
+            Timber.e("DasBdTerminalInfo 为空!");
+            bdTerminalInfo = new DasBdTerminalInfo();
+            mSbBeiDouEnable.setCheckedImmediatelyNoEvent(false);
+            beiDouChildsLayout.setVisibility(View.GONE);
+            return;
+        }
+
+        if (bdTerminalInfo.getSw().equals("0")) {
+            mSbBeiDouEnable.setCheckedImmediatelyNoEvent(false);
+            beiDouChildsLayout.setVisibility(View.GONE);
+        } else {
+            mSbBeiDouEnable.setCheckedImmediatelyNoEvent(true);
+            beiDouChildsLayout.setVisibility(View.VISIBLE);
+        }
+        targetAddr = bdTerminalInfo.getDstaddr();
+        baudRate = bdTerminalInfo.getBaud();
+        baudRateOld = bdTerminalInfo.getBaud();
+        switch (baudRate) {
+            case "9600":
+                baudRatePos = 0;
+                mTvBaudRate.setText("9600");
+                break;
+            case "115200":
+                baudRatePos = 1;
+                mTvBaudRate.setText("115200");
+                break;
+        }
+        mEtTargetAddress.setText(targetAddr);
     }
 
     private String getStatusTextById(String statusId) {
@@ -398,13 +571,16 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     }
 
     private boolean checkValueIsChange() {
-        if (dataCommunicationModeOld != null && dataCommunicationMode != null && !dataCommunicationModeOld.equals(dataCommunicationMode)) {
-            return true;
-        }
         if (reportingInterval != null && !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())) {
             return true;
         }
-        if (bdCardNumber != null && !bdCardNumber.equals(mEtBdCardNumber.getText().toString().trim())) {
+        if (!mSbBeiDouEnable.isChecked()) {
+            return false;
+        }
+        if (targetAddr != null && !targetAddr.equals(mEtTargetAddress.getText().toString().trim())) {
+            return true;
+        }
+        if (baudRateOld != null && baudRate != null && !baudRateOld.equals(baudRate)) {
             return true;
         }
         return false;

@@ -65,7 +65,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         super.onActivityCreated(savedInstanceState);
     }
 
-    @OnClick({R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})
+    @OnClick({R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.workModeLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -83,15 +83,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
         } else if (id == R.id.workModeLayout) {
-            ToastUtils.show("正在研发中,敬请期待...");
-
-        } else if (id == R.id.productRegisterLayout) {
-            ToastUtils.show("正在研发中,敬请期待...");
-
-        } else if (id == R.id.modifyAuthCodeLayout) {
-            ToastUtils.show("正在研发中,敬请期待...");
-
-        } else if (id == R.id.syncInstallLocationLayout) {
             ToastUtils.show("正在研发中,敬请期待...");
         }
     }
@@ -165,7 +156,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         }
         doDispatchSuccess(cmdStr);
     }
-
 
     /**
      * 指令下发失败弹框
@@ -249,7 +239,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
                             }
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         dismissProgressDialog();

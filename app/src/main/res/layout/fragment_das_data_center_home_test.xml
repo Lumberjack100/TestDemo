@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_gray">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="数据上报间隔(min)"
+                android:textColor="@color/text_color_343434"
+                android:textSize="@dimen/text_size_17" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/reportingIntervalET"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dimen_size_25"
+                android:layout_weight="1"
+                android:background="@null"
+                android:drawablePadding="@dimen/dimen_size_15"
+                android:gravity="center_vertical|right"
+                android:hint="请输入"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textColor="@color/text_color_666666"
+                android:textColorHint="@color/text_color_cccccc"
+                android:textSize="@dimen/text_size_17" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="北斗数传终端"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17" />
+
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/beiDouEnableSBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/beiDouChildsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="目标地址"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/targetAddressEt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dimen_size_25"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawablePadding="@dimen/dimen_size_15"
+                    android:gravity="center_vertical|right"
+                    android:hint="请输入"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textColor="@color/text_color_666666"
+                    android:textColorHint="@color/text_color_cccccc"
+                    android:textSize="@dimen/text_size_17" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/divider_line_bg_efefef" />
+
+            <LinearLayout
+                android:id="@+id/ll_baudRate"
+                style="@style/Common_ClickableItem_LayoutStyle">
+
+                <TextView
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="波特率" />
+
+                <TextView
+                    android:id="@+id/tv_baudRate"
+                    style="@style/Common_ClickableItem_ValueStyle"
+                    android:textSize="17sp"
+                    tools:text="9600" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:gravity="center_vertical"
+            android:paddingStart="16.5dp"
+            android:text="4g 通讯"
+            android:textColor="@color/sub_title_text_color"
+            android:textSize="@dimen/text_size_15" />
+
+        <LinearLayout
+            android:id="@+id/dataCenterOneLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="数据中心1" />
+
+            <TextView
+                android:id="@+id/tv_data_center_one"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="未启用" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/dataCenterTwoLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="数据中心2" />
+
+            <TextView
+                android:id="@+id/tv_data_center_two"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="未启用" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/dataCenterThreeLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="数据中心3" />
+
+            <TextView
+                android:id="@+id/tv_data_center_three"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="未启用" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="34dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_select"
+            android:text="保存"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

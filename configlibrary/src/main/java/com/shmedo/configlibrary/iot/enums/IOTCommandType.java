@@ -88,7 +88,6 @@ public enum IOTCommandType {
      */
     DAS_MD_GET_NET_STATUS("md_getnetstatus"),
     /**
-     *
      * 获取太阳能控制器状态
      */
     DAS_MD_GET_SOLAR_STATUS("md_getsloarstatus"),
@@ -141,6 +140,24 @@ public enum IOTCommandType {
      * 设置数字渗压计信息
      */
     DAS_MD_SET_DIGITAL_PIEZOMETER_INFO("md_setdigtalosm"),
+
+    /**
+     * 获取上报数据的间隔
+     */
+    DAS_MD_GET_DATA_REPORT_TIME("md_getreportdatatime"),
+    /**
+     * 设置上报数据的间隔
+     */
+    DAS_MD_SET_DATA_REPORT_TIME("md_setreportdatatime"),
+
+    /**
+     * 查询北斗数传终端
+     */
+    DAS_MD_GET_BD_TERMINAL("md_getbdterminal"),
+    /**
+     * 设置北斗数传终端
+     */
+    DAS_MD_SET_BD_TERMINAL("md_setbdterminal"),
 
     /*　VMS-LoRa网关指令  */
     /**

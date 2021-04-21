@@ -35,7 +35,7 @@ import timber.log.Timber;
 /**
  * 通过物联网平台配置采集器
  */
-public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
+public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 
     @BindView(R.id.collectorAddressET)
     EditText mEtCollectorAddress;
@@ -59,8 +59,8 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 
     private DasCollectorInfo collectorInfo;
 
-    public static NetCollectorSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
-        NetCollectorSettingFragment fragment = new NetCollectorSettingFragment();
+    public static NetDasCollectorSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetDasCollectorSettingFragment fragment = new NetDasCollectorSettingFragment();
         Bundle args = new Bundle();
         args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
@@ -69,7 +69,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.net_collector_setting;
+        return R.layout.fragment_das_collector_setting;
     }
 
     @Override
