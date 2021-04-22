@@ -22,6 +22,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.das.DasBdTerminalInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasCollectorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasDataReportInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasDigitalPiezometerInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.das.DasExternalSensorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasIOSensorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasNetStatusInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasSensorStatusInfoParser;
@@ -181,7 +182,8 @@ public class IOTParseManager {
                 DasIOSensorInfoParser.class,
                 DasDigitalPiezometerInfoParser.class,
                 DasDataReportInfoParser.class,
-                DasBdTerminalInfoParser.class
+                DasBdTerminalInfoParser.class,
+                DasExternalSensorInfoParser.class
         });
 
         registerWithClass(clazzes);

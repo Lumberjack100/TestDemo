@@ -95,7 +95,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_d_a_s_external_sensor;
+        return R.layout.fragment_das_external_sensor_home;
     }
 
     @Override
@@ -279,14 +279,12 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
                     }
                     accessSum = collectorConfigInfo.getAccessSum();
                 }
-
                 if (accessSum == 0) {
                     stopProgressRunnable();
                     initDefaultSensorItems();
                     initEmptyDefaultCollectorSensorParamsInfo();
                     return;
                 }
-
                 // 查询传感器配置信息前,重置accessNumFlag、sbcollectorSensor参数
                 sensorIndex = 0;
                 queryExtendSensorConfigInfo();

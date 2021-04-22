@@ -39,7 +39,7 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalSensorHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasExternalSensorHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 

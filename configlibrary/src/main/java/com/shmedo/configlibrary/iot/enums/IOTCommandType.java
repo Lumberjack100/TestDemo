@@ -159,6 +159,15 @@ public enum IOTCommandType {
      */
     DAS_MD_SET_BD_TERMINAL("md_setbdterminal"),
 
+    /**
+     * 查询扩展传感器信息
+     */
+    DAS_MD_GET_EXTERNAL_SENSOR("md_getsensorctrl"),
+    /**
+     * 设置扩展传感器信息
+     */
+    DAS_MD_SET_EXTERNAL_SENSOR("md_setsensorctrl"),
+
     /*　VMS-LoRa网关指令  */
     /**
      * 获取网关的基本信息
