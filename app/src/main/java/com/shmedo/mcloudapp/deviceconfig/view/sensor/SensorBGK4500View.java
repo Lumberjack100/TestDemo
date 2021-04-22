@@ -125,7 +125,7 @@ public class SensorBGK4500View extends FrameLayout {
         return true;
     }
 
-    /**********/
+    /**** 新添加******/
     public void initData(DasExternalSensorInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));

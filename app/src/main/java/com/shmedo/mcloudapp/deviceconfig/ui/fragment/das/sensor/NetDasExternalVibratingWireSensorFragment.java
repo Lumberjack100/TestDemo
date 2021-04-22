@@ -134,14 +134,14 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorBGK4500View.initData(externalSensorInfo);
                 break;
 
-//            case GUDAN_PERCOLATE://葛南渗压计(VWP-03)
-//                sensorTypePos = 1;
-//                mTvSensorType.setText(sensorTypeList.get(1));
-//                sensorBGK4500View.setVisibility(View.GONE);
-//                sensorVWP03View.setVisibility(View.VISIBLE);
-//                sensorZLJ300tView.setVisibility(View.GONE);
-//                sensorVWP03View.initData(parcelableData == null ? null : (SensorGudanPercolateInfo) parcelableData);
-//                break;
+            case GUDAN_PERCOLATE://葛南渗压计(VWP-03)
+                sensorTypePos = 1;
+                mTvSensorType.setText(sensorTypeList.get(1));
+                sensorBGK4500View.setVisibility(View.GONE);
+                sensorVWP03View.setVisibility(View.VISIBLE);
+                sensorZLJ300tView.setVisibility(View.GONE);
+                sensorVWP03View.initData(externalSensorInfo);
+                break;
 //
 //            case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
 //                sensorTypePos = 2;
@@ -222,14 +222,12 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
         boolean updateDataSuccess = false;
         switch (selectedSensorType) {
             case KANG_PERCOLATE:
-                externalSensorInfo = new DasExternalSensorInfo();
                 updateDataSuccess = sensorBGK4500View.updateSensorData(externalSensorInfo);
                 break;
 
-//            case GUDAN_PERCOLATE:
-//                parcelableData = new SensorGudanPercolateInfo();
-//                updateDataSuccess = sensorVWP03View.updateSensorData((SensorGudanPercolateInfo) parcelableData);
-//                break;
+            case GUDAN_PERCOLATE:
+                updateDataSuccess = sensorVWP03View.updateSensorData(externalSensorInfo);
+                break;
 //
 //            case JUNXING_ZLJ_300T:
 //                parcelableData = new SensorJunXingZljInfo();
@@ -241,7 +239,6 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
             Timber.w("传感器参数存在错误!");
             return;
         }
-
         externalSensorInfo.setAddr(mTvSensorAisle.getText().toString());
         externalSensorInfo.setType(selectedSensorType.toString());
         Intent intent = new Intent();
