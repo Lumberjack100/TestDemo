@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.BleDasSensorConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasSensorConfigFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -16,7 +15,6 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
  * DAS 传感器配置页面
  */
 public class DasSensorConfigActivity extends BaseConfigFragmentContainerActivity {
-    private String collectorModel = "";//采集器类型
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, DasSensorConfigActivity.class);
@@ -44,7 +42,7 @@ public class DasSensorConfigActivity extends BaseConfigFragmentContainerActivity
             fragment = NetDasSensorConfigFragment.newInstance(projectDeviceInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            fragment = new BleDasSensorConfigFragment();
+//            fragment = new BleDasSensorConfigFragment();
         }
         return fragment;
     }

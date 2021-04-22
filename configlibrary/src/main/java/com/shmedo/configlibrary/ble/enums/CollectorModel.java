@@ -14,35 +14,35 @@ public enum CollectorModel {
     /**
      * 振弦式采集器
      */
-    VW08("00"),
+    VW08("0"),
     /**
      * 雨量采集器
      */
-    RAIN08("01"),
+    RAIN08("1"),
     /**
      * 裂缝计采集器
      */
-    DS08("02"),
+    DS08("2"),
     /**
      * 土壤湿度采集器
      */
-    HD08("03"),
+    HD08("3"),
     /**
      * 测斜仪采集器
      */
-    CX08("04"),
+    CX08("4"),
     /**
      * 超声波采集器
      */
-    UDS08("06"),
+    UDS08("6"),
     /**
      * 雷达采集器
      */
-    RD08("07"),
+    RD08("7"),
     /**
      * 墒情采集器
      */
-    SMC08("08"),
+    SMC08("8"),
     /**
      * 温湿度采集器
      */
@@ -78,21 +78,21 @@ public enum CollectorModel {
 
     public static CollectorModel value(String model) {
         switch (model) {
-            case "00":
+            case "0":
                 return VW08;
-            case "01":
+            case "1":
                 return RAIN08;
-            case "02":
+            case "2":
                 return DS08;
-            case "03":
+            case "3":
                 return HD08;
-            case "04":
+            case "4":
                 return CX08;
-            case "06":
+            case "6":
                 return UDS08;
-            case "07":
+            case "7":
                 return RD08;
-            case "08":
+            case "8":
                 return SMC08;
             case "12":
                 return TH08;

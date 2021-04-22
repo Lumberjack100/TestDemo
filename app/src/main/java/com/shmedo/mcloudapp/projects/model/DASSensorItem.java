@@ -23,7 +23,7 @@ public class DASSensorItem {
     }
 
     public String getSensorAddress() {
-        return TextUtils.isEmpty(sensorAddress) ? "1" : sensorAddress;
+        return TextUtils.isEmpty(sensorAddress) ? "" : sensorAddress;
     }
 
     public void setSensorAddress(String sensorAddress) {

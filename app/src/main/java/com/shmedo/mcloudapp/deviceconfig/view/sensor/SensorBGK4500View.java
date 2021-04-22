@@ -15,6 +15,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
+import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.mcloudapp.R;
 
 import java.util.Locale;
@@ -120,6 +121,38 @@ public class SensorBGK4500View extends FrameLayout {
         sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
         sensorInfo.setCordLenght(cordLength);
         sensorInfo.setInstallElevation(installElevation);
+
+        return true;
+    }
+
+    /**********/
+    public void initData(DasExternalSensorInfo sensorInfo) {
+        if (sensorInfo != null) {
+            mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
+            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCorrval()));
+            mEtCoefficientA.setText(sensorInfo.getPoly_a());
+            mEtCoefficientB.setText(sensorInfo.getPloy_b());
+            mEtCoefficientC.setText(sensorInfo.getPloy_c());
+            mEtCoefficientK.setText(sensorInfo.getTemp_k());
+            mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTemp_t0()));
+            mEtCordLength.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getRopelen()));
+            mEtInstallElevation.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTubealti()));
+        }
+    }
+
+    public boolean updateSensorData(DasExternalSensorInfo sensorInfo) {
+        if (!checkValue()) {
+            return false;
+        }
+        sensorInfo.setThreshold(triggerThreshold);
+        sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
+        sensorInfo.setPoly_a(coefficientA);
+        sensorInfo.setPloy_b(coefficientB);
+        sensorInfo.setPloy_c(coefficientC);
+        sensorInfo.setTemp_k(coefficientK);
+        sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
+        sensorInfo.setRopelen(cordLength);
+        sensorInfo.setTubealti(installElevation);
 
         return true;
     }

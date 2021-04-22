@@ -60,7 +60,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     private String sensorAddress, triggerThreshold, correctValue, measureLong;
 
 
-
     public static NetDasExternalDigitalSensorFragment newInstance(ProjectDeviceInfo projectDeviceInfo, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
         NetDasExternalDigitalSensorFragment fragment = new NetDasExternalDigitalSensorFragment();
         Bundle args = new Bundle();
@@ -78,6 +77,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
             addressList = getArguments().getStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST);
             externalSensorInfo = (DasExternalSensorInfo) getArguments().getSerializable(AppContants.Extras.SENSOR_PARAM);
+
+            sensorType = SensorType.value(externalSensorInfo.getType());
+            if (!TextUtils.isEmpty(externalSensorInfo.getAddr())) {
+                addressList.remove(externalSensorInfo.getAddr());
+            }
         }
     }
 
@@ -89,7 +93,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sensorType = SensorType.value(externalSensorInfo.getType());
         setView();
         initValue();
     }

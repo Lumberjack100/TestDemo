@@ -190,7 +190,7 @@ public class NetDasExternalSensorHomeFragment extends BaseNetIotCommunicateFragm
 //            DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
 
         } else { //数字式传感器
-            DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, addressList, sensorInfo);
+            DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, collectorCode, addressList, sensorInfo);
         }
     }
 

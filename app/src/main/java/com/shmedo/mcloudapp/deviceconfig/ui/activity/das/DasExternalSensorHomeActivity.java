@@ -2,15 +2,12 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity.das;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.BleDasExternalDigtalSensorFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.BleDasExternalVibratingWireSensorFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasExternalSensorHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -37,13 +34,6 @@ public class DasExternalSensorHomeActivity extends BaseConfigFragmentContainerAc
         context.startActivity(intent);
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("扩展传感器配置");
-    }
-
     @Override
     protected void parseIntent() {
         super.parseIntent();
@@ -66,11 +56,7 @@ public class DasExternalSensorHomeActivity extends BaseConfigFragmentContainerAc
             fragment = NetDasExternalSensorHomeFragment.newInstance(projectDeviceInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            if (CollectorModel.value(collectorModel) == CollectorModel.VW08) {//振弦式传感器
-                fragment = BleDasExternalVibratingWireSensorFragment.newInstance(collectorModel);
-            } else { //数字式传感器
-                fragment = BleDasExternalDigtalSensorFragment.newInstance(collectorModel);
-            }
+
         }
         return fragment;
     }

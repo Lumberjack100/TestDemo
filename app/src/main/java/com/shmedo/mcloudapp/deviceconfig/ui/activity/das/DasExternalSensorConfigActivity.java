@@ -2,18 +2,22 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity.das;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
+import com.shmedo.configlibrary.ble.enums.CollectorModel;
+import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasExternalDigitalSensorFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasExternalVibratingWireSensorFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * 创建者:   gonghe <br/>
@@ -21,25 +25,21 @@ import java.util.ArrayList;
  * 描述：     TODO
  */
 public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainerActivity {
+    private String collectorModel = "";//采集器类型
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
 
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProjectDeviceInfo projectDeviceInfo, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProjectDeviceInfo projectDeviceInfo, String collectorModel, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
         Intent intent = new Intent(context, DasExternalSensorConfigActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         intent.putStringArrayListExtra(AppContants.Extras.SENSOR_ADDRESS_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         launcher.launch(intent);
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("板卡解算");
-    }
 
     @Override
     protected void parseIntent() {
@@ -53,13 +53,18 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             externalSensorInfo = (DasExternalSensorInfo) intent.getSerializableExtra(AppContants.Extras.SENSOR_PARAM);
         }
+        String sensorName = BlueResultParserUtil.getSensorName(Objects.requireNonNull(SensorType.value(externalSensorInfo.getType())));
+        mToolbarTitle.setText(sensorName);
     }
 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetDasExternalDigitalSensorFragment.newInstance(projectDeviceInfo, addressList, externalSensorInfo);
-
+            if (CollectorModel.value(collectorModel) == CollectorModel.VW08) {//振弦式传感器
+                fragment = NetDasExternalVibratingWireSensorFragment.newInstance(projectDeviceInfo, addressList, externalSensorInfo);
+            } else { //数字式传感器
+                fragment = NetDasExternalDigitalSensorFragment.newInstance(projectDeviceInfo, addressList, externalSensorInfo);
+            }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
 
         }

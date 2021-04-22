@@ -14,31 +14,31 @@ public enum SensorType {
     /**
      * 压电式雨量计
      */
-    RAIN_GAUGE("01"),
+    RAIN_GAUGE("1"),
     /**
      * 拉线位移计 MPS-M-2000
      */
-    WIRE_SHIFT("02"),
+    WIRE_SHIFT("2"),
     /**
      * 土壤含水率 TR-3000
      */
-    SOIL_MOISTURE("03"),
+    SOIL_MOISTURE("3"),
     /**
      * 测斜仪 I-P-I
      */
-    INCLINOMETER("04"),
+    INCLINOMETER("4"),
     /**
      * 超声波物位计 HBRD908
      */
-    ULTRASONIC_LEVEL_GAUGE("06"),
+    ULTRASONIC_LEVEL_GAUGE("6"),
     /**
      * 雷达物位计 MH-A15R
      */
-    RADAR_LEVEL_GAUGE("07"),
+    RADAR_LEVEL_GAUGE("7"),
     /**
      * 墒情计 EP100G
      */
-    MOISTURE_METER("08"),
+    MOISTURE_METER("8"),
     /**
      * 温湿度计 CSW18
      */
@@ -96,19 +96,19 @@ public enum SensorType {
 
     public static SensorType value(String type) {
         switch (type) {
-            case "01":
+            case "1":
                 return RAIN_GAUGE;
-            case "02":
+            case "2":
                 return WIRE_SHIFT;
-            case "03":
+            case "3":
                 return SOIL_MOISTURE;
-            case "04":
+            case "4":
                 return INCLINOMETER;
-            case "06":
+            case "6":
                 return ULTRASONIC_LEVEL_GAUGE;
-            case "07":
+            case "7":
                 return RADAR_LEVEL_GAUGE;
-            case "08":
+            case "8":
                 return MOISTURE_METER;
             case "12":
                 return TEMPERATURE_HUMIDITY_METER;
