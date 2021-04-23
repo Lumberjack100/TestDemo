@@ -181,6 +181,10 @@ public class DeviceCurrentRunStateUtils {
      * @return
      */
     public static int getSignalResIdByCSQValue(int value) {
+        //无信号
+        if (value == 99)
+            return 0;
+
         if (value >= 1 && value <= 11) {
             return R.drawable.signalstrengthone;
         } else if (value >= 12 && value <= 18) {
