@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.hjq.toast.ToastUtils;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeAdvancedConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
@@ -22,7 +21,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +30,12 @@ import butterknife.BindView;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/12/28<br/>
- * 描述：     ADME 高级配置页面
+ * 创建时间:  2021/4/23 <br/>
+ * 描述：     TODO
  */
-public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragment {
+public class NetAdmeAdvancedConfigFragment extends BaseFragment {
+    protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
+
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
@@ -42,8 +43,23 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    public static BleAdmeAdvancedConfigFragment newInstance() {
-        return new BleAdmeAdvancedConfigFragment();
+    public ProjectDeviceInfo projectDeviceInfo;
+
+
+    public static NetAdmeAdvancedConfigFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetAdmeAdvancedConfigFragment fragment = new NetAdmeAdvancedConfigFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null && getArguments().containsKey(PRO_DEVICE_INFO)) {
+            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
+        }
     }
 
     @Override
@@ -73,12 +89,6 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
                 if (isDoubleClick(view)) {
                     return;
                 }
-
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    return;
-                }
-
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
                 processItemClick();
             }
@@ -89,32 +99,31 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "计米轮":
-                AdmeMeterWheelActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdmeMeterWheelActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
 
             case "测斜仪":
-                AdmeInclinometerActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdmeInclinometerActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
 
             case "执行机构":
-                AdmeExecutiveAgencyActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdmeExecutiveAgencyActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
 
             case "步进电机":
-                AdmeStepperMotorActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdmeStepperMotorActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
 
             case "堵转缓停":
-                BleAdmeLockedRotorDetectionActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                BleAdmeLockedRotorDetectionActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
         }
     }
 
-
     private void initConfigModuleData() {
         configModuleList.clear();
 
-        ConfigModule   configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "计米轮", "参数配置");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "计米轮", "参数配置");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "测斜仪", "参数配置");
@@ -129,5 +138,4 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "堵转缓停", "参数配置");
         configModuleList.add(configModule);
     }
-
 }

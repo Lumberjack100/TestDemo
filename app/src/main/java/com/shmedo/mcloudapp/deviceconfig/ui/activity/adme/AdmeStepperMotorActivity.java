@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeStepperMotorFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeStepperMotorFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -16,6 +18,14 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeStepperMotorFra
  * 描述：     ADME 步进电机参数配置页面
  */
 public class AdmeStepperMotorActivity extends BaseConfigFragmentContainerActivity {
+
+    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
+        Intent intent = new Intent(context, AdmeStepperMotorActivity.class);
+        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
 
     public static void startActivity(Context context, int connectWay) {
         Intent intent = new Intent(context, AdmeStepperMotorActivity.class);
@@ -33,6 +43,7 @@ public class AdmeStepperMotorActivity extends BaseConfigFragmentContainerActivit
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
+            fragment = NetAdmeStepperMotorFragment.newInstance(projectDeviceInfo);
 
         } else {
             fragment = BleAdmeStepperMotorFragment.newInstance();

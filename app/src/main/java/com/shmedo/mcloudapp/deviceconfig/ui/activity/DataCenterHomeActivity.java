@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeDataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasDataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40DataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40DataCenterHomeFragment;
@@ -98,6 +99,7 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
                     break;
 
                 case AppContants.DeviceType.ADME:
+                    fragment = NetAdmeDataCenterHomeFragment.newInstance(configMethod, projectDeviceInfo);
                     break;
 
                 case AppContants.DeviceType.M20:

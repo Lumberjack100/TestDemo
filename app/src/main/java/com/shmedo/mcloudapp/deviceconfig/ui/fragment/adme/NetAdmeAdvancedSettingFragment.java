@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
 import android.view.View;
@@ -14,11 +14,11 @@ import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.e40.E40RTKModeEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeWorkModeEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.e40.E40RTKModeInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeWorkModeInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -29,9 +29,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40BoardSolutionActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40CORSServiceActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40EthernetActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -57,39 +54,57 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2/25/21 <br/>
- * 描述：    E40网络模式设置页面
+ * 创建时间:  2021/4/23 <br/>
+ * 描述：     TODO
  */
-public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment {
-    private static final int REBOOT = 0x1002;
-    private static final int RESET = 0x1003;
+public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragment {
+    private static final int REBOOT = 0x1000;
+    private static final int RESET = 0x1001;
 
-    @BindView(R.id.tv_rtk_mode)
-    TextView mTvRTKMode;
+    @BindView(R.id.tv_work_mode)
+    TextView mTvWorkMode;
 
-    private int rtkModePos;
-    private String rtkMode;//0表示基站，1表示移动站
-    private E40RTKModeInfo rtkModeInfo;
+    private int workModePos;
+    private String workMode;// 工作模式(0:常规测量模式，1:特定点位模式，2:静态测量模式，3:设备停用模式)
+    private AdmeWorkModeInfo workModeInfo;
 
-
-    public static NetE40AdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
-        NetE40AdvancedSettingFragment fragment = new NetE40AdvancedSettingFragment();
+    public static NetAdmeAdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetAdmeAdvancedSettingFragment fragment = new NetAdmeAdvancedSettingFragment();
         Bundle args = new Bundle();
         args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
 
-
     @Override
     protected int getLayoutId() {
-        return R.layout.net_e40_advanced_setting_fragment;
+        return R.layout.adme_advanced_setting_fragment;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getRTKMode();
+        getWorkMode();
+    }
+
+    /**
+     * 获取设备工作模式
+     */
+    private void getWorkMode() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_WORK_MODE);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 设置设备工作模式
+     */
+    private void setWorkMode() {
+        AdmeWorkModeEntity entity = new AdmeWorkModeEntity();
+        entity.setWorkmode(workMode);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_WORK_MODE, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -110,39 +125,14 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
-    /**
-     * 获取RTK模式
-     */
-    private void getRTKMode() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_RTK);
-        showProgressDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-    }
-
-    /**
-     * 设置RTK模式
-     */
-    private void setRTKMode() {
-        E40RTKModeEntity entity = new E40RTKModeEntity();
-        entity.setMode(rtkMode);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_RTK, entity);
-        showProgressDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-    }
-
-    @OnClick({R.id.dataCenterConfigLayout, R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.rtkModeLayout, R.id.corsServiceLayout, R.id.boardSolveLayout, R.id.sensorSettingLayout, R.id.wiredNetworkSettingLayout, R.id.fileDownloadLayout})
+    @OnClick({R.id.dataCenterConfigLayout, R.id.rebootLayout, R.id.resetLayout, R.id.firmwareUpgradeLayout, R.id.workModeLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
         }
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
-
-        } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
-            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
-            newFragment.setDialogFragmentClickListener(firmWareSelectListener);
-            newFragment.show(getChildFragmentManager(), "dialog");
+            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
 
         } else if (id == R.id.rebootLayout) {//重启
             showWarnDialog("确定重启设备吗？", REBOOT);
@@ -150,28 +140,19 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         } else if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
-        } else if (id == R.id.rtkModeLayout) {//RTK模式
-            showRTKModeDialog();
+        } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
+            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
+            newFragment.setDialogFragmentClickListener(firmWareSelectListener);
+            newFragment.show(getChildFragmentManager(), "dialog");
 
-        } else if (id == R.id.corsServiceLayout) {//CORS 服务设置
-            E40CORSServiceActivity.startActivity(mActivity, projectDeviceInfo);
-
-        } else if (id == R.id.boardSolveLayout) {//板卡解算设置
-            E40BoardSolutionActivity.startActivity(mActivity, projectDeviceInfo);
-
-        } else if (id == R.id.sensorSettingLayout) {//传感器设置
-
-        } else if (id == R.id.wiredNetworkSettingLayout) {//有线网络设置
-            E40EthernetActivity.startActivity(mActivity, projectDeviceInfo);
-        } else if (id == R.id.fileDownloadLayout) {//下载文件
-
+        } else if (id == R.id.workModeLayout) {//工作模式
+            showWorkModeDialog();
         }
     }
 
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
         public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-//            showProgressDialog("指令下发中...");
             doFirmwareUpgrade(firmWareInfo.getId());
             return true;
         }
@@ -183,21 +164,21 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     };
 
     /**
-     * 选择RTK模式
+     * 选择工作模式
      */
-    private void showRTKModeDialog() {
+    private void showWorkModeDialog() {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
-                .isDestroyOnDismiss(true)
-                .asBottomList("", new String[]{"基站", "移动站"},
-                        null, rtkModePos, true,
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", new String[]{"常规测量模式", "特定点位模式", "静态测量模式", "设备停用模式"},
+                        null, workModePos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                rtkModePos = position;
-                                rtkMode = String.valueOf(position);
-                                mTvRTKMode.setText(text);
-                                setRTKMode();
+                                workModePos = position;
+                                workMode = String.valueOf(position);
+                                mTvWorkMode.setText(text);
+                                setWorkMode();
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
@@ -223,11 +204,11 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                         switch (operateType) {
                             case REBOOT:
                                 rebootDevice();
-                            break;
+                                break;
 
                             case RESET:
                                 resetDevice();
-                            break;
+                                break;
                         }
                     }
                 });
@@ -275,7 +256,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 break;
 
             case E40_MD_GET_RTK:
-                title = "获取RTK模式";
+                title = "工作模式";
                 break;
 
             default:
@@ -308,8 +289,8 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 
-            case E40_MD_GET_RTK:
-            case E40_MD_SET_RTK:
+            case ADME_MD_GET_WORK_MODE:
+            case ADME_MD_SET_WORK_MODE:
                 if (msgIDList != null && msgIDList.size() > 0) {
                     startQueryCmdResponseRunnable(0);
                 }
@@ -351,7 +332,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
      */
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
         setResultData(queryCmdResult);
     }
 
@@ -359,23 +340,38 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case E40_MD_GET_RTK: {//获取RTK
-                IOTCommandResult<E40RTKModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+            case ADME_MD_GET_WORK_MODE: {//获取设备的工作模式
+                dismissProgressDialog();
+                IOTCommandResult<AdmeWorkModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取RTK模式出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "获取设备的工作模式出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                rtkModeInfo = commandResult.getResult();
-                initRTKMode();
+                workModeInfo = commandResult.getResult();
+                initWorkMode();
             }
             break;
 
-            case E40_MD_SET_RTK: {
+            case ADME_MD_SET_WORK_MODE: {//设置ADME的工作模式
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置RTK模式出错!", cmdResult.getReason());
+                    dismissProgressDialog();
+                    String errMsg = String.format("%s %s", "设置A工作模式出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                saveConfigInfo();
+            }
+            break;
+
+            case MD_SAVE_CONFIG_PARAM: {
+                dismissProgressDialog();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -389,20 +385,28 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         }
     }
 
-    private void initRTKMode() {
-        if (rtkModeInfo == null) {
-            Timber.e("E40RTKModeInfo is Null!");
-            rtkModeInfo = new E40RTKModeInfo();
+    private void initWorkMode() {
+        if (workModeInfo == null) {
+            Timber.e("AdmeWorkModeInfo is Null!");
+            workModeInfo = new AdmeWorkModeInfo();
             return;
         }
 
-        rtkMode = rtkModeInfo.getMode().trim();
-        if (rtkMode.equals("0")) {
-            mTvRTKMode.setText("基站");
-            rtkModePos = 0;
-        } else if (rtkMode.equals("1")) {
-            mTvRTKMode.setText("移动站");
-            rtkModePos = 1;
+        workMode = workModeInfo.getWorkmode().trim();
+        if (workMode.equals("0")) {
+            mTvWorkMode.setText("常规测量模式");
+            workModePos = 0;
+        } else if (workMode.equals("1")) {
+            mTvWorkMode.setText("特定点位模式");
+            workModePos = 1;
+
+        } else if (workMode.equals("2")) {
+            mTvWorkMode.setText("静态测量模式");
+            workModePos = 2;
+
+        } else if (workMode.equals("3")) {
+            mTvWorkMode.setText("设备停用模式");
+            workModePos = 3;
         }
     }
 
@@ -441,5 +445,4 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                     }
                 });
     }
-
 }

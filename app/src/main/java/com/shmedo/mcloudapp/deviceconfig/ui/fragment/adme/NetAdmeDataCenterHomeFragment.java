@@ -24,10 +24,14 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -35,10 +39,11 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/12/29<br/>
- * 描述：    ADME 数据中心页面
+ * 创建时间:  2021/4/23 <br/>
+ * 描述：     TODO
  */
-public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragment {
+public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragment {
+
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
 
@@ -54,10 +59,12 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
     private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public static BleAdmeDataCenterHomeFragment newInstance(int configMethod) {
-        BleAdmeDataCenterHomeFragment fragment = new BleAdmeDataCenterHomeFragment();
+
+    public static NetAdmeDataCenterHomeFragment newInstance(int configMethod, ProjectDeviceInfo projectDeviceInfo) {
+        NetAdmeDataCenterHomeFragment fragment = new NetAdmeDataCenterHomeFragment();
         Bundle args = new Bundle();
         args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,7 +91,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        showProgressDialog("加载中...");
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -112,10 +119,9 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        showProgressDialog("加载中...");
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
-
 
     /**
      * 获取数据中心状态
@@ -123,7 +129,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        sendCommand(command);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout})
@@ -131,34 +137,78 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
         if (isDoubleClick(view)) {
             return;
         }
-        if (!isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-            return;
-        }
-
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher,AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.ADME, projectDeviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher,AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.E40, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
         }
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            ToastUtils.show("下发指令失败");
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(0);
+        }
     }
 
-    private void setResultData(final String cmdStr) {
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("查询设备响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("查询设备响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -173,17 +223,16 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgressRunnable();
+                        dismissProgressDialog();
                     }
                 } else if (centerStatus.getCenterid() == 2) {
-                    stopProgressRunnable();
+                    dismissProgressDialog();
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }
             }
             break;
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -197,7 +246,6 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
         } else if (statusId.equals("2")) {
             status = "未连接";
         }
-
         return status;
     }
 

@@ -62,7 +62,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_advanced_setting_fragment;
+        return R.layout.adme_advanced_setting_fragment;
     }
 
     @Override

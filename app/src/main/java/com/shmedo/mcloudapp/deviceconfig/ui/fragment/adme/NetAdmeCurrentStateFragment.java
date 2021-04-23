@@ -14,19 +14,23 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeCurrentStateInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/12/28<br/>
- * 描述：     ADME  查看当前状态页面
+ * 创建时间:  2021/4/23 <br/>
+ * 描述：     TODO
  */
-public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragment {
+public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
@@ -123,8 +127,12 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
 
     private AdmeCurrentStateInfo currentStateInfo;
 
-    public static BleAdmeCurrentStateFragment newInstance() {
-        return new BleAdmeCurrentStateFragment();
+    public static NetAdmeCurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetAdmeCurrentStateFragment fragment = new NetAdmeCurrentStateFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -138,7 +146,7 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         initRefreshLayout();
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
-        queryParamInfo();
+        queryStateInfo();
     }
 
     private void initRefreshLayout() {
@@ -146,12 +154,7 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
-                    swipeRefresh.setRefreshing(false);
-                    return;
-                }
-                queryParamInfo();
+                queryStateInfo();
             }
         });
     }
@@ -159,30 +162,73 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     /**
      * 获取设备的当前状态
      */
-    private void queryParamInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable(null, WRITE_TIME_OUT_SECOND);
+    private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_STATE);
-        sendCommand(command);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            swipeRefresh.setRefreshing(false);
+            ToastUtils.show("下发指令失败");
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(0);
+        }
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
         swipeRefresh.setRefreshing(false);
+        ToastUtils.show("查询设备状态响应错误");
     }
 
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
     @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        swipeRefresh.setRefreshing(false);
+        ToastUtils.show("查询设备状态响应超时");
     }
 
-    private void setResultData(final String cmdStr) {
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        swipeRefresh.setRefreshing(false);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_STATE: {
-                swipeRefresh.setRefreshing(false);
-                stopProgressRunnable();
                 IOTCommandResult<AdmeCurrentStateInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
@@ -191,17 +237,16 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                     return;
                 }
                 currentStateInfo = commandResult.getResult();
-                initParamConfigInfo();
+                initStatusInfo();
             }
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
 
-    private void initParamConfigInfo() {
+    private void initStatusInfo() {
         if (currentStateInfo == null) {
             Timber.e("AdmeCurrentStateInfo is Null!");
             currentStateInfo = new AdmeCurrentStateInfo();

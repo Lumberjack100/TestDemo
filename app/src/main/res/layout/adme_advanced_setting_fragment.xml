@@ -32,6 +32,22 @@
             android:layout_height="14dp" />
 
         <LinearLayout
+            android:id="@+id/firmwareUpgradeLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="固件升级" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
             android:id="@+id/rebootLayout"
             style="@style/Common_ClickableItem_LayoutStyle">
 
@@ -62,25 +78,6 @@
         <Space
             android:layout_width="wrap_content"
             android:layout_height="14dp" />
-
-        <LinearLayout
-            android:id="@+id/firmwareUpgradeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="固件升级" />
-
-            <TextView style="@style/Common_ClickableItem_ValueStyle" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="18dp"
-            android:background="@color/divider_line_bg_efefef" />
 
         <LinearLayout
             android:id="@+id/workModeLayout"
