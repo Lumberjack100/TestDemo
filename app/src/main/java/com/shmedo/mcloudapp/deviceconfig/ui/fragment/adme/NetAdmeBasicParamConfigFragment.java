@@ -437,8 +437,8 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     ToastUtils.show(errMsg);
                     return;
                 }
+                ToastUtils.show("保存成功");
             }
-            ToastUtils.show("保存成功");
             break;
 
             default:
