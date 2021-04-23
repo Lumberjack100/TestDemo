@@ -311,7 +311,6 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
             mEtDecentralizationWaitingTime.requestFocus();
             return false;
         }
-
         return true;
     }
 

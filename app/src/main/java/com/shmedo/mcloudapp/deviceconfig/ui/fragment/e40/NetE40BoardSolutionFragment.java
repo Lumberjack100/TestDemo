@@ -119,7 +119,7 @@ public class NetE40BoardSolutionFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_BOARDSOLUTION);
-        showProgressDialog("处理中...");
+        showProgressDialog("加载中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 

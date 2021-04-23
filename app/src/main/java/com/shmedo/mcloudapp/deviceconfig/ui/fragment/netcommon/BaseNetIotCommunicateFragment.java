@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -100,6 +101,11 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         if (getArguments() != null && getArguments().containsKey(PRO_DEVICE_INFO)) {
             projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
         configPageViewModel.configPageEditableChanged.observeInFragment(this, new Observer<Boolean>() {
             @Override

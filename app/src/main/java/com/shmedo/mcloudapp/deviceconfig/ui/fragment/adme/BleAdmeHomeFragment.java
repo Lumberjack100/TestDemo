@@ -67,9 +67,6 @@ import timber.log.Timber;
 public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
-    @BindView(R.id.device_container)
-    View content;
-
     @BindView(R.id.progress_overlay)
     View progressOverlay;
 
@@ -215,7 +212,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         moduleAdapter = new ConfigModuleAdapter(configModuleList);
-        moduleAdapter.setAnimationEnable(true);
+        moduleAdapter.setAnimationEnable(false);
         moduleAdapter.setAnimationFirstOnly(false);
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -227,7 +224,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                selectedConfigModule = (ConfigModule) configModuleList.get(position);
+                selectedConfigModule = configModuleList.get(position);
                 processItemClick();
             }
         });
@@ -520,7 +517,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             }
             break;
 
-            case MD_SAVE_CONFIG_PARAM:{
+            case MD_SAVE_CONFIG_PARAM: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

@@ -42,7 +42,7 @@ public class AdmeAdvancedConfigActivity extends BaseConfigFragmentContainerActiv
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAdmeAdvancedConfigFragment.newInstance();
+            fragment = NetAdmeAdvancedConfigFragment.newInstance(projectDeviceInfo);
 
         } else {
             fragment = BleAdmeAdvancedConfigFragment.newInstance();
