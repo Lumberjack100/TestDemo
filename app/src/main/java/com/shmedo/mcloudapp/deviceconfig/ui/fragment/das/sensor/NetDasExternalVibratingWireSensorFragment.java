@@ -21,7 +21,6 @@ import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,8 +46,6 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
 
     @BindView(R.id.sensorZLJ300tView)
     SensorZLJ300tView sensorZLJ300tView;
-
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     private List<String> sensorTypeList = Arrays.asList("基康渗压计(BGK-4500)", "葛南渗压计(VWP-03)", "轴力计(ZLJ-300T)");
     private List<String> allAisleList = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");//所有通道

@@ -186,12 +186,7 @@ public class NetDasExternalSensorHomeFragment extends BaseNetIotCommunicateFragm
             sensorInfo = sensorHashMap.get(curSensorItem.getSensorAddress());
         }
 
-        if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
-//            DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
-
-        } else { //数字式传感器
-            DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, collectorCode, addressList, sensorInfo);
-        }
+        DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, collectorCode, addressList, sensorInfo);
     }
 
     private void warnDeleteSensorItem(int position) {
