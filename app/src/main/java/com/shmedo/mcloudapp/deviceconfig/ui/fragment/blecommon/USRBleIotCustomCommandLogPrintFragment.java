@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,7 +19,6 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;

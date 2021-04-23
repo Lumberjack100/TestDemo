@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,7 +30,6 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +42,7 @@ import timber.log.Timber;
  * 创建时间:  2020/12/28<br/>
  * 描述：     ADME 数据中心基本参数配置页面
  */
-public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunicateFragment {
+public class UniversalUSRBleDataCenterBasicConfigFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.contentLayout)
     ViewGroup contentLayout;
 
@@ -70,8 +69,8 @@ public class BleAdmeDataCenterBasicConfigFragment extends BaseUSRBleIotCommunica
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
-    public static BleAdmeDataCenterBasicConfigFragment newInstance(ServerNumber serverNumber, String status) {
-        BleAdmeDataCenterBasicConfigFragment fragment = new BleAdmeDataCenterBasicConfigFragment();
+    public static UniversalUSRBleDataCenterBasicConfigFragment newInstance(ServerNumber serverNumber, String status) {
+        UniversalUSRBleDataCenterBasicConfigFragment fragment = new UniversalUSRBleDataCenterBasicConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
