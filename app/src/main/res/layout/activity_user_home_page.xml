@@ -3,237 +3,214 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/gray_f2f2f2"
     android:orientation="vertical">
 
     <include layout="@layout/common_toolbar_primary_bg" />
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <RelativeLayout
+        android:id="@+id/userLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@color/white"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingStart="@dimen/dimen_size_20"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:paddingEnd="@dimen/dimen_size_20"
+        android:paddingBottom="@dimen/dimen_size_10">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="头像"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_16" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_15"
-                android:background="@drawable/bg_corner_10dp_white"
-                android:orientation="vertical"
-                android:paddingTop="@dimen/dimen_size_20"
-                android:paddingBottom="@dimen/dimen_size_30">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userAvatar"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dimen_size_10"
+            android:layout_toLeftOf="@+id/iv_arrow_right"
+            android:src="@drawable/ic_avatar_default"
+            app:civ_border_color="@color/white"
+            app:civ_border_overlay="true"
+            app:civ_border_width="0.5dp" />
+
+        <ImageView
+            android:id="@+id/iv_arrow_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dimen_size_15"
+            android:src="@drawable/icon_right" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dimen_size_20"
+        android:background="@color/gray_f2f2f2" />
+
+    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户名"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_16" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/userNameET"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dimen_size_25"
+            android:layout_weight="1"
+            android:background="@null"
+            android:drawablePadding="@dimen/dimen_size_15"
+            android:ellipsize="end"
+            android:gravity="center_vertical|right"
+            android:hint="请输入用户名"
+            android:maxLength="10"
+            android:maxLines="1"
+            android:textColor="@color/title_text_color"
+            android:textColorHint="@color/gray_818182"
+            android:textSize="@dimen/text_size_15" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dimen_size_20"
+        android:background="@color/gray_f2f2f2" />
+
+    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="职位"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_16" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/titleET"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dimen_size_25"
+            android:layout_weight="1"
+            android:background="@null"
+            android:drawablePadding="@dimen/dimen_size_15"
+            android:ellipsize="end"
+            android:gravity="center_vertical|right"
+            android:hint="请输入职位"
+            android:maxLength="12"
+            android:maxLines="1"
+            android:textColor="@color/title_text_color"
+            android:textColorHint="@color/gray_818182"
+            android:textSize="@dimen/text_size_15" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dimen_size_20"
+        android:background="@color/gray_f2f2f2" />
+
+    <LinearLayout
+        android:id="@+id/mobileLayout"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:foreground="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="手机号"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_16" />
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableEnd="@drawable/icon_right"
+            android:drawablePadding="@dimen/dimen_size_5"
+            android:ellipsize="end"
+            android:gravity="right"
+            android:maxLines="1"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_16"
+            tools:text="13915273356" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dimen_size_20"
+        android:background="@color/gray_f2f2f2" />
+
+    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="邮箱"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_16" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/emailET"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dimen_size_25"
+            android:layout_weight="1"
+            android:background="@null"
+            android:drawablePadding="@dimen/dimen_size_15"
+            android:ellipsize="end"
+            android:gravity="center_vertical|right"
+            android:hint="请输入邮箱"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:textColor="@color/title_text_color"
+            android:textColorHint="@color/gray_818182"
+            android:textSize="@dimen/text_size_15" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dimen_size_20"
+        android:background="@color/gray_f2f2f2" />
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/btn_select"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="确认"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_20" />
 
 
-                <RelativeLayout
-                    android:id="@+id/userLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:paddingStart="@dimen/dimen_size_20"
-                    android:paddingTop="@dimen/dimen_size_10"
-                    android:paddingEnd="@dimen/dimen_size_20"
-                    android:paddingBottom="@dimen/dimen_size_10">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
-                        android:text="头像"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16" />
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/userAvatar"
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/dimen_size_10"
-                        android:layout_toLeftOf="@+id/iv_arrow_right"
-                        android:src="@drawable/ic_avatar_default"
-                        app:civ_border_color="@color/white"
-                        app:civ_border_overlay="true"
-                        app:civ_border_width="0.5dp" />
-
-                    <ImageView
-                        android:id="@+id/iv_arrow_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/dimen_size_15"
-                        android:src="@drawable/icon_right" />
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="@dimen/dimen_size_20"
-                    android:background="@color/gray_f2f2f2" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="用户名"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16" />
-
-                    <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/userNameET"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:ellipsize="end"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入用户名"
-                        android:maxLength="10"
-                        android:maxLines="1"
-                        android:textColor="@color/title_text_color"
-                        android:textColorHint="@color/gray_818182"
-                        android:textSize="@dimen/text_size_15" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="@dimen/dimen_size_20"
-                    android:background="@color/gray_f2f2f2" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="职位"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16" />
-
-                    <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/titleET"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:ellipsize="end"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入职位"
-                        android:maxLength="12"
-                        android:maxLines="1"
-                        android:textColor="@color/title_text_color"
-                        android:textColorHint="@color/gray_818182"
-                        android:textSize="@dimen/text_size_15" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="@dimen/dimen_size_20"
-                    android:background="@color/gray_f2f2f2" />
-
-                <LinearLayout
-                    android:id="@+id/mobileLayout"
-                    style="@style/Common_EditItem_LayoutStyle"
-                    android:foreground="?attr/selectableItemBackground">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="手机号"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16" />
-
-                    <TextView
-                        android:id="@+id/tv_phone"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:drawableEnd="@drawable/icon_right"
-                        android:drawablePadding="@dimen/dimen_size_5"
-                        android:ellipsize="end"
-                        android:gravity="right"
-                        android:maxLines="1"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16"
-                        tools:text="13915273356" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="@dimen/dimen_size_20"
-                    android:background="@color/gray_f2f2f2" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="邮箱"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16" />
-
-                    <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/emailET"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:ellipsize="end"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入邮箱"
-                        android:maxLength="30"
-                        android:maxLines="1"
-                        android:textColor="@color/title_text_color"
-                        android:textColorHint="@color/gray_818182"
-                        android:textSize="@dimen/text_size_15" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="@dimen/dimen_size_20"
-                    android:background="@color/gray_f2f2f2" />
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_select"
-                android:foreground="?attr/selectableItemBackground"
-                android:text="确认"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_20" />
-
-        </LinearLayout>
-
-    </ScrollView>
 
 </LinearLayout>
