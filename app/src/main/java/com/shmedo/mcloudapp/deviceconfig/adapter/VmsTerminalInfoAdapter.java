@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.adapter;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -12,11 +13,13 @@ import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.util.DateUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,17 +47,36 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
             holder.setTextColorRes(R.id.tv_terminal_sn, R.color.title_text_color);
 //            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_three);
             holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);
-            holder.setText(R.id.tv_terminal_state, "在线");
             holder.setTextColorRes(R.id.tv_terminal_state, R.color.text_color_54DA99);
-        } else {
-            holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
-//            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
-            holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
-            holder.setText(R.id.tv_terminal_state, "离线");
-            holder.setTextColorRes(R.id.tv_terminal_state, R.color.text_color_b3b3b3);
-        }
+            holder.setText(R.id.tv_terminal_state, "在线");
 
+        } else {
+//            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
+            holder.setText(R.id.tv_terminal_state, processTerminalState(vmsTerminalInfo.getLastpackagetime()));
+            if (vmsTerminalInfo.getLastpackagetime().equals("离线")) {
+                holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
+                holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
+                holder.setTextColorRes(R.id.tv_terminal_state, R.color.text_color_b3b3b3);
+            } else {
+                holder.setTextColorRes(R.id.tv_terminal_sn, R.color.title_text_color);
+                holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_online);
+                holder.setTextColorRes(R.id.tv_terminal_state, R.color.title_text_color);
+            }
+        }
         processSensorInsertState(holder, vmsTerminalInfo.getSensor());
+    }
+
+    private String processTerminalState(String lastTime) {
+        if (TextUtils.isEmpty(lastTime)) {
+            return "离线";
+        }
+        long packageTime = DateUtil.stringToLong(lastTime, "yyyy/MM/dd HH:mm:ss");
+        long phoneTime = new Date().getTime();
+        if ((phoneTime - packageTime) > 24 * 3600 * 1000) {
+            return "离线";
+        } else {
+            return "待机";
+        }
     }
 
     private void processSensorInsertState(BaseViewHolder holder, List<SensorErrnoInfo> errnoInfoList) {

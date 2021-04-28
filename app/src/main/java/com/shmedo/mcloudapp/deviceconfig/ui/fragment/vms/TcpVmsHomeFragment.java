@@ -100,7 +100,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     private TabLayoutMediator tabLayoutMediator;
 
     private NetVmsAisleListFragment vmsAisleListFragment;
-    private TcpVmsTerminalListFragment vmsTerminalListFragmentTest;
+    private VmsTerminalListFragment vmsTerminalListFragmentTest;
 
     private final String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
@@ -122,7 +122,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     @Override
     protected void initView() {
         vmsAisleListFragment = new NetVmsAisleListFragment();
-        vmsTerminalListFragmentTest = new TcpVmsTerminalListFragment();
+        vmsTerminalListFragmentTest = new VmsTerminalListFragment();
 
         List<Fragment> mFragments = new ArrayList<>();
         mFragments.add(vmsAisleListFragment);

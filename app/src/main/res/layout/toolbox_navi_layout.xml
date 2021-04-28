@@ -98,7 +98,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/calculatedAreaView"
-        style="@style/NaviToolView_ConstraintLayoutStyle">
+        style="@style/NaviToolView_ConstraintLayoutStyle"
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/iv_calculated_area"
@@ -137,7 +138,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/compassView"
-        style="@style/NaviToolView_ConstraintLayoutStyle">
+        style="@style/NaviToolView_ConstraintLayoutStyle"
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/iv_compass"
