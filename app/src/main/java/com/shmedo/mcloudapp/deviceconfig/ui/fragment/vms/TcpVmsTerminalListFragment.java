@@ -135,5 +135,6 @@ public class TcpVmsTerminalListFragment extends BaseFragment {
     public void updateTerminalList(List<VmsTerminalInfo> dataList) {
         vmsTerminalInfoList.addAll(dataList);
         adapter.notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 }

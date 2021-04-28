@@ -184,8 +184,11 @@ dependencies {
     implementation 'com.iqiyi.xcrash:xcrash-android-lib:3.0.0'
 
     implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
+
     //下拉刷新
-//    implementation "com.scwang.smartrefresh:SmartRefreshLayout:$rootProject.thirdLib.SmartRefreshLayout"
+    implementation  "com.scwang.smart:refresh-layout-kernel:$rootProject.thirdLib.SmartRefreshLayout"      //核心必须依赖
+    implementation  "com.scwang.smart:refresh-header-classics:$rootProject.thirdLib.SmartRefreshLayout"    //经典刷新头
+
     //一个强大并且灵活的RecyclerViewAdapter
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.thirdLib.BaseRecyclerViewAdapterHelper"
     implementation "gdut.bsx:share2:$rootProject.thirdLib.bsxShare"

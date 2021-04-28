@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -19,13 +18,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
@@ -65,8 +66,8 @@ import timber.log.Timber;
  * 描述：     Vms 网关 TCP 配置主页面
  */
 public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements TabLayout.OnTabSelectedListener {
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -107,36 +108,10 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     private VmsAisleInfo vmsAisleInfo1, vmsAisleInfo2;
     private int terminalIndex1 = 0;//通道一终端索引号
     private int terminalIndex2 = 0;//通道二终端索引号
-    private static Handler myHander = new Handler();
-    private static RefreshRunnable refreshRunnable;
 
 
     public static TcpVmsHomeFragment newInstance() {
         return new TcpVmsHomeFragment();
-    }
-
-    private class RefreshRunnable implements Runnable {
-        @Override
-        public void run() {
-            refreshRunnable = null;
-            swipeRefresh.setRefreshing(false);
-            updateHeadInfo();
-            ToastUtils.show("查询数据超时");
-        }
-    }
-
-    private void startRefreshRunnable(long delayMillis) {
-        if (refreshRunnable == null) {
-            swipeRefresh.setRefreshing(true);
-            refreshRunnable = new RefreshRunnable();
-            myHander.postDelayed(refreshRunnable, delayMillis);
-        }
-    }
-
-    private void stopRefreshRunnable() {
-        myHander.removeCallbacksAndMessages(null);
-        refreshRunnable = null;
-        swipeRefresh.setRefreshing(false);
     }
 
     @Override
@@ -146,11 +121,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
     @Override
     protected void initView() {
-        mTvDeviceState.setVisibility(View.INVISIBLE);
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        initRefreshLayout();
-
         vmsAisleListFragment = new NetVmsAisleListFragment();
         vmsTerminalListFragmentTest = new TcpVmsTerminalListFragment();
 
@@ -187,6 +157,13 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mTvDeviceState.setVisibility(View.INVISIBLE);
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        initRefreshLayout();
         observerRefreshTerminal();
         setupTcpConnect();
     }
@@ -198,17 +175,25 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     }
 
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 //查询网关基本信息
                 getGatewayBaseInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                            ToastUtils.show("刷新超时");
+                        }
+                    }
+                }, WRITE_TIME_OUT_SECOND);
             }
         });
     }
@@ -298,7 +283,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
      * 获取网关的基本信息
      */
     private void getGatewayBaseInfo() {
-        startRefreshRunnable(WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_BASE);
         sendCommand(command);
     }
@@ -342,7 +326,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             case VMS_MD_GET_GATEWAY_BASE: {//获取网关的基本信息
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopRefreshRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -359,7 +343,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             case VMS_MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopRefreshRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -367,7 +351,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 }
                 VmsAisleInfo vmsAisleInfo = commandResult.getResult();
                 if (vmsAisleInfo == null) {
-                    stopRefreshRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 vmsAisleListFragment.updateAisleListInfo(vmsAisleInfo);
@@ -399,7 +383,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             case VMS_MD_GET_TERMINAL_STATUS: {//获取挂载终端的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopRefreshRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -423,8 +407,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                     if (terminalIndex2 < Integer.parseInt(vmsAisleInfo2.getTerminalnum())) {
                         getTerminalStatus(vmsAisleInfo2.getChannel(), terminalIndex2);
                     } else {
-//                        updateTerminalTabText();
-                        stopRefreshRunnable();
+                        mRefreshLayout.finishRefresh(true);
                     }
                 }
             }
@@ -444,7 +427,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             break;
 
             default:
-                stopRefreshRunnable();
+                mRefreshLayout.finishRefresh(false);
                 super.parseResponseMessage(cmdStr);
                 break;
         }
@@ -533,7 +516,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     @Override
     public void onStop() {
         super.onStop();
-        stopRefreshRunnable();
+        mRefreshLayout.finishRefresh(false);
         dismissProgressDialog();
     }
 

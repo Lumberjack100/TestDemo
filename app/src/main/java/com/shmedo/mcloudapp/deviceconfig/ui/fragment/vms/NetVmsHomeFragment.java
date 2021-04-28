@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
@@ -43,6 +44,8 @@ import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,8 +62,8 @@ import timber.log.Timber;
 public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements TabLayout.OnTabSelectedListener {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -100,8 +103,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private VmsAisleInfo vmsAisleInfo1, vmsAisleInfo2;
     private int terminalIndex1 = 0;//通道一终端索引号
     private int terminalIndex2 = 0;//通道二终端索引号
-    private static Handler myHander = new Handler();
-    private static RefreshRunnable refreshRunnable;
 
 
     public static NetVmsHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
@@ -110,30 +111,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         args.putParcelable(EXTRA_DEVICE, projectDeviceInfo);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    private class RefreshRunnable implements Runnable {
-        @Override
-        public void run() {
-            refreshRunnable = null;
-            swipeRefresh.setRefreshing(false);
-            updateHeadInfo();
-            ToastUtils.show("查询数据超时");
-        }
-    }
-
-    private void startRefreshRunnable(long delayMillis) {
-        if (refreshRunnable == null) {
-            swipeRefresh.setRefreshing(true);
-            refreshRunnable = new RefreshRunnable();
-            myHander.postDelayed(refreshRunnable, delayMillis);
-        }
-    }
-
-    private void stopRefreshRunnable() {
-        myHander.removeCallbacksAndMessages(null);
-        refreshRunnable = null;
-        swipeRefresh.setRefreshing(false);
     }
 
     @Override
@@ -187,21 +164,30 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initRefreshLayout();
-        updateHeadInfo();
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         observerRefreshTerminal();
-
-        //查询网关基本信息
-        getGatewayBaseInfo();
+        updateHeadInfo();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 getGatewayBaseInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                            ToastUtils.show("刷新超时");
+                        }
+                    }
+                }, DELAY_MILLIS);
             }
         });
     }
@@ -275,7 +261,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
      * 获取网关的基本信息
      */
     private void getGatewayBaseInfo() {
-        startRefreshRunnable(DELAY_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_BASE);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
@@ -316,7 +301,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            stopRefreshRunnable();
+            mRefreshLayout.finishRefresh(false);
             dismissProgressDialog();
             ToastUtils.show("下发指令失败");
             return;
@@ -338,7 +323,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        stopRefreshRunnable();
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("查询数据响应错误");
     }
 
@@ -350,7 +335,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        stopRefreshRunnable();
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("查询数据响应超时");
     }
 
@@ -372,7 +357,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             case VMS_MD_GET_GATEWAY_BASE: {//获取网关的基本信息
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopRefreshRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -389,7 +374,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             case VMS_MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopRefreshRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -397,7 +382,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 }
                 VmsAisleInfo vmsAisleInfo = commandResult.getResult();
                 if (vmsAisleInfo == null) {
-                    stopRefreshRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 vmsAisleListFragment.updateAisleListInfo(vmsAisleInfo);
@@ -429,7 +414,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             case VMS_MD_GET_TERMINAL_STATUS: {//获取挂载终端的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopRefreshRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -453,8 +438,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                     if (terminalIndex2 < Integer.parseInt(vmsAisleInfo2.getTerminalnum())) {
                         getTerminalStatus(vmsAisleInfo2.getChannel(), terminalIndex2);
                     } else {
-//                        updateTerminalTabText();
-                        stopRefreshRunnable();
+
+                        mRefreshLayout.finishRefresh(true);
                     }
                 }
             }
@@ -510,7 +495,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     public void onStop() {
         super.onStop();
-        stopRefreshRunnable();
+        mRefreshLayout.finishRefresh(false);
         dismissProgressDialog();
     }
 
