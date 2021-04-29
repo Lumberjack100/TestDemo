@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.huawei.hms.hmsscankit.ScanUtil;
+import com.huawei.hms.ml.scan.HmsScan;
+import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 
 import java.util.List;
 
@@ -31,11 +33,12 @@ public class PermissionHelper {
 
     public static void requestScanPermissions(Activity activity) {
         XPermissionUtils.requestPermissionsResult(activity, 200, new String[]{
-                        Manifest.permission.CAMERA},
+                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        ScanActivity.startActivityForResult(activity, XPermissionUtils.REQUEST_CODE_SCAN);
+                        //申请权限之后，调用DefaultView扫码界面
+                        int result = ScanUtil.startScan(activity, XPermissionUtils.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
                     }
 
                     @Override
@@ -54,16 +57,16 @@ public class PermissionHelper {
 
     public static void requestScanPermissions(Fragment fragment) {
         XPermissionUtils.requestPermissionsResult(fragment, 200, new String[]{
-                        Manifest.permission.CAMERA},
+                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
                 new XPermissionUtils.OnPermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-                        ScanActivity.startActivityForResultByFragment(fragment, XPermissionUtils.REQUEST_CODE_SCAN);
+                        //申请权限之后，调用DefaultView扫码界面
+                        int result = ScanUtil.startScan(fragment.getActivity(), XPermissionUtils.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
                     }
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-
                         boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(fragment.getActivity(), deniedPermissions);
                         // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
                         if (allNeverAskAgain) {

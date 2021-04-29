@@ -175,6 +175,9 @@ dependencies {
     implementation "cn.bingoogolapple:bga-qrcode-zxing:$rootProject.thirdLib.bgaQrcodeZxing"
     implementation "cn.bingoogolapple:bga-photopicker:$rootProject.thirdLib.bgaPhotoPicker"
     implementation "cn.bingoogolapple:bga-baseadapter:$rootProject.thirdLib.bgaBaseAdapter"
+    //华为扫码服务
+    implementation 'com.huawei.hms:scan:1.3.2.300'
+
     //蒲公英SDk
     implementation "com.pgyersdk:sdk:$rootProject.thirdLib.pgyerSdk"
     //异常信息上报组件

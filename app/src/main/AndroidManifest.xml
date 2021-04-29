@@ -32,9 +32,7 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="no.nordicsemi.android.LOG" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 声明应用仅适用于支持 BLE 的设备 -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -118,11 +116,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-        <activity
-            android:name=".common.ui.activity.ScanActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/MCloud.ScanActivity" />
         <activity
             android:name=".common.ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.huawei.hms.hmsscankit.ScanUtil;
+import com.huawei.hms.ml.scan.HmsScan;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.enums.SensorType;
@@ -26,7 +28,6 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
@@ -320,17 +321,15 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case XPermissionUtils.REQUEST_CODE_SCAN:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (data != null) {
-                        String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
-                        Timber.d("扫描结果为：%s", content);
-                        scanResult(content);
-                    }
-                }
-                break;
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            return;
+        }
+        if (requestCode == XPermissionUtils.REQUEST_CODE_SCAN) {
+            HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
+            if (obj != null) {
+                Timber.d("扫描结果为：%s", obj.originalValue);
+                scanResult(obj.originalValue);
+            }
         }
     }
 

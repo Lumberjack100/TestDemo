@@ -25,13 +25,14 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.hjq.toast.ToastUtils;
+import com.huawei.hms.hmsscankit.ScanUtil;
+import com.huawei.hms.ml.scan.HmsScan;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
 import com.shmedo.core.event.MessageEvent;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.activity.ScanActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
@@ -218,16 +219,15 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case XPermissionUtils.REQUEST_CODE_SCAN:
-                if (resultCode == Activity.RESULT_OK) {
-                    if (data != null) {
-                        String content = data.getStringExtra(ScanActivity.CODED_CONTENT);
-                        Timber.d("扫描结果为：%s", content);
-                        scanResult(content);
-                    }
-                }
-                break;
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            return;
+        }
+        if (requestCode == XPermissionUtils.REQUEST_CODE_SCAN) {
+            HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
+            if (obj != null) {
+                Timber.d("扫描结果为：%s", obj.originalValue);
+                scanResult(obj.originalValue);
+            }
         }
     }
 

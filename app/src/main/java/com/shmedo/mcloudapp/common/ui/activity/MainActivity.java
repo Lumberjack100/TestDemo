@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -23,6 +24,8 @@ import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -186,6 +189,25 @@ public class MainActivity extends BaseActivity {
 
             currentFragment = fragment;  //  然后将传入的fragment赋值给currentFragment
             transaction.commit();
+        }
+    }
+
+
+    /**
+     * 解决Fragment中的onActivityResult()方法无响应问题。
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        /**
+         * 1.使用getSupportFragmentManager().getFragments()获取到当前Activity中添加的Fragment集合
+         * 2.遍历Fragment集合，手动调用在当前Activity中的Fragment中的onActivityResult()方法。
+         */
+        if (getSupportFragmentManager().getFragments() != null && getSupportFragmentManager().getFragments().size() > 0) {
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            for (Fragment mFragment : fragments) {
+                mFragment.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 

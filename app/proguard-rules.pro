@@ -42,3 +42,14 @@
  #避免混淆Bugly
    -dontwarn com.tencent.bugly.**
    -keep public class com.tencent.bugly.**{*;}
+
+#加入排除HMS Core SDK的混淆配置脚本
+   -ignorewarnings
+   -keepattributes *Annotation*
+   -keepattributes Exceptions
+   -keepattributes InnerClasses
+   -keepattributes Signature
+   -keepattributes SourceFile,LineNumberTable
+   -keep class com.huawei.hianalytics.**{*;}
+   -keep class com.huawei.updatesdk.**{*;}
+   -keep class com.huawei.hms.**{*;}
