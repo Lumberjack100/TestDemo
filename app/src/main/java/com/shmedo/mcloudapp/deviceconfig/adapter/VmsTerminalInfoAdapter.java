@@ -35,7 +35,9 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
 
     @Override
     protected void convert(@NotNull BaseViewHolder holder, VmsTerminalInfo vmsTerminalInfo) {
-        holder.setText(R.id.tv_terminal_sn, vmsTerminalInfo.getSn());
+        holder.setText(R.id.tv_terminal_sn, String.valueOf(vmsTerminalInfo.getSn()));
+        holder.setText(R.id.tv_asile_number, String.valueOf(vmsTerminalInfo.getAsileNumber()));
+        holder.setText(R.id.tv_address, String.valueOf(vmsTerminalInfo.getAddr()));
         holder.setText(R.id.tv_signal_strength, vmsTerminalInfo.getUprssi() + "dBm");
         holder.setText(R.id.tv_last_data_time, vmsTerminalInfo.getLastpackagetime());
 
