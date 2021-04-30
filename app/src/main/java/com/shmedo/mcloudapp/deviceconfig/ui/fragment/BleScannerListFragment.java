@@ -143,15 +143,19 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", tempDeviceList.size()));
             }
         });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+        //进入页面刷新蓝牙设备列表
         if (!scannerViewModel.isScanning()) {
             processStartScan();
         }
     }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        if (!scannerViewModel.isScanning()) {
+//            processStartScan();
+//        }
+//    }
 
     @Override
     public void onStop() {
