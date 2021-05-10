@@ -156,23 +156,6 @@ public class DeviceCurrentRunStateUtils {
         }
     }
 
-    /**
-     * 根据  RSSI(=2CSQ-113) 值判断信号强度
-     *
-     * @param value
-     * @return
-     */
-    public static int getSignalResIdByRSSIValue(int value) {
-        if (value >= -111 && value <= -91) {
-            return R.drawable.signalstrengthone;
-        } else if (value >= -89 && value <= -77) {
-            return R.drawable.signalstrengthtwo;
-        } else if (value >= -75 && value <= -63) {
-            return R.drawable.signalstrengththree;
-        } else {
-            return R.drawable.signalstrengthfour;
-        }
-    }
 
     /**
      * 根据  CSQ 值判断信号强度
@@ -183,7 +166,7 @@ public class DeviceCurrentRunStateUtils {
     public static int getSignalResIdByCSQValue(int value) {
         //无信号
         if (value == 99)
-            return 0;
+            return  R.drawable.signalstrengthzero;
 
         if (value >= 1 && value <= 11) {
             return R.drawable.signalstrengthone;

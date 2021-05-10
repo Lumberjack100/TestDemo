@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,10 +35,12 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalParamSetting
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
+import com.shmedo.mcloudapp.util.DateUtil;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -122,18 +125,30 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
             mTvProductModel.setText(String.format("固件版本：%s", ""));
             mTvTime.setText(String.format("接入时间：%s", vmsTerminalInfo.getLogintime()));
             mTvDeviceState.setVisibility(View.VISIBLE);
+            mTvDeviceState.setText(processTerminalState(vmsTerminalInfo.getLastpackagetime()));
             if (vmsTerminalInfo.getStatus() != 0) {
-                mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
             } else {
-                mTvDeviceState.setText("离线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
             }
         }
         mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.GONE);
+    }
+
+    private String processTerminalState(String lastTime) {
+        if (TextUtils.isEmpty(lastTime)) {
+            return "离线";
+        }
+        long packageTime = DateUtil.stringToLong(lastTime, "yyyy/MM/dd HH:mm:ss");
+        long phoneTime = new Date().getTime();
+        if ((phoneTime - packageTime) > 24 * 3600 * 1000) {
+            return "离线";
+        } else {
+            return "待机";
+        }
     }
 
     private void initAdapter() {
