@@ -183,6 +183,7 @@ dependencies {
     implementation 'com.iqiyi.xcrash:xcrash-android-lib:3.0.0'
 
     implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
+    implementation 'com.permissionx.guolindev:permissionx:1.4.1-snapshot'
 
     //下拉刷新
     implementation  "com.scwang.smart:refresh-layout-kernel:$rootProject.thirdLib.SmartRefreshLayout"      //核心必须依赖

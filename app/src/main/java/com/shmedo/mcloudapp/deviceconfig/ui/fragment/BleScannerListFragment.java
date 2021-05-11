@@ -27,9 +27,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.ExplainReasonCallbackWithBeforeParam;
+import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
+import com.permissionx.guolindev.callback.RequestCallback;
+import com.permissionx.guolindev.request.ExplainScope;
+import com.permissionx.guolindev.request.ForwardScope;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -42,7 +47,6 @@ import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerStateLiveData;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,14 +152,6 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             processStartScan();
         }
     }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        if (!scannerViewModel.isScanning()) {
-//            processStartScan();
-//        }
-//    }
 
     @Override
     public void onStop() {
@@ -271,13 +267,11 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             PermissionHelper.showGPSSettingDialog(mActivity);
             return;
         }
-
         //位置服务开关已经开启, 但缺少定位权限
         if (!BleScannerUtils.isLocationPermissionsGranted(mActivity)) {
             checkPermissionForLocation();
             return;
         }
-
         // Bluetooth must be enabled.
         if (state.isBluetoothEnabled()) {
             noBluetoothView.setVisibility(View.GONE);
@@ -303,22 +297,29 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     }
 
     private void checkPermissionForLocation() {
-        XPermissionUtils.requestPermissionsResult(getActivity(), REQUEST_ACCESS_FINE_LOCATION, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION},
-                new XPermissionUtils.OnPermissionListener() {
+        PermissionX.init(this)
+                .permissions(Manifest.permission.ACCESS_FINE_LOCATION)
+//                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
                     @Override
-                    public void onPermissionGranted() {
-                        processStartScan();
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
                     }
-
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(getActivity(), GlobalUtil.getString(R.string.message_permission_bluetooth_location_rational));
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            processStartScan();
+
                         } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
                         }
                     }
                 });
@@ -330,14 +331,6 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     private void clear() {
         scannerViewModel.getDevices().clear();
         scannerViewModel.getBleScannerState().clearRecords();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_ACCESS_FINE_LOCATION) {
-            scannerViewModel.refresh();
-        }
     }
 
     @Override

@@ -27,11 +27,14 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.hjq.toast.ToastUtils;
 import com.huawei.hms.hmsscankit.ScanUtil;
 import com.huawei.hms.ml.scan.HmsScan;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.ExplainReasonCallbackWithBeforeParam;
+import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
+import com.permissionx.guolindev.callback.RequestCallback;
+import com.permissionx.guolindev.request.ExplainScope;
+import com.permissionx.guolindev.request.ForwardScope;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.event.DeviceModuleSwitchTabEvent;
-import com.shmedo.core.event.MessageEvent;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
@@ -44,10 +47,6 @@ import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
 import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +149,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
 
         scannerViewModel = getFragmentScopeViewModel(BleScannerViewModel.class);
         scannerViewModel.getBleScannerState().observeInFragment(this, this::startScan);
@@ -191,16 +190,16 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MessageEvent messageEvent) {
-        if (messageEvent instanceof DeviceModuleSwitchTabEvent) {
-            DeviceModuleSwitchTabEvent switchTabEvent = (DeviceModuleSwitchTabEvent) messageEvent;
-            viewPager.setCurrentItem(switchTabEvent.getTabPosition());
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onMessageEvent(MessageEvent messageEvent) {
+//        if (messageEvent instanceof DeviceModuleSwitchTabEvent) {
+//            DeviceModuleSwitchTabEvent switchTabEvent = (DeviceModuleSwitchTabEvent) messageEvent;
+//            viewPager.setCurrentItem(switchTabEvent.getTabPosition());
+//        }
+//    }
 
     @OnClick({R.id.iv_query_data, R.id.iv_scan_device_code})
     public void onClick(View v) {
@@ -334,22 +333,29 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     }
 
     private void checkPermissionForLocation() {
-        XPermissionUtils.requestPermissionsResult(getActivity(), REQUEST_ACCESS_FINE_LOCATION, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION},
-                new XPermissionUtils.OnPermissionListener() {
+        PermissionX.init(this)
+                .permissions(Manifest.permission.ACCESS_FINE_LOCATION)
+//                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
                     @Override
-                    public void onPermissionGranted() {
-
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "继续操作需要以下权限", "允许", "拒绝");
                     }
-
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(getActivity(), GlobalUtil.getString(R.string.message_permission_bluetooth_location_rational));
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            processStartScan();
+
                         } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
                         }
                     }
                 });
@@ -361,13 +367,5 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     private void clear() {
         scannerViewModel.getDevices().clear();
         scannerViewModel.getBleScannerState().clearRecords();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_ACCESS_FINE_LOCATION) {
-            scannerViewModel.refresh();
-        }
     }
 }
