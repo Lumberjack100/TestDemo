@@ -155,10 +155,11 @@
                     android:id="@+id/maskLayerChild"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#ccffffff"
+                    android:background="#66ffffff"
                     android:clickable="true"
                     android:focusable="true"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                 </RelativeLayout>
 

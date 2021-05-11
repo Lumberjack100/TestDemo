@@ -9,8 +9,11 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
@@ -42,6 +45,9 @@ import timber.log.Timber;
  * 描述：    ADME 蓝牙模式下电机运动堵转缓停参数配置页面
  */
 public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicateFragment {
+    public static final int DECENTRALIZED_OPERATOR = 0x0001;
+    public static final int PULLUP_OPERATOR = 0x0002;
+
     @BindView(R.id.decentralizedEnableSBtn)
     SwitchButton mSbDecentralizedEnable;
 
@@ -87,11 +93,11 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.decentralizedChildLayout)
-    ViewGroup decentralizedChildLayout;
+    @BindView(R.id.decentralizedChildMaskLayer)
+    ViewGroup decentralizedChildMaskLayer;
 
-    @BindView(R.id.pullUpChildLayout)
-    ViewGroup pullUpChildLayout;
+    @BindView(R.id.pullUpChildMaskLayer)
+    ViewGroup pullUpChildMaskLayer;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
@@ -111,6 +117,8 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     private String pullUpTorqueDetectionStart;//上拉力矩检测起点
     private String pullUpTorqueDetectionEnd;//上拉力矩检测终点
 
+    private boolean paramEnableInitial;//开关初始状态，用于判断开关是否有打开后没有设置参数就返回
+    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭开关操作
     private DecimalFormat decimalFormat = new DecimalFormat();
 
 
@@ -162,20 +170,32 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
         mSbDecentralizedEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
                 if (!isChecked) {
-                    decentralizedChildLayout.setVisibility(View.GONE);
+                    showCloseSwitchButtonDialog("确定使下放堵转检测不生效？", DECENTRALIZED_OPERATOR);
                 } else {
-                    decentralizedChildLayout.setVisibility(View.VISIBLE);
+                    decentralizedChildMaskLayer.setVisibility(View.GONE);
+                    mBtnSave.setVisibility(View.VISIBLE);
                 }
             }
         });
         mSbPullUpEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    mSbPullUpEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
                 if (!isChecked) {
-                    pullUpChildLayout.setVisibility(View.GONE);
+                    showCloseSwitchButtonDialog("确定使上拉堵转检测不生效？", PULLUP_OPERATOR);
                 } else {
-                    pullUpChildLayout.setVisibility(View.VISIBLE);
+                    pullUpChildMaskLayer.setVisibility(View.GONE);
+                    mBtnSave.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -259,12 +279,80 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     }
 
     /**
+     * 关闭SwitchButton
+     */
+    private void showCloseSwitchButtonDialog(String content, int type) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示：")
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        if (type == DECENTRALIZED_OPERATOR) {
+                            disableDecentralized();
+                            decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
+                            if (!mSbPullUpEnable.isChecked()) {
+                                mBtnSave.setVisibility(View.GONE);
+                            }
+                        } else if (type == PULLUP_OPERATOR) {
+                            disablePullUp();
+                            pullUpChildMaskLayer.setVisibility(View.VISIBLE);
+                            if (!mSbDecentralizedEnable.isChecked()) {
+                                mBtnSave.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        if (type == DECENTRALIZED_OPERATOR) {
+                            mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
+                        } else if (type == PULLUP_OPERATOR) {
+                            mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    /**
      * 获取参数
      */
     private void queryParamInfo() {
         errMsg = "查询数据超时,请稍后尝试";
         startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
+        sendCommand(command);
+    }
+
+    /**
+     * 禁用下放堵转检测
+     */
+    private void disableDecentralized() {
+        AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
+        entity.setLowtbtss("0");
+        isSaveParamOperation = false;
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
+        sendCommand(command);
+    }
+
+    /**
+     * 禁用上拉堵转检测
+     */
+    private void disablePullUp() {
+        AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
+        entity.setUptbtss("0");
+        isSaveParamOperation = false;
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
         sendCommand(command);
     }
 
@@ -431,9 +519,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     private void processSave() {
         try {
             AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
-            if (!mSbDecentralizedEnable.isChecked()) {
-                entity.setLowtbtss("0");
-            } else {
+            if (mSbDecentralizedEnable.isChecked()) {
                 entity.setLowtbtss("1");
                 entity.setNumpput(decentralizedPulsesPerUnitTime);
                 entity.setPdajtime(decentralizedPulseDetectionTime);
@@ -445,16 +531,13 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                 entity.setLowsusranb(decentralizedTorqueDetectionEnd);
             }
 
-            if (!mSbPullUpEnable.isChecked()) {
-                entity.setUptbtss("0");
-            } else {
+            if (mSbPullUpEnable.isChecked()) {
                 entity.setUptbtss("1");
                 entity.setUptorblothr(pullUpTorqueStallThreshold);
                 entity.setUptordetime(pullUpTorqueDetectionTime);
                 entity.setUpsusrana(pullUpTorqueDetectionStart);
                 entity.setUpsusranb(pullUpTorqueDetectionEnd);
             }
-
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
@@ -517,7 +600,9 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                     return;
                 }
             }
-            ToastUtils.show("保存成功");
+            if (isSaveParamOperation) {
+                ToastUtils.show("保存成功");
+            }
             break;
 
             default:
@@ -582,18 +667,21 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
 
         if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
             mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(false);
-            decentralizedChildLayout.setVisibility(View.GONE);
+            decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
         } else {
             mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
-            decentralizedChildLayout.setVisibility(View.VISIBLE);
+            decentralizedChildMaskLayer.setVisibility(View.GONE);
         }
 
         if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
-            pullUpChildLayout.setVisibility(View.GONE);
+            pullUpChildMaskLayer.setVisibility(View.VISIBLE);
+            if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
+                mBtnSave.setVisibility(View.GONE);
+            }
         } else {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
-            pullUpChildLayout.setVisibility(View.VISIBLE);
+            pullUpChildMaskLayer.setVisibility(View.GONE);
         }
 
         try {
