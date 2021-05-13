@@ -267,7 +267,7 @@ public class NetDasExternalSensorHomeFragment extends BaseNetIotCommunicateFragm
         entity.setTemp_b(externalSensorInfo.getTemp_b());
         entity.setReferval_f(externalSensorInfo.getReferval_f());
 
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR, entity);
         showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }

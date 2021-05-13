@@ -47,6 +47,9 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
         if (intent.getExtras() == null)
             return;
 
+        if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
+            collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
+        }
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_ADDRESS_LIST)) {
             addressList = intent.getStringArrayListExtra(AppContants.Extras.SENSOR_ADDRESS_LIST);
         }

@@ -663,6 +663,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         } else {
             mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(true);
             digitalOsmometerChildsLayout.setVisibility(View.VISIBLE);
+            btnConfirm.setVisibility(View.VISIBLE);
         }
         try {
             osmometerAddress = digitalPiezometerInfo.getAddr();
