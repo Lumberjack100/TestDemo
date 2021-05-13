@@ -47,6 +47,6 @@ public class DasDataReportInfoParser implements IOTResultParser<DasDataReportInf
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.DAS_MD_SET_DATA_REPORT_TIME;
+        return IOTCommandType.DAS_MD_GET_DATA_REPORT_TIME;
     }
 }

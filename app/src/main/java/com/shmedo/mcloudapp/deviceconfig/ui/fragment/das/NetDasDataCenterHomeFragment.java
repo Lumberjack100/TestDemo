@@ -442,6 +442,8 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     dismissProgressDialog();
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                }else{
+                    dismissProgressDialog();
                 }
             }
             break;
