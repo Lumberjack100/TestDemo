@@ -2,7 +2,10 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -231,10 +234,10 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 //未开启
                 if (netStatusInfo.getErrno() == 0) {
                     holder.setText(R.id.tv_link_status, "未开启");
-                    holder.setTextColorRes(R.id.tv_link_status, Color.GRAY);
+                    holder.setTextColor(R.id.tv_link_status, Color.GRAY);
                     holder.setText(R.id.tv_link_send_data, "0");
                     holder.setText(R.id.tv_link_unsend_data, "0");
-                    holder.setText(R.id.tv_link_online_rate, "0");
+                    holder.setText(R.id.tv_link_online_rate, "0%");
 
                 } else if (netStatusInfo.getErrno() == 1) {//上线
                     holder.setText(R.id.tv_link_status, "已上线");
@@ -242,7 +245,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
                 } else if (netStatusInfo.getErrno() == 2) {//离线
                     holder.setText(R.id.tv_link_status, "离线");
-                    holder.setTextColorRes(R.id.tv_link_status, Color.RED);
+                    holder.setTextColor(R.id.tv_link_status, Color.RED);
                 }
             }
         };
@@ -470,20 +473,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
             case DAS_MD_GET_SENSOR_STATUS: {
                 swipeRefresh.setRefreshing(false);
-//                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-//                if (!commandResult.isSuccess()) {
-//                    String errMsg = String.format("%s %s", "查询主传感器状态出错!", commandResult.getMessage());
-//                    Timber.e(errMsg);
-//                    ToastUtils.show(errMsg);
-//                    return;
-//                }
-//                if (!TextUtils.isEmpty(commandResult.getResult())) {
-//                    List<DasSensorStatusInfo> tempList = GsonFactory.getGson().fromJson(commandResult.getResult(), new TypeToken<List<DasSensorStatusInfo>>() {
-//                    }.getType());
-//                    sensorList.clear();
-//                    sensorList.addAll(tempList);
-//                    sensorAdapter.notifyDataSetChanged();
-//                }
                 IOTCommandResult<List<DasSensorStatusInfo>> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询主传感器状态出错!", commandResult.getMessage());
@@ -524,8 +513,27 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(dasBaseInfo.getCsq())), 0);
         mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType(dasBaseInfo.getIsp()));
 
-        mTvDeviceInternalPower.setText(dasBaseInfo.getInvolt());
-        mTvDeviceExternalVoltage.setText(dasBaseInfo.getOutvolt());
+        try {
+            String powerStr = DeviceCurrentRunStateUtils.setDeviceInternalBattery(Double.parseDouble(dasBaseInfo.getInvolt()));
+            double power = Double.parseDouble(powerStr.replace("%", ""));
+            SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+            builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mTvDeviceInternalPower.setText(builder);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        try {
+            String voltageStr = dasBaseInfo.getOutvolt();
+            double voltage = Double.parseDouble(voltageStr);
+            SpannableStringBuilder builder = new SpannableStringBuilder(voltageStr + "V");
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+            builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mTvDeviceExternalVoltage.setText(builder);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -588,24 +596,21 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
         if (dasSubSensorStatusInfo.getIo() != null) {
             ioSensorLayout.setVisibility(View.VISIBLE);
-
             if (dasSubSensorStatusInfo.getIo().getType() == 1) {
+                mTvSwitchStatus.setText("雨量计");
                 rainLayout.setVisibility(View.VISIBLE);
                 wireBreakAlarmLayout.setVisibility(View.GONE);
-                mTvSwitchStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getIo().getErrno())));
-                setDeviceStatus(mTvSwitchStatus, dasSubSensorStatusInfo.getIo().getErrno());
                 mTvRain.setText(dasSubSensorStatusInfo.getIo().getVaule() + "mm");
 
             } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
+                mTvSwitchStatus.setText("关闭");
                 rainLayout.setVisibility(View.GONE);
                 wireBreakAlarmLayout.setVisibility(View.GONE);
-                mTvSwitchStatus.setText("关闭");
 
             } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
+                mTvSwitchStatus.setText("断线报警器");
                 rainLayout.setVisibility(View.GONE);
                 wireBreakAlarmLayout.setVisibility(View.VISIBLE);
-                mTvSwitchStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getIo().getErrno())));
-                setDeviceStatus(mTvSwitchStatus, dasSubSensorStatusInfo.getIo().getErrno());
                 if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
                     mTvAlarmStatus.setText("断开");
                     mTvAlarmStatus.setTextColor(Color.RED);
@@ -620,7 +625,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             dasDigitalPiezometerLayout.setVisibility(View.VISIBLE);
             mTvDigitalPiezometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
             setDeviceStatus(mTvDigitalPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());
-            mTvDigitalPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue() + "");
+            mTvDigitalPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue() + "m");
         }
 
         if (dasSubSensorStatusInfo.getMems() != null) {

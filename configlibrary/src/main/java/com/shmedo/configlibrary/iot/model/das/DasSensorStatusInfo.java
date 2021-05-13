@@ -8,7 +8,7 @@ package com.shmedo.configlibrary.iot.model.das;
 public class DasSensorStatusInfo {
     private int addr;//传感器地址
     private int errno;//错误码
-    private int val;//传感器数据
+    private String val;//传感器数据
 
     public int getAddr() {
         return addr;
@@ -26,11 +26,11 @@ public class DasSensorStatusInfo {
         this.errno = errno;
     }
 
-    public int getVal() {
+    public String getVal() {
         return val;
     }
 
-    public void setVal(int val) {
+    public void setVal(String val) {
         this.val = val;
     }
 

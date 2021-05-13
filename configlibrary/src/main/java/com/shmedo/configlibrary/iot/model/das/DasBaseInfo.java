@@ -60,7 +60,7 @@ public class DasBaseInfo {
     }
 
     public String getInvolt() {
-        return TextUtils.isEmpty(involt) ? "" : involt;
+        return TextUtils.isEmpty(involt) ? "0" : involt;
     }
 
     public void setInvolt(String involt) {
@@ -68,7 +68,7 @@ public class DasBaseInfo {
     }
 
     public String getOutvolt() {
-        return TextUtils.isEmpty(outvolt) ? "" : outvolt;
+        return TextUtils.isEmpty(outvolt) ? "0" : outvolt;
     }
 
     public void setOutvolt(String outvolt) {

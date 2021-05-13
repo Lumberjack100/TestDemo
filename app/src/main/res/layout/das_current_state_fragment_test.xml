@@ -415,7 +415,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="状态"
+                        android:text="开关量类型"
                         android:textColor="@color/title_text_color"
                         android:textSize="15sp" />
 
@@ -458,7 +458,7 @@
                     <TextView
                         android:id="@+id/tv_alarm_status"
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        tools:text="19902102313" />
+                        tools:text="开启" />
 
                 </LinearLayout>
 
