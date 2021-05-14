@@ -93,7 +93,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
 
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private DecimalFormat decimalFormat = new DecimalFormat("#.###");
 
     private DasIOSensorInfo ioSensorInfo;
     private String rainPrecision;
@@ -192,6 +192,12 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     if (!mSbDigitalOsmometerEnable.isChecked()) {
                         btnConfirm.setVisibility(View.GONE);
                     }
+
+                    //发送断线报警器常开指令
+                    DasIOSensorEntity entity = new DasIOSensorEntity();
+                    entity.setType("2");
+                    entity.setValue("0");
+                    setSwitchSensorInfo(entity);
                 } else {
                     rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
                     rgBreakAlarmItems.setVisibility(View.GONE);
@@ -358,12 +364,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 return false;
             }
             try {
-                int value = Integer.parseInt(depthTriggerValue);
-                if (value < 1 || value > 65535) {
-                    ToastUtils.show("请输入正确的水位报警值!");
-                    mEtWaterAlarmValue.requestFocus();
-                    return false;
-                }
+                double value = Double.parseDouble(depthTriggerValue);
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的水位报警值!");
                 mEtWaterAlarmValue.requestFocus();
