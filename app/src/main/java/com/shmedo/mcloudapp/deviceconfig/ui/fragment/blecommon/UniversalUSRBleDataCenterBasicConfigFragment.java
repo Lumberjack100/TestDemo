@@ -37,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/12/28<br/>
@@ -217,28 +218,25 @@ public class UniversalUSRBleDataCenterBasicConfigFragment extends BaseUSRBleIotC
         dataServerAddress = mEtDataServerAddress.getText().toString().trim();
         dataServerPort = mEtDataServerPort.getText().toString().trim();
 
-        if (TextUtils.isEmpty(dataServerAddress)) {
-            ToastUtils.show("请输入数据中心地址!");
-            mEtDataServerAddress.requestFocus();
-            return false;
-        }
+//        if (TextUtils.isEmpty(dataServerAddress)) {
+//            ToastUtils.show("请输入数据中心地址!");
+//            mEtDataServerAddress.requestFocus();
+//            return false;
+//        }
 
-        if (TextUtils.isEmpty(dataServerPort)) {
-            ToastUtils.show("请输入数据中心端口!");
-            mEtDataServerPort.requestFocus();
-            return false;
-        }
-        try {
-            int port = Integer.parseInt(dataServerPort);
-            if (port < 0 || port > 65535) {
+        if (!TextUtils.isEmpty(dataServerPort)) {
+            try {
+                int port = Integer.parseInt(dataServerPort);
+                if (port < 0 || port > 65535) {
+                    ToastUtils.show("请输入正确的数据中心端口号!");
+                    mEtDataServerPort.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
                 ToastUtils.show("请输入正确的数据中心端口号!");
                 mEtDataServerPort.requestFocus();
                 return false;
             }
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的数据中心端口号!");
-            mEtDataServerPort.requestFocus();
-            return false;
         }
 
         return true;
