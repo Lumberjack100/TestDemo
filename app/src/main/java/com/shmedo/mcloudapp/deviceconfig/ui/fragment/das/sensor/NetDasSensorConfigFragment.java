@@ -432,8 +432,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         if (rbRainGauge.isChecked()) {
             DasIOSensorEntity entity = new DasIOSensorEntity();
             entity.setType("1");
-            int precision = (int) (Double.parseDouble(rainPrecision) * 100);
-            entity.setValue(precision + "");
+            entity.setValue(rainPrecision);
             setSwitchSensorInfo(entity);
         } else if (mSbDigitalOsmometerEnable.isChecked()) {
             setDigitalOsmometerParam();
@@ -519,7 +518,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
-            case DAS_MD_GET_IO_SENSOR_INFO: {//
+            case DAS_MD_GET_IO_SENSOR_INFO: {//查询开关量传感器参数
                 IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     dismissProgressDialog();
@@ -534,7 +533,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             }
             break;
 
-            case DAS_MD_GET_DIGITAL_PIEZOMETER_INFO: {//
+            case DAS_MD_GET_DIGITAL_PIEZOMETER_INFO: {//查询数字渗压计参数
                 dismissProgressDialog();
                 IOTCommandResult<DasDigitalPiezometerInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -548,7 +547,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             }
             break;
 
-            case DAS_MD_SET_IO_SENSOR_INFO: {//
+            case DAS_MD_SET_IO_SENSOR_INFO: {//设置开关量传感器
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     dismissProgressDialog();
@@ -567,7 +566,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             }
             break;
 
-            case DAS_MD_SET_DIGITAL_PIEZOMETER_INFO: {//
+            case DAS_MD_SET_DIGITAL_PIEZOMETER_INFO: {//设置数字渗压计
                 dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -614,7 +613,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
 
                 try {
-                    rainPrecision = decimalFormat.format(Double.parseDouble(ioSensorInfo.getValue()) / 10000);
+                    rainPrecision = decimalFormat.format(Double.parseDouble(ioSensorInfo.getValue()));
                     mEtRainPrecision.setText(rainPrecision);
                 } catch (Exception ex) {
                     ex.printStackTrace();
