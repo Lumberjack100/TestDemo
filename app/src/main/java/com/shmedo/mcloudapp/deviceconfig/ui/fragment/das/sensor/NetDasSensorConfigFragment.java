@@ -442,6 +442,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
 
     private void setDigitalOsmometerParam() {
         DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
+        entity.setSw("1");
         entity.setAddr(osmometerAddress);
         entity.setThreshold(depthTriggerValue);
         entity.setCorrval(depthCorrection);
