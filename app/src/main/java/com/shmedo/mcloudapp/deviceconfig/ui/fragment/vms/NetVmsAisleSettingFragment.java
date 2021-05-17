@@ -130,13 +130,13 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
         mEtTerminalWakeTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
         mEtNetworkNumber.setHint("1~65535");
-        mEtAisleAddress.setHint("0~63");
+        mEtAisleAddress.setHint("0~65535");
         mEtChannelNumber.setHint("0~31");
         mEtAirSpeed.setHint("1~6");
         mEtAirWakeTime.setHint("0~5");
         mEtTerminalWorkingMode.setHint("0低功耗模式，1正常模式");
         mEtDataRequestInterval.setHint("≥3s");
-        mEtOfflineInterval.setHint("≥7200s");
+        mEtOfflineInterval.setHint("≥1800s");
         mEtTerminalSleepTime.setHint("0~5");
         mEtTerminalWakeTime.setHint("0~65535");
     }
@@ -197,7 +197,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
         if (!TextUtils.isEmpty(aisleAddress)) {
             try {
                 int port = Integer.parseInt(aisleAddress);
-                if (port < 0 || port > 63) {
+                if (port < 0 || port > 65535) {
                     ToastUtils.show("请输入正确的地址!");
                     mEtAisleAddress.requestFocus();
                     return false;
@@ -293,7 +293,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
         if (!TextUtils.isEmpty(offlineInterval)) {
             try {
                 int port = Integer.parseInt(offlineInterval);
-                if (port < 7200) {
+                if (port < 1800) {
                     ToastUtils.show("请输入正确的离线间隔!");
                     mEtOfflineInterval.requestFocus();
                     return false;
