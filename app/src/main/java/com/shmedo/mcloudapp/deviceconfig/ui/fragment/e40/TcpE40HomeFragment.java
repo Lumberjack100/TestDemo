@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -26,9 +28,11 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -38,6 +42,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40EthernetActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.BaseTcpIotCommunicateFragment;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
@@ -58,6 +63,8 @@ import timber.log.Timber;
  * 描述：    E40设备通过 TCP 连接配置主页面
  */
 public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
+    private static final int REBOOT = 0x1002;
+
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
@@ -249,6 +256,12 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
         configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
         configModuleList.add(configModule);
 
+        configModule = new ConfigModule(R.drawable.ic_device_reboot, "重启", "重新启动当前设备");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "有线网络设置", "有线网络设置");
+        configModuleList.add(configModule);
+
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
     }
@@ -260,13 +273,57 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.E40, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.E40, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                break;
+
+            case "重启":
+                showWarnDialog("确定重启设备吗？", REBOOT);
+                break;
+
+            case "有线网络设置":
+                E40EthernetActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT);
                 break;
 
             case "设置":
                 AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.E40);
                 break;
         }
+    }
+
+    /**
+     * 重启设备
+     */
+    private void rebootDevice() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
+        sendCommand(command);
+    }
+
+    /**
+     * 危险操作前弹框提醒
+     */
+    private void showWarnDialog(String content, int operateType) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示")
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (operateType) {
+                            case REBOOT:
+                                rebootDevice();
+                                break;
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     @OnClick({R.id.tv_device_connect_operate})
@@ -316,6 +373,24 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                 }
                 vmsBasicInfo = commandResult.getResult();
                 updateHeadInfo();
+            }
+            break;
+
+            case REBOOT: {//重启
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("发送指令成功,设备稍后将重启,请稍候重新连接");
+                MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tcpViewModel.disconnect();
+                    }
+                }, 3000);
             }
             break;
 

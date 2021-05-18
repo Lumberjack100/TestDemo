@@ -123,7 +123,7 @@ public class TcpE40EthernetFragment extends BaseTcpIotCommunicateFragment {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"自动", "手动"},
+                .asBottomList("", new String[]{"手动", "自动"},
                         null, dhcpPos, true,
                         new OnSelectListener() {
                             @Override
@@ -239,11 +239,11 @@ public class TcpE40EthernetFragment extends BaseTcpIotCommunicateFragment {
 
         if (dhcpOld.equals("0")) {
             dhcpPos = 0;
-            mTvDhcp.setText("自动");
+            mTvDhcp.setText("手动");
             onDhcpChanged(true);
         } else {
             dhcpPos = 1;
-            mTvDhcp.setText("手动");
+            mTvDhcp.setText("自动");
             onDhcpChanged(false);
         }
         mEtIpAddress.setText(ip);

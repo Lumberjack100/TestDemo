@@ -46,7 +46,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
 
     @Override
     protected int getLayoutId() {
-        return R.layout.net_e40_advanced_setting_fragment;
+        return R.layout.e40_advanced_setting_fragment;
     }
 
     @Override
