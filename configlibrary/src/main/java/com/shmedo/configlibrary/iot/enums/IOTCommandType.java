@@ -88,7 +88,6 @@ public enum IOTCommandType {
      */
     DAS_MD_GET_NET_STATUS("md_getnetstatus"),
     /**
-     *
      * 获取太阳能控制器状态
      */
     DAS_MD_GET_SOLAR_STATUS("md_getsloarstatus"),
@@ -400,6 +399,16 @@ public enum IOTCommandType {
      * 设置E40 的有线网络配置置参数
      */
     E40_MD_SET_ETHERNET("md_seteth0"),
+
+    /**
+     * 获取E40 的串口配置置参数
+     */
+    E40_MD_GET_DB_GUART("md_getdbguart"),
+
+    /**
+     * 设置E40 的串口配置置参数
+     */
+    E40_MD_SET_DB_GUART("md_setdbguart"),
 
     /**
      * 自定义心跳包
