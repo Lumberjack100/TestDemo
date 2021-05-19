@@ -1,8 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,12 +18,10 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.e40.E40SerialPortInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,19 +36,19 @@ import timber.log.Timber;
  * 描述：    E40 4G模式串口参数配置页面
  */
 public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment {
-
     @BindView(R.id.tv_type)
     TextView mTvType;
 
-    @BindView(R.id.et_baud)
-    ClearEditText mEtBaud;
+    @BindView(R.id.tv_baud)
+    TextView mTvBaud;
 
     private int typePos;
+    private int baudPos;
 
     private String typeOld;//
     private String type;//
+    private String baudOld;//
     private String baud;//
-
     private E40SerialPortInfo e40SerialPortInfo;
 
 
@@ -72,12 +68,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setView();
         queryParamInfo();
-    }
-
-    private void setView() {
-        mEtBaud.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     /**
@@ -89,21 +80,19 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
-    @OnClick({R.id.ll_type, R.id.btn_confirm})
+    @OnClick({R.id.ll_type, R.id.ll_baud, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
         }
         int id = view.getId();
         if (id == R.id.ll_type) {
-            showDhcpDialog();
+            showTypeDialog();
+
+        } else if (id == R.id.ll_baud) {
+            showBaudDialog();
 
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
-            if (!checkValueIsValid()) {
-                Timber.w("参数存在错误!");
-                return;
-            }
             processSave();
         }
     }
@@ -111,7 +100,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
     /**
      * 选择输出的数据格式
      */
-    private void showDhcpDialog() {
+    private void showTypeDialog() {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
@@ -142,14 +131,24 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
                 .show();
     }
 
-    private boolean checkValueIsValid() {
-        baud = mEtBaud.getText().toString().trim();
-        if (TextUtils.isEmpty(baud)) {
-            ToastUtils.show("请输入波特率!");
-            mEtBaud.requestFocus();
-            return false;
-        }
-        return true;
+    /**
+     * 选择波特率
+     */
+    private void showBaudDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", new String[]{"9600", "115200"},
+                        null, baudPos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                baudPos = position;
+                                baud = text;
+                                mTvBaud.setText(text);
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
     }
 
     private void processSave() {
@@ -277,6 +276,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
         }
         typeOld = e40SerialPortInfo.getType().trim();
         type = e40SerialPortInfo.getType().trim();
+        baudOld = e40SerialPortInfo.getBaud().trim();
         baud = e40SerialPortInfo.getBaud().trim();
 
         if (typeOld.equals("1")) {
@@ -289,7 +289,13 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
             typePos = 2;
             mTvType.setText("RAW_OUT");
         }
-        mEtBaud.setText(baud);
+
+        if (baudOld.equals("9600")) {
+            baudPos = 0;
+        } else if (baudOld.equals("115200")) {
+            baudPos = 1;
+        }
+        mTvBaud.setText(baudOld);
     }
 
     private void doAfterSetting() {
@@ -299,6 +305,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
             e40SerialPortInfo.setBaud(baud);
         }
         typeOld = type;
+        baudOld = baud;
     }
 
     @Override
@@ -315,7 +322,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
         if (typeOld != null && type != null && !typeOld.equals(type)) {
             return true;
         }
-        if (baud != null && !baud.equals(mEtBaud.getText().toString().trim())) {
+        if (baudOld != null && baud != null && !baudOld.equals(baud)) {
             return true;
         }
         return false;
