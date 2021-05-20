@@ -504,7 +504,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
             return;
 
         mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(runStateInfo.getGprsSignal())), 0);
-        mTvSignalStrength.setText(DeviceCurrentRunStateUtils.setOperatorType(runStateInfo.getOperator()));
+        mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType2(runStateInfo.getOperator()));
     }
 
     /**

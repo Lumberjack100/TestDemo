@@ -118,19 +118,19 @@ public class DeviceCurrentRunStateUtils {
     }
 
     //设置运营商类型
-    public static String setOperatorType(String type) {
-        switch (type) {
+    public static String getOperatorType2(String type) {
+        switch (type.toUpperCase()) {
             case "CMCC":
-                return "移动";
+                return "中国移动";
 
             case "UNICOM":
-                return "联通";
+                return "中国联通";
 
             case "CT":
-                return "电信";
+                return "中国电信";
 
             default:
-                return "";
+                return "未知运营商";
         }
     }
 
@@ -165,8 +165,8 @@ public class DeviceCurrentRunStateUtils {
      */
     public static int getSignalResIdByCSQValue(int value) {
         //无信号
-        if (value == 99)
-            return  R.drawable.signalstrengthzero;
+        if (value == 0 || value == 99)
+            return R.drawable.signalstrengthzero;
 
         if (value >= 1 && value <= 11) {
             return R.drawable.signalstrengthone;

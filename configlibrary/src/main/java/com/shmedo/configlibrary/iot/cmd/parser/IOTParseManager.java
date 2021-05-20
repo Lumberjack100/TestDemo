@@ -143,6 +143,7 @@ public class IOTParseManager {
         List<Class> clazzes = Arrays.asList(new Class[]{
                 DeviceTimeParser.class,
                 DeviceCurrentStateParser.class,
+                DeviceCurrentStateExParser.class,
                 TelemetryParser.class,
                 DataCenterStatusParser.class,
                 DataCenterInfoParser.class,

@@ -10,6 +10,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCurrentStateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20CurrentStateFragment;
@@ -69,11 +70,14 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                     break;
 
                 case AppContants.DeviceType.M20:
-                case AppContants.DeviceType.E40:
                     fragment = NetM20CurrentStateFragment.newInstance(projectDeviceInfo);
                     break;
+
+                case AppContants.DeviceType.E40:
+                    fragment = NetE40CurrentStateFragment.newInstance(projectDeviceInfo);
+                    break;
             }
-        }else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
                     fragment = BleDasCurrentStateFragment.newInstance();
@@ -87,7 +91,7 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                     fragment = BleM20CurrentStateFragment.newInstance();
                     break;
             }
-        }else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+        } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.E40:
                     fragment = TcpE40CurrentStateFragment.newInstance();

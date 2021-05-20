@@ -124,10 +124,14 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="15dp" />
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipeLayout"
+            <com.scwang.smart.refresh.layout.SmartRefreshLayout
+                android:id="@+id/refreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
+                <com.scwang.smart.refresh.header.ClassicsHeader
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerview_device"
@@ -142,7 +146,10 @@
                     tools:listitem="@layout/item_device_info"
                     tools:spanCount="2" />
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                <com.scwang.smart.refresh.footer.ClassicsFooter
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
         </LinearLayout>
 

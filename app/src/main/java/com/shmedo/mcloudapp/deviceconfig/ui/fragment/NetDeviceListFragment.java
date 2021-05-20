@@ -15,12 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
@@ -48,6 +50,8 @@ import com.shmedo.mcloudapp.projects.view.SlidingConflictRecyclerView;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,10 +66,6 @@ import okhttp3.RequestBody;
  * A simple {@link Fragment} subclass.
  */
 public class NetDeviceListFragment extends BaseFragment {
-
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
-
     @BindView(R.id.tv_online_num)
     TextView tvOnlineNum;
 
@@ -78,6 +78,9 @@ public class NetDeviceListFragment extends BaseFragment {
     @BindView(R.id.recyclerview_device_type)
     SlidingConflictRecyclerView mRecyclerViewDeviceType;
 
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
+
     @BindView(R.id.recyclerview_device)
     RecyclerView mRecyclerViewDevice;
 
@@ -86,7 +89,7 @@ public class NetDeviceListFragment extends BaseFragment {
     private List<DeviceOnlineTypeStatistic> deviceTypeStatisticList = new ArrayList<>();
     private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
 
-    private static final int PAGE_SIZE = 15;
+    private static final int PAGE_SIZE = 30;
     private PageInfo pageInfo;
     private int companyID = -100;
     private int deviceTypeID = -1;
@@ -117,16 +120,18 @@ public class NetDeviceListFragment extends BaseFragment {
             deviceTypeID = -1;
             clearData();
             startLoading();
-            swipeRefresh.setRefreshing(true);
+            mRefreshLayout.setEnableLoadMore(false);
+            //是否在刷新的时候禁止内容的一切手势操作（默认false）
+            mRefreshLayout.setDisableContentWhenRefresh(true);
+            mRefreshLayout.autoRefresh();
             queryCompanyDeviceOnlineTypeStatistics();
         }
     }
 
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 refreshDevices();
             }
         });
@@ -159,7 +164,7 @@ public class NetDeviceListFragment extends BaseFragment {
                 }
 
                 deviceTypeID = deviceOnlineTypeStatistic.getDeviceTypeID();
-                swipeRefresh.setRefreshing(true);
+                mRefreshLayout.autoRefresh();
 //                updateTopView(deviceOnlineTypeStatistic);
                 refreshDevices();
             }
@@ -337,14 +342,14 @@ public class NetDeviceListFragment extends BaseFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-                                    swipeRefresh.setRefreshing(false);
+                                    mRefreshLayout.finishRefresh(false);
                                     showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setDeviceTypeData(data);
 
                             } else {
-                                swipeRefresh.setRefreshing(false);
+                                mRefreshLayout.finishRefresh(false);
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
@@ -393,7 +398,7 @@ public class NetDeviceListFragment extends BaseFragment {
         }
         deviceTypeAdapter.notifyDataSetChanged();
         if (deviceTypeStatisticList.size() <= 1) {
-            swipeRefresh.setRefreshing(false);
+            mRefreshLayout.finishRefresh(false);
             showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
         } else {
             processOnlineData(deviceTypeStatisticList.get(0));
@@ -422,7 +427,7 @@ public class NetDeviceListFragment extends BaseFragment {
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
                     protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {
-                        swipeRefresh.setRefreshing(false);
+                        mRefreshLayout.finishRefresh();
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
@@ -463,14 +468,13 @@ public class NetDeviceListFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        swipeRefresh.setRefreshing(false);
+                        mRefreshLayout.finishRefresh(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
-
 
     /**
      * 筛选出支持米度物联网协议的设备
@@ -486,9 +490,21 @@ public class NetDeviceListFragment extends BaseFragment {
                     || deviceInfo.getDeviceTypeID() == 15) {
                 continue;
             }
-
             deviceInfoList.add(deviceInfo);
         }
+
+        List<ProjectDeviceInfo> onlineList = new ArrayList<>();
+        List<ProjectDeviceInfo> offlineList = new ArrayList<>();
+        for (ProjectDeviceInfo deviceInfo : deviceInfoList) {
+            if(deviceInfo.isOnline()){
+                onlineList.add(deviceInfo);
+            }else {
+                offlineList.add(deviceInfo);
+            }
+        }
+        deviceInfoList.clear();
+        deviceInfoList.addAll(onlineList);
+        deviceInfoList.addAll(offlineList);
     }
 
     @Override
@@ -496,13 +512,13 @@ public class NetDeviceListFragment extends BaseFragment {
         super.loadFailed(msg);
         if (msg == null) {
             mRecyclerViewDeviceType.setVisibility(View.GONE);
-            swipeRefresh.setVisibility(View.GONE);
+            mRefreshLayout.setVisibility(View.GONE);
             mRecyclerViewDevice.setVisibility(View.GONE);
             showBadNetworkView(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startLoading();
-                    swipeRefresh.setRefreshing(true);
+                    mRefreshLayout.autoRefresh();
                     queryCompanyDeviceOnlineTypeStatistics();
                 }
             });
@@ -518,7 +534,7 @@ public class NetDeviceListFragment extends BaseFragment {
     protected void loadFinished() {
         super.loadFinished();
         mRecyclerViewDeviceType.setVisibility(View.VISIBLE);
-        swipeRefresh.setVisibility(View.VISIBLE);
+        mRefreshLayout.setVisibility(View.VISIBLE);
         mRecyclerViewDevice.setVisibility(View.VISIBLE);
     }
 

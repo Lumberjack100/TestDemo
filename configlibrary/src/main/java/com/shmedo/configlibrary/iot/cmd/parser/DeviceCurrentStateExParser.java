@@ -7,10 +7,10 @@ import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/8/31 <br/>
- * 描述：   解析运行状态数据
+ * 创建时间:  2021/5/20 <br/>
+ * 描述：     解析运行状态数据(扩展指令)
  */
-public class DeviceCurrentStateParser implements IOTResultParser<String> {
+public class DeviceCurrentStateExParser implements IOTResultParser<String> {
     @Override
     public String parse(String result) {
         String info;
@@ -27,7 +27,7 @@ public class DeviceCurrentStateParser implements IOTResultParser<String> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info = keyValueMap.get("state");
+            info = keyValueMap.get("status");
             return info;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -42,6 +42,6 @@ public class DeviceCurrentStateParser implements IOTResultParser<String> {
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.QUERY_DEVICE_STATUS;
+        return IOTCommandType.QUERY_DEVICE_EX_STATUS;
     }
 }

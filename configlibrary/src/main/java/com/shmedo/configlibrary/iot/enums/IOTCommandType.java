@@ -24,6 +24,11 @@ public enum IOTCommandType {
     QUERY_DEVICE_STATUS("getstatus"),
 
     /**
+     * 获取设备状态
+     */
+    QUERY_DEVICE_EX_STATUS("md_getExstatus"),
+
+    /**
      * 获取数据中心状态
      */
     MD_GET_DATA_CENTER_STATUS("md_getdatacenterstatus"),
