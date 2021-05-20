@@ -86,7 +86,7 @@ public class NetDeviceListFragment extends BaseFragment {
     private List<DeviceOnlineTypeStatistic> deviceTypeStatisticList = new ArrayList<>();
     private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 15;
     private PageInfo pageInfo;
     private int companyID = -100;
     private int deviceTypeID = -1;
@@ -477,8 +477,9 @@ public class NetDeviceListFragment extends BaseFragment {
      */
     private void filterIOTProtocolDevices(List<ProjectDeviceInfo> deviceInfos) {
         for (ProjectDeviceInfo deviceInfo : deviceInfos) {
-            //去除不支持物联网协议的 DAG、TPS、VIR 设备
-            if (deviceInfo.getDeviceTypeID() == 5 || deviceInfo.getDeviceTypeID() == 8
+            //去除不支持物联网协议的 DAG(5)、PVS(8)、VIR(9)、智能化设备(11)、专业监测设备(12)、智能声光报警器(15)
+            if (deviceInfo.getDeviceTypeID() == 5
+                    || deviceInfo.getDeviceTypeID() == 8
                     || deviceInfo.getDeviceTypeID() == 9
                     || deviceInfo.getDeviceTypeID() == 11
                     || deviceInfo.getDeviceTypeID() == 12
