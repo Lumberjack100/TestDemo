@@ -23,6 +23,7 @@ import com.shmedo.configlibrary.ble.enums.WorkModel;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -128,6 +129,9 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
 
     @OnClick({R.id.debugModeLayout, R.id.fab_clear_log, R.id.fab_start_pause, R.id.btn_send})
     public void onViewClicked(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         switch (view.getId()) {
             case R.id.debugModeLayout:
                 showDebugModeDialog();
@@ -151,6 +155,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
                 break;
 
             case R.id.btn_send:
+                KeyBordUtils.hideSoftKeyboard(view);
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.fragment.app.Fragment;
@@ -85,6 +86,11 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
             }
         }
         return fragment;
+    }
+
+    @Override
+    protected boolean isShouldHideKeyboard(View v, MotionEvent event) {
+        return false;
     }
 
     @OnClick({R.id.iv_action})

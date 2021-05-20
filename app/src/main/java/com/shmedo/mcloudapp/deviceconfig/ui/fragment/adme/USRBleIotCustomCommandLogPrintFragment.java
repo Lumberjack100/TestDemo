@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.TimeUtil;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
@@ -127,6 +128,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
             logDataList.clear();
             cmdAdapter.notifyDataSetChanged();
         } else if (id == R.id.btn_send) {
+            KeyBordUtils.hideSoftKeyboard(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                 return;

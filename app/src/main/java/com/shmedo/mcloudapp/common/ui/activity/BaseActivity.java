@@ -259,7 +259,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param event
      * @return
      */
-    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
+    protected boolean isShouldHideKeyboard(View v, MotionEvent event) {
         if ((v instanceof EditText)) {  //判断得到的焦点控件是否包含EditText
             int[] l = {0, 0};
             v.getLocationInWindow(l);
