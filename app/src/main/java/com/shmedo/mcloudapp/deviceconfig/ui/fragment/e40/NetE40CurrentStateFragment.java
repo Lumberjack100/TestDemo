@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.e40.CurrentExtendStateInfo;
+import com.shmedo.configlibrary.iot.model.e40.SatelitteBean;
 import com.shmedo.configlibrary.iot.model.e40.SensorBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.util.DensityUtil;
@@ -71,6 +73,15 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     /**
      * 存储状态
      */
+    @BindView(R.id.pb_storage_ram)
+    ProgressBar pBarStorageRam;
+
+    @BindView(R.id.pb_storage_flash)
+    ProgressBar pBarStorageFlash;
+
+    @BindView(R.id.pb_storage_tfcard)
+    ProgressBar pBarStorageTfcard;
+
     @BindView(R.id.tv_storage_ram)
     TextView mTvStorageRam;
 
@@ -134,8 +145,21 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.sensor_recyclerView)
     RecyclerView sensorRecyclerView;
 
+    /**
+     * GNSS
+     */
+    @BindView(R.id.tv_gnss_time)
+    TextView mTvGnssTime;
+
+    @BindView(R.id.tv_gnss_position)
+    TextView mTvGnssPosition;
+
+    @BindView(R.id.gnss_recyclerView)
+    RecyclerView gnssRecyclerView;
+
     private List<SensorBean> sensorList = new ArrayList<>();
-    private CommonAdapter sensorAdapter;
+    private List<SatelitteBean> satelitteBeanList = new ArrayList<>();
+    private CommonAdapter sensorAdapter, satelitteAdapter;
 
     private CurrentExtendStateInfo extendStateInfo;
 
@@ -157,12 +181,16 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initSensorAdapter();
+        initSatelitteAdapter();
         initRefreshLayout();
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
         queryStateInfo();
     }
 
+    /**
+     * 初始化主传感器适配器
+     */
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
@@ -182,6 +210,31 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             }
         };
         sensorRecyclerView.setAdapter(sensorAdapter);
+    }
+
+    /**
+     * 初始化GNSS适配器
+     */
+    private void initSatelitteAdapter() {
+        gnssRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        gnssRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
+        satelitteAdapter = new CommonAdapter<SatelitteBean>(getActivity(), R.layout.item_e40_gnss_status, satelitteBeanList) {
+            @Override
+            protected void convert(CommonViewHolder holder, SatelitteBean satelitteBean, int position) {
+                if (satelitteBean.getType() == 1) {
+                    holder.setText(R.id.tv_titel, "北斗搜星数");
+                } else if (satelitteBean.getType() == 2) {
+                    holder.setText(R.id.tv_titel, "GLONASS搜星数");
+                } else if (satelitteBean.getType() == 3) {
+                    holder.setText(R.id.tv_titel, "GPS搜星数");
+                }
+                holder.setText(R.id.tv_satellite_total_num, "总数:" + satelitteBean.getMax());
+                holder.setText(R.id.tv_red_num, String.valueOf(satelitteBean.getLow()));
+                holder.setText(R.id.tv_yellow_num, String.valueOf(satelitteBean.getMid()));
+                holder.setText(R.id.tv_green_num, String.valueOf(satelitteBean.getHigh()));
+            }
+        };
+        gnssRecyclerView.setAdapter(satelitteAdapter);
     }
 
     private void initRefreshLayout() {
@@ -297,9 +350,40 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 //存储状态
                 if (extendStateInfo.getStorage() != null) {
-                    mTvStorageRam.setText(extendStateInfo.getStorage().getRam());
-                    mTvStorageFlash.setText(extendStateInfo.getStorage().getFlash());
-                    mTvStorageTfCard.setText(extendStateInfo.getStorage().getTfcard());
+                    try {
+                        int ramValue = Integer.parseInt(extendStateInfo.getStorage().getRam().replace("%", ""));
+                        int flashValue = Integer.parseInt(extendStateInfo.getStorage().getFlash().replace("%", ""));
+                        int tfCradValue = Integer.parseInt(extendStateInfo.getStorage().getTfcard().replace("%", ""));
+
+                        ramValue = 120;
+                        if (ramValue <= 50) {
+                            pBarStorageRam.setProgressDrawable(getResources().getDrawable(R.drawable.storage_low_progress_indeterminate_horizontal));
+                        } else {
+                            pBarStorageRam.setProgressDrawable(getResources().getDrawable(R.drawable.storage_high_progress_indeterminate_horizontal));
+                        }
+
+                        if (flashValue <= 50) {
+                            pBarStorageFlash.setProgressDrawable(getResources().getDrawable(R.drawable.storage_low_progress_indeterminate_horizontal));
+                        } else {
+                            pBarStorageFlash.setProgressDrawable(getResources().getDrawable(R.drawable.storage_high_progress_indeterminate_horizontal));
+                        }
+
+                        if (tfCradValue <= 50) {
+                            pBarStorageTfcard.setProgressDrawable(getResources().getDrawable(R.drawable.storage_low_progress_indeterminate_horizontal));
+                        } else {
+                            pBarStorageTfcard.setProgressDrawable(getResources().getDrawable(R.drawable.storage_high_progress_indeterminate_horizontal));
+                        }
+
+                        pBarStorageRam.setProgress(ramValue);
+                        pBarStorageFlash.setProgress(flashValue);
+                        pBarStorageTfcard.setProgress(tfCradValue);
+
+                        mTvStorageRam.setText(ramValue > 100 ? "错误" : extendStateInfo.getStorage().getRam());
+                        mTvStorageFlash.setText(flashValue > 100 ? "错误" : extendStateInfo.getStorage().getFlash());
+                        mTvStorageTfCard.setText(flashValue > 100 ? "错误" : extendStateInfo.getStorage().getTfcard());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
                 //网络状态
                 if (extendStateInfo.getNet() != null) {
@@ -321,9 +405,9 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                     if (extendStateInfo.getSolar().getSw().toLowerCase().equals("on")) {
                         solarInfoLayout.setVisibility(View.VISIBLE);
                         setDeviceStatus(mTvSolarStatus, extendStateInfo.getSolar().getStatus());
-                        mTvSolarVoltage.setText(extendStateInfo.getSolar().getSloarvolt() + "V");
-                        mTvBatteryVoltage.setText(extendStateInfo.getSolar().getBatvolt() + "V");
-                        mTvConsumeVoltage.setText(extendStateInfo.getSolar().getPayloadvolt() + "V");
+                        mTvSolarVoltage.setText(String.format("%sV", extendStateInfo.getSolar().getSloarvolt()));
+                        mTvBatteryVoltage.setText(String.format("%sV", extendStateInfo.getSolar().getBatvolt()));
+                        mTvConsumeVoltage.setText(String.format("%sV", extendStateInfo.getSolar().getPayloadvolt()));
                     } else {
                         solarInfoLayout.setVisibility(View.GONE);
                     }
@@ -333,7 +417,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                     if (extendStateInfo.getMems().getSw().toLowerCase().equals("on")) {
                         memsInfoLayout.setVisibility(View.VISIBLE);
                         setDeviceStatus(mTvMemsStatus, extendStateInfo.getMems().getStatus());
-                        mTvInclination.setText(extendStateInfo.getMems().getX() + "," + extendStateInfo.getMems().getY() + "," + extendStateInfo.getMems().getZ());
+                        mTvInclination.setText(String.format("%s,%s,%s", extendStateInfo.getMems().getX(), extendStateInfo.getMems().getY(), extendStateInfo.getMems().getZ()));
                     } else {
                         memsInfoLayout.setVisibility(View.GONE);
                     }
@@ -342,6 +426,17 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 sensorList.clear();
                 sensorList.addAll(extendStateInfo.getSensor());
                 sensorAdapter.notifyDataSetChanged();
+
+                //GNSS 信息
+                if (extendStateInfo.getGnss() != null) {
+                    mTvGnssTime.setText(extendStateInfo.getGnss().getTime());
+                    mTvGnssPosition.setText(String.format("%s,%s", extendStateInfo.getGnss().getLon(), extendStateInfo.getGnss().getLat()));
+
+                    List<SatelitteBean> satelitte = extendStateInfo.getGnss().getSatelitte();
+                    satelitteBeanList.clear();
+                    satelitteBeanList.addAll(satelitte);
+                    satelitteAdapter.notifyDataSetChanged();
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -356,11 +451,14 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void initLinkStatus(TextView tvLinkStatus, int linkStatus) {
         if (linkStatus == 0) {
-            tvLinkStatus.setText("未连接");
-            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_not_connected_platform));
+            tvLinkStatus.setText("未开启");
+            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_unopened_platform));
         } else if (linkStatus == 1) {
             tvLinkStatus.setText("已连接");
-            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.title_text_color));
+            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+        } else if (linkStatus == 2) {
+            tvLinkStatus.setText("未连接");
+            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_not_connected_platform));
         }
     }
 
@@ -389,8 +487,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 return "翻斗雨量计";
 
             default:
-                break;
+                return "未知类型";
         }
-        return name;
     }
 }

@@ -106,7 +106,8 @@
 
             </LinearLayout>
 
-            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style"
+            <LinearLayout
+                style="@style/DeviceCurrentState_SingleItem_Style"
                 android:visibility="gone">
 
                 <TextView
@@ -151,15 +152,32 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:text="RAM"
                     android:textColor="@color/title_text_color"
                     android:textSize="15sp" />
 
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ProgressBar
+                    android:id="@+id/pb_storage_ram"
+                    style="@style/storage_progress_horizontal"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    tools:progress="40" />
+
                 <TextView
                     android:id="@+id/tv_storage_ram"
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="15sp"
                     tools:text="20%" />
 
             </LinearLayout>
@@ -167,15 +185,32 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:text="Flash"
                     android:textColor="@color/title_text_color"
                     android:textSize="15sp" />
 
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ProgressBar
+                    android:id="@+id/pb_storage_flash"
+                    style="@style/storage_progress_horizontal"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    tools:progress="40" />
+
                 <TextView
                     android:id="@+id/tv_storage_flash"
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="15sp"
                     tools:text="20%" />
 
             </LinearLayout>
@@ -183,16 +218,33 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:text="TFCard"
                     android:textColor="@color/title_text_color"
                     android:textSize="15sp" />
 
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ProgressBar
+                    android:id="@+id/pb_storage_tfcard"
+                    style="@style/storage_progress_horizontal"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    tools:progress="70" />
+
                 <TextView
                     android:id="@+id/tv_storage_tfcard"
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    tools:text="20%" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="15sp"
+                    tools:text="8%" />
 
             </LinearLayout>
 
@@ -517,7 +569,56 @@
                 android:text="GNSS"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="15sp" />
-        </LinearLayout>
 
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="时间"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_gnss_time"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="2021/05/20 09:54:30" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="经纬度"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_gnss_position"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="121.312570,31.362510" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="16dp"
+                android:text="红色代表：信噪比&#060;25   黄色代表：25&#060;信噪比&#060;35   绿色代表：信噪比&#062;25"
+                android:textColor="@color/app_color_theme_1"
+                android:textSize="12sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/gnss_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:splitMotionEvents="false"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_e40_gnss_status" />
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
