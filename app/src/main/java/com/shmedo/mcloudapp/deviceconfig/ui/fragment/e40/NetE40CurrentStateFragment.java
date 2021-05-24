@@ -355,7 +355,6 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                         int flashValue = Integer.parseInt(extendStateInfo.getStorage().getFlash().replace("%", ""));
                         int tfCradValue = Integer.parseInt(extendStateInfo.getStorage().getTfcard().replace("%", ""));
 
-                        ramValue = 120;
                         if (ramValue <= 50) {
                             pBarStorageRam.setProgressDrawable(getResources().getDrawable(R.drawable.storage_low_progress_indeterminate_horizontal));
                         } else {
