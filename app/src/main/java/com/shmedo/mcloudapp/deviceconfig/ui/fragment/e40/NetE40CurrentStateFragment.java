@@ -394,7 +394,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                             ramProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
                         } else {
                             ramProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
-                            mTvStorageRam.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(extendStateInfo.getNet().getCsq()), 0);
+                            mTvStorageRam.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_storage_error, 0);
                         }
 
                         if (flashValue <= 80) {
@@ -403,7 +403,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                             flashProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
                         } else {
                             flashProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
-                            mTvStorageFlash.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(extendStateInfo.getNet().getCsq()), 0);
+                            mTvStorageFlash.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_storage_error, 0);
                         }
 
                         if (tfCradValue <= 80) {
@@ -412,7 +412,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                             tfcardProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
                         } else {
                             tfcardProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
-                            mTvStorageTfCard.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(extendStateInfo.getNet().getCsq()), 0);
+                            mTvStorageTfCard.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_storage_error, 0);
                         }
                         ramProgress.setCurrentProgress(ramValue);
                         ramProgress.postInvalidate();

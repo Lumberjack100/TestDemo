@@ -180,9 +180,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:drawablePadding="5dp"
+                        android:gravity="center"
                         android:text="运行内存"
                         android:textColor="@color/title_text_color"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        tools:drawableEnd="@drawable/ic_storage_error" />
                 </LinearLayout>
 
                 <LinearLayout
