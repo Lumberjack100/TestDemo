@@ -1,54 +1,58 @@
 package com.shmedo.configlibrary.iot.model.e40;
 
+import android.text.TextUtils;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2021/5/20 <br/>
+ * 创建时间:  2021/5/24 <br/>
  * 描述：     TODO
  */
 public class SatelitteBean {
-    private int type;
-    private int max;
-    private int low;
-    private int mid;
-    private int high;
+    @SerializedName("UTCTime")
+    private String utctime;
 
-    public int getType() {
-        return type;
+    @SerializedName("GPS")
+    private List<GPSBean> gpsBeanList;
+
+    @SerializedName("GLO")
+    private List<GLOBean> gloBeanList;
+
+    @SerializedName("BDS")
+    private List<BDSBean> bdsBeanList;
+
+    public String getUtctime() {
+        return TextUtils.isEmpty(utctime) ? "" : utctime;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setUtctime(String utctime) {
+        this.utctime = utctime;
     }
 
-    public int getMax() {
-        return max;
+    public List<GPSBean> getGpsBeanList() {
+        return gpsBeanList;
     }
 
-    public void setMax(int max) {
-        this.max = max;
+    public void setGpsBeanList(List<GPSBean> gpsBeanList) {
+        this.gpsBeanList = gpsBeanList;
     }
 
-    public int getLow() {
-        return low;
+    public List<GLOBean> getGloBeanList() {
+        return gloBeanList;
     }
 
-    public void setLow(int low) {
-        this.low = low;
+    public void setGloBeanList(List<GLOBean> gloBeanList) {
+        this.gloBeanList = gloBeanList;
     }
 
-    public int getMid() {
-        return mid;
+    public List<BDSBean> getBdsBeanList() {
+        return bdsBeanList;
     }
 
-    public void setMid(int mid) {
-        this.mid = mid;
-    }
-
-    public int getHigh() {
-        return high;
-    }
-
-    public void setHigh(int high) {
-        this.high = high;
+    public void setBdsBeanList(List<BDSBean> bdsBeanList) {
+        this.bdsBeanList = bdsBeanList;
     }
 }

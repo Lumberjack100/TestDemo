@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeLayout"
     android:layout_width="match_parent"
@@ -149,102 +150,98 @@
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="15sp" />
 
-            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
 
-                <TextView
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:text="RAM"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
-
-                <View
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ProgressBar
-                    android:id="@+id/pb_storage_ram"
-                    style="@style/storage_progress_horizontal"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:max="100"
-                    tools:progress="40" />
+                    <com.shmedo.mcloudapp.deviceconfig.view.RingProgressView
+                        android:id="@+id/ramProgress"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        tools:currentProgress="75"
+                        app:maxProgress="100"
+                        app:ringColor="@color/divider_line_bg_efefef"
+                        tools:ringProgressColor="@android:color/holo_red_light"
+                        app:ringWidth="10dp"
+                        app:textColor="@color/title_text_color"
+                        app:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tv_storage_ram"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:textColor="@color/text_color_666666"
-                    android:textSize="15sp"
-                    tools:text="20%" />
+                    <TextView
+                        android:id="@+id/tv_ram"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="运行内存"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
-
-                <TextView
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:text="Flash"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
-
-                <View
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ProgressBar
-                    android:id="@+id/pb_storage_flash"
-                    style="@style/storage_progress_horizontal"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:max="100"
-                    tools:progress="40" />
+                    <com.shmedo.mcloudapp.deviceconfig.view.RingProgressView
+                        android:id="@+id/flashProgress"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        tools:currentProgress="75"
+                        app:maxProgress="100"
+                        app:ringColor="@color/divider_line_bg_efefef"
+                        tools:ringProgressColor="@android:color/holo_red_light"
+                        app:ringWidth="10dp"
+                        app:textColor="@color/title_text_color"
+                        app:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tv_storage_flash"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:textColor="@color/text_color_666666"
-                    android:textSize="15sp"
-                    tools:text="20%" />
+                    <TextView
+                        android:id="@+id/tv_flash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="内部存储"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
-
-                <TextView
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:text="TFCard"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
-
-                <View
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ProgressBar
-                    android:id="@+id/pb_storage_tfcard"
-                    style="@style/storage_progress_horizontal"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:max="100"
-                    tools:progress="70" />
+                    <com.shmedo.mcloudapp.deviceconfig.view.RingProgressView
+                        android:id="@+id/tfCardProgress"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        tools:currentProgress="75"
+                        app:maxProgress="100"
+                        app:ringColor="@color/divider_line_bg_efefef"
+                        tools:ringProgressColor="@android:color/holo_red_light"
+                        app:ringWidth="10dp"
+                        app:textColor="@color/title_text_color"
+                        app:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tv_storage_tfcard"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:textColor="@color/text_color_666666"
-                    android:textSize="15sp"
-                    tools:text="8%" />
+                    <TextView
+                        android:id="@+id/tv_tfcard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="外部存储"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -272,11 +269,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:drawablePadding="5dp"
+                    tools:background="@drawable/bg_corner_2dp_stroke_1dp_50e9b9"
+                    android:paddingStart="6dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="6dp"
+                    android:paddingBottom="3dp"
                     android:singleLine="true"
-                    android:textColor="@color/text_color_666666"
+                    android:textColor="@color/text_color_50E9B9"
                     android:textSize="15sp"
-                    tools:drawableStart="@drawable/signalstrengthfour"
                     tools:text="中国移动" />
 
                 <TextView
@@ -284,9 +284,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
+                    android:drawablePadding="15dp"
                     android:singleLine="true"
                     android:textColor="@color/text_color_666666"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:drawableStart="@drawable/signalstrengthfour"
                     tools:text="4G" />
 
             </LinearLayout>
@@ -602,15 +605,45 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="16dp"
-                android:text="红色代表：信噪比&#060;25   黄色代表：25&#060;信噪比&#060;35   绿色代表：信噪比&#062;25"
-                android:textColor="@color/app_color_theme_1"
-                android:textSize="12sp" />
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/dot_red"
+                    android:text="信噪比&#060;25"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/dot_blue"
+                    android:text="25&#060;=信噪比&#060;25"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/dot_red"
+                    android:text="信噪比&#062;=35"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/gnss_recyclerView"
@@ -619,6 +652,7 @@
                 android:splitMotionEvents="false"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_e40_gnss_status" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

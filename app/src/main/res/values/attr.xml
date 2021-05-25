@@ -50,4 +50,15 @@
         <attr name="diffuse_speed" format="integer"/>
     </declare-styleable>
 
+    <!-- 自定义环形进度条的属性-->
+    <declare-styleable name="RingProgressView">
+        <attr name="ringColor" format="color"/>
+        <attr name="ringProgressColor" format="color"/>
+        <attr name="ringWidth" format="dimension"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
+        <attr name="currentProgress" format="integer"/>
+        <attr name="maxProgress" format="integer"/>
+    </declare-styleable>
+
 </resources>

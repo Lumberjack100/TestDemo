@@ -366,6 +366,11 @@ public enum IOTCommandType {
 
     /*　 E40 指令  */
     /**
+     * 获取设备卫星状态
+     */
+    E40_MD_GET_SATELITTE("md_getsatelitte"),
+
+    /**
      * 获取E40 的 RTK
      */
     E40_MD_GET_RTK("md_getrtk"),

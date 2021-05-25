@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -29,6 +28,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
+import com.shmedo.mcloudapp.deviceconfig.view.RingProgressView;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
@@ -73,22 +73,22 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     /**
      * 存储状态
      */
-    @BindView(R.id.pb_storage_ram)
-    ProgressBar pBarStorageRam;
+    @BindView(R.id.ramProgress)
+    RingProgressView ramProgress;
 
-    @BindView(R.id.pb_storage_flash)
-    ProgressBar pBarStorageFlash;
+    @BindView(R.id.flashProgress)
+    RingProgressView flashProgress;
 
-    @BindView(R.id.pb_storage_tfcard)
-    ProgressBar pBarStorageTfcard;
+    @BindView(R.id.tfCardProgress)
+    RingProgressView tfcardProgress;
 
-    @BindView(R.id.tv_storage_ram)
+    @BindView(R.id.tv_ram)
     TextView mTvStorageRam;
 
-    @BindView(R.id.tv_storage_flash)
+    @BindView(R.id.tv_flash)
     TextView mTvStorageFlash;
 
-    @BindView(R.id.tv_storage_tfcard)
+    @BindView(R.id.tv_tfcard)
     TextView mTvStorageTfCard;
 
     /**
@@ -221,17 +221,17 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
         satelitteAdapter = new CommonAdapter<SatelitteBean>(getActivity(), R.layout.item_e40_gnss_status, satelitteBeanList) {
             @Override
             protected void convert(CommonViewHolder holder, SatelitteBean satelitteBean, int position) {
-                if (satelitteBean.getType() == 1) {
-                    holder.setText(R.id.tv_titel, "北斗搜星数");
-                } else if (satelitteBean.getType() == 2) {
-                    holder.setText(R.id.tv_titel, "GLONASS搜星数");
-                } else if (satelitteBean.getType() == 3) {
-                    holder.setText(R.id.tv_titel, "GPS搜星数");
-                }
-                holder.setText(R.id.tv_satellite_total_num, "总数:" + satelitteBean.getMax());
-                holder.setText(R.id.tv_red_num, String.valueOf(satelitteBean.getLow()));
-                holder.setText(R.id.tv_yellow_num, String.valueOf(satelitteBean.getMid()));
-                holder.setText(R.id.tv_green_num, String.valueOf(satelitteBean.getHigh()));
+//                if (satelitteBean.getType() == 1) {
+//                    holder.setText(R.id.tv_titel, "北斗搜星数");
+//                } else if (satelitteBean.getType() == 2) {
+//                    holder.setText(R.id.tv_titel, "GLONASS搜星数");
+//                } else if (satelitteBean.getType() == 3) {
+//                    holder.setText(R.id.tv_titel, "GPS搜星数");
+//                }
+//                holder.setText(R.id.tv_satellite_total_num, "总数:" + satelitteBean.getMax());
+//                holder.setText(R.id.tv_red_num, String.valueOf(satelitteBean.getLow()));
+//                holder.setText(R.id.tv_yellow_num, String.valueOf(satelitteBean.getMid()));
+//                holder.setText(R.id.tv_green_num, String.valueOf(satelitteBean.getHigh()));
             }
         };
         gnssRecyclerView.setAdapter(satelitteAdapter);
@@ -252,6 +252,14 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_EX_STATUS);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 获取设备的卫星状态
+     */
+    private void querySatelitteInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_SATELITTE);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -308,7 +316,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultSuccess(queryCmdResult);
-        swipeRefresh.setRefreshing(false);
+//        swipeRefresh.setRefreshing(false);
         setResultData(queryCmdResult);
     }
 
@@ -319,6 +327,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             case QUERY_DEVICE_EX_STATUS: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -326,6 +335,21 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 String content = commandResult.getResult();
                 initStatusInfo(content);
+                querySatelitteInfo();
+            }
+            break;
+
+            case E40_MD_GET_SATELITTE: {
+                swipeRefresh.setRefreshing(false);
+                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询卫星数据出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                String content = commandResult.getResult();
+                initSatelittleInfo(content);
             }
             break;
 
@@ -355,31 +379,40 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                         int flashValue = Integer.parseInt(extendStateInfo.getStorage().getFlash().replace("%", ""));
                         int tfCradValue = Integer.parseInt(extendStateInfo.getStorage().getTfcard().replace("%", ""));
 
-                        if (ramValue <= 50) {
-                            pBarStorageRam.setProgressDrawable(getResources().getDrawable(R.drawable.storage_low_progress_indeterminate_horizontal));
+                        if (ramValue <= 80) {
+                            ramProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_normal));
+                        } else if (ramValue <= 100) {
+                            ramProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
                         } else {
-                            pBarStorageRam.setProgressDrawable(getResources().getDrawable(R.drawable.storage_high_progress_indeterminate_horizontal));
+                            ramProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
+                            mTvStorageRam.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(extendStateInfo.getNet().getCsq()), 0);
                         }
 
-                        if (flashValue <= 50) {
-                            pBarStorageFlash.setProgressDrawable(getResources().getDrawable(R.drawable.storage_low_progress_indeterminate_horizontal));
+                        if (flashValue <= 80) {
+                            flashProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_normal));
+                        } else if (flashValue <= 100) {
+                            flashProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
                         } else {
-                            pBarStorageFlash.setProgressDrawable(getResources().getDrawable(R.drawable.storage_high_progress_indeterminate_horizontal));
+                            flashProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
+                            mTvStorageFlash.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(extendStateInfo.getNet().getCsq()), 0);
                         }
 
-                        if (tfCradValue <= 50) {
-                            pBarStorageTfcard.setProgressDrawable(getResources().getDrawable(R.drawable.storage_low_progress_indeterminate_horizontal));
+                        if (tfCradValue <= 80) {
+                            tfcardProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_normal));
+                        } else if (tfCradValue <= 100) {
+                            tfcardProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
                         } else {
-                            pBarStorageTfcard.setProgressDrawable(getResources().getDrawable(R.drawable.storage_high_progress_indeterminate_horizontal));
+                            tfcardProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
+                            mTvStorageTfCard.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(extendStateInfo.getNet().getCsq()), 0);
                         }
+                        ramProgress.setCurrentProgress(ramValue);
+                        ramProgress.postInvalidate();
 
-                        pBarStorageRam.setProgress(ramValue);
-                        pBarStorageFlash.setProgress(flashValue);
-                        pBarStorageTfcard.setProgress(tfCradValue);
+                        flashProgress.setCurrentProgress(flashValue);
+                        flashProgress.postInvalidate();
 
-                        mTvStorageRam.setText(ramValue > 100 ? "错误" : extendStateInfo.getStorage().getRam());
-                        mTvStorageFlash.setText(flashValue > 100 ? "错误" : extendStateInfo.getStorage().getFlash());
-                        mTvStorageTfCard.setText(flashValue > 100 ? "错误" : extendStateInfo.getStorage().getTfcard());
+                        tfcardProgress.setCurrentProgress(tfCradValue);
+                        tfcardProgress.postInvalidate();
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -388,10 +421,12 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 if (extendStateInfo.getNet() != null) {
                     if (extendStateInfo.getNet().get_$4g().toLowerCase().equals("on")) {
                         mTvSignalStrength.setVisibility(View.VISIBLE);
-                        mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(extendStateInfo.getNet().getCsq()), 0);
+                        mTvSignalStrength.setBackgroundResource(R.drawable.bg_corner_2dp_stroke_1dp_50e9b9);
                         mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType2(extendStateInfo.getNet().getIsp()));
+                        mTvNetworkMode.setCompoundDrawablesWithIntrinsicBounds(DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(extendStateInfo.getNet().getCsq()), 0, 0, 0);
                     } else {
                         mTvSignalStrength.setVisibility(View.GONE);
+                        mTvNetworkMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                     }
                     mTvNetworkMode.setText(extendStateInfo.getNet().get_$4g().toLowerCase().equals("on") ? extendStateInfo.getNet().getType() : "本地网络");
                     initLinkStatus(mTvLinkOneStatus, extendStateInfo.getNet().getSocket1());
@@ -431,12 +466,28 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                     mTvGnssTime.setText(extendStateInfo.getGnss().getTime());
                     mTvGnssPosition.setText(String.format("%s,%s", extendStateInfo.getGnss().getLon(), extendStateInfo.getGnss().getLat()));
 
-                    List<SatelitteBean> satelitte = extendStateInfo.getGnss().getSatelitte();
-                    satelitteBeanList.clear();
-                    satelitteBeanList.addAll(satelitte);
-                    satelitteAdapter.notifyDataSetChanged();
+//                    List<SatelitteBean> satelitte = extendStateInfo.getGnss().getSatelitte();
+//                    satelitteBeanList.clear();
+//                    satelitteBeanList.addAll(satelitte);
+//                    satelitteAdapter.notifyDataSetChanged();
                 }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void initSatelittleInfo(String content) {
+        try {
+            content="{\"UTCTime\":\"2021-05-24 05:50:45.0\",\"GPS\":{\"G01\":{\"AZ\":40.595654,\"EL\":32.298524,\"L1\":42,\"L2\":31,\"L3\":0},\"G03\":{\"AZ\":85.327445,\"EL\":51.693389,\"L1\":48,\"L2\":42,\"L3\":0},\"G06\":{\"AZ\":246.994703,\"EL\":27.985387,\"L1\":43,\"L2\":43,\"L3\":0},\"G14\":{\"AZ\":242.780189,\"EL\":80.830086,\"L1\":48,\"L2\":41,\"L3\":0},\"G17\":{\"AZ\":333.197570,\"EL\":51.668473,\"L1\":44,\"L2\":45,\"L3\":0},\"G19\":{\"AZ\":306.554044,\"EL\":32.334989,\"L1\":41,\"L2\":28,\"L3\":0},\"G21\":{\"AZ\":0,\"EL\":0,\"L1\":41,\"L2\":24,\"L3\":0},\"G22\":{\"AZ\":53.791276,\"EL\":32.508679,\"L1\":45,\"L2\":32,\"L3\":0},\"G28\":{\"AZ\":308.186403,\"EL\":66.967555,\"L1\":45,\"L2\":36,\"L3\":0},\"G30\":{\"AZ\":0,\"EL\":0,\"L1\":38,\"L2\":36,\"L3\":0}},\"GLO\":{\"R04\":{\"SAT\":\"R04\",\"AZ\":80.115497,\"EL\":26.621261,\"L1\":47,\"L2\":45,\"L3\":0},\"R05\":{\"SAT\":\"R05\",\"AZ\":134.297591,\"EL\":18.717331,\"L1\":48,\"L2\":43,\"L3\":0},\"R09\":{\"SAT\":\"R09\",\"AZ\":212.377262,\"EL\":46.523622,\"L1\":51,\"L2\":48,\"L3\":0},\"R19\":{\"SAT\":\"R19\",\"AZ\":0,\"EL\":0,\"L1\":35,\"L2\":39,\"L3\":0},\"R20\":{\"SAT\":\"R20\",\"AZ\":0,\"EL\":0,\"L1\":38,\"L2\":44,\"L3\":0}},\"BDS\":{\"C01\":{\"SAT\":\"C01\",\"AZ\":0,\"EL\":0,\"L1\":47,\"L2\":49,\"L3\":0},\"C02\":{\"SAT\":\"C02\",\"AZ\":0,\"EL\":0,\"L1\":40,\"L2\":45,\"L3\":0},\"C03\":{\"SAT\":\"C03\",\"AZ\":0,\"EL\":0,\"L1\":46,\"L2\":47,\"L3\":0},\"C04\":{\"SAT\":\"C04\",\"AZ\":0,\"EL\":0,\"L1\":44,\"L2\":48,\"L3\":0},\"C05\":{\"SAT\":\"C05\",\"AZ\":0,\"EL\":0,\"L1\":0,\"L2\":38,\"L3\":0},\"C07\":{\"SAT\":\"C07\",\"AZ\":0,\"EL\":0,\"L1\":48,\"L2\":50,\"L3\":0},\"C08\":{\"SAT\":\"C08\",\"AZ\":0,\"EL\":0,\"L1\":45,\"L2\":47,\"L3\":0},\"C10\":{\"SAT\":\"C10\",\"AZ\":0,\"EL\":0,\"L1\":45,\"L2\":46,\"L3\":0},\"C13\":{\"SAT\":\"C13\",\"AZ\":236.050225,\"EL\":49.063911,\"L1\":46,\"L2\":45,\"L3\":0}}}";
+            content = content.replace("\\", "");
+            content = content.replace("\"GPS\":{", "\"GPS\":[");
+            content = content.replace("},\"GLO\":{", "],\"GLO\":[");
+            content = content.replace("},\"BDS\":{", "],\"BDS\":[");
+            content = content.replace("}}}", "}]}");
+            content = content.replaceAll("\"[GRC]\\d{2}\":", "");
+
+            String ss = content;
         } catch (Exception ex) {
             ex.printStackTrace();
         }

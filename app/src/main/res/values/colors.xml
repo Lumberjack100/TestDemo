@@ -90,4 +90,10 @@
     <color name="search_input_text_color">#ff333333</color>
     <color name="search_hint_text_color">#B3B3B3</color>
     <color name="project_detail_tab_indicator_color">#52B4F8</color>
+
+    <!-- E40存储状态圆环颜色 -->
+    <color name="storage_ring_progress_normal">#5289e8</color>
+    <color name="storage_ring_progress_warn">#e69331</color>
+    <color name="storage_ring_progress_abnormal">#cc4d4d</color>
+
 </resources>

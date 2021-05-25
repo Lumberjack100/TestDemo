@@ -2,9 +2,6 @@ package com.shmedo.configlibrary.iot.model.e40;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/5/20 <br/>
@@ -12,9 +9,8 @@ import java.util.List;
  */
 public class GnssBean {
     private String time;
-    private double lon;
-    private double lat;
-    private List<SatelitteBean> satelitte;
+    private String lon;
+    private String lat;
 
     public String getTime() {
         return TextUtils.isEmpty(time) ? "" : time;
@@ -24,27 +20,20 @@ public class GnssBean {
         this.time = time;
     }
 
-    public double getLon() {
-        return lon;
+    public String getLon() {
+        return TextUtils.isEmpty(lon) ? "" : lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(String lon) {
         this.lon = lon;
     }
 
-    public double getLat() {
-        return lat;
+    public String getLat() {
+        return TextUtils.isEmpty(lat) ? "" : lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(String lat) {
         this.lat = lat;
     }
 
-    public List<SatelitteBean> getSatelitte() {
-        return satelitte == null ? new ArrayList<SatelitteBean>() : satelitte;
-    }
-
-    public void setSatelitte(List<SatelitteBean> satelitte) {
-        this.satelitte = satelitte;
-    }
 }
