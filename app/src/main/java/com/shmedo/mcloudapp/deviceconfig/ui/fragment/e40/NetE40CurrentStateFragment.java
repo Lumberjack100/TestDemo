@@ -15,7 +15,10 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.e40.BDSBean;
 import com.shmedo.configlibrary.iot.model.e40.CurrentExtendStateInfo;
+import com.shmedo.configlibrary.iot.model.e40.GLOBean;
+import com.shmedo.configlibrary.iot.model.e40.GPSBean;
 import com.shmedo.configlibrary.iot.model.e40.SatelitteBean;
 import com.shmedo.configlibrary.iot.model.e40.SensorBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -154,12 +157,44 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_gnss_position)
     TextView mTvGnssPosition;
 
-    @BindView(R.id.gnss_recyclerView)
-    RecyclerView gnssRecyclerView;
+    @BindView(R.id.tv_bd_satellite_total_num)
+    TextView mTvBDSatelliteTotalNum;
+
+    @BindView(R.id.tv_bd_red_num)
+    TextView mTvBDSatelliteRedNum;
+
+    @BindView(R.id.tv_bd_blue_num)
+    TextView mTvBDSatelliteBlueNum;
+
+    @BindView(R.id.tv_bd_green_num)
+    TextView mTvBDSatelliteGreenNum;
+
+    @BindView(R.id.tv_gps_satellite_total_num)
+    TextView mTvGpsSatelliteTotalNum;
+
+    @BindView(R.id.tv_gps_red_num)
+    TextView mTvGpsSatelliteRedNum;
+
+    @BindView(R.id.tv_gps_blue_num)
+    TextView mTvGpsSatelliteBlueNum;
+
+    @BindView(R.id.tv_gps_green_num)
+    TextView mTvGpsSatelliteGreenNum;
+
+    @BindView(R.id.tv_glo_satellite_total_num)
+    TextView mTvGloSatelliteTotalNum;
+
+    @BindView(R.id.tv_glo_red_num)
+    TextView mTvGloSatelliteRedNum;
+
+    @BindView(R.id.tv_glo_blue_num)
+    TextView mTvGloSatelliteBlueNum;
+
+    @BindView(R.id.tv_glo_green_num)
+    TextView mTvGloSatelliteGreenNum;
 
     private List<SensorBean> sensorList = new ArrayList<>();
-    private List<SatelitteBean> satelitteBeanList = new ArrayList<>();
-    private CommonAdapter sensorAdapter, satelitteAdapter;
+    private CommonAdapter sensorAdapter;
 
     private CurrentExtendStateInfo extendStateInfo;
 
@@ -181,7 +216,6 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initSensorAdapter();
-        initSatelitteAdapter();
         initRefreshLayout();
         // 进入页面，刷新数据
         swipeRefresh.setRefreshing(true);
@@ -210,31 +244,6 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             }
         };
         sensorRecyclerView.setAdapter(sensorAdapter);
-    }
-
-    /**
-     * 初始化GNSS适配器
-     */
-    private void initSatelitteAdapter() {
-        gnssRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        gnssRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
-        satelitteAdapter = new CommonAdapter<SatelitteBean>(getActivity(), R.layout.item_e40_gnss_status, satelitteBeanList) {
-            @Override
-            protected void convert(CommonViewHolder holder, SatelitteBean satelitteBean, int position) {
-//                if (satelitteBean.getType() == 1) {
-//                    holder.setText(R.id.tv_titel, "北斗搜星数");
-//                } else if (satelitteBean.getType() == 2) {
-//                    holder.setText(R.id.tv_titel, "GLONASS搜星数");
-//                } else if (satelitteBean.getType() == 3) {
-//                    holder.setText(R.id.tv_titel, "GPS搜星数");
-//                }
-//                holder.setText(R.id.tv_satellite_total_num, "总数:" + satelitteBean.getMax());
-//                holder.setText(R.id.tv_red_num, String.valueOf(satelitteBean.getLow()));
-//                holder.setText(R.id.tv_yellow_num, String.valueOf(satelitteBean.getMid()));
-//                holder.setText(R.id.tv_green_num, String.valueOf(satelitteBean.getHigh()));
-            }
-        };
-        gnssRecyclerView.setAdapter(satelitteAdapter);
     }
 
     private void initRefreshLayout() {
@@ -465,11 +474,6 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 if (extendStateInfo.getGnss() != null) {
                     mTvGnssTime.setText(extendStateInfo.getGnss().getTime());
                     mTvGnssPosition.setText(String.format("%s,%s", extendStateInfo.getGnss().getLon(), extendStateInfo.getGnss().getLat()));
-
-//                    List<SatelitteBean> satelitte = extendStateInfo.getGnss().getSatelitte();
-//                    satelitteBeanList.clear();
-//                    satelitteBeanList.addAll(satelitte);
-//                    satelitteAdapter.notifyDataSetChanged();
                 }
             }
         } catch (Exception ex) {
@@ -479,7 +483,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initSatelittleInfo(String content) {
         try {
-            content="{\"UTCTime\":\"2021-05-24 05:50:45.0\",\"GPS\":{\"G01\":{\"AZ\":40.595654,\"EL\":32.298524,\"L1\":42,\"L2\":31,\"L3\":0},\"G03\":{\"AZ\":85.327445,\"EL\":51.693389,\"L1\":48,\"L2\":42,\"L3\":0},\"G06\":{\"AZ\":246.994703,\"EL\":27.985387,\"L1\":43,\"L2\":43,\"L3\":0},\"G14\":{\"AZ\":242.780189,\"EL\":80.830086,\"L1\":48,\"L2\":41,\"L3\":0},\"G17\":{\"AZ\":333.197570,\"EL\":51.668473,\"L1\":44,\"L2\":45,\"L3\":0},\"G19\":{\"AZ\":306.554044,\"EL\":32.334989,\"L1\":41,\"L2\":28,\"L3\":0},\"G21\":{\"AZ\":0,\"EL\":0,\"L1\":41,\"L2\":24,\"L3\":0},\"G22\":{\"AZ\":53.791276,\"EL\":32.508679,\"L1\":45,\"L2\":32,\"L3\":0},\"G28\":{\"AZ\":308.186403,\"EL\":66.967555,\"L1\":45,\"L2\":36,\"L3\":0},\"G30\":{\"AZ\":0,\"EL\":0,\"L1\":38,\"L2\":36,\"L3\":0}},\"GLO\":{\"R04\":{\"SAT\":\"R04\",\"AZ\":80.115497,\"EL\":26.621261,\"L1\":47,\"L2\":45,\"L3\":0},\"R05\":{\"SAT\":\"R05\",\"AZ\":134.297591,\"EL\":18.717331,\"L1\":48,\"L2\":43,\"L3\":0},\"R09\":{\"SAT\":\"R09\",\"AZ\":212.377262,\"EL\":46.523622,\"L1\":51,\"L2\":48,\"L3\":0},\"R19\":{\"SAT\":\"R19\",\"AZ\":0,\"EL\":0,\"L1\":35,\"L2\":39,\"L3\":0},\"R20\":{\"SAT\":\"R20\",\"AZ\":0,\"EL\":0,\"L1\":38,\"L2\":44,\"L3\":0}},\"BDS\":{\"C01\":{\"SAT\":\"C01\",\"AZ\":0,\"EL\":0,\"L1\":47,\"L2\":49,\"L3\":0},\"C02\":{\"SAT\":\"C02\",\"AZ\":0,\"EL\":0,\"L1\":40,\"L2\":45,\"L3\":0},\"C03\":{\"SAT\":\"C03\",\"AZ\":0,\"EL\":0,\"L1\":46,\"L2\":47,\"L3\":0},\"C04\":{\"SAT\":\"C04\",\"AZ\":0,\"EL\":0,\"L1\":44,\"L2\":48,\"L3\":0},\"C05\":{\"SAT\":\"C05\",\"AZ\":0,\"EL\":0,\"L1\":0,\"L2\":38,\"L3\":0},\"C07\":{\"SAT\":\"C07\",\"AZ\":0,\"EL\":0,\"L1\":48,\"L2\":50,\"L3\":0},\"C08\":{\"SAT\":\"C08\",\"AZ\":0,\"EL\":0,\"L1\":45,\"L2\":47,\"L3\":0},\"C10\":{\"SAT\":\"C10\",\"AZ\":0,\"EL\":0,\"L1\":45,\"L2\":46,\"L3\":0},\"C13\":{\"SAT\":\"C13\",\"AZ\":236.050225,\"EL\":49.063911,\"L1\":46,\"L2\":45,\"L3\":0}}}";
+//            content = "{\"UTCTime\":\"2021-05-24 05:50:45.0\",\"GPS\":{\"G01\":{\"AZ\":40.595654,\"EL\":32.298524,\"L1\":42,\"L2\":31,\"L3\":0},\"G03\":{\"AZ\":85.327445,\"EL\":51.693389,\"L1\":48,\"L2\":42,\"L3\":0},\"G06\":{\"AZ\":246.994703,\"EL\":27.985387,\"L1\":43,\"L2\":43,\"L3\":0},\"G14\":{\"AZ\":242.780189,\"EL\":80.830086,\"L1\":48,\"L2\":41,\"L3\":0},\"G17\":{\"AZ\":333.197570,\"EL\":51.668473,\"L1\":44,\"L2\":45,\"L3\":0},\"G19\":{\"AZ\":306.554044,\"EL\":32.334989,\"L1\":41,\"L2\":28,\"L3\":0},\"G21\":{\"AZ\":0,\"EL\":0,\"L1\":41,\"L2\":24,\"L3\":0},\"G22\":{\"AZ\":53.791276,\"EL\":32.508679,\"L1\":45,\"L2\":32,\"L3\":0},\"G28\":{\"AZ\":308.186403,\"EL\":66.967555,\"L1\":45,\"L2\":36,\"L3\":0},\"G30\":{\"AZ\":0,\"EL\":0,\"L1\":38,\"L2\":36,\"L3\":0}},\"GLO\":{\"R04\":{\"SAT\":\"R04\",\"AZ\":80.115497,\"EL\":26.621261,\"L1\":47,\"L2\":45,\"L3\":0},\"R05\":{\"SAT\":\"R05\",\"AZ\":134.297591,\"EL\":18.717331,\"L1\":48,\"L2\":43,\"L3\":0},\"R09\":{\"SAT\":\"R09\",\"AZ\":212.377262,\"EL\":46.523622,\"L1\":51,\"L2\":48,\"L3\":0},\"R19\":{\"SAT\":\"R19\",\"AZ\":0,\"EL\":0,\"L1\":35,\"L2\":39,\"L3\":0},\"R20\":{\"SAT\":\"R20\",\"AZ\":0,\"EL\":0,\"L1\":38,\"L2\":44,\"L3\":0}},\"BDS\":{\"C01\":{\"SAT\":\"C01\",\"AZ\":0,\"EL\":0,\"L1\":47,\"L2\":49,\"L3\":0},\"C02\":{\"SAT\":\"C02\",\"AZ\":0,\"EL\":0,\"L1\":40,\"L2\":45,\"L3\":0},\"C03\":{\"SAT\":\"C03\",\"AZ\":0,\"EL\":0,\"L1\":46,\"L2\":47,\"L3\":0},\"C04\":{\"SAT\":\"C04\",\"AZ\":0,\"EL\":0,\"L1\":44,\"L2\":48,\"L3\":0},\"C05\":{\"SAT\":\"C05\",\"AZ\":0,\"EL\":0,\"L1\":0,\"L2\":38,\"L3\":0},\"C07\":{\"SAT\":\"C07\",\"AZ\":0,\"EL\":0,\"L1\":48,\"L2\":50,\"L3\":0},\"C08\":{\"SAT\":\"C08\",\"AZ\":0,\"EL\":0,\"L1\":45,\"L2\":47,\"L3\":0},\"C10\":{\"SAT\":\"C10\",\"AZ\":0,\"EL\":0,\"L1\":45,\"L2\":46,\"L3\":0},\"C13\":{\"SAT\":\"C13\",\"AZ\":236.050225,\"EL\":49.063911,\"L1\":46,\"L2\":45,\"L3\":0}}}";
             content = content.replace("\\", "");
             content = content.replace("\"GPS\":{", "\"GPS\":[");
             content = content.replace("},\"GLO\":{", "],\"GLO\":[");
@@ -487,7 +491,56 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             content = content.replace("}}}", "}]}");
             content = content.replaceAll("\"[GRC]\\d{2}\":", "");
 
-            String ss = content;
+            SatelitteBean satelitteBean = GsonFactory.getGson().fromJson(content, SatelitteBean.class);
+            if (satelitteBean != null) {
+                List<BDSBean> bdsBeanList = satelitteBean.getBdsBeanList();
+                List<GPSBean> gpsBeanList = satelitteBean.getGpsBeanList();
+                List<GLOBean> gloBeanList = satelitteBean.getGloBeanList();
+
+                mTvBDSatelliteTotalNum.setText(String.format("总数：%d", bdsBeanList.size()));
+                mTvGpsSatelliteTotalNum.setText(String.format("总数：%d", gpsBeanList.size()));
+                mTvGloSatelliteTotalNum.setText(String.format("总数：%d", gloBeanList.size()));
+
+                int bdRedNum = 0, bdBlueNum = 0, bdGreenNum = 0, gpsRedNum = 0, gpsBlueNum = 0, gpsGreenNum = 0, gloRedNum = 0, gloBlueNum = 0, gloGreenNum = 0;
+                for (BDSBean bdsBean : bdsBeanList) {
+                    if (bdsBean.getL1() < 25) {
+                        bdRedNum += 1;
+                    } else if (bdsBean.getL1() < 35) {
+                        bdBlueNum += 1;
+                    } else {
+                        bdGreenNum += 1;
+                    }
+                }
+                mTvBDSatelliteRedNum.setText(String.valueOf(bdRedNum));
+                mTvBDSatelliteBlueNum.setText(String.valueOf(bdBlueNum));
+                mTvBDSatelliteGreenNum.setText(String.valueOf(bdGreenNum));
+
+                for (GPSBean gpsBean : gpsBeanList) {
+                    if (gpsBean.getL1() < 25) {
+                        gpsRedNum += 1;
+                    } else if (gpsBean.getL1() < 35) {
+                        gpsBlueNum += 1;
+                    } else {
+                        gpsGreenNum += 1;
+                    }
+                }
+                mTvGpsSatelliteRedNum.setText(String.valueOf(gpsRedNum));
+                mTvGpsSatelliteBlueNum.setText(String.valueOf(gpsBlueNum));
+                mTvGpsSatelliteGreenNum.setText(String.valueOf(gpsGreenNum));
+
+                for (GLOBean gloBean : gloBeanList) {
+                    if (gloBean.getL1() < 25) {
+                        gloRedNum += 1;
+                    } else if (gloBean.getL1() < 35) {
+                        gloBlueNum += 1;
+                    } else {
+                        gloGreenNum += 1;
+                    }
+                }
+                mTvGloSatelliteRedNum.setText(String.valueOf(gloRedNum));
+                mTvGloSatelliteBlueNum.setText(String.valueOf(gloBlueNum));
+                mTvGloSatelliteGreenNum.setText(String.valueOf(gloGreenNum));
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

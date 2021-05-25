@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class SatelitteBean {
     }
 
     public List<GPSBean> getGpsBeanList() {
-        return gpsBeanList;
+        return gpsBeanList == null ? new ArrayList<GPSBean>() : gpsBeanList;
     }
 
     public void setGpsBeanList(List<GPSBean> gpsBeanList) {
@@ -41,7 +42,7 @@ public class SatelitteBean {
     }
 
     public List<GLOBean> getGloBeanList() {
-        return gloBeanList;
+        return gloBeanList == null ? new ArrayList<GLOBean>() : gloBeanList;
     }
 
     public void setGloBeanList(List<GLOBean> gloBeanList) {
@@ -49,7 +50,7 @@ public class SatelitteBean {
     }
 
     public List<BDSBean> getBdsBeanList() {
-        return bdsBeanList;
+        return bdsBeanList == null ? new ArrayList<BDSBean>() : bdsBeanList;
     }
 
     public void setBdsBeanList(List<BDSBean> bdsBeanList) {
