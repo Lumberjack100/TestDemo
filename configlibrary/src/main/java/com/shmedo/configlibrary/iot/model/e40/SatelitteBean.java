@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.model.e40;
 
-import android.text.TextUtils;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -13,9 +11,6 @@ import java.util.List;
  * 描述：     TODO
  */
 public class SatelitteBean {
-    @SerializedName("UTCTime")
-    private String utctime;
-
     @SerializedName("GPS")
     private List<GPSBean> gpsBeanList;
 
@@ -24,14 +19,6 @@ public class SatelitteBean {
 
     @SerializedName("BDS")
     private List<BDSBean> bdsBeanList;
-
-    public String getUtctime() {
-        return TextUtils.isEmpty(utctime) ? "" : utctime;
-    }
-
-    public void setUtctime(String utctime) {
-        this.utctime = utctime;
-    }
 
     public List<GPSBean> getGpsBeanList() {
         return gpsBeanList == null ? new ArrayList<GPSBean>() : gpsBeanList;

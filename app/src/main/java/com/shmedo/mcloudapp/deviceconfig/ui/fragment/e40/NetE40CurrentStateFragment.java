@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.e40.SatelitteTypeEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.e40.BDSBean;
@@ -197,6 +199,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     private CommonAdapter sensorAdapter;
 
     private CurrentExtendStateInfo extendStateInfo;
+    private SatelitteBean satelitteBean;
 
     public static NetE40CurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetE40CurrentStateFragment fragment = new NetE40CurrentStateFragment();
@@ -267,8 +270,9 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     /**
      * 获取设备的卫星状态
      */
-    private void querySatelitteInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_SATELITTE);
+    private void querySatelitteInfo(String type) {
+        SatelitteTypeEntity entity = new SatelitteTypeEntity(type);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_SATELITTE, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -324,8 +328,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-        super.onQueryCmdResponseResultSuccess(queryCmdResult);
-//        swipeRefresh.setRefreshing(false);
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
         setResultData(queryCmdResult);
     }
 
@@ -344,21 +347,41 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 String content = commandResult.getResult();
                 initStatusInfo(content);
-                querySatelitteInfo();
+                querySatelitteInfo("BDS");
             }
             break;
 
             case E40_MD_GET_SATELITTE: {
-                swipeRefresh.setRefreshing(false);
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    swipeRefresh.setRefreshing(false);
                     String errMsg = String.format("%s %s", "查询卫星数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
                 String content = commandResult.getResult();
+                if(TextUtils.isEmpty(content)){
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
                 initSatelittleInfo(content);
+                if (content.contains("BDS")) {
+                    if (satelitteBean != null && satelitteBean.getBdsBeanList()!=null) {
+                        initBDSInfo(satelitteBean.getBdsBeanList());
+                    }
+                    querySatelitteInfo("GPS");
+                } else if (content.contains("GPS")) {
+                    if (satelitteBean != null && satelitteBean.getGpsBeanList()!=null) {
+                        initGPSInfo(satelitteBean.getGpsBeanList());
+                    }
+                    querySatelitteInfo("GLO");
+                } else if (content.contains("GLO")) {
+                    swipeRefresh.setRefreshing(false);
+                    if (satelitteBean != null && satelitteBean.getGloBeanList()!=null) {
+                        initGLOInfo(satelitteBean.getGloBeanList());
+                    }
+                }
             }
             break;
 
@@ -483,67 +506,69 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initSatelittleInfo(String content) {
         try {
-//            content = "{\"UTCTime\":\"2021-05-24 05:50:45.0\",\"GPS\":{\"G01\":{\"AZ\":40.595654,\"EL\":32.298524,\"L1\":42,\"L2\":31,\"L3\":0},\"G03\":{\"AZ\":85.327445,\"EL\":51.693389,\"L1\":48,\"L2\":42,\"L3\":0},\"G06\":{\"AZ\":246.994703,\"EL\":27.985387,\"L1\":43,\"L2\":43,\"L3\":0},\"G14\":{\"AZ\":242.780189,\"EL\":80.830086,\"L1\":48,\"L2\":41,\"L3\":0},\"G17\":{\"AZ\":333.197570,\"EL\":51.668473,\"L1\":44,\"L2\":45,\"L3\":0},\"G19\":{\"AZ\":306.554044,\"EL\":32.334989,\"L1\":41,\"L2\":28,\"L3\":0},\"G21\":{\"AZ\":0,\"EL\":0,\"L1\":41,\"L2\":24,\"L3\":0},\"G22\":{\"AZ\":53.791276,\"EL\":32.508679,\"L1\":45,\"L2\":32,\"L3\":0},\"G28\":{\"AZ\":308.186403,\"EL\":66.967555,\"L1\":45,\"L2\":36,\"L3\":0},\"G30\":{\"AZ\":0,\"EL\":0,\"L1\":38,\"L2\":36,\"L3\":0}},\"GLO\":{\"R04\":{\"SAT\":\"R04\",\"AZ\":80.115497,\"EL\":26.621261,\"L1\":47,\"L2\":45,\"L3\":0},\"R05\":{\"SAT\":\"R05\",\"AZ\":134.297591,\"EL\":18.717331,\"L1\":48,\"L2\":43,\"L3\":0},\"R09\":{\"SAT\":\"R09\",\"AZ\":212.377262,\"EL\":46.523622,\"L1\":51,\"L2\":48,\"L3\":0},\"R19\":{\"SAT\":\"R19\",\"AZ\":0,\"EL\":0,\"L1\":35,\"L2\":39,\"L3\":0},\"R20\":{\"SAT\":\"R20\",\"AZ\":0,\"EL\":0,\"L1\":38,\"L2\":44,\"L3\":0}},\"BDS\":{\"C01\":{\"SAT\":\"C01\",\"AZ\":0,\"EL\":0,\"L1\":47,\"L2\":49,\"L3\":0},\"C02\":{\"SAT\":\"C02\",\"AZ\":0,\"EL\":0,\"L1\":40,\"L2\":45,\"L3\":0},\"C03\":{\"SAT\":\"C03\",\"AZ\":0,\"EL\":0,\"L1\":46,\"L2\":47,\"L3\":0},\"C04\":{\"SAT\":\"C04\",\"AZ\":0,\"EL\":0,\"L1\":44,\"L2\":48,\"L3\":0},\"C05\":{\"SAT\":\"C05\",\"AZ\":0,\"EL\":0,\"L1\":0,\"L2\":38,\"L3\":0},\"C07\":{\"SAT\":\"C07\",\"AZ\":0,\"EL\":0,\"L1\":48,\"L2\":50,\"L3\":0},\"C08\":{\"SAT\":\"C08\",\"AZ\":0,\"EL\":0,\"L1\":45,\"L2\":47,\"L3\":0},\"C10\":{\"SAT\":\"C10\",\"AZ\":0,\"EL\":0,\"L1\":45,\"L2\":46,\"L3\":0},\"C13\":{\"SAT\":\"C13\",\"AZ\":236.050225,\"EL\":49.063911,\"L1\":46,\"L2\":45,\"L3\":0}}}";
             content = content.replace("\\", "");
+            content = content.replace("\"BDS\":{", "\"BDS\":[");
             content = content.replace("\"GPS\":{", "\"GPS\":[");
-            content = content.replace("},\"GLO\":{", "],\"GLO\":[");
-            content = content.replace("},\"BDS\":{", "],\"BDS\":[");
+            content = content.replace("\"GLO\":{", "\"GLO\":[");
             content = content.replace("}}}", "}]}");
             content = content.replaceAll("\"[GRC]\\d{2}\":", "");
+            satelitteBean = GsonFactory.getGson().fromJson(content, SatelitteBean.class);
 
-            SatelitteBean satelitteBean = GsonFactory.getGson().fromJson(content, SatelitteBean.class);
-            if (satelitteBean != null) {
-                List<BDSBean> bdsBeanList = satelitteBean.getBdsBeanList();
-                List<GPSBean> gpsBeanList = satelitteBean.getGpsBeanList();
-                List<GLOBean> gloBeanList = satelitteBean.getGloBeanList();
-
-                mTvBDSatelliteTotalNum.setText(String.format("总数：%d", bdsBeanList.size()));
-                mTvGpsSatelliteTotalNum.setText(String.format("总数：%d", gpsBeanList.size()));
-                mTvGloSatelliteTotalNum.setText(String.format("总数：%d", gloBeanList.size()));
-
-                int bdRedNum = 0, bdBlueNum = 0, bdGreenNum = 0, gpsRedNum = 0, gpsBlueNum = 0, gpsGreenNum = 0, gloRedNum = 0, gloBlueNum = 0, gloGreenNum = 0;
-                for (BDSBean bdsBean : bdsBeanList) {
-                    if (bdsBean.getL1() < 25) {
-                        bdRedNum += 1;
-                    } else if (bdsBean.getL1() < 35) {
-                        bdBlueNum += 1;
-                    } else {
-                        bdGreenNum += 1;
-                    }
-                }
-                mTvBDSatelliteRedNum.setText(String.valueOf(bdRedNum));
-                mTvBDSatelliteBlueNum.setText(String.valueOf(bdBlueNum));
-                mTvBDSatelliteGreenNum.setText(String.valueOf(bdGreenNum));
-
-                for (GPSBean gpsBean : gpsBeanList) {
-                    if (gpsBean.getL1() < 25) {
-                        gpsRedNum += 1;
-                    } else if (gpsBean.getL1() < 35) {
-                        gpsBlueNum += 1;
-                    } else {
-                        gpsGreenNum += 1;
-                    }
-                }
-                mTvGpsSatelliteRedNum.setText(String.valueOf(gpsRedNum));
-                mTvGpsSatelliteBlueNum.setText(String.valueOf(gpsBlueNum));
-                mTvGpsSatelliteGreenNum.setText(String.valueOf(gpsGreenNum));
-
-                for (GLOBean gloBean : gloBeanList) {
-                    if (gloBean.getL1() < 25) {
-                        gloRedNum += 1;
-                    } else if (gloBean.getL1() < 35) {
-                        gloBlueNum += 1;
-                    } else {
-                        gloGreenNum += 1;
-                    }
-                }
-                mTvGloSatelliteRedNum.setText(String.valueOf(gloRedNum));
-                mTvGloSatelliteBlueNum.setText(String.valueOf(gloBlueNum));
-                mTvGloSatelliteGreenNum.setText(String.valueOf(gloGreenNum));
-            }
         } catch (Exception ex) {
             ex.printStackTrace();
+            swipeRefresh.setRefreshing(false);
         }
+    }
+
+    private void initBDSInfo(List<BDSBean> bdsBeanList) {
+        mTvBDSatelliteTotalNum.setText(String.format("总数：%d", bdsBeanList.size()));
+        int bdRedNum = 0, bdBlueNum = 0, bdGreenNum = 0;
+        for (BDSBean bdsBean : bdsBeanList) {
+            if (bdsBean.getL1() < 25) {
+                bdRedNum += 1;
+            } else if (bdsBean.getL1() < 35) {
+                bdBlueNum += 1;
+            } else {
+                bdGreenNum += 1;
+            }
+        }
+        mTvBDSatelliteRedNum.setText(String.valueOf(bdRedNum));
+        mTvBDSatelliteBlueNum.setText(String.valueOf(bdBlueNum));
+        mTvBDSatelliteGreenNum.setText(String.valueOf(bdGreenNum));
+    }
+
+    private void initGPSInfo(List<GPSBean> gpsBeanList) {
+        mTvGpsSatelliteTotalNum.setText(String.format("总数：%d", gpsBeanList.size()));
+        int  gpsRedNum = 0, gpsBlueNum = 0, gpsGreenNum = 0;
+        for (GPSBean gpsBean : gpsBeanList) {
+            if (gpsBean.getL1() < 25) {
+                gpsRedNum += 1;
+            } else if (gpsBean.getL1() < 35) {
+                gpsBlueNum += 1;
+            } else {
+                gpsGreenNum += 1;
+            }
+        }
+        mTvGpsSatelliteRedNum.setText(String.valueOf(gpsRedNum));
+        mTvGpsSatelliteBlueNum.setText(String.valueOf(gpsBlueNum));
+        mTvGpsSatelliteGreenNum.setText(String.valueOf(gpsGreenNum));
+    }
+
+    private void initGLOInfo(List<GLOBean> gloBeanList) {
+        mTvGloSatelliteTotalNum.setText(String.format("总数：%d", gloBeanList.size()));
+        int  gloRedNum = 0, gloBlueNum = 0, gloGreenNum = 0;
+        for (GLOBean gloBean : gloBeanList) {
+            if (gloBean.getL1() < 25) {
+                gloRedNum += 1;
+            } else if (gloBean.getL1() < 35) {
+                gloBlueNum += 1;
+            } else {
+                gloGreenNum += 1;
+            }
+        }
+        mTvGloSatelliteRedNum.setText(String.valueOf(gloRedNum));
+        mTvGloSatelliteBlueNum.setText(String.valueOf(gloBlueNum));
+        mTvGloSatelliteGreenNum.setText(String.valueOf(gloGreenNum));
     }
 
     /**
