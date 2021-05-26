@@ -173,7 +173,7 @@
                         app:ringWidth="10dp"
                         app:textColor="@color/title_text_color"
                         app:textSize="14sp"
-                        tools:currentProgress="75" />
+                        tools:currentProgress="0" />
 
                     <TextView
                         android:id="@+id/tv_ram"
@@ -205,7 +205,7 @@
                         app:ringWidth="10dp"
                         app:textColor="@color/title_text_color"
                         app:textSize="14sp"
-                        tools:currentProgress="75" />
+                        tools:currentProgress="0" />
 
                     <TextView
                         android:id="@+id/tv_flash"
@@ -234,7 +234,7 @@
                         app:ringWidth="10dp"
                         app:textColor="@color/title_text_color"
                         app:textSize="14sp"
-                        tools:currentProgress="75" />
+                        tools:currentProgress="0" />
 
                     <TextView
                         android:id="@+id/tv_tfcard"
@@ -630,7 +630,7 @@
                     android:layout_marginStart="12dp"
                     android:drawableStart="@drawable/dot_blue"
                     android:drawablePadding="5dp"
-                    android:text="25&#060;=信噪比&#060;25"
+                    android:text="25&#060;=信噪比&#060;35"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="13sp" />
 
@@ -660,6 +660,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -672,7 +673,7 @@
                             android:layout_height="wrap_content"
                             android:text="北斗搜星数"
                             android:textColor="@color/title_text_color"
-                            android:textSize="17sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_bd_satellite_total_num"
@@ -708,7 +709,7 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="13dp"
                         android:background="@drawable/shape_satelitte_blue">
 
                         <TextView
@@ -725,7 +726,7 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="13dp"
                         android:background="@drawable/shape_satelitte_green">
 
                         <TextView
@@ -750,6 +751,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -762,7 +764,7 @@
                             android:layout_height="wrap_content"
                             android:text="GPS搜星数"
                             android:textColor="@color/title_text_color"
-                            android:textSize="17sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_gps_satellite_total_num"
@@ -798,7 +800,7 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="13dp"
                         android:background="@drawable/shape_satelitte_blue">
 
                         <TextView
@@ -815,7 +817,7 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="13dp"
                         android:background="@drawable/shape_satelitte_green">
 
                         <TextView
@@ -840,6 +842,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -852,7 +855,7 @@
                             android:layout_height="wrap_content"
                             android:text="GLONASS搜星数"
                             android:textColor="@color/title_text_color"
-                            android:textSize="17sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_glo_satellite_total_num"
@@ -888,7 +891,7 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="13dp"
                         android:background="@drawable/shape_satelitte_blue">
 
                         <TextView
@@ -905,7 +908,7 @@
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="13dp"
                         android:background="@drawable/shape_satelitte_green">
 
                         <TextView
