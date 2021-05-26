@@ -42,4 +42,15 @@ public class DeviceDao {
 
         DaoManager.getInstance().getDaoSession().getDeviceApiKeyDao().insertOrReplaceInTx(deviceApiKey);
     }
+
+    public void deleteCachedDeviceApiKeyBySn(String sn) {
+        DeviceApiKey deviceApiKey = DaoManager.getInstance().getDaoSession().getDeviceApiKeyDao()
+                .queryBuilder()
+                .where(DeviceApiKeyDao.Properties.DeviceToken.eq(sn))
+                .unique();
+
+        if (deviceApiKey != null) {
+            DaoManager.getInstance().getDaoSession().getDeviceApiKeyDao().delete(deviceApiKey);
+        }
+    }
 }

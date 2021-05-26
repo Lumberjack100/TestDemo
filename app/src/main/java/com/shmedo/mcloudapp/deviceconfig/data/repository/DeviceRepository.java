@@ -56,12 +56,13 @@ public class DeviceRepository {
      * @param sn
      */
     public void queryDeviceApiKeyBySn(String sn) {
-        String apiKey = DeviceDao.getInstance().getCachedDeviceApiKeyBySn(sn);
-        if (apiKey == null) {
-            queryCompanyDevice(sn);
-        } else {
-            deviceApiKey.postValue(apiKey);
-        }
+        queryCompanyDevice(sn);
+//        String apiKey = DeviceDao.getInstance().getCachedDeviceApiKeyBySn(sn);
+//        if (apiKey == null) {
+//            queryCompanyDevice(sn);
+//        } else {
+//            deviceApiKey.postValue(apiKey);
+//        }
     }
 
 
@@ -128,7 +129,6 @@ public class DeviceRepository {
                                     deviceApiKey.postValue(null);
                                     return;
                                 }
-
                                 deviceApiKey.postValue(deviceDetailInfo.getBasicInfo().getApiKey());
 
                                 DeviceApiKey apiKey = new DeviceApiKey();
