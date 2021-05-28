@@ -296,13 +296,13 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         if (type == DECENTRALIZED_OPERATOR) {
-                            disableDecentralized();
+                            processSave();
                             decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
                             if (!mSbPullUpEnable.isChecked()) {
                                 mBtnSave.setVisibility(View.GONE);
                             }
                         } else if (type == PULLUP_OPERATOR) {
-                            disablePullUp();
+                            processSave();
                             pullUpChildMaskLayer.setVisibility(View.VISIBLE);
                             if (!mSbDecentralizedEnable.isChecked()) {
                                 mBtnSave.setVisibility(View.GONE);
@@ -519,25 +519,22 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     private void processSave() {
         try {
             AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
-            if (mSbDecentralizedEnable.isChecked()) {
-                entity.setLowtbtss("1");
-                entity.setNumpput(decentralizedPulsesPerUnitTime);
-                entity.setPdajtime(decentralizedPulseDetectionTime);
-                entity.setDetintiona(decentralizedPulseDetectionStart);
-                entity.setDetintionb(decentralizedPulseDetectionEnd);
-                entity.setLowtorblothr(decentralizedTorqueStallThreshold);
-                entity.setLowtordetime(decentralizedTorqueDetectionTime);
-                entity.setLowsusrana(decentralizedTorqueDetectionStart);
-                entity.setLowsusranb(decentralizedTorqueDetectionEnd);
-            }
+            entity.setLowtbtss(mSbDecentralizedEnable.isChecked() ? "1" : "0");
+            entity.setNumpput(decentralizedPulsesPerUnitTime);
+            entity.setPdajtime(decentralizedPulseDetectionTime);
+            entity.setDetintiona(decentralizedPulseDetectionStart);
+            entity.setDetintionb(decentralizedPulseDetectionEnd);
+            entity.setLowtorblothr(decentralizedTorqueStallThreshold);
+            entity.setLowtordetime(decentralizedTorqueDetectionTime);
+            entity.setLowsusrana(decentralizedTorqueDetectionStart);
+            entity.setLowsusranb(decentralizedTorqueDetectionEnd);
 
-            if (mSbPullUpEnable.isChecked()) {
-                entity.setUptbtss("1");
-                entity.setUptorblothr(pullUpTorqueStallThreshold);
-                entity.setUptordetime(pullUpTorqueDetectionTime);
-                entity.setUpsusrana(pullUpTorqueDetectionStart);
-                entity.setUpsusranb(pullUpTorqueDetectionEnd);
-            }
+            entity.setUptbtss(mSbPullUpEnable.isChecked() ? "1" : "0");
+            entity.setUptorblothr(pullUpTorqueStallThreshold);
+            entity.setUptordetime(pullUpTorqueDetectionTime);
+            entity.setUpsusrana(pullUpTorqueDetectionStart);
+            entity.setUpsusranb(pullUpTorqueDetectionEnd);
+
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
