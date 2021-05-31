@@ -18,8 +18,11 @@ import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionDistanceInfoP
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeWorkModeParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasBaseInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.das.DasBdTerminalInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasCollectorInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.das.DasDataReportInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasDigitalPiezometerInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.das.DasExternalSensorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasIOSensorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasNetStatusInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasSensorStatusInfoParser;
@@ -184,7 +187,10 @@ public class IOTParseManager {
                 DasSensorStatusInfoParser.class,
                 DasSubSensorStatusInfoParser.class,
                 DasIOSensorInfoParser.class,
-                DasDigitalPiezometerInfoParser.class
+                DasDigitalPiezometerInfoParser.class,
+                DasDataReportInfoParser.class,
+                DasBdTerminalInfoParser.class,
+                DasExternalSensorInfoParser.class
         });
 
         registerWithClass(clazzes);

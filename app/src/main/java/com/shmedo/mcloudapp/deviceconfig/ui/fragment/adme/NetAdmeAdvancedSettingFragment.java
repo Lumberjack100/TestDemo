@@ -22,28 +22,42 @@ import com.shmedo.configlibrary.iot.model.adme.AdmeWorkModeInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareUpgrade;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
-import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
-import com.shmedo.mcloudapp.util.DaoManager;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.RequestBody;
 import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/12/29<br/>
- * 描述：     ADME 设置页面
+ * 创建时间:  2021/4/23 <br/>
+ * 描述：     TODO
  */
-public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFragment {
+public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragment {
     private static final int REBOOT = 0x1000;
     private static final int RESET = 0x1001;
 
@@ -54,10 +68,12 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     private String workMode;// 工作模式(0:常规测量模式，1:特定点位模式，2:静态测量模式，3:设备停用模式)
     private AdmeWorkModeInfo workModeInfo;
 
-    private int deviceTypeID;
-
-    public static BleAdmeAdvancedSettingFragment newInstance() {
-        return new BleAdmeAdvancedSettingFragment();
+    public static NetAdmeAdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetAdmeAdvancedSettingFragment fragment = new NetAdmeAdvancedSettingFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -69,19 +85,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getWorkMode();
-        searchDeviceTypeInfo("ADME");
-    }
-
-    private void searchDeviceTypeInfo(String typeName) {
-        DeviceTypeInfo deviceTypeInfo = DaoManager.getInstance().getDaoSession().getDeviceTypeInfoDao().queryBuilder()
-                .where(DeviceTypeInfoDao.Properties.DeviceTypeName.like("%" + typeName + "%"))
-                .unique();
-
-        if (deviceTypeInfo != null) {
-            deviceTypeID = deviceTypeInfo.getId();
-        } else {
-            deviceTypeID = -1;
-        }
     }
 
     /**
@@ -89,7 +92,8 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
      */
     private void getWorkMode() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_WORK_MODE);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -99,7 +103,8 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         AdmeWorkModeEntity entity = new AdmeWorkModeEntity();
         entity.setWorkmode(workMode);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_WORK_MODE, entity);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -107,7 +112,8 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
      */
     private void rebootDevice() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -115,7 +121,8 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
      */
     private void resetDevice() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
-        sendCommand(command);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.dataCenterConfigLayout, R.id.rebootLayout, R.id.resetLayout, R.id.firmwareUpgradeLayout, R.id.workModeLayout})
@@ -123,14 +130,9 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         if (isDoubleClick(v)) {
             return;
         }
-        if (!isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-            return;
-        }
-
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
 
         } else if (id == R.id.rebootLayout) {//重启
             showWarnDialog("确定重启设备吗？", REBOOT);
@@ -139,7 +141,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
         } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
-            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceTypeID);
+            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);
             newFragment.show(getChildFragmentManager(), "dialog");
 
@@ -151,7 +153,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
         public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-
+            doFirmwareUpgrade(firmWareInfo.getId());
             return true;
         }
 
@@ -214,16 +216,132 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         mMaterialDialog.show();
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            doDispatchFailed(cmdStr);
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        doDispatchSuccess(cmdStr);
     }
 
-    private void setResultData(final String cmdStr) {
+
+    /**
+     * 指令下发失败弹框
+     */
+    private void doDispatchFailed(String cmdStr) {
+        String title = "";
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case MD_UPGRADE:
+                title = "固件升级";
+                break;
+
+            case REBOOT:
+                title = "重新启动";
+                break;
+
+            case RESET:
+                title = "恢复出厂设置";
+                break;
+
+            case E40_MD_GET_RTK:
+                title = "工作模式";
+                break;
+
+            default:
+                break;
+        }
+        BaseDispatchCmdDialog newFragment = new DispatchCmdFailedDialog(title);
+        newFragment.show(getChildFragmentManager(), "dialog");
+    }
+
+    /**
+     * 指令下发成功弹框
+     */
+    private void doDispatchSuccess(String cmdStr) {
+        BaseDispatchCmdDialog newFragment = null;
+        //下发指令成功，弹出对话框开始轮询查询指令响应
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case MD_UPGRADE:
+                dismissProgressDialog();
+                newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
+                break;
+
+            case REBOOT:
+                dismissProgressDialog();
+                newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
+                break;
+
+            case RESET:
+                dismissProgressDialog();
+                newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
+                break;
+
+            case ADME_MD_GET_WORK_MODE:
+            case ADME_MD_SET_WORK_MODE:
+                if (msgIDList != null && msgIDList.size() > 0) {
+                    startQueryCmdResponseRunnable(0);
+                }
+                break;
+
+            default:
+                break;
+        }
+        if (newFragment != null)
+            newFragment.show(getChildFragmentManager(), "dialog");
+    }
+
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("查询设备响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("查询设备响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_WORK_MODE: {//获取设备的工作模式
-                stopProgressRunnable();
+                dismissProgressDialog();
                 IOTCommandResult<AdmeWorkModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备的工作模式出错!", commandResult.getMessage());
@@ -239,6 +357,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             case ADME_MD_SET_WORK_MODE: {//设置ADME的工作模式
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "设置A工作模式出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -248,46 +367,8 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             }
             break;
 
-            case REBOOT: {//重启
-                stopProgressRunnable();
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                ToastUtils.show("发送指令成功,设备稍后将重启,请等待后重新连接");
-                MCloudApp.getMainHandler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        disconnectDevice();
-                    }
-                }, 3000);
-            }
-            break;
-
-            case RESET: {//恢复出厂设置
-                stopProgressRunnable();
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送恢复出厂设置指令失败!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                ToastUtils.show("发送指令成功,设备稍后将重启,请等待后重新连接");
-                MCloudApp.getMainHandler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        disconnectDevice();
-                    }
-                }, 3000);
-            }
-            break;
-
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgressRunnable();
+                dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
@@ -300,7 +381,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -328,5 +408,41 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             mTvWorkMode.setText("设备停用模式");
             workModePos = 3;
         }
+    }
+
+    /**
+     * 固件升级
+     */
+    private void doFirmwareUpgrade(int firmwareID) {
+        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), projectDeviceInfo.getId(), firmwareID);
+        String json = GsonFactory.getGson().toJson(parameter);
+        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        MDRetrofit.getInstance()
+                .createService()
+                .FirmwareUpgrade(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<String>() {
+                    @Override
+                    protected void onResponse(String msgId, ErrCode errCode) {
+                        dismissProgressDialog();
+                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            if (errCode.getCode() == 0) {
+                                msgIDList.clear();
+                                msgIDList.add(msgId);
+                                doDispatchSuccess("$cmd=md_upgrade");
+                            } else {
+                                doDispatchFailed("$cmd=md_upgrade");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        dismissProgressDialog();
+                        doDispatchFailed("$cmd=md_upgrade");
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
     }
 }

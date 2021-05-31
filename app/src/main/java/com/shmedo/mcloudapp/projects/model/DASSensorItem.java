@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.projects.model;
 
+import android.text.TextUtils;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/10/12 <br/>
@@ -21,7 +23,7 @@ public class DASSensorItem {
     }
 
     public String getSensorAddress() {
-        return sensorAddress;
+        return TextUtils.isEmpty(sensorAddress) ? "" : sensorAddress;
     }
 
     public void setSensorAddress(String sensorAddress) {

@@ -9,11 +9,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
@@ -28,12 +25,15 @@ import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -41,13 +41,10 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  3/2/21 <br/>
- * 描述：    ADME 蓝牙模式下电机运动堵转缓停参数配置页面
+ * 创建时间:  2021/4/23 <br/>
+ * 描述：      ADME 4g模式下电机运动堵转缓停参数配置页面
  */
-public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicateFragment {
-    public static final int DECENTRALIZED_OPERATOR = 0x0001;
-    public static final int PULLUP_OPERATOR = 0x0002;
-
+public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.decentralizedEnableSBtn)
     SwitchButton mSbDecentralizedEnable;
 
@@ -93,11 +90,11 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.decentralizedChildMaskLayer)
-    ViewGroup decentralizedChildMaskLayer;
+    @BindView(R.id.decentralizedChildLayout)
+    ViewGroup decentralizedChildLayout;
 
-    @BindView(R.id.pullUpChildMaskLayer)
-    ViewGroup pullUpChildMaskLayer;
+    @BindView(R.id.pullUpChildLayout)
+    ViewGroup pullUpChildLayout;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
@@ -117,14 +114,16 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     private String pullUpTorqueDetectionStart;//上拉力矩检测起点
     private String pullUpTorqueDetectionEnd;//上拉力矩检测终点
 
-    private boolean paramEnableInitial;//开关初始状态，用于判断开关是否有打开后没有设置参数就返回
-    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭开关操作
     private DecimalFormat decimalFormat = new DecimalFormat();
 
-
-    public static BleAdmeLockedRotorDetectionFragment newInstance() {
-        return new BleAdmeLockedRotorDetectionFragment();
+    public static NetAdmeLockedRotorDetectionFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetAdmeLockedRotorDetectionFragment fragment = new NetAdmeLockedRotorDetectionFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        fragment.setArguments(args);
+        return fragment;
     }
+
 
     @Override
     protected int getLayoutId() {
@@ -170,32 +169,20 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
         mSbDecentralizedEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
                 if (!isChecked) {
-                    showCloseSwitchButtonDialog("确定使下放堵转检测不生效？", DECENTRALIZED_OPERATOR);
+                    decentralizedChildLayout.setVisibility(View.GONE);
                 } else {
-                    decentralizedChildMaskLayer.setVisibility(View.GONE);
-                    mBtnSave.setVisibility(View.VISIBLE);
+                    decentralizedChildLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
         mSbPullUpEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    mSbPullUpEnable.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
                 if (!isChecked) {
-                    showCloseSwitchButtonDialog("确定使上拉堵转检测不生效？", PULLUP_OPERATOR);
+                    pullUpChildLayout.setVisibility(View.GONE);
                 } else {
-                    pullUpChildMaskLayer.setVisibility(View.GONE);
-                    mBtnSave.setVisibility(View.VISIBLE);
+                    pullUpChildLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -279,81 +266,12 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     }
 
     /**
-     * 关闭SwitchButton
-     */
-    private void showCloseSwitchButtonDialog(String content, int type) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
-                .title("温馨提示：")
-                .content(content)
-                .contentColorRes(R.color.title_text_color)
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .positiveColorRes(R.color.blue_52B4F8)
-                .negativeColorRes(R.color.sub_title_text_color)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        if (type == DECENTRALIZED_OPERATOR) {
-                            processSave();
-                            decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
-                            if (!mSbPullUpEnable.isChecked()) {
-                                mBtnSave.setVisibility(View.GONE);
-                            }
-                        } else if (type == PULLUP_OPERATOR) {
-                            processSave();
-                            pullUpChildMaskLayer.setVisibility(View.VISIBLE);
-                            if (!mSbDecentralizedEnable.isChecked()) {
-                                mBtnSave.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        if (type == DECENTRALIZED_OPERATOR) {
-                            mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
-                        } else if (type == PULLUP_OPERATOR) {
-                            mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
-                        }
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-    /**
      * 获取参数
      */
     private void queryParamInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-        sendCommand(command);
-    }
-
-    /**
-     * 禁用下放堵转检测
-     */
-    private void disableDecentralized() {
-        AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
-        entity.setLowtbtss("0");
-        isSaveParamOperation = false;
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
-        sendCommand(command);
-    }
-
-    /**
-     * 禁用上拉堵转检测
-     */
-    private void disablePullUp() {
-        AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
-        entity.setUptbtss("0");
-        isSaveParamOperation = false;
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
-        sendCommand(command);
+        showProgressDialog("加载中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -364,10 +282,6 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
         int id = view.getId();
         if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-            if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                return;
-            }
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;
@@ -519,48 +433,106 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     private void processSave() {
         try {
             AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
-            entity.setLowtbtss(mSbDecentralizedEnable.isChecked() ? "1" : "0");
-            entity.setNumpput(decentralizedPulsesPerUnitTime);
-            entity.setPdajtime(decentralizedPulseDetectionTime);
-            entity.setDetintiona(decentralizedPulseDetectionStart);
-            entity.setDetintionb(decentralizedPulseDetectionEnd);
-            entity.setLowtorblothr(decentralizedTorqueStallThreshold);
-            entity.setLowtordetime(decentralizedTorqueDetectionTime);
-            entity.setLowsusrana(decentralizedTorqueDetectionStart);
-            entity.setLowsusranb(decentralizedTorqueDetectionEnd);
+            if (!mSbDecentralizedEnable.isChecked()) {
+                entity.setLowtbtss("0");
+            } else {
+                entity.setLowtbtss("1");
+                entity.setNumpput(decentralizedPulsesPerUnitTime);
+                entity.setPdajtime(decentralizedPulseDetectionTime);
+                entity.setDetintiona(decentralizedPulseDetectionStart);
+                entity.setDetintionb(decentralizedPulseDetectionEnd);
+                entity.setLowtorblothr(decentralizedTorqueStallThreshold);
+                entity.setLowtordetime(decentralizedTorqueDetectionTime);
+                entity.setLowsusrana(decentralizedTorqueDetectionStart);
+                entity.setLowsusranb(decentralizedTorqueDetectionEnd);
+            }
 
-            entity.setUptbtss(mSbPullUpEnable.isChecked() ? "1" : "0");
-            entity.setUptorblothr(pullUpTorqueStallThreshold);
-            entity.setUptordetime(pullUpTorqueDetectionTime);
-            entity.setUpsusrana(pullUpTorqueDetectionStart);
-            entity.setUpsusranb(pullUpTorqueDetectionEnd);
+            if (!mSbPullUpEnable.isChecked()) {
+                entity.setUptbtss("0");
+            } else {
+                entity.setUptbtss("1");
+                entity.setUptorblothr(pullUpTorqueStallThreshold);
+                entity.setUptordetime(pullUpTorqueDetectionTime);
+                entity.setUpsusrana(pullUpTorqueDetectionStart);
+                entity.setUpsusranb(pullUpTorqueDetectionEnd);
+            }
 
-            errMsg = "发送指令超时,请稍后尝试";
-            startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
-            sendCommand(command);
+            showProgressDialog("处理中...");
+            doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        mBtnSave.setEnabled(true);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            showDispatchFailedDialog(cmdStr);
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(0);
+        }
     }
 
-    @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog(String cmdStr) {
+        ToastUtils.show("下发指令失败");
     }
 
-    private void setResultData(final String cmdStr) {
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("指令响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("指令响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {
-                stopProgressRunnable();
+                dismissProgressDialog();
                 IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
@@ -576,7 +548,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgressRunnable();
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -588,7 +560,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgressRunnable();
+                dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送保存指令出错!", cmdResult.getReason());
@@ -597,13 +569,10 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                     return;
                 }
             }
-            if (isSaveParamOperation) {
-                ToastUtils.show("保存成功");
-            }
+            ToastUtils.show("保存成功");
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -631,21 +600,18 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
 
         if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
             mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(false);
-            decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
+            decentralizedChildLayout.setVisibility(View.GONE);
         } else {
             mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
-            decentralizedChildMaskLayer.setVisibility(View.GONE);
+            decentralizedChildLayout.setVisibility(View.VISIBLE);
         }
 
         if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
-            pullUpChildMaskLayer.setVisibility(View.VISIBLE);
-            if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
-                mBtnSave.setVisibility(View.GONE);
-            }
+            pullUpChildLayout.setVisibility(View.GONE);
         } else {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
-            pullUpChildMaskLayer.setVisibility(View.GONE);
+            pullUpChildLayout.setVisibility(View.VISIBLE);
         }
 
         try {

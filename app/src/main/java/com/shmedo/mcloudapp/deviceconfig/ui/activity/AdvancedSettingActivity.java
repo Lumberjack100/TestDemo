@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeAdvancedSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeAdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasAdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasAdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40AdvancedSettingFragment;
@@ -69,6 +70,7 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
                     break;
 
                 case AppContants.DeviceType.ADME:
+                    fragment = NetAdmeAdvancedSettingFragment.newInstance(projectDeviceInfo);
                     break;
 
                 case AppContants.DeviceType.M20:

@@ -5,10 +5,14 @@ import android.os.Handler;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
@@ -16,6 +20,8 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.AdmeViewModel;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -24,6 +30,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -41,6 +48,10 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     public static final int DELAY_MILLIS = 60000;//超时时间
 
     public ProjectDeviceInfo projectDeviceInfo;
+
+    protected ConfigPageViewModel configPageViewModel;
+
+    protected AdmeViewModel admeViewModel;
 
     protected List<String> msgIDList = new ArrayList<>();
 
@@ -93,10 +104,34 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
+        configPageViewModel.configPageEditableChanged.observeInFragment(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isEditable) {
+                onEditableChanged(isEditable);
+            }
+        });
+        admeViewModel = getApplicationScopeViewModel(AdmeViewModel.class);
+    }
+
+    protected void onEditableChanged(boolean isEditable) {
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         dismissProgressDialog();
         stopQueryCmdResponseRunnable();
+    }
+
+    /**
+     * 保存配置信息
+     */
+    protected void saveConfigInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**

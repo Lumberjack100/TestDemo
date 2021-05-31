@@ -57,6 +57,8 @@ public interface AppContants {
 
         String SENSOR_TYPE = "sensor_type";
 
+        String SENSOR_ADDRESS_LIST = "sensor_address_list";
+
         String SENSOR_ADDRESS = "sensor_address";
 
         String SENSOR_PARAM = "sensor_param";

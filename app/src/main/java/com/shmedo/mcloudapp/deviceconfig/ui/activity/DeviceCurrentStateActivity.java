@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeCurrentStateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40CurrentStateFragment;
@@ -67,6 +68,7 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                     break;
 
                 case AppContants.DeviceType.ADME:
+                    fragment = NetAdmeCurrentStateFragment.newInstance(projectDeviceInfo);
                     break;
 
                 case AppContants.DeviceType.M20:

@@ -131,7 +131,7 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
                 } else {
                     mTvOnlineState.setTextColor(GlobalUtil.getColor(R.color.red));
                 }
-                mTv4gSignal.setText(String.valueOf(devcieCurrentState.get_$4g_signal()));
+                mTv4gSignal.setText(devcieCurrentState.get_$4g_signal() + "dBm");
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -23,12 +23,15 @@ import com.shmedo.configlibrary.iot.model.adme.AdmeExecutiveAgencyInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,10 +39,10 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2020/12/28<br/>
+ * 创建时间:  2021/4/23 <br/>
  * 描述：     ADME 执行机构配置页面
  */
-public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFragment {
+public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragment {
 
     @BindView(R.id.tv_data_settlement_method)
     TextView mTvDataSettlementMethod;
@@ -110,9 +113,14 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
     private DecimalFormat decimalFormat = new DecimalFormat();
 
 
-    public static BleAdmeExecutiveAgencyFragment newInstance() {
-        return new BleAdmeExecutiveAgencyFragment();
+    public static NetAdmeExecutiveAgencyFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetAdmeExecutiveAgencyFragment fragment = new NetAdmeExecutiveAgencyFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        fragment.setArguments(args);
+        return fragment;
     }
+
 
     @Override
     protected int getLayoutId() {
@@ -156,10 +164,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
      * 获取执行机构参数
      */
     private void queryParamInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
-        sendCommand(command);
+        showProgressDialog("加载中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_data_settlement_method, R.id.ll_data_response, R.id.btn_confirm})
@@ -176,15 +183,10 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-            if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                return;
-            }
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;
             }
-
             processSave();
         }
     }
@@ -461,32 +463,82 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             decimalFormat.applyPattern("#.##");
             entity.setMeabaseth(decimalFormat.format(Double.parseDouble(measuringReferenceDepth)));
 
-            errMsg = "发送指令超时,请稍后尝试";
-            startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY, entity);
-            sendCommand(command);
+            showProgressDialog("处理中...");
+            doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * 调用指令下发/透传接口结果返回
+     *
+     * @param dispatchCmdItemList
+     */
     @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        mBtnSave.setEnabled(true);
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+        if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            dismissProgressDialog();
+            showDispatchFailedDialog(cmdStr);
+            return;
+        }
+        msgIDList.clear();
+        for (DispatchCmdItem cmdItem : dispatchCmdItemList) {
+            msgIDList.add(cmdItem.getMsgID());
+        }
+        if (msgIDList != null && msgIDList.size() > 0) {
+            startQueryCmdResponseRunnable(0);
+        }
     }
 
-    @Override
-    protected void parseResponseMessage(@NotNull String cmdStr) {
-        setResultData(cmdStr);
+    /**
+     * 指令下发失败弹框
+     */
+    private void showDispatchFailedDialog(String cmdStr) {
+        ToastUtils.show("下发指令失败");
     }
 
-    private void setResultData(final String cmdStr) {
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+    /**
+     * 查询指令响应结果出错
+     *
+     * @param errMsg
+     */
+    @Override
+    protected void onQueryCmdResponseResultError(String errMsg) {
+        super.onQueryCmdResponseResultError(errMsg);
+        ToastUtils.show("指令响应错误");
+    }
+
+    /**
+     * 查询指令响应结果超时
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
+        super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        ToastUtils.show("指令响应超时");
+    }
+
+    /**
+     * 查询指令响应结果成功
+     *
+     * @param queryCmdResult
+     */
+    @Override
+    protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        setResultData(queryCmdResult);
+    }
+
+    private void setResultData(QueryCmdResult queryCmdResult) {
+        String cmdStr = queryCmdResult.getResponseContent();
+        IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_EXECUTIVE_AGENCY: {//获取ADME的执行机构配置参数
-                stopProgressRunnable();
+                dismissProgressDialog();
                 IOTCommandResult<AdmeExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询执行机构参数出错!", commandResult.getMessage());
@@ -502,7 +554,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             case ADME_MD_SET_EXECUTIVE_AGENCY: {//设置ADME的执行机构配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgressRunnable();
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -514,7 +566,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgressRunnable();
+                dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
@@ -527,7 +579,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             break;
 
             default:
-                super.parseResponseMessage(cmdStr);
                 break;
         }
     }
@@ -622,15 +673,12 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
 
     @Override
     public boolean onBackPressed() {
-        if (isConnected()) {
-            if (checkValueIsChange()) {
-                warnNotYetSettingBeforeLeavePage();
-                return true;
-            } else {
-                return false;
-            }
+        if (checkValueIsChange()) {
+            warnNotYetSettingBeforeLeavePage();
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private boolean checkValueIsChange() {

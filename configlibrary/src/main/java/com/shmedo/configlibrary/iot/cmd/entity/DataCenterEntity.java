@@ -98,14 +98,11 @@ public class DataCenterEntity implements Validater {
         stringBuilder.append("&");
         stringBuilder.append("port=" + port);
         stringBuilder.append("&");
-        if (!TextUtils.isEmpty(deviceid)) {
-            stringBuilder.append("deviceid=" + deviceid);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(devicekey)) {
-            stringBuilder.append("devicekey=" + devicekey);
-            stringBuilder.append("&");
-        }
+        stringBuilder.append("deviceid=" + deviceid);
+        stringBuilder.append("&");
+        stringBuilder.append("devicekey=" + devicekey);
+        stringBuilder.append("&");
+
         if (!TextUtils.isEmpty(httpaddr)) {
             stringBuilder.append("httpaddr=" + httpaddr);
             stringBuilder.append("&");
