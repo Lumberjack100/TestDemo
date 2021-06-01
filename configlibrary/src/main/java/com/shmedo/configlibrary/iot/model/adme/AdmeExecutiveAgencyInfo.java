@@ -26,6 +26,10 @@ public class AdmeExecutiveAgencyInfo {
     private String detectiontime;//堵转检测判断时间
     private String detectionstart;//堵转检测起点
     private String detectionend;//堵转检测终点
+    private String interval_compensation;//距离补偿区间h1
+    private String interval_fitting;//数据拟合区间h2
+    private String point_offset;//测点偏移距离h3
+
 
 
     public String getDatatype() {
@@ -170,5 +174,29 @@ public class AdmeExecutiveAgencyInfo {
 
     public void setDetectionend(String detectionend) {
         this.detectionend = detectionend;
+    }
+
+    public String getInterval_compensation() {
+        return TextUtils.isEmpty(interval_compensation) ? "" : interval_compensation;
+    }
+
+    public void setInterval_compensation(String interval_compensation) {
+        this.interval_compensation = interval_compensation;
+    }
+
+    public String getInterval_fitting() {
+        return TextUtils.isEmpty(interval_fitting) ? "" : interval_fitting;
+    }
+
+    public void setInterval_fitting(String interval_fitting) {
+        this.interval_fitting = interval_fitting;
+    }
+
+    public String getPoint_offset() {
+        return TextUtils.isEmpty(point_offset) ? "" : point_offset;
+    }
+
+    public void setPoint_offset(String point_offset) {
+        this.point_offset = point_offset;
     }
 }

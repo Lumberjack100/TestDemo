@@ -45,19 +45,19 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
     TextView mTvDataSettlementMethod;
 
     @BindView(R.id.tv_data_response)
-    TextView mTvDataResponse;
+    TextView mTvDataResponse;//数据应答
 
     @BindView(R.id.et_waiting_interval_per_round)
-    ClearEditText mEtWaitingIntervalPerRound;
+    ClearEditText mEtWaitingIntervalPerRound;//每轮等待时间
 
     @BindView(R.id.et_data_reading_interval)
-    ClearEditText mEtDataReadingInterval;
+    ClearEditText mEtDataReadingInterval;//数据读取间隔
 
     @BindView(R.id.et_measurement_compensation_time)
     ClearEditText mEtMeasurementCompensationTime;
 
     @BindView(R.id.et_motor_drive_address)
-    ClearEditText mEtMotorDriveAddress;
+    ClearEditText mEtMotorDriveAddress;//电机驱动器地址
 
     @BindView(R.id.et_decentralization_speed)
     ClearEditText mEtDecentralizationSpeed;//下放速度(r/min)
@@ -69,16 +69,25 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
     ClearEditText mEtDecentralizationWaitingTime;//下放等待时间(min)
 
     @BindView(R.id.et_pull_up_speed)
-    ClearEditText mEtPullUpSpeed;
+    ClearEditText mEtPullUpSpeed;//电机上拉速度
 
     @BindView(R.id.et_measuring_distance)
-    ClearEditText mEtMeasuringDistance;
+    ClearEditText mEtMeasuringDistance;//测量间距
 
     @BindView(R.id.et_measurement_interval_time)
-    ClearEditText mEtMeasurementIntervalTime;
+    ClearEditText mEtMeasurementIntervalTime;//测量间隔时间
 
     @BindView(R.id.et_measuring_reference_depth)
-    ClearEditText mEtMeasuringReferenceDepth;
+    ClearEditText mEtMeasuringReferenceDepth;//测量基准深度
+
+    @BindView(R.id.et_interval_compensation)
+    ClearEditText mEtIntervalCompensation;//距离补偿区间h1
+
+    @BindView(R.id.et_interval_fitting)
+    ClearEditText mEtIntervalFitting;//数据拟合区间h2
+
+    @BindView(R.id.et_point_offset)
+    ClearEditText mEtPointOffset;//测点偏移距离h3
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
@@ -106,6 +115,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
     private String measuringDistance;// 测量间距
     private String measurementIntervalTime;// 测量间隔时间
     private String measuringReferenceDepth;// 测量基准深度
+    private String intervalCompensation;// 距离补偿区间h1
+    private String intervalFitting;// 数据拟合区间h2
+    private String pointOffset;// 测点偏移距离h3
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -249,6 +261,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
         measuringDistance = mEtMeasuringDistance.getText().toString().trim();
         measurementIntervalTime = mEtMeasurementIntervalTime.getText().toString().trim();
         measuringReferenceDepth = mEtMeasuringReferenceDepth.getText().toString().trim();
+        intervalCompensation = mEtIntervalCompensation.getText().toString().trim();
+        intervalFitting = mEtIntervalFitting.getText().toString().trim();
+        pointOffset = mEtPointOffset.getText().toString().trim();
 
         if (TextUtils.isEmpty(waitingIntervalPerRound)) {
             ToastUtils.show("请输入每轮等待时间!");
@@ -439,6 +454,61 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             mEtMeasuringReferenceDepth.requestFocus();
             return false;
         }
+
+        if (TextUtils.isEmpty(intervalCompensation)) {
+            ToastUtils.show("请输入距离补偿区间h1!");
+            mEtIntervalCompensation.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(intervalCompensation);
+            if (value <= -10 || value >= 10) {
+                ToastUtils.show("请输入正确的距离补偿区间h1!");
+                mEtIntervalCompensation.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的距离补偿区间h1!");
+            mEtIntervalCompensation.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(intervalFitting)) {
+            ToastUtils.show("请输入数据拟合区间h2!");
+            mEtIntervalFitting.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(intervalFitting);
+            if (value < 0 || value >= 10) {
+                ToastUtils.show("请输入正确的数据拟合区间h2!");
+                mEtIntervalFitting.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的数据拟合区间h2!");
+            mEtIntervalFitting.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(pointOffset)) {
+            ToastUtils.show("请输入测点偏移距离h3!");
+            mEtPointOffset.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(pointOffset);
+            if (value < 0 || value >= 0.5) {
+                ToastUtils.show("请输入正确的测点偏移距离h3!");
+                mEtPointOffset.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的测点偏移距离h3!");
+            mEtPointOffset.requestFocus();
+            return false;
+        }
+
         return true;
     }
 
@@ -460,6 +530,12 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             entity.setMeaintertime(measurementIntervalTime);
             decimalFormat.applyPattern("#.##");
             entity.setMeabaseth(decimalFormat.format(Double.parseDouble(measuringReferenceDepth)));
+            decimalFormat.applyPattern("#.###");
+            entity.setInterval_compensation(decimalFormat.format(Double.parseDouble(intervalCompensation)));
+            decimalFormat.applyPattern("#.#");
+            entity.setInterval_fitting(decimalFormat.format(Double.parseDouble(intervalFitting)));
+            decimalFormat.applyPattern("#.###");
+            entity.setPoint_offset(decimalFormat.format(Double.parseDouble(pointOffset)));
 
             errMsg = "发送指令超时,请稍后尝试";
             startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
@@ -553,6 +629,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
         measuringDistance = admeExecutiveAgencyInfo.getMeaspacing().trim();
         measurementIntervalTime = admeExecutiveAgencyInfo.getMeaintertime().trim();
         measuringReferenceDepth = admeExecutiveAgencyInfo.getMeabaseth().trim();
+        intervalCompensation = admeExecutiveAgencyInfo.getInterval_compensation().trim();
+        intervalFitting = admeExecutiveAgencyInfo.getInterval_fitting().trim();
+        pointOffset = admeExecutiveAgencyInfo.getPoint_offset().trim();
 
         if (dataSettlementMethodOld.equals("0")) {
             dataSettlementMethodPos = 0;
@@ -590,6 +669,18 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             measuringReferenceDepth = decimalFormat.format(Double.parseDouble(measuringReferenceDepth));
             mEtMeasuringReferenceDepth.setText(measuringReferenceDepth);
 
+            decimalFormat.applyPattern("#.###");
+            intervalCompensation = decimalFormat.format(Double.parseDouble(intervalCompensation));
+            mEtIntervalCompensation.setText(intervalCompensation);
+
+            decimalFormat.applyPattern("#.#");
+            intervalFitting = decimalFormat.format(Double.parseDouble(intervalFitting));
+            mEtIntervalFitting.setText(intervalFitting);
+
+            decimalFormat.applyPattern("#.###");
+            pointOffset = decimalFormat.format(Double.parseDouble(pointOffset));
+            mEtPointOffset.setText(pointOffset);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -610,6 +701,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             admeExecutiveAgencyInfo.setMeaspacing(measuringDistance);
             admeExecutiveAgencyInfo.setMeaintertime(measurementIntervalTime);
             admeExecutiveAgencyInfo.setMeabaseth(measuringReferenceDepth);
+            admeExecutiveAgencyInfo.setInterval_compensation(intervalCompensation);
+            admeExecutiveAgencyInfo.setInterval_fitting(intervalFitting);
+            admeExecutiveAgencyInfo.setPoint_offset(pointOffset);
         }
         //TODO  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
@@ -676,6 +770,15 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
         if (measuringReferenceDepth != null && !measuringReferenceDepth.equals(mEtMeasuringReferenceDepth.getText().toString().trim())) {
             return true;
         }
+        if (intervalCompensation != null && !intervalCompensation.equals(mEtIntervalCompensation.getText().toString().trim())) {
+            return true;
+        }
+        if (intervalFitting != null && !intervalFitting.equals(mEtIntervalFitting.getText().toString().trim())) {
+            return true;
+        }
+        if (pointOffset != null && !pointOffset.equals(mEtPointOffset.getText().toString().trim())) {
+            return true;
+        }
 
         return false;
     }
@@ -697,6 +800,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             mEtMeasuringDistance.setHint("请输入");
             mEtMeasurementIntervalTime.setHint("请输入");
             mEtMeasuringReferenceDepth.setHint("请输入");
+            mEtIntervalCompensation.setHint("请输入");
+            mEtIntervalFitting.setHint("请输入");
+            mEtPointOffset.setHint("请输入");
 
         } else {
             mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -712,6 +818,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             mEtMeasuringDistance.setHint("");
             mEtMeasurementIntervalTime.setHint("");
             mEtMeasuringReferenceDepth.setHint("");
+            mEtIntervalCompensation.setHint("");
+            mEtIntervalFitting.setHint("");
+            mEtPointOffset.setHint("");
 
             mEtWaitingIntervalPerRound.clearFocus();
             mEtDataReadingInterval.clearFocus();
@@ -724,6 +833,9 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             mEtMeasuringDistance.clearFocus();
             mEtMeasurementIntervalTime.clearFocus();
             mEtMeasuringReferenceDepth.clearFocus();
+            mEtIntervalCompensation.clearFocus();
+            mEtIntervalFitting.clearFocus();
+            mEtPointOffset.clearFocus();
 
             initParamConfigInfo();
         }

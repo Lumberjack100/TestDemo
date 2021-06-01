@@ -47,6 +47,9 @@ public class AdmeExecutiveAgencyInfoParser implements IOTResultParser<AdmeExecut
             info.setDetectiontime(TextUtils.isEmpty(keyValueMap.get("detectiontime")) ? "" : keyValueMap.get("detectiontime"));
             info.setDetectionstart(TextUtils.isEmpty(keyValueMap.get("detectionstart")) ? "" : keyValueMap.get("detectionstart"));
             info.setDetectionend(TextUtils.isEmpty(keyValueMap.get("detectionend")) ? "" : keyValueMap.get("detectionend"));
+            info.setInterval_compensation(TextUtils.isEmpty(keyValueMap.get("interval_compensation")) ? "" : keyValueMap.get("interval_compensation"));
+            info.setInterval_fitting(TextUtils.isEmpty(keyValueMap.get("interval_fitting")) ? "" : keyValueMap.get("interval_fitting"));
+            info.setPoint_offset(TextUtils.isEmpty(keyValueMap.get("point_offset")) ? "" : keyValueMap.get("point_offset"));
 
             return info;
         } catch (Exception ex) {
