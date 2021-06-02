@@ -203,7 +203,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
                     childItemsLayout.setVisibility(View.VISIBLE);
-                    mBtnSave.setEnabled(true);
+                    mBtnSave.setVisibility(View.VISIBLE);
 
                     errMsg = "查询数据超时,请稍后尝试";
                     startProgressRunnable("正在获取参数...", 25000);
@@ -231,6 +231,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         childItemsLayout.setVisibility(View.GONE);
+                        mBtnSave.setVisibility(View.GONE);
                         closeDataServer();//关闭服务器
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -280,14 +281,14 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     }
 
 
-    @OnClick({R.id.communicationProtocolLayout, R.id.ll_register_platform, R.id.btn_confirm})
+    @OnClick({R.id.communicationProtocolLayout, R.id.ll_register_platform_child, R.id.btn_confirm})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.communicationProtocolLayout:
                 showCommunicationProtocolDialog();
                 break;
 
-            case R.id.ll_register_platform:
+            case R.id.ll_register_platform_child:
                 showRegisterPlatformDialog();
                 break;
 
@@ -620,12 +621,12 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 if (!serverAddressInfo.getAddress().equals("0.0.0.0")) {//地址为0.0.0.0，表示数据中心未启用
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
                     childItemsLayout.setVisibility(View.VISIBLE);
-                    mBtnSave.setEnabled(true);
+                    mBtnSave.setVisibility(View.VISIBLE);
                     queryDataCenterInfo();
                 } else {
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
                     childItemsLayout.setVisibility(View.GONE);
-                    mBtnSave.setEnabled(false);
+                    mBtnSave.setVisibility(View.GONE);
                     stopProgressRunnable();
                 }
                 break;
@@ -658,6 +659,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 }
                 //处理关闭中心1、2、3的开关时，接收到的应答指令
                 if (!mSbCenterEnable.isChecked()) {
+                    doAfterSetting();
                     return;
                 }
 
@@ -775,7 +777,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
             case "5":
                 communicationProtocolOld = "5";
-                updateViewByCommunicationProtocol(1, "MQTT手动注册");
+                updateViewByCommunicationProtocol(2, "MQTT手动注册");
                 break;
         }
 
@@ -787,12 +789,12 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
             case "1"://成都理工平台
                 registerPlatformOld = "1";
-                updateViewByRegisterPlatform(0, "成都理工平台");
+                updateViewByRegisterPlatform(1, "成都理工平台");
                 break;
 
             case "2"://米度平台
                 registerPlatformOld = "2";
-                updateViewByRegisterPlatform(0, "米度平台");
+                updateViewByRegisterPlatform(2, "米度平台");
                 break;
         }
 

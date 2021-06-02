@@ -89,106 +89,132 @@
                 <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/et_data_server_address"
                     style="@style/DataCenter_EditText_Style"
-                    android:hint="服务器地址 端口"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/divider_line_bg_efefef" />
-
-            <LinearLayout
-                android:id="@+id/ll_register_platform"
-                style="@style/Common_ClickableItem_LayoutStyle">
-
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="注册平台" />
-
-                <TextView
-                    android:id="@+id/tv_register_platform"
-                    style="@style/Common_ClickableItem_ValueStyle"
-                    android:textSize="17sp"
-                    tools:text="地大平台" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/divider_line_bg_efefef" />
-
-            <LinearLayout
-                android:id="@+id/ll_app_key"
-                style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="AppKey"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/appKeyET"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入App密钥" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/divider_line_bg_efefef" />
-
-            <LinearLayout
-                android:id="@+id/ll_register_platform_address"
-                style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="注册平台地址"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_register_platform_address"
-                    style="@style/DataCenter_EditText_Style"
                     android:hint="服务器地址 端口" />
 
             </LinearLayout>
 
-            <View
+            <LinearLayout
+                android:id="@+id/ll_register_platform"
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/divider_line_bg_efefef" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
+
+                <LinearLayout
+                    android:id="@+id/ll_register_platform_child"
+                    style="@style/Common_ClickableItem_LayoutStyle">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="注册平台" />
+
+                    <TextView
+                        android:id="@+id/tv_register_platform"
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:textSize="17sp"
+                        tools:text="地大平台" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_app_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
+
+                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="AppKey"
+                        android:textColor="@color/text_color_343434"
+                        android:textSize="@dimen/text_size_17" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/appKeyET"
+                        style="@style/DataCenter_EditText_Style"
+                        android:hint="请输入App密钥" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_register_platform_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
+
+                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="注册平台地址"
+                        android:textColor="@color/text_color_343434"
+                        android:textSize="@dimen/text_size_17" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_register_platform_address"
+                        style="@style/DataCenter_EditText_Style"
+                        android:hint="服务器地址 端口" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_keep_alive"
-                style="@style/Common_EditItem_LayoutStyle">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="KeepAlive值(s)"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
 
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_keep_alive"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="默认120s"
-                    android:inputType="number" />
+                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="KeepAlive值(s)"
+                        android:textColor="@color/text_color_343434"
+                        android:textSize="@dimen/text_size_17" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_keep_alive"
+                        style="@style/DataCenter_EditText_Style"
+                        android:hint="默认120s"
+                        android:inputType="number" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
