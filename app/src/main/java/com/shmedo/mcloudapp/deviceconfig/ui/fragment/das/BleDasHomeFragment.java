@@ -23,6 +23,7 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.cmd.entity.InstallLocationEntity;
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
@@ -43,9 +44,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
@@ -55,9 +56,9 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDial
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LocationUtils;
-import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -392,7 +393,10 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
                     String position = String.format(Locale.getDefault(), "%.8f", latLng.longitude) + "," + String.format(Locale.getDefault(), "%.8f", latLng.latitude);
                     if (isConnected()) {
-                        String command = "##9161" + position + "\r\n";
+//                        String command = "##9161" + position + "\r\n";
+                        InstallLocationEntity installLocationEntity = new InstallLocationEntity(1);
+                        String command = CommandManager.getInstance().getCommand(CommandType.INSTALL_LOCATION, installLocationEntity);
+                        command = command.replace("\r\n", position + "\r\n");
                         sendCommand(command);
                         Timber.i("同步安装位置指令：%s", command);
                     }
@@ -558,6 +562,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             break;
 
             case INSTALL_LOCATION: {
+                LocationUtils.getInstance().stopLocalService();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("同步安装位置出错!");
                     ToastUtils.show("同步安装位置出错!");
@@ -573,7 +578,9 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show("保存参数指令错误!");
                     return;
                 }
-                ToastUtils.show("设备即将重启!");
+                if (tempStr.contains("0191")) {
+                    ToastUtils.show("设备即将重启!");
+                }
                 break;
 
             default:
