@@ -43,7 +43,7 @@ public class DeviceCurrentRunStateUtils {
      */
     public static void setDeviceStatus(TextView textView, String status, Context context) {
         if (status.equals("1")) {
-            textView.setText("异常");
+            textView.setText("未接入");
             textView.setTextColor(Color.RED);
         } else if (status.equals("0")) {
             textView.setText("正常");
@@ -63,7 +63,7 @@ public class DeviceCurrentRunStateUtils {
             return "正常";
         } else if (status.equals("1")) {
             textView.setTextColor(Color.RED);
-            return "异常";
+            return "未接入";
         }
         return "";
     }

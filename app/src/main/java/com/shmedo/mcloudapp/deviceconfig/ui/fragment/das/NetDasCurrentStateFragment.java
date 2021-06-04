@@ -633,7 +633,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void setDeviceStatus(TextView textView, int status) {
         if (status == 0) {
-            textView.setText("异常");
+            textView.setText("未接入");
             textView.setTextColor(Color.RED);
         } else if (status == 1) {
             textView.setText("正常");

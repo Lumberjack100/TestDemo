@@ -262,7 +262,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     holder.setText(R.id.tv_status, "正常");
                     holder.setTextColorRes(R.id.tv_status, R.color.text_color_3AD094);
                 } else if (result[1].equals("1")) {
-                    holder.setText(R.id.tv_status, "异常");
+                    holder.setText(R.id.tv_status, "未接入");
                     holder.setTextColorRes(R.id.tv_status, R.color.red);
                 }
 
@@ -627,7 +627,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
     private void setDeviceStatus(TextView textView, String status) {
         if (status.equals("1")) {
-            textView.setText("异常");
+            textView.setText("未接入");
             textView.setTextColor(Color.RED);
         } else if (status.equals("0")) {
             textView.setText("正常");

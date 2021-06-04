@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
@@ -117,7 +116,7 @@ public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
                     sensorAbnormal = true;
                 }
             }
-            mTvSensorStatus.setText(sensorAbnormal ? "异常" : "正常");
+            mTvSensorStatus.setText(sensorAbnormal ? "未接入" : "正常");
             mTvSensorStatus.setTextColor(sensorAbnormal ? GlobalUtil.getColor(R.color.red) : GlobalUtil.getColor(R.color.text_color_3AD094));
         }
     }

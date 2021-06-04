@@ -270,7 +270,7 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
                         sensorAbnormal = true;
                     }
                 }
-                mTvSensorStatus.setText(sensorAbnormal ? "异常" : "正常");
+                mTvSensorStatus.setText(sensorAbnormal ? "未接入" : "正常");
                 mTvSensorStatus.setTextColor(sensorAbnormal ? GlobalUtil.getColor(R.color.red) : GlobalUtil.getColor(R.color.text_color_3AD094));
 
                 mTvInclination.setText(m20CurrentStateInfo.getZ_Angle());

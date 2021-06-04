@@ -236,7 +236,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             protected void convert(CommonViewHolder holder, SensorBean sensorBean, int position) {
                 holder.setText(R.id.tv_address, "通道" + sensorBean.getAddr());
                 holder.setText(R.id.tv_type, getSensorNameByTypeCode(sensorBean.getType()));
-                holder.setText(R.id.tv_status, sensorBean.getStatus() ? "正常" : "异常");
+                holder.setText(R.id.tv_status, sensorBean.getStatus() ? "正常" : "未接入");
                 holder.setText(R.id.tv_value, sensorBean.getVaule() + "");
 
                 if (sensorBean.getStatus()) {
@@ -595,7 +595,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             textView.setText("正常");
             textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
         } else {
-            textView.setText("异常");
+            textView.setText("未接入");
             textView.setTextColor(Color.RED);
         }
     }
