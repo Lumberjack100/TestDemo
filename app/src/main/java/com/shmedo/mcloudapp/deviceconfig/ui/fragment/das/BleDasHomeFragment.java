@@ -42,14 +42,11 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
-import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasSensorConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
@@ -159,9 +156,22 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         initConfigModuleData();
         observerConnectionState();
         observerLocation();
+
+        progressOverlay.postDelayed(connectTimeOut, 15000);
         //建立蓝牙连接
         connectDevice(device.getDevice());
     }
+
+    private Runnable connectTimeOut = new Runnable() {
+        @Override
+        public void run() {
+            if (!isConnected()) {
+                hideProgressBar();
+                disconnectDevice();
+                ToastUtils.show("连接超时");
+            }
+        }
+    };
 
     @Override
     public void onResume() {
@@ -275,12 +285,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 showWarnDialog("温馨提示", "确定重启设备吗？", REBOOT);
                 break;
 
-            case "固件升级":
-                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceTypeID);
-                newFragment.setDialogFragmentClickListener(firmWareSelectListener);
-                newFragment.show(getChildFragmentManager(), "dialog");
-                break;
-
             case "采集器配置":
                 DasCollectorSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
                 break;
@@ -319,19 +323,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         saveConfigInfo();
     }
 
-    private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
-        @Override
-        public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-
-            return true;
-        }
-
-        @Override
-        public void onNegativeClick(View view) {
-
-        }
-    };
-
     /**
      * 观察连接状态变化
      */
@@ -359,14 +350,16 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                         if (connectionState instanceof ConnectionState.Disconnected) {
                             final ConnectionState.Disconnected stateWithReason = (ConnectionState.Disconnected) connectionState;
                             if (stateWithReason.isNotSupported()) {
+                                Timber.e("DISCONNECTED: 不支持的设备");
                                 ToastUtils.show("不支持的设备");
                             } else if (stateWithReason.isTimeout()) {
-                                ToastUtils.show("连接超时");
+                                Timber.e("DISCONNECTED: 连接超时");
+//                                ToastUtils.show("连接超时");
                             }
                         }
                         clearDevice();
-                        onConnectionStateChanged(false);
                         hideProgressBar();
+                        onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
@@ -393,7 +386,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
                     String position = String.format(Locale.getDefault(), "%.8f", latLng.longitude) + "," + String.format(Locale.getDefault(), "%.8f", latLng.latitude);
                     if (isConnected()) {
-//                        String command = "##9161" + position + "\r\n";
                         InstallLocationEntity installLocationEntity = new InstallLocationEntity(1);
                         String command = CommandManager.getInstance().getCommand(CommandType.INSTALL_LOCATION, installLocationEntity);
                         command = command.replace("\r\n", position + "\r\n");
@@ -416,6 +408,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void hideProgressBar() {
+        progressOverlay.removeCallbacks(connectTimeOut);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -460,6 +453,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         }
         if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
+                progressOverlay.postDelayed(connectTimeOut, 15000);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -481,7 +475,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case BASE_CONFIG://基础配置信息 000
-                hideProgressBar();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询基础配置信息指令出错!");
                     return;
@@ -653,10 +646,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         configModule = new ConfigModule(R.drawable.ic_device_reboot, 7, "重启", "重新启动当前设备");
         configModuleList.add(configModule);
 
-//        TODO #gh# 后期换成物联网协议再开放
-//        configModule = new ConfigModule(R.drawable.ic_device_firmware_upgrade, 24, "固件升级", "版本:--");
-//        configModuleList.add(configModule);
-
         //DAS具有采集器配置项
         if (mTvProductModel.getText().toString().contains("DAS")) {
             configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
@@ -685,14 +674,15 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     @Override
     public void onStop() {
-        super.onStop();
+        progressOverlay.removeCallbacks(connectTimeOut);
         LocationUtils.getInstance().stopLocalService();
+        super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
+        super.onDestroy();
     }
 
     /**

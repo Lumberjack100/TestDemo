@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -21,9 +22,12 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.LogOutputStatus;
 import com.shmedo.configlibrary.ble.enums.WorkModel;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.TimeUtil;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -53,12 +57,18 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
     @BindView(R.id.recyclerView_log)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.ll_fab_action)
+    View fabActionView;
+
+    @BindView(R.id.fab_clear_log)
+    ImageView mIvClearLog;
+
     @BindView(R.id.fab_start_pause)
     ImageView fabStartPause;
 
     private CommonAdapter cmdAdapter;
 
-    private List<String> logDataList = new ArrayList<>();
+    private List<CmdLogInfo> logDataList = new ArrayList<>();
 
     private boolean isPause = false;
 
@@ -77,13 +87,28 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         setView();
         initAdapter();
         setSwitchViewListener();
+        setOnScrollListener();
     }
 
     private void setView() {
+        isPause = false;
+        fabStartPause.setImageResource(R.drawable.sl_stop_monitor);
         snNumber = MCloudApp.getCurDeviceToken();
         Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
         mTvDebugMode.setText("关闭");
         usrBleViewModel.updateLogOutputMode(true);
+    }
+
+    private void initAdapter() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        cmdAdapter = new CommonAdapter<CmdLogInfo>(mActivity, R.layout.item_cmd_log_print, logDataList) {
+            @Override
+            protected void convert(CommonViewHolder holder, CmdLogInfo cmdLogInfo, int position) {
+                holder.setText(R.id.tv_log_time, cmdLogInfo.getLogTime());
+                holder.setText(R.id.tv_log_content, cmdLogInfo.getLogContent());
+            }
+        };
+        mRecyclerView.setAdapter(cmdAdapter);
     }
 
     /**
@@ -99,81 +124,85 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
                     logSwitchButton.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
-
                 if (isChecked) {
                     setLogOutputMode(true);
-                    ToastUtils.show("开始日志输出");
-//                    isPause = false;
-//                    fabStartPause.setImageResource(R.drawable.icon_command_log_print_pause);
                 } else {
                     setLogOutputMode(false);
-                    ToastUtils.show("关闭日志输出");
-//                    isPause = true;
-//                    fabStartPause.setImageResource(R.drawable.icon_command_log_print_play);
                 }
             }
         });
     }
 
-    private void initAdapter() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        cmdAdapter = new CommonAdapter<String>(mActivity, R.layout.item_log_print, logDataList) {
+    private void setOnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            protected void convert(CommonViewHolder holder, String string, int position) {
-                holder.setText(R.id.tv_log, string);
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    float xStart = -fabActionView.getWidth();
+                    float xEnd = DensityUtil.Dp2Px(getActivity(), 10);
+                    ObjectAnimator heightAnimator = ObjectAnimator
+                            .ofFloat(fabActionView, "x", xStart, xEnd)
+                            .setDuration(2000);
+                    heightAnimator.start();
+                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    float xStart = fabActionView.getX();
+                    float xEnd = -fabActionView.getWidth();
+                    ObjectAnimator heightAnimator = ObjectAnimator
+                            .ofFloat(fabActionView, "x", xStart, xEnd)
+                            .setDuration(500);
+                    heightAnimator.start();
+                }
             }
-        };
-        mRecyclerView.setAdapter(cmdAdapter);
-    }
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+    }
 
     @OnClick({R.id.debugModeLayout, R.id.fab_clear_log, R.id.fab_start_pause, R.id.btn_send})
     public void onViewClicked(View view) {
         if (isDoubleClick(view)) {
             return;
         }
-        switch (view.getId()) {
-            case R.id.debugModeLayout:
-                showDebugModeDialog();
-                break;
+        int id = view.getId();
+        if (id == R.id.debugModeLayout) {
+            showDebugModeDialog();
 
-            case R.id.fab_clear_log:
-                logDataList.clear();
-                cmdAdapter.notifyDataSetChanged();
-                break;
+        } else if (id == R.id.fab_clear_log) {
+            logDataList.clear();
+            cmdAdapter.notifyDataSetChanged();
 
-            case R.id.fab_start_pause:
-                if (isPause) {
-                    isPause = false;
-                    ToastUtils.show("日志已开始输出");
-                    fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.icon_command_log_print_pause));
-                } else {
-                    ToastUtils.show("日志已暂停输出");
-                    isPause = true;
-                    fabStartPause.setImageDrawable(getResources().getDrawable(R.drawable.icon_command_log_print_play));
-                }
-                break;
-
-            case R.id.btn_send:
-                KeyBordUtils.hideSoftKeyboard(view);
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    return;
-                }
-                //发送指令
-                String sendCode = mEtcommand.getText().toString().trim();
-                String result = sendCode + "\r\n";
-                if (!sendCode.startsWith("##")) {
-                    ToastUtils.show("指令格式不正确，请重新输入");
-                    return;
-                }
-                sendCommand(result);
-                logDataList.add(sendCode);
-                cmdAdapter.notifyDataSetChanged();
-                mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
-                Log4a.i(TAG, String.format("发送指令==%s", result.replace("\r\n", "")));
-                break;
-
+        } else if (id == R.id.fab_start_pause) {
+            if (isPause) {
+                isPause = false;
+                ToastUtils.show("日志输出开始");
+                fabStartPause.setImageResource(R.drawable.sl_stop_monitor);
+            } else {
+                ToastUtils.show("日志输出暂停");
+                isPause = true;
+                fabStartPause.setImageResource(R.drawable.sl_start_monitor);
+            }
+        } else if (id == R.id.btn_send) {
+            KeyBordUtils.hideSoftKeyboard(view);
+            if (!isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
+            //发送指令
+            String command = mEtcommand.getText().toString().trim();
+            if (!command.startsWith("##")) {
+                ToastUtils.show("指令格式不正确，请重新输入");
+                return;
+            }
+            sendCommand(command + "\r\n");
+            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
+            logDataList.add(cmdLogInfo);
+            cmdAdapter.notifyDataSetChanged();
+            mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
+            Log4a.i(TAG, String.format("发送指令==%s", command));
         }
     }
 
@@ -213,11 +242,13 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
                 .show();
     }
 
-    private void  setLogOutputMode(boolean isOpen) {
+    private void setLogOutputMode(boolean isOpen) {
         LogOutputEntity logOutputEntity = new LogOutputEntity(isOpen ? LogOutputStatus.OPEN.toInt() : LogOutputStatus.CLOSE.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
         sendCommand(command);
-        logDataList.add(command.replace("\r\n",""));
+
+        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command.replace("\r\n", ""));
+        logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         Log4a.i(TAG, String.format("设置日志输出模式指令==%s", command.replace("\r\n", "")));
@@ -227,7 +258,9 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         WorkModeEntity workModeEntity = new WorkModeEntity(workMode.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.WORK_MODE, workModeEntity);
         sendCommand(command);
-        logDataList.add(command.replace("\r\n",""));
+
+        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command.replace("\r\n", ""));
+        logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         Log4a.i(TAG, String.format("设置调试模式指令==%s", command.replace("\r\n", "")));
@@ -250,7 +283,8 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
             Timber.i("=====屏幕打印暂停了");
 
         } else {
-            logDataList.add(cmdStr);
+            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), cmdStr);
+            logDataList.add(cmdLogInfo);
             cmdAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         }
@@ -261,17 +295,20 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         usrBleViewModel.updateLogOutputMode(false);
         setLogOutputMode(false);
 
-        super.onDestroy();
-    }
-
-    @Override
-    public boolean onBackPressed() {
         String content = String.format("====结束调试设备：%s\r\n", snNumber);
         Log4a.i(TAG, content);
         Log4a.flush();
-        mActivity.finish();
-
-        return true;
+        super.onDestroy();
     }
+
+//    @Override
+//    public boolean onBackPressed() {
+//        String content = String.format("====结束调试设备：%s\r\n", snNumber);
+//        Log4a.i(TAG, content);
+//        Log4a.flush();
+//        mActivity.finish();
+//
+//        return true;
+//    }
 
 }

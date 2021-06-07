@@ -124,7 +124,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         public void run() {
             if (!isActive)
                 return;
-
             queryMotorState();
         }
     }
@@ -171,9 +170,22 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         initConfigModuleData();
         observerApiKey();
         observerConnectionState();
+
+        progressOverlay.postDelayed(connectTimeOut, 15000);
         //建立蓝牙连接
         connectDevice(device.getDevice());
     }
+
+    private Runnable connectTimeOut = new Runnable() {
+        @Override
+        public void run() {
+            if (!isConnected()) {
+                hideProgressBar();
+                disconnectDevice();
+                ToastUtils.show("连接超时");
+            }
+        }
+    };
 
     @Override
     public void onResume() {
@@ -189,6 +201,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onStop() {
         super.onStop();
         isFirstCreate = false;
+        progressOverlay.removeCallbacks(connectTimeOut);
         stopQueryMotorStateRunnable();
     }
 
@@ -298,12 +311,12 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 ToastUtils.show("不支持的设备");
                             } else if (stateWithReason.isTimeout()) {
                                 Timber.e("DISCONNECTED: 连接超时");
-                                ToastUtils.show("连接超时");
+//                                ToastUtils.show("连接超时");
                             }
                         }
                         clearDevice();
-                        onConnectionStateChanged(false);
                         hideProgressBar();
+                        onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
@@ -359,6 +372,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     private void hideProgressBar() {
+        progressOverlay.removeCallbacks(connectTimeOut);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -408,25 +422,22 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         sendCommand(command);
     }
 
-
     @OnClick({R.id.tv_device_connect_operate, R.id.ll_switch_config_model})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
         }
-        switch (v.getId()) {
-            case R.id.tv_device_connect_operate://断开/重新连接
-                if (!isConnected()) {
-                    connectDevice(device.getDevice());
-                } else {//断开连接处理
-                    isExitMode = false;
-                    showDisconnectDialog(getResources().getString(R.string.disconnect_device));
-                }
-                break;
-
-            case R.id.ll_switch_config_model://切换设备模式
-                showSwitchConfigModelDialog();
-                break;
+        int id = v.getId();
+        if (id == R.id.tv_device_connect_operate) {//断开/重新连接
+            if (!isConnected()) {
+                progressOverlay.postDelayed(connectTimeOut, 15000);
+                connectDevice(device.getDevice());
+            } else {//断开连接处理
+                isExitMode = false;
+                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+            }
+        } else if (id == R.id.ll_switch_config_model) {//切换设备模式
+            showSwitchConfigModelDialog();
         }
     }
 
@@ -475,7 +486,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_BASIS: {//获取设备的基本信息
-                hideProgressBar();
                 IOTCommandResult<AdmeBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
@@ -675,14 +685,13 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
             return true;
         }
-
         return false;
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         admeViewModel.deviceMode = -1;
         MCloudApp.setCurDeviceToken(null);
+        super.onDestroy();
     }
 }

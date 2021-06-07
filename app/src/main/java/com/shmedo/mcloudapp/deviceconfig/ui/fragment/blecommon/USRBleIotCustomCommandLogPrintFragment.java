@@ -1,10 +1,12 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +18,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.IotLogOutputEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
@@ -50,6 +53,9 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
     @BindView(R.id.recyclerView_log)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.fab_clear_log)
+    ImageView mIvClearLog;
+
     @BindView(R.id.btn_send)
     Button btnSend;
 
@@ -73,14 +79,27 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setView();
-        setSwitchViewListener();
         initAdapter();
+        setSwitchViewListener();
+        setOnScrollListener();
     }
 
     private void setView() {
         snNumber = MCloudApp.getCurDeviceToken();
         Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
         usrBleViewModel.updateLogOutputMode(true);
+    }
+
+    private void initAdapter() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        cmdAdapter = new CommonAdapter<CmdLogInfo>(mActivity, R.layout.item_cmd_log_print, logDataList) {
+            @Override
+            protected void convert(CommonViewHolder holder, CmdLogInfo cmdLogInfo, int position) {
+                holder.setText(R.id.tv_log_time, cmdLogInfo.getLogTime());
+                holder.setText(R.id.tv_log_content, cmdLogInfo.getLogContent());
+            }
+        };
+        mRecyclerView.setAdapter(cmdAdapter);
     }
 
     /**
@@ -106,16 +125,33 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
         });
     }
 
-    private void initAdapter() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        cmdAdapter = new CommonAdapter<CmdLogInfo>(mActivity, R.layout.item_cmd_log_print, logDataList) {
+    private void setOnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            protected void convert(CommonViewHolder holder, CmdLogInfo cmdLogInfo, int position) {
-                holder.setText(R.id.tv_log_time, cmdLogInfo.getLogTime());
-                holder.setText(R.id.tv_log_content, cmdLogInfo.getLogContent());
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    float xStart = -mIvClearLog.getWidth();
+                    float xEnd = DensityUtil.Dp2Px(getActivity(), 10);
+                    ObjectAnimator heightAnimator = ObjectAnimator
+                            .ofFloat(mIvClearLog, "x", xStart, xEnd)
+                            .setDuration(2000);
+                    heightAnimator.start();
+                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    float xStart = mIvClearLog.getX();
+                    float xEnd = -mIvClearLog.getWidth();
+                    ObjectAnimator heightAnimator = ObjectAnimator
+                            .ofFloat(mIvClearLog, "x", xStart, xEnd)
+                            .setDuration(500);
+                    heightAnimator.start();
+                }
             }
-        };
-        mRecyclerView.setAdapter(cmdAdapter);
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     @OnClick({R.id.fab_clear_log, R.id.btn_send})
@@ -142,7 +178,6 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
                 ToastUtils.show("指令格式不正确，请重新输入");
                 return;
             }
-
             String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
             if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
                 apiKey = usrBleViewModel.getDeviceApiKey().getValue();
@@ -152,8 +187,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
                         + "&msgid=" + UUID.randomUUID().toString().substring(30);
             }
             sendCommand(command);
-            btnSend.setEnabled(false);
-
+//            btnSend.setEnabled(false);
             CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
             logDataList.add(cmdLogInfo);
             cmdAdapter.notifyDataSetChanged();
@@ -176,7 +210,6 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
                     + "&msgid=" + UUID.randomUUID().toString().substring(30);
         }
         sendCommand(command);
-
         CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
         logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();

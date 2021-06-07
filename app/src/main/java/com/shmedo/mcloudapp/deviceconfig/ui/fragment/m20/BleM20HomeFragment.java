@@ -121,9 +121,22 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         initConfigModuleData();
         observerApiKey();
         observerConnectionState();
+
+        progressOverlay.postDelayed(connectTimeOut, 15000);
         //建立蓝牙连接
         connectDevice(device.getDevice());
     }
+
+    private Runnable connectTimeOut = new Runnable() {
+        @Override
+        public void run() {
+            if (!isConnected()) {
+                hideProgressBar();
+                disconnectDevice();
+                ToastUtils.show("连接超时");
+            }
+        }
+    };
 
     @Override
     public void onResume() {
@@ -206,7 +219,6 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        showProgressBar();
                         mTvProgressText.setText("初始化中...");
                         //查询设备 ApiKey
                         bleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
@@ -220,12 +232,12 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                                 ToastUtils.show("不支持的设备");
                             } else if (stateWithReason.isTimeout()) {
                                 Timber.e("DISCONNECTED: 连接超时");
-                                ToastUtils.show("连接超时");
+//                                ToastUtils.show("连接超时");
                             }
                         }
                         clearDevice();
-                        onConnectionStateChanged(false);
                         hideProgressBar();
+                        onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
@@ -281,6 +293,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     private void hideProgressBar() {
+        progressOverlay.removeCallbacks(connectTimeOut);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -315,15 +328,14 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         if (isDoubleClick(v)) {
             return;
         }
-        switch (v.getId()) {
-            case R.id.tv_device_connect_operate://断开/重新连接
-                if (!isConnected()) {
-                    connectDevice(device.getDevice());
-                } else {//断开连接处理
-                    isExitMode = false;
-                    showDisconnectDialog(getResources().getString(R.string.disconnect_device));
-                }
-                break;
+        if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
+            if (!isConnected()) {
+                progressOverlay.postDelayed(connectTimeOut, 15000);
+                connectDevice(device.getDevice());
+            } else {//断开连接处理
+                isExitMode = false;
+                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+            }
         }
     }
 
@@ -339,7 +351,6 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
-                hideProgressBar();
                 IOTCommandResult<M20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
@@ -401,13 +412,18 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
             showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
             return true;
         }
-
         return false;
     }
 
     @Override
+    public void onStop() {
+        progressOverlay.removeCallbacks(connectTimeOut);
+        super.onStop();
+    }
+
+    @Override
     public void onDestroy() {
-        super.onDestroy();
         MCloudApp.setCurDeviceToken(null);
+        super.onDestroy();
     }
 }

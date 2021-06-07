@@ -69,17 +69,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom"
-                android:layout_marginStart="10dp"
                 android:layout_marginBottom="30dp"
+                android:layout_marginStart="10dp"
                 android:orientation="vertical">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                <ImageView
                     android:id="@+id/fab_clear_log"
-                    style="@style/Widget.Design.FloatingActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fabSize="mini"
-                    app:srcCompat="@drawable/ic_clear_log" />
+                    android:layout_width="71dp"
+                    android:layout_height="71dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ripple_clear_log" />
 
             </LinearLayout>
 
