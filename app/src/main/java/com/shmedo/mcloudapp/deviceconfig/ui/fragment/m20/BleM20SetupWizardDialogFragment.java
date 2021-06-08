@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -10,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -21,6 +23,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -54,29 +58,13 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
 
     private BaseGOCBleIotCommunicateFragment baseGOCBleIotCommunicateFragment;
 
-    private Handler uiHander = new Handler();
-
-    private ProgressRunnable progressRunnable;//常规任务
-
-    private class ProgressRunnable implements Runnable {
+    private Handler uiHander = new Handler(new Handler.Callback() {
         @Override
-        public void run() {
-            progressRunnable = null;
+        public boolean handleMessage(@NonNull @NotNull Message msg) {
             updateState(false);
+            return false;
         }
-    }
-
-    protected void startProgressRunnable(long delayMillis) {
-        if (progressRunnable == null) {
-            progressRunnable = new ProgressRunnable();
-            uiHander.postDelayed(progressRunnable, delayMillis);
-        }
-    }
-
-    protected void stopProgressRunnable() {
-        uiHander.removeCallbacksAndMessages(null);
-        progressRunnable = null;
-    }
+    });
 
     public static BleM20SetupWizardDialogFragment newInstance() {
         return new BleM20SetupWizardDialogFragment();
@@ -134,9 +122,9 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
+            uiHander.sendEmptyMessageDelayed(1, 10000);
             mTvContent.setText("正在水平初始化...");
             setLevelInitial();
-            startProgressRunnable(10000);
             disableTouch();
         }
     }
@@ -165,7 +153,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
         if (mTvContent == null) {
             return;
         }
-        stopProgressRunnable();
+        uiHander.removeCallbacksAndMessages(null);
         enableTouch();
 
         if (isLevelInitSucc) {
@@ -182,5 +170,11 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
             dispatchCmdFailedView.setVisibility(View.VISIBLE);
             mTvRight.setText("重新尝试");
         }
+    }
+
+    @Override
+    public void onStop() {
+        uiHander.removeCallbacksAndMessages(null);
+        super.onStop();
     }
 }

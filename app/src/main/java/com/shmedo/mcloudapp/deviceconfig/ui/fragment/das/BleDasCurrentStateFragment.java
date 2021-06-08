@@ -9,12 +9,15 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.InstallLocationEntity;
@@ -38,6 +41,8 @@ import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +53,8 @@ import timber.log.Timber;
  * 测试通过下发指令查看设备当前运行状态
  */
 public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     /**
      * 基本信息
@@ -226,26 +231,36 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initRefreshLayout();
         initAdapter();
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
-        queryStatusOne();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 queryStatusOne();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                            ToastUtils.show("刷新超时");
+                        }
+                    }
+                }, WRITE_TIME_OUT_MILLIS);
             }
         });
+
     }
 
     private void initAdapter() {
@@ -280,17 +295,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     }
 
     private void queryStatusOne() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable(null, CONFIG_PARAMS_DELAY_MILLIS);
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_1);
         sendCommand(command);
         Timber.i("查询设备状态1：%s", command);
-    }
-
-    @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        swipeRefresh.setRefreshing(false);
     }
 
     @Override
@@ -308,8 +315,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         switch (type) {
             case QUERY_DAS_STATUS_1:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询设备状态1指令出错!");
                     ToastUtils.show("查询设备状态1出错!");
                     return;
@@ -324,8 +330,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case VERSION_MESSAGE:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询设备版本信息出错!");
                     ToastUtils.show("查询设备版本信息出错!");
                     return;
@@ -343,8 +348,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case INSTALL_LOCATION:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询安装位置出错!");
                     ToastUtils.show("查询安装位置出错!");
                     return;
@@ -361,8 +365,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case SYSTEM_RUN_STATE:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询运行状态出错!");
                     ToastUtils.show("查询运行状态出错!");
                     return;
@@ -378,8 +381,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_NETWORK_STATUS://数据中心网络状态
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询数据中心网络状态出错!");
                     ToastUtils.show("查询数据中心网络状态出错!");
                     return;
@@ -420,8 +422,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_DAS_STATUS_2:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询设备状态2出错!");
                     ToastUtils.show("查询设备状态2出错!");
                     return;
@@ -436,8 +437,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_DAS_STATUS_3:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询设备状态3出错!");
                     ToastUtils.show("查询设备状态3出错!");
                     return;
@@ -451,15 +451,13 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     if (collectorModel.trim().equals("2")) {
                         processQueryInclinometerInfo();
                     }else{
-                        swipeRefresh.setRefreshing(false);
-                        stopProgressRunnable();
+                        mRefreshLayout.finishRefresh(true);
                     }
                 }
                 break;
 
             case QUERY_INCLINOMETER_INFO:
-                swipeRefresh.setRefreshing(false);
-                stopProgressRunnable();
+                mRefreshLayout.finishRefresh(true);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询倾角计信息出错!");
                     return;

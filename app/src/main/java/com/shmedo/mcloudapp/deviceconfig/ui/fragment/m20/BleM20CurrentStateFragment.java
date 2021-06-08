@@ -3,10 +3,13 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
@@ -19,6 +22,8 @@ import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import butterknife.BindView;
 import timber.log.Timber;
 /**
@@ -27,8 +32,8 @@ import timber.log.Timber;
  * 描述：    M20蓝牙模式 设备运行状态页面
  */
 public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment {
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     /**
      * 基本信息
@@ -129,40 +134,42 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRefreshLayout();
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
-        queryStateInfo();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 queryStateInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                            ToastUtils.show("刷新超时");
+                        }
+                    }
+                }, WRITE_TIME_OUT_MILLIS);
             }
         });
+
     }
 
     /**
      * 获取设备的当前状态
      */
     private void queryStateInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("", WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
         sendCommand(command);
-    }
-
-    @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        swipeRefresh.setRefreshing(false);
     }
 
     @Override
@@ -177,8 +184,7 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case QUERY_DEVICE_STATUS: {
-                swipeRefresh.setRefreshing(false);
-                stopProgressRunnable();
+                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
@@ -260,5 +266,4 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
             tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_not_connected_platform));
         }
     }
-
 }

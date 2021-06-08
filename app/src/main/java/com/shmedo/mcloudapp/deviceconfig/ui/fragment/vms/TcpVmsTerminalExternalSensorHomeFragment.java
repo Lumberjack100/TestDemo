@@ -166,7 +166,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
             case VMS_MD_GET_TERMINAL_CHL: {//获取终端传感器的参数
                 IOTCommandResult<VmsTerminalSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
+//                    stopProgressRunnable();
                     String errMsg = String.format("%s %s", "查询获取终端传感器参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -182,10 +182,10 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
                     if (sensorIndex < accessSum) {
                         queryTerminalAisleParamInfo();
                     } else {//所有通道的传感器参数都查询了
-                        stopProgressRunnable();
+//                        stopProgressRunnable();
                     }
                 } else {//只刷新单个通道的传感器数据
-                    stopProgressRunnable();
+//                    stopProgressRunnable();
                 }
             }
 

@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -22,7 +24,10 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+
+import org.jetbrains.annotations.NotNull;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -104,8 +109,8 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
      * 查询采集器配置信息
      */
     private void queryCollectorInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", 20000);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+
         CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModel);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
         sendCommand(command);
@@ -192,10 +197,16 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         CollectorFrequencyEntity collectorFrequencyEntity = new CollectorFrequencyEntity(collectorModel, StringUtil.formatStringFive(collectTime));
         cmdCollectTime = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_FREQUENCY, collectorFrequencyEntity);
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         sendCommand(cmdCollectorAddress);
         Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
     }
 
     @Override
@@ -211,12 +222,11 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case COLLECTOR_CONFIG://采集器配置信息 100
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
                     Timber.e("查询采集器配置信息指令出错!");
                     return;
                 }
-                stopProgressRunnable();
                 collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
                 initValue();
                 break;
@@ -224,7 +234,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             case SET_COLLECTOR_ADDRESS:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器地址配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdCalculatTime);
@@ -234,7 +244,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             case COLLECTOR_SOLUTION_FREQUENCY:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器解算频度配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdStandbyTime);
@@ -244,7 +254,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             case COLLECTOR_STANDBY_TIME:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器待机时长配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdCollectTime);
@@ -252,7 +262,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                 break;
 
             case COLLECTOR_FREQUENCY:
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器采集频度配置错误!");
                     return;
@@ -275,7 +285,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        stopProgressRunnable();
+        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
         saveConfigInfoNoReboot();
     }
 

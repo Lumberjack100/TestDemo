@@ -187,7 +187,6 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case M20_MD_LEVEL_INITIAL: {//M20水平初始化设置
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "水平初始化设置出错!", cmdResult.getReason());
@@ -200,7 +199,6 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
             break;
 
             case REBOOT: {//重启
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "重启出错!", cmdResult.getReason());
@@ -219,7 +217,6 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
             break;
 
             case RESET: {//恢复出厂设置
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "恢复出厂设置出错!", cmdResult.getReason());

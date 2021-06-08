@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -193,7 +194,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                             ToastUtils.show("刷新超时");
                         }
                     }
-                }, WRITE_TIME_OUT_SECOND);
+                }, WRITE_TIME_OUT_MILLIS);
             }
         });
     }
@@ -219,7 +220,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
      */
     private void setupTcpConnect() {
         tcpViewModel.initTcpClient(ipAddress, 10002);
-        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+        startProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
         tcpViewModel.connect();
     }
 
@@ -228,7 +229,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
      */
     @Override
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
-        stopProgressRunnable();
+        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
 
         if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
@@ -268,7 +269,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {
             if (!tcpViewModel.getConnectStatus()) {
-                startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+                startProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
                 tcpViewModel.connect();
             } else {
                 isExitMode = false;
@@ -311,8 +312,24 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     public void removeTerminal(String sn) {
         TerminalSNEntity entity = new TerminalSNEntity(sn);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
-        showProgressDialog("处理中...");
+        startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         sendCommand(command);
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show("连接超时");
+                }
+            }
+            break;
+        }
     }
 
     @Override
@@ -414,9 +431,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             break;
 
             case VMS_MD_DELETE_TERMINAL: {//删除终端设备
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "删除终端出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -484,7 +501,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
     private void doAfterSetting() {
         ToastUtils.show("删除成功");
-        dismissProgressDialog();
         updateTerminalTabText();
     }
 
@@ -515,9 +531,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
     @Override
     public void onStop() {
-        super.onStop();
         mRefreshLayout.finishRefresh(false);
-        dismissProgressDialog();
+        super.onStop();
     }
 
     @Override

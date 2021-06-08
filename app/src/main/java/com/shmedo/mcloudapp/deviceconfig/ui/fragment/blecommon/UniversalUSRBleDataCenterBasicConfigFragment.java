@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -172,8 +173,7 @@ public class UniversalUSRBleDataCenterBasicConfigFragment extends BaseUSRBleIotC
      * 获取设备的数据中心参数
      */
     private void queryDataCenterInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
         sendCommand(command);
@@ -251,10 +251,16 @@ public class UniversalUSRBleDataCenterBasicConfigFragment extends BaseUSRBleIotC
         enableButtonOriginalState = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
     }
 
     @Override
@@ -266,7 +272,7 @@ public class UniversalUSRBleDataCenterBasicConfigFragment extends BaseUSRBleIotC
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
@@ -282,7 +288,7 @@ public class UniversalUSRBleDataCenterBasicConfigFragment extends BaseUSRBleIotC
             case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -293,7 +299,7 @@ public class UniversalUSRBleDataCenterBasicConfigFragment extends BaseUSRBleIotC
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

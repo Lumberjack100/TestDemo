@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,8 @@ import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -30,11 +33,7 @@ import timber.log.Timber;
 public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     public static final int TCP_CONNECT_DELAY_MILLIS = 5000;//Tcp 连接超时时间
 
-    public static final int WRITE_TIME_OUT_SECOND = 15000;//发送指令超时时间
-
-    private Handler uiHander = new Handler();
-
-    protected String errMsg = "";
+    public static final int WRITE_TIME_OUT_MILLIS = 10000;//发送指令超时时间
 
     protected boolean isExitMode = false;
 
@@ -42,43 +41,37 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
     protected DeviceApiKeyViewModel deviceApiKeyViewModel;
 
-    private ProgressRunnable progressRunnable;
 
-    private class ProgressRunnable implements Runnable {
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+
+    }
+
+    private Handler uiHander = new Handler(new Handler.Callback() {
         @Override
-        public void run() {
+        public boolean handleMessage(@NonNull @NotNull Message msg) {
             dismissProgressDialog();
-            progressRunnable = null;
-            doProgressRun();
+            customHandleMessage(msg);
+            return false;
         }
-    }
+    });
 
-    protected void doProgressRun() {
-        if (!TextUtils.isEmpty(errMsg)) {
-            ToastUtils.show(errMsg);
-        }
-    }
-
-    protected void startProgressRunnable(String dialogContent, long delayMillis) {
+    protected void startProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        if (progressRunnable == null) {
-            progressRunnable = new ProgressRunnable();
-            uiHander.postDelayed(progressRunnable, delayMillis);
-        }
+        uiHander.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    protected void stopProgressRunnable() {
+    public void stopProgress(int what) {
         dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
-        progressRunnable = null;
+        uiHander.removeMessages(what);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
         dismissProgressDialog();
+        uiHander.removeCallbacksAndMessages(null);
+        super.onStop();
     }
 
     @Override

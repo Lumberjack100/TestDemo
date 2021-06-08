@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,6 +37,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,21 +125,9 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         observerApiKey();
         observerConnectionState();
 
-        progressOverlay.postDelayed(connectTimeOut, 15000);
         //建立蓝牙连接
         connectDevice(device.getDevice());
     }
-
-    private Runnable connectTimeOut = new Runnable() {
-        @Override
-        public void run() {
-            if (!isConnected()) {
-                hideProgressBar();
-                disconnectDevice();
-                ToastUtils.show("连接超时");
-            }
-        }
-    };
 
     @Override
     public void onResume() {
@@ -210,6 +201,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
                     case CONNECTING://A connection to the device was initiated.
+                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
                         showProgressBar();
                         mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
@@ -293,7 +285,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     private void hideProgressBar() {
-        progressOverlay.removeCallbacks(connectTimeOut);
+        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -330,7 +322,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         }
         if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                progressOverlay.postDelayed(connectTimeOut, 15000);
+                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -406,6 +398,24 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("发送指令超时,请稍后尝试");
+                break;
+
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!isConnected()) {
+                    hideProgressBar();
+                    disconnectDevice();
+                    ToastUtils.show("连接超时");
+                }
+            }
+            break;
+        }
+    }
+
+    @Override
     public boolean onBackPressed() {
         if (isConnected()) {
             isExitMode = true;
@@ -417,7 +427,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
 
     @Override
     public void onStop() {
-        progressOverlay.removeCallbacks(connectTimeOut);
+        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         super.onStop();
     }
 

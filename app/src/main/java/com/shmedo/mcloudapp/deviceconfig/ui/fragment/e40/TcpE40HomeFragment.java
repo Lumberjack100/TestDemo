@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -106,31 +106,31 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
 
     private VmsBasicInfo vmsBasicInfo;
 
-    private static Handler myHander = new Handler();
-    private static RefreshRunnable refreshRunnable;
-
-    private class RefreshRunnable implements Runnable {
-        @Override
-        public void run() {
-            refreshRunnable = null;
-            swipeRefresh.setRefreshing(false);
-            updateHeadInfo();
-            ToastUtils.show("查询数据超时");
-        }
-    }
-
-    private void startRefreshRunnable(long delayMillis) {
-        if (refreshRunnable == null) {
-            refreshRunnable = new RefreshRunnable();
-            myHander.postDelayed(refreshRunnable, delayMillis);
-        }
-    }
-
-    private void stopRefreshRunnable() {
-        myHander.removeCallbacksAndMessages(null);
-        refreshRunnable = null;
-        swipeRefresh.setRefreshing(false);
-    }
+//    private static Handler myHander = new Handler();
+//    private static RefreshRunnable refreshRunnable;
+//
+//    private class RefreshRunnable implements Runnable {
+//        @Override
+//        public void run() {
+//            refreshRunnable = null;
+//            swipeRefresh.setRefreshing(false);
+//            updateHeadInfo();
+//            ToastUtils.show("查询数据超时");
+//        }
+//    }
+//
+//    private void startRefreshRunnable(long delayMillis) {
+//        if (refreshRunnable == null) {
+//            refreshRunnable = new RefreshRunnable();
+//            myHander.postDelayed(refreshRunnable, delayMillis);
+//        }
+//    }
+//
+//    private void stopRefreshRunnable() {
+//        myHander.removeCallbacksAndMessages(null);
+//        refreshRunnable = null;
+//        swipeRefresh.setRefreshing(false);
+//    }
 
     public static TcpE40HomeFragment newInstance() {
         return new TcpE40HomeFragment();
@@ -179,7 +179,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
      */
     private void setupTcpConnect() {
         tcpViewModel.initTcpClient(ipAddress, 10002);
-        startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+        startProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
         tcpViewModel.connect();
     }
 
@@ -188,7 +188,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
      */
     @Override
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
-        stopProgressRunnable();
+        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
 
         if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
@@ -239,7 +239,6 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                     ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
-
                 selectedConfigModule = configModuleList.get(position);
                 processItemClick();
             }
@@ -315,10 +314,8 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        switch (operateType) {
-                            case REBOOT:
-                                rebootDevice();
-                                break;
+                        if (operateType == REBOOT) {
+                            rebootDevice();
                         }
                     }
                 });
@@ -335,7 +332,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {
             if (!tcpViewModel.getConnectStatus()) {
-                startProgressRunnable("建立通讯连接...", TCP_CONNECT_DELAY_MILLIS);
+                startProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
                 tcpViewModel.connect();
             } else {
                 isExitMode = false;
@@ -348,9 +345,27 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
      * 获取网关的基本信息
      */
     private void getGatewayBaseInfo() {
-        startRefreshRunnable(10000);
+        startProgress(null, AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_BASE);
         sendCommand(command);
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                swipeRefresh.setRefreshing(false);
+                updateHeadInfo();
+                ToastUtils.show("查询数据超时");
+                break;
+
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show("连接超时");
+                }
+            }
+            break;
+        }
     }
 
     @Override
@@ -362,10 +377,10 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case VMS_MD_GET_GATEWAY_BASE: {//获取网关的基本信息
-                stopRefreshRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                swipeRefresh.setRefreshing(false);
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopRefreshRunnable();
                     String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -440,14 +455,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
             showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_tcp_device));
             return true;
         }
-
         return false;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopRefreshRunnable();
     }
 
     @Override

@@ -1,12 +1,14 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -18,6 +20,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMeterWheelInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
@@ -133,8 +136,7 @@ public class BleAdmeMeterWheelFragment extends BaseUSRBleIotCommunicateFragment 
      * 获取ADME的计米轮参数
      */
     private void queryParamConfigInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_METER_WHEEL);
         sendCommand(command);
     }
@@ -325,9 +327,8 @@ public class BleAdmeMeterWheelFragment extends BaseUSRBleIotCommunicateFragment 
             entity.setDownconstant(decimalFormat.format(Double.parseDouble(downConstant)));
             entity.setDownfilter(downFilterCoefficient);
 
-            errMsg = "发送指令超时,请稍后尝试";
-            startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
             mBtnSave.setEnabled(false);
+            startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_METER_WHEEL, entity);
             sendCommand(command);
         } catch (Exception ex) {
@@ -336,9 +337,10 @@ public class BleAdmeMeterWheelFragment extends BaseUSRBleIotCommunicateFragment 
     }
 
     @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        mBtnSave.setEnabled(true);
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
     }
 
     @Override
@@ -350,7 +352,7 @@ public class BleAdmeMeterWheelFragment extends BaseUSRBleIotCommunicateFragment 
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_METER_WHEEL: {//获取ADME的计米轮配置参数
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeMeterWheelInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取计米轮配置参数出错!", commandResult.getMessage());
@@ -366,7 +368,7 @@ public class BleAdmeMeterWheelFragment extends BaseUSRBleIotCommunicateFragment 
             case ADME_MD_SET_METER_WHEEL: {//设置ADME的计米轮配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "保存计米轮配置参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -378,7 +380,7 @@ public class BleAdmeMeterWheelFragment extends BaseUSRBleIotCommunicateFragment 
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

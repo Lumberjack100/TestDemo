@@ -1,6 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor;
 
 import android.os.Bundle;
+import android.os.Message;
+
+import androidx.annotation.NonNull;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
@@ -17,6 +20,8 @@ import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
+
+import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
@@ -64,8 +69,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_LONG_DELAY_MILLIS);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_LONG_MILLIS);
         sendCommand(command);
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
     }
@@ -269,6 +273,13 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
     }
 
     @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
+    }
+
+    @Override
     protected void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
@@ -276,7 +287,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
             case SET_COLLECTOR_SENSOR://设置采集器接入的传感器 150
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("接入传感器设置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sensorIndex = 0;
@@ -291,7 +302,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
             case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值(单传感器设置) 168
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("传感器触发阈值设置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 setCorrectionValue();
@@ -300,7 +311,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
             case COLLECTOR_SENSOR_THRESHOLD://传感器触发阈值(多传感器设置) 162
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("传感器触发阈值设置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 setCorrectionValue();
@@ -309,7 +320,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
             case COLLECTOR_SENSOR_REVISED: //传感器修正值 165
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("传感器修正值设置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sensorIndex++;
@@ -332,7 +343,7 @@ public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensor
             case SET_INCLINOMETER_LONG: //设置测斜仪测段长 166
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("测段长设置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 doAfterSetting();

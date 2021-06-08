@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -34,9 +35,12 @@ import com.shmedo.configlibrary.ble.model.MqttConfigInfo;
 import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -205,8 +209,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     childItemsLayout.setVisibility(View.VISIBLE);
                     mBtnSave.setVisibility(View.VISIBLE);
 
-                    errMsg = "查询数据超时,请稍后尝试";
-                    startProgressRunnable("正在获取参数...", 25000);
+                    startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
                     queryDataCenterInfo();
                 }
             }
@@ -249,8 +252,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
      * 查询数据服务器地址、端口
      */
     private void queryDataServerAddress() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("正在获取参数...", 25000);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
 
         //获取服务器地址,查询中心开启状态
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
@@ -592,10 +594,16 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
         }
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         sendCommand(cmdCommunicationProtocol);
         Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
     }
 
     @Override
@@ -612,7 +620,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         switch (type) {
             case SERVER_ADDRESS://获取服务器1、2、3 的地址
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     Timber.e("查询服务器地址指令出错!");
                     ToastUtils.show("查询服务器地址指令出错!");
                     return;
@@ -627,12 +635,12 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
                     childItemsLayout.setVisibility(View.GONE);
                     mBtnSave.setVisibility(View.GONE);
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 }
                 break;
 
             case QUERY_DATA_CENTER_PARAM://查询数据中心 1、2、3 参数
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询数据中心指令出错!");
                     ToastUtils.show("查询数据中心指令出错!");
@@ -644,7 +652,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case NET_LINK_COMMUN_PROTOCOL://设置通讯协议应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("网络中心通讯协议配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdDataServerAddress);
@@ -654,7 +662,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_SERVER_ADDRESS_PORT://设置数据服务器地址、端口应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据服务器地址、端口配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 //处理关闭中心1、2、3的开关时，接收到的应答指令
@@ -679,7 +687,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case AUTO_REGISTRATION_PLATFORM:// MQTT 自动注册设置通选择注册平台时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("选择平台配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdRegistrationPlatformAddress);
@@ -689,7 +697,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT:// MQTT 自动注册设置注册平台地址时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("自动注册平台地址配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdKeepAliveValue);
@@ -699,7 +707,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case MQTT_KEEP_ALIVE://设置KeepAlive值应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("设置MQTT KeepAlive值错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdPlatformParam);
@@ -709,7 +717,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_AUTO_REGISTRATION_PLATFORM_PARAM:// MQTT 自动注册设置参数时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("自动注册平台参数配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 //米度平台需要额外配置 APPKey
@@ -725,7 +733,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_MEDO_PLATFORM_APPKEY://设置appKey(米度/北京平台特有)
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("AppKey配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 doAfterSetting();
@@ -734,7 +742,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_MANUAL_REGISTRATION_PLATFORM_PARAM:// MQTT 手动注册设置参数时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("手动注册平台参数配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 doAfterSetting();
@@ -822,7 +830,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     }
 
     private void doAfterSetting() {
-        stopProgressRunnable();
+        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
 //        isExitMode = true;
         saveConfigInfoNoReboot();
     }

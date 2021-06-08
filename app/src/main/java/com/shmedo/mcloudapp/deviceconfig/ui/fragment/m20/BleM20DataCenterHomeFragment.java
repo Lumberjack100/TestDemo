@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -100,7 +102,8 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -133,7 +136,7 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         } else {
             mBtnComplete.setVisibility(View.GONE);
         }
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
@@ -191,6 +194,15 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
     }
 
     @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
+    }
+
+    @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
     }
@@ -201,7 +213,7 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -216,7 +228,7 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgressRunnable();
+                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
@@ -224,7 +236,7 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
                     } else {
-                        stopProgressRunnable();
+                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
@@ -232,10 +244,10 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_FOUR);
                     } else {
-                        stopProgressRunnable();
+                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 4) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }

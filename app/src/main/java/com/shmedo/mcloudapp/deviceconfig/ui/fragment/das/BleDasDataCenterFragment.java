@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -27,6 +29,8 @@ import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterServerConfigActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -75,8 +79,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
     }
 
     private void queryData() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("正在获取参数...", 25000);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
 
         String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
         sendCommand(baseInfoCommand);
@@ -204,14 +207,20 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(Integer.parseInt(reportingInterval));
         cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
 
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
         String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
         sendCommand(cmd);
         Timber.d("设置数据通讯模式===%s", cmd);
     }
 
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
+    }
+    
     @Override
     protected void parseResponseMessage(String cmdStr) {
         if (!isActive) {
@@ -225,7 +234,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case BASE_CONFIG://获取基础配置信息
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询基础配置信息指令出错!");
                     ToastUtils.show("查询基础配置信息指令出错!");
@@ -274,7 +283,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
             case DATA_MASSAGE_MODEL://设置数据通讯方式
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据通讯方式配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdDataReport);
@@ -284,7 +293,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
             case DATA_REPORT_INTERVAL://设置数据上报间隔
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据上报配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
@@ -296,7 +305,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                 break;
 
             case SIX_TARGER_BD_NUMBER://北斗配置
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("北斗配置错误!");
                     return;
@@ -320,7 +329,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        stopProgressRunnable();
+        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
         saveConfigInfoNoReboot();
     }
 

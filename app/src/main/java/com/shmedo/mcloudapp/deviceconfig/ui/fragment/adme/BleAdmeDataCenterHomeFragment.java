@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +11,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -84,7 +86,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -112,10 +114,9 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
-
 
     /**
      * 获取数据中心状态
@@ -148,6 +149,15 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
     }
 
     @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
+    }
+
+    @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
     }
@@ -158,7 +168,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -173,10 +183,10 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgressRunnable();
+                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 2) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }

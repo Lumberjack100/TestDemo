@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,8 @@ import com.shmedo.mcloudapp.deviceconfig.viewmodels.AdmeViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -31,7 +34,8 @@ import timber.log.Timber;
  * 描述：    与有人物联网蓝牙模块通讯的页面基类
  */
 public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
-    public static final int WRITE_TIME_OUT_SECOND = 10000;//发送指令超时时间
+    public static final int CONNECT_TIME_OUT_MILLIS = 15000;//蓝牙连接超时时间
+    public static final int WRITE_TIME_OUT_MILLIS = 10000;//发送指令超时时间
 
     //自定义心跳包指令
     private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
@@ -46,13 +50,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
 
     public boolean isExitMode = false;//是否退出页面标志
 
-    protected String errMsg;
-
-    private Handler uiHander = new Handler();
-
     private Handler heartHander = new Handler();//心跳包处理
-
-    private ProgressRunnable progressRunnable;//常规任务
 
     private HeartRunnable heartRunnable;//心跳包任务
 
@@ -81,35 +79,29 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         heartRunnable = null;
     }
 
-    private class ProgressRunnable implements Runnable {
+    private Handler uiHander = new Handler(new Handler.Callback() {
         @Override
-        public void run() {
+        public boolean handleMessage(@NonNull @NotNull Message msg) {
             dismissProgressDialog();
-            progressRunnable = null;
-            doProgressRun();
+            customHandleMessage(msg);
+            return false;
         }
+    });
+
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+
     }
 
-    protected void doProgressRun() {
-        if (!TextUtils.isEmpty(errMsg)) {
-            ToastUtils.show(errMsg);
-        }
-    }
-
-    protected void startProgressRunnable(String dialogContent, long delayMillis) {
+    protected void startProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        if (progressRunnable == null) {
-            progressRunnable = new ProgressRunnable();
-            uiHander.postDelayed(progressRunnable, delayMillis);
-        }
+        uiHander.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    protected void stopProgressRunnable() {
+    public void stopProgress(int what) {
         dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
-        progressRunnable = null;
+        uiHander.removeMessages(what);
     }
 
     @Override
@@ -146,8 +138,9 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
 
     @Override
     public void onStop() {
+        dismissProgressDialog();
+        uiHander.removeCallbacksAndMessages(null);
         super.onStop();
-        stopProgressRunnable();
     }
 
     /**
@@ -181,7 +174,8 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     protected void parseResponseMessage(String cmdStr) {
-        stopProgressRunnable();
+        dismissProgressDialog();
+        uiHander.removeCallbacksAndMessages(null);
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         if (type == IOTCommandType.UNKNOWN_TYPE) {
             Timber.e("未知的命令:%s", cmdStr);

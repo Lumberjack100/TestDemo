@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -50,6 +51,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeGuideGrooveCalibrationActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,21 +174,9 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         observerApiKey();
         observerConnectionState();
 
-        progressOverlay.postDelayed(connectTimeOut, 15000);
         //建立蓝牙连接
         connectDevice(device.getDevice());
     }
-
-    private Runnable connectTimeOut = new Runnable() {
-        @Override
-        public void run() {
-            if (!isConnected()) {
-                hideProgressBar();
-                disconnectDevice();
-                ToastUtils.show("连接超时");
-            }
-        }
-    };
 
     @Override
     public void onResume() {
@@ -201,7 +192,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onStop() {
         super.onStop();
         isFirstCreate = false;
-        progressOverlay.removeCallbacks(connectTimeOut);
+        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         stopQueryMotorStateRunnable();
     }
 
@@ -289,6 +280,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
                     case CONNECTING://A connection to the device was initiated.
+                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
                         showProgressBar();
                         mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
@@ -372,7 +364,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     private void hideProgressBar() {
-        progressOverlay.removeCallbacks(connectTimeOut);
+        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -430,7 +422,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                progressOverlay.postDelayed(connectTimeOut, 15000);
+                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -676,6 +668,24 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
 
         moduleAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("发送指令超时,请稍后尝试");
+                break;
+
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!isConnected()) {
+                    hideProgressBar();
+                    disconnectDevice();
+                    ToastUtils.show("连接超时");
+                }
+            }
+            break;
+        }
     }
 
     @Override

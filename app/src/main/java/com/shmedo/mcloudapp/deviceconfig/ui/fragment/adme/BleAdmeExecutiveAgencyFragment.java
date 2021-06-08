@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -21,6 +23,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeExecutiveAgencyInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
@@ -168,8 +171,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
      * 获取执行机构参数
      */
     private void queryParamInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
         sendCommand(command);
     }
@@ -537,9 +539,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             decimalFormat.applyPattern("#.###");
             entity.setPoint_offset(decimalFormat.format(Double.parseDouble(pointOffset)));
 
-            errMsg = "发送指令超时,请稍后尝试";
-            startProgressRunnable("正在发送配置指令...", WRITE_TIME_OUT_SECOND);
-            mBtnSave.setEnabled(false);
+            startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY, entity);
             sendCommand(command);
         } catch (Exception ex) {
@@ -548,9 +548,12 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
     }
 
     @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        mBtnSave.setEnabled(true);
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
     }
 
     @Override
@@ -562,7 +565,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EXECUTIVE_AGENCY: {//获取ADME的执行机构配置参数
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询执行机构参数出错!", commandResult.getMessage());
@@ -578,7 +581,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             case ADME_MD_SET_EXECUTIVE_AGENCY: {//设置ADME的执行机构配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -590,7 +593,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

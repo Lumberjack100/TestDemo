@@ -3,10 +3,13 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
@@ -27,8 +30,8 @@ import timber.log.Timber;
  * 描述：     ADME  查看当前状态页面
  */
 public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragment {
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     /**
      * 基本信息
@@ -136,40 +139,42 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRefreshLayout();
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
-        queryParamInfo();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 queryParamInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                            ToastUtils.show("刷新超时");
+                        }
+                    }
+                }, WRITE_TIME_OUT_MILLIS);
             }
         });
+
     }
 
     /**
      * 获取设备的当前状态
      */
     private void queryParamInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable(null, WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_STATE);
         sendCommand(command);
-    }
-
-    @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        swipeRefresh.setRefreshing(false);
     }
 
     @Override
@@ -181,8 +186,7 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_STATE: {
-                swipeRefresh.setRefreshing(false);
-                stopProgressRunnable();
+                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<AdmeCurrentStateInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());

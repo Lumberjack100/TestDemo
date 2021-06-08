@@ -223,7 +223,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_WORK_MODE: {//获取设备的工作模式
-                stopProgressRunnable();
                 IOTCommandResult<AdmeWorkModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备的工作模式出错!", commandResult.getMessage());
@@ -249,7 +248,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             break;
 
             case REBOOT: {//重启
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());
@@ -268,7 +266,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             break;
 
             case RESET: {//恢复出厂设置
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送恢复出厂设置指令失败!", cmdResult.getReason());
@@ -287,7 +284,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

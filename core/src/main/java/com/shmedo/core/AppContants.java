@@ -49,7 +49,6 @@ public interface AppContants {
         int ADVANCED_CONFIG = 0x002;//高级配置
     }
 
-
     interface Extras {
         String CUR_DEVICE_SN = "cur_device_sn";
 
@@ -86,6 +85,12 @@ public interface AppContants {
 
         // 设备类型
         String DEVICE_TYPE = "device_type";
+    }
+
+    interface MsgWhat{
+        int MSG_DEFAULT = 0x001;//
+        int CONNECT_DEVICE = 0x002;//
+
     }
 
 }

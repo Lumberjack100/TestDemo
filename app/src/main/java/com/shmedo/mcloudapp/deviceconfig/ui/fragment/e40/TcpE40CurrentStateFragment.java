@@ -6,12 +6,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.e40.SatelitteTypeEntity;
@@ -49,8 +52,8 @@ import timber.log.Timber;
  * 描述：     E40 TCP模式 设备运行状态页面
  */
 public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     /**
      * 基本信息
@@ -213,9 +216,10 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
         super.onActivityCreated(savedInstanceState);
         initSensorAdapter();
         initRefreshLayout();
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
-        queryStateInfo();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     /**
@@ -242,18 +246,25 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
         sensorRecyclerView.setAdapter(sensorAdapter);
     }
 
-
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!tcpViewModel.getConnectStatus()) {
                     ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 queryStateInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                            ToastUtils.show("刷新超时");
+                        }
+                    }
+                }, WRITE_TIME_OUT_MILLIS);
             }
         });
     }
@@ -262,16 +273,8 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
      * 获取设备的当前状态
      */
     private void queryStateInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable(null, WRITE_TIME_OUT_SECOND);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_EX_STATUS);
         sendCommand(command);
-    }
-
-    @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        swipeRefresh.setRefreshing(false);
     }
 
     /**
@@ -294,8 +297,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
             case QUERY_DEVICE_EX_STATUS: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -310,34 +312,31 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
             case E40_MD_GET_SATELITTE: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询卫星数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
                 String content = commandResult.getResult();
-                if(TextUtils.isEmpty(content)){
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
+                if (TextUtils.isEmpty(content)) {
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 initSatelittleInfo(content);
                 if (content.contains("BDS")) {
-                    if (satelitteBean != null && satelitteBean.getBdsBeanList()!=null) {
+                    if (satelitteBean != null && satelitteBean.getBdsBeanList() != null) {
                         initBDSInfo(satelitteBean.getBdsBeanList());
                     }
                     querySatelitteInfo("GPS");
                 } else if (content.contains("GPS")) {
-                    if (satelitteBean != null && satelitteBean.getGpsBeanList()!=null) {
+                    if (satelitteBean != null && satelitteBean.getGpsBeanList() != null) {
                         initGPSInfo(satelitteBean.getGpsBeanList());
                     }
                     querySatelitteInfo("GLO");
                 } else if (content.contains("GLO")) {
-                    swipeRefresh.setRefreshing(false);
-                    stopProgressRunnable();
-                    if (satelitteBean != null && satelitteBean.getGloBeanList()!=null) {
+                    mRefreshLayout.finishRefresh(true);
+                    if (satelitteBean != null && satelitteBean.getGloBeanList() != null) {
                         initGLOInfo(satelitteBean.getGloBeanList());
                     }
                 }
@@ -476,7 +475,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            swipeRefresh.setRefreshing(false);
+            mRefreshLayout.finishRefresh(false);
         }
     }
 
@@ -499,7 +498,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
 
     private void initGPSInfo(List<GPSBean> gpsBeanList) {
         mTvGpsSatelliteTotalNum.setText(String.format("总数：%d", gpsBeanList.size()));
-        int  gpsRedNum = 0, gpsBlueNum = 0, gpsGreenNum = 0;
+        int gpsRedNum = 0, gpsBlueNum = 0, gpsGreenNum = 0;
         for (GPSBean gpsBean : gpsBeanList) {
             if (gpsBean.getL1() < 25) {
                 gpsRedNum += 1;
@@ -516,7 +515,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
 
     private void initGLOInfo(List<GLOBean> gloBeanList) {
         mTvGloSatelliteTotalNum.setText(String.format("总数：%d", gloBeanList.size()));
-        int  gloRedNum = 0, gloBlueNum = 0, gloGreenNum = 0;
+        int gloRedNum = 0, gloBlueNum = 0, gloGreenNum = 0;
         for (GLOBean gloBean : gloBeanList) {
             if (gloBean.getL1() < 25) {
                 gloRedNum += 1;

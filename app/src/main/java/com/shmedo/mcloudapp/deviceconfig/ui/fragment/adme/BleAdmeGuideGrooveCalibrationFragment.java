@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeGuideGrooveCalibrationInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionAngleInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
@@ -103,8 +105,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
      * 获取导槽校准配置参数
      */
     private void queryMotorMotionConfig() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", WRITE_TIME_OUT_SECOND);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION);
         sendCommand(command);
     }
@@ -121,8 +122,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
      * 清空电机运动数据记录指令
      */
     private void clearMotorMotionData() {
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_CLEAR_GUIDE_GROOVE_CALIBRATION_DATA);
         sendCommand(command);
     }
@@ -208,20 +208,12 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
             entity.setMotorspeed(movementSpeed);
             entity.setMovepulse(totalPulseGoal);
 
-            mBtnRun.setEnabled(false);
-            errMsg = "发送指令超时,请稍后尝试";
-            startProgressRunnable("处理中...", WRITE_TIME_OUT_SECOND);
+            startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION, entity);
             sendCommand(command);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    protected void doProgressRun() {
-        super.doProgressRun();
-        mBtnRun.setEnabled(true);
     }
 
     /**
@@ -275,6 +267,13 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
     }
 
     @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
+    }
+
+    @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
     }
@@ -283,7 +282,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION: {//获取ADME的导槽校准配置参数
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeGuideGrooveCalibrationInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取导槽校准配置参数出错!", commandResult.getMessage());
@@ -321,7 +320,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
             break;
 
             case ADME_MD_SET_GUIDE_GROOVE_CALIBRATION: {//设置ADME的导槽校准配置参数
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置导槽校准配置参数出错!", cmdResult.getReason());
@@ -335,7 +334,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
             break;
 
             case ADME_MD_CLEAR_GUIDE_GROOVE_CALIBRATION_DATA: {//ADME导槽校准清空
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "清空数据出错!", cmdResult.getReason());

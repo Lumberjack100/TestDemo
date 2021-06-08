@@ -276,7 +276,6 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case VMS_TERMINAL_QUERY_SAMPLE: {//Vms终端遥测
-                stopProgressRunnable();
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "遥测出错!", commandResult.getMessage());
@@ -290,7 +289,6 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
             break;
 
             case VMS_MD_REBOOT_TERMINAL: {//重启Vms终端
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());

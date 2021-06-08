@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.nio.charset.StandardCharsets;
 
 import timber.log.Timber;
@@ -37,10 +40,11 @@ import timber.log.Timber;
  * 描述：     TODO #gh#
  */
 public abstract class BaseBleCommunicateFragment extends BaseFragment {
+    public static final int CONNECT_TIME_OUT_MILLIS = 15000;//蓝牙连接超时时间
 
-    public static final int CONFIG_PARAMS_DELAY_MILLIS = 20000;//发送配置参数指令超时时间
+    public static final int WRITE_TIME_OUT_MILLIS = 20000;//发送配置参数指令超时时间
 
-    public static final int CONFIG_PARAMS_LONG_DELAY_MILLIS = 30000;//发送配置参数指令超时时间
+    public static final int WRITE_TIME_OUT_LONG_MILLIS = 30000;//发送配置参数指令超时时间
 
     protected USRBleViewModel usrBleViewModel;
 
@@ -50,11 +54,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
 
     protected String errMsg;
 
-    private Handler uiHander = new Handler();
-
     private Handler heartHander = new Handler();
-
-    private ProgressRunnable progressRunnable;
 
     private HeartRunnable heartRunnable;
 
@@ -70,48 +70,40 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
             }
         }
     }
-
     protected void startHeartRunnable() {
         if (heartRunnable == null) {
             heartRunnable = new HeartRunnable();
             heartHander.postDelayed(heartRunnable, 10000);
         }
     }
-
     protected void stopHeartRunnable() {
         heartHander.removeCallbacksAndMessages(null);
         heartRunnable = null;
     }
 
-    private class ProgressRunnable implements Runnable {
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+
+    }
+
+    private Handler uiHander = new Handler(new Handler.Callback() {
         @Override
-        public void run() {
+        public boolean handleMessage(@NonNull @NotNull Message msg) {
             dismissProgressDialog();
-            progressRunnable = null;
-            doProgressRun();
+            customHandleMessage(msg);
+            return false;
         }
-    }
+    });
 
-    protected void doProgressRun() {
-        if (!TextUtils.isEmpty(errMsg)) {
-            ToastUtils.show(errMsg);
-        }
-    }
-
-    protected void startProgressRunnable(String dialogContent, long delayMillis) {
+    protected void startProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        if (progressRunnable == null) {
-            progressRunnable = new ProgressRunnable();
-            uiHander.postDelayed(progressRunnable, delayMillis);
-        }
+        uiHander.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    public void stopProgressRunnable() {
+    public void stopProgress(int what) {
         dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
-        progressRunnable = null;
+        uiHander.removeMessages(what);
     }
 
     @Override
@@ -291,9 +283,6 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
     protected void saveConfigInfo() {
         SaveConfigInfoEntity saveConfigInfoEntity = new SaveConfigInfoEntity(SaveConfigMode.SAVE_REBOOT.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SAVE_CONFIG_INFO, saveConfigInfoEntity);
-
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送保存重启指令...", CONFIG_PARAMS_DELAY_MILLIS);
         sendCommand(command);
         Timber.d("发送保存配置重启设备指令===%s", command);
     }
@@ -364,7 +353,8 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
 
     @Override
     public void onStop() {
+        dismissProgressDialog();
+        uiHander.removeCallbacksAndMessages(null);
         super.onStop();
-        stopProgressRunnable();
     }
 }

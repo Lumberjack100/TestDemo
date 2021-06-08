@@ -204,8 +204,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
      * 查询采集器配置信息
      */
     private void queryCollectorInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("查询数据...", 20000);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModelValue);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
         sendCommand(command);
@@ -229,8 +228,8 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
     protected void sendCloseCollectorCmd() {
         SetCollectorAddressEntity collectorAddressEntity = new SetCollectorAddressEntity(0);
         String cmdCollectorAddress = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_ADDRESS, collectorAddressEntity);
-        errMsg = "发送指令超时,请稍后尝试";
-        startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         sendCommand(cmdCollectorAddress);
         Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
     }
@@ -263,7 +262,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
             case COLLECTOR_CONFIG://采集器配置信息 100
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询采集器配置信息指令出错!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     initDefaultSensorItems();
                     initEmptyDefaultCollectorSensorParamsInfo();
                     return;
@@ -273,7 +272,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
                     Timber.e("采集器配置信息为空!");
                 } else {
                     if (collectorConfigInfo.getCollectorAddress().equals("0")) {
-                        stopProgressRunnable();
+                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                         collectorCloseWarn();
                         return;
                     }
@@ -281,7 +280,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
                 }
 
                 if (accessSum == 0) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     initDefaultSensorItems();
                     initEmptyDefaultCollectorSensorParamsInfo();
                     return;
@@ -294,7 +293,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
 
             case COLLECTOR_CHANNEL_SENSOR_PARAMETER://获取XX采集器YY通道的传感器参数 101
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     Timber.e("查询采集器配置信息指令出错!");
                     return;
                 }
@@ -306,7 +305,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
                 if (sensorIndex < accessSum) {
                     queryExtendSensorConfigInfo();
                 } else {//所有通道的传感器参数都查询了
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     if (sensorItemList.size() < 8) {
                         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
                         sensorItemList.add(sensorItem);
@@ -321,7 +320,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
                 break;
 
             case SET_COLLECTOR_ADDRESS://当接入的传感器为0时，设置采集器地址为0
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器地址配置错误!");
                     return;
@@ -419,7 +418,7 @@ public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicat
     }
 
     protected void doAfterSetting() {
-        stopProgressRunnable();
+        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
 //        isExitMode = true;
         saveConfigInfoNoReboot();
     }

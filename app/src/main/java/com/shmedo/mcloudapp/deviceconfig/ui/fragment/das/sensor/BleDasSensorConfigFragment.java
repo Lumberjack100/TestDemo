@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -42,6 +44,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalSensorHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
@@ -263,8 +267,8 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
      * 查询开关量传感器信息
      */
     private void querySwitchSensorInfo() {
-        errMsg = "查询数据超时,请稍后尝试";
-        startProgressRunnable("加载中...", 20000);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+
         String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
         sendCommand(command);
         Timber.d("获取基础配置信息指令===%s", command);
@@ -506,8 +510,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             cmdList.add(cmdNozzelHeight);
         }
         if (!cmdList.isEmpty()) {
-            errMsg = "发送指令超时,请稍后尝试";
-            startProgressRunnable("正在发送配置指令...", CONFIG_PARAMS_DELAY_MILLIS);
+            startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         }
         sendParamConfigCmd();
     }
@@ -528,6 +531,13 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     }
 
     @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
+    }
+
+    @Override
     protected void parseResponseMessage(String cmdStr) {
         if (!isActive) {
             return;
@@ -541,7 +551,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         switch (type) {
             case BASE_CONFIG://基础配置信息 000
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     Timber.e("查询基础配置信息指令出错!");
                     return;
                 }
@@ -554,7 +564,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 break;
 
             case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
-                stopProgressRunnable();
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询数字式渗压计参数指令出错!");
                     return;
@@ -582,7 +592,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
             case BREAK_ALARM_STATUS: //查询或设置断线报警器状态 227
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     if (tempStr.contains("2270")) {
                         Timber.e("查询断线报警器状态指令出错!");
                     } else {
@@ -610,7 +620,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SETTING_RAIN_PRECISION://设置雨量计精度 121
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("雨量计精度配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -625,7 +635,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SET_OSMOMETER_ADDRESS://设置数字渗压计地址 402
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计地址配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -640,7 +650,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SET_OSMOMETER_TRIGGER://设置数字渗压计水位报警值 403
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计水位报警值配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -655,7 +665,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SET_OSMOMETR_CORRECT://设置数字渗压计水深修正值 404
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计水深修正值配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -670,7 +680,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SET_CORD_LENGTH://设置数字渗压计绳长 405
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计绳长配置错误!");
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -684,7 +694,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
             case SET_OSMOMETR_NOZZEL_HEIGHT://设置数字渗压计安装高程 406
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     ToastUtils.show("数字渗压计安装高程配置错误!");
                     return;
                 }
@@ -828,7 +838,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        stopProgressRunnable();
+        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
 //        isExitMode = true;
         saveConfigInfoNoReboot();
     }

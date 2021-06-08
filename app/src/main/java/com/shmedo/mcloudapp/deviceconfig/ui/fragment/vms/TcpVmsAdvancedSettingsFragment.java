@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
@@ -95,7 +96,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-//        startProgressRunnable("加载中...", QUERY_CMD_DELAY_MILLIS);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -118,7 +119,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        startProgressRunnable("加载中...", QUERY_CMD_DELAY_MILLIS);
+        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
@@ -222,6 +223,15 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
     }
 
     @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
+    }
+
+    @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
     }
@@ -232,7 +242,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
             case MD_GET_DATA_CENTER_STATUS: {//获取Vms数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询网关数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -247,7 +257,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgressRunnable();
+                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
@@ -257,7 +267,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgressRunnable();
+                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
@@ -267,10 +277,10 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                         getDataCenterStatus(ServerNumber.NUMBER_FOUR);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgressRunnable();
+                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 4) {
-                    stopProgressRunnable();
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }
@@ -278,7 +288,6 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
             break;
 
             case REBOOT: {//重启网关
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());
@@ -297,7 +306,6 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
             break;
 
             case RESET: {//恢复出厂设置
-                stopProgressRunnable();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送恢复出厂设置指令失败!", cmdResult.getReason());
