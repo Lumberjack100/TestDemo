@@ -54,7 +54,7 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
 
         } else {
 //            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
-            holder.setText(R.id.tv_terminal_state, processTerminalState(vmsTerminalInfo.getLastpackagetime()));
+            holder.setText(R.id.tv_terminal_state, processTerminalState(vmsTerminalInfo.getLastpackagetime(), vmsTerminalInfo.getLogintime()));
             if (vmsTerminalInfo.getLastpackagetime().equals("离线")) {
                 holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
                 holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
@@ -68,13 +68,14 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
         processSensorInsertState(holder, vmsTerminalInfo.getSensor());
     }
 
-    private String processTerminalState(String lastTime) {
+    private String processTerminalState(String lastTime, String logintime) {
         if (TextUtils.isEmpty(lastTime)) {
             return "离线";
         }
-        long packageTime = DateUtil.stringToLong(lastTime, "yyyy/MM/dd HH:mm:ss");
+        long lastPackageTime = DateUtil.stringToLong(lastTime, "yyyy/MM/dd HH:mm:ss");
+        long loginTime = DateUtil.stringToLong(logintime, "yyyy/MM/dd HH:mm:ss");
         long phoneTime = new Date().getTime();
-        if ((phoneTime - packageTime) > 24 * 3600 * 1000) {
+        if (((phoneTime - lastPackageTime) > 24 * 3600 * 1000) || (Math.abs(loginTime - lastPackageTime) < 2 * 1000)) {
             return "离线";
         } else {
             return "待机";

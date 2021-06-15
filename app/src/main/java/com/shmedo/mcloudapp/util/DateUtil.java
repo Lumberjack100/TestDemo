@@ -311,7 +311,7 @@ public class DateUtil {
 
     /**
      * 把字符串型日期按照指定的格式转为long型日期
-     * <br/>返回的结果单位是秒
+     * <br/>
      *
      * @param date   String 型日期
      * @param format 日期格式；

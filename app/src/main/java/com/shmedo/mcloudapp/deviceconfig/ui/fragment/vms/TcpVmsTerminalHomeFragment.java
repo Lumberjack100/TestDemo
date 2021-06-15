@@ -125,7 +125,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
             mTvProductModel.setText(String.format("固件版本：%s", ""));
             mTvTime.setText(String.format("接入时间：%s", vmsTerminalInfo.getLogintime()));
             mTvDeviceState.setVisibility(View.VISIBLE);
-            mTvDeviceState.setText(processTerminalState(vmsTerminalInfo.getLastpackagetime()));
+            mTvDeviceState.setText(processTerminalState(vmsTerminalInfo.getLastpackagetime(), vmsTerminalInfo.getLogintime()));
             if (vmsTerminalInfo.getStatus() != 0) {
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
@@ -138,13 +138,14 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
         mTvDeviceConnectOperate.setVisibility(View.GONE);
     }
 
-    private String processTerminalState(String lastTime) {
+    private String processTerminalState(String lastTime, String logintime) {
         if (TextUtils.isEmpty(lastTime)) {
             return "离线";
         }
-        long packageTime = DateUtil.stringToLong(lastTime, "yyyy/MM/dd HH:mm:ss");
+        long lastPackageTime = DateUtil.stringToLong(lastTime, "yyyy/MM/dd HH:mm:ss");
+        long loginTime = DateUtil.stringToLong(logintime, "yyyy/MM/dd HH:mm:ss");
         long phoneTime = new Date().getTime();
-        if ((phoneTime - packageTime) > 24 * 3600 * 1000) {
+        if (((phoneTime - lastPackageTime) > 24 * 3600 * 1000) || (Math.abs(loginTime - lastPackageTime) < 2 * 1000)) {
             return "离线";
         } else {
             return "待机";
