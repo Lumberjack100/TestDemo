@@ -6,12 +6,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.e40.SatelitteTypeEntity;
@@ -38,6 +41,8 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,8 +56,8 @@ import timber.log.Timber;
  * 描述：      E40 4G模式设备运行状态页面
  */
 public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     /**
      * 基本信息
@@ -220,9 +225,10 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
         super.onActivityCreated(savedInstanceState);
         initSensorAdapter();
         initRefreshLayout();
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
-        queryStateInfo();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     /**
@@ -250,11 +256,19 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     }
 
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 queryStateInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+//                            ToastUtils.show("刷新超时");
+                        }
+                    }
+                }, 10000);
             }
         });
     }
@@ -284,7 +298,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            swipeRefresh.setRefreshing(false);
+            mRefreshLayout.finishRefresh(false);
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -305,7 +319,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        swipeRefresh.setRefreshing(false);
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("查询设备状态响应错误");
     }
 
@@ -317,7 +331,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        swipeRefresh.setRefreshing(false);
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("查询设备状态响应超时");
     }
 
@@ -339,7 +353,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             case QUERY_DEVICE_EX_STATUS: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -354,31 +368,31 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             case E40_MD_GET_SATELITTE: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询卫星数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
                 String content = commandResult.getResult();
-                if(TextUtils.isEmpty(content)){
-                    swipeRefresh.setRefreshing(false);
+                if (TextUtils.isEmpty(content)) {
+                    mRefreshLayout.finishRefresh(false);
                     return;
                 }
                 initSatelittleInfo(content);
                 if (content.contains("BDS")) {
-                    if (satelitteBean != null && satelitteBean.getBdsBeanList()!=null) {
+                    if (satelitteBean != null && satelitteBean.getBdsBeanList() != null) {
                         initBDSInfo(satelitteBean.getBdsBeanList());
                     }
                     querySatelitteInfo("GPS");
                 } else if (content.contains("GPS")) {
-                    if (satelitteBean != null && satelitteBean.getGpsBeanList()!=null) {
+                    if (satelitteBean != null && satelitteBean.getGpsBeanList() != null) {
                         initGPSInfo(satelitteBean.getGpsBeanList());
                     }
                     querySatelitteInfo("GLO");
                 } else if (content.contains("GLO")) {
-                    swipeRefresh.setRefreshing(false);
-                    if (satelitteBean != null && satelitteBean.getGloBeanList()!=null) {
+                    mRefreshLayout.finishRefresh(true);
+                    if (satelitteBean != null && satelitteBean.getGloBeanList() != null) {
                         initGLOInfo(satelitteBean.getGloBeanList());
                     }
                 }
@@ -516,7 +530,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            swipeRefresh.setRefreshing(false);
+            mRefreshLayout.finishRefresh(true);
         }
     }
 
@@ -539,7 +553,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initGPSInfo(List<GPSBean> gpsBeanList) {
         mTvGpsSatelliteTotalNum.setText(String.format("总数：%d", gpsBeanList.size()));
-        int  gpsRedNum = 0, gpsBlueNum = 0, gpsGreenNum = 0;
+        int gpsRedNum = 0, gpsBlueNum = 0, gpsGreenNum = 0;
         for (GPSBean gpsBean : gpsBeanList) {
             if (gpsBean.getL1() < 25) {
                 gpsRedNum += 1;
@@ -556,7 +570,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initGLOInfo(List<GLOBean> gloBeanList) {
         mTvGloSatelliteTotalNum.setText(String.format("总数：%d", gloBeanList.size()));
-        int  gloRedNum = 0, gloBlueNum = 0, gloGreenNum = 0;
+        int gloRedNum = 0, gloBlueNum = 0, gloGreenNum = 0;
         for (GLOBean gloBean : gloBeanList) {
             if (gloBean.getL1() < 25) {
                 gloRedNum += 1;

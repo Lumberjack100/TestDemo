@@ -166,7 +166,6 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                 }, WRITE_TIME_OUT_MILLIS);
             }
         });
-
     }
 
     /**

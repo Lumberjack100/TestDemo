@@ -95,7 +95,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private FragmentStateAdapter pagerAdapter;
     private TabLayoutMediator tabLayoutMediator;
 
-    private NetVmsAisleListFragment vmsAisleListFragment;
+    private VmsAisleListFragment vmsAisleListFragment;
     private NetVmsTerminalListFragment vmsTerminalListFragmentTest;
     public ProjectDeviceInfo projectDeviceInfo;
     private VmsViewModel vmsViewModel;
@@ -128,7 +128,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
     @Override
     protected void initView() {
-        vmsAisleListFragment = new NetVmsAisleListFragment();
+        vmsAisleListFragment = new VmsAisleListFragment();
         vmsTerminalListFragmentTest = NetVmsTerminalListFragment.newInstance(projectDeviceInfo);
 
         List<Fragment> mFragments = new ArrayList<>();

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalCurrentStateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.VmsTerminalCurrentStateFragment;
 
 /**
  * 创建者:   gonghe <br/>
@@ -50,6 +50,6 @@ public class VmsTerminalCurrentStateActivity extends BaseConfigFragmentContainer
 
     @Override
     protected Fragment initFragment() {
-        return TcpVmsTerminalCurrentStateFragment.newInstance(vmsTerminalInfo);
+        return VmsTerminalCurrentStateFragment.newInstance(vmsTerminalInfo);
     }
 }

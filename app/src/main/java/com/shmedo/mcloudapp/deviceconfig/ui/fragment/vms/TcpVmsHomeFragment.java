@@ -100,8 +100,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     private FragmentStateAdapter pagerAdapter;
     private TabLayoutMediator tabLayoutMediator;
 
-    private NetVmsAisleListFragment vmsAisleListFragment;
-    private VmsTerminalListFragment vmsTerminalListFragmentTest;
+    private VmsAisleListFragment vmsAisleListFragment;
+    private TcpVmsTerminalListFragment tcpVmsTerminalListFragmentTest;
 
     private final String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
@@ -122,12 +122,12 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
     @Override
     protected void initView() {
-        vmsAisleListFragment = new NetVmsAisleListFragment();
-        vmsTerminalListFragmentTest = new VmsTerminalListFragment();
+        vmsAisleListFragment = new VmsAisleListFragment();
+        tcpVmsTerminalListFragmentTest = new TcpVmsTerminalListFragment();
 
         List<Fragment> mFragments = new ArrayList<>();
         mFragments.add(vmsAisleListFragment);
-        mFragments.add(vmsTerminalListFragmentTest);
+        mFragments.add(tcpVmsTerminalListFragmentTest);
         pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(1);
@@ -390,7 +390,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                     tabLayout.getTabAt(1).select();
 
                     terminalIndex1 = 0;
-                    vmsTerminalListFragmentTest.clearTerminalList();
+                    tcpVmsTerminalListFragmentTest.clearTerminalList();
                     vmsViewModel.clearCacheTerminalList();
                     getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
                 }
@@ -409,7 +409,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
                 vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-                vmsTerminalListFragmentTest.updateTerminalList(vmsAisleTerminalInfo.getTerminal());
+                tcpVmsTerminalListFragmentTest.updateTerminalList(vmsAisleTerminalInfo.getTerminal());
 
                 if (vmsAisleTerminalInfo.getChannel() == vmsAisleInfo1.getChannel()) {
                     terminalIndex1++;

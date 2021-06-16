@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".deviceconfig.ui.fragment.vms.NetVmsAisleListFragment">
+    tools:context=".deviceconfig.ui.fragment.vms.VmsAisleListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerviewAisle"

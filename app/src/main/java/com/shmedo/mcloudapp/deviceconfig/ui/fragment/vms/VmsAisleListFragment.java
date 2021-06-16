@@ -18,7 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class NetVmsAisleListFragment extends BaseFragment {
+public class VmsAisleListFragment extends BaseFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     @BindView(R.id.recyclerviewAisle)

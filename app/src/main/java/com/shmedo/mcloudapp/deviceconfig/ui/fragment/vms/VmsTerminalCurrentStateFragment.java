@@ -28,7 +28,7 @@ import butterknife.BindView;
  * 创建时间:  2020/11/20 <br/>
  * 描述：     Vms 网关终端运行状态详情页面
  */
-public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
+public class VmsTerminalCurrentStateFragment extends BaseFragment {
     private static final String TERMINAL_INFO = "terminal_info";
     /**
      * 基本信息
@@ -77,8 +77,8 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
 
     private VmsTerminalInfo vmsTerminalInfo;
 
-    public static TcpVmsTerminalCurrentStateFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
-        TcpVmsTerminalCurrentStateFragment fragment = new TcpVmsTerminalCurrentStateFragment();
+    public static VmsTerminalCurrentStateFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
+        VmsTerminalCurrentStateFragment fragment = new VmsTerminalCurrentStateFragment();
         Bundle args = new Bundle();
         args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
@@ -95,7 +95,7 @@ public class TcpVmsTerminalCurrentStateFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.tcp_vms_terminal_current_state_fragment;
+        return R.layout.vms_terminal_current_state_fragment;
     }
 
 

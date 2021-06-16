@@ -36,7 +36,7 @@ import butterknife.BindView;
  * 创建时间:  2020/11/19 <br/>
  * 描述：     Vms 网关挂载的终端设备列表页面
  */
-public class VmsTerminalListFragment extends BaseFragment {
+public class TcpVmsTerminalListFragment extends BaseFragment {
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 

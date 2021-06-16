@@ -161,7 +161,6 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 }, WRITE_TIME_OUT_MILLIS);
             }
         });
-
     }
 
     /**
