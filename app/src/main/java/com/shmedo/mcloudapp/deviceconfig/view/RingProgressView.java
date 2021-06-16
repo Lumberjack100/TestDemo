@@ -102,7 +102,7 @@ public class RingProgressView extends View {
         canvas.drawArc(rectF, -90, currentProgress * 360 / maxProgress, false, paint);
 
         // 3. 画文本
-        String text = currentProgress * 100 / maxProgress + "%";
+        String text = currentProgress <= 100 ? (currentProgress * 100 / maxProgress + "%") : "异常";
         paint.setColor(textColor);
         // 设置绘制文本画笔风格
         paint.setStyle(Paint.Style.FILL);
