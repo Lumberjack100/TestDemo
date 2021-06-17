@@ -2,7 +2,10 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -327,17 +330,29 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                 if (content.contains("BDS")) {
                     if (satelitteBean != null && satelitteBean.getBdsBeanList() != null) {
                         initBDSInfo(satelitteBean.getBdsBeanList());
+                    }else {
+                        mTvBDSatelliteRedNum.setText("!");
+                        mTvBDSatelliteBlueNum.setText("!");
+                        mTvBDSatelliteGreenNum.setText("!");
                     }
                     querySatelitteInfo("GPS");
                 } else if (content.contains("GPS")) {
                     if (satelitteBean != null && satelitteBean.getGpsBeanList() != null) {
                         initGPSInfo(satelitteBean.getGpsBeanList());
+                    }else {
+                        mTvGpsSatelliteRedNum.setText("!");
+                        mTvGpsSatelliteBlueNum.setText("!");
+                        mTvGpsSatelliteGreenNum.setText("!");
                     }
                     querySatelitteInfo("GLO");
                 } else if (content.contains("GLO")) {
                     mRefreshLayout.finishRefresh(true);
                     if (satelitteBean != null && satelitteBean.getGloBeanList() != null) {
                         initGLOInfo(satelitteBean.getGloBeanList());
+                    }else {
+                        mTvGloSatelliteRedNum.setText("!");
+                        mTvGloSatelliteBlueNum.setText("!");
+                        mTvGloSatelliteGreenNum.setText("!");
                     }
                 }
             }
@@ -361,7 +376,12 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                     mTvImeiNumber.setText(extendStateInfo.getBase().getImei());
                     mTvFirmwareVersion.setText(extendStateInfo.getBase().getVersion());
                     mTvBoardType.setText(extendStateInfo.getBase().getOem());
-                    mTvDeviceExternalVoltage.setText(String.format("%s V", extendStateInfo.getBase().getVolt() + ""));
+
+                    double voltage = extendStateInfo.getBase().getVolt();
+                    SpannableStringBuilder builder = new SpannableStringBuilder(voltage + "V");
+                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(voltage <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_666666));
+                    builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    mTvDeviceExternalVoltage.setText(builder);
                 }
                 //存储状态
                 if (extendStateInfo.getStorage() != null) {
@@ -475,7 +495,21 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            mRefreshLayout.finishRefresh(false);
+            mRefreshLayout.finishRefresh(true);
+            mTvBDSatelliteTotalNum.setText("总数：");
+            mTvBDSatelliteRedNum.setText("!");
+            mTvBDSatelliteBlueNum.setText("!");
+            mTvBDSatelliteGreenNum.setText("!");
+
+            mTvGpsSatelliteTotalNum.setText("总数：");
+            mTvGpsSatelliteRedNum.setText("!");
+            mTvGpsSatelliteBlueNum.setText("!");
+            mTvGpsSatelliteGreenNum.setText("!");
+
+            mTvGloSatelliteTotalNum.setText("总数：");
+            mTvGloSatelliteRedNum.setText("!");
+            mTvGloSatelliteBlueNum.setText("!");
+            mTvGloSatelliteGreenNum.setText("!");
         }
     }
 
