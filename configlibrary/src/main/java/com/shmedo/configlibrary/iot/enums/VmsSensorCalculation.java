@@ -24,7 +24,12 @@ public enum VmsSensorCalculation {
     /**
      * 模数
      */
-    MODULUS("81");
+    MODULUS("81"),
+
+    /**
+     * 倍率
+     */
+    MAGNIFICATION("82");
 
     private String type;
 
@@ -49,6 +54,9 @@ public enum VmsSensorCalculation {
 
             case "81":
                 return MODULUS;
+
+            case "82":
+                return MAGNIFICATION;
 
             default:
                 return null;

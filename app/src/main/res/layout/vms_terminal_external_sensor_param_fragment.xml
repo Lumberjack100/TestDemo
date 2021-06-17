@@ -90,7 +90,7 @@
                     android:text="监测类型" />
 
                 <TextView
-                    android:id="@+id/tv_sensor_name"
+                    android:id="@+id/tv_monitor_type"
                     style="@style/Common_ClickableItem_ValueStyle"
                     android:textSize="17sp"
                     tools:text="轴力计" />
@@ -138,32 +138,32 @@
             <com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.LinearParamView
                 android:id="@+id/linearParamView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
             <com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView
                 android:id="@+id/polynomialParamView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
             <com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.ModulusView
                 android:id="@+id/modulusView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.MagnificationView
+                android:id="@+id/magnificationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:foreground="?attr/selectableItemBackground"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="34dp"
-                android:layout_marginEnd="18dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_select"
-                android:gravity="center"
-                android:text="保存"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
+                style="@style/SubmitBordelessButtonStyle"
+                android:text="保存" />
+            
         </LinearLayout>
 
     </LinearLayout>

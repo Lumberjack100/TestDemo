@@ -279,6 +279,20 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="SubmitBordelessButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/ripple_button_with_corner</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">46dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginBottom">25dp</item>
+
+    </style>
+
     <!--设备当前运行状态单条基本信息样式-->
     <style name="DeviceCurrentState_SingleItem_Style">
         <item name="android:layout_width">match_parent</item>
@@ -332,7 +346,9 @@
     <style name="storage_progress_horizontal" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:indeterminateOnly">false</item>
         <!--进度条的进度颜色drawable文件-->
-        <item name="android:progressDrawable">@drawable/storage_low_progress_indeterminate_horizontal</item>
+        <item name="android:progressDrawable">
+            @drawable/storage_low_progress_indeterminate_horizontal
+        </item>
         <!--进度条的最小高度-->
         <item name="android:minHeight">15dp</item>
         <!--进度条的最大高度-->
