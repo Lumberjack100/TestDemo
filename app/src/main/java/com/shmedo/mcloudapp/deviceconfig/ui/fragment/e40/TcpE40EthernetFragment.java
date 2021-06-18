@@ -257,9 +257,11 @@ public class TcpE40EthernetFragment extends BaseTcpIotCommunicateFragment {
             mEtGateWayAddress.setHint("");
             mEtDnsAddress.setHint("");
 
-//            mEtIpAddress.clearFocus();
-//            mEtGateWayAddress.clearFocus();
-//            mEtDnsAddress.clearFocus();
+/*
+            mEtIpAddress.clearFocus();
+            mEtGateWayAddress.clearFocus();
+            mEtDnsAddress.clearFocus();
+*/
 
             mEtIpAddress.setEnabled(false);
             mEtGateWayAddress.setEnabled(false);

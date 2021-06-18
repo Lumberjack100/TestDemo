@@ -448,6 +448,16 @@ public enum IOTCommandType {
     E40_MD_SET_DB_GUART("md_setdbguart"),
 
     /**
+     * 获取E40 的GPS工作参数
+     */
+    E40_MD_GET_GPS_PARAM("md_getgpsparam"),
+
+    /**
+     * 设置E40 的GPS工作参数
+     */
+    E40_MD_SET_GPS_PARAM("md_setgpsparam"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData"),

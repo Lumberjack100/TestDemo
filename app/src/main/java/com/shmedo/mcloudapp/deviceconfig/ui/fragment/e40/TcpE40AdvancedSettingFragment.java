@@ -17,6 +17,7 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40GpsWorkParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40SerialPortParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.BaseTcpIotCommunicateFragment;
 
@@ -50,7 +51,7 @@ public class TcpE40AdvancedSettingFragment extends BaseTcpIotCommunicateFragment
         super.onActivityCreated(savedInstanceState);
     }
 
-    @OnClick({R.id.resetLayout, R.id.serialPortLayout, R.id.fileDownloadLayout})
+    @OnClick({R.id.resetLayout, R.id.serialPortLayout,R.id.gpsWorkParamLayout, R.id.fileDownloadLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -64,10 +65,13 @@ public class TcpE40AdvancedSettingFragment extends BaseTcpIotCommunicateFragment
         if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
-        } else if (id == R.id.serialPortLayout) {//RTK模式
+        } else if (id == R.id.serialPortLayout) {//串口参数
             E40SerialPortParamActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT);
 
-        } else if (id == R.id.fileDownloadLayout) {//下载文件
+        } else if (id == R.id.gpsWorkParamLayout) {//GPS工作参数
+            E40GpsWorkParamActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT);
+
+        }else if (id == R.id.fileDownloadLayout) {//下载文件
 
         }
     }

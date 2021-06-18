@@ -13,6 +13,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40GpsWorkParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40SerialPortParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
@@ -54,7 +55,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         super.onActivityCreated(savedInstanceState);
     }
 
-    @OnClick({R.id.resetLayout, R.id.serialPortLayout, R.id.fileDownloadLayout})
+    @OnClick({R.id.resetLayout, R.id.serialPortLayout, R.id.gpsWorkParamLayout, R.id.fileDownloadLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -65,6 +66,9 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
 
         } else if (id == R.id.serialPortLayout) {//串口参数
             E40SerialPortParamActivity.startActivity(mActivity, projectDeviceInfo);
+
+        } else if (id == R.id.gpsWorkParamLayout) {//GPS工作参数
+            E40GpsWorkParamActivity.startActivity(mActivity, projectDeviceInfo);
 
         } else if (id == R.id.fileDownloadLayout) {//下载文件
 
