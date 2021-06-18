@@ -120,7 +120,7 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"0.05s", "0.1s", "0.2s"},
+                .asBottomList("", new String[]{"0.05s", "0.1s", "0.2s", "1s", "5s", "10s", "15s", "30s"},
                         null, frequencyPos, true,
                         new OnSelectListener() {
                             @Override
@@ -133,6 +133,16 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
                                     dataFrequency = "7";
                                 } else if (position == 2) {
                                     dataFrequency = "6";
+                                } else if (position == 3) {
+                                    dataFrequency = "5";
+                                } else if (position == 4) {
+                                    dataFrequency = "4";
+                                } else if (position == 5) {
+                                    dataFrequency = "3";
+                                } else if (position == 6) {
+                                    dataFrequency = "2";
+                                } else if (position == 7) {
+                                    dataFrequency = "1";
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
@@ -148,8 +158,33 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
             mEtSatelliteElevationAngle.requestFocus();
             return false;
         }
+        try {
+            int value = Integer.parseInt(satelliteElevationAngle);
+            if (value < 0 || value > 90) {
+                ToastUtils.show("请输入正确的仰角截止角!");
+                mEtSatelliteElevationAngle.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的仰角截止角!");
+            mEtSatelliteElevationAngle.requestFocus();
+            return false;
+        }
+
         if (TextUtils.isEmpty(observationRange)) {
             ToastUtils.show("请输入观测范围!");
+            mEtObservationRange.requestFocus();
+            return false;
+        }
+        try {
+            int value = Integer.parseInt(observationRange);
+            if (value != 0 && value != 1) {
+                ToastUtils.show("请输入正确的观测范围!");
+                mEtObservationRange.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的观测范围!");
             mEtObservationRange.requestFocus();
             return false;
         }
@@ -296,6 +331,21 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
         } else if (dataFrequencyOld.equals("6")) {
             frequencyPos = 2;
             mTvDataFrequency.setText("0.2s");
+        } else if (dataFrequencyOld.equals("5")) {
+            frequencyPos = 3;
+            mTvDataFrequency.setText("1s");
+        } else if (dataFrequencyOld.equals("4")) {
+            frequencyPos = 4;
+            mTvDataFrequency.setText("5s");
+        } else if (dataFrequencyOld.equals("3")) {
+            frequencyPos = 5;
+            mTvDataFrequency.setText("10s");
+        } else if (dataFrequencyOld.equals("2")) {
+            frequencyPos = 6;
+            mTvDataFrequency.setText("15s");
+        } else if (dataFrequencyOld.equals("1")) {
+            frequencyPos = 7;
+            mTvDataFrequency.setText("30s");
         }
     }
 
