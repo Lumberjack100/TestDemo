@@ -231,7 +231,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 //未开启
                 if (netStatusInfo.getErrno() == 0) {
                     holder.setText(R.id.tv_link_status, "未开启");
-                    holder.setTextColorRes(R.id.tv_link_status, Color.GRAY);
+                    holder.setTextColor(R.id.tv_link_status, Color.GRAY);
                     holder.setText(R.id.tv_link_send_data, "0");
                     holder.setText(R.id.tv_link_unsend_data, "0");
                     holder.setText(R.id.tv_link_online_rate, "0");
@@ -242,7 +242,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
                 } else if (netStatusInfo.getErrno() == 2) {//离线
                     holder.setText(R.id.tv_link_status, "离线");
-                    holder.setTextColorRes(R.id.tv_link_status, Color.RED);
+                    holder.setTextColor(R.id.tv_link_status, Color.RED);
                 }
             }
         };
