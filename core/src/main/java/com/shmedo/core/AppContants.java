@@ -25,6 +25,7 @@ public interface AppContants {
      * 设备类型
      */
     interface DeviceType {
+        int UnKnown = 0x000;
         int DAS = 0x001;
         int ADME = 0x002;
         int VMS = 0x003;

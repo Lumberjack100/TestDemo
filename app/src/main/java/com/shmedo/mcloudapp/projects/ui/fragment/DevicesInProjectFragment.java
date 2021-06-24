@@ -189,7 +189,7 @@ public class DevicesInProjectFragment extends BaseFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 ProjectDeviceInfo deviceInfo = deviceInfoList.get(position);
-                int deviceType = AppContants.DeviceType.DAS;
+                int deviceType = AppContants.DeviceType.UnKnown;
                 if (deviceInfo.getDeviceTypeName().contains("DAS")) {
                     deviceType = AppContants.DeviceType.DAS;
                 } else if (deviceInfo.getDeviceTypeName().contains("ADME")) {
@@ -198,8 +198,12 @@ public class DevicesInProjectFragment extends BaseFragment {
                     deviceType = AppContants.DeviceType.M20;
                 } else if (deviceInfo.getDeviceTypeName().contains("E40") || deviceInfo.getDeviceTypeName().contains("E60")) {
                     deviceType = AppContants.DeviceType.E40;
-                } else if (deviceInfo.getDeviceTypeName().contains("VMS")) {
+                } else if (deviceInfo.getDeviceTypeName().contains("VMS")||deviceInfo.getDeviceTypeName().contains("GW300")) {
                     deviceType = AppContants.DeviceType.VMS;
+                }
+                if (deviceType == AppContants.DeviceType.UnKnown) {
+                    ToastUtils.show("此设备暂不支持!");
+                    return;
                 }
                 DeviceConfigActivity.startActivity(mActivity, deviceInfo, deviceType);
             }

@@ -115,6 +115,10 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                 case AppContants.DeviceType.VMS:
                     fragment = NetVmsHomeFragment.newInstance(projectDeviceInfo);
                     break;
+
+                default:
+
+                    break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             switch (deviceType) {
