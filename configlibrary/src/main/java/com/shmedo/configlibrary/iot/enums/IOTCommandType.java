@@ -458,6 +458,16 @@ public enum IOTCommandType {
     E40_MD_SET_GPS_PARAM("md_setgpsparam"),
 
     /**
+     * 获取E40 的基站位置信息
+     */
+    E40_MD_GET_BASE_POSITION("md_getbaseposition"),
+
+    /**
+     * 设置E40 的基站位置信息
+     */
+    E40_MD_SET_BASE_POSITION("md_setbaseposition"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData"),

@@ -29,6 +29,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.das.DasSensorStatusInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasSolarStatusInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasSubSensorStatusInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasTemperatureAndHumidityStatusinfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.e40.E40BasePositionInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40BoardSolutionInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40CORSInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40EthernetInfoParser;
@@ -176,6 +177,7 @@ public class IOTParseManager {
                 M20BaseInfoParser.class,
                 E40SatelitteInfoParser.class,
                 E40RTKModeInfoParser.class,
+                E40BasePositionInfoParser.class,
                 E40CORSInfoParser.class,
                 E40BoardSolutionInfoParser.class,
                 E40EthernetInfoParser.class,
