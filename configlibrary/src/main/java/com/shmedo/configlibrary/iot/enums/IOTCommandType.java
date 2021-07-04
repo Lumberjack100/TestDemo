@@ -468,6 +468,16 @@ public enum IOTCommandType {
     E40_MD_SET_BASE_POSITION("md_setbaseposition"),
 
     /**
+     * 获取E40 NMEA输出内容及输出频率
+     */
+    E40_MD_GET_NMEA_TIME("md_getnmeatime"),
+
+    /**
+     * 设置E40 NMEA输出内容及输出频率
+     */
+    E40_MD_SET_NMEA_TIME("md_setnmeatime"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData"),

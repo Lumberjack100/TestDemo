@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_gray"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        android:paddingStart="18dp"
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="开启状态"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/centerEnableSBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:kswAnimationDuration="100"
+            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+            app:kswThumbHeight="28dp"
+            app:kswThumbRangeRatio="2"
+            app:kswThumbWidth="28dp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="接收数据"
+        android:textSize="@dimen/dimen_size_15" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_log"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:scrollbarSize="1dp"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+        android:scrollbars="vertical"
+        android:splitMotionEvents="false"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_log_print" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/et_ipAddress"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:hint="IP地址"
+            android:padding="5dp"
+            android:text="192.168.31.53" />
+
+        <EditText
+            android:id="@+id/et_ipPort"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="端口号"
+            android:padding="5dp"
+            android:text="1088" />
+
+        <Button
+            android:id="@+id/connect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="连接" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/pause_log"
+            style="@style/SubmitBordelessButtonStyle"
+            android:layout_weight="1"
+            android:text="暂停" />
+
+        <Button
+            android:id="@+id/share_log"
+            style="@style/SubmitBordelessButtonStyle"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:text="分享" />
+
+    </LinearLayout>
+
+</LinearLayout>
