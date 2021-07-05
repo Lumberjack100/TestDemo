@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,7 +29,6 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
-import com.shmedo.configlibrary.iot.model.e40.E40NmeaTimeInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -66,6 +66,9 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     @BindView(R.id.tv_data_center)
     TextView mTvDataCenter;
 
+    @BindView(R.id.tv_connect_title)
+    TextView mTvConnectTitle;
+
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbEnable;
 
@@ -80,8 +83,6 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     private List<String> logDataList = new ArrayList<>();
 
     private String deviceSn;
-
-    private E40NmeaTimeInfo nmeaTimeInfo;
 
     private boolean isPause = false;
 
@@ -254,6 +255,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                 } else {
                     ToastUtils.show("连接断开!");
                     Timber.e("onServiceStatusConnectChanged:%s", statusCode);
+                    mSbEnable.setCheckedImmediatelyNoEvent(false);
                 }
             }
         });
@@ -336,8 +338,10 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                                 DataCenterInfo dataCenterInfo = dataCenterInfoList.get(position);
                                 if (TextUtils.isEmpty(dataCenterInfo.getAddr()) || dataCenterInfo.getPort().equals("0")) {
                                     mSbEnable.setEnabled(false);
+                                    mTvConnectTitle.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                                 } else {
                                     mSbEnable.setEnabled(true);
+                                    mTvConnectTitle.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color));
                                     ip = dataCenterInfo.getAddr();
                                     port = Integer.parseInt(dataCenterInfo.getPort());
                                 }
@@ -367,7 +371,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
 
     private void setNmeaTimeInfo(boolean isOpen) {
         String command = isOpen ? "$cmd=md_setnmeatime&gga=1" : "$cmd=md_setnmeatime&gga=0";
-        showProgressDialog("处理中...");
+//        showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -451,8 +455,11 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                 if (dataCenterInfo.getCenterid().equals("1")) {
                     if (TextUtils.isEmpty(dataCenterInfo.getAddr()) || dataCenterInfo.getPort().equals("0")) {
                         mSbEnable.setEnabled(false);
+                        mTvConnectTitle.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                     } else {
                         mSbEnable.setEnabled(true);
+                        mTvConnectTitle.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color));
+
                         ip = dataCenterInfo.getAddr();
                         port = Integer.parseInt(dataCenterInfo.getPort());
                     }
