@@ -66,11 +66,8 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     @BindView(R.id.tv_data_center)
     TextView mTvDataCenter;
 
-    @BindView(R.id.btn_connect_data_center)
-    Button mBtnConnectDataCenter;
-
     @BindView(R.id.centerEnableSBtn)
-    SwitchButton mSbCenterEnable;
+    SwitchButton mSbEnable;
 
     @BindView(R.id.recyclerView_log)
     RecyclerView mRecyclerView;
@@ -118,8 +115,6 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         initAdapter();
         setSwitchViewListener();
         initLog4a();
-//        initTcpClient("114.215.177.133", 7683);//"192.168.31.53", 1088
-//        connect();
 
         queryDataCenterInfo(1);
     }
@@ -136,12 +131,14 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     }
 
     private void setSwitchViewListener() {
-        mSbCenterEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSbEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
+                    disconnect();
                     setNmeaTimeInfo(false);
                 } else {
+                    connect();//连接服务器
                     setNmeaTimeInfo(true);
                 }
             }
@@ -254,11 +251,9 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                 if (statusCode == ConnectState.STATUS_CONNECT_SUCCESS) {
                     ToastUtils.show("连接成功!");
                     Timber.d("STATUS_CONNECT_SUCCESS:");
-//                    mBtnConnect.setText("断开");
                 } else {
                     ToastUtils.show("连接断开!");
                     Timber.e("onServiceStatusConnectChanged:%s", statusCode);
-//                    mBtnConnect.setText("连接");
                 }
             }
         });
@@ -287,7 +282,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         return mNettyTcpClient != null && mNettyTcpClient.getConnectStatus();
     }
 
-    @OnClick({R.id.dataCenterLayout, R.id.btn_connect_data_center, R.id.pause_log, R.id.share_log})
+    @OnClick({R.id.dataCenterLayout, R.id.pause_log, R.id.share_log})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -295,10 +290,6 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         int id = view.getId();
         if (id == R.id.dataCenterLayout) {
             showDataCenterNameDialog();
-        } else if (id == R.id.btn_connect_data_center) {
-            if (!getConnectStatus()) {
-                connect();//连接服务器
-            }
         } else if (id == R.id.pause_log) {
             if (mBtnPause.getText().toString().equals("暂停")) {
                 isPause = true;
@@ -344,9 +335,9 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                                 mTvDataCenter.setText(text);
                                 DataCenterInfo dataCenterInfo = dataCenterInfoList.get(position);
                                 if (TextUtils.isEmpty(dataCenterInfo.getAddr()) || dataCenterInfo.getPort().equals("0")) {
-                                    mBtnConnectDataCenter.setEnabled(false);
+                                    mSbEnable.setEnabled(false);
                                 } else {
-                                    mBtnConnectDataCenter.setEnabled(true);
+                                    mSbEnable.setEnabled(true);
                                     ip = dataCenterInfo.getAddr();
                                     port = Integer.parseInt(dataCenterInfo.getPort());
                                 }
@@ -459,9 +450,9 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
 
                 if (dataCenterInfo.getCenterid().equals("1")) {
                     if (TextUtils.isEmpty(dataCenterInfo.getAddr()) || dataCenterInfo.getPort().equals("0")) {
-                        mBtnConnectDataCenter.setEnabled(false);
+                        mSbEnable.setEnabled(false);
                     } else {
-                        mBtnConnectDataCenter.setEnabled(true);
+                        mSbEnable.setEnabled(true);
                         ip = dataCenterInfo.getAddr();
                         port = Integer.parseInt(dataCenterInfo.getPort());
                     }
@@ -471,22 +462,8 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                 } else if (dataCenterInfo.getCenterid().equals("3")) {
                     queryDataCenterInfo(4);
                 } else if (dataCenterInfo.getCenterid().equals("4")) {
-                    queryNmeaTimeInfo();
+                    dismissProgressDialog();
                 }
-            }
-            break;
-
-            case E40_MD_GET_NMEA_TIME: {
-                dismissProgressDialog();
-                IOTCommandResult<E40NmeaTimeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询NMEA参数出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                nmeaTimeInfo = commandResult.getResult();
-                initParamInfo();
             }
             break;
 
@@ -504,20 +481,6 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
 
             default:
                 break;
-        }
-    }
-
-    private void initParamInfo() {
-        if (nmeaTimeInfo == null) {
-            Timber.e("E40NmeaTimeInfo 为空!");
-            nmeaTimeInfo = new E40NmeaTimeInfo();
-            return;
-        }
-
-        if (nmeaTimeInfo.getGga().equals("1")) {
-            mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
-        } else {
-            mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
         }
     }
 
