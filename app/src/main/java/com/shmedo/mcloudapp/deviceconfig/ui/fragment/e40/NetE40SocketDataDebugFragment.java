@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,11 +19,15 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.littlegreens.netty.client.NettyTcpClient;
 import com.littlegreens.netty.client.listener.NettyClientListener;
 import com.littlegreens.netty.client.status.ConnectState;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
+import com.shmedo.configlibrary.iot.model.DataCenterInfo;
 import com.shmedo.configlibrary.iot.model.e40.E40NmeaTimeInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
@@ -59,23 +63,20 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     private final String heartBeat = "I'm HeartBeatData";
     private NettyTcpClient mNettyTcpClient;
 
+    @BindView(R.id.tv_data_center)
+    TextView mTvDataCenter;
+
+    @BindView(R.id.btn_connect_data_center)
+    Button mBtnConnectDataCenter;
+
     @BindView(R.id.centerEnableSBtn)
     SwitchButton mSbCenterEnable;
 
     @BindView(R.id.recyclerView_log)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.et_ipAddress)
-    EditText mEtIpAddress;
-
-    @BindView(R.id.et_ipPort)
-    EditText mEtIpPort;
-
     @BindView(R.id.pause_log)
     Button mBtnPause;
-
-    @BindView(R.id.connect)
-    Button mBtnConnect;
 
     private CommonAdapter mReceAdapter;
 
@@ -88,6 +89,12 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     private boolean isPause = false;
 
     private Handler myHandler = new Handler();
+
+    List<String> dataCenterNameList = Arrays.asList("数据中心1", "数据中心2", "数据中心3", "数据中心4");
+    List<DataCenterInfo> dataCenterInfoList = new ArrayList<>();
+    private int dataCenterPos = 0;
+    private String ip;
+    private int port = 0;
 
     public static NetE40SocketDataDebugFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetE40SocketDataDebugFragment fragment = new NetE40SocketDataDebugFragment();
@@ -106,12 +113,15 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         deviceSn = projectDeviceInfo.getToken();
+        dataCenterPos = 0;
+        mTvDataCenter.setText(dataCenterNameList.get(0));
         initAdapter();
         setSwitchViewListener();
         initLog4a();
-        initTcpClient("114.215.177.133", 7683);//"192.168.31.53", 1088
-        connect();
-        queryNmeaTimeInfo();
+//        initTcpClient("114.215.177.133", 7683);//"192.168.31.53", 1088
+//        connect();
+
+        queryDataCenterInfo(1);
     }
 
     private void initAdapter() {
@@ -205,8 +215,10 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         if (msg.contains(IOTCommandType.HEART_BEAT.toString()))
             return;
 
-        if (!checkDataValid(msg))
+        if (!checkDataValid(msg)) {
+            Timber.d("checkDataValid 校验失败");
             return;
+        }
 
         if (myHandler == null)
             return;
@@ -242,21 +254,22 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                 if (statusCode == ConnectState.STATUS_CONNECT_SUCCESS) {
                     ToastUtils.show("连接成功!");
                     Timber.d("STATUS_CONNECT_SUCCESS:");
-                    mBtnConnect.setText("断开");
+//                    mBtnConnect.setText("断开");
                 } else {
                     ToastUtils.show("连接断开!");
                     Timber.e("onServiceStatusConnectChanged:%s", statusCode);
-                    mBtnConnect.setText("连接");
+//                    mBtnConnect.setText("连接");
                 }
             }
         });
     }
 
     private void connect() {
-        if (mNettyTcpClient == null) {
-            setupTcpConnect();
+        if (TextUtils.isEmpty(ip)) {
+            ToastUtils.show("未获取到IP地址!");
             return;
         }
+        initTcpClient(ip, port);
         if (!mNettyTcpClient.getConnectStatus()) {
             mNettyTcpClient.connect();//连接服务器
         } else {
@@ -265,27 +278,27 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     }
 
     private void disconnect() {
-        if (mNettyTcpClient != null)
+        if (mNettyTcpClient != null && mNettyTcpClient.getConnectStatus()) {
             mNettyTcpClient.disconnect();
+        }
     }
 
     private boolean getConnectStatus() {
         return mNettyTcpClient != null && mNettyTcpClient.getConnectStatus();
     }
 
-    @OnClick({R.id.connect, R.id.pause_log, R.id.share_log})
+    @OnClick({R.id.dataCenterLayout, R.id.btn_connect_data_center, R.id.pause_log, R.id.share_log})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
         }
         int id = view.getId();
-        if (id == R.id.connect) {
+        if (id == R.id.dataCenterLayout) {
+            showDataCenterNameDialog();
+        } else if (id == R.id.btn_connect_data_center) {
             if (!getConnectStatus()) {
                 connect();//连接服务器
-            } else {
-                disconnect();
             }
-
         } else if (id == R.id.pause_log) {
             if (mBtnPause.getText().toString().equals("暂停")) {
                 isPause = true;
@@ -298,25 +311,6 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
             Log4a.release();
             shareFile();
         }
-    }
-
-    /**
-     * 建立 Tcp 通讯连接
-     */
-    private void setupTcpConnect() {
-        if (TextUtils.isEmpty(mEtIpAddress.getText())) {
-            ToastUtils.show("请输入IP地址!");
-            mEtIpAddress.requestFocus();
-            return;
-        }
-        if (TextUtils.isEmpty(mEtIpPort.getText())) {
-            ToastUtils.show("请输入IP端口号!");
-            mEtIpPort.requestFocus();
-            return;
-        }
-        int port = Integer.parseInt(mEtIpPort.getText().toString());
-        initTcpClient(mEtIpAddress.getText().toString(), port);
-        connect();
     }
 
     private void shareFile() {
@@ -335,6 +329,40 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                 .setOnActivityResult(300)
                 .build()
                 .shareBySystem();
+    }
+
+    private void showDataCenterNameDialog() {
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", (String[]) dataCenterNameList.toArray(),
+                        null, dataCenterPos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                dataCenterPos = position;
+                                mTvDataCenter.setText(text);
+                                DataCenterInfo dataCenterInfo = dataCenterInfoList.get(position);
+                                if (TextUtils.isEmpty(dataCenterInfo.getAddr()) || dataCenterInfo.getPort().equals("0")) {
+                                    mBtnConnectDataCenter.setEnabled(false);
+                                } else {
+                                    mBtnConnectDataCenter.setEnabled(true);
+                                    ip = dataCenterInfo.getAddr();
+                                    port = Integer.parseInt(dataCenterInfo.getPort());
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
+    }
+
+    /**
+     * 获取设备的数据中心参数
+     */
+    private void queryDataCenterInfo(int number) {
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(number);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**
@@ -409,7 +437,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
      */
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
         setResultData(queryCmdResult);
     }
 
@@ -417,7 +445,39 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
+            case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
+                IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    dismissProgressDialog();
+                    String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                DataCenterInfo dataCenterInfo = commandResult.getResult();
+                dataCenterInfoList.add(dataCenterInfo);
+
+                if (dataCenterInfo.getCenterid().equals("1")) {
+                    if (TextUtils.isEmpty(dataCenterInfo.getAddr()) || dataCenterInfo.getPort().equals("0")) {
+                        mBtnConnectDataCenter.setEnabled(false);
+                    } else {
+                        mBtnConnectDataCenter.setEnabled(true);
+                        ip = dataCenterInfo.getAddr();
+                        port = Integer.parseInt(dataCenterInfo.getPort());
+                    }
+                    queryDataCenterInfo(2);
+                } else if (dataCenterInfo.getCenterid().equals("2")) {
+                    queryDataCenterInfo(3);
+                } else if (dataCenterInfo.getCenterid().equals("3")) {
+                    queryDataCenterInfo(4);
+                } else if (dataCenterInfo.getCenterid().equals("4")) {
+                    queryNmeaTimeInfo();
+                }
+            }
+            break;
+
             case E40_MD_GET_NMEA_TIME: {
+                dismissProgressDialog();
                 IOTCommandResult<E40NmeaTimeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询NMEA参数出错!", commandResult.getMessage());
@@ -431,6 +491,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
             break;
 
             case E40_MD_SET_NMEA_TIME: {
+                dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置NMEA参数出错!", cmdResult.getReason());
@@ -490,7 +551,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
 
     @Override
     public void onDestroy() {
-        myHandler.removeCallbacksAndMessages(null);
+        myHandler = null;
         Log4a.flush();
         disconnect();
         super.onDestroy();

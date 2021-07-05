@@ -8,6 +8,7 @@ import android.text.TextUtils;
  * 描述：     数据中心参数信息
  */
 public class DataCenterInfo {
+    private String centerid;
     private String protocol;//传输协议;TCP-C/TCP-S/MQTT
     private String datatype;//数据协议,由设备类型决定
     private String plattype;//平台类型
@@ -20,6 +21,13 @@ public class DataCenterInfo {
     private String projid;//产品ID(MQTT参数)
     private String regcode;//厂商设备注册码（MQTT参数）
 
+    public String getCenterid() {
+        return TextUtils.isEmpty(centerid) ? "" : centerid;
+    }
+
+    public void setCenterid(String centerid) {
+        this.centerid = centerid;
+    }
 
     public String getProtocol() {
         return TextUtils.isEmpty(protocol) ? "" : protocol;

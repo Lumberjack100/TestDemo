@@ -29,6 +29,7 @@ public class DataCenterInfoParser implements IOTResultParser<DataCenterInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
+            info.setCenterid(TextUtils.isEmpty(keyValueMap.get("centerid")) ? "" : keyValueMap.get("centerid"));
             info.setProtocol(TextUtils.isEmpty(keyValueMap.get("protocol")) ? "" : keyValueMap.get("protocol"));
             info.setDatatype(TextUtils.isEmpty(keyValueMap.get("datatype")) ? "" : keyValueMap.get("datatype"));
             info.setPlattype(TextUtils.isEmpty(keyValueMap.get("plattype")) ? "" : keyValueMap.get("plattype"));
