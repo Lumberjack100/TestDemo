@@ -4,13 +4,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * 创建者:   gonghe <br/>
@@ -18,8 +14,8 @@ import java.util.List;
  * 描述：    公司简单信息适配器
  */
 public class CompanySimpleInfoAdapter extends BaseQuickAdapter<CompanySimpleInfo, BaseViewHolder> implements LoadMoreModule {
-    public CompanySimpleInfoAdapter(@Nullable List<CompanySimpleInfo> data) {
-        super(R.layout.item_company_simple_info, data);
+    public CompanySimpleInfoAdapter() {
+        super(R.layout.item_company_simple_info);
     }
 
     @Override
