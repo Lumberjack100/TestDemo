@@ -236,13 +236,78 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
             return;
         }
 
-        if (result.contains("=")) {
-            String results = result.substring(result.indexOf("=") + 1);
-            parseScanResult(results);
-        } else {
-            parseScanResult(result);
+        if (result.contains("MEDO")) {
+            if (result.contains("=")) {
+                result = result.substring(result.indexOf("=") + 1);
+            }
+            parseOldDeviceCode(result);
+        } else if (result.startsWith("https://cloud.shmedo.cn/mcloudapp/device")) {
+            parseNewDeviceCode(result);
         }
     }
+
+    /**
+     * 处理老设备条码规则，例如：MEDO,189150L,DAS
+     */
+    private void parseOldDeviceCode(String barCode) {
+        if (!barCode.startsWith("MEDO")) {
+            showTipDialog("请扫码正确的设备二维码");
+            return;
+        }
+        String[] localData = barCode.split(",");
+        if (localData.length != 3) {
+            showTipDialog("请扫码正确的设备二维码");
+            return;
+        }
+        if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
+            showTipDialog("请扫码正确的设备二维码");
+            return;
+        }
+        if (localData[1].length() != 7) {
+            showTipDialog("设备标识有误,请扫码正确的设备二维码");
+            return;
+        }
+//        if (!DeviceTypeEnum.value(localData[2])) {
+//            showTipDialog("此设备类型暂时不支持");
+//            return;
+//        }
+        if (!(localData[1].endsWith("L") || localData[1].endsWith("T") || localData[1].endsWith("V"))) {
+            showTipDialog("此设备类型暂时不支持");
+            return;
+        }
+        MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""));
+        processStartScan();
+    }
+
+    /**
+     * 处理新设备条码规则，例如：https://cloud.shmedo.cn/mcloudapp/device?sn=189150L
+     */
+    private void parseNewDeviceCode(String barCode) {
+        if (!barCode.startsWith("https://cloud.shmedo.cn/mcloudapp/device?sn=")) {
+            showTipDialog("请扫码正确的设备二维码");
+            return;
+        }
+        String[] localData = barCode.split("=");
+        if (localData.length != 2) {
+            showTipDialog("请扫码正确的设备二维码");
+            return;
+        }
+        if (TextUtils.isEmpty(localData[1])) {
+            showTipDialog("请扫码正确的设备二维码");
+            return;
+        }
+        if (localData[1].length() != 7) {
+            showTipDialog("设备标识有误,请扫码正确的设备二维码");
+            return;
+        }
+        if (!(localData[1].endsWith("L") || localData[1].endsWith("T") || localData[1].endsWith("V"))) {
+            showTipDialog("此设备类型暂时不支持");
+            return;
+        }
+        MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""));
+        processStartScan();
+    }
+
 
     /**
      * 处理扫描结果，例如：MEDO,189150L,DAS
