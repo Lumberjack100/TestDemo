@@ -117,7 +117,7 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_elevation"
                 style="@style/DataCenter_EditText_Style"
-                android:inputType="number" />
+                android:inputType="numberDecimal" />
 
         </LinearLayout>
 

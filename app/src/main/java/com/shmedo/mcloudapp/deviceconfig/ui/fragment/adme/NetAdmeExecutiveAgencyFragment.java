@@ -141,7 +141,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
     }
 
     private void setView() {
-        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDataReadingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasurementCompensationTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});

@@ -232,7 +232,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
 
     private void scanResult(String result) {
         if (TextUtils.isEmpty(result)) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
 
@@ -251,20 +251,20 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
      */
     private void parseOldDeviceCode(String barCode) {
         if (!barCode.startsWith("MEDO")) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
         String[] localData = barCode.split(",");
         if (localData.length != 3) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
         if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
         if (localData[1].length() != 7) {
-            showTipDialog("设备标识有误,请扫码正确的设备二维码");
+            showTipDialog("设备标识有误,请扫描正确的设备二维码");
             return;
         }
 //        if (!DeviceTypeEnum.value(localData[2])) {
@@ -284,20 +284,20 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
      */
     private void parseNewDeviceCode(String barCode) {
         if (!barCode.startsWith("https://cloud.shmedo.cn/mcloudapp/device?sn=")) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
         String[] localData = barCode.split("=");
         if (localData.length != 2) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
         if (TextUtils.isEmpty(localData[1])) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
         if (localData[1].length() != 7) {
-            showTipDialog("设备标识有误,请扫码正确的设备二维码");
+            showTipDialog("设备标识有误,请扫描正确的设备二维码");
             return;
         }
         if (!(localData[1].endsWith("L") || localData[1].endsWith("T") || localData[1].endsWith("V"))) {
@@ -314,13 +314,13 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
      */
     private void parseScanResult(String deviceInfo) {
         if (!deviceInfo.startsWith("MEDO")) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
 
         String[] localData = deviceInfo.split(",");
         if (localData.length != 3) {
-            showTipDialog("请扫码正确的设备二维码");
+            showTipDialog("请扫描正确的设备二维码");
             return;
         }
 
@@ -330,7 +330,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         }
 
         if (localData[1].length() != 7) {
-            showTipDialog("设备标识有误,请扫码正确的设备二维码");
+            showTipDialog("设备标识有误,请扫描正确的设备二维码");
             return;
         }
 

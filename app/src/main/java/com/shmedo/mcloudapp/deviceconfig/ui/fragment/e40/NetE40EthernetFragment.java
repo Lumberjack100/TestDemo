@@ -333,10 +333,6 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
             mEtGateWayAddress.setHint("");
             mEtDnsAddress.setHint("");
 
-//            mEtIpAddress.clearFocus();
-//            mEtGateWayAddress.clearFocus();
-//            mEtDnsAddress.clearFocus();
-
             mEtIpAddress.setEnabled(false);
             mEtGateWayAddress.setEnabled(false);
             mEtDnsAddress.setEnabled(false);

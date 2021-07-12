@@ -102,7 +102,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
     private void setView() {
         mEtLongitude.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
         mEtLatitude.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
-        mEtElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
 
         rtkModePos = 1;
         rtkModeOld = rtkMode = "1";
@@ -430,7 +430,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
             decimalFormat.applyPattern("#.########");
             mEtLongitude.setText(decimalFormat.format(Double.parseDouble(longitude)));
             mEtLatitude.setText(decimalFormat.format(Double.parseDouble(latitude)));
-            decimalFormat.applyPattern("#");
+            decimalFormat.applyPattern("#.########");
             mEtElevation.setText(decimalFormat.format(Double.parseDouble(elevation)));
         } catch (Exception ex) {
             ex.printStackTrace();
