@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_network_number"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="网络号"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_network_number"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_aisle_address"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="地址"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_aisle_address"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_channel_number"
+        style="@style/Common_EditItem_LayoutStyle">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="信道号"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_channel_number"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_air_speed"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="空中速率"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_air_speed"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_air_wake_time"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="空中唤醒时间(s)"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_air_wake_time"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_terminal_working_mode"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="终端工作模式"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_terminal_working_mode"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_data_request_interval"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="数据请求间隔(s)"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_data_request_interval"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_offline_interval"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="离线间隔(s)"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_offline_interval"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_terminal_sleep_time"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="终端休眠时间(s)"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_terminal_sleep_time"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_terminal_wakeup_time"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="终端唤醒时间(ms)"
+            android:textColor="@color/text_color_343434"
+            android:textSize="@dimen/text_size_17" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_terminal_wake_time"
+            style="@style/DataCenter_EditText_Style"
+            android:hint="请输入"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_confirm"
+        style="@style/SubmitBordelessButtonStyle"
+        android:text="保存" />
+
+</LinearLayout>
+

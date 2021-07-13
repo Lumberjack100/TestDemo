@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
@@ -30,18 +28,18 @@ public class VmsAisleInfoParser implements IOTResultParser<VmsAisleInfo> {
                 }
             }
             info.setChannel(Integer.parseInt(keyValueMap.get("channel")));
-            info.setNetid(TextUtils.isEmpty(keyValueMap.get("netid")) ? "" : keyValueMap.get("netid"));
-            info.setPpt(TextUtils.isEmpty(keyValueMap.get("ppt")) ? "" : keyValueMap.get("ppt"));
-            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
-            info.setChl(TextUtils.isEmpty(keyValueMap.get("chl")) ? "" : keyValueMap.get("chl"));
-            info.setTerminalmode(TextUtils.isEmpty(keyValueMap.get("terminalmode")) ? "" : keyValueMap.get("terminalmode"));
-            info.setSendgap(TextUtils.isEmpty(keyValueMap.get("sendgap")) ? "" : keyValueMap.get("sendgap"));
-            info.setOffline(TextUtils.isEmpty(keyValueMap.get("offline")) ? "" : keyValueMap.get("offline"));
-            info.setSleepgap(TextUtils.isEmpty(keyValueMap.get("sleepgap")) ? "" : keyValueMap.get("sleepgap"));
-            info.setWakeupgap(TextUtils.isEmpty(keyValueMap.get("wakeupgap")) ? "" : keyValueMap.get("wakeupgap"));
-            info.setAirbaud(TextUtils.isEmpty(keyValueMap.get("airbaud")) ? "" : keyValueMap.get("airbaud"));
-            info.setTerminalnum(TextUtils.isEmpty(keyValueMap.get("terminalnum")) ? "" : keyValueMap.get("terminalnum"));
-            info.setRssi(TextUtils.isEmpty(keyValueMap.get("rssi")) ? "" : keyValueMap.get("rssi"));
+            info.setNetid(!keyValueMap.containsKey("netid") ? "NullKey" :  keyValueMap.get("netid"));
+            info.setAddr(!keyValueMap.containsKey("addr") ? "NullKey" : keyValueMap.get("addr"));
+            info.setChl(!keyValueMap.containsKey("chl") ? "NullKey": keyValueMap.get("chl"));
+            info.setAirbaud(!keyValueMap.containsKey("airbaud") ? "NullKey" : keyValueMap.get("airbaud"));
+            info.setPpt(!keyValueMap.containsKey("ppt") ? "NullKey" : keyValueMap.get("ppt"));
+            info.setTerminalmode(!keyValueMap.containsKey("terminalmode") ? "NullKey": keyValueMap.get("terminalmode"));
+            info.setSendgap(!keyValueMap.containsKey("sendgap") ? "NullKey" : keyValueMap.get("sendgap"));
+            info.setOffline(!keyValueMap.containsKey("offline") ? "NullKey": keyValueMap.get("offline"));
+            info.setSleepgap(!keyValueMap.containsKey("sleepgap") ? "NullKey" : keyValueMap.get("sleepgap"));
+            info.setWakeupgap(!keyValueMap.containsKey("wakeupgap") ? "NullKey" : keyValueMap.get("wakeupgap"));
+            info.setTerminalnum(!keyValueMap.containsKey("terminalnum") ? "NullKey" : keyValueMap.get("terminalnum"));
+            info.setRssi(!keyValueMap.containsKey("rssi") ? "NullKey": keyValueMap.get("rssi"));
 
             return info;
         } catch (Exception ex) {

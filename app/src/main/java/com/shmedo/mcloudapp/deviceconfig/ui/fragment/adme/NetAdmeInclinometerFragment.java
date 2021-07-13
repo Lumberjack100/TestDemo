@@ -1,36 +1,28 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.interfaces.OnSelectListener;
-import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeInclinometerEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeInclinometerInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.view.adme.AdmeInclinometerView;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,58 +36,11 @@ import timber.log.Timber;
  * 描述：       ADME 测斜仪参数配置页面
  */
 public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
-    @BindView(R.id.tv_inclinometer_type)
-    TextView mTvInclinometerType;
-
-    @BindView(R.id.tv_low_power_mode)
-    TextView mTvLowPowerMode;
-
-    @BindView(R.id.et_collector_address)
-    ClearEditText mEtCollectorAddress;//采集器地址
-
-    @BindView(R.id.et_mac_address)
-    ClearEditText mEtMacAddress;//Mac 地址
-
-    @BindView(R.id.et_collection_interval)
-    ClearEditText mEtCollectionInterval;
-
-    @BindView(R.id.et_solving_interval)
-    ClearEditText mEtSolvingInterval;
-
-    @BindView(R.id.et_sleep_time)
-    ClearEditText mEtSleepTime;
-
-    @BindView(R.id.et_correction_value)
-    ClearEditText mEtCorrectionValue;
-
-    @BindView(R.id.btn_confirm)
-    Button mBtnSave;
-
-    @BindView(R.id.ll_collector_address)
-    ViewGroup collectorAddressLayout;
-
-    @BindView(R.id.ll_mac_address)
-    ViewGroup macAddressLayout;
+    @BindView(R.id.admeInclinometerView)
+    AdmeInclinometerView admeInclinometerView;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
-
-    private AdmeInclinometerInfo admeInclinometerInfo;
-
-    private int inclinometerTypePos;
-    private int lowPowerModePos;
-
-    private String inclinometerTypeOld;//测斜仪类型
-    private String inclinometerType;// 测斜仪类型
-    private String lowPowerModeOld;//低功耗模式
-    private String lowPowerMode;// 低功耗模式
-    private String address;// 采集器地址/Mac 地址
-    private String collectionInterval;//采集器采集间隔
-    private String solvingInterval;//采集器解算间隔
-    private String sleepTime;//休眠时间
-    private String correctionValue;//测斜仪修正值
-
-    private DecimalFormat decimalFormat = new DecimalFormat();
 
 
     public static NetAdmeInclinometerFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
@@ -114,7 +59,6 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setView();
         queryParamConfigInfo();
         //TODO #gh# 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
@@ -122,19 +66,6 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
         } else {
             configPageViewModel.configPageEditableChanged.setValue(false);
         }
-    }
-
-    private void setView() {
-        mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtCollectorAddress.setHint("0-32");
-
-        mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
-        mEtMacAddress.setHint("XXXXXXXXXXXX");
-
-        mEtCollectionInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtSolvingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtSleepTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtCorrectionValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     /**
@@ -148,197 +79,27 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
 
     @OnClick({R.id.ll_inclinometer_type, R.id.ll_low_power_mode, R.id.btn_confirm})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.ll_inclinometer_type) {
-            showInclinometerTypeDialog();
+            admeInclinometerView.showInclinometerTypeDialog(mActivity);
 
         } else if (id == R.id.ll_low_power_mode) {
-            showLowPowerModeDialog();
+            admeInclinometerView.showLowPowerModeDialog(mActivity);
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
-            if (!checkValueIsValid()) {
+            if (!admeInclinometerView.checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;
             }
-            processSave();
-        }
-    }
-
-    /**
-     * 选择测斜仪类型
-     */
-    private void showInclinometerTypeDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
-        new XPopup.Builder(mActivity)
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"433测斜仪", "蓝牙测斜仪"},
-                        null, inclinometerTypePos, true,
-                        new OnSelectListener() {
-                            @Override
-                            public void onSelect(int position, String text) {
-                                inclinometerTypePos = position;
-                                mTvInclinometerType.setText(text);
-                                if (position == 0) {
-                                    inclinometerType = "0";
-                                    collectorAddressLayout.setVisibility(View.VISIBLE);
-                                    macAddressLayout.setVisibility(View.GONE);
-                                } else {
-                                    inclinometerType = "1";
-                                    collectorAddressLayout.setVisibility(View.GONE);
-                                    macAddressLayout.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
-                .show();
-    }
-
-    /**
-     * 选择低功耗模式
-     */
-    private void showLowPowerModeDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
-        new XPopup.Builder(mActivity)
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"关闭", "开启"},
-                        null, lowPowerModePos, true,
-                        new OnSelectListener() {
-                            @Override
-                            public void onSelect(int position, String text) {
-                                lowPowerModePos = position;
-                                mTvLowPowerMode.setText(text);
-                                if (position == 0) {
-                                    lowPowerMode = "0";
-                                } else {
-                                    lowPowerMode = "1";
-                                }
-                            }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
-                .show();
-    }
-
-    private boolean checkValueIsValid() {
-        collectionInterval = mEtCollectionInterval.getText().toString().trim();
-        solvingInterval = mEtSolvingInterval.getText().toString().trim();
-        sleepTime = mEtSleepTime.getText().toString().trim();
-        correctionValue = mEtCorrectionValue.getText().toString().trim();
-
-        if (inclinometerType.equals("0")) {
-            address = mEtCollectorAddress.getText().toString().trim();
-
-            if (TextUtils.isEmpty(address)) {
-                ToastUtils.show("请输入采集器地址!");
-                mEtCollectorAddress.requestFocus();
-                return false;
+            String command = admeInclinometerView.getSetCommand();
+            if (!TextUtils.isEmpty(command)) {
+                showProgressDialog("处理中...");
+                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
-            if (Integer.parseInt(address) < 0 || Integer.parseInt(address) > 32) {
-                ToastUtils.show("请输入正确的采集器地址!");
-                mEtCollectorAddress.requestFocus();
-                return false;
-            }
-        } else {
-            address = mEtMacAddress.getText().toString().trim();
-
-            if (TextUtils.isEmpty(address)) {
-                ToastUtils.show("请输入Mac地址!");
-                mEtMacAddress.requestFocus();
-                return false;
-            }
-            if (!ValidateUtil.isValidMacAddressNoColon(address)) {
-                ToastUtils.show("请输入正确的Mac地址!");
-                mEtMacAddress.requestFocus();
-                return false;
-            }
-        }
-
-        if (TextUtils.isEmpty(collectionInterval)) {
-            ToastUtils.show("请输入采集器采集间隔!");
-            mEtCollectionInterval.requestFocus();
-            return false;
-        }
-        try {
-            int value = Integer.parseInt(collectionInterval);
-            if (value < 1) {
-                ToastUtils.show("请输入正确的采集器采集间隔!");
-                mEtCollectionInterval.requestFocus();
-                return false;
-            }
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的采集器采集间隔!");
-            mEtCollectionInterval.requestFocus();
-            return false;
-        }
-
-        if (TextUtils.isEmpty(solvingInterval)) {
-            ToastUtils.show("请输入采集器解算间隔!");
-            mEtSolvingInterval.requestFocus();
-            return false;
-        }
-        try {
-            int value = Integer.parseInt(solvingInterval);
-            if (value < 1) {
-                ToastUtils.show("请输入正确的采集器解算间隔!");
-                mEtSolvingInterval.requestFocus();
-                return false;
-            }
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的采集器解算间隔!");
-            mEtSolvingInterval.requestFocus();
-            return false;
-        }
-
-        if (TextUtils.isEmpty(sleepTime)) {
-            ToastUtils.show("请输入休眠时间!");
-            mEtSleepTime.requestFocus();
-            return false;
-        }
-        try {
-            int value = Integer.parseInt(sleepTime);
-            if (value < 1) {
-                ToastUtils.show("请输入正确的休眠时间!");
-                mEtSleepTime.requestFocus();
-                return false;
-            }
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的休眠时间!");
-            mEtSleepTime.requestFocus();
-            return false;
-        }
-
-        if (TextUtils.isEmpty(correctionValue)) {
-            ToastUtils.show("测斜仪修正值!");
-            mEtCorrectionValue.requestFocus();
-            return false;
-        }
-        try {
-            double value = Double.parseDouble(correctionValue);
-
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的测斜仪修正值!");
-            mEtCorrectionValue.requestFocus();
-            return false;
-        }
-        return true;
-    }
-
-    private void processSave() {
-        try {
-            AdmeInclinometerEntity entity = new AdmeInclinometerEntity();
-            entity.setInctype(inclinometerType);
-            entity.setLowpower(lowPowerMode);
-            entity.setAddress(address);
-            entity.setCollinval(collectionInterval);
-            entity.setCalcinval(solvingInterval);
-            entity.setDormancytime(sleepTime);
-            decimalFormat.applyPattern("#.####");
-            entity.setInterupdate(decimalFormat.format(Double.parseDouble(correctionValue)));
-
-            mBtnSave.setEnabled(false);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_INCLINOMETER, entity);
-            showProgressDialog("处理中...");
-            doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -413,11 +174,12 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备的测斜仪参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    ToastUtils.show(commandResult.getMessage().contains("unsupported") ? "设备版本不支持!" : errMsg);
+                    maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
-                admeInclinometerInfo = commandResult.getResult();
-                initParamConfigInfo();
+                admeInclinometerView.admeInclinometerInfo = commandResult.getResult();
+                admeInclinometerView.initParamConfigInfo();
             }
             break;
 
@@ -428,10 +190,10 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
                     String errMsg = String.format("%s %s", "保存测斜仪参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
-                    mBtnSave.setEnabled(true);
                     return;
                 }
-                doAfterSetting();
+                admeInclinometerView.doAfterSetting();
+                saveConfigInfo();
             }
             break;
 
@@ -453,78 +215,9 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-    private void initParamConfigInfo() {
-        if (admeInclinometerInfo == null) {
-            Timber.e("AdmeInclinometerInfo is Null!");
-            admeInclinometerInfo = new AdmeInclinometerInfo();
-            return;
-        }
-        try {
-            inclinometerTypeOld = admeInclinometerInfo.getInctype().trim();
-            inclinometerType = admeInclinometerInfo.getInctype().trim();
-            lowPowerModeOld = admeInclinometerInfo.getLowpower().trim();
-            lowPowerMode = admeInclinometerInfo.getLowpower().trim();
-            address = admeInclinometerInfo.getAddress().trim();
-            collectionInterval = admeInclinometerInfo.getCollinval().trim();
-            solvingInterval = admeInclinometerInfo.getCalcinval().trim();
-            sleepTime = admeInclinometerInfo.getDormancytime().trim();
-            correctionValue = admeInclinometerInfo.getInterupdate().trim();
-
-            mEtCollectionInterval.setText(collectionInterval);
-            mEtSolvingInterval.setText(solvingInterval);
-            mEtSleepTime.setText(sleepTime);
-            decimalFormat.applyPattern("#.####");
-            correctionValue = decimalFormat.format(Double.parseDouble(correctionValue));
-            mEtCorrectionValue.setText(correctionValue);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        if (inclinometerTypeOld.equals("0")) {
-            inclinometerTypePos = 0;
-            mTvInclinometerType.setText("433测斜仪");
-            mEtCollectorAddress.setText(address);
-            collectorAddressLayout.setVisibility(View.VISIBLE);
-            macAddressLayout.setVisibility(View.GONE);
-
-        } else {
-            inclinometerTypePos = 1;
-            mTvInclinometerType.setText("蓝牙测斜仪");
-            mEtMacAddress.setText(address);
-            collectorAddressLayout.setVisibility(View.GONE);
-            macAddressLayout.setVisibility(View.VISIBLE);
-        }
-
-        if (lowPowerModeOld.equals("0")) {
-            lowPowerModePos = 0;
-            mTvLowPowerMode.setText("关闭");
-        } else {
-            lowPowerModePos = 1;
-            mTvLowPowerMode.setText("开启");
-        }
-    }
-
-    private void doAfterSetting() {
-        if (admeInclinometerInfo != null) {
-            admeInclinometerInfo.setInctype(inclinometerType);
-            admeInclinometerInfo.setLowpower(lowPowerMode);
-            admeInclinometerInfo.setAddress(address);
-            admeInclinometerInfo.setCollinval(collectionInterval);
-            admeInclinometerInfo.setCalcinval(solvingInterval);
-            admeInclinometerInfo.setDormancytime(sleepTime);
-            admeInclinometerInfo.setInterupdate(correctionValue);
-        }
-        //TODO #gh#  打开注释，设置为浏览模式
-//        configPageViewModel.configPageEditableChanged.setValue(false);
-        inclinometerTypeOld = inclinometerType;
-        lowPowerModeOld = lowPowerMode;
-        mBtnSave.setEnabled(true);
-
-        saveConfigInfo();
-    }
-
     @Override
     public boolean onBackPressed() {
-        if (checkValueIsChange()) {
+        if (admeInclinometerView.checkValueIsChange(configPageViewModel.configPageEditableChanged.getValue())) {
             warnNotYetSettingBeforeLeavePage();
             return true;
         } else {
@@ -532,76 +225,8 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-    private boolean checkValueIsChange() {
-        if (!configPageViewModel.configPageEditableChanged.getValue())
-            return false;
-
-        if (inclinometerTypeOld != null && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
-            return true;
-        }
-
-        if (lowPowerModeOld != null && lowPowerMode != null && !lowPowerModeOld.equals(lowPowerMode)) {
-            return true;
-        }
-
-        if (address != null) {
-            if (inclinometerTypeOld.equals("0") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
-                return true;
-            }
-            if (inclinometerTypeOld.equals("1") && !address.equals(mEtMacAddress.getText().toString().trim())) {
-                return true;
-            }
-        }
-
-        if (collectionInterval != null && !collectionInterval.equals(mEtCollectionInterval.getText().toString().trim())) {
-            return true;
-        }
-
-        if (solvingInterval != null && !solvingInterval.equals(mEtSolvingInterval.getText().toString().trim())) {
-            return true;
-        }
-
-        if (sleepTime != null && !sleepTime.equals(mEtSleepTime.getText().toString().trim())) {
-            return true;
-        }
-
-        if (correctionValue != null && !correctionValue.equals(mEtCorrectionValue.getText().toString().trim())) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     protected void onEditableChanged(boolean isEditable) {
-        if (isEditable) {
-            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
-            mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
-            mEtCollectorAddress.setHint("0-32");
-            mEtMacAddress.setHint("XXXXXXXXXXXX");
-            mEtCollectionInterval.setHint("请输入");
-            mEtSolvingInterval.setHint("请输入");
-            mEtSleepTime.setHint("请输入");
-            mEtCorrectionValue.setHint("请输入");
-        } else {
-            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            mEtCollectorAddress.setHint("");
-            mEtMacAddress.setHint("");
-            mEtCollectionInterval.setHint("");
-            mEtSolvingInterval.setHint("");
-            mEtSleepTime.setHint("");
-            mEtCorrectionValue.setHint("");
-
-            mEtCollectorAddress.clearFocus();
-            mEtMacAddress.clearFocus();
-            mEtCollectionInterval.clearFocus();
-            mEtSolvingInterval.clearFocus();
-            mEtSleepTime.clearFocus();
-            mEtCorrectionValue.clearFocus();
-
-            initParamConfigInfo();
-        }
-        maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
-        mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
+        admeInclinometerView.onEditableChanged(isEditable);
     }
 }

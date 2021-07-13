@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBasicConfigInfo;
@@ -29,12 +27,12 @@ public class AdmeBasicConfigParamParser implements IOTResultParser<AdmeBasicConf
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setInctype(TextUtils.isEmpty(keyValueMap.get("inctype")) ? "" : keyValueMap.get("inctype"));
-            info.setAddress(TextUtils.isEmpty(keyValueMap.get("address")) ? "" : keyValueMap.get("address"));
-            info.setInterdeep(TextUtils.isEmpty(keyValueMap.get("interdeep")) ? "" : keyValueMap.get("interdeep"));
-            info.setDownspeed(TextUtils.isEmpty(keyValueMap.get("downspeed")) ? "" : keyValueMap.get("downspeed"));
-            info.setDownwaitetime(TextUtils.isEmpty(keyValueMap.get("downwaitetime")) ? "" : keyValueMap.get("downwaitetime"));
-            info.setDatatype(TextUtils.isEmpty(keyValueMap.get("datatype")) ? "" : keyValueMap.get("datatype"));
+            info.setInctype(!keyValueMap.containsKey("inctype") ? "NullKey" : keyValueMap.get("inctype"));
+            info.setAddress(!keyValueMap.containsKey("address") ? "NullKey" : keyValueMap.get("address"));
+            info.setInterdeep(!keyValueMap.containsKey("interdeep") ? "NullKey" : keyValueMap.get("interdeep"));
+            info.setDownspeed(!keyValueMap.containsKey("downspeed") ? "NullKey" : keyValueMap.get("downspeed"));
+            info.setDownwaitetime(!keyValueMap.containsKey("downwaitetime") ? "NullKey" : keyValueMap.get("downwaitetime"));
+            info.setDatatype(!keyValueMap.containsKey("datatype") ? "NullKey" : keyValueMap.get("datatype"));
 
             return info;
         } catch (Exception ex) {

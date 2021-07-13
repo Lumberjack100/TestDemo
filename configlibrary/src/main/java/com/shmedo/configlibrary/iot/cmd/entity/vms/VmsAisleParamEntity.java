@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.entity.vms;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 
@@ -119,48 +117,46 @@ public class VmsAisleParamEntity implements Validater {
 
     @Override
     public String toString() {
-
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("channel=" + vmsAisleNumber.toInt());
         stringBuilder.append("&");
 
-        if (!TextUtils.isEmpty(netid)) {
+        if (netid != null && !netid.equals("NullKey")) {
             stringBuilder.append("netid=" + netid);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(ppt)) {
+        if (ppt != null && !ppt.equals("NullKey")) {
             stringBuilder.append("ppt=" + ppt);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(addr)) {
+        if (addr != null && !addr.equals("NullKey")) {
             stringBuilder.append("addr=" + addr);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(chl)) {
+        if (chl != null && !chl.equals("NullKey")) {
             stringBuilder.append("chl=" + chl);
             stringBuilder.append("&");
         }
-
-        stringBuilder.append("terminalmode=" + terminalmode);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(sendgap)) {
+        if (terminalmode != null && !terminalmode.equals("NullKey")) {
+            stringBuilder.append("terminalmode=" + terminalmode);
+            stringBuilder.append("&");
+        }
+        if (sendgap != null && !sendgap.equals("NullKey")) {
             stringBuilder.append("sendgap=" + sendgap);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(offline)) {
+        if (offline != null && !offline.equals("NullKey")) {
             stringBuilder.append("offline=" + offline);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(sleepgap)) {
+        if (sleepgap != null && !sleepgap.equals("NullKey")) {
             stringBuilder.append("sleepgap=" + sleepgap);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(wakeupgap)) {
+        if (wakeupgap != null && !wakeupgap.equals("NullKey")) {
             stringBuilder.append("wakeupgap=" + wakeupgap);
             stringBuilder.append("&");
         }
-
         stringBuilder.append("airbaud=" + airbaud);
 
         return stringBuilder.toString();

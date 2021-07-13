@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -39,17 +37,19 @@ public class AdmeStepperMotorEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("posnegtest=" + posnegtest);
-        stringBuilder.append("&");
-        if (!TextUtils.isEmpty(absprsion)) {
+        if (posnegtest != null && !posnegtest.equals("NullKey")) {
+            stringBuilder.append("posnegtest=" + posnegtest);
+            stringBuilder.append("&");
+        }
+        if (absprsion != null && !absprsion.equals("NullKey")) {
             stringBuilder.append("absprsion=" + absprsion);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(movspeed)) {
+        if (movspeed != null && !movspeed.equals("NullKey")) {
             stringBuilder.append("movspeed=" + movspeed);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(movesm)) {
+        if (movesm != null && !movesm.equals("NullKey")) {
             stringBuilder.append("movesm=" + movesm);
             stringBuilder.append("&");
         }

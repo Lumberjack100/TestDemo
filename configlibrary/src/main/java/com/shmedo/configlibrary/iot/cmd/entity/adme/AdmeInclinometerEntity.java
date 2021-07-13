@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -54,31 +52,31 @@ public class AdmeInclinometerEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("inctype=" + inctype);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(lowpower)) {
+        if (inctype != null && !inctype.equals("NullKey")) {
+            stringBuilder.append("inctype=" + inctype);
+            stringBuilder.append("&");
+        }
+        if (lowpower != null && !lowpower.equals("NullKey")) {
             stringBuilder.append("lowpower=" + lowpower);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(address)) {
+        if (address != null && !address.equals("NullKey")) {
             stringBuilder.append("address=" + address);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(collinval)) {
+        if (collinval != null && !collinval.equals("NullKey")) {
             stringBuilder.append("collinval=" + collinval);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(calcinval)) {
+        if (calcinval != null && !calcinval.equals("NullKey")) {
             stringBuilder.append("calcinval=" + calcinval);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(dormancytime)) {
+        if (dormancytime != null && !dormancytime.equals("NullKey")) {
             stringBuilder.append("dormancytime=" + dormancytime);
             stringBuilder.append("&");
         }
-
-        if (!TextUtils.isEmpty(interupdate)) {
+        if (interupdate != null && !interupdate.equals("NullKey")) {
             stringBuilder.append("interupdate=" + interupdate);
             stringBuilder.append("&");
         }

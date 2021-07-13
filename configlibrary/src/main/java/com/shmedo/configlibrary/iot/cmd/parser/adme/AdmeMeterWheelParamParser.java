@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMeterWheelInfo;
@@ -29,16 +27,16 @@ public class AdmeMeterWheelParamParser implements IOTResultParser<AdmeMeterWheel
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setEnclinenum(TextUtils.isEmpty(keyValueMap.get("enclinenum")) ? "" : keyValueMap.get("enclinenum"));
-            info.setOutline(TextUtils.isEmpty(keyValueMap.get("outline")) ? "" : keyValueMap.get("outline"));
-            info.setUptiona(TextUtils.isEmpty(keyValueMap.get("uptiona")) ? "" : keyValueMap.get("uptiona"));
-            info.setUptionb(TextUtils.isEmpty(keyValueMap.get("uptionb")) ? "" : keyValueMap.get("uptionb"));
-            info.setUpconstant(TextUtils.isEmpty(keyValueMap.get("upconstant")) ? "" : keyValueMap.get("upconstant"));
-            info.setUpfilter(TextUtils.isEmpty(keyValueMap.get("upfilter")) ? "" : keyValueMap.get("upfilter"));
-            info.setDowntiona(TextUtils.isEmpty(keyValueMap.get("downtiona")) ? "" : keyValueMap.get("downtiona"));
-            info.setDowntionb(TextUtils.isEmpty(keyValueMap.get("downtionb")) ? "" : keyValueMap.get("downtionb"));
-            info.setDownconstant(TextUtils.isEmpty(keyValueMap.get("downconstant")) ? "" : keyValueMap.get("downconstant"));
-            info.setDownfilter(TextUtils.isEmpty(keyValueMap.get("downfilter")) ? "" : keyValueMap.get("downfilter"));
+            info.setEnclinenum(!keyValueMap.containsKey("enclinenum") ? "NullKey" : keyValueMap.get("enclinenum"));
+            info.setOutline(!keyValueMap.containsKey("outline") ? "NullKey" : keyValueMap.get("outline"));
+            info.setUptiona(!keyValueMap.containsKey("uptiona") ? "NullKey" : keyValueMap.get("uptiona"));
+            info.setUptionb(!keyValueMap.containsKey("uptionb") ? "NullKey" : keyValueMap.get("uptionb"));
+            info.setUpconstant(!keyValueMap.containsKey("upconstant") ? "NullKey" : keyValueMap.get("upconstant"));
+            info.setUpfilter(!keyValueMap.containsKey("upfilter") ? "NullKey" : keyValueMap.get("upfilter"));
+            info.setDowntiona(!keyValueMap.containsKey("downtiona") ? "NullKey" : keyValueMap.get("downtiona"));
+            info.setDowntionb(!keyValueMap.containsKey("downtionb") ? "NullKey" : keyValueMap.get("downtionb"));
+            info.setDownconstant(!keyValueMap.containsKey("downconstant") ? "NullKey" : keyValueMap.get("downconstant"));
+            info.setDownfilter(!keyValueMap.containsKey("downfilter") ? "NullKey" : keyValueMap.get("downfilter"));
 
             return info;
         } catch (Exception ex) {

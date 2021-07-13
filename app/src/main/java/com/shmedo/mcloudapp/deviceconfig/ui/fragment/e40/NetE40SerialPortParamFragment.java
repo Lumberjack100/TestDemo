@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -36,6 +37,9 @@ import timber.log.Timber;
  * 描述：    E40 4G模式串口参数配置页面
  */
 public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment {
+    @BindView(R.id.maskLayerLayout)
+    ViewGroup maskLayerLayout;
+
     @BindView(R.id.tv_type)
     TextView mTvType;
 
@@ -243,7 +247,8 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询有线网络参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    ToastUtils.show(commandResult.getMessage().contains("unsupported") ? "设备版本不支持!" : errMsg);
+                    maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
                 e40SerialPortInfo = commandResult.getResult();

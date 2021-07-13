@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeExecutiveAgencyInfo;
@@ -29,27 +27,28 @@ public class AdmeExecutiveAgencyInfoParser implements IOTResultParser<AdmeExecut
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setDatatype(TextUtils.isEmpty(keyValueMap.get("datatype")) ? "" : keyValueMap.get("datatype"));
-            info.setDatareply(TextUtils.isEmpty(keyValueMap.get("datareply")) ? "" : keyValueMap.get("datareply"));
-            info.setRoundwaitetime(TextUtils.isEmpty(keyValueMap.get("roundwaitetime")) ? "" : keyValueMap.get("roundwaitetime"));
-            info.setDatainval(TextUtils.isEmpty(keyValueMap.get("datainval")) ? "" : keyValueMap.get("datainval"));
-            info.setCompensatetime(TextUtils.isEmpty(keyValueMap.get("compensatetime")) ? "" : keyValueMap.get("compensatetime"));
-            info.setDriveaddress(TextUtils.isEmpty(keyValueMap.get("driveaddress")) ? "" : keyValueMap.get("driveaddress"));
-            info.setDownspeed(TextUtils.isEmpty(keyValueMap.get("downspeed")) ? "" : keyValueMap.get("downspeed"));
-            info.setInterdeep(TextUtils.isEmpty(keyValueMap.get("interdeep")) ? "" : keyValueMap.get("interdeep"));
-            info.setDownwaitetime(TextUtils.isEmpty(keyValueMap.get("downwaitetime")) ? "" : keyValueMap.get("downwaitetime"));
-            info.setUpspeed(TextUtils.isEmpty(keyValueMap.get("upspeed")) ? "" : keyValueMap.get("upspeed"));
-            info.setMeaspacing(TextUtils.isEmpty(keyValueMap.get("measpacing")) ? "" : keyValueMap.get("measpacing"));
-            info.setMeaintertime(TextUtils.isEmpty(keyValueMap.get("meaintertime")) ? "" : keyValueMap.get("meaintertime"));
-            info.setMeabaseth(TextUtils.isEmpty(keyValueMap.get("meabaseth")) ? "" : keyValueMap.get("meabaseth"));
-            info.setDwonblocked(TextUtils.isEmpty(keyValueMap.get("dwonblocked")) ? "" : keyValueMap.get("dwonblocked"));
-            info.setUntimenum(TextUtils.isEmpty(keyValueMap.get("untimenum")) ? "" : keyValueMap.get("untimenum"));
-            info.setDetectiontime(TextUtils.isEmpty(keyValueMap.get("detectiontime")) ? "" : keyValueMap.get("detectiontime"));
-            info.setDetectionstart(TextUtils.isEmpty(keyValueMap.get("detectionstart")) ? "" : keyValueMap.get("detectionstart"));
-            info.setDetectionend(TextUtils.isEmpty(keyValueMap.get("detectionend")) ? "" : keyValueMap.get("detectionend"));
-            info.setInterval_compensation(TextUtils.isEmpty(keyValueMap.get("interval_compensation")) ? "" : keyValueMap.get("interval_compensation"));
-            info.setInterval_fitting(TextUtils.isEmpty(keyValueMap.get("interval_fitting")) ? "" : keyValueMap.get("interval_fitting"));
-            info.setPoint_offset(TextUtils.isEmpty(keyValueMap.get("point_offset")) ? "" : keyValueMap.get("point_offset"));
+
+            info.setDatatype(!keyValueMap.containsKey("datatype") ? "NullKey" : keyValueMap.get("datatype"));
+            info.setDatareply(!keyValueMap.containsKey("datareply") ? "NullKey" : keyValueMap.get("datareply"));
+            info.setRoundwaitetime(!keyValueMap.containsKey("roundwaitetime") ? "NullKey" : keyValueMap.get("roundwaitetime"));
+            info.setDatainval(!keyValueMap.containsKey("datainval") ? "NullKey" : keyValueMap.get("datainval"));
+            info.setCompensatetime(!keyValueMap.containsKey("compensatetime") ? "NullKey": keyValueMap.get("compensatetime"));
+            info.setDriveaddress(!keyValueMap.containsKey("driveaddress") ? "NullKey" : keyValueMap.get("driveaddress"));
+            info.setDownspeed(!keyValueMap.containsKey("downspeed") ? "NullKey" : keyValueMap.get("downspeed"));
+            info.setInterdeep(!keyValueMap.containsKey("interdeep") ? "NullKey" : keyValueMap.get("interdeep"));
+            info.setDownwaitetime(!keyValueMap.containsKey("downwaitetime") ? "NullKey" : keyValueMap.get("downwaitetime"));
+            info.setUpspeed(!keyValueMap.containsKey("upspeed") ? "NullKey" : keyValueMap.get("upspeed"));
+            info.setMeaspacing(!keyValueMap.containsKey("measpacing") ? "NullKey" : keyValueMap.get("measpacing"));
+            info.setMeaintertime(!keyValueMap.containsKey("meaintertime") ? "NullKey" : keyValueMap.get("meaintertime"));
+            info.setMeabaseth(!keyValueMap.containsKey("meabaseth") ? "NullKey" : keyValueMap.get("meabaseth"));
+            info.setDwonblocked(!keyValueMap.containsKey("dwonblocked") ? "NullKey" : keyValueMap.get("dwonblocked"));
+            info.setUntimenum(!keyValueMap.containsKey("untimenum") ? "NullKey" : keyValueMap.get("untimenum"));
+            info.setDetectiontime(!keyValueMap.containsKey("detectiontime") ? "NullKey" : keyValueMap.get("detectiontime"));
+            info.setDetectionstart(!keyValueMap.containsKey("detectionstart") ? "NullKey" : keyValueMap.get("detectionstart"));
+            info.setDetectionend(!keyValueMap.containsKey("detectionend") ? "NullKey" : keyValueMap.get("detectionend"));
+            info.setInterval_compensation(!keyValueMap.containsKey("interval_compensation") ? "NullKey": keyValueMap.get("interval_compensation"));
+            info.setInterval_fitting(!keyValueMap.containsKey("interval_fitting") ? "NullKey" : keyValueMap.get("interval_fitting"));
+            info.setPoint_offset(!keyValueMap.containsKey("point_offset") ? "NullKey" : keyValueMap.get("point_offset"));
 
             return info;
         } catch (Exception ex) {

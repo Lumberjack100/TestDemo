@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo;
@@ -29,20 +27,20 @@ public class AdmeLockedRotorDetectionInfoParser implements IOTResultParser<AdmeL
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setLowtbtss(TextUtils.isEmpty(keyValueMap.get("lowtbtss")) ? "" : keyValueMap.get("lowtbtss"));
-            info.setNumpput(TextUtils.isEmpty(keyValueMap.get("numpput")) ? "" : keyValueMap.get("numpput"));
-            info.setPdajtime(TextUtils.isEmpty(keyValueMap.get("pdajtime")) ? "" : keyValueMap.get("pdajtime"));
-            info.setDetintiona(TextUtils.isEmpty(keyValueMap.get("detintiona")) ? "" : keyValueMap.get("detintiona"));
-            info.setDetintionb(TextUtils.isEmpty(keyValueMap.get("detintionb")) ? "" : keyValueMap.get("detintionb"));
-            info.setLowtorblothr(TextUtils.isEmpty(keyValueMap.get("lowtorblothr")) ? "" : keyValueMap.get("lowtorblothr"));
-            info.setLowtordetime(TextUtils.isEmpty(keyValueMap.get("lowtordetime")) ? "" : keyValueMap.get("lowtordetime"));
-            info.setLowsusrana(TextUtils.isEmpty(keyValueMap.get("lowsusrana")) ? "" : keyValueMap.get("lowsusrana"));
-            info.setLowsusranb(TextUtils.isEmpty(keyValueMap.get("lowsusranb")) ? "" : keyValueMap.get("lowsusranb"));
-            info.setUptbtss(TextUtils.isEmpty(keyValueMap.get("uptbtss")) ? "" : keyValueMap.get("uptbtss"));
-            info.setUptorblothr(TextUtils.isEmpty(keyValueMap.get("uptorblothr")) ? "" : keyValueMap.get("uptorblothr"));
-            info.setUptordetime(TextUtils.isEmpty(keyValueMap.get("uptordetime")) ? "" : keyValueMap.get("uptordetime"));
-            info.setUpsusrana(TextUtils.isEmpty(keyValueMap.get("upsusrana")) ? "" : keyValueMap.get("upsusrana"));
-            info.setUpsusranb(TextUtils.isEmpty(keyValueMap.get("upsusranb")) ? "" : keyValueMap.get("upsusranb"));
+            info.setLowtbtss(!keyValueMap.containsKey("lowtbtss") ? "NullKey"  : keyValueMap.get("lowtbtss"));
+            info.setNumpput(!keyValueMap.containsKey("numpput") ? "NullKey" : keyValueMap.get("numpput"));
+            info.setPdajtime(!keyValueMap.containsKey("pdajtime") ? "NullKey"  : keyValueMap.get("pdajtime"));
+            info.setDetintiona(!keyValueMap.containsKey("detintiona") ? "NullKey"  : keyValueMap.get("detintiona"));
+            info.setDetintionb(!keyValueMap.containsKey("detintionb") ? "NullKey"  : keyValueMap.get("detintionb"));
+            info.setLowtorblothr(!keyValueMap.containsKey("lowtorblothr") ? "NullKey"  : keyValueMap.get("lowtorblothr"));
+            info.setLowtordetime(!keyValueMap.containsKey("lowtordetime") ? "NullKey"  : keyValueMap.get("lowtordetime"));
+            info.setLowsusrana(!keyValueMap.containsKey("lowsusrana") ? "NullKey"  : keyValueMap.get("lowsusrana"));
+            info.setLowsusranb(!keyValueMap.containsKey("lowsusranb") ? "NullKey"  : keyValueMap.get("lowsusranb"));
+            info.setUptbtss(!keyValueMap.containsKey("uptbtss") ? "NullKey"  : keyValueMap.get("uptbtss"));
+            info.setUptorblothr(!keyValueMap.containsKey("uptorblothr") ? "NullKey"  : keyValueMap.get("uptorblothr"));
+            info.setUptordetime(!keyValueMap.containsKey("uptordetime") ? "NullKey" : keyValueMap.get("uptordetime"));
+            info.setUpsusrana(!keyValueMap.containsKey("upsusrana") ? "NullKey"  : keyValueMap.get("upsusrana"));
+            info.setUpsusranb(!keyValueMap.containsKey("upsusranb") ? "NullKey"  : keyValueMap.get("upsusranb"));
 
             return info;
         } catch (Exception ex) {

@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -89,62 +87,62 @@ public class AdmeLockedRotorDetectionEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("lowtbtss=" + lowtbtss);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(numpput)) {
+        if (lowtbtss != null && !lowtbtss.equals("NullKey")) {
+            stringBuilder.append("lowtbtss=" + lowtbtss);
+            stringBuilder.append("&");
+        }
+        if (numpput != null && !numpput.equals("NullKey")) {
             stringBuilder.append("numpput=" + numpput);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(pdajtime)) {
+        if (pdajtime != null && !pdajtime.equals("NullKey")) {
             stringBuilder.append("pdajtime=" + pdajtime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(detintiona)) {
+        if (detintiona != null && !detintiona.equals("NullKey")) {
             stringBuilder.append("detintiona=" + detintiona);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(detintionb)) {
+        if (detintionb != null && !detintionb.equals("NullKey")) {
             stringBuilder.append("detintionb=" + detintionb);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(lowtorblothr)) {
+        if (lowtorblothr != null && !lowtorblothr.equals("NullKey")) {
             stringBuilder.append("lowtorblothr=" + lowtorblothr);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(lowtordetime)) {
+        if (lowtordetime != null && !lowtordetime.equals("NullKey")) {
             stringBuilder.append("lowtordetime=" + lowtordetime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(lowsusrana)) {
+        if (lowsusrana != null && !lowsusrana.equals("NullKey")) {
             stringBuilder.append("lowsusrana=" + lowsusrana);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(lowsusranb)) {
+        if (lowsusranb != null && !lowsusranb.equals("NullKey")) {
             stringBuilder.append("lowsusranb=" + lowsusranb);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(uptbtss)) {
+        if (uptbtss != null && !uptbtss.equals("NullKey")) {
             stringBuilder.append("uptbtss=" + uptbtss);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(uptorblothr)) {
+        if (uptorblothr != null && !uptorblothr.equals("NullKey")) {
             stringBuilder.append("uptorblothr=" + uptorblothr);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(uptordetime)) {
+        if (uptordetime != null && !uptordetime.equals("NullKey")) {
             stringBuilder.append("uptordetime=" + uptordetime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(upsusrana)) {
+        if (upsusrana != null && !upsusrana.equals("NullKey")) {
             stringBuilder.append("upsusrana=" + upsusrana);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(upsusranb)) {
+        if (upsusranb != null && !upsusranb.equals("NullKey")) {
             stringBuilder.append("upsusranb=" + upsusranb);
             stringBuilder.append("&");
         }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

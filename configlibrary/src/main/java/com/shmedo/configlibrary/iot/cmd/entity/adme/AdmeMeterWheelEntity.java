@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -70,43 +68,43 @@ public class AdmeMeterWheelEntity implements Validater {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        if (!TextUtils.isEmpty(enclinenum)) {
+        if (enclinenum != null && !enclinenum.equals("NullKey")) {
             stringBuilder.append("enclinenum=" + enclinenum);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(outline)) {
+        if (outline != null && !outline.equals("NullKey")) {
             stringBuilder.append("outline=" + outline);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(uptiona)) {
+        if (uptiona != null && !uptiona.equals("NullKey")) {
             stringBuilder.append("uptiona=" + uptiona);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(uptionb)) {
+        if (uptionb != null && !uptionb.equals("NullKey")) {
             stringBuilder.append("uptionb=" + uptionb);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(upconstant)) {
+        if (upconstant != null && !upconstant.equals("NullKey")) {
             stringBuilder.append("upconstant=" + upconstant);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(upfilter)) {
+        if (upfilter != null && !upfilter.equals("NullKey")) {
             stringBuilder.append("upfilter=" + upfilter);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(downtiona)) {
+        if (downtiona != null && !downtiona.equals("NullKey")) {
             stringBuilder.append("downtiona=" + downtiona);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(downtionb)) {
+        if (downtionb != null && !downtionb.equals("NullKey")) {
             stringBuilder.append("downtionb=" + downtionb);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(downconstant)) {
+        if (downconstant != null && !downconstant.equals("NullKey")) {
             stringBuilder.append("downconstant=" + downconstant);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(downfilter)) {
+        if (downfilter != null && !downfilter.equals("NullKey")) {
             stringBuilder.append("downfilter=" + downfilter);
         }
 

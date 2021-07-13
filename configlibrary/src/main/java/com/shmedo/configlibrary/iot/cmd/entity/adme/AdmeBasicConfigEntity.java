@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -49,26 +47,28 @@ public class AdmeBasicConfigEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("inctype=" + inctype);
-        stringBuilder.append("&");
 
-        if (!TextUtils.isEmpty(address)) {
+        if (inctype != null && !inctype.equals("NullKey")) {
+            stringBuilder.append("inctype=" + inctype);
+            stringBuilder.append("&");
+        }
+        if (address != null && !address.equals("NullKey")) {
             stringBuilder.append("address=" + address);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(interdeep)) {
+        if (interdeep != null && !interdeep.equals("NullKey")) {
             stringBuilder.append("interdeep=" + interdeep);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(downspeed)) {
+        if (downspeed != null && !downspeed.equals("NullKey")) {
             stringBuilder.append("downspeed=" + downspeed);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(downwaitetime)) {
+        if (downwaitetime != null && !downwaitetime.equals("NullKey")) {
             stringBuilder.append("downwaitetime=" + downwaitetime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(datatype)) {
+        if (datatype != null && !datatype.equals("NullKey")) {
             stringBuilder.append("datatype=" + datatype);
         }
 

@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -124,96 +122,93 @@ public class AdmeExecutiveAgencyEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("datatype=" + datatype);
-        stringBuilder.append("&");
-        if (!TextUtils.isEmpty(datareply)) {
+        if (datatype != null && !datatype.equals("NullKey")) {
+            stringBuilder.append("datatype=" + datatype);
+            stringBuilder.append("&");
+        }
+        if (datareply != null && !datareply.equals("NullKey")) {
             stringBuilder.append("datareply=" + datareply);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(roundwaitetime)) {
+        if (roundwaitetime != null && !roundwaitetime.equals("NullKey")) {
             stringBuilder.append("roundwaitetime=" + roundwaitetime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(datainval)) {
+        if (datainval != null && !datainval.equals("NullKey")) {
             stringBuilder.append("datainval=" + datainval);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(compensatetime)) {
+        if (compensatetime != null && !compensatetime.equals("NullKey")) {
             stringBuilder.append("compensatetime=" + compensatetime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(driveaddress)) {
+        if (driveaddress != null && !driveaddress.equals("NullKey")) {
             stringBuilder.append("driveaddress=" + driveaddress);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(downspeed)) {
+        if (downspeed != null && !downspeed.equals("NullKey")) {
             stringBuilder.append("downspeed=" + downspeed);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(interdeep)) {
+        if (interdeep != null && !interdeep.equals("NullKey")) {
             stringBuilder.append("interdeep=" + interdeep);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(downwaitetime)) {
+        if (downwaitetime != null && !downwaitetime.equals("NullKey")) {
             stringBuilder.append("downwaitetime=" + downwaitetime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(upspeed)) {
+        if (upspeed != null && !upspeed.equals("NullKey")) {
             stringBuilder.append("upspeed=" + upspeed);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(measpacing)) {
+        if (measpacing != null && !measpacing.equals("NullKey")) {
             stringBuilder.append("measpacing=" + measpacing);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(meaintertime)) {
+        if (meaintertime != null && !meaintertime.equals("NullKey")) {
             stringBuilder.append("meaintertime=" + meaintertime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(meabaseth)) {
+        if (meabaseth != null && !meabaseth.equals("NullKey")) {
             stringBuilder.append("meabaseth=" + meabaseth);
             stringBuilder.append("&");
         }
-
-        if (!TextUtils.isEmpty(dwonblocked)) {
+        if (dwonblocked != null && !dwonblocked.equals("NullKey")) {
             stringBuilder.append("dwonblocked=" + dwonblocked);
             stringBuilder.append("&");
         }
-
-        if (!TextUtils.isEmpty(untimenum)) {
+        if (untimenum != null && !untimenum.equals("NullKey")) {
             stringBuilder.append("untimenum=" + untimenum);
             stringBuilder.append("&");
         }
-
-        if (!TextUtils.isEmpty(detectiontime)) {
+        if (detectiontime != null && !detectiontime.equals("NullKey")) {
             stringBuilder.append("detectiontime=" + detectiontime);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(detectionstart)) {
+        if (detectionstart != null && !detectionstart.equals("NullKey")) {
             stringBuilder.append("detectionstart=" + detectionstart);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(detectionend)) {
+        if (detectionend != null && !detectionend.equals("NullKey")) {
             stringBuilder.append("detectionend=" + detectionend);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(interval_compensation)) {
+        if (interval_compensation != null && !interval_compensation.equals("NullKey")) {
             stringBuilder.append("interval_compensation=" + interval_compensation);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(interval_fitting)) {
+        if (interval_fitting != null && !interval_fitting.equals("NullKey")) {
             stringBuilder.append("interval_fitting=" + interval_fitting);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(point_offset)) {
+        if (point_offset != null && !point_offset.equals("NullKey")) {
             stringBuilder.append("point_offset=" + point_offset);
             stringBuilder.append("&");
         }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
-
         return stringBuilder.toString();
     }
 }

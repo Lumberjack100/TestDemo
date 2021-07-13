@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -44,6 +45,10 @@ import timber.log.Timber;
  * 描述：    E50 4G模式RTK参数配置页面
  */
 public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
+
+    @BindView(R.id.maskLayerLayout)
+    ViewGroup maskLayerLayout;
+
     @BindView(R.id.tv_rtk_mode)
     TextView mTvRTKMode;
 
@@ -324,7 +329,8 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
                     dismissProgressDialog();
                     String errMsg = String.format("%s %s", "查询RTK模式出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    ToastUtils.show(commandResult.getMessage().contains("unsupported") ? "设备版本不支持!" : errMsg);
+                    maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
                 rtkModeInfo = commandResult.getResult();

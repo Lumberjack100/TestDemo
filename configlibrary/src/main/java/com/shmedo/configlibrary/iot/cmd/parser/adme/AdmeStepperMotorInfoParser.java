@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorInfo;
@@ -29,10 +27,10 @@ public class AdmeStepperMotorInfoParser implements IOTResultParser<AdmeStepperMo
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setPosnegtest(TextUtils.isEmpty(keyValueMap.get("posnegtest")) ? "" : keyValueMap.get("posnegtest"));
-            info.setAbsprsion(TextUtils.isEmpty(keyValueMap.get("absprsion")) ? "" : keyValueMap.get("absprsion"));
-            info.setMovspeed(TextUtils.isEmpty(keyValueMap.get("movspeed")) ? "" : keyValueMap.get("movspeed"));
-            info.setMovesm(TextUtils.isEmpty(keyValueMap.get("movesm")) ? "" : keyValueMap.get("movesm"));
+            info.setPosnegtest(!keyValueMap.containsKey("posnegtest") ? "NullKey"  : keyValueMap.get("posnegtest"));
+            info.setAbsprsion(!keyValueMap.containsKey("absprsion") ? "NullKey"  : keyValueMap.get("absprsion"));
+            info.setMovspeed(!keyValueMap.containsKey("movspeed") ? "NullKey" : keyValueMap.get("movspeed"));
+            info.setMovesm(!keyValueMap.containsKey("movesm") ? "NullKey"  : keyValueMap.get("movesm"));
 
             return info;
         } catch (Exception ex) {

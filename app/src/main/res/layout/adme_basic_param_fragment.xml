@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,192 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <com.shmedo.mcloudapp.deviceconfig.view.adme.AdmeBasicParamConfigView
+            android:id="@+id/admeBasicParamConfigView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
-
-            <LinearLayout
-                android:id="@+id/ll_inclinometer_type"
-                style="@style/Common_ClickableItem_LayoutStyle">
-
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="测斜仪类型" />
-
-                <TextView
-                    android:id="@+id/tv_inclinometer_type"
-                    style="@style/Common_ClickableItem_ValueStyle"
-                    android:textSize="17sp"
-                    tools:text="433测斜仪" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="14dp" />
-
-            <LinearLayout
-                android:id="@+id/ll_collector_address"
-                style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="采集器地址"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_collector_address"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入"
-                    android:inputType="number" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_mac_address"
-                style="@style/Common_EditItem_LayoutStyle"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mac地址"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_mac_address"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入"
-                    android:inputType="textCapCharacters"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/divider_line_bg_efefef" />
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="测斜管孔深(m)"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_inclination_tube_hole_depth"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入"
-                    android:inputType="numberDecimal" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="14dp" />
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="下放速度(r/min)"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_decentralization_speed"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入"
-                    android:inputType="number" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/divider_line_bg_efefef" />
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="下放等待时间(min)"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_decentralization_waiting_time"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入"
-                    android:inputType="number" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="14dp" />
-
-            <LinearLayout
-                android:id="@+id/ll_data_settlement_method"
-                style="@style/Common_ClickableItem_LayoutStyle">
-
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="数据结算方式" />
-
-                <TextView
-                    android:id="@+id/tv_data_settlement_method"
-                    style="@style/Common_ClickableItem_ValueStyle"
-                    android:textSize="17sp"
-                    tools:text="顶固定法" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
-
-            <Button
-                android:id="@+id/btn_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_select"
-                android:gravity="center"
-                android:text="保存"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:id="@+id/maskLayerLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent"
+            android:background="#B3FFFFFF"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:visibility="gone" />
 
     </FrameLayout>
 

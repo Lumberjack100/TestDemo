@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeInclinometerInfo;
@@ -29,13 +27,13 @@ public class AdmeInclinometerInfoParser implements IOTResultParser<AdmeInclinome
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setInctype(TextUtils.isEmpty(keyValueMap.get("inctype")) ? "" : keyValueMap.get("inctype"));
-            info.setLowpower(TextUtils.isEmpty(keyValueMap.get("lowpower")) ? "" : keyValueMap.get("lowpower"));
-            info.setAddress(TextUtils.isEmpty(keyValueMap.get("address")) ? "" : keyValueMap.get("address"));
-            info.setCollinval(TextUtils.isEmpty(keyValueMap.get("collinval")) ? "" : keyValueMap.get("collinval"));
-            info.setCalcinval(TextUtils.isEmpty(keyValueMap.get("calcinval")) ? "" : keyValueMap.get("calcinval"));
-            info.setDormancytime(TextUtils.isEmpty(keyValueMap.get("dormancytime")) ? "" : keyValueMap.get("dormancytime"));
-            info.setInterupdate(TextUtils.isEmpty(keyValueMap.get("interupdate")) ? "" : keyValueMap.get("interupdate"));
+            info.setInctype(!keyValueMap.containsKey("inctype") ? "NullKey" : keyValueMap.get("inctype"));
+            info.setLowpower(!keyValueMap.containsKey("lowpower") ? "NullKey" : keyValueMap.get("lowpower"));
+            info.setAddress(!keyValueMap.containsKey("address") ? "NullKey" : keyValueMap.get("address"));
+            info.setCollinval(!keyValueMap.containsKey("collinval") ? "NullKey" : keyValueMap.get("collinval"));
+            info.setCalcinval(!keyValueMap.containsKey("calcinval") ? "NullKey" : keyValueMap.get("calcinval"));
+            info.setDormancytime(!keyValueMap.containsKey("dormancytime") ? "NullKey" : keyValueMap.get("dormancytime"));
+            info.setInterupdate(!keyValueMap.containsKey("interupdate") ? "NullKey" : keyValueMap.get("interupdate"));
 
             return info;
         } catch (Exception ex) {
