@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
@@ -21,6 +22,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeBasicConfigEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBasicConfigInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
@@ -56,6 +58,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
 
     @BindView(R.id.tv_data_settlement_method)
     TextView mTvDataSettlementMethod;
+
+    @BindView(R.id.decentralizedEnableSBtn)
+    public SwitchButton mSbDecentralizedEnable;
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
@@ -96,6 +101,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private DecimalFormat decimalFormat = new DecimalFormat();
 
     public AdmeBasicConfigInfo basicConfigParam;
+    public AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
 
 
     public AdmeBasicParamConfigView(Context context) {
@@ -359,6 +365,23 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                 dataSettlementMethodPos = 1;
                 mTvDataSettlementMethod.setText("底固定法");
             }
+        }
+    }
+
+    /**
+     * 初始化堵转检测参数
+     */
+    public void initLockedRotorDetectionInfo() {
+        if (lockedRotorDetectionInfo == null) {
+            Timber.e("AdmeLockedRotorDetectionInfo is Null!");
+            lockedRotorDetectionInfo = new AdmeLockedRotorDetectionInfo();
+            return;
+        }
+
+        if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
+            mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(false);
+        } else {
+            mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
         }
     }
 

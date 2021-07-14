@@ -5,6 +5,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,10 +13,12 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeLockedRotorDetectionEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBasicConfigInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -54,6 +57,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setSwitchViewListener();
         queryBasicParamConfigInfo();
         //TODO #gh# 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
@@ -69,6 +73,51 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
     private void queryBasicParamConfigInfo() {
         startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC);
+        sendCommand(command);
+    }
+
+    /**
+     * 获取堵转检测参数
+     */
+    private void queryLockRotorInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
+        sendCommand(command);
+    }
+
+    private void setSwitchViewListener() {
+        admeBasicParamConfigView.mSbDecentralizedEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    admeBasicParamConfigView.mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+                setLockRotorInfo(isChecked);
+            }
+        });
+    }
+
+    private void setLockRotorInfo(boolean isChecked) {
+        AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
+        entity.setLowtbtss(isChecked ? "1" : "0");
+        entity.setNumpput(admeBasicParamConfigView.lockedRotorDetectionInfo.getNumpput());
+        entity.setPdajtime(admeBasicParamConfigView.lockedRotorDetectionInfo.getPdajtime());
+        entity.setDetintiona(admeBasicParamConfigView.lockedRotorDetectionInfo.getDetintiona());
+        entity.setDetintionb(admeBasicParamConfigView.lockedRotorDetectionInfo.getDetintionb());
+        entity.setLowtorblothr(admeBasicParamConfigView.lockedRotorDetectionInfo.getLowtorblothr());
+        entity.setLowtordetime(admeBasicParamConfigView.lockedRotorDetectionInfo.getLowtordetime());
+        entity.setLowsusrana(admeBasicParamConfigView.lockedRotorDetectionInfo.getLowsusrana());
+        entity.setLowsusranb(admeBasicParamConfigView.lockedRotorDetectionInfo.getLowsusranb());
+
+        entity.setUptbtss(admeBasicParamConfigView.lockedRotorDetectionInfo.getUptbtss());
+        entity.setUptorblothr(admeBasicParamConfigView.lockedRotorDetectionInfo.getUptorblothr());
+        entity.setUptordetime(admeBasicParamConfigView.lockedRotorDetectionInfo.getUptordetime());
+        entity.setUpsusrana(admeBasicParamConfigView.lockedRotorDetectionInfo.getUpsusrana());
+        entity.setUpsusranb(admeBasicParamConfigView.lockedRotorDetectionInfo.getUpsusranb());
+
+//        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
         sendCommand(command);
     }
 
@@ -120,7 +169,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_BASIC: {//获取设备的基础配置参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+//                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeBasicConfigInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备的基础配置参数出错!", commandResult.getMessage());
@@ -131,6 +180,35 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                 }
                 admeBasicParamConfigView.basicConfigParam = commandResult.getResult();
                 admeBasicParamConfigView.initParamConfigInfo();
+                queryLockRotorInfo();
+            }
+            break;
+
+            case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                admeBasicParamConfigView.lockedRotorDetectionInfo = commandResult.getResult();
+                admeBasicParamConfigView.initLockedRotorDetectionInfo();
+            }
+            break;
+
+            case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+//                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+//                doAfterSetting();
             }
             break;
 
