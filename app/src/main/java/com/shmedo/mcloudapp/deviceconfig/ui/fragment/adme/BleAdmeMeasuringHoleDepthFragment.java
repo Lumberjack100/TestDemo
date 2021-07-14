@@ -53,7 +53,7 @@ import timber.log.Timber;
 public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.decentralizedEnableSBtn)
     SwitchButton mSbDecentralizedEnable;
-    
+
     @BindView(R.id.tv_motion_way)
     TextView mTvMotionWay;
 
@@ -107,7 +107,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         setView();
         setSwitchViewListener();
         setRadioButtonListener();
-        queryMotorMotionConfig();
+        queryLockRotorInfo();
     }
 
     private void setView() {
@@ -122,20 +122,20 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         clearMotionDataLayout.setVisibility(View.VISIBLE);
         motionDataClearCompleteLayout.setVisibility(View.GONE);
     }
-    
-     private void setSwitchViewListener() {
-         mSbDecentralizedEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-             @Override
-             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                 if (!isConnected()) {
-                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                     mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
-                     return;
-                 }
-                 setLockRotorInfo(isChecked);
-             }
-         });
-     }
+
+    private void setSwitchViewListener() {
+        mSbDecentralizedEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+                setLockRotorInfo(isChecked);
+            }
+        });
+    }
 
     /**
      * 单选框事件
@@ -382,8 +382,27 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {//获取ADME的堵转参数
+                IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                lockedRotorDetectionInfo = commandResult.getResult();
+                if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
+                    mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(false);
+                } else {
+                    mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
+                }
+                queryMotorMotionConfig();
+            }
+            break;
+
             case ADME_MD_GET_MEASURING_HOLEDEPTH: {//获取ADME的测量孔深配置参数
-//                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeMeasuringHoleDepthInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取测量孔深配置参数出错!", commandResult.getMessage());
@@ -396,32 +415,12 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     motorMotionDistanceFragment.processMotorMotionState(measuringHoleDepthInfo);
                 } else {
                     initParamConfigInfo();
-                    queryLockRotorInfo();
-//                    getMotorMotionData();
+                    getMotorMotionData();
                 }
             }
             break;
 
-            case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                lockedRotorDetectionInfo = commandResult.getResult();
-                if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
-                    mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(false);
-                } else {
-                    mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
-                }
-                getMotorMotionData();
-            }
-            break;
-
-            case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {
+            case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {//设置堵转参数
                 stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -431,7 +430,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     ToastUtils.show(errMsg);
                     return;
                 }
-                doAfterSetting();
             }
             break;
 
@@ -464,7 +462,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     mBtnRun.setEnabled(true);
                     return;
                 }
-//                doAfterSetting();
+                doAfterSetting();
             }
             break;
 
