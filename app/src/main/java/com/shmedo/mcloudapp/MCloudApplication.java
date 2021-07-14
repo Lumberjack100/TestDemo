@@ -2,14 +2,13 @@ package com.shmedo.mcloudapp;
 
 import android.app.Application;
 import android.content.Context;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelStore;
 import androidx.lifecycle.ViewModelStoreOwner;
 
-import com.hjq.toast.ToastInterceptor;
 import com.hjq.toast.ToastUtils;
+import com.hjq.toast.config.IToastInterceptor;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
@@ -90,21 +89,32 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
      * https://github.com/getActivity/ToastUtils
      */
     private void initToastUtil() {
-        // 设置 Toast 拦截器
-        ToastUtils.setToastInterceptor(new ToastInterceptor() {
+        // 自定义 Toast 拦截器（用于追踪 Toast 调用的位置）
+        ToastUtils.setInterceptor(new IToastInterceptor() {
             @Override
-            public boolean intercept(Toast toast, CharSequence text) {
-                boolean intercept = super.intercept(toast, text);
-                if (intercept) {
-                    Timber.e("空 Toast");
-                } else {
-                    Timber.i("Toast: %s", text.toString());
+            public boolean intercept(CharSequence text) {
+                if (BuildConfig.DEBUG) {
+                    // 获取调用的堆栈信息
+                    StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+                    // 跳过最前面两个堆栈
+                    for (int i = 2; stackTrace.length > 2 && i < stackTrace.length; i++) {
+                        // 获取代码行数
+                        int lineNumber = stackTrace[i].getLineNumber();
+                        // 获取类的全路径
+                        String className = stackTrace[i].getClassName();
+                        if (lineNumber <= 0 || className.startsWith(ToastUtils.class.getName())) {
+                            continue;
+                        }
+                        Timber.d("(" + stackTrace[i].getFileName() + ":" + lineNumber + ") " + text.toString());
+                        break;
+                    }
                 }
-                return intercept;
+                return false;
             }
         });
         // 初始化吐司工具类
-        ToastUtils.init(this, new MyToastBlackStyle(this));
+        ToastUtils.init(this);
+        ToastUtils.setStyle(new MyToastBlackStyle());
     }
 }
 

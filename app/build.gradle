@@ -167,7 +167,8 @@ dependencies {
     //Material Dialog
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
     //Toast 吐司
-    implementation "com.hjq:toast:$rootProject.thirdLib.hjqToast"
+    implementation "com.github.getActivity:ToastUtils:$rootProject.thirdLib.ToastUtils"
+//    implementation "com.hjq:toast:$rootProject.thirdLib.hjqToast"
     implementation "com.lxj:xpopup:$rootProject.thirdLib.xpopup"
     //开关 Button
     implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
@@ -220,6 +221,8 @@ dependencies {
 
     // debugImplementation because LeakCanary should only run in debug builds.
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+    // 日志调试框架：https://github.com/getActivity/Logcat
+    debugImplementation 'com.github.getActivity:Logcat:9.6'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
