@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_gray">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/sensorTypeLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="传感器类型" />
+
+            <TextView
+                android:id="@+id/tv_sensor_type"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="4g" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/divider_line_bg_efefef" />
+
+        <LinearLayout
+            android:id="@+id/sensorAisleLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="传感器通道" />
+
+            <TextView
+                android:id="@+id/tv_sensor_aisle"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="4g" />
+
+        </LinearLayout>
+
+        <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View
+            android:id="@+id/sensorBGK4500View"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View
+            android:id="@+id/sensorVWP03View"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView
+            android:id="@+id/sensorZLJ300tView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_select"
+            android:text="确认"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

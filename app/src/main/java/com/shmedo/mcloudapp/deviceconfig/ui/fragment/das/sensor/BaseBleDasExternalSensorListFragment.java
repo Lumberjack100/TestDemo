@@ -52,6 +52,7 @@ import timber.log.Timber;
 
 /**
  * DAS扩展传感器配置页面
+ * @deprecated 后面将用物联网指令模式取代
  */
 public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommunicateFragment {
     private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0102;

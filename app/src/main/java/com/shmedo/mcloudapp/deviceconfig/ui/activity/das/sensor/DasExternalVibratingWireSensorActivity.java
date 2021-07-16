@@ -47,6 +47,7 @@ import timber.log.Timber;
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/10/14 <br/>
  * 描述：     Das振弦式传感器参数配置页面
+ * @deprecated 后面将用物联网指令模式取代
  */
 public class DasExternalVibratingWireSensorActivity extends BaseActivity {
     private static final String SENSOR_ITEM_LIST = "sensor_item_list";

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.util;
 
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.SensorType;
+import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 
 /**
  * 项目名：  mCloudapp
@@ -91,6 +92,91 @@ public class BlueResultParserUtil {
     public static String getSensorName(SensorType sensorType) {
         String sensorName = "";
         switch (sensorType) {
+            case RAIN_GAUGE:
+                sensorName = "压电式雨量计";
+                break;
+
+            case WIRE_SHIFT:
+                sensorName = "拉线位移计";
+                break;
+
+            case SOIL_MOISTURE:
+                sensorName = "土壤含水率计";
+                break;
+
+            case INCLINOMETER:
+                sensorName = "测斜仪";
+                break;
+
+            case ULTRASONIC_LEVEL_GAUGE:
+                sensorName = "超声波物位计";
+                break;
+
+            case RADAR_LEVEL_GAUGE:
+                sensorName = "雷达物位计";
+                break;
+
+            case MOISTURE_METER:
+                sensorName = "墒情计";
+                break;
+
+            case TEMPERATURE_HUMIDITY_METER:
+                sensorName = "温湿度计";
+                break;
+
+            case UPLIFT_PRESSURE_GAUGE:
+                sensorName = "扬压力计";
+                break;
+
+            case LUYAN_INCLINOMETER:
+                sensorName = "陆岩倾角仪";
+                break;
+
+            case INFRASOUND_SENSOR:
+                sensorName = "次声传感器";
+                break;
+
+            case KANG_PERCOLATE:
+                sensorName = "基康渗压计";
+                break;
+
+            case GUDAN_PERCOLATE:
+                sensorName = "葛南渗压计";
+                break;
+
+            case GUDAN_SOIL_PRESSURE:
+                sensorName = "葛南土压力盒";
+                break;
+
+            case GUDAN_STRESS:
+                sensorName = "葛南应力计";
+                break;
+
+            case GUDAN_NOT_STRESS:
+                sensorName = "葛南无应力计";
+                break;
+
+            case GUDAN_DISPLACEMENT_METER:
+                sensorName = "葛南位移计";
+                break;
+
+            case JUNXING_ZLJ_300T:
+                sensorName = "军星轴力计";
+                break;
+        }
+
+        return sensorName;
+    }
+
+    /**
+     * 根据传感器类型得到传感器名称
+     *
+     * @param iotSensorType
+     * @return
+     */
+    public static String getSensorName(IOTSensorType iotSensorType) {
+        String sensorName = "";
+        switch (iotSensorType) {
             case RAIN_GAUGE:
                 sensorName = "压电式雨量计";
                 break;

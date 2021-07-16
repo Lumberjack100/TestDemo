@@ -29,6 +29,7 @@ import timber.log.Timber;
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/10/15 <br/>
  * 描述：    外接数字式传感器
+ * @deprecated 后面将用物联网指令模式取代
  */
 public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExternalSensorListFragment {
 

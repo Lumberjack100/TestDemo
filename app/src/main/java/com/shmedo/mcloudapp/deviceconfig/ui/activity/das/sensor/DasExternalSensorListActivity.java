@@ -22,6 +22,7 @@ import butterknife.BindView;
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/20<br/>
  * 描述：     Das 扩展传感器配置主页面
+ * @deprecated 后面将用物联网指令模式取代
  */
 public class DasExternalSensorListActivity extends BaseActivity {
     @BindView(R.id.tv_title)

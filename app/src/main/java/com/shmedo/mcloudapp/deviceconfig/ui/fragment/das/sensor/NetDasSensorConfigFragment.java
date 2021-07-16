@@ -29,6 +29,7 @@ import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasExternalSensorListNewActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
@@ -291,8 +292,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         }
         int id = view.getId();
         if (id == R.id.extendSensorLayout) {
-//            DasExternalSensorHomeActivity.startActivity(mActivity, projectDeviceInfo);
-            ToastUtils.show("正在研发中,敬请期待...");
+            DasExternalSensorListNewActivity.startActivity(mActivity, projectDeviceInfo);
+
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
             if (!checkRainPrecisionParam() || !checkDigitalOsmometerParam()) {
