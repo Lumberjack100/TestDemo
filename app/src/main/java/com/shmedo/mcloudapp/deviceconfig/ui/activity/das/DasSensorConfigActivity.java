@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.das;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
  * DAS 传感器配置页面
  */
 public class DasSensorConfigActivity extends BaseConfigFragmentContainerActivity {
-    private String collectorModel = "";//采集器类型
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
         Intent intent = new Intent(context, DasSensorConfigActivity.class);

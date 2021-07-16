@@ -30,10 +30,10 @@ import timber.log.Timber;
  * 创建时间:  2020/10/15 <br/>
  * 描述：    外接数字式传感器
  */
-public class BleDasExternalDigtalSensorFragment extends BaseBleDasExternalSensorFragment {
+public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExternalSensorListFragment {
 
-    public static BaseBleDasExternalSensorFragment newInstance(String collectorModel) {
-        BaseBleDasExternalSensorFragment fragment = new BleDasExternalDigtalSensorFragment();
+    public static BaseBleDasExternalSensorListFragment newInstance(String collectorModel) {
+        BaseBleDasExternalSensorListFragment fragment = new BleDasExternalDigtalSensorListListFragment();
         Bundle args = new Bundle();
         args.putString(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         fragment.setArguments(args);

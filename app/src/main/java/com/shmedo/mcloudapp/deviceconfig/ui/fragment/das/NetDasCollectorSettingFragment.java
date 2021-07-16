@@ -35,7 +35,7 @@ import timber.log.Timber;
 /**
  * 通过物联网平台配置采集器
  */
-public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
+public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 
     @BindView(R.id.collectorAddressET)
     EditText mEtCollectorAddress;
@@ -59,8 +59,8 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 
     private DasCollectorInfo collectorInfo;
 
-    public static NetCollectorSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
-        NetCollectorSettingFragment fragment = new NetCollectorSettingFragment();
+    public static NetDasCollectorSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+        NetDasCollectorSettingFragment fragment = new NetDasCollectorSettingFragment();
         Bundle args = new Bundle();
         args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         fragment.setArguments(args);
@@ -69,7 +69,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.net_collector_setting;
+        return R.layout.fragment_das_collector_setting;
     }
 
     @Override
@@ -256,7 +256,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
      */
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
         setResultData(queryCmdResult);
     }
 
@@ -265,6 +265,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case DAS_MD_GET_COLLECTOR_CONTROL: {//
+                dismissProgressDialog();
                 IOTCommandResult<DasCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询采集器参数出错!", commandResult.getMessage());
@@ -280,6 +281,7 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_SET_COLLECTOR_CONTROL: {//
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "设置采集器参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -289,17 +291,22 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
             }
             break;
 
+            case MD_SAVE_CONFIG_PARAM: {
+                dismissProgressDialog();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("保存成功");
+            }
+            break;
+
             default:
                 break;
         }
-    }
-
-    private void doAfterSetting() {
-        ToastUtils.show("保存成功");
-        collectorAddress = mEtCollectorAddress.getText().toString().trim();
-        calculatTime = mEtCalculatingTime.getText().toString().trim();
-        standbyTime = mEtStandbyTime.getText().toString().trim();
-        collectTime = mEtCollectTime.getText().toString().trim();
     }
 
     private void initCollectorInfo() {
@@ -317,6 +324,15 @@ public class NetCollectorSettingFragment extends BaseNetIotCommunicateFragment {
         mEtCalculatingTime.setText(calculatTime);
         mEtStandbyTime.setText(standbyTime);
         mEtCollectTime.setText(collectTime);
+    }
+
+    private void doAfterSetting() {
+        collectorAddress = mEtCollectorAddress.getText().toString().trim();
+        calculatTime = mEtCalculatingTime.getText().toString().trim();
+        standbyTime = mEtStandbyTime.getText().toString().trim();
+        collectTime = mEtCollectTime.getText().toString().trim();
+
+        saveConfigInfo();
     }
 
     @Override

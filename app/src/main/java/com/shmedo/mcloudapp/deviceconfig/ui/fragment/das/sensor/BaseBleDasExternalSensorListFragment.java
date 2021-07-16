@@ -53,7 +53,7 @@ import timber.log.Timber;
 /**
  * DAS扩展传感器配置页面
  */
-public abstract class BaseBleDasExternalSensorFragment extends BaseBleCommunicateFragment {
+public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommunicateFragment {
     private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0102;
 
     @BindView(R.id.recyclerview_sensor)

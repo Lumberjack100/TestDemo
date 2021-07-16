@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCollectorSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetCollectorSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCollectorSettingFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 /**
@@ -56,7 +56,7 @@ public class DasCollectorSettingActivity extends BaseConfigFragmentContainerActi
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetCollectorSettingFragment.newInstance(projectDeviceInfo);
+            fragment = NetDasCollectorSettingFragment.newInstance(projectDeviceInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             fragment = BleDasCollectorSettingFragment.newInstance(collectorModel);

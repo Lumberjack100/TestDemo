@@ -61,7 +61,8 @@
 
         <LinearLayout
             android:id="@+id/workModeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:visibility="gone">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"

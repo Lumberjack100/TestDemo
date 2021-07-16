@@ -41,7 +41,7 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalSensorHomeActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalSensorListActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -328,7 +328,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         }
         int id = view.getId();
         if (id == R.id.extendSensorLayout) {
-            DasExternalSensorHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
+            DasExternalSensorListActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
 
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);

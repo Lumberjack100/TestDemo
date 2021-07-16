@@ -251,7 +251,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.das.sensor.DasSensorConfigActivity"
+            android:name=".deviceconfig.ui.activity.das.DasSensorConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
@@ -269,7 +269,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.das.sensor.DasExternalSensorHomeActivity"
+            android:name=".deviceconfig.ui.activity.das.sensor.DasExternalSensorListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
