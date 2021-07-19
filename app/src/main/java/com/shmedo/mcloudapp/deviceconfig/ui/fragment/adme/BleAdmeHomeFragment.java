@@ -665,6 +665,9 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         } else {
             configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
             configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+            configModuleList.add(configModule);
         }
 
         moduleAdapter.notifyDataSetChanged();
