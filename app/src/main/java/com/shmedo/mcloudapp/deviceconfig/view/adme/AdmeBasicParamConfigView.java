@@ -438,6 +438,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         mEtDecentralizationSpeed.setEnabled(isEditable);
         mEtDecentralizationWaitingTime.setEnabled(isEditable);
         dataSettlementMethodLayout.setEnabled(isEditable);
+        mSbDecentralizedEnable.setEnabled(isEditable);
         if (isEditable) {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
             mEtCollectorAddress.setHint("0-32");
