@@ -421,11 +421,23 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             break;
 
             case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {//设置堵转参数
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                saveConfigInfo();
+            }
+            break;
+
+            case MD_SAVE_CONFIG_PARAM: {
                 stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-//                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "发送保存指令出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
