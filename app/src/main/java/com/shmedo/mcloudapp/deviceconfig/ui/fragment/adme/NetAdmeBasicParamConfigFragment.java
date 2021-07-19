@@ -93,12 +93,17 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
         admeBasicParamConfigView.mSbDecentralizedEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (admeBasicParamConfigView.lockedRotorDetectionInfo == null) {
+                    admeBasicParamConfigView.mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
                 setLockRotorInfo(isChecked);
             }
         });
     }
 
     private void setLockRotorInfo(boolean isChecked) {
+
         AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
         entity.setLowtbtss(isChecked ? "1" : "0");
         entity.setNumpput(admeBasicParamConfigView.lockedRotorDetectionInfo.getNumpput());

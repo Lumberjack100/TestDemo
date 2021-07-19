@@ -93,6 +93,10 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                     admeBasicParamConfigView.mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
+                if (admeBasicParamConfigView.lockedRotorDetectionInfo == null) {
+                    admeBasicParamConfigView.mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
                 setLockRotorInfo(isChecked);
             }
         });
