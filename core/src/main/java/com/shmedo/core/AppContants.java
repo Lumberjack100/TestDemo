@@ -31,6 +31,7 @@ public interface AppContants {
         int VMS = 0x003;
         int E40 = 0x004;
         int M20 = 0x005;
+        int RN20 = 0x006;
     }
 
     /**

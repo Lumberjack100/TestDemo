@@ -52,6 +52,13 @@ public class GOCManager extends ObservableBleManager {
     private static final UUID NOTIFY_CHARACTERISTIC_UUID_GOC_W91200 = UUID.fromString("0000fff5-0000-1000-8000-00805f9b34fb");
     private static final UUID WRITABLE_CHARACTERISTIC_UUID_GOC_W91200 = UUID.fromString("0000fff4-0000-1000-8000-00805f9b34fb");
 
+    /**
+     * The service UUID.<br>
+     */
+    public static final UUID SERVICE_UUID_GOC_THRID = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb");
+    private static final UUID NOTIFY_CHARACTERISTIC_UUID_GOC_THRID = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
+    private static final UUID WRITABLE_CHARACTERISTIC_UUID_GOC_THRID = UUID.fromString("0000fff3-0000-1000-8000-00805f9b34fb");
+
     private final UnPeekLiveData<String> responseMsg = new UnPeekLiveData<>();
     private final UnPeekLiveData<Boolean> logOutputModeLiveData = new UnPeekLiveData<>();
 
@@ -198,24 +205,56 @@ public class GOCManager extends ObservableBleManager {
 
         @Override
         protected boolean isRequiredServiceSupported(@NonNull BluetoothGatt gatt) {
-            final BluetoothGattService serviceGoc400 = gatt.getService(SERVICE_UUID_GOC_400);
+//            final BluetoothGattService serviceGoc400 = gatt.getService(SERVICE_UUID_GOC_400);
             //GOC-MD-400蓝牙模块
-            if (serviceGoc400 != null) {
-                notifyCharacteristic = serviceGoc400.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_400);
-                writeCharacteristic = serviceGoc400.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_400);
-            } else { //GOC-W91200蓝牙模块
-                List<BluetoothGattService> serviceList = gatt.getServices();
-                for (BluetoothGattService service : serviceList) {
-                    if (!service.getUuid().equals(SERVICE_UUID_GOC_W91200))
-                        continue;
+//            if (serviceGoc400 != null) {
+//                notifyCharacteristic = serviceGoc400.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_400);
+//                writeCharacteristic = serviceGoc400.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_400);
+//            } else { //GOC-W91200蓝牙模块
+//                List<BluetoothGattService> serviceList = gatt.getServices();
+//                for (BluetoothGattService service : serviceList) {
+//                    if (!service.getUuid().equals(SERVICE_UUID_GOC_W91200))
+//                        continue;
+//
+//                    if (service.getCharacteristics() != null && service.getCharacteristics().size() >= 2) {
+//                        notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_W91200);
+//                        writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_W91200);
+//                        break;
+//                    }
+//                }
+//            }
 
+            List<BluetoothGattService> serviceList = gatt.getServices();
+            for (BluetoothGattService service : serviceList) {
+                //GOC-MD-400蓝牙模块
+                if (service.getUuid().equals(SERVICE_UUID_GOC_400)) {
+                    if (service.getCharacteristics() != null && service.getCharacteristics().size() >= 2) {
+                        notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_400);
+                        writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_400);
+                        break;
+                    }
+                }
+
+                //GOC-W91200蓝牙模块
+                if (service.getUuid().equals(SERVICE_UUID_GOC_W91200)) {
+                    Timber.d("SERVICE_UUID_GOC_W91200");
                     if (service.getCharacteristics() != null && service.getCharacteristics().size() >= 2) {
                         notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_W91200);
                         writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_W91200);
                         break;
                     }
                 }
+
+                if (service.getUuid().equals(SERVICE_UUID_GOC_THRID)) {
+                    Timber.d("SERVICE_UUID_GOC_THRID");
+                    if (service.getCharacteristics() != null && service.getCharacteristics().size() >= 2) {
+                        notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_THRID);
+                        writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_THRID);
+                        break;
+                    }
+                }
             }
+
             boolean writeRequest = false;
             boolean writeCommand = false;
             if (writeCharacteristic != null) {

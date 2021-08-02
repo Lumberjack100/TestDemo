@@ -117,7 +117,6 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                     break;
 
                 default:
-
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
@@ -131,6 +130,10 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                     break;
 
                 case AppContants.DeviceType.M20:
+                    fragment = BleM20HomeFragment.newInstance(device);
+                    break;
+
+                case AppContants.DeviceType.RN20:
                     fragment = BleM20HomeFragment.newInstance(device);
                     break;
             }
