@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
@@ -159,6 +160,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         processStopScan();
     }
 
+    @SuppressLint("MissingPermission")
     private void initAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         bleDeviceAdapter = new BleDeviceAdapter();
@@ -168,7 +170,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 processStopScan();
                 DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
-                String deviceName = bluetoothDevice.getName();
+                String deviceName = bluetoothDevice.getDevice().getName();
                 MCloudApp.setCurDeviceToken(deviceName.replace("MD-", ""));
                 int deviceType = AppContants.DeviceType.UnKnown;
                 if (deviceName.endsWith("L")) {

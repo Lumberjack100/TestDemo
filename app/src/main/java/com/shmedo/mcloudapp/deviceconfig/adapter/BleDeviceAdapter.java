@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.adapter;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -20,26 +21,27 @@ public class BleDeviceAdapter extends BaseQuickAdapter<DiscoveredBluetoothDevice
         setHasStableIds(true);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void convert(@NotNull BaseViewHolder holder, DiscoveredBluetoothDevice bluetoothDevice) {
-        holder.setText(R.id.tv_dev_name, TextUtils.isEmpty(bluetoothDevice.getName()) ? "Unknown device" : bluetoothDevice.getName());
+        holder.setText(R.id.tv_dev_name, TextUtils.isEmpty(bluetoothDevice.getDevice().getName()) ? "Unknown device" : bluetoothDevice.getDevice().getName());
         holder.setText(R.id.tv_mac_address, bluetoothDevice.getAddress());
 
-        if (TextUtils.isEmpty(bluetoothDevice.getName())) {
+        if (TextUtils.isEmpty(bluetoothDevice.getDevice().getName())) {
             holder.setGone(R.id.tv_device_type, true);
         } else {
             holder.setGone(R.id.tv_device_type, false);
 
-            if (bluetoothDevice.getName().endsWith("L")) {
+            if (bluetoothDevice.getDevice().getName().endsWith("L")) {
                 holder.setText(R.id.tv_device_type, "DAS");
 
-            } else if (bluetoothDevice.getName().endsWith("T")) {
-                if (bluetoothDevice.getName().startsWith("M20"))
+            } else if (bluetoothDevice.getDevice().getName().endsWith("T")) {
+                if (bluetoothDevice.getDevice().getName().startsWith("M20"))
                     holder.setText(R.id.tv_device_type, "M20");
                 else
                     holder.setText(R.id.tv_device_type, "ADME");
 
-            } else if (bluetoothDevice.getName().endsWith("V")) {
+            } else if (bluetoothDevice.getDevice().getName().endsWith("V")) {
                 holder.setText(R.id.tv_device_type, "M20");
             } else {
                 holder.setText(R.id.tv_device_type, "UnKnown");
