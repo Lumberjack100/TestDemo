@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20ParamSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalParamSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalParamSettingFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -64,6 +65,9 @@ public class VmsTerminalParamSettingActivity extends BaseConfigFragmentContainer
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpVmsTerminalParamSettingFragment.newInstance(vmsTerminalInfo);
+        }
+        else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+            fragment = BleRN20ParamSettingFragment.newInstance();
         }
         return fragment;
     }

@@ -39,6 +39,8 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalParamSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
@@ -58,7 +60,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/8/3 <br/>
- * 描述：     TODO
+ * 描述：     雨量采集器配置主页面
  */
 public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
@@ -153,7 +155,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         mTvDeviceSn.setText(String.format("设备编号：%s", sn));
         mTvProductModel.setText("固件版本：--");
         mTvFirmwareVersion.setText("电压：--");
-        mTvPlatformCommunicationState.setText(View.GONE);
+        mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
@@ -187,7 +189,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.RN20);
                 break;
 
             case "时间":
@@ -207,7 +209,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "终端配置":
-//                VmsTerminalParamSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
+                VmsTerminalParamSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, null);
                 break;
         }
     }
