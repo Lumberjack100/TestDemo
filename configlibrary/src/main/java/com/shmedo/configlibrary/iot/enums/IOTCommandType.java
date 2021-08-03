@@ -239,6 +239,12 @@ public enum IOTCommandType {
      */
     VMS_TERMINAL_QUERY_SAMPLE("md_sampleterminal"),
 
+    /*　 RN20 雨量采集器 指令  */
+    /**
+     * 获取终端基本信息
+     */
+    RN20_MD_GET_TERMINAL_BASE("md_getterminalbase"),
+
     /*　 ADME 指令  */
     /**
      * 获取ADME的基本信息

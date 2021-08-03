@@ -1,0 +1,627 @@
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20;
+
+import android.graphics.Paint;
+import android.os.Bundle;
+import android.os.Message;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.das.DasIOSensorEntity;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
+import com.shmedo.configlibrary.iot.model.DeviceTimeInfo;
+import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo;
+import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.DensityUtil;
+import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
+import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import no.nordicsemi.android.ble.livedata.state.ConnectionState;
+import timber.log.Timber;
+
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2021/8/3 <br/>
+ * 描述：     TODO
+ */
+public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
+    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
+    private static final int REBOOT = 0x0002;
+
+    @BindView(R.id.progress_overlay)
+    View progressOverlay;
+
+    @BindView(R.id.tv_progress_text)
+    TextView mTvProgressText;
+
+    @BindView(R.id.tv_device_name)
+    TextView mTvDeviceName;//设备名称
+
+    @BindView(R.id.tv_device_sn)
+    TextView mTvDeviceSn;//设备SN号
+
+    @BindView(R.id.tv_product_model)
+    TextView mTvProductModel;//产品型号
+
+    @BindView(R.id.tv_time_or_sub_model)
+    TextView mTvFirmwareVersion;//固件版本
+
+    @BindView(R.id.tv_platform_communication_state)
+    TextView mTvPlatformCommunicationState;//与米度平台连接状态
+
+    @BindView(R.id.tv_device_state_flag)
+    TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
+
+    @BindView(R.id.tv_device_connect_operate)
+    TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
+
+    @BindView(R.id.recyclerview)
+    RecyclerView mRecyclerView;
+
+    private ConfigModuleAdapter moduleAdapter;
+    private List<ConfigModule> configModuleList = new ArrayList<>();
+    private ConfigModule selectedConfigModule;
+
+    private DiscoveredBluetoothDevice device;
+    private String sn;
+
+    private List<String> rainPrecisionList = Arrays.asList("0.1mm", "0.2mm", "0.5mm", "1mm");
+    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
+    private int rainPrecisionIndex = 0;
+    private String rainPrecision;
+
+
+    public static BleRN20HomeFragment newInstance(DiscoveredBluetoothDevice device) {
+        BleRN20HomeFragment fragment = new BleRN20HomeFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(EXTRA_DEVICE, device);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            device = getArguments().getParcelable(EXTRA_DEVICE);
+            sn = device.getName().substring(3);
+        }
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.universal_config_home_fragment;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHeadInfo();
+        initAdapter();
+        initConfigModuleData();
+        observerApiKey();
+        observerConnectionState();
+
+        //建立蓝牙连接
+        connectDevice(device.getDevice());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        onConnectionStateChanged(isConnected());
+    }
+
+    private void setHeadInfo() {
+        mTvDeviceName.setText("雨量采集器");
+        mTvDeviceSn.setText(String.format("设备编号：%s", sn));
+        mTvProductModel.setText("固件版本：--");
+        mTvFirmwareVersion.setText("电压：--");
+        mTvPlatformCommunicationState.setText(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+    }
+
+    private void initAdapter() {
+        int spanCount = 2;//跟布局里面的spanCount属性是一致的
+        int spacing = DensityUtil.Dp2Px(mActivity, 15);//每一个矩形的间距
+        mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
+        //设置每个item间距
+        mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
+        moduleAdapter = new ConfigModuleAdapter(configModuleList);
+        moduleAdapter.setAnimationEnable(true);
+        moduleAdapter.setAnimationFirstOnly(false);
+        moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                if (isDoubleClick(view)) {
+                    return;
+                }
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    return;
+                }
+                selectedConfigModule = (ConfigModule) configModuleList.get(position);
+                processItemClick();
+            }
+        });
+        mRecyclerView.setAdapter(moduleAdapter);
+    }
+
+    private void processItemClick() {
+        switch (selectedConfigModule.getName()) {
+            case "状态":
+
+                break;
+
+            case "时间":
+                queryTerminalTime();
+                break;
+
+            case "遥测":
+                sampleTerminal();
+                break;
+
+            case "重启":
+                showWarnDialog("温馨提示", "确定重启终端设备吗？", REBOOT);
+                break;
+
+            case "雨量精度":
+                showSelectPrecision();
+                break;
+
+            case "终端配置":
+//                VmsTerminalParamSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
+                break;
+        }
+    }
+
+    /**
+     * 观察连接状态变化
+     */
+    private void observerConnectionState() {
+        usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
+            @Override
+            public void onChanged(ConnectionState connectionState) {
+                switch (connectionState.getState()) {
+                    case CONNECTING://A connection to the device was initiated.
+                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                        showProgressBar();
+                        mTvProgressText.setText(R.string.ble_state_connecting);
+                        break;
+
+                    case INITIALIZING://The device has connected and begun service discovery and initialization.
+//                        mTvConnectState.setText(R.string.ble_state_initializing);
+                        break;
+
+                    case READY://The initialization is complete, and the device is ready to use.
+                        onConnectionStateChanged(true);
+                        mTvProgressText.setText("初始化中...");
+                        usrBleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        break;
+
+                    case DISCONNECTED://The device disconnected or failed to connect.
+                        if (connectionState instanceof ConnectionState.Disconnected) {
+                            final ConnectionState.Disconnected stateWithReason = (ConnectionState.Disconnected) connectionState;
+                            if (stateWithReason.isNotSupported()) {
+                                Timber.e("DISCONNECTED: 不支持的设备");
+                                ToastUtils.show("不支持的设备");
+                            } else if (stateWithReason.isTimeout()) {
+                                Timber.e("DISCONNECTED: 连接超时");
+//                                ToastUtils.show("连接超时");
+                            }
+                        }
+                        clearDevice();
+                        hideProgressBar();
+                        onConnectionStateChanged(false);
+                        break;
+
+                    // fallthrough
+                    case DISCONNECTING://The disconnection was initiated.
+                        break;
+                }
+            }
+        });
+    }
+
+    /**
+     * 观察获取 ApiKey
+     */
+    private void observerApiKey() {
+        usrBleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
+            @Override
+            public void onChanged(String apiKey) {
+                hideProgressBar();
+                queryBaseInfo();
+            }
+        });
+    }
+
+    /**
+     * 蓝牙连接/断开回调，更新页面头部信息
+     *
+     * @param isConnected
+     */
+    private void onConnectionStateChanged(boolean isConnected) {
+        if (isConnected) {
+            mTvDeviceState.setText("已连接");
+            mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+            mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+
+            mTvDeviceConnectOperate.setText("断开连接");
+            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_b3b3b3));
+        } else {
+            mTvDeviceState.setText("已断开");
+            mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+            mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+
+            mTvDeviceConnectOperate.setText("重新连接");
+            mTvDeviceConnectOperate.setTextColor(ContextCompat.getColor(mActivity, R.color.blue_52B4F8));
+        }
+    }
+
+    private void showProgressBar() {
+        progressOverlay.setVisibility(View.VISIBLE);
+        //TODO android:clickable="true" 和 android:focusable="true" 已经实现了禁止触摸遮罩层下面的 View,
+        // 防止点击未遮住的ToolBar，添加下面代码禁用窗体触摸
+        mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private void hideProgressBar() {
+        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        progressOverlay.setVisibility(View.GONE);
+        //get user interaction back
+        mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private void initConfigModuleData() {
+        configModuleList.clear();
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_current_time, "时间", "获取当前设备时间");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_telemetry, "遥测", "远距离测量");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_reboot, "重启", "重新启动当前设备");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "雨量精度", "雨量精度配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "终端配置", "终端参数配置");
+        configModuleList.add(configModule);
+    }
+
+    /**
+     * 获取设备的基本信息
+     */
+    private void queryBaseInfo() {
+        TerminalSNEntity entity = new TerminalSNEntity(sn);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE, entity);
+        sendCommand(command);
+    }
+
+    /**
+     * 获取终端时间
+     */
+    private void queryTerminalTime() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        sendCommand(command);
+    }
+
+    /**
+     * 遥测终端
+     */
+    private void sampleTerminal() {
+        TerminalSNEntity entity = new TerminalSNEntity(sn);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_TERMINAL_QUERY_SAMPLE, entity);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        sendCommand(command);
+    }
+
+    /**
+     * 重启终端指令
+     */
+    private void rebootTerminal() {
+        TerminalSNEntity entity = new TerminalSNEntity(sn);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        sendCommand(command);
+    }
+
+    /**
+     * 查询开关量传感器信息
+     */
+    private void querySwitchSensorInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        sendCommand(command);
+    }
+
+    /**
+     * 设置开关量传感器信息
+     */
+    private void setSwitchSensorInfo(DasIOSensorEntity entity) {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO, entity);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        sendCommand(command);
+    }
+
+    /**
+     * 危险操作前弹框提醒
+     */
+    private void showWarnDialog(String title, String content, int operateType) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title(title)
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (operateType) {
+                            case REBOOT:
+                                rebootTerminal();
+                                break;
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    private void showSelectPrecision() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("选择精度")
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .items(rainPrecisionList)
+                .itemsCallbackSingleChoice(rainPrecisionIndex, new MaterialDialog.ListCallbackSingleChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                        rainPrecisionIndex = which;
+                        rainPrecision = text.toString().replace("mm", "");
+                        return false;
+                    }
+                }).onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        DasIOSensorEntity entity = new DasIOSensorEntity();
+                        entity.setType("1");
+                        entity.setValue(rainPrecision);
+                        setSwitchSensorInfo(entity);
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    @OnClick({R.id.tv_device_connect_operate})
+    public void onClick(View v) {
+        if (isDoubleClick(v)) {
+            return;
+        }
+        if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
+            if (!isConnected()) {
+                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                connectDevice(device.getDevice());
+            } else {//断开连接处理
+                isExitMode = false;
+                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+            }
+        }
+    }
+
+    @Override
+    protected void parseResponseMessage(String cmdStr) {
+        if (!isActive) {
+            return;
+        }
+        setResultData(cmdStr);
+    }
+
+    private void setResultData(final String cmdStr) {
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        switch (type) {
+            case RN20_MD_GET_TERMINAL_BASE: {
+                IOTCommandResult<Rn20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+//                    ToastUtils.show(errMsg);
+                    return;
+                }
+                Rn20BaseInfo rn20BaseInfo = commandResult.getResult();
+                updateHeadInfo(rn20BaseInfo);
+                //查询雨量精度
+                querySwitchSensorInfo();
+            }
+            break;
+
+            case DAS_MD_GET_IO_SENSOR_INFO: {//查询开关量传感器参数
+                IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询雨量精度参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                DasIOSensorInfo ioSensorInfo = commandResult.getResult();
+                initSwitchSensor(ioSensorInfo);
+            }
+            break;
+
+            case QUERY_TERMINAL_TIME: {//获取终端时间
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                IOTCommandResult<DeviceTimeInfo> cmdResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!cmdResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "获取终端时间出错!", cmdResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                DeviceTimeInfo deviceTimeInfo = cmdResult.getResult();
+                BaseDispatchCmdDialog newFragment = new QueryTerminalTimeDialog("终端时间", deviceTimeInfo.getTime());
+                newFragment.show(getChildFragmentManager(), "dialog");
+            }
+            break;
+
+            case VMS_TERMINAL_QUERY_SAMPLE: {//终端遥测
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "遥测出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("遥测成功");
+            }
+            break;
+
+            case VMS_MD_REBOOT_TERMINAL: {//重启终端
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "重启出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("设备即将重启");
+            }
+            break;
+
+            case DAS_MD_SET_IO_SENSOR_INFO: {//设置开关量传感器
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "设置雨量精度出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("设置成功");
+            }
+            break;
+        }
+    }
+
+    /**
+     * 更新头部信息
+     */
+    private void updateHeadInfo(Rn20BaseInfo rn20BaseInfo) {
+        if (rn20BaseInfo != null) {
+            mTvDeviceName.setText("雨量采集器");
+            mTvDeviceSn.setText(String.format("设备编号：%s", sn));
+            mTvProductModel.setText(String.format("固件版本：%s", !TextUtils.isEmpty(rn20BaseInfo.getVer()) ? rn20BaseInfo.getVer() : "--"));
+            mTvFirmwareVersion.setText(String.format("电压：%s", !TextUtils.isEmpty(rn20BaseInfo.getInvolt()) ? rn20BaseInfo.getInvolt() : "--"));
+        }
+    }
+
+    private void initSwitchSensor(DasIOSensorInfo ioSensorInfo) {
+        if (ioSensorInfo == null) {
+            Timber.e("DasIOSensorInfo 为空!");
+            return;
+        }
+        if (ioSensorInfo.getType().equals("1")) {
+            try {
+                rainPrecision = decimalFormat.format(Double.parseDouble(ioSensorInfo.getValue()));
+                rainPrecisionIndex = rainPrecisionList.contains(rainPrecision + "mm") ? rainPrecisionList.indexOf(rainPrecision + "mm") : 0;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("发送指令超时,请稍后尝试");
+                break;
+
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!isConnected()) {
+                    hideProgressBar();
+                    disconnectDevice();
+                    ToastUtils.show("连接超时");
+                }
+            }
+            break;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        super.onStop();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (isConnected()) {
+            isExitMode = true;
+            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        MCloudApp.setCurDeviceToken(null);
+        super.onDestroy();
+    }
+}
