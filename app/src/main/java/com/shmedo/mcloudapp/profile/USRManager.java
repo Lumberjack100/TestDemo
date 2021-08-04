@@ -223,8 +223,16 @@ public class USRManager extends ObservableBleManager {
             return supported;
         }
 
+        /**
+         * This method should nullify all services and characteristics of the device.
+         * <p>
+         * It's called when the services were invalidated and can no longer be used. Most probably the
+         * device has disconnected, Service Changed indication was received, or
+         * {@link BleManager#refreshDeviceCache()} request was executed, which has invalidated cached
+         * services.
+         */
         @Override
-        protected void onDeviceDisconnected() {
+        protected void onServicesInvalidated() {
             notifyCharacteristic = null;
             writeCharacteristic = null;
         }

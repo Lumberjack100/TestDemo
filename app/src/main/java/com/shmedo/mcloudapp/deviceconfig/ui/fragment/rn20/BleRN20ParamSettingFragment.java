@@ -1,12 +1,14 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -266,6 +268,14 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
         sendCommand(command);
     }
 
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
+    }
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
@@ -318,9 +328,9 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
             break;
 
             case VMS_MD_SET_TERMINAL_COMMUNICATE: {//设置Vms终端通信参数
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);

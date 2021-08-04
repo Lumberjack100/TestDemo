@@ -120,7 +120,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
-        deviceApiKeyViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
+        deviceApiKeyViewModel.getDeviceApiKey().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 if (WiFiDeviceListFragment.this.isVisible() && curWiFi != null) {

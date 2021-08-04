@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/syncInstallLocationLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="同步安装位置" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="14dp" />
+
+        <LinearLayout
+            android:id="@+id/customCommandLogPrintLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="指令日志输出" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
+
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+</ScrollView>

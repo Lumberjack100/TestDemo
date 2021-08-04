@@ -70,7 +70,7 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         bleViewModel = getApplicationScopeViewModel(GOCBleViewModel.class);
-        bleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
+        bleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
                 if (!result.startsWith("$cmd=")) {
@@ -86,7 +86,7 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
             }
         });
         configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
-        configPageViewModel.configPageEditableChanged.observeInFragment(this, new Observer<Boolean>() {
+        configPageViewModel.configPageEditableChanged.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isEditable) {
                 onEditableChanged(isEditable);

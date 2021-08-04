@@ -146,7 +146,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
         } else if (id == R.id.btn_confirm) {
             KeyBordUtils.hideSoftKeyboard(view);
             if (!checkValueIsValid()) {
-                Timber.w("通道参数存在错误!");
+                Timber.w("参数存在错误!");
                 return;
             }
 

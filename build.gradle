@@ -5,7 +5,9 @@ buildscript {
     
     repositories {
         google()
+        mavenCentral()
         jcenter()
+        //GitHub 开源代码库
         maven { url 'https://jitpack.io' }
         // 配置HMS Core SDK的Maven仓地址。
         maven {url 'https://developer.huawei.com/repo/'}
@@ -20,6 +22,7 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
         maven { url 'https://jitpack.io' }
         // 配置HMS Core SDK的Maven仓地址。

@@ -78,7 +78,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
-        tcpViewModel.getTcpConnectionState().observeInFragment(this, new Observer<TcpConnectionState>() {
+        tcpViewModel.getTcpConnectionState().observe(getViewLifecycleOwner(), new Observer<TcpConnectionState>() {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
                 //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
@@ -89,7 +89,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
                 onConnectionChange(tcpConnectionState);
             }
         });
-        tcpViewModel.getReceivedMessage().observeInFragment(this, new Observer<String>() {
+        tcpViewModel.getReceivedMessage().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String msg) {
                 //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件

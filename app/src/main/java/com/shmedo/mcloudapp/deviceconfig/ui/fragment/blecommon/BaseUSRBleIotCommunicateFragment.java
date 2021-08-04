@@ -108,7 +108,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         usrBleViewModel = getApplicationScopeViewModel(USRBleViewModel.class);
-        usrBleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
+        usrBleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
                 if (!result.startsWith("$cmd=")) {
@@ -124,7 +124,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
             }
         });
         configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
-        configPageViewModel.configPageEditableChanged.observeInFragment(this, new Observer<Boolean>() {
+        configPageViewModel.configPageEditableChanged.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isEditable) {
                 onEditableChanged(isEditable);
@@ -213,7 +213,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
                     + "&msgid=" + UUID.randomUUID().toString().substring(30);
         }
 
-        usrBleViewModel.sendIOTProtocolCommand(cmdStr);
+        usrBleViewModel.sendIOTProtocolCommand(cmdStr + "&&");
     }
 
     protected void showDisconnectDialog(String content) {

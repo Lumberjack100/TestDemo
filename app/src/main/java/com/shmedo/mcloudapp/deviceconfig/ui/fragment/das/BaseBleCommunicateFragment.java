@@ -110,7 +110,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         usrBleViewModel = getApplicationScopeViewModel(USRBleViewModel.class);
-        usrBleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
+        usrBleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
                 if (!result.startsWith("$$")) {

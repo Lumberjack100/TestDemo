@@ -31,7 +31,7 @@ public class USRBleViewModel extends AndroidViewModel {
     }
 
     public LiveData<ConnectionState> getConnectionState() {
-        return usrManager.getState();
+        return usrManager.state;
     }
 
     public ProtectedUnPeekLiveData<String> getResponseMsg() {

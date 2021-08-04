@@ -67,6 +67,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.OnClick;
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
+import no.nordicsemi.android.ble.observer.ConnectionObserver;
 import timber.log.Timber;
 
 /**
@@ -335,12 +336,11 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     case DISCONNECTED:
                         if (connectionState instanceof ConnectionState.Disconnected) {
                             final ConnectionState.Disconnected stateWithReason = (ConnectionState.Disconnected) connectionState;
-                            if (stateWithReason.isNotSupported()) {
+                            if (stateWithReason.getReason() == ConnectionObserver.REASON_NOT_SUPPORTED) {
                                 Timber.e("DISCONNECTED: 不支持的设备");
                                 ToastUtils.show("不支持的设备");
-                            } else if (stateWithReason.isTimeout()) {
+                            } else if (stateWithReason.getReason() == ConnectionObserver.REASON_TIMEOUT) {
                                 Timber.e("DISCONNECTED: 连接超时");
-//                                ToastUtils.show("连接超时");
                             }
                         }
                         clearDevice();
@@ -362,7 +362,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
      */
     private void observerLocation() {
         locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
-        locationViewModel.getSyncPositionBean().observeInFragment(this, new Observer<SyncPositionBean>() {
+        locationViewModel.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionBean>() {
             @Override
             public void onChanged(SyncPositionBean syncPositionBean) {
                 try {

@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -90,7 +91,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
-        locationViewModel.getSyncPositionBean().observeInFragment(this, new Observer<SyncPositionBean>() {
+        locationViewModel.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionBean>() {
             @Override
             public void onChanged(SyncPositionBean syncPositionBean) {
                 String address = syncPositionBean.getAddress();
@@ -102,7 +103,6 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
 
                     String position = String.format(Locale.getDefault(), "%.8f", latLng.longitude) + "," + String.format(Locale.getDefault(), "%.8f", latLng.latitude);
                     mEtLatLong.setText(position);
-
                 } catch (NumberFormatException ex) {
                     ex.printStackTrace();
                     latLng = null;
@@ -125,7 +125,6 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
                 ex.printStackTrace();
                 latLng = null;
             }
-
         }
         if (latLng != null) {
             mEtLatLong.setText(latLng.longitude + "," + latLng.latitude);
@@ -143,7 +142,6 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
                     ToastUtils.show(MapErrorUtil.getErrorMsg(errorCode));
                     return;
                 }
-
                 if (result != null && result.getRegeocodeAddress() != null && result.getRegeocodeAddress().getFormatAddress() != null) {
                     String address = result.getRegeocodeAddress().getFormatAddress();
                     mTvAddress.setText(address);
@@ -176,21 +174,40 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
 
         } else if (id == R.id.tv_confirm) {
             KeyBordUtils.hideSoftKeyboard(mEtLatLong);
-
-            String result = mEtLatLong.getText().toString().trim();
-            if (TextUtils.isEmpty(result)) {
-                ToastUtils.show("经纬度不能为空");
+            if (!checkValueIsValid()) {
+                Timber.w("参数存在错误!");
                 return;
             }
-
-            if (mListener == null) {
-                return;
-            }
-
-            if (mListener.onPositiveClick(view, result)) {
+            if (mListener != null && mListener.onPositiveClick(view, mEtLatLong.getText().toString().trim())) {
                 dismiss();
             }
         }
+    }
+
+    private boolean checkValueIsValid() {
+        String result = mEtLatLong.getText().toString().trim();
+        if (TextUtils.isEmpty(result)) {
+            ToastUtils.show("经纬度不能为空");
+            return false;
+        }
+
+        String[] strs = result.split(",");
+        if (strs.length < 2) {
+            ToastUtils.show("请输入正确格式的经纬度!");
+            return false;
+        }
+
+        try {
+            double longitude = Double.parseDouble(strs[0]);
+            double latitude = Double.parseDouble(strs[1]);
+            latLng = new LatLng(latitude, longitude);
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+            ToastUtils.show("请输入正确格式的经纬度!");
+            mEtLatLong.requestFocus();
+            return false;
+        }
+        return true;
     }
 
     public void setDialogFragmentClickListener(DialogFragmentClickListener listener) {

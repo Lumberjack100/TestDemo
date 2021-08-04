@@ -106,7 +106,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         initTipView();//初始化提示View
 
         shareViewModel = getApplicationScopeViewModel(ShareViewModel.class);
-        shareViewModel.getNetworkChangeEvent().observeInActivity(this, new Observer<NetworkChangeEvent>() {
+        shareViewModel.getNetworkChangeEvent().observe(this, new Observer<NetworkChangeEvent>() {
             @Override
             public void onChanged(NetworkChangeEvent networkChangeEvent) {
                 Timber.i("网络发生变化:%s", networkChangeEvent.toString());
@@ -114,7 +114,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 netStateChangedUI(networkChangeEvent.isConnected);
             }
         });
-        shareViewModel.getForceToLoginEvent().observeInActivity(this, new Observer<ForceToLoginEvent>() {
+        shareViewModel.getForceToLoginEvent().observe(this, new Observer<ForceToLoginEvent>() {
             @Override
             public void onChanged(ForceToLoginEvent forceToLoginEvent) {
                 if (isActive) { // 判断Activity是否在前台，防止非前台的Activity也处理这个事件，造成打开多个LoginActivity的问题。

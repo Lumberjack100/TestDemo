@@ -31,7 +31,7 @@ public class GOCBleViewModel extends AndroidViewModel {
     }
 
     public LiveData<ConnectionState> getConnectionState() {
-        return gocManager.getState();
+        return gocManager.state;
     }
 
     public ProtectedUnPeekLiveData<String> getResponseMsg() {

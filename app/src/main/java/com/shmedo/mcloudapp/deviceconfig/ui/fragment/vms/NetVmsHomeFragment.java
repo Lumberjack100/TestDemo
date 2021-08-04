@@ -235,7 +235,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
      * 因为终端列表页面移除了设备，网关主页面需要刷新数据
      */
     private void observerRefreshTerminal() {
-        vmsViewModel.getVmsRefreshTerminal().observeInFragment(this, new Observer<Boolean>() {
+        vmsViewModel.getVmsRefreshTerminal().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isRefresh) {
                 if (isRefresh) {

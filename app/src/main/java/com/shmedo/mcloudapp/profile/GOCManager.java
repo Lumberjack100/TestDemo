@@ -205,25 +205,6 @@ public class GOCManager extends ObservableBleManager {
 
         @Override
         protected boolean isRequiredServiceSupported(@NonNull BluetoothGatt gatt) {
-//            final BluetoothGattService serviceGoc400 = gatt.getService(SERVICE_UUID_GOC_400);
-            //GOC-MD-400蓝牙模块
-//            if (serviceGoc400 != null) {
-//                notifyCharacteristic = serviceGoc400.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_400);
-//                writeCharacteristic = serviceGoc400.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_400);
-//            } else { //GOC-W91200蓝牙模块
-//                List<BluetoothGattService> serviceList = gatt.getServices();
-//                for (BluetoothGattService service : serviceList) {
-//                    if (!service.getUuid().equals(SERVICE_UUID_GOC_W91200))
-//                        continue;
-//
-//                    if (service.getCharacteristics() != null && service.getCharacteristics().size() >= 2) {
-//                        notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_W91200);
-//                        writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_W91200);
-//                        break;
-//                    }
-//                }
-//            }
-
             List<BluetoothGattService> serviceList = gatt.getServices();
             for (BluetoothGattService service : serviceList) {
                 //GOC-MD-400蓝牙模块
@@ -267,8 +248,16 @@ public class GOCManager extends ObservableBleManager {
             return supported;
         }
 
+        /**
+         * This method should nullify all services and characteristics of the device.
+         * <p>
+         * It's called when the services were invalidated and can no longer be used. Most probably the
+         * device has disconnected, Service Changed indication was received, or
+         * {@link BleManager#refreshDeviceCache()} request was executed, which has invalidated cached
+         * services.
+         */
         @Override
-        protected void onDeviceDisconnected() {
+        protected void onServicesInvalidated() {
             notifyCharacteristic = null;
             writeCharacteristic = null;
         }

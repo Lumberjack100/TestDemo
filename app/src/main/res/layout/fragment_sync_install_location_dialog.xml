@@ -77,11 +77,6 @@
             android:textSize="@dimen/text_size_17"
             tools:text="闵行区联航路"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/divider_line_bg_efefef" />
-
     </LinearLayout>
 
     <include layout="@layout/two_button_dialog_footer" />

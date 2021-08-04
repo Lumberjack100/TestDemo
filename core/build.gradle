@@ -41,6 +41,7 @@ dependencies {
     api 'io.netty:netty-all:4.1.53.Final'
     api 'com.thanosfisherman.elvis:elvis:3.0'
 
+    api "no.nordicsemi.android:ble:$rootProject.thirdLib.nordicsemiBle"
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.thirdLib.testExtJunit"

@@ -71,7 +71,7 @@ public class SpeedTestResultActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         locationViewModel=getApplicationScopeViewModel(LocationViewModel.class);
-        locationViewModel.getSyncPositionBean().observeInActivity(this, new Observer<SyncPositionBean>() {
+        locationViewModel.getSyncPositionBean().observe(this, new Observer<SyncPositionBean>() {
             @Override
             public void onChanged(SyncPositionBean syncPositionBean) {
                 String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLatitude());

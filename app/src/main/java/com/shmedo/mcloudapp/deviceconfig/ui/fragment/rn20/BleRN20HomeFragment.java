@@ -39,6 +39,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalParamSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
@@ -55,6 +56,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
+import no.nordicsemi.android.ble.observer.ConnectionObserver;
 import timber.log.Timber;
 
 /**
@@ -211,6 +213,10 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             case "终端配置":
                 VmsTerminalParamSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, null);
                 break;
+
+            case "设置":
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.RN20);
+                break;
         }
     }
 
@@ -241,12 +247,11 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                     case DISCONNECTED://The device disconnected or failed to connect.
                         if (connectionState instanceof ConnectionState.Disconnected) {
                             final ConnectionState.Disconnected stateWithReason = (ConnectionState.Disconnected) connectionState;
-                            if (stateWithReason.isNotSupported()) {
+                            if (stateWithReason.getReason() == ConnectionObserver.REASON_NOT_SUPPORTED) {
                                 Timber.e("DISCONNECTED: 不支持的设备");
                                 ToastUtils.show("不支持的设备");
-                            } else if (stateWithReason.isTimeout()) {
+                            } else if (stateWithReason.getReason() == ConnectionObserver.REASON_TIMEOUT) {
                                 Timber.e("DISCONNECTED: 连接超时");
-//                                ToastUtils.show("连接超时");
                             }
                         }
                         clearDevice();
@@ -266,7 +271,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        usrBleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
+        usrBleViewModel.getDeviceApiKey().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 hideProgressBar();
@@ -332,14 +337,16 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "终端配置", "终端参数配置");
         configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+        configModuleList.add(configModule);
     }
 
     /**
      * 获取设备的基本信息
      */
     private void queryBaseInfo() {
-        TerminalSNEntity entity = new TerminalSNEntity(sn);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE);
         sendCommand(command);
     }
 

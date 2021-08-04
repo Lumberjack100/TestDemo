@@ -4,8 +4,6 @@ import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.common.model.PageResult;
-import com.shmedo.mcloudapp.deviceconfig.data.db.DeviceDao;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceApiKey;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
@@ -131,11 +129,11 @@ public class DeviceRepository {
                                 }
                                 deviceApiKey.postValue(deviceDetailInfo.getBasicInfo().getApiKey());
 
-                                DeviceApiKey apiKey = new DeviceApiKey();
-                                apiKey.setApiKey(deviceDetailInfo.getBasicInfo().getApiKey());
-                                apiKey.setDeviceID(deviceDetailInfo.getBasicInfo().getDeviceID());
-                                apiKey.setDeviceToken(deviceDetailInfo.getBasicInfo().getDeviceToken());
-                                DeviceDao.getInstance().cacheDeviceApiKey(apiKey);
+//                                DeviceApiKey apiKey = new DeviceApiKey();
+//                                apiKey.setApiKey(deviceDetailInfo.getBasicInfo().getApiKey());
+//                                apiKey.setDeviceID(deviceDetailInfo.getBasicInfo().getDeviceID());
+//                                apiKey.setDeviceToken(deviceDetailInfo.getBasicInfo().getDeviceToken());
+//                                DeviceDao.getInstance().cacheDeviceApiKey(apiKey);
                             } else {
                                 deviceApiKey.postValue(null);
                             }

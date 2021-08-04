@@ -46,6 +46,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
+import no.nordicsemi.android.ble.observer.ConnectionObserver;
 import timber.log.Timber;
 
 /**
@@ -219,12 +220,11 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                     case DISCONNECTED://The device disconnected or failed to connect.
                         if (connectionState instanceof ConnectionState.Disconnected) {
                             final ConnectionState.Disconnected stateWithReason = (ConnectionState.Disconnected) connectionState;
-                            if (stateWithReason.isNotSupported()) {
+                            if (stateWithReason.getReason() == ConnectionObserver.REASON_NOT_SUPPORTED) {
                                 Timber.e("DISCONNECTED: 不支持的设备");
                                 ToastUtils.show("不支持的设备");
-                            } else if (stateWithReason.isTimeout()) {
+                            } else if (stateWithReason.getReason() == ConnectionObserver.REASON_TIMEOUT) {
                                 Timber.e("DISCONNECTED: 连接超时");
-//                                ToastUtils.show("连接超时");
                             }
                         }
                         clearDevice();
@@ -244,7 +244,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        bleViewModel.getDeviceApiKey().observeInFragment(this, new Observer<String>() {
+        bleViewModel.getDeviceApiKey().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 hideProgressBar();

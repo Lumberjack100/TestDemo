@@ -245,6 +245,16 @@ public enum IOTCommandType {
      */
     RN20_MD_GET_TERMINAL_BASE("md_getterminalbase"),
 
+    /**
+     * 获取终端经纬度参数
+     */
+    RN20_MD_GET_TERMINAL_LOCAL("md_getterminallocal"),
+
+    /**
+     * 设置终端经纬度参数
+     */
+    RN20_MD_SET_TERMINAL_LOCAL("md_setterminallocal"),
+
     /*　 ADME 指令  */
     /**
      * 获取ADME的基本信息

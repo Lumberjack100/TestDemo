@@ -15,6 +15,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40AdvancedSettingFr
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20AdvancedSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsAdvancedSettingsFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsAdvancedSettingsFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -97,6 +98,10 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
 
                 case AppContants.DeviceType.M20:
                     fragment = BleM20AdvancedSettingFragment.newInstance();
+                    break;
+
+                case AppContants.DeviceType.RN20:
+                    fragment = BleRN20AdvancedSettingFragment.newInstance();
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {

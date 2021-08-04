@@ -136,7 +136,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         super.onActivityCreated(savedInstanceState);
         initView();
         usrBleViewModel = getApplicationScopeViewModel(USRBleViewModel.class);
-        usrBleViewModel.getResponseMsg().observeInFragment(this, new Observer<String>() {
+        usrBleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
                 if (!result.startsWith("$cmd=") || !isResumed())

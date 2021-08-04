@@ -77,6 +77,7 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
                     break;
 
                 case AppContants.DeviceType.ADME:
+                case AppContants.DeviceType.RN20:
                     fragment = USRBleIotCustomCommandLogPrintFragment.newInstance();
                     break;
 

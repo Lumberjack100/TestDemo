@@ -13,14 +13,12 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
 import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
@@ -135,8 +133,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
      * 获取设备的基本信息
      */
     private void queryBaseInfo() {
-        TerminalSNEntity entity = new TerminalSNEntity(MCloudApp.getCurDeviceToken());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE);
         sendCommand(command);
     }
 

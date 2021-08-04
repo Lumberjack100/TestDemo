@@ -107,7 +107,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
-        configPageViewModel.configPageEditableChanged.observeInFragment(this, new Observer<Boolean>() {
+        configPageViewModel.configPageEditableChanged.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isEditable) {
                 onEditableChanged(isEditable);

@@ -150,10 +150,9 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 //        EventBus.getDefault().register(this);
-
         scannerViewModel = getFragmentScopeViewModel(BleScannerViewModel.class);
-        scannerViewModel.getBleScannerState().observeInFragment(this, this::startScan);
-        scannerViewModel.getDevices().observeInFragment(this, new Observer<List<DiscoveredBluetoothDevice>>() {
+        scannerViewModel.getBleScannerState().observe(getViewLifecycleOwner(), this::startScan);
+        scannerViewModel.getDevices().observe(getViewLifecycleOwner(), new Observer<List<DiscoveredBluetoothDevice>>() {
             @Override
             public void onChanged(List<DiscoveredBluetoothDevice> newDevices) {
                 tempDeviceList.clear();

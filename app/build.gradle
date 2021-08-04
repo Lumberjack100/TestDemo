@@ -145,7 +145,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
-    implementation 'com.kunminx.archi:unpeek-livedata:4.4.1-beta1'
+    implementation 'com.kunminx.arch:unpeek-livedata:6.1.0-beta1'
 
     implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
@@ -168,12 +168,11 @@ dependencies {
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
     //Toast 吐司
     implementation "com.github.getActivity:ToastUtils:$rootProject.thirdLib.ToastUtils"
-//    implementation "com.hjq:toast:$rootProject.thirdLib.hjqToast"
     implementation "com.lxj:xpopup:$rootProject.thirdLib.xpopup"
     //开关 Button
     implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
     //华为扫码服务
-    implementation 'com.huawei.hms:scan:1.3.2.300'
+    implementation 'com.huawei.hms:scan:2.0.0.300'
 
     //蒲公英SDk
     implementation "com.pgyersdk:sdk:$rootProject.thirdLib.pgyerSdk"
@@ -182,14 +181,13 @@ dependencies {
     implementation "com.tencent.bugly:nativecrashreport:$rootProject.thirdLib.buglyNativeCrashReport"
     //xCrash 能为安卓 app 提供捕获 java 崩溃，native 崩溃和 ANR 的能力。
     implementation 'com.iqiyi.xcrash:xcrash-android-lib:3.0.0'
-
-    implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
-    implementation 'com.permissionx.guolindev:permissionx:1.4.1-snapshot'
+    implementation "com.guolindev.permissionx:permissionx:$rootProject.thirdLib.permissionx"
 
     //下拉刷新
     implementation  "com.scwang.smart:refresh-layout-kernel:$rootProject.thirdLib.SmartRefreshLayout"      //核心必须依赖
     implementation  "com.scwang.smart:refresh-header-classics:$rootProject.thirdLib.SmartRefreshLayout"    //经典刷新头
 
+    implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
     //一个强大并且灵活的RecyclerViewAdapter
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.thirdLib.BaseRecyclerViewAdapterHelper"
     implementation "gdut.bsx:share2:$rootProject.thirdLib.bsxShare"
@@ -197,7 +195,7 @@ dependencies {
     implementation "com.alibaba.android:ddsharesdk:$rootProject.thirdLib.ddsharesdk"
 
     // 一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
-    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
+    implementation "com.github.Jay-Goo:RangeSeekBar:$rootProject.thirdLib.RangeSeekBar"
 
     //高德地图导航
     implementation "com.amap.api:navi-3dmap:$rootProject.thirdLib.amapNavi"
@@ -207,22 +205,21 @@ dependencies {
     implementation "com.amap.api:search:$rootProject.thirdLib.amapSearch"
 
     // 透明系统栏设置基础依赖包，必须要依赖
-    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation "com.gyf.immersionbar:immersionbar:$rootProject.thirdLib.immersionbar"
     // fragment快速实现（可选）
-    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+    implementation "com.gyf.immersionbar:immersionbar-components:$rootProject.thirdLib.immersionbar"
 
     //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
-    implementation 'no.nordicsemi.android.support.v18:scanner:1.4.3'
+    implementation "no.nordicsemi.android.support.v18:scanner:$rootProject.thirdLib.nordicsemiScanner"
     // Log Bluetooth LE events in nRF Logger APP
-    implementation 'no.nordicsemi.android:log:2.3.0'
-    // BLE library
-    implementation 'no.nordicsemi.android:ble-livedata:2.2.0'
-
+    implementation "no.nordicsemi.android:log:$rootProject.thirdLib.nordicsemiLog"
+    // BLE library, 放在 core 模块中引用
+    //implementation 'no.nordicsemi.android:ble:2.3.0'
 
     // debugImplementation because LeakCanary should only run in debug builds.
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
     // 日志调试框架：https://github.com/getActivity/Logcat
-    debugImplementation 'com.github.getActivity:Logcat:9.6'
+    debugImplementation "com.github.getActivity:Logcat:$rootProject.thirdLib.Logcat"
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
