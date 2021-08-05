@@ -293,7 +293,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
                         mTvProgressText.setText("初始化中...");
-                        usrBleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        usrBleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -323,7 +323,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        usrBleViewModel.getDeviceApiKey().observe(getViewLifecycleOwner(), new Observer<String>() {
+        usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 hideProgressBar();

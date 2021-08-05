@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.mcloudapp.deviceconfig.data.repository.DeviceRepository;
+import com.shmedo.mcloudapp.deviceconfig.data.DeviceApiKeyRequest;
 
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import no.nordicsemi.android.log.LogSession;
@@ -23,6 +23,8 @@ import no.nordicsemi.android.log.Logger;
 public class USRBleViewModel extends AndroidViewModel {
     private final USRManager usrManager;
     private BluetoothDevice device;
+
+    public final DeviceApiKeyRequest deviceApiKeyRequest = new DeviceApiKeyRequest();
 
     public USRBleViewModel(@NonNull Application application) {
         super(application);
@@ -48,18 +50,6 @@ public class USRBleViewModel extends AndroidViewModel {
 
     public void updateLogOutputMode(boolean isLogOutputMode) {
         usrManager.updateLogOutputMode(isLogOutputMode);
-    }
-
-    public ProtectedUnPeekLiveData<String> getDeviceApiKey() {
-        return DeviceRepository.getInstance().getDeviceApiKeyLiveData();
-    }
-
-    public void queryDeviceApiKeyBySn(String sn) {
-        DeviceRepository.getInstance().queryDeviceApiKeyBySn(sn);
-    }
-
-    public void clearDeviceApiKey() {
-        DeviceRepository.getInstance().clearDeviceApiKey();
     }
 
     /**
@@ -109,7 +99,7 @@ public class USRBleViewModel extends AndroidViewModel {
 
     public void clearDevice() {
         device = null;
-        clearDeviceApiKey();
+        deviceApiKeyRequest.clearDeviceApiKey();
     }
 
     /**

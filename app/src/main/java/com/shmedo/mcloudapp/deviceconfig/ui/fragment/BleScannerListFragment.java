@@ -131,8 +131,8 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         setEditTextListener();
 
         scannerViewModel = getFragmentScopeViewModel(BleScannerViewModel.class);
-        scannerViewModel.getBleScannerState().observeInFragment(this, this::startScan);
-        scannerViewModel.getDevices().observeInFragment(this, new Observer<List<DiscoveredBluetoothDevice>>() {
+        scannerViewModel.getBleScannerState().observe(getViewLifecycleOwner(), this::startScan);
+        scannerViewModel.getDevices().observe(getViewLifecycleOwner(), new Observer<List<DiscoveredBluetoothDevice>>() {
             @Override
             public void onChanged(List<DiscoveredBluetoothDevice> newDevices) {
                 final DiffUtil.DiffResult result = DiffUtil.calculateDiff(
@@ -182,7 +182,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                         deviceType = AppContants.DeviceType.ADME;
                 } else if (deviceName.endsWith("V")) {
                     deviceType = AppContants.DeviceType.M20;
-                } else if (deviceName.endsWith("Y")) {
+                } else if (deviceName.endsWith("W")) {
                     deviceType = AppContants.DeviceType.RN20;
                 }
                 if(deviceType == AppContants.DeviceType.UnKnown){

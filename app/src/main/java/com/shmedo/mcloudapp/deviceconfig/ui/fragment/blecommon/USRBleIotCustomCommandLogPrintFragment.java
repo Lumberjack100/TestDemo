@@ -179,8 +179,8 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
                 return;
             }
             String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-            if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
-                apiKey = usrBleViewModel.getDeviceApiKey().getValue();
+            if (!TextUtils.isEmpty(usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
+                apiKey = usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();
             }
             if (!command.contains("&apikey")) {
                 command += "&apikey=" + apiKey
@@ -202,8 +202,8 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
         entity.setType("bt");
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.LOG_OUTPUT_MODE_LEVEL, entity);
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
-            apiKey = usrBleViewModel.getDeviceApiKey().getValue();
+        if (!TextUtils.isEmpty(usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
+            apiKey = usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();
         }
         if (!command.contains("&apikey")) {
             command += "&apikey=" + apiKey

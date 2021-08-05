@@ -214,7 +214,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                         onConnectionStateChanged(true);
                         mTvProgressText.setText("初始化中...");
                         //查询设备 ApiKey
-                        bleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -244,7 +244,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        bleViewModel.getDeviceApiKey().observe(getViewLifecycleOwner(), new Observer<String>() {
+        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 hideProgressBar();

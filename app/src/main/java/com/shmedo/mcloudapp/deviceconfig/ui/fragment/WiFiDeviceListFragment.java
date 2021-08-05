@@ -120,7 +120,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
-        deviceApiKeyViewModel.getDeviceApiKey().observe(getViewLifecycleOwner(), new Observer<String>() {
+        deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 if (WiFiDeviceListFragment.this.isVisible() && curWiFi != null) {
@@ -147,7 +147,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 curWiFi = wiFiAdapter.getItem(position);
                 String[] strs = curWiFi.name().split("-");
                 showProgressDialog("处理中...");
-                deviceApiKeyViewModel.queryDeviceApiKeyBySn(strs[strs.length - 1]);
+                deviceApiKeyViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(strs[strs.length - 1]);
             }
         });
     }
@@ -411,7 +411,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     @Override
     public void onDestroy() {
-        deviceApiKeyViewModel.clearDeviceApiKey();
+        deviceApiKeyViewModel.deviceApiKeyRequest.clearDeviceApiKey();
         super.onDestroy();
     }
 

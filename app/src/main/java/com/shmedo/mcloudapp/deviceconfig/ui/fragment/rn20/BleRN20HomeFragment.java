@@ -241,7 +241,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
                         mTvProgressText.setText("初始化中...");
-                        usrBleViewModel.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        usrBleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -271,7 +271,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        usrBleViewModel.getDeviceApiKey().observe(getViewLifecycleOwner(), new Observer<String>() {
+        usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 hideProgressBar();
@@ -384,7 +384,6 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      */
     private void querySwitchSensorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO);
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         sendCommand(command);
     }
 
@@ -440,16 +439,11 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         rainPrecisionIndex = which;
                         rainPrecision = text.toString().replace("mm", "");
-                        return false;
-                    }
-                }).onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
                         DasIOSensorEntity entity = new DasIOSensorEntity();
                         entity.setType("1");
                         entity.setValue(rainPrecision);
                         setSwitchSensorInfo(entity);
+                        return true;
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

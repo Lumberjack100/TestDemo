@@ -61,7 +61,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         sendCommand(command);
     }
 
-    @OnClick({R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout})
+    @OnClick({R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -87,7 +87,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
                 installLocation = location;
                 String[] strs = installLocation.split(",");
                 try {
-                    Rn20PositionEntity entity=new Rn20PositionEntity();
+                    Rn20PositionEntity entity = new Rn20PositionEntity();
                     entity.setLongitude(strs[0]);
                     entity.setLatitude(strs[1]);
                     String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);

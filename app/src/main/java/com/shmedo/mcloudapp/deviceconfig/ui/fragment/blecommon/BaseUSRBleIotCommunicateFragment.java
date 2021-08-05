@@ -205,8 +205,8 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
             return;
         }
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(usrBleViewModel.getDeviceApiKey().getValue())) {
-            apiKey = usrBleViewModel.getDeviceApiKey().getValue();
+        if (!TextUtils.isEmpty(usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
+            apiKey = usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();
         }
         if (!cmdStr.contains("&apikey")) {
             cmdStr += "&apikey=" + apiKey

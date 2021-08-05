@@ -51,6 +51,9 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     @BindView(R.id.tv_channel)
     TextView mTvChannel;
 
+    @BindView(R.id.tv_install_position)
+    TextView mTvPosition;
+
     @BindView(R.id.tv_register_time)
     TextView mTvRegisterTime;
 
@@ -225,6 +228,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         mTvNetId.setText(rn20BaseInfo.getNetid());
         mTvAddress.setText(rn20BaseInfo.getAddr());
         mTvChannel.setText(rn20BaseInfo.getChannel());
+        mTvPosition.setText(rn20BaseInfo.getLocal());
         mTvRegisterTime.setText(rn20BaseInfo.getLogintime());
         mTvUpdateTime.setText(rn20BaseInfo.getFinaltime());
 

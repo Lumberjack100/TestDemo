@@ -99,6 +99,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="安装位置"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_install_position"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="121.1213,31.5246" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="注册时间"
                     android:textColor="@color/title_text_color"
                     android:textSize="15sp" />

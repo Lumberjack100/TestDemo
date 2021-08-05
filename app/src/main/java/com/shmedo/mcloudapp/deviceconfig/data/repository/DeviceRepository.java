@@ -24,28 +24,9 @@ import okhttp3.RequestBody;
  */
 public class DeviceRepository {
     private static final DeviceRepository instance = new DeviceRepository();
-    private UnPeekLiveData<String> deviceApiKey = new UnPeekLiveData.Builder<String>()
-            .setAllowNullValue(true)
-            .create();
 
     public static DeviceRepository getInstance() {
         return instance;
-    }
-
-    public UnPeekLiveData<String> getDeviceApiKeyLiveData() {
-        if (deviceApiKey == null) {
-            deviceApiKey = new UnPeekLiveData.Builder<String>()
-                    .setAllowNullValue(true)
-                    .create();
-        }
-
-        return deviceApiKey;
-    }
-
-    public void clearDeviceApiKey() {
-        if (deviceApiKey != null) {
-            deviceApiKey.postValue(null);
-        }
     }
 
     /**
@@ -53,8 +34,8 @@ public class DeviceRepository {
      *
      * @param sn
      */
-    public void queryDeviceApiKeyBySn(String sn) {
-        queryCompanyDevice(sn);
+    public void queryDeviceApiKeyBySn(String sn, UnPeekLiveData<String> deviceApiKey) {
+        queryCompanyDevice(sn, deviceApiKey);
 //        String apiKey = DeviceDao.getInstance().getCachedDeviceApiKeyBySn(sn);
 //        if (apiKey == null) {
 //            queryCompanyDevice(sn);
@@ -67,7 +48,7 @@ public class DeviceRepository {
     /**
      * 查询公司设备列表
      */
-    private void queryCompanyDevice(String sn) {
+    private void queryCompanyDevice(String sn, UnPeekLiveData<String> deviceApiKey) {
         QueryProjectDevice parameter = new QueryProjectDevice();
         parameter.setCompanyID(MCloudApp.getCompanyID());
         parameter.setDeviceType(-1);
@@ -92,7 +73,7 @@ public class DeviceRepository {
                                     deviceApiKey.postValue(null);
                                     return;
                                 }
-                                GetDeviceDetailInfo(data.getCurrentPageData().get(0).getId());
+                                GetDeviceDetailInfo(data.getCurrentPageData().get(0).getId(), deviceApiKey);
 
                             } else {
                                 deviceApiKey.postValue(null);
@@ -110,7 +91,7 @@ public class DeviceRepository {
                 });
     }
 
-    private void GetDeviceDetailInfo(int deviceId) {
+    private void GetDeviceDetailInfo(int deviceId, UnPeekLiveData<String> deviceApiKey) {
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(deviceId));
 
         MDRetrofit.getInstance()

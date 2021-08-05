@@ -149,8 +149,8 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
             return;
         }
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(bleViewModel.getDeviceApiKey().getValue())) {
-            apiKey = bleViewModel.getDeviceApiKey().getValue();
+        if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
+            apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();
         }
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString();

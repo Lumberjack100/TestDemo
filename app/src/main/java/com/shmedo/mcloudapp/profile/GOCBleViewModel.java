@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.mcloudapp.deviceconfig.data.repository.DeviceRepository;
+import com.shmedo.mcloudapp.deviceconfig.data.DeviceApiKeyRequest;
 
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import no.nordicsemi.android.log.LogSession;
@@ -23,7 +23,10 @@ import no.nordicsemi.android.log.Logger;
 public class GOCBleViewModel extends AndroidViewModel {
     private final GOCManager gocManager;
     private BluetoothDevice device;
-    
+
+    public final DeviceApiKeyRequest deviceApiKeyRequest = new DeviceApiKeyRequest();
+
+
     public GOCBleViewModel(@NonNull Application application) {
         super(application);
         // Initialize the manager.
@@ -46,17 +49,6 @@ public class GOCBleViewModel extends AndroidViewModel {
         gocManager.updateLogOutputMode(isLogOutputMode);
     }
 
-    public ProtectedUnPeekLiveData<String> getDeviceApiKey() {
-        return DeviceRepository.getInstance().getDeviceApiKeyLiveData();
-    }
-
-    public void queryDeviceApiKeyBySn(String sn) {
-        DeviceRepository.getInstance().queryDeviceApiKeyBySn(sn);
-    }
-
-    public void clearDeviceApiKey() {
-        DeviceRepository.getInstance().clearDeviceApiKey();
-    }
 
     /**
      * Connect to the given peripheral.
@@ -105,7 +97,7 @@ public class GOCBleViewModel extends AndroidViewModel {
 
     public void clearDevice() {
         device = null;
-        clearDeviceApiKey();
+        deviceApiKeyRequest.clearDeviceApiKey();
     }
 
     /**
