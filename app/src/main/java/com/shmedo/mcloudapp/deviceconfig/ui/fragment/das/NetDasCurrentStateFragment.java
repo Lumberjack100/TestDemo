@@ -2,17 +2,23 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
@@ -39,6 +45,8 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,9 +58,9 @@ import timber.log.Timber;
  * 通过网络下发指令查看设备当前运行状态
  */
 public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
-    @BindView(R.id.swipeLayout)
-    SwipeRefreshLayout swipeRefresh;
     /**
      * 基本信息
      */
@@ -200,19 +208,27 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
         initDataCenterAdapter();
         initSensorAdapter();
-        // 进入页面，刷新数据
-        swipeRefresh.setRefreshing(true);
-        queryDeviceBaseInfo();
     }
 
     private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onRefresh() {
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 queryDeviceBaseInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                        }
+                    }
+                }, 15000);
             }
         });
     }
@@ -335,7 +351,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            swipeRefresh.setRefreshing(false);
+            mRefreshLayout.finishRefresh(false);
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -356,7 +372,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        swipeRefresh.setRefreshing(false);
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("查询设备状态响应错误");
     }
 
@@ -368,7 +384,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        swipeRefresh.setRefreshing(false);
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("查询设备状态响应超时");
     }
 
@@ -390,7 +406,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_DEVICE_BASE: {
                 IOTCommandResult<DasBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -405,7 +421,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_NET_STATUS: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -425,7 +441,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_SOLAR_STATUS: {
                 IOTCommandResult<DasSolarStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询太阳能控制器状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -440,7 +456,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS: {
                 IOTCommandResult<DasTemperatureAndHumidityStatusinfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询温湿度状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -449,14 +465,13 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 DasTemperatureAndHumidityStatusinfo dasTemperatureAndHumidityStatusinfo = commandResult.getResult();
                 initTemperatureAndHumidityStatus(dasTemperatureAndHumidityStatusinfo);
                 querySubSensorStatus();
-
             }
             break;
 
             case DAS_MD_GET_SUB_SENSOR_STATUS: {
                 IOTCommandResult<DasSubSensorStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    swipeRefresh.setRefreshing(false);
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询辅传感器状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -469,21 +484,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case DAS_MD_GET_SENSOR_STATUS: {
-                swipeRefresh.setRefreshing(false);
-//                IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-//                if (!commandResult.isSuccess()) {
-//                    String errMsg = String.format("%s %s", "查询主传感器状态出错!", commandResult.getMessage());
-//                    Timber.e(errMsg);
-//                    ToastUtils.show(errMsg);
-//                    return;
-//                }
-//                if (!TextUtils.isEmpty(commandResult.getResult())) {
-//                    List<DasSensorStatusInfo> tempList = GsonFactory.getGson().fromJson(commandResult.getResult(), new TypeToken<List<DasSensorStatusInfo>>() {
-//                    }.getType());
-//                    sensorList.clear();
-//                    sensorList.addAll(tempList);
-//                    sensorAdapter.notifyDataSetChanged();
-//                }
+                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<List<DasSensorStatusInfo>> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询主传感器状态出错!", commandResult.getMessage());
@@ -524,8 +525,19 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(dasBaseInfo.getCsq())), 0);
         mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType(dasBaseInfo.getIsp()));
 
-        mTvDeviceInternalPower.setText(dasBaseInfo.getInvolt());
-        mTvDeviceExternalVoltage.setText(dasBaseInfo.getOutvolt());
+        String powerStr = dasBaseInfo.getInvolt();
+        double power = Double.parseDouble(powerStr.replace("%", ""));
+        SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mTvDeviceInternalPower.setText(builder);
+
+        String voltageStr = dasBaseInfo.getOutvolt();
+        double voltage = Double.parseDouble(voltageStr);
+        builder = new SpannableStringBuilder(voltageStr + "V");
+        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mTvDeviceExternalVoltage.setText(builder);
     }
 
     /**

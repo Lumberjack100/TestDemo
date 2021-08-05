@@ -93,9 +93,10 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
     protected void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态": {
-                showProgressDialog("处理中...");
-                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+//                showProgressDialog("处理中...");
+//                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
+//                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
             }
             break;
 
@@ -283,7 +284,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
+            case DAS_MD_SET_ACTIVE: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "传感器初始化失败!", cmdResult.getReason());
