@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -134,7 +135,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
         CommonSettingCmdResult cmdResponseResult = IOTParseManager.getInstance().parseSettingCmd(queryCmdResult.getResponseContent());
         if (cmdResponseResult.isSucceed()) {
             mTvContent.setText("初始化完成");
-            UIHandler.postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     dismiss();

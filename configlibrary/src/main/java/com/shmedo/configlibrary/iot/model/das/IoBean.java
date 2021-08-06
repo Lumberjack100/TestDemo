@@ -7,7 +7,7 @@ package com.shmedo.configlibrary.iot.model.das;
  */
 public class IoBean {
     private int type;
-    private int vaule;
+    private double vaule;
     private int errno;
 
     public int getType() {
@@ -18,7 +18,7 @@ public class IoBean {
         this.type = type;
     }
 
-    public int getVaule() {
+    public double getVaule() {
         return vaule;
     }
 

@@ -31,6 +31,7 @@ import timber.log.Timber;
  * 创建时间:  3/10/21 <br/>
  * 描述：     TODO
  */
+@Deprecated
 public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBottomSheetDialogFragment {
     protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
     public ProjectDeviceInfo projectDeviceInfo;

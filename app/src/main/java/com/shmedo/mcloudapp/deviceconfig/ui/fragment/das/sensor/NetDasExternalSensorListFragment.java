@@ -315,7 +315,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             msgIDList.add(cmdItem.getMsgID());
         }
         if (msgIDList != null && msgIDList.size() > 0) {
-            startQueryCmdResponseRunnable(0);
+            startQueryCmdResponse();
         }
     }
 

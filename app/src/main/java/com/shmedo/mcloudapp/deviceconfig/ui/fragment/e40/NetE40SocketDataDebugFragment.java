@@ -392,7 +392,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
             msgIDList.add(cmdItem.getMsgID());
         }
         if (msgIDList != null && msgIDList.size() > 0) {
-            startQueryCmdResponseRunnable(0);
+            startQueryCmdResponse();
         }
     }
 

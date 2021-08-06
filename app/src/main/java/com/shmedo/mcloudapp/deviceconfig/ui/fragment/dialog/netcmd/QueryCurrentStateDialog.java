@@ -67,8 +67,7 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        showResponseLoadingView();
-        startQueryCmdResponseRunnable(0);
+        startQueryCmdResponse();
     }
 
     private void initView() {
@@ -80,12 +79,10 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_close:
-                stopQueryCmdResponseRunnable();
                 dismiss();
                 break;
 
             case R.id.tv_confirm:
-                stopQueryCmdResponseRunnable();
                 dismiss();
                 if (mTvConfirm.getText().toString().equals("查看详情")) {
                     if (mListener != null) {

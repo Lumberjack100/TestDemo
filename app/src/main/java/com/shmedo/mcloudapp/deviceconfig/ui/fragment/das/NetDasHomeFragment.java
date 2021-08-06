@@ -253,7 +253,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
 
             case DAS_MD_SET_ACTIVE:
                 if (msgIDList != null && msgIDList.size() > 0) {
-                    startQueryCmdResponseRunnable(0);
+                    startQueryCmdResponse();
                 }
                 break;
 

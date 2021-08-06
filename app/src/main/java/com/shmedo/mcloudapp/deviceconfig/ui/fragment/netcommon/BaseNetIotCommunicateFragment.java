@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
@@ -28,6 +30,8 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,44 +59,37 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     protected List<String> msgIDList = new ArrayList<>();
 
-    private Handler uiHander = new Handler();
-
     private int queryNum = 0;//当查询指令结果10次时，判断响应超时
 
-    private QueryCmdResponseRunnable queryCmdResponseRunnable;//常规任务
-
-    private class QueryCmdResponseRunnable implements Runnable {
+    private Handler uiHander = new Handler(new Handler.Callback() {
         @Override
-        public void run() {
-            //轮询指令响应结果接口达到10次，判断超时
-            if (queryNum > 10) {
-                onQueryCmdResponseResultTimeOut(null);
-                return;
+        public boolean handleMessage(@NonNull @NotNull Message msg) {
+            if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+                //轮询指令响应结果接口达到10次，判断超时
+                if (queryNum > 10) {
+                    onQueryCmdResponseResultTimeOut(null);
+                    return false;
+                }
+                Timber.i("handleMessage();queryNum=%s", queryNum);
+                queryCmdResultByMsgID();
             }
-            Timber.i("QueryCmdResponseRunnable run();queryNum=%s", queryNum);
-            queryCmdResultByMsgID();
+            return false;
         }
-    }
+    });
 
-    protected void startQueryCmdResponseRunnable(long delayMillis) {
-        this.startQueryCmdResponseRunnable(delayMillis, true);
-    }
-
-    protected void startQueryCmdResponseRunnable(long delayMillis, boolean isFirstCall) {
-        if (!isFirstCall && queryCmdResponseRunnable == null) {
-            return;
-        }
-        if (queryCmdResponseRunnable == null) {
-            queryCmdResponseRunnable = new QueryCmdResponseRunnable();
-        }
+    protected void startQueryCmdResponse() {
         queryNum++;
-        uiHander.postDelayed(queryCmdResponseRunnable, delayMillis);
+        uiHander.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, 0);
     }
 
-    protected void stopQueryCmdResponseRunnable() {
-        uiHander.removeCallbacksAndMessages(null);
-        queryCmdResponseRunnable = null;
+    protected void startQueryCmdResponseDelayed(long delayMillis) {
+        queryNum++;
+        uiHander.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
+    }
+
+    protected void stopQueryCmdResponse() {
         queryNum = 0;
+        uiHander.removeMessages(AppContants.MsgWhat.MSG_DEFAULT);
     }
 
     @Override
@@ -123,7 +120,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         dismissProgressDialog();
-        stopQueryCmdResponseRunnable();
+        stopQueryCmdResponse();
     }
 
     /**
@@ -235,11 +232,11 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     private void processCmdResult(QueryCmdResult queryCmdResult) {
         if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
-            stopQueryCmdResponseRunnable();
+            stopQueryCmdResponse();
             onQueryCmdResponseResultSuccess(queryCmdResult);
         } else {
-            //延迟2秒后再次查询响应结果
-            startQueryCmdResponseRunnable(1000, false);
+            //延迟1秒后再次查询响应结果
+            startQueryCmdResponseDelayed(1000);
         }
     }
 
@@ -260,7 +257,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     protected void onQueryCmdResponseResultError(String errMsg) {
         dismissProgressDialog();
         //停止轮询指令响应结果接口
-        stopQueryCmdResponseRunnable();
+        stopQueryCmdResponse();
     }
 
     /**
@@ -271,7 +268,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         dismissProgressDialog();
         //停止轮询指令响应结果接口
-        stopQueryCmdResponseRunnable();
+        stopQueryCmdResponse();
     }
 
     protected void warnNotYetSettingBeforeLeavePage() {

@@ -4,7 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.core.util.GsonFactory;
@@ -31,6 +32,8 @@ import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,37 +68,37 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     protected List<String> msgIDList = new ArrayList<>();
 
-    protected Handler UIHandler;
-
-    private QueryCmdResponseRunnable queryCmdResponseRunnable;
-
     private int queryNum = 0;//当查询指令结果10次时，判断响应超时
 
-    private class QueryCmdResponseRunnable implements Runnable {
+    private Handler UIHandler = new Handler(new Handler.Callback() {
         @Override
-        public void run() {
-            //轮询指令响应结果接口达到10次，判断超时
-            if (queryNum > 10) {
-                onQueryCmdResponseResultTimeOut(null);
-                return;
+        public boolean handleMessage(@NonNull @NotNull Message msg) {
+            if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+                //轮询指令响应结果接口达到10次，判断超时
+                if (queryNum > 10) {
+                    onQueryCmdResponseResultTimeOut(null);
+                    return false;
+                }
+                Timber.i("handleMessage();queryNum=%s", queryNum);
+                queryCmdResultByMsgID();
             }
-            Timber.i("QueryCmdResponseRunnable run();queryNum=%s", queryNum);
-            queryCmdResultByMsgID();
+            return false;
         }
+    });
+
+    protected void startQueryCmdResponse() {
+        showResponseLoadingView();
+        startQueryCmdResponseDelayed(0);
     }
 
-    protected void startQueryCmdResponseRunnable(long delayMillis) {
-        if (queryCmdResponseRunnable == null) {
-            queryCmdResponseRunnable = new QueryCmdResponseRunnable();
-        }
+    private void startQueryCmdResponseDelayed(long delayMillis) {
         queryNum++;
-        UIHandler.postDelayed(queryCmdResponseRunnable, delayMillis);
+        UIHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
     }
 
-    protected void stopQueryCmdResponseRunnable() {
-        UIHandler.removeCallbacks(queryCmdResponseRunnable);
-        queryCmdResponseRunnable = null;
+    private void stopQueryCmdResponse() {
         queryNum = 0;
+        UIHandler.removeMessages(AppContants.MsgWhat.MSG_DEFAULT);
     }
 
     @Override
@@ -124,7 +127,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
-        UIHandler = new Handler(Looper.getMainLooper());
+//        UIHandler = new Handler(Looper.getMainLooper());
     }
 
     protected void setWindowStyle(int gravity) {
@@ -200,21 +203,13 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     @Override
     public void onStop() {
         super.onStop();
-        stopQueryCmdResponseRunnable();
+        stopQueryCmdResponse();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-    }
-
-    /**
-     * 开始轮询指令响应结果
-     */
-    protected void startQueryCmdResponse() {
-        showResponseLoadingView();
-        startQueryCmdResponseRunnable(0);
     }
 
     private void queryCmdResultByMsgID() {
@@ -256,13 +251,13 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     private void processCmdResult(QueryCmdResult queryCmdResult) {
         if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
-            stopQueryCmdResponseRunnable();
+            stopQueryCmdResponse();
             hideResponseLoadingView();
             onQueryCmdResponseResultSuccess(queryCmdResult);
 
         } else {
             //延迟2秒后再次查询响应结果
-            startQueryCmdResponseRunnable(1000);
+            startQueryCmdResponseDelayed(1000);
         }
     }
 
@@ -281,7 +276,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
      * @param errMsg
      */
     protected void onQueryCmdResponseResultError(String errMsg) {
-        stopQueryCmdResponseRunnable();
+        stopQueryCmdResponse();
         hideResponseLoadingView();
     }
 
@@ -292,7 +287,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
      */
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         //停止轮询指令响应结果接口
-        stopQueryCmdResponseRunnable();
+        stopQueryCmdResponse();
         hideResponseLoadingView();
         showResponseTimeOutView("响应超时");
     }

@@ -292,7 +292,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
             case ADME_MD_GET_WORK_MODE:
             case ADME_MD_SET_WORK_MODE:
                 if (msgIDList != null && msgIDList.size() > 0) {
-                    startQueryCmdResponseRunnable(0);
+                    startQueryCmdResponse();
                 }
                 break;
 

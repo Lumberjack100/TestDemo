@@ -177,7 +177,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
 
             case M20_MD_GET_BASE_INFO: {//获取设备基本信息
                 if (msgIDList != null && msgIDList.size() > 0) {
-                    startQueryCmdResponseRunnable(0);
+                    startQueryCmdResponse();
                 }
             }
             break;
