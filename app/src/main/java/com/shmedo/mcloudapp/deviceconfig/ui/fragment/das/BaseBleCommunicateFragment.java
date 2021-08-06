@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 
 import timber.log.Timber;
@@ -53,6 +54,8 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
     public boolean isExitMode = false;
 
     protected String errMsg;
+
+    private final InnerHandler mInnerHandler = new InnerHandler(this);
 
     private Handler heartHander = new Handler();
 
@@ -85,25 +88,38 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
 
     }
 
-    private Handler uiHander = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull @NotNull Message msg) {
-            dismissProgressDialog();
-            customHandleMessage(msg);
-            return false;
+    private static class InnerHandler extends Handler {
+        private final WeakReference<BaseBleCommunicateFragment> fragmentWeakReference;
+
+        public InnerHandler(BaseBleCommunicateFragment fragment) {
+            fragmentWeakReference = new WeakReference<>(fragment);
         }
-    });
+
+        @Override
+        public void handleMessage(Message msg) {
+            BaseBleCommunicateFragment fragment = fragmentWeakReference.get();
+            if (fragment != null) {
+                fragment.dismissProgressDialog();
+                fragment.customHandleMessage(msg);
+            }
+        }
+    }
 
     protected void startProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        uiHander.sendEmptyMessageDelayed(what, delayMillis);
+        mInnerHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
 
     public void stopProgress(int what) {
         dismissProgressDialog();
-        uiHander.removeMessages(what);
+        mInnerHandler.removeMessages(what);
+    }
+
+    protected void stopProgressAll() {
+        dismissProgressDialog();
+        mInnerHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -353,8 +369,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
 
     @Override
     public void onStop() {
-        dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
         super.onStop();
+        stopProgressAll();
     }
 }

@@ -22,9 +22,11 @@ import com.shmedo.mcloudapp.profile.GOCBleViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/20/21 <br/>
@@ -40,15 +42,24 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
 
     public boolean isExitMode = false;//是否退出页面标志
 
+    private final InnerHandler mInnerHandler = new InnerHandler(this);
 
-    private Handler uiHander = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull @NotNull Message msg) {
-            dismissProgressDialog();
-            customHandleMessage(msg);
-            return false;
+    private static class InnerHandler extends Handler {
+        private final WeakReference<BaseGOCBleIotCommunicateFragment> fragmentWeakReference;
+
+        public InnerHandler(BaseGOCBleIotCommunicateFragment fragment) {
+            fragmentWeakReference = new WeakReference<>(fragment);
         }
-    });
+
+        @Override
+        public void handleMessage(Message msg) {
+            BaseGOCBleIotCommunicateFragment fragment = fragmentWeakReference.get();
+            if (fragment != null) {
+                fragment.dismissProgressDialog();
+                fragment.customHandleMessage(msg);
+            }
+        }
+    }
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
 
@@ -58,12 +69,17 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        uiHander.sendEmptyMessageDelayed(what, delayMillis);
+        mInnerHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
 
     public void stopProgress(int what) {
         dismissProgressDialog();
-        uiHander.removeMessages(what);
+        mInnerHandler.removeMessages(what);
+    }
+
+    protected void stopProgressAll() {
+        dismissProgressDialog();
+        mInnerHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -99,9 +115,8 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
 
     @Override
     public void onStop() {
-        dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
         super.onStop();
+        stopProgressAll();
     }
 
     /**
@@ -135,8 +150,7 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     protected void parseResponseMessage(String cmdStr) {
-        dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
+        stopProgressAll();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         if (type == IOTCommandType.UNKNOWN_TYPE) {
             Timber.e("未知的命令:%s", cmdStr);

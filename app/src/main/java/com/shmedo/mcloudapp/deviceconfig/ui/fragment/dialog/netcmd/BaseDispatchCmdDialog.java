@@ -33,8 +33,7 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
-import org.jetbrains.annotations.NotNull;
-
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,21 +69,31 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     private int queryNum = 0;//当查询指令结果10次时，判断响应超时
 
-    private Handler UIHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull @NotNull Message msg) {
-            if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-                //轮询指令响应结果接口达到10次，判断超时
-                if (queryNum > 10) {
-                    onQueryCmdResponseResultTimeOut(null);
-                    return false;
-                }
-                Timber.i("handleMessage();queryNum=%s", queryNum);
-                queryCmdResultByMsgID();
-            }
-            return false;
+    private final InnerHandler mInnerHandler = new InnerHandler(this);
+
+    private static class InnerHandler extends Handler {
+        private final WeakReference<BaseDispatchCmdDialog> fragmentWeakReference;
+
+        public InnerHandler(BaseDispatchCmdDialog fragment) {
+            fragmentWeakReference = new WeakReference<>(fragment);
         }
-    });
+
+        @Override
+        public void handleMessage(Message msg) {
+            BaseDispatchCmdDialog fragment = fragmentWeakReference.get();
+            if (fragment != null) {
+                if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+                    //轮询指令响应结果接口达到10次，判断超时
+                    if (fragment.queryNum > 10) {
+                        fragment.onQueryCmdResponseResultTimeOut(null);
+                        return;
+                    }
+                    Timber.i("handleMessage();queryNum=%s", fragment.queryNum);
+                    fragment.queryCmdResultByMsgID();
+                }
+            }
+        }
+    }
 
     protected void startQueryCmdResponse() {
         showResponseLoadingView();
@@ -93,12 +102,12 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
     private void startQueryCmdResponseDelayed(long delayMillis) {
         queryNum++;
-        UIHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
+        mInnerHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
     }
 
     private void stopQueryCmdResponse() {
         queryNum = 0;
-        UIHandler.removeMessages(AppContants.MsgWhat.MSG_DEFAULT);
+        mInnerHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -127,7 +136,6 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
-//        UIHandler = new Handler(Looper.getMainLooper());
     }
 
     protected void setWindowStyle(int gravity) {

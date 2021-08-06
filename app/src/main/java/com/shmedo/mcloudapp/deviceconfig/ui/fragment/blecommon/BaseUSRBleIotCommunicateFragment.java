@@ -24,6 +24,7 @@ import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -49,6 +50,8 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
     protected AdmeViewModel admeViewModel;
 
     public boolean isExitMode = false;//是否退出页面标志
+
+    private final InnerHandler mInnerHandler = new InnerHandler(this);
 
     private Handler heartHander = new Handler();//心跳包处理
 
@@ -79,14 +82,22 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         heartRunnable = null;
     }
 
-    private Handler uiHander = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull @NotNull Message msg) {
-            dismissProgressDialog();
-            customHandleMessage(msg);
-            return false;
+    private static class InnerHandler extends Handler {
+        private final WeakReference<BaseUSRBleIotCommunicateFragment> fragmentWeakReference;
+
+        public InnerHandler(BaseUSRBleIotCommunicateFragment fragment) {
+            fragmentWeakReference = new WeakReference<>(fragment);
         }
-    });
+
+        @Override
+        public void handleMessage(Message msg) {
+            BaseUSRBleIotCommunicateFragment fragment = fragmentWeakReference.get();
+            if (fragment != null) {
+                fragment.dismissProgressDialog();
+                fragment.customHandleMessage(msg);
+            }
+        }
+    }
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
 
@@ -96,12 +107,17 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        uiHander.sendEmptyMessageDelayed(what, delayMillis);
+        mInnerHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    public void stopProgress(int what) {
+    protected void stopProgress(int what) {
         dismissProgressDialog();
-        uiHander.removeMessages(what);
+        mInnerHandler.removeMessages(what);
+    }
+
+    protected void stopProgressAll() {
+        dismissProgressDialog();
+        mInnerHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -138,9 +154,8 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
 
     @Override
     public void onStop() {
-        dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
         super.onStop();
+        stopProgressAll();
     }
 
     /**
@@ -174,8 +189,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     protected void parseResponseMessage(String cmdStr) {
-        dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
+        stopProgressAll();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         if (type == IOTCommandType.UNKNOWN_TYPE) {
             Timber.e("未知的命令:%s", cmdStr);
