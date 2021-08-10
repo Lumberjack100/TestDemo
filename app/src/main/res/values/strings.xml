@@ -29,6 +29,8 @@
     <string name="loading_data">正在加载中...</string>
     <string name="unknown_error">发生未知错误</string>
     <string name="fetch_data_failed">获取数据失败</string>
+    <string name="empty_no_usb_device">没有 USB 设备</string>
+
 
     <!-- 网络 -->
     <string name="network_connect_error">网络连接异常</string>

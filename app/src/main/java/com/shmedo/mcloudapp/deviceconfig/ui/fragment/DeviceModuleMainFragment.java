@@ -37,7 +37,6 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeEnum;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
@@ -71,7 +70,6 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
     private FragmentStateAdapter pagerAdapter;
     private TabLayoutMediator tabLayoutMediator;
 
-    private static final int REQUEST_ACCESS_FINE_LOCATION = 1022;
     private BleScannerViewModel scannerViewModel;
     private boolean enableScan = false;
     private List<DiscoveredBluetoothDevice> tempDeviceList = new ArrayList<>();
@@ -88,6 +86,8 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         mFragments.add(new NetDeviceListFragment());
         mFragments.add(new BleScannerListFragment());
         mFragments.add(new WiFiDeviceListFragment());
+        mFragments.add(USBDeviceListFragment.newInstance());
+
         pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
@@ -114,6 +114,13 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
                     textView.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                     textView.setTextSize(17);
                     tab.setCustomView(textView);
+                } else if (position == 3) {
+                    View tabView = LayoutInflater.from(mActivity).inflate(R.layout.custom_tab_text, null);
+                    TextView textView = tabView.findViewById(R.id.tabText);
+                    textView.setText("USB");
+                    textView.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                    textView.setTextSize(17);
+                    tab.setCustomView(textView);
                 }
             }
         });
@@ -127,10 +134,10 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         textView.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color));
         textView.setTextSize(18);
 
-        if (tab.getPosition() == 0 || tab.getPosition() == 2) {
-            ivScanDeviceCode.setVisibility(View.INVISIBLE);
-        } else {
+        if (tab.getPosition() == 1) {
             ivScanDeviceCode.setVisibility(View.VISIBLE);
+        } else {
+            ivScanDeviceCode.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -304,42 +311,6 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
             return;
         }
         MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""));
-        processStartScan();
-    }
-
-
-    /**
-     * 处理扫描结果，例如：MEDO,189150L,DAS
-     */
-    private void parseScanResult(String deviceInfo) {
-        if (!deviceInfo.startsWith("MEDO")) {
-            showTipDialog("请扫描正确的设备二维码");
-            return;
-        }
-
-        String[] localData = deviceInfo.split(",");
-        if (localData.length != 3) {
-            showTipDialog("请扫描正确的设备二维码");
-            return;
-        }
-
-        if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
-            showTipDialog("二维码信息不能为空");
-            return;
-        }
-
-        if (localData[1].length() != 7) {
-            showTipDialog("设备标识有误,请扫描正确的设备二维码");
-            return;
-        }
-
-        if (!DeviceTypeEnum.value(localData[2])) {
-            showTipDialog("此设备类型暂时不支持");
-            return;
-        }
-
-        MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""));
-
         processStartScan();
     }
 

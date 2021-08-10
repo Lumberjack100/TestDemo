@@ -218,6 +218,8 @@ dependencies {
     // BLE library, 放在 core 模块中引用
     //implementation 'no.nordicsemi.android:ble:2.3.0'
 
+    implementation "com.github.mik3y:usb-serial-for-android:$rootProject.thirdLib.usbSerialVersion" // maven jitpack
+
     // debugImplementation because LeakCanary should only run in debug builds.
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
     // 日志调试框架：https://github.com/getActivity/Logcat

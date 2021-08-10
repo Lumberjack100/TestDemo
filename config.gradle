@@ -66,6 +66,8 @@ ext {
             nordicsemiLog                : '2.3.0',
             nordicsemiBle                : '2.3.0',
 
+            usbSerialVersion             : '3.4.2',
+
             junit                        : '4.13.2',
             testExtJunit                 : '1.1.3',
             runner                       : '1.4.0',
