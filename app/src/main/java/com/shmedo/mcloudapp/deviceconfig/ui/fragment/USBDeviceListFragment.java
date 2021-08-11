@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.adapter.USBDeviceAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.USBDeviceItem;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.usb.BluetoothDebugBoxHomeActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -181,6 +182,7 @@ public class USBDeviceListFragment extends BaseFragment {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         baudRate = Integer.parseInt(baudRates[which]);
+                        BluetoothDebugBoxHomeActivity.startActivity(mActivity,usbDeviceItem.getDevice().getDeviceId(),usbDeviceItem.getPort(),baudRate);
                         return true;
                     }
                 });

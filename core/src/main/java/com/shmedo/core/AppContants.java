@@ -93,6 +93,11 @@ public interface AppContants {
         String USB_BAUD_RATE = "usb_baud_rate";
     }
 
+    interface UsbSerial {
+        String INTENT_ACTION_GRANT_USB = "com.shmedo.mcloudapp.GRANT_USB";
+        String INTENT_ACTION_DISCONNECT = "com.shmedo.mcloudapp.Disconnect";
+    }
+
     interface MsgWhat {
         int MSG_DEFAULT = 0x001;//
         int CONNECT_DEVICE = 0x002;//

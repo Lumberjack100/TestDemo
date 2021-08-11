@@ -8,14 +8,13 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BluetoothDebugBoxHomeFragment;
 
 public class BluetoothDebugBoxHomeActivity extends BaseConfigFragmentContainerActivity {
     private int deviceId, portNum, baudRate;
 
-    public static void startActivity(Context context, int deviceId, int port,int baudRate) {
-        Intent intent = new Intent(context, DeviceConfigActivity.class);
+    public static void startActivity(Context context, int deviceId, int port, int baudRate) {
+        Intent intent = new Intent(context, BluetoothDebugBoxHomeActivity.class);
         intent.putExtra(AppContants.Extras.DEVICE_ID, deviceId);
         intent.putExtra(AppContants.Extras.USB_PORT_NUM, port);
         intent.putExtra(AppContants.Extras.USB_BAUD_RATE, baudRate);
@@ -35,16 +34,14 @@ public class BluetoothDebugBoxHomeActivity extends BaseConfigFragmentContainerAc
         if (intent.getExtras() == null)
             return;
 
-        deviceId = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
-
-
-
+        deviceId = intent.getIntExtra(AppContants.Extras.DEVICE_ID, -1);
+        portNum = intent.getIntExtra(AppContants.Extras.USB_PORT_NUM, 0);
+        baudRate = intent.getIntExtra(AppContants.Extras.USB_BAUD_RATE, 115200);
     }
 
     @Override
     protected Fragment initFragment() {
-        fragment = BluetoothDebugBoxHomeFragment.newInstance();
+        fragment = BluetoothDebugBoxHomeFragment.newInstance(deviceId, portNum, baudRate);
         return fragment;
-
     }
 }
