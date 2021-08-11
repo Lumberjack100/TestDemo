@@ -16,14 +16,19 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.IotLogOutputEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
+import com.shmedo.configlibrary.iot.model.IotLogOutputInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
@@ -65,12 +70,17 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     @BindView(R.id.tv_data_center_four)
     TextView mTvDataCenterFour;
 
+    @BindView(R.id.tv_log_output)
+    TextView mTvLogOutput;
+
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;
     private static final int SERVER_NUMBER_THREE = 0x1003;
     private static final int SERVER_NUMBER_FOUR = 0x1004;
     private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
+
+    private String logLevel;
 
     public static NetVmsAdvancedSettingsFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetVmsAdvancedSettingsFragment fragment = new NetVmsAdvancedSettingsFragment();
@@ -127,11 +137,12 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        serverNumber = -1;
         showProgressDialog("加载中...");
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
-    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsRebootLayout, R.id.vmsResetLayout})
+    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsRebootLayout, R.id.vmsResetLayout, R.id.logOutputLayout})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -166,6 +177,8 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
             showWarnDialog("确定重启网关吗？", VMS_REBOOT);
         } else if (id == R.id.vmsResetLayout) {
             showWarnDialog("确定恢复出厂设置吗？", VMS_RESET);
+        } else if (id == R.id.logOutputLayout) {
+            showLogLevelDialog();
         }
     }
 
@@ -175,7 +188,6 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -193,6 +205,23 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
      */
     private void resetGateWay() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 查询日志输出等级
+     */
+    private void queryLogOutput() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.GET_LOG_OUTPUT_MODE_LEVEL);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 设置日志输出等级
+     */
+    private void setLogOutput(IotLogOutputEntity entity) {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL, entity);
         showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
@@ -227,6 +256,30 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    /**
+     * 选择日志输出等级
+     */
+    private void showLogLevelDialog() {
+        final String[] logLevels = new String[]{"off", "debug", "info"};
+        int pos = Arrays.asList(logLevels).indexOf(String.valueOf(logLevel));
+        pos = pos == -1 ? 0 : pos;
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", logLevels,
+                        null, pos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                logLevel = logLevels[position];
+                                IotLogOutputEntity entity = new IotLogOutputEntity();
+                                entity.setLevel(logLevel);
+                                setLogOutput(entity);
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                .show();
     }
 
     /**
@@ -266,13 +319,10 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
                 newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 
-            case MD_GET_DATA_CENTER_STATUS:
+            default:
                 if (msgIDList != null && msgIDList.size() > 0) {
                     startQueryCmdResponse();
                 }
-                break;
-
-            default:
                 break;
         }
         if (newFragment != null)
@@ -360,7 +410,36 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
                     dismissProgressDialog();
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    queryLogOutput();
                 }
+            }
+            break;
+
+            case GET_LOG_OUTPUT_MODE_LEVEL: {//获取日志输出方式和等级
+                dismissProgressDialog();
+                IOTCommandResult<IotLogOutputInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询日志输出方式出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                IotLogOutputInfo logOutputInfo = commandResult.getResult();
+                mTvLogOutput.setText(logOutputInfo.getLevel());
+                logLevel = logOutputInfo.getLevel();
+            }
+            break;
+
+            case SET_LOG_OUTPUT_MODE_LEVEL: {//设置日志输出方式和等级
+                dismissProgressDialog();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "设置日志输出方式失败!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("设置成功");
             }
             break;
 

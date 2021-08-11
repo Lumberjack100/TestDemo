@@ -200,7 +200,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
         IotLogOutputEntity entity = new IotLogOutputEntity();
         entity.setLevel(isOpen ? "info" : "off");
         entity.setType("bt");
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.LOG_OUTPUT_MODE_LEVEL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL, entity);
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
         if (!TextUtils.isEmpty(usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
             apiKey = usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();

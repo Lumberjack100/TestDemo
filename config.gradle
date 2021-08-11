@@ -42,7 +42,7 @@ ext {
             SmartRefreshLayout           : '2.0.3',
             BaseRecyclerViewAdapterHelper: '3.0.4',
             materialDialogsCore          : '0.9.6.0',
-            xpopup                       : '2.1.15',
+            xpopupVersion                       : '2.5.8',
             ToastUtils                   : '9.5',
             switchbutton                 : '2.0.0',
 

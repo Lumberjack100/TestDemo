@@ -168,7 +168,7 @@ dependencies {
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
     //Toast 吐司
     implementation "com.github.getActivity:ToastUtils:$rootProject.thirdLib.ToastUtils"
-    implementation "com.lxj:xpopup:$rootProject.thirdLib.xpopup"
+    implementation "com.github.li-xiaojun:XPopup:$rootProject.thirdLib.xpopupVersion"
     //开关 Button
     implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
     //华为扫码服务

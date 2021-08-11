@@ -186,7 +186,7 @@ public class BleM20CustomCommandLogPrintFragment extends BaseGOCBleIotCommunicat
         IotLogOutputEntity entity = new IotLogOutputEntity();
         entity.setLevel(isOpen ? "info" : "off");
         entity.setType("bt");
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.LOG_OUTPUT_MODE_LEVEL, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL, entity);
         sendCommand(command);
 
         CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);

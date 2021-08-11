@@ -200,7 +200,8 @@ public class IOTParseManager {
                 DasBdTerminalInfoParser.class,
                 DasExternalSensorInfoParser.class,
                 Rn20BaseInfoParser.class,
-                Rn20PositionInfoParser.class
+                Rn20PositionInfoParser.class,
+                LogOutputInfoParser.class
         });
 
         registerWithClass(clazzes);

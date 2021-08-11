@@ -74,9 +74,14 @@ public enum IOTCommandType {
     SET_WORK_MODE("setworkmode"),
 
     /**
+     * 获取日志输出等级和输出方式
+     */
+    GET_LOG_OUTPUT_MODE_LEVEL("md_getlogoutput"),
+
+    /**
      * 日志输出等级和输出方式
      */
-    LOG_OUTPUT_MODE_LEVEL("md_setlogoutput"),
+    SET_LOG_OUTPUT_MODE_LEVEL("md_setlogoutput"),
 
     /**
      * 保存配置参数
