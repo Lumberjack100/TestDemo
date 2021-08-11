@@ -257,7 +257,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
      * 选择日志输出等级
      */
     private void showLogLevelDialog() {
-        final String[] logLevels = new String[]{"off", "debug", "info"};
+        final String[] logLevels = new String[]{"off", "info", "debug"};
         int pos = Arrays.asList(logLevels).indexOf(String.valueOf(logLevel));
         pos = pos == -1 ? 0 : pos;
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
