@@ -87,9 +87,13 @@ public interface AppContants {
 
         // 设备类型
         String DEVICE_TYPE = "device_type";
+
+        String DEVICE_ID = "device_id";
+        String USB_PORT_NUM = "usb_port_num";
+        String USB_BAUD_RATE = "usb_baud_rate";
     }
 
-    interface MsgWhat{
+    interface MsgWhat {
         int MSG_DEFAULT = 0x001;//
         int CONNECT_DEVICE = 0x002;//
 

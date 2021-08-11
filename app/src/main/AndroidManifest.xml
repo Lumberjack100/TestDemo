@@ -49,7 +49,6 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
-
         <!-- 声明最小宽高比 -->
         <meta-data
             android:name="android.min_aspect"
@@ -123,13 +122,15 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />-->
-<!--            </intent-filter>-->
 
-<!--            <meta-data-->
-<!--                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"-->
-<!--                android:resource="@xml/device_filter" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" /> -->
+            <!-- </intent-filter> -->
+
+
+            <!-- <meta-data -->
+            <!-- android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" -->
+            <!-- android:resource="@xml/device_filter" /> -->
         </activity>
         <activity
             android:name=".maps.ui.activity.MapActivity"
@@ -453,6 +454,13 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.usb.BluetoothDebugBoxHomeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
         <activity
             android:name=".ddshare.DDShareActivity"
             android:exported="true"
