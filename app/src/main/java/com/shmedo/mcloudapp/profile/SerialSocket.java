@@ -27,25 +27,29 @@ public class SerialSocket implements SerialInputOutputManager.Listener {
     private UsbSerialPort serialPort;
     private SerialInputOutputManager ioManager;
 
-    SerialSocket(Context context, UsbDeviceConnection connection, UsbSerialPort serialPort) {
-        if(context instanceof Activity)
+    public SerialSocket(Context context, UsbDeviceConnection connection, UsbSerialPort serialPort) {
+        if (context instanceof Activity)
             throw new InvalidParameterException("expected non UI context");
+
         this.context = context;
         this.connection = connection;
         this.serialPort = serialPort;
         disconnectBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onSerialIoError(new IOException("background disconnect"));
+                }
                 disconnect(); // disconnect now, else would be queued until UI re-attached
             }
         };
     }
 
-    String getName() { return serialPort.getDriver().getClass().getSimpleName().replace("SerialDriver",""); }
+    public String getName() {
+        return serialPort.getDriver().getClass().getSimpleName().replace("SerialDriver", "");
+    }
 
-    void connect(SerialListener listener) throws IOException {
+    public void connect(SerialListener listener) throws IOException {
         this.listener = listener;
         context.registerReceiver(disconnectBroadcastReceiver, new IntentFilter(AppContants.UsbSerial.INTENT_ACTION_DISCONNECT));
         serialPort.setDTR(true); // for arduino, ...
@@ -54,7 +58,7 @@ public class SerialSocket implements SerialInputOutputManager.Listener {
         ioManager.start();
     }
 
-    void disconnect() {
+    public void disconnect() {
         listener = null; // ignore remaining data and errors
         if (ioManager != null) {
             ioManager.setListener(null);
@@ -73,7 +77,7 @@ public class SerialSocket implements SerialInputOutputManager.Listener {
             }
             serialPort = null;
         }
-        if(connection != null) {
+        if (connection != null) {
             connection.close();
             connection = null;
         }
@@ -83,15 +87,15 @@ public class SerialSocket implements SerialInputOutputManager.Listener {
         }
     }
 
-    void write(byte[] data) throws IOException {
-        if(serialPort == null)
+    public void write(byte[] data) throws IOException {
+        if (serialPort == null)
             throw new IOException("not connected");
         serialPort.write(data, WRITE_WAIT_MILLIS);
     }
 
     @Override
     public void onNewData(byte[] data) {
-        if(listener != null)
+        if (listener != null)
             listener.onSerialRead(data);
     }
 

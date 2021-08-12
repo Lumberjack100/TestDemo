@@ -5,9 +5,18 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.profile.USBSerialViewModel;
+
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -17,10 +26,87 @@ import com.shmedo.mcloudapp.profile.USBSerialViewModel;
 public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     protected USBSerialViewModel usbSerialViewModel;
 
+    public boolean isExitMode = false;//是否退出页面标志
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view,savedInstanceState);
         usbSerialViewModel = getApplicationScopeViewModel(USBSerialViewModel.class);
+        usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String result) {
+//                if (!result.startsWith("$cmd=")) {
+//                    if (usrBleViewModel.getLogOutputMode().getValue() == null || !usrBleViewModel.getLogOutputMode().getValue()) {
+//                        return;
+//                    }
+//                }
+                try {
+                    parseResponseMessage(result);
+                } catch (Exception ex) {
+                    Timber.e(ex);
+                }
+            }
+        });
+    }
 
+
+    /**
+     * USB建立连接
+     */
+    protected void connectDevice() {
+        usbSerialViewModel.connect();
+    }
+
+    /**
+     * USB 取消连接
+     */
+    protected void disconnectDevice() {
+        Timber.d("disconnectDevice()调用");
+        usbSerialViewModel.disconnect();
+    }
+
+    /**
+     * This method returns true if the device is connected. Services could have not been
+     * discovered yet.
+     */
+    protected final boolean isConnected() {
+        return usbSerialViewModel.isConnected();
+    }
+
+    /**
+     * 解析设备的参数指令
+     */
+    protected void parseResponseMessage(String cmdStr) {
+//        stopProgressAll();
+        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
+        if (type == IOTCommandType.UNKNOWN_TYPE) {
+            Timber.e("未知的命令:%s", cmdStr);
+            ToastUtils.show("未知的命令:" + cmdStr);
+        }
+    }
+
+    protected void showDisconnectDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
+                .title("温馨提示：")
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        disconnectDevice();
+                        if (isExitMode) {
+                            mActivity.finish();
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 }

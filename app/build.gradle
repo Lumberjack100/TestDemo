@@ -146,7 +146,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
 
-    implementation 'com.kunminx.arch:unpeek-livedata:6.1.0-beta1'
+//    implementation 'com.kunminx.arch:unpeek-livedata:6.1.0-beta1'
 
     implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
