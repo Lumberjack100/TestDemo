@@ -1,48 +1,25 @@
 package com.shmedo.mcloudapp.profile;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.usb.UsbDeviceConnection;
 
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.util.SerialInputOutputManager;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.profile.callback.SerialListener;
 
 import java.io.IOException;
-import java.security.InvalidParameterException;
 
 public class SerialSocket implements SerialInputOutputManager.Listener {
 
     private static final int WRITE_WAIT_MILLIS = 2000; // 0 blocked infinitely on unprogrammed arduino
 
-    private final BroadcastReceiver disconnectBroadcastReceiver;
-
-    private final Context context;
     private SerialListener listener;
     private UsbDeviceConnection connection;
     private UsbSerialPort serialPort;
     private SerialInputOutputManager ioManager;
 
-    public SerialSocket(Context context, UsbDeviceConnection connection, UsbSerialPort serialPort) {
-        if (context instanceof Activity)
-            throw new InvalidParameterException("expected non UI context");
-
-        this.context = context;
+    public SerialSocket(UsbDeviceConnection connection, UsbSerialPort serialPort) {
         this.connection = connection;
         this.serialPort = serialPort;
-        disconnectBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (listener != null) {
-                    listener.onSerialIoError(new IOException("background disconnect"));
-                }
-                disconnect(); // disconnect now, else would be queued until UI re-attached
-            }
-        };
     }
 
     public String getName() {
@@ -51,7 +28,6 @@ public class SerialSocket implements SerialInputOutputManager.Listener {
 
     public void connect(SerialListener listener) throws IOException {
         this.listener = listener;
-        context.registerReceiver(disconnectBroadcastReceiver, new IntentFilter(AppContants.UsbSerial.INTENT_ACTION_DISCONNECT));
         serialPort.setDTR(true); // for arduino, ...
         serialPort.setRTS(true);
         ioManager = new SerialInputOutputManager(serialPort, this);
@@ -80,10 +56,6 @@ public class SerialSocket implements SerialInputOutputManager.Listener {
         if (connection != null) {
             connection.close();
             connection = null;
-        }
-        try {
-            context.unregisterReceiver(disconnectBroadcastReceiver);
-        } catch (Exception ignored) {
         }
     }
 

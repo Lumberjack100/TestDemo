@@ -25,7 +25,7 @@ public class BluetoothDebugBoxHomeActivity extends BaseConfigFragmentContainerAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("设备配置");
+        mToolbarTitle.setText("蓝牙测斜仪调试设备");
     }
 
     @Override

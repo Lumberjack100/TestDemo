@@ -8,8 +8,9 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.os.Handler;
+import android.os.Looper;
 
-import com.hjq.toast.ToastUtils;
 import com.hoho.android.usbserial.driver.SerialTimeoutException;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
@@ -24,6 +25,8 @@ import com.shmedo.mcloudapp.profile.callback.SerialListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
+
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -46,8 +49,11 @@ public class UsbSerialManager implements SerialListener {
     public final UnPeekLiveData<USBConnectionState> state;
     private final UnPeekLiveData<String> responseMsg = new UnPeekLiveData<>();
 
+    private final Handler mainLooper;
+
     public UsbSerialManager(@NotNull Context context) {
         mContext = context.getApplicationContext();
+        mainLooper = new Handler(Looper.getMainLooper());
         state = new USBConnectionStateLiveData();
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -79,26 +85,25 @@ public class UsbSerialManager implements SerialListener {
 
         UsbDevice device = null;
         UsbManager usbManager = (UsbManager) mContext.getSystemService(Context.USB_SERVICE);
-        for (UsbDevice v : usbManager.getDeviceList().values())
+        for (UsbDevice v : usbManager.getDeviceList().values()) {
             if (v.getDeviceId() == deviceId)
                 device = v;
+        }
         if (device == null) {
-            state.postValue(new USBConnectionState.Disconnected("device not found"));
-//            status("connection failed: device not found");
+            state.postValue(new USBConnectionState.Disconnected("connection failed: device not found"));
             return;
         }
         UsbSerialDriver driver = UsbSerialProber.getDefaultProber().probeDevice(device);
+        //查找自定义的设备
 //        if (driver == null) {
 //            driver = CustomProber.getCustomProber().probeDevice(device);
 //        }
         if (driver == null) {
-            state.postValue(new USBConnectionState.Disconnected("no driver for device"));
-//            status("connection failed: no driver for device");
+            state.postValue(new USBConnectionState.Disconnected("connection failed: no driver for device"));
             return;
         }
         if (driver.getPorts().size() < portNum) {
-            state.postValue(new USBConnectionState.Disconnected("not enough ports at device"));
-//            status("connection failed: not enough ports at device");
+            state.postValue(new USBConnectionState.Disconnected("connection failed: not enough ports at device"));
             return;
         }
         usbSerialPort = driver.getPorts().get(portNum);
@@ -110,11 +115,9 @@ public class UsbSerialManager implements SerialListener {
         }
         if (usbConnection == null) {
             if (!usbManager.hasPermission(driver.getDevice())) {
-                state.postValue(new USBConnectionState.Disconnected("permission denied"));
-//                status("connection failed: permission denied");
+                state.postValue(new USBConnectionState.Disconnected("connection failed: permission denied"));
             } else {
-                state.postValue(new USBConnectionState.Disconnected("open failed"));
-//                status("connection failed: open failed");
+                state.postValue(new USBConnectionState.Disconnected("connection failed: open failed"));
             }
             return;
         }
@@ -123,7 +126,7 @@ public class UsbSerialManager implements SerialListener {
         try {
             usbSerialPort.open(usbConnection);
             usbSerialPort.setParameters(baudRate, UsbSerialPort.DATABITS_8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
-            socket = new SerialSocket(mContext.getApplicationContext(), usbConnection, usbSerialPort);
+            socket = new SerialSocket(usbConnection, usbSerialPort);
             socket.connect(this);
             // usb connect is not asynchronous. connect-success and connect-error are returned immediately from socket.connect
             // for consistency to bluetooth/bluetooth-LE app use same SerialListener and SerialService classes
@@ -154,6 +157,7 @@ public class UsbSerialManager implements SerialListener {
         if (connected != Connected.True)
             return;
 
+        Timber.e("发送串口数据: %s", msg);
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);
         try {
             socket.write(data);
@@ -164,31 +168,57 @@ public class UsbSerialManager implements SerialListener {
         }
     }
 
+    /**
+     * 用户主动断开
+     */
+    public void onActiveDisconnect() {
+        state.postValue(new USBConnectionState.Disconnected("disconnect from user"));
+    }
+
     @Override
     public void onSerialConnect() {
-        connected = Connected.True;
-        state.postValue(USBConnectionState.Ready.INSTANCE);
-
+        synchronized (this) {
+            mainLooper.post(() -> {
+                connected = Connected.True;
+                state.postValue(USBConnectionState.Ready.INSTANCE);
+            });
+        }
     }
 
     @Override
     public void onSerialConnectError(Exception e) {
-        state.postValue(new USBConnectionState.Disconnected(e.getMessage()));
+        if (isConnected()) {
+            synchronized (this) {
+                mainLooper.post(() -> {
+                    state.postValue(new USBConnectionState.Disconnected("connection failed: " + e.getMessage()));
+                    disconnect();
+                });
+            }
+        }
     }
 
     @Override
     public void onSerialRead(byte[] data) {
-        String msg = new String(data, StandardCharsets.UTF_8);
-        ToastUtils.show(msg);
-        responseMsg.postValue(msg);
+        if (isConnected()) {
+            synchronized (this) {
+                mainLooper.post(() -> {
+                    String msg = new String(data, StandardCharsets.UTF_8);
+                    Timber.e("接收串口数据: %s", msg);
+                    responseMsg.setValue(msg);
+                });
+            }
+        }
     }
 
     @Override
     public void onSerialIoError(Exception e) {
-        synchronized (this) {
-            state.postValue(new USBConnectionState.Disconnected("connection lost: " + e.getMessage()));
-//        status("connection lost: " + e.getMessage());
-            disconnect();
+        if (isConnected()) {
+            synchronized (this) {
+                mainLooper.post(() -> {
+                    state.postValue(new USBConnectionState.Disconnected("connection lost: " + e.getMessage()));
+                    disconnect();
+                });
+            }
         }
     }
 }

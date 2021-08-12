@@ -27,11 +27,11 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     protected USBSerialViewModel usbSerialViewModel;
 
     public boolean isExitMode = false;//是否退出页面标志
-
+    public StringBuilder resultBuilder = new StringBuilder();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view,savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
         usbSerialViewModel = getApplicationScopeViewModel(USBSerialViewModel.class);
         usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb;
 
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -175,7 +176,10 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                     case DISCONNECTED://The device disconnected or failed to connect.
                         if (usbConnectionState instanceof USBConnectionState.Disconnected) {
                             final USBConnectionState.Disconnected stateWithReason = (USBConnectionState.Disconnected) usbConnectionState;
-                            ToastUtils.show(stateWithReason.getReason());
+                            if (!TextUtils.isEmpty(stateWithReason.getReason())) {
+                                Timber.e(stateWithReason.getReason());
+                                ToastUtils.show(stateWithReason.getReason());
+                            }
                         }
                         onConnectionStateChanged(false);
                         break;
@@ -209,10 +213,19 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
 
     private void initConfigModuleData() {
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "名字", "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "配置连接", "获取当前设备状态");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_current_time, "版本号", "获取当前设备时间");
+        configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_current_time, "电压数据查询", "获取当前设备时间");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_current_time, "测量数据查询", "获取当前设备时间");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "其他配置", "高级设置");
         configModuleList.add(configModule);
     }
 
@@ -245,6 +258,7 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
             }
         }
     }
+
     @Override
     protected void parseResponseMessage(String cmdStr) {
         if (!isActive) {
@@ -254,29 +268,32 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
     }
 
     private void setResultData(String cmdStr) {
-        Timber.e("接收串口数据: " + cmdStr);
-
-        if (cmdStr.contains("a") && cmdStr.contains("+ok")) {
+        resultBuilder.append(cmdStr);
+        if (resultBuilder.toString().contains("a") && resultBuilder.toString().contains("+ok")) {
+            resultBuilder.setLength(0);
             queryDeviceName();
         }
-
-        if (cmdStr.contains(WHBLE102CommandType.NAME.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-            cmdStr = cmdStr.replace(ATCommand.OK_FLAG, "")
-                    .replace(ATCommand.NEWLINE_CR, "")
-                    .replace(ATCommand.NEWLINE_LF, "");
+        if (resultBuilder.toString().contains(ATCommand.OK_FLAG)) {
+            cmdStr = resultBuilder.toString();
+            resultBuilder.setLength(0);
+            if (cmdStr.contains(WHBLE102CommandType.NAME.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
+                cmdStr = cmdStr.replace(ATCommand.OK_FLAG, "")
+                        .replace(ATCommand.NEWLINE_CR, "")
+                        .replace(ATCommand.NEWLINE_LF, "");
 //                    .trim();
-            cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + WHBLE102CommandType.NAME.toString() + ATCommand.DELIMITER_COLON, "");
-            mTvDeviceName.setText(cmdStr);
-            queryDeviceVersion();
-        }
+                cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + WHBLE102CommandType.NAME.toString() + ATCommand.DELIMITER_COLON, "");
+                mTvDeviceName.setText(cmdStr);
+                queryDeviceVersion();
+            }
 
-        if (cmdStr.contains("VER") && cmdStr.contains(ATCommand.OK_FLAG)) {
-            cmdStr = cmdStr.replace(ATCommand.OK_FLAG, "")
-                    .replace(ATCommand.NEWLINE_CR, "")
-                    .replace(ATCommand.NEWLINE_LF, "");
+            if (cmdStr.contains("VER") && cmdStr.contains(ATCommand.OK_FLAG)) {
+                cmdStr = cmdStr.replace(ATCommand.OK_FLAG, "")
+                        .replace(ATCommand.NEWLINE_CR, "")
+                        .replace(ATCommand.NEWLINE_LF, "");
 //                    .trim();
-            cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + "VER" + ATCommand.DELIMITER_COLON, "");
-            mTvDeviceSn.setText(String.format("固件版本：%s", cmdStr));
+                cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + "VER" + ATCommand.DELIMITER_COLON, "");
+                mTvDeviceSn.setText(String.format("固件版本：%s", cmdStr));
+            }
         }
     }
 

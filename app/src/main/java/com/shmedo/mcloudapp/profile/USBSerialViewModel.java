@@ -9,8 +9,6 @@ import androidx.lifecycle.LiveData;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.shmedo.core.usbserial.livedata.state.USBConnectionState;
 
-import timber.log.Timber;
-
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/8/11 <br/>
@@ -48,6 +46,7 @@ public class USBSerialViewModel extends AndroidViewModel {
 
     public void disconnect() {
         usbSerialManager.disconnect();
+        usbSerialManager.onActiveDisconnect();
     }
 
     public final boolean isConnected() {
@@ -58,7 +57,6 @@ public class USBSerialViewModel extends AndroidViewModel {
         if (!isConnected()) {
             return;
         }
-        Timber.e("发送串口数据: " + msg);
         usbSerialManager.writeMessage(msg);
     }
 
