@@ -8,6 +8,11 @@ package com.shmedo.configlibrary.at;
 public enum WHBLE102CommandType {
 
     /**
+     * 进入命令模式
+     */
+    ENTER_COMMAND_MODE("+++a"),
+
+    /**
      * 查询/设置模块的名称
      */
     NAME("NAME"),

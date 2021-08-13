@@ -27,8 +27,8 @@ import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
-import com.shmedo.mcloudapp.deviceconfig.adapter.USBDeviceAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.USBDeviceItem;
+import com.shmedo.mcloudapp.deviceconfig.adapter.usb_serial.USBDeviceAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.USBDeviceItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.usb.BluetoothDebugBoxHomeActivity;
 
 import java.util.ArrayList;

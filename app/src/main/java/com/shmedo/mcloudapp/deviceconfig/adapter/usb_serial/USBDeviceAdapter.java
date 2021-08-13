@@ -1,9 +1,9 @@
-package com.shmedo.mcloudapp.deviceconfig.adapter;
+package com.shmedo.mcloudapp.deviceconfig.adapter.usb_serial;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.USBDeviceItem;
+import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.USBDeviceItem;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,10 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.profile.USBSerialViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.ref.WeakReference;
+
 import timber.log.Timber;
 
 /**
@@ -24,10 +30,50 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
+    public static final int WRITE_TIME_OUT_MILLIS = 500;//发送指令超时时间
+    public static final int SCAN_TIME_OUT_MILLIS = 5000;//扫描指令超时时间
+
+
     protected USBSerialViewModel usbSerialViewModel;
 
     public boolean isExitMode = false;//是否退出页面标志
     public StringBuilder resultBuilder = new StringBuilder();
+
+    private final InnerHandler mInnerHandler = new InnerHandler(this);
+
+
+    private static class InnerHandler extends Handler {
+        private final WeakReference<BaseUSBSerialCommunicateFragment> fragmentWeakReference;
+
+        public InnerHandler(BaseUSBSerialCommunicateFragment fragment) {
+            fragmentWeakReference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            BaseUSBSerialCommunicateFragment fragment = fragmentWeakReference.get();
+            if (fragment != null) {
+//                fragment.dismissProgressDialog();
+                fragment.customHandleMessage(msg);
+            }
+        }
+    }
+
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+
+    }
+
+    protected void startProgress(int what, long delayMillis) {
+        mInnerHandler.sendEmptyMessageDelayed(what, delayMillis);
+    }
+
+    protected void stopProgress(int what) {
+        mInnerHandler.removeMessages(what);
+    }
+
+    protected void stopProgressAll() {
+        mInnerHandler.removeCallbacksAndMessages(null);
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -36,11 +82,6 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
         usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
-//                if (!result.startsWith("$cmd=")) {
-//                    if (usrBleViewModel.getLogOutputMode().getValue() == null || !usrBleViewModel.getLogOutputMode().getValue()) {
-//                        return;
-//                    }
-//                }
                 try {
                     parseResponseMessage(result);
                 } catch (Exception ex) {
@@ -108,5 +149,11 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopProgressAll();
     }
 }

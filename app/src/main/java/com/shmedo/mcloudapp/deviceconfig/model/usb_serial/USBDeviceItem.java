@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.model;
+package com.shmedo.mcloudapp.deviceconfig.model.usb_serial;
 
 import android.hardware.usb.UsbDevice;
 

@@ -203,7 +203,7 @@ public class UsbSerialManager implements SerialListener {
             synchronized (this) {
                 mainLooper.post(() -> {
                     String msg = new String(data, StandardCharsets.UTF_8);
-                    Timber.e("接收串口数据: %s", msg);
+//                    Timber.e("接收串口数据: %s", msg);
                     responseMsg.setValue(msg);
                 });
             }

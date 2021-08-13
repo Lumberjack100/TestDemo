@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BluetoothDebugBoxHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.BluetoothDebugBoxHomeFragment;
 
 public class BluetoothDebugBoxHomeActivity extends BaseConfigFragmentContainerActivity {
     private int deviceId, portNum, baudRate;

@@ -101,7 +101,7 @@ public interface AppContants {
     interface MsgWhat {
         int MSG_DEFAULT = 0x001;//
         int CONNECT_DEVICE = 0x002;//
-
+        int USB_DEVICE_INITIAL = 0x003;//
     }
 
 }
