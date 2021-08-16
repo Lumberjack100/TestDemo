@@ -10,7 +10,7 @@ public enum WHBLE102CommandType {
     /**
      * 进入命令模式
      */
-    ENTER_COMMAND_MODE("+++a"),
+    ENTER_COMMAND("+++a"),
 
     /**
      * 查询/设置模块的名称

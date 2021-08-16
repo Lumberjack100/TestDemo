@@ -111,7 +111,7 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
      * This method returns true if the device is connected. Services could have not been
      * discovered yet.
      */
-    protected final boolean isConnected() {
+    public final boolean isConnected() {
         return usbSerialViewModel.isConnected();
     }
 

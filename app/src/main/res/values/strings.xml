@@ -212,7 +212,7 @@
     <string name="ble_state_connecting">连接中…</string>
     <string name="ble_state_initializing">初始化中…</string>
     <string name="refresh_failed_while_device_disconnected">设备已断开连接，刷新失败</string>
-    <string name="usb_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
+    <string name="usb_config_disconnect_warn">USB连接已断开，暂无法进行操作</string>
     <string name="finish_activity_disconnect_usb_device">确定要退出该页面，并断开连接吗？</string>
 
 

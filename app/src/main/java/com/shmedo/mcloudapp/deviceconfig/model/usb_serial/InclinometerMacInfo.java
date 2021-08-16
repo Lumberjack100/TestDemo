@@ -10,6 +10,12 @@ public class InclinometerMacInfo {
     private String addr;// MAC 地址
     private String rssi;// 信号强度
 
+    private boolean isChecked = false;
+
+
+    public InclinometerMacInfo() {
+    }
+
     public InclinometerMacInfo(String no, String addr, String rssi) {
         this.no = no;
         this.addr = addr;
@@ -38,5 +44,13 @@ public class InclinometerMacInfo {
 
     public void setRssi(String rssi) {
         this.rssi = rssi;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

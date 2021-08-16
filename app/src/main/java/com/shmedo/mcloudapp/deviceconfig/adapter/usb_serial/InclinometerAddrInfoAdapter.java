@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class InclinometerAddrInfoAdapter extends BaseQuickAdapter<InclinometerMacInfo, BaseViewHolder> {
 
-    public InclinometerAddrInfoAdapter( @Nullable List<InclinometerMacInfo> data) {
+    public InclinometerAddrInfoAdapter(@Nullable List<InclinometerMacInfo> data) {
         super(R.layout.item_inclinometer_mac, data);
     }
 
@@ -26,5 +26,12 @@ public class InclinometerAddrInfoAdapter extends BaseQuickAdapter<InclinometerMa
     protected void convert(@NonNull BaseViewHolder holder, InclinometerMacInfo inclinometerMacInfo) {
         String info = String.format("No:%s Addr:%s RSSI:%s", inclinometerMacInfo.getNo(), inclinometerMacInfo.getAddr(), inclinometerMacInfo.getRssi());
         holder.setText(R.id.tv_info, info);
+
+        if (inclinometerMacInfo.isChecked()) {
+            holder.setGone(R.id.iv_checked_flag, false);
+
+        } else {
+            holder.setGone(R.id.iv_checked_flag, true);
+        }
     }
 }

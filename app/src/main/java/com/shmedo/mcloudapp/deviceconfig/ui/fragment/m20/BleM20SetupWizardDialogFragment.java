@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
@@ -24,7 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 
-import org.jetbrains.annotations.NotNull;
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,13 +57,24 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
 
     private BaseGOCBleIotCommunicateFragment baseGOCBleIotCommunicateFragment;
 
-    private Handler uiHander = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull @NotNull Message msg) {
-            updateState(false);
-            return false;
+
+    private final InnerHandler mInnerHandler = new InnerHandler(this);
+
+    private static class InnerHandler extends Handler {
+        private final WeakReference<BleM20SetupWizardDialogFragment> fragmentWeakReference;
+
+        public InnerHandler(BleM20SetupWizardDialogFragment fragment) {
+            fragmentWeakReference = new WeakReference<>(fragment);
         }
-    });
+
+        @Override
+        public void handleMessage(Message msg) {
+            BleM20SetupWizardDialogFragment fragment = fragmentWeakReference.get();
+            if (fragment != null) {
+                fragment.updateState(false);
+            }
+        }
+    }
 
     public static BleM20SetupWizardDialogFragment newInstance() {
         return new BleM20SetupWizardDialogFragment();
@@ -122,7 +132,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            uiHander.sendEmptyMessageDelayed(1, 10000);
+            mInnerHandler.sendEmptyMessageDelayed(1, 10000);
             mTvContent.setText("正在水平初始化...");
             setLevelInitial();
             disableTouch();
@@ -153,12 +163,12 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
         if (mTvContent == null) {
             return;
         }
-        uiHander.removeCallbacksAndMessages(null);
+        mInnerHandler.removeCallbacksAndMessages(null);
         enableTouch();
 
         if (isLevelInitSucc) {
             mTvContent.setText("初始化完成");
-            new Handler().postDelayed(new Runnable() {
+            mInnerHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     dismiss();
@@ -174,7 +184,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
 
     @Override
     public void onStop() {
-        uiHander.removeCallbacksAndMessages(null);
+        mInnerHandler.removeCallbacksAndMessages(null);
         super.onStop();
     }
 }
