@@ -103,6 +103,7 @@ public interface AppContants {
         int CONNECT_DEVICE = 0x002;//
         int USB_SERIAL_DEVICE_INITIAL = 0x003;//
         int USB_SERIAL_AT_SCAN = 0x004;//
+        int USB_SERIAL_AT_CONN = 0x005;//
     }
 
 }

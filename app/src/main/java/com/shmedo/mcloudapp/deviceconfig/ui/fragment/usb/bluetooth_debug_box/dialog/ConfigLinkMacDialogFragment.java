@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -49,6 +52,9 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
 
     private InclinometerAddrInfoAdapter adapter;
 
@@ -97,15 +103,18 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 macInfo = macInfoList.get(position);
-                if (macInfo.isChecked()) {
-                    return;
-                }
-                for (InclinometerMacInfo info : macInfoList) {
-                    if (!info.getAddr().equals(macInfo.getAddr()))
-                        info.setChecked(false);
-                }
-                macInfo.setChecked(true);
-                adapter.notifyDataSetChanged();
+//                if (macInfo.isChecked()) {
+//                    return;
+//                }
+//                for (InclinometerMacInfo info : macInfoList) {
+//                    if (!info.getAddr().equals(macInfo.getAddr()))
+//                        info.setChecked(false);
+//                }
+//                macInfo.setChecked(true);
+//                adapter.notifyDataSetChanged();
+
+                String content = String.format("确定连接 %s 设备？", macInfo.getAddr());
+                showConnectDialog(content);
             }
         });
         mRecyclerView.setAdapter(adapter);
@@ -152,7 +161,6 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
                 if (macInfo == null || !macInfo.isChecked()) {
                     ToastUtils.show("请先选中要操作的设备");
                 }
-
                 break;
 
             case R.id.btn_link:
@@ -160,6 +168,59 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
         }
     }
 
+    public void showConnectDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
+                .title("温馨提示：")
+                .content("确定连接此设备？")
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        processLink();
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    /**
+     * 1.发送 AT+CONNADD=mac地址 设置默认连接的mac地址
+     * 2.发送 AT+AUTOCONN=on 使能自动重连
+     * 3.发送 AT+CONN=num 通过搜索到索引号快速建立连接
+     */
+    private void processLink() {
+        if (macInfo == null) {
+            return;
+        }
+        debugBoxHomeFragment.atCommandItems.clear();
+
+        String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.CONNADD.toString() + "=" + macInfo.getAddr() + ATCommand.NEWLINE_CRLF;
+        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.CONNADD, command);
+        debugBoxHomeFragment.atCommandItems.add(atCommandItem);
+
+        command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.AUTOCONN.toString() + "=ON" + ATCommand.NEWLINE_CRLF;
+        atCommandItem = new ATCommandItem(WHBLE102CommandType.AUTOCONN, command);
+        debugBoxHomeFragment.atCommandItems.add(atCommandItem);
+
+        command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.CONN.toString() + "=" + macInfo.getNo() + ATCommand.NEWLINE_CRLF;
+        atCommandItem = new ATCommandItem(WHBLE102CommandType.CONN, command);
+        debugBoxHomeFragment.atCommandItems.add(atCommandItem);
+
+        debugBoxHomeFragment.sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONN, 500);
+    }
+
+    /**
+     * 解析处理扫描到的设备信息
+     *
+     * @param resultBuilder
+     */
     public void parseScanInfo(StringBuilder resultBuilder) {
         String cmdStr = resultBuilder.toString();
         if (cmdStr.contains(WHBLE102CommandType.SCAN.toString()) && cmdStr.contains("OFF")) {
@@ -210,4 +271,16 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
         }
     }
 
+    public void updateSuccessStatus() {
+        mProgressBar.setVisibility(View.GONE);
+        String content = String.format("蓝牙测斜仪连接成功！", macInfo.getAddr());
+        ToastUtils.show(content);
+    }
+
+    public void updateFailureStatus() {
+        mProgressBar.setVisibility(View.GONE);
+        String content = String.format("蓝牙测斜仪连接超时！", macInfo.getAddr());
+
+        ToastUtils.show(content);
+    }
 }

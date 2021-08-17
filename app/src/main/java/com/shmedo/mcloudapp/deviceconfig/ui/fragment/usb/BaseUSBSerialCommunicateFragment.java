@@ -30,14 +30,13 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
-    public static final int WRITE_TIME_OUT_MILLIS = 500;//发送指令超时时间
-    public static final int SCAN_TIME_OUT_MILLIS = 5000;//扫描指令超时时间
-
+    protected static final int WRITE_TIME_OUT_MILLIS = 500;//发送指令超时时间
+    protected static final int SCAN_TIME_OUT_MILLIS = 5000;//扫描指令超时时间
 
     protected USBSerialViewModel usbSerialViewModel;
 
-    public boolean isExitMode = false;//是否退出页面标志
-    public StringBuilder resultBuilder = new StringBuilder();
+    protected boolean isExitMode = false;//是否退出页面标志
+    protected StringBuilder resultBuilder = new StringBuilder();
 
     private final InnerHandler mInnerHandler = new InnerHandler(this);
 
