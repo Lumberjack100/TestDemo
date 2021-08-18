@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.di
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -30,9 +31,9 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.adapter.usb_serial.InclinometerAddrInfoAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.InclinometerMacInfo;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.BluetoothDebugBoxHomeFragment;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ import timber.log.Timber;
  * 创建时间:  2021/8/13 <br/>
  * 描述：    配置蓝牙测斜仪 MAC 连接地址
  */
-public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
+public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
@@ -61,7 +62,8 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
     private List<InclinometerMacInfo> macInfoList = new ArrayList<>();
     private InclinometerMacInfo macInfo = null;
 
-    private BluetoothDebugBoxHomeFragment debugBoxHomeFragment;
+    private int queryCont = 0;
+
 
     public static ConfigLinkMacDialogFragment newInstance() {
         return new ConfigLinkMacDialogFragment();
@@ -86,7 +88,6 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        debugBoxHomeFragment = (BluetoothDebugBoxHomeFragment) getParentFragment();
         mTvTitle.setText("配置连接");
         initAdapter();
     }
@@ -123,19 +124,30 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (debugBoxHomeFragment.isConnected()) {
+        if (isConnected()) {
             sendScanCommand();
         }
     }
 
     private void sendScanCommand() {
-        debugBoxHomeFragment.atCommandItems.clear();
+        atCommandItems.clear();
 
         String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.SCAN.toString() + ATCommand.QUERY_FLAG + ATCommand.NEWLINE_CRLF;
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SCAN, command);
-        debugBoxHomeFragment.atCommandItems.add(atCommandItem);
+        atCommandItems.add(atCommandItem);
 
-        debugBoxHomeFragment.sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_SCAN, 5000);
+        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_SCAN, SCAN_TIME_OUT_MILLIS);
+    }
+
+    /**
+     * 查询蓝牙测斜仪设备连接状态
+     */
+    private void queryBluetoothLinkStatus() {
+        atCommandItems.clear();
+
+        String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.LINK.toString() + ATCommand.QUERY_FLAG + ATCommand.NEWLINE_CRLF;
+        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.LINK, command);
+        atCommandItems.add(atCommandItem);
     }
 
     @OnClick({R.id.iv_close, R.id.btn_scan, R.id.btn_save, R.id.btn_link})
@@ -146,24 +158,11 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
                 break;
 
             case R.id.btn_scan:
-                if (!debugBoxHomeFragment.isConnected()) {
+                if (!isConnected()) {
                     ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                     return;
                 }
                 sendScanCommand();
-                break;
-
-            case R.id.btn_save:
-                if (!debugBoxHomeFragment.isConnected()) {
-                    ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
-                    return;
-                }
-                if (macInfo == null || !macInfo.isChecked()) {
-                    ToastUtils.show("请先选中要操作的设备");
-                }
-                break;
-
-            case R.id.btn_link:
                 break;
         }
     }
@@ -171,7 +170,7 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
     public void showConnectDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
-                .content("确定连接此设备？")
+                .content(content)
                 .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
@@ -199,21 +198,38 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
         if (macInfo == null) {
             return;
         }
-        debugBoxHomeFragment.atCommandItems.clear();
+        atCommandItems.clear();
 
         String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.CONNADD.toString() + "=" + macInfo.getAddr() + ATCommand.NEWLINE_CRLF;
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.CONNADD, command);
-        debugBoxHomeFragment.atCommandItems.add(atCommandItem);
+        atCommandItems.add(atCommandItem);
 
         command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.AUTOCONN.toString() + "=ON" + ATCommand.NEWLINE_CRLF;
         atCommandItem = new ATCommandItem(WHBLE102CommandType.AUTOCONN, command);
-        debugBoxHomeFragment.atCommandItems.add(atCommandItem);
+        atCommandItems.add(atCommandItem);
 
         command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.CONN.toString() + "=" + macInfo.getNo() + ATCommand.NEWLINE_CRLF;
         atCommandItem = new ATCommandItem(WHBLE102CommandType.CONN, command);
-        debugBoxHomeFragment.atCommandItems.add(atCommandItem);
+        atCommandItems.add(atCommandItem);
 
-        debugBoxHomeFragment.sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONN, 500);
+        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, 500);
+    }
+
+    @Override
+    protected void parseResponseMessage(String cmdStr) {
+        setResultData(cmdStr);
+    }
+
+    private void setResultData(String cmdStr) {
+        resultBuilder.append(cmdStr);
+
+        //处理 AT+SCAN 指令
+        if (atCommandItems.size() > 0) {
+            ATCommandItem commandItem = atCommandItems.getFirst();
+            if (commandItem.getCommandType() == WHBLE102CommandType.SCAN) {
+                parseScanInfo(resultBuilder);
+            }
+        }
     }
 
     /**
@@ -277,10 +293,97 @@ public class ConfigLinkMacDialogFragment extends BaseDialogFragment {
         ToastUtils.show(content);
     }
 
-    public void updateFailureStatus() {
+    public void updateFailureStatus(String content) {
         mProgressBar.setVisibility(View.GONE);
-        String content = String.format("蓝牙测斜仪连接超时！", macInfo.getAddr());
-
         ToastUtils.show(content);
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_SCAN) {
+
+
+        } else if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
+            String cmdStr = resultBuilder.toString();
+            Timber.e("接收串口数据: %s", cmdStr);
+
+            resultBuilder.setLength(0);
+            if (atCommandItems.size() == 0)
+                return;
+            ATCommandItem commandItem = atCommandItems.getFirst();
+            switch (commandItem.getCommandType()) {
+                case CONNADD: {
+                    if (cmdStr.contains(WHBLE102CommandType.CONNADD.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
+                        atCommandItems.removeFirst();//移除已经发送完的指令
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                    } else {
+                        updateFailureStatus("蓝牙测斜仪连接失败！");
+                    }
+                }
+                break;
+
+                case AUTOCONN: {
+                    if (cmdStr.contains(WHBLE102CommandType.AUTOCONN.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
+                        atCommandItems.removeFirst();//移除已经发送完的指令
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                    } else {
+                        updateFailureStatus("蓝牙测斜仪连接失败！");
+                    }
+                }
+                break;
+
+                case CONN: {
+                    if (cmdStr.contains(WHBLE102CommandType.CONN.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
+                        atCommandItems.removeFirst();//移除已经发送完的指令
+                        if (atCommandItems.size() == 0) {
+                            ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
+                            atCommandItems.add(atCommandItem);//进入命令模式
+                        }
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                    } else {
+                        updateFailureStatus("蓝牙测斜仪连接失败！");
+                    }
+                }
+                break;
+
+                case ENTER_COMMAND: {
+                    cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
+                    if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
+                        atCommandItems.removeFirst();//移除已经发送完的指令
+                        if (atCommandItems.size() == 0) {
+                            queryCont = 1;
+                            queryBluetoothLinkStatus();
+                        }
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                    }
+                }
+                break;
+
+                case LINK: {
+                    if (cmdStr.contains(WHBLE102CommandType.LINK.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
+                        atCommandItems.removeFirst();//移除已经发送完的指令
+
+                        if (cmdStr.toUpperCase().contains("ONLINE")) {
+                            queryCont = 0;
+                            //连接成功
+                            updateSuccessStatus();
+                        } else {
+                            //查询连接状态超过10次，判定超时
+                            if (queryCont >= 3 || !isConnected()) {
+                                stopProgress(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT);
+                                updateFailureStatus("蓝牙测斜仪连接超时！");
+                                return;
+                            }
+                            queryCont++;
+                            queryBluetoothLinkStatus();
+                            sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, 1000);
+                        }
+                    } else {
+                        updateFailureStatus("蓝牙测斜仪连接失败！");
+                    }
+                }
+                break;
+            }
+        }
     }
 }

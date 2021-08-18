@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BaseUSBSerialCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigLinkMacDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigBluetoothMacDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -86,10 +86,7 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
 
     public LinkedList<ATCommandItem> atCommandItems = new LinkedList<>();
 
-//    public List<InclinometerMacInfo> macInfoList = new ArrayList<>();
-
-
-    private ConfigLinkMacDialogFragment configLinkMacDialogFragment;
+    private ConfigBluetoothMacDialogFragment configLinkMacDialogFragment;
 
     public static BluetoothDebugBoxHomeFragment newInstance(int deviceId, int port, int baudRate) {
         BluetoothDebugBoxHomeFragment fragment = new BluetoothDebugBoxHomeFragment();
@@ -168,7 +165,7 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "配置连接":
-                configLinkMacDialogFragment = ConfigLinkMacDialogFragment.newInstance();
+                configLinkMacDialogFragment = ConfigBluetoothMacDialogFragment.newInstance();
                 configLinkMacDialogFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
@@ -269,18 +266,20 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
         atCommandItems.add(atCommandItem);//进入命令模式
 
-        String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.MODE.toString() + "=M" + ATCommand.NEWLINE_CRLF;
-        atCommandItem = new ATCommandItem(WHBLE102CommandType.MODE, command);
-        atCommandItems.add(atCommandItem);//设置主设备模式
+        if (initialStart) {
+            String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.MODE.toString() + "=M" + ATCommand.NEWLINE_CRLF;
+            atCommandItem = new ATCommandItem(WHBLE102CommandType.MODE, command);
+            atCommandItems.add(atCommandItem);//设置主设备模式
 
-        atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
-        atCommandItems.add(atCommandItem);//重新进入命令模式
+            atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
+            atCommandItems.add(atCommandItem);//重新进入命令模式
+        }
     }
 
     /**
      * 查询 USB设备名称和版本号
      */
-    private void QueryDeviceNameAndVerison() {
+    private void queryDeviceNameAndVerison() {
         atCommandItems.clear();
 
         String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.NAME.toString() + ATCommand.QUERY_FLAG + ATCommand.NEWLINE_CRLF;
@@ -328,29 +327,17 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
 
     private void setResultData(String cmdStr) {
         resultBuilder.append(cmdStr);
-
-        //处理 AT+SCAN 指令
-        if (atCommandItems.size() > 0) {
-            ATCommandItem commandItem = atCommandItems.getFirst();
-            if (commandItem.getCommandType() == WHBLE102CommandType.SCAN) {
-                if (configLinkMacDialogFragment == null || !configLinkMacDialogFragment.isVisible()) {
-                    return;
-                }
-                configLinkMacDialogFragment.parseScanInfo(resultBuilder);
-            }
-        }
     }
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-
         if (msg.what == AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL) {
             String cmdStr = resultBuilder.toString();
             Timber.e("接收串口数据: %s", cmdStr);
-
             resultBuilder.setLength(0);
             if (atCommandItems.size() == 0)
                 return;
+
             ATCommandItem commandItem = atCommandItems.getFirst();
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {
@@ -359,7 +346,7 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                         atCommandItems.removeFirst();//移除已经发送完的指令
                         if (atCommandItems.size() == 0 && initialStart) {
                             initialStart = false;
-                            QueryDeviceNameAndVerison();
+                            queryDeviceNameAndVerison();
                         }
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
                     }
@@ -393,87 +380,7 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                         mTvDeviceSn.setText(String.format("固件版本：%s", cmdStr));
 
                         atCommandItems.removeFirst();//移除已经发送完的指令
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
-                    }
-                }
-                break;
-            }
-        } else if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_SCAN) {
-
-
-        } else if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONN) {
-            String cmdStr = resultBuilder.toString();
-            Timber.e("接收串口数据: %s", cmdStr);
-
-            resultBuilder.setLength(0);
-            if (atCommandItems.size() == 0)
-                return;
-            ATCommandItem commandItem = atCommandItems.getFirst();
-            switch (commandItem.getCommandType()) {
-                case CONNADD: {
-                    if (cmdStr.contains(WHBLE102CommandType.CONNADD.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONN, WRITE_TIME_OUT_MILLIS);
-                    }
-                }
-                break;
-
-                case AUTOCONN: {
-                    if (cmdStr.contains(WHBLE102CommandType.AUTOCONN.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONN, WRITE_TIME_OUT_MILLIS);
-                    }
-                }
-                break;
-
-                case CONN: {
-                    if (cmdStr.contains(WHBLE102CommandType.CONN.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
-                        if (atCommandItems.size() == 0) {
-                            ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
-                            atCommandItems.add(atCommandItem);//进入命令模式
-                        }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONN, WRITE_TIME_OUT_MILLIS);
-                    }
-                }
-                break;
-
-                case ENTER_COMMAND: {
-                    cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
-                    if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
-                        if (atCommandItems.size() == 0) {
-                            queryCont = 1;
-                            QueryBluetoothLinkStatus();
-                        }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONN, WRITE_TIME_OUT_MILLIS);
-                    }
-                }
-                break;
-
-                case LINK: {
-                    if (cmdStr.contains(WHBLE102CommandType.LINK.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
-
-                        if (cmdStr.toUpperCase().contains("ONLINE")) {
-                            queryCont = 0;
-                            //连接成功
-                            if (configLinkMacDialogFragment != null && configLinkMacDialogFragment.isVisible()) {
-                                configLinkMacDialogFragment.updateSuccessStatus();
-                            }
-                        } else {
-                            //查询连接状态超过10次，判定超时
-                            if (queryCont >= 3 || !isConnected()) {
-                                stopProgress(AppContants.MsgWhat.USB_SERIAL_AT_CONN);
-                                if (configLinkMacDialogFragment != null && configLinkMacDialogFragment.isVisible()) {
-                                    configLinkMacDialogFragment.updateFailureStatus();
-                                }
-                                return;
-                            }
-                            queryCont++;
-                            QueryBluetoothLinkStatus();
-                            sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONN, 1000);
-                        }
+//                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
                     }
                 }
                 break;

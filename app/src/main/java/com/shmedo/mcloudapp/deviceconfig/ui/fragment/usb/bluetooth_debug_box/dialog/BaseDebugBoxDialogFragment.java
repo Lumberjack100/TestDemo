@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,45 +9,44 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.profile.USBSerialViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
 
 import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2021/8/11 <br/>
+ * 创建时间:  2021/8/17 <br/>
  * 描述：     TODO
  */
-public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
+public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
     protected static final int WRITE_TIME_OUT_MILLIS = 500;//发送指令超时时间
-    protected static final int SCAN_TIME_OUT_MILLIS = 5000;//扫描指令超时时间
+    protected static final int SCAN_TIME_OUT_MILLIS = 10000;//扫描指令超时时间
 
     protected USBSerialViewModel usbSerialViewModel;
 
-    protected boolean isExitMode = false;//是否退出页面标志
+    protected LinkedList<ATCommandItem> atCommandItems = new LinkedList<>();
     protected StringBuilder resultBuilder = new StringBuilder();
 
     private final InnerHandler mInnerHandler = new InnerHandler(this);
 
 
     private static class InnerHandler extends Handler {
-        private final WeakReference<BaseUSBSerialCommunicateFragment> fragmentWeakReference;
+        private final WeakReference<BaseDebugBoxDialogFragment> fragmentWeakReference;
 
-        public InnerHandler(BaseUSBSerialCommunicateFragment fragment) {
+        public InnerHandler(BaseDebugBoxDialogFragment fragment) {
             fragmentWeakReference = new WeakReference<>(fragment);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            BaseUSBSerialCommunicateFragment fragment = fragmentWeakReference.get();
+            BaseDebugBoxDialogFragment fragment = fragmentWeakReference.get();
             if (fragment != null) {
 //                fragment.dismissProgressDialog();
                 fragment.customHandleMessage(msg);
@@ -87,20 +86,11 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
         });
     }
 
-
     /**
-     * USB建立连接
+     * 解析设备的参数指令
      */
-    protected void connectDevice() {
-        usbSerialViewModel.connect();
-    }
+    protected void parseResponseMessage(String cmdStr) {
 
-    /**
-     * USB 取消连接
-     */
-    protected void disconnectDevice() {
-        Timber.d("disconnectDevice()调用");
-        usbSerialViewModel.disconnect();
     }
 
     /**
@@ -111,35 +101,13 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
         return usbSerialViewModel.isConnected();
     }
 
-    /**
-     * 解析设备的参数指令
-     */
-    protected void parseResponseMessage(String cmdStr) {
-
-    }
-
-    protected void showDisconnectDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
-                .title("温馨提示：")
-                .content(content)
-                .contentColorRes(R.color.title_text_color)
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .positiveColorRes(R.color.blue_52B4F8)
-                .negativeColorRes(R.color.sub_title_text_color)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        disconnectDevice();
-                        if (isExitMode) {
-                            mActivity.finish();
-                        }
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
+    public void sendCommandFromCmdList(int what, long delayMillis) {
+        if (atCommandItems.size() > 0) {
+            resultBuilder.setLength(0);
+            String command = atCommandItems.getFirst().getCommand();
+            usbSerialViewModel.sendData(command);
+            startProgress(what, delayMillis);
+        }
     }
 
     @Override
