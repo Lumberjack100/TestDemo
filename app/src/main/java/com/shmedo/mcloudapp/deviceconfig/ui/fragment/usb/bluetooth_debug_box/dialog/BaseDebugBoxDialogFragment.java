@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
+import com.shmedo.configlibrary.at.ATCommand;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.profile.USBSerialViewModel;
@@ -48,7 +50,6 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
         public void handleMessage(Message msg) {
             BaseDebugBoxDialogFragment fragment = fragmentWeakReference.get();
             if (fragment != null) {
-//                fragment.dismissProgressDialog();
                 fragment.customHandleMessage(msg);
             }
         }
@@ -108,6 +109,23 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
             usbSerialViewModel.sendData(command);
             startProgress(what, delayMillis);
         }
+    }
+
+    public void sendHexCommandFromCmdList(int what, long delayMillis) {
+        if (atCommandItems.size() > 0) {
+            resultBuilder.setLength(0);
+            String command = atCommandItems.getFirst().getCommand();
+            byte[] data = StringUtil.hexStringToBytes2(command);
+            usbSerialViewModel.sendData(data);
+            startProgress(what, delayMillis);
+        }
+    }
+
+    protected String filterControlCharacter(String str) {
+        str = str.replace(ATCommand.OK_FLAG, "")
+                .replace(ATCommand.NEWLINE_CR, "")
+                .replace(ATCommand.NEWLINE_LF, "");
+        return str;
     }
 
     @Override

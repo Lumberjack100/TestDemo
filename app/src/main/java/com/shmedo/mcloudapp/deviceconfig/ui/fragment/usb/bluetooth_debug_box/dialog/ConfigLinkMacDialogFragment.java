@@ -47,6 +47,7 @@ import timber.log.Timber;
  * 创建时间:  2021/8/13 <br/>
  * 描述：    配置蓝牙测斜仪 MAC 连接地址
  */
+@Deprecated
 public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -311,10 +312,10 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
             if (atCommandItems.size() == 0)
                 return;
             ATCommandItem commandItem = atCommandItems.getFirst();
+            atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case CONNADD: {
                     if (cmdStr.contains(WHBLE102CommandType.CONNADD.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");
@@ -324,7 +325,6 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
 
                 case AUTOCONN: {
                     if (cmdStr.contains(WHBLE102CommandType.AUTOCONN.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");
@@ -334,7 +334,6 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
 
                 case CONN: {
                     if (cmdStr.contains(WHBLE102CommandType.CONN.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
                         if (atCommandItems.size() == 0) {
                             ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
                             atCommandItems.add(atCommandItem);//进入命令模式
@@ -349,7 +348,6 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
                 case ENTER_COMMAND: {
                     cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
                     if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
                         if (atCommandItems.size() == 0) {
                             queryCont = 1;
                             queryBluetoothLinkStatus();
@@ -361,8 +359,6 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
 
                 case LINK: {
                     if (cmdStr.contains(WHBLE102CommandType.LINK.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
-
                         if (cmdStr.toUpperCase().contains("ONLINE")) {
                             queryCont = 0;
                             //连接成功

@@ -60,6 +60,13 @@ public class USBSerialViewModel extends AndroidViewModel {
         usbSerialManager.writeMessage(msg);
     }
 
+    public void sendData(final byte[] data) {
+        if (!isConnected()) {
+            return;
+        }
+        usbSerialManager.writeMessage(data);
+    }
+
     @Override
     protected void onCleared() {
         disconnect();

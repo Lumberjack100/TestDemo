@@ -168,6 +168,20 @@ public class UsbSerialManager implements SerialListener {
         }
     }
 
+    public void writeMessage(byte[] data) {
+        if (connected != Connected.True)
+            return;
+
+        Timber.e("发送串口数据: %s", data);
+        try {
+            socket.write(data);
+        } catch (SerialTimeoutException e) {
+//            status("write timeout: " + e.getMessage());
+        } catch (Exception e) {
+            onSerialIoError(e);
+        }
+    }
+
     /**
      * 用户主动断开
      */

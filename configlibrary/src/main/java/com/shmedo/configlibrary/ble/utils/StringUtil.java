@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
@@ -117,6 +118,45 @@ public class StringUtil {
     }
 
     /**
+     * 将十六进制字符串转化成数组
+     *
+     * @param hexString 参数
+     * @return 返回字节数组
+     */
+    public static byte[] hexStringToBytes2(String hexString) {
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        byte b = 0;
+        int nibble = 0;
+        for (int pos = 0; pos < hexString.length(); pos++) {
+            if (nibble == 2) {
+                buf.write(b);
+                nibble = 0;
+                b = 0;
+            }
+            int c = hexString.charAt(pos);
+            if (c >= '0' && c <= '9') {
+                nibble++;
+                b *= 16;
+                b += c - '0';
+            }
+            if (c >= 'A' && c <= 'F') {
+                nibble++;
+                b *= 16;
+                b += c - 'A' + 10;
+            }
+            if (c >= 'a' && c <= 'f') {
+                nibble++;
+                b *= 16;
+                b += c - 'a' + 10;
+            }
+        }
+        if (nibble > 0)
+            buf.write(b);
+
+        return buf.toByteArray();
+    }
+
+    /**
      * 将字符串转化成十六进制字符串
      *
      * @param str 返回字符串
@@ -198,6 +238,7 @@ public class StringUtil {
 
     /**
      * 将 String 转换的double保留3位小数
+     *
      * @param param
      * @return
      */

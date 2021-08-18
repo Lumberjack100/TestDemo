@@ -104,6 +104,16 @@ public enum WHBLE102CommandType {
     UUID("UUID"),
 
     /**
+     * 允许连接
+     */
+    ALLOW_CONNECT("allow_connect"),
+
+    /**
+     * 允许蓝牙通讯
+     */
+    ALLOW_BLUETOOTH_COMMUNICATION("allow_bluetooth_communication"),
+
+    /**
      * 未知的命令类型
      */
     UNKNOWN_TYPE("unknown_type");

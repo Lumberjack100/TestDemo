@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_corner_5dp_white"
+        android:background="@drawable/bg_corner_3dp_gray_f9f9f9"
         android:orientation="vertical"
         tools:context="com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigLinkMacDialogFragment">
 
@@ -61,29 +61,15 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="14dp"
-            android:layout_marginBottom="15dp">
+        <Button
+            android:id="@+id/btn_link"
+            style="@style/SubmitBordelessButtonStyle"
+            android:text="连接" />
 
-            <TextView
-                android:id="@+id/btn_link"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="15dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_corner_5dp_blue"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:text="连接"
-                android:textColor="@color/white"
-                android:textSize="17sp"
-                android:visibility="visible" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/test_link"
+            style="@style/SubmitBordelessButtonStyle"
+            android:text="查询连接" />
 
     </LinearLayout>
 

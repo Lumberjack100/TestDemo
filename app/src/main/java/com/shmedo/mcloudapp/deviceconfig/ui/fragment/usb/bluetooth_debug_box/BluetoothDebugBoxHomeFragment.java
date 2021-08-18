@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BaseUSBSerialCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigBluetoothMacDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.QueryBluetoothLinkStatusDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -86,7 +87,6 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
 
     public LinkedList<ATCommandItem> atCommandItems = new LinkedList<>();
 
-    private ConfigBluetoothMacDialogFragment configLinkMacDialogFragment;
 
     public static BluetoothDebugBoxHomeFragment newInstance(int deviceId, int port, int baudRate) {
         BluetoothDebugBoxHomeFragment fragment = new BluetoothDebugBoxHomeFragment();
@@ -165,11 +165,13 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "配置连接":
-                configLinkMacDialogFragment = ConfigBluetoothMacDialogFragment.newInstance();
+                ConfigBluetoothMacDialogFragment configLinkMacDialogFragment = ConfigBluetoothMacDialogFragment.newInstance();
                 configLinkMacDialogFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
             case "状态":
+                QueryBluetoothLinkStatusDialogFragment queryBluetoothLinkStatusDialogFragment = QueryBluetoothLinkStatusDialogFragment.newInstance();
+                queryBluetoothLinkStatusDialogFragment.show(getChildFragmentManager(), "dialog");
                 break;
         }
     }
@@ -291,17 +293,6 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
         atCommandItems.add(atCommandItem);
     }
 
-    /**
-     * 查询蓝牙测斜仪设备连接状态
-     */
-    private void QueryBluetoothLinkStatus() {
-        atCommandItems.clear();
-
-        String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.LINK.toString() + ATCommand.QUERY_FLAG + ATCommand.NEWLINE_CRLF;
-        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.LINK, command);
-        atCommandItems.add(atCommandItem);
-    }
-
     @OnClick({R.id.tv_device_connect_operate})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
@@ -339,11 +330,11 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                 return;
 
             ATCommandItem commandItem = atCommandItems.getFirst();
+            atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {
                     cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
                     if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
                         if (atCommandItems.size() == 0 && initialStart) {
                             initialStart = false;
                             queryDeviceNameAndVerison();
@@ -355,7 +346,6 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
 
                 case MODE: {
                     if (cmdStr.contains(WHBLE102CommandType.MODE.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
                     }
                 }
@@ -367,7 +357,6 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                         cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + WHBLE102CommandType.NAME.toString() + ATCommand.DELIMITER_COLON, "");
                         mTvDeviceName.setText(cmdStr);
 
-                        atCommandItems.removeFirst();//移除已经发送完的指令
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
                     }
                 }
@@ -378,9 +367,6 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                         cmdStr = filterControlCharacter(cmdStr);
                         cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + "VER" + ATCommand.DELIMITER_COLON, "");
                         mTvDeviceSn.setText(String.format("固件版本：%s", cmdStr));
-
-                        atCommandItems.removeFirst();//移除已经发送完的指令
-//                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
                     }
                 }
                 break;

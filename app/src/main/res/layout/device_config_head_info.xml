@@ -47,14 +47,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
                     android:layout_marginStart="5dp"
-                    android:background="@drawable/bg_device_online_state_flag"
+                    android:background="@drawable/bg_device_offline_state_flag"
                     android:gravity="center"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:singleLine="true"
                     android:textSize="@dimen/text_size_10"
-                    tools:text="已连接"
-                    tools:textColor="@color/text_color_50E9B9" />
+                    android:text="已断开"
+                    android:textColor="@color/sub_title_text_color" />
 
             </LinearLayout>
 

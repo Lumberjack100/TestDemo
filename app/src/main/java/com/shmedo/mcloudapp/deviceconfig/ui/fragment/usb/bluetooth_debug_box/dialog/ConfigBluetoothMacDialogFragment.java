@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,12 +37,16 @@ import timber.log.Timber;
  */
 public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment {
     private int USB_SERIAL_LINK_QUERY = 0x10001;//
+    private int USB_SERIAL_OPEN_COMMUNICATION = 0x10002;//
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
     @BindView(R.id.et_mac_address)
     ClearEditText mEtMacAddr;
+
+    @BindView(R.id.btn_link)
+    Button mBtnLink;
 
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
@@ -129,6 +134,11 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
      * 3.发送 +++a 进入命令行模式
      */
     private void queryBluetoothLinkStatus() {
+        if (queryCont >= 103) {
+            updateFailureStatus("连接查询超时！");
+            return;
+        }
+        queryCont++;
         atCommandItems.clear();
 
         String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.Z.toString() + ATCommand.NEWLINE_CRLF;
@@ -142,7 +152,38 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItem = new ATCommandItem(WHBLE102CommandType.LINK, command);
         atCommandItems.add(atCommandItem);
 
+        //发送 AT+Z 指令后,延迟 1000 ms 发送下一条指令
+        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, 1000);
+    }
+
+    /**
+     * 退出命令行模式
+     */
+    private void exitCommand() {
+        atCommandItems.clear();
+
+        String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.ENTM.toString() + ATCommand.NEWLINE_CRLF;
+        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
+        atCommandItems.add(atCommandItem);
+
         sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
+    }
+
+    /**
+     * 打开测斜仪通讯
+     * 1.发送 01 10 07 DD 00 01 02 55 AA 7D 32 允许连接指令
+     * 2.发送 01 10 08 17 00 01 02 5A 5A 96 2C 允许蓝牙通讯
+     */
+    private void openCommunication() {
+        atCommandItems.clear();
+
+        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ALLOW_CONNECT, "011007DD00010255AA7D32");
+        atCommandItems.add(atCommandItem);
+
+        atCommandItem = new ATCommandItem(WHBLE102CommandType.ALLOW_BLUETOOTH_COMMUNICATION, "011008170001025A5A962C");
+        atCommandItems.add(atCommandItem);
+
+        sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_MILLIS);
     }
 
     @OnClick({R.id.iv_close, R.id.btn_link})
@@ -163,24 +204,27 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                 ToastUtils.show("请输入有效的 MAC 地址！");
                 return;
             }
+            mBtnLink.setEnabled(false);
             mProgressBar.setVisibility(View.VISIBLE);
             //与原来默认配置的 MAC 地址不同，需要先发送 at+connadd=mac 指令进行设置
             if (!defaultMac.equals(mEtMacAddr.getText().toString().trim())) {
                 configDefaultMac();
             } else {
                 //直接循环查询连接状态
+                queryCont = 1;
                 queryBluetoothLinkStatus();
             }
         }
     }
 
-
     public void updateSuccessStatus() {
+        mBtnLink.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
         ToastUtils.show("蓝牙测斜仪连接成功！");
     }
 
     public void updateFailureStatus(String content) {
+        Timber.e("updateFailureStatus: %s", content);
         mProgressBar.setVisibility(View.GONE);
         ToastUtils.show(content);
     }
@@ -196,15 +240,16 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
-            String cmdStr = resultBuilder.toString();
-            Timber.e("接收串口数据: %s", cmdStr);
+        String cmdStr = resultBuilder.toString();
+        Timber.e("接收串口数据: %s", cmdStr);
 
-            resultBuilder.setLength(0);
-            if (atCommandItems.size() == 0)
-                return;
-            ATCommandItem commandItem = atCommandItems.getFirst();
-            atCommandItems.removeFirst();//移除已经发送完的指令
+        resultBuilder.setLength(0);
+        if (atCommandItems.size() == 0)
+            return;
+
+        ATCommandItem commandItem = atCommandItems.getFirst();
+        atCommandItems.removeFirst();//移除已经发送完的指令
+        if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
             switch (commandItem.getCommandType()) {
                 case CONNADD: {
                     if (cmdStr.contains(WHBLE102CommandType.CONNADD.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
@@ -213,41 +258,38 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                         defaultMac = cmdStr;
                         mEtMacAddr.setText(cmdStr);
 
-                        atCommandItems.removeFirst();//移除已经发送完的指令
+                        //说明还有 AT+AUTOCONN 指令,表示进行连接处理
                         if (atCommandItems.size() > 0) {
-                            mProgressBar.setVisibility(View.VISIBLE);
                             sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
                         }
                     } else {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
+                        //说明还有 AT+AUTOCONN 指令,表示进行连接处理
+                        if (atCommandItems.size() > 0) {
+                            updateFailureStatus(commandItem.getCommand() + "  Error");
+                        }
                     }
                 }
                 break;
 
                 case AUTOCONN: {
                     if (cmdStr.contains("AUTOCONN:ON") && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
+                        //循环查询连接状态
+                        queryCont = 1;
                         queryBluetoothLinkStatus();
-                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
+                    } else {
+                        updateFailureStatus(commandItem.getCommand() + "  Error");
                     }
                 }
                 break;
             }
         } else if (msg.what == USB_SERIAL_LINK_QUERY) {
-            String cmdStr = resultBuilder.toString();
-            Timber.e("接收串口数据: %s", cmdStr);
-
-            resultBuilder.setLength(0);
-            if (atCommandItems.size() == 0)
-                return;
-            ATCommandItem commandItem = atCommandItems.getFirst();
             switch (commandItem.getCommandType()) {
                 case Z: {//重启
-                    if (cmdStr.contains("RST:OK") && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
+                    cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
+                    if (cmdStr.toUpperCase().contains("RST:OK")) {
                         sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
-                    }else{
-                        updateFailureStatus("蓝牙测斜仪连接失败！");
+                    } else {
+                        updateFailureStatus(commandItem.getCommand() + "  Error");
                     }
                 }
                 break;
@@ -255,46 +297,52 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                 case ENTER_COMMAND: {
                     cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
                     if (cmdStr.contains("a+ok")) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
                         sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
-                    }else{
-                        updateFailureStatus("蓝牙测斜仪连接失败！");
+                    } else {
+                        updateFailureStatus(commandItem.getCommand() + "  Error");
                     }
                 }
                 break;
 
                 case LINK: {
-                    if (cmdStr.contains(WHBLE102CommandType.LINK.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        atCommandItems.removeFirst();//移除已经发送完的指令
-
+                    if (cmdStr.toUpperCase().contains(WHBLE102CommandType.LINK.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
                         if (cmdStr.toUpperCase().contains("ONLINE")) {
                             queryCont = 0;
                             //连接成功
                             updateSuccessStatus();
+                            //退出命令模式
+                            exitCommand();
                         } else {
-                            //查询连接状态超过10次，判定超时
-                            if (queryCont >= 3 || !isConnected()) {
-                                stopProgress(USB_SERIAL_LINK_QUERY);
-                                updateFailureStatus("蓝牙测斜仪连接超时！");
-                                return;
-                            }
-                            queryCont++;
+                            //循环查询连接状态
                             queryBluetoothLinkStatus();
-                            sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, 1000);
                         }
                     } else {
-                        updateFailureStatus("蓝牙测斜仪连接失败！");
+                        updateFailureStatus(commandItem.getCommand() + "  Error");
+                    }
+                }
+                break;
+
+                case ENTM: {//退出命令模式
+                    if (cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) {
+                        //打开通讯
+                        openCommunication();
+                    } else {
+                        updateFailureStatus(commandItem.getCommand() + "  Error");
                     }
                 }
                 break;
             }
-        }
-    }
+        } else if (msg.what == USB_SERIAL_OPEN_COMMUNICATION) {
+            switch (commandItem.getCommandType()) {
+                case ALLOW_CONNECT: {//允许连接指令
+                    sendCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_MILLIS);
+                }
+                break;
 
-    private String filterControlCharacter(String str) {
-        str = str.replace(ATCommand.OK_FLAG, "")
-                .replace(ATCommand.NEWLINE_CR, "")
-                .replace(ATCommand.NEWLINE_LF, "");
-        return str;
+                case ALLOW_BLUETOOTH_COMMUNICATION: {//允许蓝牙通讯
+                }
+                break;
+            }
+        }
     }
 }
