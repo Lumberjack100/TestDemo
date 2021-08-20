@@ -57,9 +57,9 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
     @BindView(R.id.btn_save)
     Button mBtnSave;
 
-    private String sleepTime;
-    private String waitingLinkTime;
+    private String sleepTime, waitingLinkTime;
 
+    private String cmdSleepTime, cmdWaitingLinkTime;
 
     public static CommunicationTimeDialogFragment newInstance() {
         return new CommunicationTimeDialogFragment();
@@ -85,9 +85,9 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("待机时间配置");
-        sleepTime="200s";
+        sleepTime = "200s";
         mTvSleepTime.setText(sleepTime);
-        waitingLinkTime="5s";
+        waitingLinkTime = "5s";
         mTvWaitingLinkTime.setText(waitingLinkTime);
     }
 
@@ -130,7 +130,23 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
         atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_WAITING_LINK_TIME, command);
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_1000_MILLIS);
+        sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
+    }
+
+    private void setTime() {
+        atCommandItems.clear();
+
+        if (TextUtils.isEmpty(cmdSleepTime)) {
+            ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_SLEEP_TIME, cmdSleepTime);
+            atCommandItems.add(atCommandItem);
+        }
+
+        if (TextUtils.isEmpty(cmdWaitingLinkTime)) {
+            ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_WAITING_LINK_TIME, cmdWaitingLinkTime);
+            atCommandItems.add(atCommandItem);
+        }
+
+        sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -153,9 +169,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
             sbCmd.append(hexValue);
             sbCmd.append(CRC16.getCRC(sbCmd.toString()));
 
-            ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_SLEEP_TIME, sbCmd.toString().replace(" ", "").trim());
-            atCommandItems.add(atCommandItem);
-
+            cmdSleepTime = sbCmd.toString().replace(" ", "").trim();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -181,9 +195,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
             sbCmd.append(hexValue);
             sbCmd.append(CRC16.getCRC(sbCmd.toString()));
 
-            ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_WAITING_LINK_TIME, sbCmd.toString().replace(" ", "").trim());
-            atCommandItems.add(atCommandItem);
-
+            cmdWaitingLinkTime = sbCmd.toString().replace(" ", "").trim();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -221,7 +233,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
             mBtnQuery.setEnabled(false);
             mBtnSave.setEnabled(false);
             stopProgressAll();
-            sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_1000_MILLIS);
+            setTime();
         }
     }
 
@@ -305,7 +317,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     Timber.e("接收串口数据: %s", cmdStr);
                     if ((cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) || TextUtils.isEmpty(cmdStr)) {
                         queryTime();
-                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                    } else if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
@@ -333,7 +345,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                         sleepTime = result + "s";
                         mTvSleepTime.setText(sleepTime);
                     }
-                    sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_1000_MILLIS);
+                    sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
                 }
                 break;
 
@@ -367,7 +379,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     Timber.e("接收16进制串口数据: %s", hexData);
 
                     if (hexData.equals("011008260001E262")) {
-                        sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_1000_MILLIS);
+                        sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;

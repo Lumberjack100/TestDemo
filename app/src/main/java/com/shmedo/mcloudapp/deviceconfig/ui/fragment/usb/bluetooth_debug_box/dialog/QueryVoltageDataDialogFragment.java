@@ -109,7 +109,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_BATTERY_VOLTAGE, command);
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_1000_MILLIS);
+        sendHexCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
     }
 
     @OnClick({R.id.iv_close, R.id.btn_query_data})

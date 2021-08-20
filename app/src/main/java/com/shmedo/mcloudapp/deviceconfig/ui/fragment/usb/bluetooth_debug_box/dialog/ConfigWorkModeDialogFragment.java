@@ -113,7 +113,7 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_WORK_MODE, "010304040001C4FB");
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_WORK_MODE, WRITE_TIME_OUT_1000_MILLIS);
+        sendHexCommandFromCmdList(USB_SERIAL_WORK_MODE, WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -133,7 +133,7 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_WORK_MODE, command);
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_WORK_MODE, WRITE_TIME_OUT_1000_MILLIS);
+        sendHexCommandFromCmdList(USB_SERIAL_WORK_MODE, WRITE_TIME_OUT_500_MILLIS);
     }
 
     @OnClick({R.id.iv_close, R.id.ll_work_mode, R.id.btn_query_data, R.id.btn_save})
