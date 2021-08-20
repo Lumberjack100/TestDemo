@@ -35,6 +35,7 @@ import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -217,21 +218,25 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
     }
 
     @Override
-    protected void parseResponseMessage(String cmdStr) {
-        setResultData(cmdStr);
-    }
-
-    private void setResultData(String cmdStr) {
-        resultBuilder.append(cmdStr);
-
-        //处理 AT+SCAN 指令
-        if (atCommandItems.size() > 0) {
-            ATCommandItem commandItem = atCommandItems.getFirst();
-            if (commandItem.getCommandType() == WHBLE102CommandType.SCAN) {
-                parseScanInfo(resultBuilder);
-            }
+    protected void parseResponseMessage(byte[] data) {
+        try {
+            resultByteBuf.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+//    private void setResultData(String cmdStr) {
+//        resultBuilder.append(cmdStr);
+//
+//        //处理 AT+SCAN 指令
+//        if (atCommandItems.size() > 0) {
+//            ATCommandItem commandItem = atCommandItems.getFirst();
+//            if (commandItem.getCommandType() == WHBLE102CommandType.SCAN) {
+//                parseScanInfo(resultBuilder);
+//            }
+//        }
+//    }
 
     /**
      * 解析处理扫描到的设备信息
@@ -305,12 +310,12 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
 
 
         } else if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
-            String cmdStr = resultBuilder.toString();
+            String cmdStr = resultByteBuf.toString();
+            resultByteBuf.reset();
             Timber.e("接收串口数据: %s", cmdStr);
-
-            resultBuilder.setLength(0);
             if (atCommandItems.size() == 0)
                 return;
+
             ATCommandItem commandItem = atCommandItems.getFirst();
             atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {

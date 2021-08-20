@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -45,6 +48,9 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
 
     @BindView(R.id.tv_rssi)
     TextView mTvRssi;
+
+    @BindView(R.id.btn_query_link)
+    Button mBtnQuery;
 
 
     public static QueryBluetoothLinkStatusDialogFragment newInstance() {
@@ -103,7 +109,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.LINK, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
     }
 
 
@@ -121,25 +127,25 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            mBtnQuery.setEnabled(false);
             QueryBluetoothLinkStatus();
         }
     }
 
     @Override
-    protected void parseResponseMessage(String cmdStr) {
-        setResultData(cmdStr);
-    }
-
-    private void setResultData(String cmdStr) {
-        resultBuilder.append(cmdStr);
+    protected void parseResponseMessage(byte[] data) {
+        try {
+            resultByteBuf.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        String cmdStr = resultBuilder.toString();
+        String cmdStr = resultByteBuf.toString();
+        resultByteBuf.reset();
         Timber.e("接收串口数据: %s", cmdStr);
-
-        resultBuilder.setLength(0);
         if (atCommandItems.size() == 0)
             return;
 
@@ -151,14 +157,16 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
                     cmdStr = filterControlCharacter(cmdStr);
                     if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
                         QueryBluetoothLinkStatus();
-                    } else {
-                        Timber.e("%s  Error", commandItem.getCommand());
-                        ToastUtils.show(commandItem.getCommand() + "  Error");
+                    } else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;
 
                 case LINK: {
+                    mBtnQuery.setEnabled(true);
                     if (cmdStr.toUpperCase().contains(WHBLE102CommandType.LINK.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
                         if (cmdStr.toUpperCase().contains("ONLINE")) {
                             mTvLinkStatus.setText("Online");
@@ -171,9 +179,10 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
                         } else {
                             mTvLinkStatus.setText("Offline");
                         }
-                    } else {
-                        Timber.e("%s  Error", commandItem.getCommand());
-                        ToastUtils.show(commandItem.getCommand() + "  Error");
+                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;

@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,11 +17,14 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -39,6 +43,12 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
 
     @BindView(R.id.tv_measurement_data)
     TextView mTvMeasurementData;
+
+    @BindView(R.id.btn_query_data)
+    Button mBtnQuery;
+
+    @BindView(R.id.btn_continuous_collection)
+    Button mBtnContinuousCollect;
 
     private boolean isContinuousCollection = false;
 
@@ -118,6 +128,8 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            mBtnQuery.setEnabled(false);
+            mBtnContinuousCollect.setEnabled(false);
             isContinuousCollection = false;
             stopProgressAll();
             queryData();
@@ -126,6 +138,8 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            mBtnQuery.setEnabled(false);
+            mBtnContinuousCollect.setEnabled(false);
             isContinuousCollection = true;
             stopProgressAll();
             queryData();
@@ -133,20 +147,16 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
     }
 
     @Override
-    protected void parseResponseMessage(String cmdStr) {
-        setResultData(cmdStr);
-    }
-
-    private void setResultData(String cmdStr) {
-        resultBuilder.append(cmdStr);
+    protected void parseResponseMessage(byte[] data) {
+        try {
+            resultByteBuf.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        String cmdStr = resultBuilder.toString();
-        Timber.e("接收串口数据: %s", cmdStr);
-
-        resultBuilder.setLength(0);
         if (atCommandItems.size() == 0)
             return;
 
@@ -155,31 +165,42 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         if (msg.what == USB_SERIAL_DATA_QUERY) {
             switch (commandItem.getCommandType()) {
                 case ENTM: {//退出命令模式
+                    String cmdStr = resultByteBuf.toString();
+                    resultByteBuf.reset();
+                    Timber.e("接收串口数据: %s", cmdStr);
                     if ((cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) || TextUtils.isEmpty(cmdStr)) {
                         queryData();
-
-                    } else {
-
+                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;
 
                 case QUERY_MEASUREMENT_DATA: {//
-                    cmdStr = filterControlCharacter(cmdStr);
-                    mTvMeasurementData.setText(cmdStr);
-                    if(isContinuousCollection) {
-                        queryData();
-                    }
+                    mBtnQuery.setEnabled(true);
+                    mBtnContinuousCollect.setEnabled(true);
+                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    resultByteBuf.reset();
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    Timber.e("接收16进制串口数据: %s", hexData);
 
-                    //CRC检验通过
-                    if (cmdStr.length() > 4 && checkCRCData(cmdStr)) {
-                        String hexData = cmdStr.replace(" ", "").trim();
-                        hexData = hexData.substring(6, hexData.length() - 4);
-
-                        int result = Integer.valueOf(hexData, 16);
-//                        String value = df.format((double) result / 1000 ) + "V";
-//                        mTvVoltage.setText(value);
-                    }
+//                    cmdStr = filterControlCharacter(cmdStr);
+//                    mTvMeasurementData.setText(cmdStr);
+//                    if(isContinuousCollection) {
+//                        queryData();
+//                    }
+//
+//                    //CRC检验通过
+//                    if (cmdStr.length() > 4 && checkCRCData(cmdStr)) {
+//                        String hexData = cmdStr.replace(" ", "").trim();
+//                        hexData = hexData.substring(6, hexData.length() - 4);
+//
+//                        int result = Integer.valueOf(hexData, 16);
+////                        String value = df.format((double) result / 1000 ) + "V";
+////                        mTvVoltage.setText(value);
+//                    }
                 }
                 break;
             }

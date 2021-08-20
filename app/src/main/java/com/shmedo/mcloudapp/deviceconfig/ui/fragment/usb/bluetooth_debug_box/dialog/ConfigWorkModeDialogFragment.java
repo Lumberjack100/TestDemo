@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,12 +18,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import butterknife.BindView;
@@ -42,6 +45,12 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
 
     @BindView(R.id.tv_work_mode)
     TextView mTvWorkMode;
+
+    @BindView(R.id.btn_query_data)
+    Button mBtnQuery;
+
+    @BindView(R.id.btn_save)
+    Button mBtnSave;
 
     private String workMode;
 
@@ -69,6 +78,8 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("模式配置");
+        workMode = "存贮/运输状态";
+        mTvWorkMode.setText(workMode);
     }
 
     @Override
@@ -142,6 +153,8 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            mBtnQuery.setEnabled(false);
+            mBtnSave.setEnabled(false);
             stopProgressAll();
             queryWorkMode();
         } else if (id == R.id.btn_save) {
@@ -149,6 +162,8 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            mBtnQuery.setEnabled(false);
+            mBtnSave.setEnabled(false);
             stopProgressAll();
             setWorkMode();
         }
@@ -173,6 +188,7 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         workMode = modes[which];
+                        mTvWorkMode.setText(workMode);
                         return true;
                     }
                 });
@@ -181,20 +197,16 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
     }
 
     @Override
-    protected void parseResponseMessage(String cmdStr) {
-        setResultData(cmdStr);
-    }
-
-    private void setResultData(String cmdStr) {
-        resultBuilder.append(cmdStr);
+    protected void parseResponseMessage(byte[] data) {
+        try {
+            resultByteBuf.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        String cmdStr = resultBuilder.toString();
-        Timber.e("接收串口数据: %s", cmdStr);
-
-        resultBuilder.setLength(0);
         if (atCommandItems.size() == 0)
             return;
 
@@ -203,14 +215,27 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
         if (msg.what == USB_SERIAL_WORK_MODE) {
             switch (commandItem.getCommandType()) {
                 case ENTM: {//退出命令模式
+                    String cmdStr = resultByteBuf.toString();
+                    resultByteBuf.reset();
+                    Timber.e("接收串口数据: %s", cmdStr);
                     if ((cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) || TextUtils.isEmpty(cmdStr)) {
                         queryWorkMode();
+                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;
 
                 case QUERY_WORK_MODE: {//
-                    String hexData = cmdStr.replace(" ", "").trim();
+                    mBtnQuery.setEnabled(true);
+                    mBtnSave.setEnabled(true);
+                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    resultByteBuf.reset();
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    Timber.e("接收16进制串口数据: %s", hexData);
+
                     if (hexData.equals("0103025A5A02DF")) {//工作
                         workMode = "工作状态";
                         mTvWorkMode.setText(workMode);
@@ -222,7 +247,13 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
                 break;
 
                 case SET_WORK_MODE: {//
-                    String hexData = cmdStr.replace(" ", "").trim();
+                    mBtnQuery.setEnabled(true);
+                    mBtnSave.setEnabled(true);
+                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    resultByteBuf.reset();
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    Timber.e("接收16进制串口数据: %s", hexData);
+
                     if (hexData.equals("0110080D0001926A")) {//工作
                         ToastUtils.show("保存成功");
                     }

@@ -27,7 +27,7 @@ public class USBSerialViewModel extends AndroidViewModel {
         return usbSerialManager.state;
     }
 
-    public ProtectedUnPeekLiveData<String> getResponseMsg() {
+    public ProtectedUnPeekLiveData<byte[]> getResponseMsg() {
         return usbSerialManager.getResponseMsg();
     }
 

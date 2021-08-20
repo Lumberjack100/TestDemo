@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.profile.USBSerialViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 
@@ -37,7 +38,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
     protected USBSerialViewModel usbSerialViewModel;
 
     protected LinkedList<ATCommandItem> atCommandItems = new LinkedList<>();
-    protected StringBuilder resultBuilder = new StringBuilder();
+    protected ByteArrayOutputStream resultByteBuf = new ByteArrayOutputStream();
 
     private final InnerHandler mInnerHandler = new InnerHandler(this);
 
@@ -78,11 +79,11 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         usbSerialViewModel = getApplicationScopeViewModel(USBSerialViewModel.class);
-        usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
+        usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<byte[]>() {
             @Override
-            public void onChanged(String result) {
+            public void onChanged(byte[] data) {
                 try {
-                    parseResponseMessage(result);
+                    parseResponseMessage(data);
                 } catch (Exception ex) {
                     Timber.e(ex);
                 }
@@ -93,7 +94,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
     /**
      * 解析设备的参数指令
      */
-    protected void parseResponseMessage(String cmdStr) {
+    protected void parseResponseMessage(byte[] data) {
 
     }
 
@@ -107,7 +108,6 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
 
     public void sendCommandFromCmdList(int what, long delayMillis) {
         if (atCommandItems.size() > 0) {
-            resultBuilder.setLength(0);
             String command = atCommandItems.getFirst().getCommand();
             usbSerialViewModel.sendData(command);
             startProgress(what, delayMillis);
@@ -116,7 +116,6 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
 
     public void sendHexCommandFromCmdList(int what, long delayMillis) {
         if (atCommandItems.size() > 0) {
-            resultBuilder.setLength(0);
             String command = atCommandItems.getFirst().getCommand();
             byte[] data = StringUtil.hexStringToBytes2(command);
             usbSerialViewModel.sendData(data);

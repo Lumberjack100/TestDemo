@@ -37,6 +37,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dia
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -286,7 +287,6 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
 
     public void sendCommandFromCmdList(int what, long delayMillis) {
         if (atCommandItems.size() > 0) {
-            resultBuilder.setLength(0);
             String command = atCommandItems.getFirst().getCommand();
             usbSerialViewModel.sendData(command);
             startProgress(what, delayMillis);
@@ -343,23 +343,23 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
     }
 
     @Override
-    protected void parseResponseMessage(String cmdStr) {
+    protected void parseResponseMessage(byte[] data) {
         if (!isActive) {
             return;
         }
-        setResultData(cmdStr);
-    }
-
-    private void setResultData(String cmdStr) {
-        resultBuilder.append(cmdStr);
+        try {
+            resultByteBuf.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         if (msg.what == AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL) {
-            String cmdStr = resultBuilder.toString();
+            String cmdStr = resultByteBuf.toString();
+            resultByteBuf.reset();
             Timber.e("接收串口数据: %s", cmdStr);
-            resultBuilder.setLength(0);
             if (atCommandItems.size() == 0)
                 return;
 
@@ -374,6 +374,10 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                             queryDeviceNameAndVerison();
                         }
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
+                    } else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;
@@ -381,6 +385,10 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                 case MODE: {
                     if (cmdStr.contains(WHBLE102CommandType.MODE.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
+                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;
@@ -392,6 +400,10 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                         mTvDeviceName.setText(cmdStr);
 
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
+                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;
@@ -401,6 +413,10 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                         cmdStr = filterControlCharacter(cmdStr);
                         cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + "VER" + ATCommand.DELIMITER_COLON, "");
                         mTvDeviceSn.setText(String.format("固件版本：%s", cmdStr));
+                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;

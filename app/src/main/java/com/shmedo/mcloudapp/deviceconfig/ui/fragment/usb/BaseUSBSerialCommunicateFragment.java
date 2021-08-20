@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.profile.USBSerialViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
@@ -33,7 +34,7 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     protected USBSerialViewModel usbSerialViewModel;
 
     protected boolean isExitMode = false;//是否退出页面标志
-    protected StringBuilder resultBuilder = new StringBuilder();
+    protected ByteArrayOutputStream resultByteBuf = new ByteArrayOutputStream();
 
     private final InnerHandler mInnerHandler = new InnerHandler(this);
 
@@ -75,11 +76,11 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         usbSerialViewModel = getApplicationScopeViewModel(USBSerialViewModel.class);
-        usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
+        usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<byte[]>() {
             @Override
-            public void onChanged(String result) {
+            public void onChanged(byte[] data) {
                 try {
-                    parseResponseMessage(result);
+                    parseResponseMessage(data);
                 } catch (Exception ex) {
                     Timber.e(ex);
                 }
@@ -114,7 +115,7 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     /**
      * 解析设备的参数指令
      */
-    protected void parseResponseMessage(String cmdStr) {
+    protected void parseResponseMessage(byte[] data) {
 
     }
 

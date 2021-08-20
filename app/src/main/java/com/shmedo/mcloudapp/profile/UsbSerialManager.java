@@ -17,6 +17,7 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.usbserial.livedata.USBConnectionStateLiveData;
 import com.shmedo.core.usbserial.livedata.state.USBConnectionState;
@@ -47,7 +48,7 @@ public class UsbSerialManager implements SerialListener {
     private Connected connected = Connected.False;
 
     public final UnPeekLiveData<USBConnectionState> state;
-    private final UnPeekLiveData<String> responseMsg = new UnPeekLiveData<>();
+    private final UnPeekLiveData<byte[]> responseMsg = new UnPeekLiveData<>();
 
     private final Handler mainLooper;
 
@@ -66,7 +67,7 @@ public class UsbSerialManager implements SerialListener {
         };
     }
 
-    public ProtectedUnPeekLiveData<String> getResponseMsg() {
+    public ProtectedUnPeekLiveData<byte[]> getResponseMsg() {
         return responseMsg;
     }
 
@@ -172,7 +173,7 @@ public class UsbSerialManager implements SerialListener {
         if (connected != Connected.True)
             return;
 
-        Timber.e("发送串口数据: %s", data);
+        Timber.e("发送 16 进制串口数据: %s", StringUtil.bytesToHexString(data));
         try {
             socket.write(data);
         } catch (SerialTimeoutException e) {
@@ -216,9 +217,7 @@ public class UsbSerialManager implements SerialListener {
         if (isConnected()) {
             synchronized (this) {
                 mainLooper.post(() -> {
-                    String msg = new String(data, StandardCharsets.UTF_8);
-//                    Timber.e("接收串口数据: %s", msg);
-                    responseMsg.setValue(msg);
+                    responseMsg.setValue(data);
                 });
             }
         }

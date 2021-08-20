@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,12 +17,14 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 import butterknife.BindView;
@@ -41,6 +44,9 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
 
     @BindView(R.id.tv_battery_voltage)
     TextView mTvVoltage;
+
+    @BindView(R.id.btn_query_data)
+    Button mBtnQuery;
 
     DecimalFormat df = new DecimalFormat("0.000");//格式化小数
 
@@ -120,26 +126,23 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            mBtnQuery.setEnabled(false);
             stopProgressAll();
             queryVoltage();
         }
     }
 
     @Override
-    protected void parseResponseMessage(String cmdStr) {
-        setResultData(cmdStr);
-    }
-
-    private void setResultData(String cmdStr) {
-        resultBuilder.append(cmdStr);
+    protected void parseResponseMessage(byte[] data) {
+        try {
+            resultByteBuf.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        String cmdStr = resultBuilder.toString();
-        Timber.e("接收串口数据: %s", cmdStr);
-
-        resultBuilder.setLength(0);
         if (atCommandItems.size() == 0)
             return;
 
@@ -148,16 +151,32 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
         if (msg.what == USB_SERIAL_DATA_QUERY) {
             switch (commandItem.getCommandType()) {
                 case ENTM: {//退出命令模式
+                    String cmdStr = resultByteBuf.toString();
+                    resultByteBuf.reset();
+                    Timber.e("接收串口数据: %s", cmdStr);
                     if ((cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) || TextUtils.isEmpty(cmdStr)) {
                         queryVoltage();
+                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;
 
                 case QUERY_BATTERY_VOLTAGE: {//
+                    mBtnQuery.setEnabled(true);
+                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    resultByteBuf.reset();
+                    if (TextUtils.isEmpty(hexData)) {
+                        return;
+                    }
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    Timber.e("接收16进制串口数据: %s", hexData);
+
                     //CRC检验通过
-                    if (cmdStr.length() > 4 && checkCRCData(cmdStr)) {
-                        String hexData = cmdStr.replace(" ", "").trim();
+                    if (hexData.length() > 4 && checkCRCData(hexData)) {
+                        hexData = hexData.replace(" ", "").trim();
                         hexData = hexData.substring(6, hexData.length() - 4);
 
                         int result = Integer.valueOf(hexData, 16);
