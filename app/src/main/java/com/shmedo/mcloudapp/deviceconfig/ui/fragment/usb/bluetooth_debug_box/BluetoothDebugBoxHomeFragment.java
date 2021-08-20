@@ -367,28 +367,39 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
             atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {
-                    cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
-                    if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
+                    cmdStr = filterControlCharacter(cmdStr);
+//                    if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
+//                        if (atCommandItems.size() == 0 && initialStart) {
+//                            initialStart = false;
+//                            queryDeviceNameAndVerison();
+//                        }
+//                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
+//                    } else
+                    if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
+                    } else {
                         if (atCommandItems.size() == 0 && initialStart) {
                             initialStart = false;
                             queryDeviceNameAndVerison();
                         }
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
-                    } else if (cmdStr.toUpperCase().contains("ERR")) {
-                        cmdStr = filterControlCharacter(commandItem.getCommand());
-                        Timber.e("%s  出错", cmdStr);
-                        ToastUtils.show(cmdStr + "  出错");
                     }
                 }
                 break;
 
                 case MODE: {
-                    if (cmdStr.contains(WHBLE102CommandType.MODE.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
-                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+//                    if (cmdStr.contains(WHBLE102CommandType.MODE.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
+//                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
+//
+//                    } else
+                    if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
+                    } else {
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
                     }
                 }
                 break;
@@ -400,7 +411,7 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                         mTvDeviceName.setText(cmdStr);
 
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
-                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                    } else if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
@@ -413,7 +424,8 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
                         cmdStr = filterControlCharacter(cmdStr);
                         cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + "VER" + ATCommand.DELIMITER_COLON, "");
                         mTvDeviceSn.setText(String.format("固件版本：%s", cmdStr));
-                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+
+                    } else if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
