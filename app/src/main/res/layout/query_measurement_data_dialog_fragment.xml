@@ -40,10 +40,10 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="连接状态" />
+            android:text="测量数据" />
 
         <TextView
-            android:id="@+id/tv_link_status"
+            android:id="@+id/tv_measurement_data"
             style="@style/Common_ClickableItem_ValueStyle"
             android:drawableEnd="@null"
             android:textSize="17sp"
@@ -53,51 +53,19 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="14dp" />
-
-    <LinearLayout style="@style/Common_ClickableItem_LayoutStyle">
-
-        <TextView
-            style="@style/Common_ClickableItem_TitleStyle"
-            android:text="MAC 地址" />
-
-        <TextView
-            android:id="@+id/tv_mac_address"
-            style="@style/Common_ClickableItem_ValueStyle"
-            android:drawableEnd="@null"
-            android:textSize="17sp"
-            tools:text="9CA525B50DE5" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="14dp" />
-
-    <LinearLayout style="@style/Common_ClickableItem_LayoutStyle">
-
-        <TextView
-            style="@style/Common_ClickableItem_TitleStyle"
-            android:text="信号强度" />
-
-        <TextView
-            android:id="@+id/tv_rssi"
-            style="@style/Common_ClickableItem_ValueStyle"
-            android:drawableEnd="@null"
-            android:textSize="17sp"
-            tools:text="-60dBm" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/btn_query_link"
+        android:id="@+id/btn_query_data"
         style="@style/SubmitBordelessButtonStyle"
-        android:text="查询连接" />
+        android:text="请求数据" />
+
+    <Button
+        android:id="@+id/btn_continuous_collection"
+        style="@style/SubmitBordelessButtonStyle"
+        android:layout_marginTop="0dp"
+        android:text="连续采集" />
 
 </LinearLayout>
 

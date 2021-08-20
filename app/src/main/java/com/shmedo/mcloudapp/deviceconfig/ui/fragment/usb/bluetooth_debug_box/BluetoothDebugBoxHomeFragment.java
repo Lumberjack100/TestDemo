@@ -28,8 +28,12 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BaseUSBSerialCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.CommunicationTimeDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigBluetoothMacDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigWorkModeDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.QueryBluetoothLinkStatusDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.QueryMeasurementDataDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.QueryVoltageDataDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -164,7 +168,7 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
 
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
-            case "配置连接":
+            case "连接配置":
                 ConfigBluetoothMacDialogFragment configLinkMacDialogFragment = ConfigBluetoothMacDialogFragment.newInstance();
                 configLinkMacDialogFragment.show(getChildFragmentManager(), "dialog");
                 break;
@@ -172,6 +176,30 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
             case "状态":
                 QueryBluetoothLinkStatusDialogFragment queryBluetoothLinkStatusDialogFragment = QueryBluetoothLinkStatusDialogFragment.newInstance();
                 queryBluetoothLinkStatusDialogFragment.show(getChildFragmentManager(), "dialog");
+                break;
+
+            case "电压数据读取":
+                QueryVoltageDataDialogFragment queryVoltageDataDialogFragment = QueryVoltageDataDialogFragment.newInstance();
+                queryVoltageDataDialogFragment.show(getChildFragmentManager(), "dialog");
+                break;
+
+            case "测量数据读取":
+                QueryMeasurementDataDialogFragment queryMeasurementDataDialogFragment = QueryMeasurementDataDialogFragment.newInstance();
+                queryMeasurementDataDialogFragment.show(getChildFragmentManager(), "dialog");
+                break;
+
+            case "模式配置":
+                ConfigWorkModeDialogFragment configWorkModeDialogFragment = ConfigWorkModeDialogFragment.newInstance();
+                configWorkModeDialogFragment.show(getChildFragmentManager(), "dialog");
+                break;
+
+            case "待机时间配置":
+                CommunicationTimeDialogFragment communicationTimeDialogFragment = CommunicationTimeDialogFragment.newInstance();
+                communicationTimeDialogFragment.show(getChildFragmentManager(), "dialog");
+                break;
+
+            case "其他参数配置":
+
                 break;
         }
     }
@@ -234,19 +262,25 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
 
     private void initConfigModuleData() {
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "配置连接", "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "连接配置", "测斜仪连接配置");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
+        configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "查询测斜仪连接状态");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_current_time, "电压数据查询", "获取当前设备时间");
+        configModule = new ConfigModule(R.drawable.ic_device_telemetry, "电压数据读取", "获取电压数据");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_current_time, "测量数据查询", "获取当前设备时间");
+        configModule = new ConfigModule(R.drawable.ic_device_telemetry, "测量数据读取", "获取测量数据");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_setting, "其他配置", "高级设置");
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "模式配置", "配置测斜仪工作模式");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "待机时间配置", "配置测斜仪待机时间");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "其他参数配置", "其他参数配置");
         configModuleList.add(configModule);
     }
 

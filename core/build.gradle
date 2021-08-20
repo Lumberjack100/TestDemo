@@ -43,7 +43,7 @@ dependencies {
 
     api "no.nordicsemi.android:ble:$rootProject.thirdLib.nordicsemiBle"
 
-    api 'com.kunminx.arch:unpeek-livedata:6.1.0-beta1'
+    api 'com.kunminx.arch:unpeek-livedata:7.1.0-beta1'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.thirdLib.testExtJunit"

@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
 import com.shmedo.configlibrary.at.ATCommand;
+import com.shmedo.configlibrary.ble.utils.CRC16;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -28,7 +29,9 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
-    protected static final int WRITE_TIME_OUT_MILLIS = 500;//发送指令超时时间
+    protected static final int WRITE_TIME_OUT_500_MILLIS = 500;//发送指令超时时间
+    protected static final int WRITE_TIME_OUT_1000_MILLIS = 1000;//发送指令超时时间
+    protected static final int WRITE_TIME_OUT_2000_MILLIS = 2000;//发送指令超时时间
     protected static final int SCAN_TIME_OUT_MILLIS = 10000;//扫描指令超时时间
 
     protected USBSerialViewModel usbSerialViewModel;
@@ -126,6 +129,32 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
                 .replace(ATCommand.NEWLINE_CR, "")
                 .replace(ATCommand.NEWLINE_LF, "");
         return str;
+    }
+
+    protected boolean checkCRCData(String hexData) {
+        hexData = hexData.trim();
+        String crcStr = hexData.substring(hexData.length() - 4);
+        String rawData = hexData.replace(crcStr, "");
+
+        return CRC16.getCRC(rawData).equals(crcStr);
+    }
+
+    protected int parserModbusValue(String hexData) {
+        int result = 0;
+
+        hexData = hexData.replace(" ", "").trim();
+        hexData = hexData.substring(6, hexData.length() - 4);
+        int len = hexData.length();
+        if (!(len % 2 == 0)) {
+            return 0;
+        }
+        int num = len / 2;
+        for (int i = 0; i < num; i++) {
+            int value = Integer.valueOf(hexData.substring(i * 2, 2 * (i + 1)), 16);
+            result += value;
+        }
+
+        return result;
     }
 
     @Override

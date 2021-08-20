@@ -316,7 +316,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
             switch (commandItem.getCommandType()) {
                 case CONNADD: {
                     if (cmdStr.contains(WHBLE102CommandType.CONNADD.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");
                     }
@@ -325,7 +325,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
 
                 case AUTOCONN: {
                     if (cmdStr.contains(WHBLE102CommandType.AUTOCONN.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");
                     }
@@ -338,7 +338,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
                             ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
                             atCommandItems.add(atCommandItem);//进入命令模式
                         }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");
                     }
@@ -352,7 +352,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
                             queryCont = 1;
                             queryBluetoothLinkStatus();
                         }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;

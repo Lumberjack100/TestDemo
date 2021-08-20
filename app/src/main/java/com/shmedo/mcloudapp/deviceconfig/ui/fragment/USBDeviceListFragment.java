@@ -182,7 +182,7 @@ public class USBDeviceListFragment extends BaseFragment {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         baudRate = Integer.parseInt(baudRates[which]);
-                        BluetoothDebugBoxHomeActivity.startActivity(mActivity,usbDeviceItem.getDevice().getDeviceId(),usbDeviceItem.getPort(),baudRate);
+                        BluetoothDebugBoxHomeActivity.startActivity(mActivity, usbDeviceItem.getDevice().getDeviceId(), usbDeviceItem.getPort(), baudRate);
                         return true;
                     }
                 });
@@ -225,7 +225,12 @@ public class USBDeviceListFragment extends BaseFragment {
 
     @Override
     public void onStop() {
-        mActivity.unregisterReceiver(usbReceiver);
+        try {
+            if (usbReceiver != null)
+                mActivity.unregisterReceiver(usbReceiver);
+        } catch (Exception ignored) {
+
+        }
         super.onStop();
     }
 

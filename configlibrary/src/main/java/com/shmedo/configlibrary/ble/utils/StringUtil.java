@@ -102,7 +102,7 @@ public class StringUtil {
         if (hexString == null || hexString.equals("")) {
             return null;
         }
-        hexString = hexString.toUpperCase();
+        hexString = hexString.replace(" ", "").trim().toUpperCase();
         int length = hexString.length() / 2;
         char[] hexChars = hexString.toCharArray();
         byte[] d = new byte[length];
@@ -124,6 +124,8 @@ public class StringUtil {
      * @return 返回字节数组
      */
     public static byte[] hexStringToBytes2(String hexString) {
+        hexString = hexString.replace(" ", "").trim();
+
         ByteArrayOutputStream buf = new ByteArrayOutputStream();
         byte b = 0;
         int nibble = 0;

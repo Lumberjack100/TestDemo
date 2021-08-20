@@ -63,14 +63,14 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.9f);
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.5f);
+        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.6f);
         window.setAttributes(wlp);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTvTitle.setText("连接状态查询");
+        mTvTitle.setText("连接状态");
     }
 
     @Override
@@ -90,7 +90,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
         atCommandItems.add(atCommandItem);//进入命令模式
 
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
+        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -103,21 +103,9 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.LINK, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
+        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
     }
 
-    /**
-     * 退出命令行模式
-     */
-    private void exitCommand() {
-        atCommandItems.clear();
-
-        String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.ENTM.toString() + ATCommand.NEWLINE_CRLF;
-        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
-        atCommandItems.add(atCommandItem);
-
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, 0);
-    }
 
     @OnClick({R.id.iv_close, R.id.btn_query_link})
     public void onClick(View view) {
@@ -160,9 +148,9 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
         if (msg.what == USB_SERIAL_LINK_QUERY) {
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {
-                    cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
+                    cmdStr = filterControlCharacter(cmdStr);
                     if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
-                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
+                        QueryBluetoothLinkStatus();
                     } else {
                         Timber.e("%s  Error", commandItem.getCommand());
                         ToastUtils.show(commandItem.getCommand() + "  Error");
@@ -179,7 +167,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
                             String mac = cmdStr.substring(cmdStr.indexOf("PEERADDR:"), cmdStr.indexOf("RSSI")).replace("PEERADDR:", "");
                             String rssi = cmdStr.substring(cmdStr.indexOf("RSSI:"), cmdStr.indexOf("DBM")).replace("RSSI:", "");
                             mTvMacAddress.setText(mac);
-                            mTvRssi.setText(rssi);
+                            mTvRssi.setText(rssi + "dBm");
                         } else {
                             mTvLinkStatus.setText("Offline");
                         }
@@ -191,12 +179,5 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
                 break;
             }
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        //退出命令模式
-        exitCommand();
     }
 }

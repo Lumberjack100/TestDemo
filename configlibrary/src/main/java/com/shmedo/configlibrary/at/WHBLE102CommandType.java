@@ -114,6 +114,46 @@ public enum WHBLE102CommandType {
     ALLOW_BLUETOOTH_COMMUNICATION("allow_bluetooth_communication"),
 
     /**
+     * 查询测斜仪电池电压
+     */
+    QUERY_BATTERY_VOLTAGE("query_battery_voltage"),
+
+    /**
+     * 查询测量数据
+     */
+    QUERY_MEASUREMENT_DATA("query_measurement_data"),
+
+    /**
+     * 查询测斜仪工作模式
+     */
+    QUERY_WORK_MODE("query_work_mode"),
+
+    /**
+     * 设置测斜仪工作模式
+     */
+    SET_WORK_MODE("set_work_mode"),
+
+    /**
+     * 查询蓝牙无通讯休眠时间
+     */
+    QUERY_SLEEP_TIME("query_sleep_time"),
+
+    /**
+     * 设置蓝牙无通讯休眠时间
+     */
+    SET_SLEEP_TIME("set_sleep_time"),
+
+    /**
+     * 查询蓝牙开机等待连接时间
+     */
+    QUERY_WAITING_LINK_TIME("query_waiting_link_time"),
+
+    /**
+     * 设置蓝牙开机等待连接时间
+     */
+    SET_WAITING_LINK_TIME("set_waiting_link_time"),
+
+    /**
      * 未知的命令类型
      */
     UNKNOWN_TYPE("unknown_type");

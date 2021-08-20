@@ -66,11 +66,6 @@
             style="@style/SubmitBordelessButtonStyle"
             android:text="连接" />
 
-        <Button
-            android:id="@+id/test_link"
-            style="@style/SubmitBordelessButtonStyle"
-            android:text="查询连接" />
-
     </LinearLayout>
 
     <ProgressBar

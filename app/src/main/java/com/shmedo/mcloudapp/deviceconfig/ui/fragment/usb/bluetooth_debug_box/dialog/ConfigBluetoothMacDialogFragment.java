@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -101,11 +102,14 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
     private void queryConfigBluetoothMac() {
         atCommandItems.clear();
 
+        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
+        atCommandItems.add(atCommandItem);//进入命令模式
+
         String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.CONNADD.toString() + ATCommand.QUERY_FLAG + ATCommand.NEWLINE_CRLF;
-        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.CONNADD, command);
+        atCommandItem = new ATCommandItem(WHBLE102CommandType.CONNADD, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -124,22 +128,23 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItem = new ATCommandItem(WHBLE102CommandType.AUTOCONN, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
-     * 查询蓝牙测斜仪设备连接状态
+     * 查询蓝牙测斜仪设备自动连接状态
      * 1.发送 AT+LINK?查询连接状态
      * 2.发送 AT+Z 控制模块重启
      * 3.发送 +++a 进入命令行模式
      */
     private void queryBluetoothLinkStatus() {
-        if (queryCont >= 103) {
+        if (queryCont >= 110) {
             updateFailureStatus("连接查询超时！");
             return;
         }
         queryCont++;
         atCommandItems.clear();
+        Timber.e("第 %s 次查询", queryCont);
 
         String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.Z.toString() + ATCommand.NEWLINE_CRLF;
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.Z, command);
@@ -153,7 +158,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItems.add(atCommandItem);
 
         //发送 AT+Z 指令后,延迟 1000 ms 发送下一条指令
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, 1000);
+        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_2000_MILLIS);
     }
 
     /**
@@ -166,7 +171,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
+        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -183,7 +188,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItem = new ATCommandItem(WHBLE102CommandType.ALLOW_BLUETOOTH_COMMUNICATION, "011008170001025A5A962C");
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_MILLIS);
+        sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
     }
 
     @OnClick({R.id.iv_close, R.id.btn_link})
@@ -210,7 +215,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
             if (!defaultMac.equals(mEtMacAddr.getText().toString().trim())) {
                 configDefaultMac();
             } else {
-                //直接循环查询连接状态
+                //直接循环查询自动连接状态
                 queryCont = 1;
                 queryBluetoothLinkStatus();
             }
@@ -225,6 +230,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
 
     public void updateFailureStatus(String content) {
         Timber.e("updateFailureStatus: %s", content);
+        mBtnLink.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
         ToastUtils.show(content);
     }
@@ -251,6 +257,18 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItems.removeFirst();//移除已经发送完的指令
         if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
             switch (commandItem.getCommandType()) {
+                case ENTER_COMMAND: {
+                    cmdStr = filterControlCharacter(cmdStr);
+                    if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
+
+                    } else {
+                        Timber.e("%s  Error", commandItem.getCommand());
+                        ToastUtils.show(commandItem.getCommand() + "  Error");
+                    }
+                }
+                break;
+
                 case CONNADD: {
                     if (cmdStr.contains(WHBLE102CommandType.CONNADD.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
                         cmdStr = filterControlCharacter(cmdStr);
@@ -260,7 +278,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
 
                         //说明还有 AT+AUTOCONN 指令,表示进行连接处理
                         if (atCommandItems.size() > 0) {
-                            sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_MILLIS);
+                            sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
                         }
                     } else {
                         //说明还有 AT+AUTOCONN 指令,表示进行连接处理
@@ -285,9 +303,9 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         } else if (msg.what == USB_SERIAL_LINK_QUERY) {
             switch (commandItem.getCommandType()) {
                 case Z: {//重启
-                    cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
+                    cmdStr = filterControlCharacter(cmdStr);
                     if (cmdStr.toUpperCase().contains("RST:OK")) {
-                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
+                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
                     } else {
                         updateFailureStatus(commandItem.getCommand() + "  Error");
                     }
@@ -295,9 +313,9 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                 break;
 
                 case ENTER_COMMAND: {
-                    cmdStr = cmdStr.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, "").trim();
+                    cmdStr = filterControlCharacter(cmdStr);
                     if (cmdStr.contains("a+ok")) {
-                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_MILLIS);
+                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
                     } else {
                         updateFailureStatus(commandItem.getCommand() + "  Error");
                     }
@@ -307,7 +325,6 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                 case LINK: {
                     if (cmdStr.toUpperCase().contains(WHBLE102CommandType.LINK.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
                         if (cmdStr.toUpperCase().contains("ONLINE")) {
-                            queryCont = 0;
                             //连接成功
                             updateSuccessStatus();
                             //退出命令模式
@@ -335,7 +352,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         } else if (msg.what == USB_SERIAL_OPEN_COMMUNICATION) {
             switch (commandItem.getCommandType()) {
                 case ALLOW_CONNECT: {//允许连接指令
-                    sendCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_MILLIS);
+                    sendCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
                 }
                 break;
 

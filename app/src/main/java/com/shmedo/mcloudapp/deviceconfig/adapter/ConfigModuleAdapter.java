@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.adapter;
 
+import android.text.TextUtils;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
@@ -24,6 +26,6 @@ public class ConfigModuleAdapter extends BaseQuickAdapter<ConfigModule, BaseView
     protected void convert(@NotNull BaseViewHolder holder, ConfigModule configModule) {
         holder.setImageResource(R.id.iv_config_logo, configModule.getIconResId());
         holder.setText(R.id.tv_config_name, configModule.getName());
-        holder.setText(R.id.tv_config_desc, configModule.getDesc());
+        holder.setText(R.id.tv_config_desc, TextUtils.isEmpty(configModule.getDesc()) ? "" : configModule.getDesc());
     }
 }
