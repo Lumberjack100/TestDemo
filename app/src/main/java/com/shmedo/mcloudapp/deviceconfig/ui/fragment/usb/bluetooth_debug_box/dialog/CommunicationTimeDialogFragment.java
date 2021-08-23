@@ -77,7 +77,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.9f);
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.7f);
+        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.6f);
         window.setAttributes(wlp);
     }
 
@@ -344,6 +344,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                         int result = Integer.valueOf(hexData, 16);
                         sleepTime = result + "s";
                         mTvSleepTime.setText(sleepTime);
+                        assembleSleepTimeCmd(sleepTime);
                     }
                     sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
                 }
@@ -368,6 +369,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                         int result = Integer.valueOf(hexData, 16);
                         waitingLinkTime = result + "s";
                         mTvWaitingLinkTime.setText(waitingLinkTime);
+                        assembleWaitingLinkTimeCmd(waitingLinkTime);
                     }
                 }
                 break;

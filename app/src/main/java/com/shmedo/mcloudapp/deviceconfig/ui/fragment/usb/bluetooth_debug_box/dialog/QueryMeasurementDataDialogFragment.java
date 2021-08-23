@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.di
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -168,12 +167,15 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                     String cmdStr = resultByteBuf.toString();
                     resultByteBuf.reset();
                     Timber.e("接收串口数据: %s", cmdStr);
-                    if ((cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) || TextUtils.isEmpty(cmdStr)) {
-                        queryData();
-                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+//                    if ((cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) || TextUtils.isEmpty(cmdStr)) {
+//                        queryData();
+//                    } else
+                    if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
+                    } else {
+                        queryData();
                     }
                 }
                 break;
@@ -185,22 +187,16 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                     resultByteBuf.reset();
                     hexData = hexData.replace(" ", "").toUpperCase().trim();
                     Timber.e("接收16进制串口数据: %s", hexData);
+                    if (hexData.length() >= 22) {
+                        String modulus = hexData.substring(10, 14);
+                        String temperature = hexData.substring(14, 18);
+                        int value = StringUtil.signedHexToDec(modulus);
+                        mTvMeasurementData.setText(String.valueOf(value));
 
-//                    cmdStr = filterControlCharacter(cmdStr);
-//                    mTvMeasurementData.setText(cmdStr);
-//                    if(isContinuousCollection) {
-//                        queryData();
-//                    }
-//
-//                    //CRC检验通过
-//                    if (cmdStr.length() > 4 && checkCRCData(cmdStr)) {
-//                        String hexData = cmdStr.replace(" ", "").trim();
-//                        hexData = hexData.substring(6, hexData.length() - 4);
-//
-//                        int result = Integer.valueOf(hexData, 16);
-////                        String value = df.format((double) result / 1000 ) + "V";
-////                        mTvVoltage.setText(value);
-//                    }
+                        if (isContinuousCollection) {
+                            queryData();
+                        }
+                    }
                 }
                 break;
             }

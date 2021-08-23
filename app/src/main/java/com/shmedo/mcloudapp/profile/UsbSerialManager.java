@@ -173,7 +173,7 @@ public class UsbSerialManager implements SerialListener {
         if (connected != Connected.True)
             return;
 
-        Timber.e("发送 16 进制串口数据: %s", StringUtil.bytesToHexString(data));
+        Timber.e("发送 16 进制串口数据: %s", StringUtil.bytesToHexString(data).toUpperCase());
         try {
             socket.write(data);
         } catch (SerialTimeoutException e) {

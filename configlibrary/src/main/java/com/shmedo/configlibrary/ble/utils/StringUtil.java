@@ -176,6 +176,70 @@ public class StringUtil {
     }
 
     /**
+     * 有符号16进制转10进制
+     *
+     * @param strHex
+     * @return
+     */
+    public static int signedHexToDec(String strHex) {
+        if (strHex.length() == 0) {
+            return 0;
+        }
+        int x = 0;
+        //带符号十六进制转换十进制
+        String fristNum = strHex.substring(0, 1);
+        String hexStr2Byte = parseHexStr2Byte(fristNum);
+        String flag = hexStr2Byte.substring(0, 1);
+        if ("1".equals(flag)) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < strHex.length(); i++) {
+                String num = strHex.substring(i, i + 1);
+                int decNum = Integer.parseInt(num, 16);
+                int a = decNum ^ 15;
+                sb.append(intToHex(a));
+            }
+            x = -Integer.parseInt(sb.toString(), 16) - 1;
+        } else {
+            x = Integer.parseInt(strHex, 16);
+        }
+
+        return x;
+
+    }
+
+    //十进制转16进制
+    private static String intToHex(int n) {
+        StringBuffer s = new StringBuffer();
+        String a;
+        char[] b = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        while (n != 0) {
+            s = s.append(b[n % 16]);
+            n = n / 16;
+        }
+        a = s.reverse().toString();
+        return a;
+    }
+
+    /**
+     * 将16进制转换为二进制
+     *
+     * @param hexStr
+     * @return
+     */
+    public static String parseHexStr2Byte(String hexStr) {
+        if (hexStr.length() == 0)
+            return null;
+        int sint = Integer.valueOf(hexStr, 16);
+        //十进制在转换成二进制的字符串形式输出!
+        String bin = Integer.toBinaryString(sint);
+        for (int i = bin.length(); i < 4; i++) {
+            bin = "0" + bin;
+        }
+        return bin;
+    }
+
+
+    /**
      * 倒叙
      *
      * @param str 参数

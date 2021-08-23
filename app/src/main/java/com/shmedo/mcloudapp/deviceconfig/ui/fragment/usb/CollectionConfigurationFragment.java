@@ -15,7 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
-import com.shmedo.configlibrary.ble.utils.CRC8;
+import com.shmedo.configlibrary.ble.utils.CRC8Utils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
@@ -353,9 +353,11 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
         sb.append(collectorStandbyInterval + ",");
         sb.append(motionAcceleration);
 
-        byte crcSum = CRC8.calcCrc8(sb.toString().getBytes());
+        int crcSum = CRC8Utils.CRC8_MAXIM(sb.toString().getBytes(), 0, sb.length());
+        String result = Integer.toHexString(crcSum).toUpperCase();
+
         sb.append("*");
-        sb.append(crcSum);
+        sb.append(result);
         sb.append("\r\n");
         String command = sb.toString();
 
@@ -401,11 +403,14 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
                 break;
 
                 case SET_COLLECTION_CONFIGURATION: {
+                    mBtnSave.setEnabled(true);
                     String cmdStr = resultByteBuf.toString();
                     resultByteBuf.reset();
                     Timber.e("接收串口数据: %s", cmdStr);
                     if (cmdStr.contains("$$CFG:OK")) {
                         ToastUtils.show("保存成功");
+                    }else{
+                        ToastUtils.show("保存失败");
                     }
                 }
                 break;

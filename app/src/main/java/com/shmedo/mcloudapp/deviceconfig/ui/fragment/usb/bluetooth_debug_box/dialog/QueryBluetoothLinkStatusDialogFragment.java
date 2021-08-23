@@ -109,7 +109,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.LINK, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
+        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
     }
 
 
