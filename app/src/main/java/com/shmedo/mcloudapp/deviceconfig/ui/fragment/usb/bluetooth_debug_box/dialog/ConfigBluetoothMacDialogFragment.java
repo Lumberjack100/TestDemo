@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -231,9 +230,9 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
     }
 
     public void updateFailureStatus(String content) {
-        Timber.e("updateFailureStatus: %s", content);
         mBtnLink.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
+        Timber.e("updateFailureStatus: %s", content);
         ToastUtils.show(content);
     }
 
@@ -253,30 +252,31 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
 
         ATCommandItem commandItem = atCommandItems.getFirst();
         atCommandItems.removeFirst();//移除已经发送完的指令
+
+        String cmdStr = resultByteBuf.toString();
+        resultByteBuf.reset();
+        Timber.e("接收串口数据: %s", cmdStr);
+
         if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {
-                    String cmdStr = resultByteBuf.toString();
-                    resultByteBuf.reset();
-                    Timber.e("接收串口数据: %s", cmdStr);
-                    cmdStr = filterControlCharacter(cmdStr);
-                    if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_1000_MILLIS);
-
-                    } else if (cmdStr.toUpperCase().contains("ERR")) {
+                    if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
+                    } else {
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_1000_MILLIS);
                     }
                 }
                 break;
 
                 case CONNADD: {
-                    String cmdStr = resultByteBuf.toString();
-                    resultByteBuf.reset();
-                    Timber.e("接收串口数据: %s", cmdStr);
-                    if (cmdStr.contains(WHBLE102CommandType.CONNADD.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        cmdStr = filterControlCharacter(cmdStr);
+                    cmdStr = filterControlCharacter(cmdStr);
+                    if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        Timber.e("%s  出错", cmdStr);
+                        ToastUtils.show(cmdStr + "  出错");
+                    } else {
                         cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + WHBLE102CommandType.CONNADD.toString() + ATCommand.DELIMITER_COLON, "");
                         defaultMac = cmdStr;
                         mEtMacAddr.setText(cmdStr);
@@ -285,51 +285,31 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                         if (atCommandItems.size() > 0) {
                             sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
                         }
-                    } else if (cmdStr.toUpperCase().contains("ERR")) {
-                        cmdStr = filterControlCharacter(commandItem.getCommand());
-                        Timber.e("%s  出错", cmdStr);
-                        ToastUtils.show(cmdStr + "  出错");
-                        //说明还有 AT+AUTOCONN 指令,表示进行连接处理
-                        if (atCommandItems.size() > 0) {
-                            updateFailureStatus(commandItem.getCommand() + "  Error");
-                        }
                     }
                 }
                 break;
 
                 case AUTOCONN: {
-                    String cmdStr = resultByteBuf.toString();
-                    resultByteBuf.reset();
-                    Timber.e("接收串口数据: %s", cmdStr);
-                    if (cmdStr.contains("AUTOCONN:ON") && cmdStr.contains(ATCommand.OK_FLAG)) {
+                    if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        updateFailureStatus(cmdStr + "  出错");
+
+                    } else {
                         //循环查询连接状态
                         queryCont = 1;
                         queryBluetoothLinkStatus();
-
-                    } else if (cmdStr.toUpperCase().contains("ERR")) {
-                        cmdStr = filterControlCharacter(commandItem.getCommand());
-                        Timber.e("%s  出错", cmdStr);
-                        ToastUtils.show(cmdStr + "  出错");
-                        updateFailureStatus(commandItem.getCommand() + "  Error");
                     }
                 }
                 break;
             }
         } else if (msg.what == USB_SERIAL_LINK_QUERY) {
             switch (commandItem.getCommandType()) {
-                case Z: {//重启
-                    String cmdStr = resultByteBuf.toString();
-                    resultByteBuf.reset();
-                    Timber.e("接收串口数据: %s", cmdStr);
-                    cmdStr = filterControlCharacter(cmdStr);
-                    if (cmdStr.toUpperCase().contains("RST:OK")) {
-                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
+                case Z:
 
-                    } else if (cmdStr.toUpperCase().contains("ERR")) {
+                case ENTER_COMMAND: {//重启
+                    if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
-                        Timber.e("%s  出错", cmdStr);
-                        ToastUtils.show(cmdStr + "  出错");
-                        updateFailureStatus(commandItem.getCommand() + "  Error");
+                        updateFailureStatus(cmdStr + "  出错");
 
                     } else {
                         sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
@@ -337,27 +317,12 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                 }
                 break;
 
-                case ENTER_COMMAND: {
-                    String cmdStr = resultByteBuf.toString();
-                    resultByteBuf.reset();
-                    Timber.e("接收串口数据: %s", cmdStr);
-                    cmdStr = filterControlCharacter(cmdStr);
-//                    if (cmdStr.contains("a+ok")) {
-//                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
-//                    } else {
-//                        updateFailureStatus(commandItem.getCommand() + "  Error");
-//                    }
-
-                    sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
-
-                }
-                break;
-
                 case LINK: {
-                    String cmdStr = resultByteBuf.toString();
-                    resultByteBuf.reset();
-                    Timber.e("接收串口数据: %s", cmdStr);
-                    if (cmdStr.toUpperCase().contains(WHBLE102CommandType.LINK.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
+                    if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        updateFailureStatus(cmdStr + "  出错");
+
+                    } else {
                         if (cmdStr.toUpperCase().contains("ONLINE")) {
                             //连接成功
                             updateSuccessStatus();
@@ -367,23 +332,18 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                             //循环查询连接状态
                             queryBluetoothLinkStatus();
                         }
-                    } else {
-//                        updateFailureStatus(commandItem.getCommand() + "  Error");
-
-                        queryBluetoothLinkStatus();
                     }
                 }
                 break;
 
                 case ENTM: {//退出命令模式
-                    String cmdStr = resultByteBuf.toString();
-                    resultByteBuf.reset();
-                    Timber.e("接收串口数据: %s", cmdStr);
-                    if (cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) {
+                    if (cmdStr.toUpperCase().contains("ERR")) {
+                        cmdStr = filterControlCharacter(commandItem.getCommand());
+                        updateFailureStatus(cmdStr + "  出错");
+
+                    } else {
                         //打开通讯
                         openCommunication();
-                    } else {
-                        updateFailureStatus(commandItem.getCommand() + "  Error");
                     }
                 }
                 break;

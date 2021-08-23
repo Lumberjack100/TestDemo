@@ -136,12 +136,12 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
     private void setTime() {
         atCommandItems.clear();
 
-        if (TextUtils.isEmpty(cmdSleepTime)) {
+        if (!TextUtils.isEmpty(cmdSleepTime)) {
             ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_SLEEP_TIME, cmdSleepTime);
             atCommandItems.add(atCommandItem);
         }
 
-        if (TextUtils.isEmpty(cmdWaitingLinkTime)) {
+        if (!TextUtils.isEmpty(cmdWaitingLinkTime)) {
             ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_WAITING_LINK_TIME, cmdWaitingLinkTime);
             atCommandItems.add(atCommandItem);
         }
@@ -350,6 +350,8 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                 break;
 
                 case QUERY_WAITING_LINK_TIME: {//
+                    mBtnQuery.setEnabled(true);
+                    mBtnSave.setEnabled(true);
                     String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
                     resultByteBuf.reset();
                     if (TextUtils.isEmpty(hexData)) {
@@ -385,6 +387,8 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                 break;
 
                 case SET_WAITING_LINK_TIME: {//
+                    mBtnQuery.setEnabled(true);
+                    mBtnSave.setEnabled(true);
                     String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
                     resultByteBuf.reset();
                     hexData = hexData.replace(" ", "").toUpperCase().trim();

@@ -154,6 +154,11 @@ public enum WHBLE102CommandType {
     SET_WAITING_LINK_TIME("set_waiting_link_time"),
 
     /**
+     * 设置采集器配置参数
+     */
+    SET_COLLECTION_CONFIGURATION("set_collection_configuration"),
+
+    /**
      * 未知的命令类型
      */
     UNKNOWN_TYPE("unknown_type");

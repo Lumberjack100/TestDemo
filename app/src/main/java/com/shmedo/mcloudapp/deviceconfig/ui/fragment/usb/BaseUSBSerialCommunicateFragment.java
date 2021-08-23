@@ -11,14 +11,17 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.profile.USBSerialViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
 
 import timber.log.Timber;
 
@@ -28,16 +31,19 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
-    protected static final int WRITE_TIME_OUT_MILLIS = 500;//发送指令超时时间
+    protected static final int WRITE_TIME_OUT_500_MILLIS = 500;//发送指令超时时间
+    protected static final int WRITE_TIME_OUT_1000_MILLIS = 1000;//发送指令超时时间
     protected static final int SCAN_TIME_OUT_MILLIS = 5000;//扫描指令超时时间
 
     protected USBSerialViewModel usbSerialViewModel;
 
     protected boolean isExitMode = false;//是否退出页面标志
+
+    protected LinkedList<ATCommandItem> atCommandItems = new LinkedList<>();
+
     protected ByteArrayOutputStream resultByteBuf = new ByteArrayOutputStream();
 
     private final InnerHandler mInnerHandler = new InnerHandler(this);
-
 
     private static class InnerHandler extends Handler {
         private final WeakReference<BaseUSBSerialCommunicateFragment> fragmentWeakReference;
@@ -117,6 +123,21 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
      */
     protected void parseResponseMessage(byte[] data) {
 
+    }
+
+    protected void sendCommandFromCmdList(int what, long delayMillis) {
+        if (atCommandItems.size() > 0) {
+            String command = atCommandItems.getFirst().getCommand();
+            usbSerialViewModel.sendData(command);
+            startProgress(what, delayMillis);
+        }
+    }
+
+    protected String filterControlCharacter(String str) {
+        str = str.replace(ATCommand.OK_FLAG, "")
+                .replace(ATCommand.NEWLINE_CR, "")
+                .replace(ATCommand.NEWLINE_LF, "");
+        return str;
     }
 
     protected void showDisconnectDialog(String content) {

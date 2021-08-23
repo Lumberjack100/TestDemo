@@ -38,6 +38,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
     protected USBSerialViewModel usbSerialViewModel;
 
     protected LinkedList<ATCommandItem> atCommandItems = new LinkedList<>();
+
     protected ByteArrayOutputStream resultByteBuf = new ByteArrayOutputStream();
 
     private final InnerHandler mInnerHandler = new InnerHandler(this);
@@ -106,7 +107,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
         return usbSerialViewModel.isConnected();
     }
 
-    public void sendCommandFromCmdList(int what, long delayMillis) {
+    protected void sendCommandFromCmdList(int what, long delayMillis) {
         if (atCommandItems.size() > 0) {
             String command = atCommandItems.getFirst().getCommand();
             usbSerialViewModel.sendData(command);
@@ -114,7 +115,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
         }
     }
 
-    public void sendHexCommandFromCmdList(int what, long delayMillis) {
+    protected void sendHexCommandFromCmdList(int what, long delayMillis) {
         if (atCommandItems.size() > 0) {
             String command = atCommandItems.getFirst().getCommand();
             byte[] data = StringUtil.hexStringToBytes2(command);
