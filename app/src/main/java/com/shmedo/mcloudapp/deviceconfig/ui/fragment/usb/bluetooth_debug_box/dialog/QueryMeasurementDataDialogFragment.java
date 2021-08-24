@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -54,7 +55,10 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
     private boolean isContinuousCollection = false;
 
     private int measuringSpacing = 500;
-    private int a, b, c, d,F;
+    private float A, B, C, D;
+
+    DecimalFormat df = new DecimalFormat("0.000000");//格式化小数
+
 
     public static QueryMeasurementDataDialogFragment newInstance() {
         return new QueryMeasurementDataDialogFragment();
@@ -104,6 +108,20 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         atCommandItems.add(atCommandItem);
 
         sendCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
+    }
+
+    /**
+     * 查询计算测斜仪测量数值的方程式系数
+     */
+    private void queryEquationCoefficient() {
+        atCommandItems.clear();
+
+        String command = "01 03 00 69 00 0D 54 13";
+        command = command.replace(" ", "").trim();
+        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_EQUATION_COEFFICIENT, command);
+        atCommandItems.add(atCommandItem);
+
+        sendHexCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -183,6 +201,22 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
                     } else {
+                        queryEquationCoefficient();
+                    }
+                }
+                break;
+
+                case QUERY_EQUATION_COEFFICIENT: {
+                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    resultByteBuf.reset();
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    Timber.e("接收16进制串口数据: %s", hexData);
+                    if (hexData.length() > 54) {
+                        A = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(22, 30)));
+                        B = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(30, 38)));
+                        C = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(38, 46)));
+                        D = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(46, 54)));
+
                         queryData();
                     }
                 }
@@ -196,13 +230,21 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                     hexData = hexData.replace(" ", "").toUpperCase().trim();
                     Timber.e("接收16进制串口数据: %s", hexData);
                     if (hexData.length() >= 22) {
-                        String modulus = hexData.substring(10, 14);
+                        String modulusHex = hexData.substring(10, 14);
                         String temperature = hexData.substring(14, 18);
-                        int value = StringUtil.signedHexToDec(modulus);
-                        mTvMeasurementData.setText(String.valueOf(value));
+                        int modulus = StringUtil.signedHexToDec(modulusHex);
 
-                        SharedUtil.save(AppContants.Extras.INCLINOMETER_MEASURINGSPACING, measuringSpacing);
-                        String measuringSpacing = SharedUtil.read(AppContants.Extras.INCLINOMETER_MEASURINGSPACING);
+                        if (A != 0 && B != 0 && C != 0 && D != 0) {
+                            try {
+                                double sum = A + B * modulus + C * modulus * modulus + D * modulus * modulus * modulus;
+                                double result = measuringSpacing * Math.sin(sum);
+                                String value = df.format(result) + "mm";
+                                mTvMeasurementData.setText(value);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+
                         if (isContinuousCollection) {
                             queryData();
                         }

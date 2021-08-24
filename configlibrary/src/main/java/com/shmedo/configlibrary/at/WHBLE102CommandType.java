@@ -119,6 +119,11 @@ public enum WHBLE102CommandType {
     QUERY_BATTERY_VOLTAGE("query_battery_voltage"),
 
     /**
+     * 查询计算测斜仪测量数值的方程式系数
+     */
+    QUERY_EQUATION_COEFFICIENT("query_equation_coefficient"),
+
+    /**
      * 查询测量数据
      */
     QUERY_MEASUREMENT_DATA("query_measurement_data"),
