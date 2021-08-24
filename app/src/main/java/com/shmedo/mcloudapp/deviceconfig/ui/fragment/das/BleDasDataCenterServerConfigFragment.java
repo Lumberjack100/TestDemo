@@ -374,7 +374,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case "MQTT手动注册":
                 communicationProtocol = "5";
                 appKeyLayout.setVisibility(View.GONE);
-                registerPlatformLayout.setVisibility(View.GONE);
+                registerPlatformLayout.setVisibility(View.VISIBLE);
                 registerPlatformAddressLayout.setVisibility(View.GONE);
                 keepAliveLayout.setVisibility(View.VISIBLE);
                 autoRegisterSpecialInfoLayout.setVisibility(View.GONE);
@@ -584,6 +584,10 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 cmdAppKey = CommandManager.getInstance().getCommand(CommandType.SET_MEDO_PLATFORM_APPKEY, appKeyEntity);
             }
         } else if (communicationProtocol.equals("5")) {//MQTT手动注册
+            //选择注册平台
+            RegistrationPlatformSelectionEntity platformSelectionEntity = new RegistrationPlatformSelectionEntity(serverNumber.toInt(), Integer.parseInt(registerPlatform));
+            cmdRegistrationPlatform = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
+
             //MQTT KeepAlive值
             MQTTKeepAliveEntity keepAliveEntity = new MQTTKeepAliveEntity(serverNumber.toInt(), Integer.parseInt(keepAliveValue));
             cmdKeepAliveValue = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
@@ -672,13 +676,10 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
                 if (communicationProtocol.equals("2")) {//MDM协议
                     doAfterSetting();
-                } else if (communicationProtocol.equals("4")) {//MQTT自动注册
+                }
+                else if (communicationProtocol.equals("4") || communicationProtocol.equals("5")) {//MQTT自动注册/MQTT手动注册
                     sendCommand(cmdRegistrationPlatform);
                     Timber.d("选择平台配置===%s", cmdRegistrationPlatform);
-                    return;
-                } else if (communicationProtocol.equals("5")) {//MQTT手动注册
-                    sendCommand(cmdKeepAliveValue);
-                    Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
                     return;
                 }
                 break;
@@ -689,8 +690,14 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommand(cmdRegistrationPlatformAddress);
-                Timber.d("自动注册平台地址配置===%s", cmdRegistrationPlatformAddress);
+                if (communicationProtocol.equals("4")) {//MQTT自动注册
+                    sendCommand(cmdRegistrationPlatformAddress);
+                    Timber.d("自动注册平台地址配置===%s", cmdRegistrationPlatformAddress);
+                } else if (communicationProtocol.equals("5")) {//MQTT手动注册
+                    sendCommand(cmdKeepAliveValue);
+                    Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
+                    return;
+                }
                 break;
 
             case SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT:// MQTT 自动注册设置注册平台地址时应答
