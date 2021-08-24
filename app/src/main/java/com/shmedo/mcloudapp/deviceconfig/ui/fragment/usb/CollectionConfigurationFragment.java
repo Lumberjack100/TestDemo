@@ -16,6 +16,8 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
 import com.shmedo.configlibrary.ble.utils.CRC8Utils;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
@@ -409,7 +411,8 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
                     Timber.e("接收串口数据: %s", cmdStr);
                     if (cmdStr.contains("$$CFG:OK")) {
                         ToastUtils.show("保存成功");
-                    }else{
+                        SharedUtil.save(AppContants.Extras.INCLINOMETER_MEASURINGSPACING, measuringSpacing);
+                    } else {
                         ToastUtils.show("保存失败");
                     }
                 }

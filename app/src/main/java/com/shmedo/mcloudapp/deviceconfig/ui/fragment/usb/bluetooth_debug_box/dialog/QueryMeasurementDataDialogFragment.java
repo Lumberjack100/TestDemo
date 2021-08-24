@@ -17,7 +17,9 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
+import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 
@@ -51,6 +53,9 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
 
     private boolean isContinuousCollection = false;
 
+    private int measuringSpacing = 500;
+    private int a, b, c, d,F;
+
     public static QueryMeasurementDataDialogFragment newInstance() {
         return new QueryMeasurementDataDialogFragment();
     }
@@ -75,6 +80,9 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("测量数据");
+        if (SharedUtil.contains(AppContants.Extras.INCLINOMETER_MEASURINGSPACING)) {
+            measuringSpacing = SharedUtil.read(AppContants.Extras.INCLINOMETER_MEASURINGSPACING, 500);
+        }
     }
 
     @Override
@@ -193,6 +201,8 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                         int value = StringUtil.signedHexToDec(modulus);
                         mTvMeasurementData.setText(String.valueOf(value));
 
+                        SharedUtil.save(AppContants.Extras.INCLINOMETER_MEASURINGSPACING, measuringSpacing);
+                        String measuringSpacing = SharedUtil.read(AppContants.Extras.INCLINOMETER_MEASURINGSPACING);
                         if (isContinuousCollection) {
                             queryData();
                         }

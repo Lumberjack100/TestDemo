@@ -91,6 +91,9 @@ public interface AppContants {
         String DEVICE_ID = "device_id";
         String USB_PORT_NUM = "usb_port_num";
         String USB_BAUD_RATE = "usb_baud_rate";
+
+        //蓝牙测斜仪测量间距
+        String INCLINOMETER_MEASURINGSPACING = "inclinometer_measuringSpacing";
     }
 
     interface UsbSerial {
