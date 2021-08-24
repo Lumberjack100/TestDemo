@@ -178,7 +178,7 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
         entity.setGateway(gateway);
         entity.setDns(dns);
 
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_CORS, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_ETHERNET, entity);
         showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }

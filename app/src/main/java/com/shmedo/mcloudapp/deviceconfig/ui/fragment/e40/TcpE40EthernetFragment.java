@@ -171,7 +171,7 @@ public class TcpE40EthernetFragment extends BaseTcpIotCommunicateFragment {
         entity.setGateway(gateway);
         entity.setDns(dns);
 
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_CORS, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_ETHERNET, entity);
         sendCommand(command);
     }
 

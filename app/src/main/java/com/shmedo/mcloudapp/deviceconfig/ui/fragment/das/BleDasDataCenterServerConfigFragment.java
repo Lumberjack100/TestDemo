@@ -66,6 +66,9 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     @BindView(R.id.et_data_server_address)
     ClearEditText mEtDataServerAddress;
 
+    @BindView(R.id.et_data_server_port)
+    ClearEditText mEtDataServerPort;
+
     @BindView(R.id.appKeyET)
     ClearEditText mEtAppKey;
 
@@ -125,7 +128,8 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String registerPlatformOld;//网络中心通讯协议
 
     private String communicationProtocol;//网络中心通讯协议
-    private String dataServerAddress;//数据服务器地址、端口
+    private String dataServerAddress;//数据服务器地址
+    private String dataServerPort;//数据服务器端口
     private String keepAliveValue;
     private String deviceSn;
     private String productId;
@@ -180,6 +184,8 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mTvRegisterPlatform.setText("地大平台");
         registerPlatform = "0";
 
+        mEtDataServerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtDataServerPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtAppKey.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
         mEtKeepAlive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtDeviceSN.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
@@ -189,7 +195,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mEtMqttUsername.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
         mEtMqttPwd.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
 
-        mEtDataServerAddress.setHint("服务器地址 端口");
         mEtRegisterPlatformAddress.setHint("服务器地址 端口");
     }
 
@@ -402,6 +407,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
     private boolean checkValueIsValid() {
         dataServerAddress = mEtDataServerAddress.getText().toString().trim();
+        dataServerPort = mEtDataServerPort.getText().toString().trim();
         appKey = mEtAppKey.getText().toString().trim();
         registerPlatformAddress = mEtRegisterPlatformAddress.getText().toString().trim();
         keepAliveValue = mEtKeepAlive.getText().toString().trim();
@@ -413,30 +419,24 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mqttPassword = mEtMqttPwd.getText().toString().trim();
 
         if (TextUtils.isEmpty(dataServerAddress)) {
-            ToastUtils.show("数据服务器地址不能为空!");
+            ToastUtils.show("数据中心地址不能为空!");
             mEtDataServerAddress.requestFocus();
             return false;
         }
 
-        String[] strs = dataServerAddress.split(" ");
-        if (strs.length < 2) {
-            ToastUtils.show("数据服务器地址格式错误!");
-            mEtDataServerAddress.requestFocus();
-            return false;
-        }
-
-        try {
-            int port = Integer.parseInt(strs[1]);
-            if (port < 0 || port > 65535) {
-                ToastUtils.show("数据服务器地址端口号错误!");
-                mEtDataServerAddress.requestFocus();
+        if (!TextUtils.isEmpty(dataServerPort)) {
+            try {
+                int port = Integer.parseInt(dataServerPort);
+                if (port < 0 || port > 65535) {
+                    ToastUtils.show("请输入正确的数据中心端口号!");
+                    mEtDataServerPort.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的数据中心端口号!");
+                mEtDataServerPort.requestFocus();
                 return false;
             }
-
-        } catch (Exception ex) {
-            ToastUtils.show("数据服务器地址端口号错误!");
-            mEtDataServerAddress.requestFocus();
-            return false;
         }
 
         if (communicationProtocol.equals("4")) {//MQTT自动注册
@@ -446,7 +446,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 return false;
             }
 
-            strs = registerPlatformAddress.split(" ");
+            String[] strs = registerPlatformAddress.split(" ");
             if (strs.length < 2) {
                 ToastUtils.show("注册平台地址格式错误!");
                 mEtRegisterPlatformAddress.requestFocus();
@@ -558,8 +558,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         cmdCommunicationProtocol = CommandManager.getInstance().getCommand(CommandType.NET_LINK_COMMUN_PROTOCOL, communicateProtoclEntity);
 
         //数据服务器地址、端口
-        String[] strs = dataServerAddress.trim().split(" ");
-        ServerAddressInfoEntity addressInfoEntity = new ServerAddressInfoEntity(serverNumber.toInt(), strs[0], Integer.parseInt(strs[1]));
+        ServerAddressInfoEntity addressInfoEntity = new ServerAddressInfoEntity(serverNumber.toInt(), dataServerAddress, Integer.parseInt(dataServerPort));
         cmdDataServerAddress = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, addressInfoEntity);
 
         if (communicationProtocol.equals("4")) {//MQTT自动注册
@@ -568,7 +567,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             cmdRegistrationPlatform = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
 
             //自动注册平台地址端口
-            strs = registerPlatformAddress.trim().split(" ");
+            String[] strs = registerPlatformAddress.trim().split(" ");
             addressInfoEntity = new ServerAddressInfoEntity(serverNumber.toInt(), strs[0], Integer.parseInt(strs[1]));
             cmdRegistrationPlatformAddress = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT, addressInfoEntity);
 
@@ -807,6 +806,11 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         }
 
         dataServerAddress = mqttConfigInfo.getDataPlatformAddress().trim();
+        String[] strs = dataServerAddress.split(" ");
+        if (strs.length == 2) {
+            dataServerAddress = strs[0];
+            dataServerPort = strs[1];
+        }
         appKey = mqttConfigInfo.getAppKey().trim();
         registerPlatformAddress = mqttConfigInfo.getRegisterPlatformAddress().trim();
         keepAliveValue = mqttConfigInfo.getKeepAliveValue().trim();
@@ -818,6 +822,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mqttPassword = mqttConfigInfo.getMqttPassword().trim();
 
         mEtDataServerAddress.setText(dataServerAddress);
+        mEtDataServerPort.setText(TextUtils.isEmpty(dataServerPort) ? "0" : dataServerPort);
         mEtAppKey.setText(appKey);
         mEtRegisterPlatformAddress.setText(registerPlatformAddress);
         mEtKeepAlive.setText(keepAliveValue);
@@ -857,8 +862,10 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         if (communicationProtocolOld != null && communicationProtocol != null && !communicationProtocolOld.equals(communicationProtocol)) {
             return true;
         }
-
         if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
+            return true;
+        }
+        if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
             return true;
         }
 
