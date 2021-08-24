@@ -189,7 +189,7 @@ public class USRManager extends ObservableBleManager {
 
                             output.write(lastPacket);
                             //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
-                            return lastPacket == null || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38) || (lastPacket[lastPacket.length - 1] == 10 && lastPacket[lastPacket.length - 2] == 13);
+                            return lastPacket == null || (lastPacket.length < 2) || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38) || (lastPacket[lastPacket.length - 1] == 10 && lastPacket[lastPacket.length - 2] == 13);
                         }
                     });
 
