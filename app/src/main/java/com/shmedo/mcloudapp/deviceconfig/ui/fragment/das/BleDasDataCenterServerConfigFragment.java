@@ -149,6 +149,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String cmdPlatformParam;//手动/自动注册平台参数
     private String cmdAppKey;//米度平台 AppKey
 
+    private String[] platforms = new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期"};
 
     public static BleDasDataCenterServerConfigFragment newInstance(ServerNumber serverNumber) {
         BleDasDataCenterServerConfigFragment fragment = new BleDasDataCenterServerConfigFragment();
@@ -336,7 +337,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"地大平台", "成都理工平台", "米度平台"},
+                .asBottomList("", platforms,
                         null, registerPlatformPos, true,
                         new OnSelectListener() {
                             @Override
@@ -388,7 +389,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mTvRegisterPlatform.setText(text);
 
         switch (text) {
-            case "地大平台":
+            case "地灾一期":
                 registerPlatform = "0";
                 appKeyLayout.setVisibility(View.GONE);
                 break;
@@ -398,9 +399,14 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 appKeyLayout.setVisibility(View.GONE);
                 break;
 
-            case "米度平台":
+            case "MDNET":
                 registerPlatform = "2";
                 appKeyLayout.setVisibility(View.VISIBLE);
+                break;
+
+            case "地灾二期":
+                registerPlatform = "3";
+                appKeyLayout.setVisibility(View.GONE);
                 break;
         }
     }
@@ -676,8 +682,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
                 if (communicationProtocol.equals("2")) {//MDM协议
                     doAfterSetting();
-                }
-                else if (communicationProtocol.equals("4") || communicationProtocol.equals("5")) {//MQTT自动注册/MQTT手动注册
+                } else if (communicationProtocol.equals("4") || communicationProtocol.equals("5")) {//MQTT自动注册/MQTT手动注册
                     sendCommand(cmdRegistrationPlatform);
                     Timber.d("选择平台配置===%s", cmdRegistrationPlatform);
                     return;
@@ -798,17 +803,22 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         switch (mqttConfigInfo.getRegisterPlatform()) {
             case "0"://地大平台
                 registerPlatformOld = "0";
-                updateViewByRegisterPlatform(0, "地大平台");
+                updateViewByRegisterPlatform(0, platforms[0]);
                 break;
 
             case "1"://成都理工平台
                 registerPlatformOld = "1";
-                updateViewByRegisterPlatform(1, "成都理工平台");
+                updateViewByRegisterPlatform(1, platforms[1]);
                 break;
 
             case "2"://米度平台
                 registerPlatformOld = "2";
-                updateViewByRegisterPlatform(2, "米度平台");
+                updateViewByRegisterPlatform(2, platforms[2]);
+                break;
+
+            case "3"://地灾二期
+                registerPlatformOld = "3";
+                updateViewByRegisterPlatform(3, platforms[3]);
                 break;
         }
 
