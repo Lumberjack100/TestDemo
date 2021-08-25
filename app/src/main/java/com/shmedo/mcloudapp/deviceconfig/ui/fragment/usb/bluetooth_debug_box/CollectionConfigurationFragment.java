@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box;
 
 import android.os.Bundle;
 import android.os.Message;
@@ -21,6 +21,7 @@ import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BaseUSBSerialCommunicateFragment;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;

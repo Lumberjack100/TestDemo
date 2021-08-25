@@ -32,6 +32,7 @@ public interface AppContants {
         int E40 = 0x004;
         int M20 = 0x005;
         int RN20 = 0x006;
+        int INCLINOMETER_DEBUG_BOX = 0x007;
     }
 
     /**
@@ -41,6 +42,7 @@ public interface AppContants {
         int NET_PLATFORM_CONNECT = 0x001;//通过物联网平台连接
         int BLE_CONNECT = 0x002;//通过蓝牙连接
         int TCP_CONNECT = 0x003;//通过本地TCP连接
+        int USB_SERIAL = 0x004;//通过 USB 串口连接
     }
 
     /**

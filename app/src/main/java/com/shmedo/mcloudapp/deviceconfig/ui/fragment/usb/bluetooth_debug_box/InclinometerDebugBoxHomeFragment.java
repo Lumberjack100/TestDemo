@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DebugCommandLoggerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.usb.CollectionConfigurationActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BaseUSBSerialCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.CommunicationTimeDialogFragment;
@@ -51,7 +52,7 @@ import timber.log.Timber;
  * 创建时间:  8/13/21 <br/>
  * 描述：    蓝牙测斜仪调试盒子配置主页面
  */
-public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragment {
+public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragment {
     @BindView(R.id.progress_overlay)
     View progressOverlay;
 
@@ -90,8 +91,8 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
     private boolean initialStart = true;
 
 
-    public static BluetoothDebugBoxHomeFragment newInstance(int deviceId, int port, int baudRate) {
-        BluetoothDebugBoxHomeFragment fragment = new BluetoothDebugBoxHomeFragment();
+    public static InclinometerDebugBoxHomeFragment newInstance(int deviceId, int port, int baudRate) {
+        InclinometerDebugBoxHomeFragment fragment = new InclinometerDebugBoxHomeFragment();
         Bundle args = new Bundle();
         args.putInt(AppContants.Extras.DEVICE_ID, deviceId);
         args.putInt(AppContants.Extras.USB_PORT_NUM, port);
@@ -199,6 +200,10 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
             case "其他参数配置":
                 CollectionConfigurationActivity.startActivity(mActivity);
                 break;
+
+            case "指令调试":
+                DebugCommandLoggerActivity.startActivity(mActivity, AppContants.CommunicationWay.USB_SERIAL, AppContants.DeviceType.INCLINOMETER_DEBUG_BOX);
+                break;
         }
     }
 
@@ -279,6 +284,9 @@ public class BluetoothDebugBoxHomeFragment extends BaseUSBSerialCommunicateFragm
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "其他参数配置", "其他参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "指令调试", "指令调试日志");
         configModuleList.add(configModule);
     }
 
