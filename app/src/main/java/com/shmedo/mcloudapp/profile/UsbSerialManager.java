@@ -47,7 +47,7 @@ public class UsbSerialManager implements SerialListener {
 
     private Connected connected = Connected.False;
 
-    public final UnPeekLiveData<USBConnectionState> state;
+    private final UnPeekLiveData<USBConnectionState> state;
     private final UnPeekLiveData<byte[]> responseMsg = new UnPeekLiveData<>();
 
     private final Handler mainLooper;
@@ -65,6 +65,10 @@ public class UsbSerialManager implements SerialListener {
                 }
             }
         };
+    }
+
+    public ProtectedUnPeekLiveData<USBConnectionState> getUSBConnectionState() {
+        return state;
     }
 
     public ProtectedUnPeekLiveData<byte[]> getResponseMsg() {
@@ -215,6 +219,7 @@ public class UsbSerialManager implements SerialListener {
     @Override
     public void onSerialRead(byte[] data) {
         if (isConnected()) {
+            Timber.e("接收 byte[] 数据: %s", new String(data));
             synchronized (this) {
                 mainLooper.post(() -> {
                     responseMsg.setValue(data);

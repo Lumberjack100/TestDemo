@@ -141,9 +141,9 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
 
     @OnClick({R.id.iv_close, R.id.btn_query_data, R.id.btn_continuous_collection})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
-            return;
-        }
+//        if (isDoubleClick(view)) {
+//            return;
+//        }
         int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
@@ -153,20 +153,20 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            stopProgressAll();
             mBtnQuery.setEnabled(false);
             mBtnContinuousCollect.setEnabled(false);
             isContinuousCollection = false;
-            stopProgressAll();
             queryData();
         } else if (id == R.id.btn_continuous_collection) {
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            stopProgressAll();
             mBtnQuery.setEnabled(false);
             mBtnContinuousCollect.setEnabled(false);
             isContinuousCollection = true;
-            stopProgressAll();
             queryData();
         }
     }

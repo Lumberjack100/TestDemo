@@ -115,9 +115,6 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
 
     @OnClick({R.id.iv_close, R.id.btn_query_link})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
-            return;
-        }
         int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
@@ -127,6 +124,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            stopProgressAll();
             mBtnQuery.setEnabled(false);
             QueryBluetoothLinkStatus();
         }

@@ -11,72 +11,85 @@
         android:id="@+id/controlLines"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:padding="5dp"
         android:visibility="visible">
 
-        <ToggleButton
-            android:id="@+id/controlLineRts"
+        <cn.wandersnail.widget.textview.RoundButton
+            android:id="@+id/btnFirst"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48sp"
-            android:textOff="RTS"
-            android:textOn="+++a" />
+            android:layout_height="32dp"
+            android:minWidth="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="@string/usb_serial_enter_command"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14"
+            app:wswCornerRadius="2dp"
+            app:wswDisabledFillColor="#ffeeeeee"
+            app:wswDisabledTextColor="#ffcccccc"
+            app:wswNormalFillColor="@color/colorPrimary"
+            app:wswNormalTextColor="@color/white"
+            app:wswPressedFillColor="@color/colorPrimaryDark"
+            app:wswPressedTextColor="@color/white" />
 
-        <ToggleButton
-            android:id="@+id/controlLineCts"
+        <cn.wandersnail.widget.textview.RoundButton
+            android:id="@+id/btnSecond"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:minWidth="48sp"
-            android:textColor="@android:color/secondary_text_dark"
-            android:textOff="CTS"
-            android:textOn="LINK" />
+            android:layout_height="32dp"
+            android:layout_marginStart="5dp"
+            android:minWidth="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="@string/usb_serial_link"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14"
+            app:wswCornerRadius="2dp"
+            app:wswDisabledFillColor="#ffeeeeee"
+            app:wswDisabledTextColor="#ffcccccc"
+            app:wswNormalFillColor="@color/colorPrimary"
+            app:wswNormalTextColor="@color/white"
+            app:wswPressedFillColor="@color/colorPrimaryDark"
+            app:wswPressedTextColor="@color/white" />
 
-        <View
-            android:layout_width="6dp"
-            android:layout_height="match_parent" />
-
-        <ToggleButton
-            android:id="@+id/controlLineDtr"
+        <cn.wandersnail.widget.textview.RoundButton
+            android:id="@+id/btnThird"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48sp"
-            android:textOff="DTR"
-            android:textOn="DTR" />
+            android:layout_height="32dp"
+            android:layout_marginStart="5dp"
+            android:minWidth="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="@string/usb_serial_exit_command"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14"
+            app:wswCornerRadius="2dp"
+            app:wswDisabledFillColor="#ffeeeeee"
+            app:wswDisabledTextColor="#ffcccccc"
+            app:wswNormalFillColor="@color/colorPrimary"
+            app:wswNormalTextColor="@color/white"
+            app:wswPressedFillColor="@color/colorPrimaryDark"
+            app:wswPressedTextColor="@color/white" />
 
-        <ToggleButton
-            android:id="@+id/controlLineDsr"
+        <cn.wandersnail.widget.textview.RoundButton
+            android:id="@+id/btnFourth"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:minWidth="48sp"
-            android:textColor="@android:color/secondary_text_dark"
-            android:textOff="DSR"
-            android:textOn="DSR" />
-
-        <View
-            android:layout_width="6dp"
-            android:layout_height="match_parent" />
-
-        <ToggleButton
-            android:id="@+id/controlLineCd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:minWidth="48sp"
-            android:textColor="@android:color/secondary_text_dark"
-            android:textOff="CD"
-            android:textOn="CD" />
-
-        <ToggleButton
-            android:id="@+id/controlLineRi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:minWidth="48sp"
-            android:textColor="@android:color/secondary_text_dark"
-            android:textOff="RI"
-            android:textOn="RI" />
+            android:layout_height="32dp"
+            android:layout_marginStart="5dp"
+            android:minWidth="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="@string/usb_serial_query_voltage"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14"
+            app:wswCornerRadius="2dp"
+            app:wswDisabledFillColor="#ffeeeeee"
+            app:wswDisabledTextColor="#ffcccccc"
+            app:wswNormalFillColor="@color/colorPrimary"
+            app:wswNormalTextColor="@color/white"
+            app:wswPressedFillColor="@color/colorPrimaryDark"
+            app:wswPressedTextColor="@color/white" />
 
     </LinearLayout>
 
@@ -100,42 +113,8 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/send_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:inputType="text|textNoSuggestions"
-            android:singleLine="true" />
-
-        <Button
-            android:id="@+id/send_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@drawable/selector_button_bg"
-            android:text="发送"
-            android:textColor="@color/white" />
-    </LinearLayout>
+    <include layout="@layout/command_input" />
 
 </LinearLayout>
 
-    <!--<Button
-    android:id="@+id/send_btn"
-    android:layout_width="80dp"
-    android:layout_height="38dp"
-    android:layout_marginStart="5dp"
-    android:layout_marginEnd="5dp"
-    android:background="@drawable/selector_button_bg"
-    android:gravity="center"
-    android:text="发送"
-    android:textColor="@color/white"
-    android:textSize="@dimen/text_size_17" />-->
 

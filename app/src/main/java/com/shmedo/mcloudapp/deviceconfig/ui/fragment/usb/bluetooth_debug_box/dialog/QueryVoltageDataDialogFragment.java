@@ -114,9 +114,9 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
 
     @OnClick({R.id.iv_close, R.id.btn_query_data})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
-            return;
-        }
+//        if (isDoubleClick(view)) {
+//            return;
+//        }
         int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
@@ -126,8 +126,8 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
-            mBtnQuery.setEnabled(false);
             stopProgressAll();
+            mBtnQuery.setEnabled(false);
             queryVoltage();
         }
     }

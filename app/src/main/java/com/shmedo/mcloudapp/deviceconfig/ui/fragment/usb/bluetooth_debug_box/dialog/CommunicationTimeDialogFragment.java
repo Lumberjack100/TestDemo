@@ -203,9 +203,9 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
 
     @OnClick({R.id.iv_close, R.id.ll_sleep_time, R.id.ll_waiting_link_time, R.id.btn_query_data, R.id.btn_save})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
-            return;
-        }
+//        if (isDoubleClick(view)) {
+//            return;
+//        }
         int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
@@ -221,18 +221,18 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            stopProgressAll();
             mBtnQuery.setEnabled(false);
             mBtnSave.setEnabled(false);
-            stopProgressAll();
             queryTime();
         } else if (id == R.id.btn_save) {
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            stopProgressAll();
             mBtnQuery.setEnabled(false);
             mBtnSave.setEnabled(false);
-            stopProgressAll();
             setTime();
         }
     }

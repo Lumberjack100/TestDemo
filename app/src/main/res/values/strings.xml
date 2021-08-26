@@ -226,4 +226,11 @@
     <string name="bluetooth_disabled_info">The Bluetooth adapter is turned off. Click the button below to enable it.</string>
     <string name="bluetooth_disabled_action">Enable</string>
 
+    <string name="any_characters">数据格式: 任意字符</string>
+    <string name="hex_characters">数据格式: aaBB1122</string>
+    <string name="usb_serial_enter_command">+++a</string>
+    <string name="usb_serial_link">AT+LINK?</string>
+    <string name="usb_serial_exit_command">AT+ENTM</string>
+    <string name="usb_serial_query_voltage">电压</string>
+
 </resources>

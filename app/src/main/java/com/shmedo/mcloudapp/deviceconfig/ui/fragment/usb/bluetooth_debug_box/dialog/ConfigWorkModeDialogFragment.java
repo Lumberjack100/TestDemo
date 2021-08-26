@@ -138,9 +138,9 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
 
     @OnClick({R.id.iv_close, R.id.ll_work_mode, R.id.btn_query_data, R.id.btn_save})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
-            return;
-        }
+//        if (isDoubleClick(view)) {
+//            return;
+//        }
         int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
@@ -153,18 +153,18 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            stopProgressAll();
             mBtnQuery.setEnabled(false);
             mBtnSave.setEnabled(false);
-            stopProgressAll();
             queryWorkMode();
         } else if (id == R.id.btn_save) {
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            stopProgressAll();
             mBtnQuery.setEnabled(false);
             mBtnSave.setEnabled(false);
-            stopProgressAll();
             setWorkMode();
         }
     }

@@ -37,10 +37,12 @@
         <item name="colorPrimaryDark">#61a9fc</item>
     </style>
 
-    <style name="LightStatusBarActivity" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="LightStatusBarActivity" parent="Theme.MaterialComponents.Light.Bridge">
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
 
