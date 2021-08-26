@@ -187,7 +187,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
 
             case ULTRASONIC_LEVEL_GAUGE://超声波物位计
                 mTvAlarmValue.setText("报警值(单位:mm)");
-                mTvCorrectValue.setText("修正值(单位:m)");
+                mTvCorrectValue.setText("安装高程(单位:m)");
                 if (parcelableData != null) {
                     SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) parcelableData;
                     triggerThreshold = sensorUltrasonicLevelInfo.getTriggerThreshold();
@@ -197,7 +197,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
 
             case RADAR_LEVEL_GAUGE://雷达物位计
                 mTvAlarmValue.setText("报警值(单位:mm)");
-                mTvCorrectValue.setText("修正值(单位:m)");
+                mTvCorrectValue.setText("安装高程(单位:m)");
                 if (parcelableData != null) {
                     SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) parcelableData;
                     triggerThreshold = sensorRadarLevelInfo.getTriggerThreshold();

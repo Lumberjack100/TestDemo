@@ -141,12 +141,12 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
                 case ULTRASONIC_LEVEL_GAUGE://超声波物位计
                     mTvAlarmValue.setText("报警值(单位:mm)");
-                    mTvCorrectValue.setText("修正值(单位:m)");
+                    mTvCorrectValue.setText("安装高程(单位:m)");
                     break;
 
                 case RADAR_LEVEL_GAUGE://雷达物位计
                     mTvAlarmValue.setText("报警值(单位:mm)");
-                    mTvCorrectValue.setText("修正值(单位:m)");
+                    mTvCorrectValue.setText("安装高程(单位:m)");
                     break;
 
                 case INFRASOUND_SENSOR://次声
