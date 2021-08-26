@@ -401,7 +401,9 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
             case "MDNET":
                 registerPlatform = "2";
-                appKeyLayout.setVisibility(View.VISIBLE);
+                if (communicationProtocol.equals("4")) {//MQTT自动注册
+                    appKeyLayout.setVisibility(View.VISIBLE);
+                }
                 break;
 
             case "地灾二期":
@@ -890,51 +892,40 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             if (registerPlatformOld != null && registerPlatform != null && !registerPlatformOld.equals(registerPlatform)) {
                 return true;
             }
-
             if (registerPlatform != null && registerPlatform.equals("2")) {//米度平台
                 if (appKey != null && !appKey.equals(mEtAppKey.getText().toString().trim())) {
                     return true;
                 }
             }
-
             if (registerPlatformAddress != null && !registerPlatformAddress.equals(mEtRegisterPlatformAddress.getText().toString().trim())) {
                 return true;
             }
-
             if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
                 return true;
             }
-
             if (deviceSn != null && !deviceSn.equals(mEtDeviceSN.getText().toString().trim())) {
                 return true;
             }
-
             if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
                 return true;
             }
-
             if (registerCode != null && !registerCode.equals(mEtRegisterCode.getText().toString().trim())) {
                 return true;
             }
-
         } else if (communicationProtocol != null && communicationProtocol.equals("5")) {//MQTT手动注册
             if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
                 return true;
             }
-
             if (mqttDeviceId != null && !mqttDeviceId.equals(mEtMqttDeviceId.getText().toString().trim())) {
                 return true;
             }
-
             if (mqttUsername != null && !mqttUsername.equals(mEtMqttUsername.getText().toString().trim())) {
                 return true;
             }
-
             if (mqttPassword != null && !mqttPassword.equals(mEtMqttPwd.getText().toString().trim())) {
                 return true;
             }
         }
-
         return false;
     }
 
