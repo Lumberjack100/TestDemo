@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box;
 
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -30,12 +30,12 @@ import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DebugCommandLoggerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.usb.CollectionConfigurationActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BaseUSBSerialCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.CommunicationTimeDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigBluetoothMacDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigWorkModeDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.QueryBluetoothLinkStatusDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.QueryMeasurementDataDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.QueryVoltageDataDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.dialog.CommunicationTimeDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.dialog.ConfigBluetoothMacDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.dialog.ConfigWorkModeDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.dialog.QueryBluetoothLinkStatusDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.dialog.QueryMeasurementDataDialogFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.dialog.QueryVoltageDataDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 

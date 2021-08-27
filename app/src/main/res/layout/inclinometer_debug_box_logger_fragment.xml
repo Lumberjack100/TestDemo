@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".deviceconfig.ui.fragment.usb.bluetooth_debug_box.InclinometerDebugBoxLoggerFragment">
+    tools:context=".deviceconfig.ui.fragment.usb.Inclinometer_debug_box.InclinometerDebugBoxLoggerFragment">
 
     <LinearLayout
         android:id="@+id/controlLines"

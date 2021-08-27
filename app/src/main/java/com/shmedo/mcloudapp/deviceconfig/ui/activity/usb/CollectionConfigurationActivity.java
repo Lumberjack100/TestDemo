@@ -7,7 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.CollectionConfigurationFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.CollectionConfigurationFragment;
 
 public class CollectionConfigurationActivity extends BaseConfigFragmentContainerActivity {
 

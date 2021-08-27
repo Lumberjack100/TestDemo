@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box;
 
 import android.app.AlertDialog;
 import android.os.Bundle;

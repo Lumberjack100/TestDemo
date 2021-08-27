@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.InclinometerDebugBoxLoggerFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.InclinometerDebugBoxLoggerFragment;
 
 public class DebugCommandLoggerActivity extends BaseActivity {
 

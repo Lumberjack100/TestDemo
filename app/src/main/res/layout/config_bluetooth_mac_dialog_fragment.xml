@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_corner_3dp_gray_f9f9f9"
         android:orientation="vertical"
-        tools:context="com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.bluetooth_debug_box.dialog.ConfigLinkMacDialogFragment">
+        tools:context="com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.dialog.ConfigLinkMacDialogFragment">
 
         <RelativeLayout
             android:layout_width="match_parent"
