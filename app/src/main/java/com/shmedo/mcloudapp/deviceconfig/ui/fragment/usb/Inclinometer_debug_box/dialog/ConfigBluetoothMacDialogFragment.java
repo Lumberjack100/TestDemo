@@ -353,7 +353,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         } else if (msg.what == USB_SERIAL_OPEN_COMMUNICATION) {
             switch (commandItem.getCommandType()) {
                 case ALLOW_CONNECT: {//允许连接指令
-                    sendCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
+                    sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
                 }
                 break;
 

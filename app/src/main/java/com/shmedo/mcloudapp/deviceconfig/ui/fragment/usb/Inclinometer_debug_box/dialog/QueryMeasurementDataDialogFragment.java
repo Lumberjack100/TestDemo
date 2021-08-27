@@ -39,6 +39,7 @@ import timber.log.Timber;
  */
 public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragment {
     private int USB_SERIAL_DATA_QUERY = 0x10001;//
+    private int USB_SERIAL_OPEN_COMMUNICATION = 0x10002;//
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -93,6 +94,8 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
     public void onResume() {
         super.onResume();
         if (isConnected()) {
+            mBtnQuery.setEnabled(false);
+            mBtnContinuousCollect.setEnabled(false);
             exitCommand();
         }
     }
@@ -108,6 +111,23 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         atCommandItems.add(atCommandItem);
 
         sendCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
+    }
+
+    /**
+     * 打开测斜仪通讯
+     * 1.发送 01 10 07 DD 00 01 02 55 AA 7D 32 允许连接指令
+     * 2.发送 01 10 08 17 00 01 02 5A 5A 96 2C 允许蓝牙通讯
+     */
+    private void openCommunication() {
+        atCommandItems.clear();
+
+        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ALLOW_CONNECT, "011007DD00010255AA7D32");
+        atCommandItems.add(atCommandItem);
+
+        atCommandItem = new ATCommandItem(WHBLE102CommandType.ALLOW_BLUETOOTH_COMMUNICATION, "011008170001025A5A962C");
+        atCommandItems.add(atCommandItem);
+
+        sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -201,7 +221,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
                     } else {
-                        queryEquationCoefficient();
+                        openCommunication();
                     }
                 }
                 break;
@@ -249,6 +269,18 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                             queryData();
                         }
                     }
+                }
+                break;
+            }
+        } else if (msg.what == USB_SERIAL_OPEN_COMMUNICATION) {
+            switch (commandItem.getCommandType()) {
+                case ALLOW_CONNECT: {//允许连接指令
+                    sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
+                }
+                break;
+
+                case ALLOW_BLUETOOTH_COMMUNICATION: {//允许蓝牙通讯
+                    queryEquationCoefficient();
                 }
                 break;
             }

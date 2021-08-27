@@ -95,6 +95,8 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
     public void onResume() {
         super.onResume();
         if (isConnected()) {
+            mBtnQuery.setEnabled(false);
+            mBtnSave.setEnabled(false);
             exitCommand();
         }
     }

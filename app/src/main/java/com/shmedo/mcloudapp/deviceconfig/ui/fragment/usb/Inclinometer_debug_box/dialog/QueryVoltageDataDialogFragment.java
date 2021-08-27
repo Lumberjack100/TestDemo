@@ -80,6 +80,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
     public void onResume() {
         super.onResume();
         if (isConnected()) {
+            mBtnQuery.setEnabled(false);
             exitCommand();
         }
     }

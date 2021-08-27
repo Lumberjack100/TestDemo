@@ -83,6 +83,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
     public void onResume() {
         super.onResume();
         if (isConnected()) {
+            mBtnQuery.setEnabled(false);
             enterCommand();
         }
     }
