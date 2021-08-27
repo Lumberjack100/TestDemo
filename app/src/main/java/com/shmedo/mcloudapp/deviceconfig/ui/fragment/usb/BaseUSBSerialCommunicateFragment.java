@@ -33,11 +33,12 @@ import timber.log.Timber;
 public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     protected static final int WRITE_TIME_OUT_500_MILLIS = 500;//发送指令超时时间
     protected static final int WRITE_TIME_OUT_1000_MILLIS = 1000;//发送指令超时时间
-    protected static final int SCAN_TIME_OUT_MILLIS = 5000;//扫描指令超时时间
 
     protected USBSerialViewModel usbSerialViewModel;
 
     protected boolean isExitMode = false;//是否退出页面标志
+
+    protected int cmdRepeatCount = 0;
 
     protected LinkedList<ATCommandItem> atCommandItems = new LinkedList<>();
 

@@ -383,7 +383,11 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     Timber.e("接收16进制串口数据: %s", hexData);
 
                     if (hexData.equals("011008260001E262")) {
-                        sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
+                        if (atCommandItems.size() > 0) {
+                            sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
+                        } else {
+                            ToastUtils.show("保存成功");
+                        }
                     }
                 }
                 break;

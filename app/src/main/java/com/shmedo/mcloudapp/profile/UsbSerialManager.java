@@ -219,7 +219,7 @@ public class UsbSerialManager implements SerialListener {
     @Override
     public void onSerialRead(byte[] data) {
         if (isConnected()) {
-            Timber.e("接收 byte[] 数据: %s", new String(data));
+            Timber.e("收到 byte[]: %s", new String(data));
             synchronized (this) {
                 mainLooper.post(() -> {
                     responseMsg.setValue(data);
