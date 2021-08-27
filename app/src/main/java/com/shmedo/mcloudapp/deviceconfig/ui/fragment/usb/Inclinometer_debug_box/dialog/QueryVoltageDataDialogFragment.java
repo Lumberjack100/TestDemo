@@ -17,10 +17,10 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
+import com.shmedo.mcloudapp.util.TextUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -167,13 +167,13 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
 
                 case QUERY_BATTERY_VOLTAGE: {//
                     mBtnQuery.setEnabled(true);
-                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    String hexData = TextUtil.toHexString(resultByteBuf.toByteArray());
                     resultByteBuf.reset();
                     if (TextUtils.isEmpty(hexData)) {
                         return;
                     }
-                    hexData = hexData.replace(" ", "").toUpperCase().trim();
                     Timber.e("接收16进制串口数据: %s", hexData);
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
 
                     //CRC检验通过
                     if (hexData.length() > 4 && checkCRCData(hexData)) {

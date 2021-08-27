@@ -17,11 +17,11 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.usbserial.livedata.USBConnectionStateLiveData;
 import com.shmedo.core.usbserial.livedata.state.USBConnectionState;
 import com.shmedo.mcloudapp.profile.callback.SerialListener;
+import com.shmedo.mcloudapp.util.TextUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -177,7 +177,7 @@ public class UsbSerialManager implements SerialListener {
         if (connected != Connected.True)
             return;
 
-        Timber.e("发送 16 进制串口数据: %s", StringUtil.bytesToHexString(data).toUpperCase());
+        Timber.e("发送 16 进制串口数据: %s", TextUtil.toHexString(data).toUpperCase());
         try {
             socket.write(data);
         } catch (SerialTimeoutException e) {
@@ -219,7 +219,7 @@ public class UsbSerialManager implements SerialListener {
     @Override
     public void onSerialRead(byte[] data) {
         if (isConnected()) {
-            Timber.e("收到 byte[]: %s", new String(data));
+//            Timber.e("收到 byte[]: %s", new String(data));
             synchronized (this) {
                 mainLooper.post(() -> {
                     responseMsg.setValue(data);

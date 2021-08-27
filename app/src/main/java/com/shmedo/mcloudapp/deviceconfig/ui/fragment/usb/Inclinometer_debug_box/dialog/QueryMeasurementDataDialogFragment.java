@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box
 import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -22,6 +23,7 @@ import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
+import com.shmedo.mcloudapp.util.TextUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -213,9 +215,6 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                     String cmdStr = resultByteBuf.toString();
                     resultByteBuf.reset();
                     Timber.e("接收串口数据: %s", cmdStr);
-//                    if ((cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) || TextUtils.isEmpty(cmdStr)) {
-//                        queryData();
-//                    } else
                     if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
@@ -226,38 +225,53 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                 }
                 break;
 
-                case QUERY_EQUATION_COEFFICIENT: {
-                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                case QUERY_EQUATION_COEFFICIENT: {//查询系数
+                    String hexData = TextUtil.toHexString(resultByteBuf.toByteArray());
                     resultByteBuf.reset();
-                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    if (TextUtils.isEmpty(hexData)) {
+                        return;
+                    }
                     Timber.e("接收16进制串口数据: %s", hexData);
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
                     if (hexData.length() > 54) {
                         A = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(22, 30)));
                         B = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(30, 38)));
                         C = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(38, 46)));
                         D = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(46, 54)));
 
+                        Timber.e("系数 A,B,C,D: %s,%s,%s,%s", A, B, C, D);
                         queryData();
                     }
                 }
                 break;
 
-                case QUERY_MEASUREMENT_DATA: {//
+                case QUERY_MEASUREMENT_DATA: {//查询模数
                     mBtnQuery.setEnabled(true);
                     mBtnContinuousCollect.setEnabled(true);
-                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    String hexData = TextUtil.toHexString(resultByteBuf.toByteArray());
                     resultByteBuf.reset();
-                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    if (TextUtils.isEmpty(hexData)) {
+                        return;
+                    }
                     Timber.e("接收16进制串口数据: %s", hexData);
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
                     if (hexData.length() >= 22) {
                         String modulusHex = hexData.substring(10, 14);
                         String temperature = hexData.substring(14, 18);
                         int modulus = StringUtil.signedHexToDec(modulusHex);
+                        Timber.e("模数 F: %s", modulus);
 
                         if (A != 0 && B != 0 && C != 0 && D != 0) {
                             try {
-                                double sum = A + B * modulus + C * modulus * modulus + D * modulus * modulus * modulus;
-                                double result = measuringSpacing * Math.sin(sum);
+                                //得到角度
+                                double angle = A + B * modulus + C * modulus * modulus + D * modulus * modulus * modulus;
+                                Timber.e("角度: %s", angle);
+
+                                //角度转为弧度
+                                double radian = Math.toRadians(angle);
+                                Timber.e("弧度: %s", radian);
+
+                                double result = measuringSpacing * Math.sin(radian);
                                 String value = df.format(result) + "mm";
                                 mTvMeasurementData.setText(value);
                             } catch (Exception ex) {
@@ -275,11 +289,13 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         } else if (msg.what == USB_SERIAL_OPEN_COMMUNICATION) {
             switch (commandItem.getCommandType()) {
                 case ALLOW_CONNECT: {//允许连接指令
+                    resultByteBuf.reset();
                     sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
                 }
                 break;
 
                 case ALLOW_BLUETOOTH_COMMUNICATION: {//允许蓝牙通讯
+                    resultByteBuf.reset();
                     queryEquationCoefficient();
                 }
                 break;

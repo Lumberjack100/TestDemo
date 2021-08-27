@@ -18,10 +18,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
+import com.shmedo.mcloudapp.util.TextUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -233,10 +233,13 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
                 case QUERY_WORK_MODE: {//
                     mBtnQuery.setEnabled(true);
                     mBtnSave.setEnabled(true);
-                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    String hexData = TextUtil.toHexString(resultByteBuf.toByteArray());
                     resultByteBuf.reset();
-                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    if (TextUtils.isEmpty(hexData)) {
+                        return;
+                    }
                     Timber.e("接收16进制串口数据: %s", hexData);
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
 
                     if (hexData.equals("0103025A5A02DF")) {//工作
                         workMode = "工作状态";
@@ -251,10 +254,14 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
                 case SET_WORK_MODE: {//
                     mBtnQuery.setEnabled(true);
                     mBtnSave.setEnabled(true);
-                    String hexData = StringUtil.bytesToHexString(resultByteBuf.toByteArray());
+                    String hexData = TextUtil.toHexString(resultByteBuf.toByteArray());
                     resultByteBuf.reset();
-                    hexData = hexData.replace(" ", "").toUpperCase().trim();
+                    if (TextUtils.isEmpty(hexData)) {
+                        ToastUtils.show("保存失败");
+                        return;
+                    }
                     Timber.e("接收16进制串口数据: %s", hexData);
+                    hexData = hexData.replace(" ", "").toUpperCase().trim();
 
                     if (hexData.equals("0110080D0001926A")) {//工作
                         ToastUtils.show("保存成功");
