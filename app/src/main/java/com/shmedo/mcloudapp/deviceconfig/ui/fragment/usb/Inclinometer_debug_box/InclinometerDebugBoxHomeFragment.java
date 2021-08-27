@@ -299,14 +299,14 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
         atCommandItems.add(atCommandItem);//进入命令模式
 
-        if (initialStart) {
-            String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.MODE.toString() + "=M" + ATCommand.NEWLINE_CRLF;
-            atCommandItem = new ATCommandItem(WHBLE102CommandType.MODE, command);
-            atCommandItems.add(atCommandItem);//设置主设备模式
-
-            atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
-            atCommandItems.add(atCommandItem);//重新进入命令模式
-        }
+//        if (initialStart) {
+//            String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.MODE.toString() + "=M" + ATCommand.NEWLINE_CRLF;
+//            atCommandItem = new ATCommandItem(WHBLE102CommandType.MODE, command);
+//            atCommandItems.add(atCommandItem);//设置主设备模式
+//
+//            atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
+//            atCommandItems.add(atCommandItem);//重新进入命令模式
+//        }
     }
 
     /**
@@ -341,9 +341,6 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
 
     @Override
     protected void parseResponseMessage(byte[] data) {
-        if (!isActive) {
-            return;
-        }
         try {
             resultByteBuf.write(data);
         } catch (IOException e) {
@@ -355,13 +352,13 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         if (msg.what == AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL) {
             String cmdStr = resultByteBuf.toString();
-            resultByteBuf.reset();
             Timber.e("接收串口数据: %s", cmdStr);
+            resultByteBuf.reset();
             if (atCommandItems.size() == 0)
                 return;
 
             ATCommandItem commandItem = atCommandItems.getFirst();
-            atCommandItems.removeFirst();//移除已经发送完的指令
+//            atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {
 //                    if (cmdStr.contains("a+ok") || TextUtils.isEmpty(cmdStr)) {
@@ -376,6 +373,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
                     } else {
+                        atCommandItems.removeFirst();//移除已经发送完的指令
                         if (atCommandItems.size() == 0 && initialStart) {
                             initialStart = false;
                             queryDeviceNameAndVerison();
@@ -394,48 +392,57 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
                     } else {
+                        atCommandItems.removeFirst();//移除已经发送完的指令
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;
 
                 case NAME: {
-//                    if (cmdStr.contains(WHBLE102CommandType.NAME.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-//                        cmdStr = filterControlCharacter(cmdStr);
-//                        cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + WHBLE102CommandType.NAME.toString() + ATCommand.DELIMITER_COLON, "");
-//                        mTvDeviceName.setText(cmdStr);
-//
-//                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
-//                    } else
-                    if (cmdStr.toUpperCase().contains("ERR")) {
-                        cmdStr = filterControlCharacter(commandItem.getCommand());
-                        Timber.e("%s  出错", cmdStr);
-                        ToastUtils.show(cmdStr + "  出错");
-                    } else {
+                    if (cmdStr.contains(WHBLE102CommandType.NAME.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
                         cmdStr = filterControlCharacter(cmdStr);
                         cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + WHBLE102CommandType.NAME.toString() + ATCommand.DELIMITER_COLON, "");
                         mTvDeviceName.setText(cmdStr);
 
+                        cmdRepeatCount = 0;
+                        atCommandItems.removeFirst();//移除已经发送完的指令
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
+                    } else {
+                        cmdRepeatCount++;
+                        if (cmdRepeatCount >= 3) {
+                            if (cmdStr.toUpperCase().contains("ERR")) {
+                                cmdStr = filterControlCharacter(commandItem.getCommand());
+                                Timber.e("%s  出错", cmdStr);
+                                ToastUtils.show(cmdStr + "  出错");
+                            }
+                            cmdRepeatCount = 0;
+                            atCommandItems.removeFirst();//移除已经发送完的指令
+                        }
                         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;
 
                 case CIVER: {
-//                    if (cmdStr.contains("VER") && cmdStr.contains(ATCommand.OK_FLAG)) {
-//                        cmdStr = filterControlCharacter(cmdStr);
-//                        cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + "VER" + ATCommand.DELIMITER_COLON, "");
-//                        mTvDeviceSn.setText(String.format("固件版本：%s", cmdStr));
-//
-//                    } else
-                    if (cmdStr.toUpperCase().contains("ERR")) {
-                        cmdStr = filterControlCharacter(commandItem.getCommand());
-                        Timber.e("%s  出错", cmdStr);
-                        ToastUtils.show(cmdStr + "  出错");
-                    } else {
+                    if (cmdStr.contains("VER") && cmdStr.contains(ATCommand.OK_FLAG)) {
                         cmdStr = filterControlCharacter(cmdStr);
                         cmdStr = cmdStr.replace(ATCommand.COMMAND_RESULT_HEADER + "VER" + ATCommand.DELIMITER_COLON, "");
                         mTvDeviceSn.setText(String.format("固件版本：%s", cmdStr));
+
+                        cmdRepeatCount = 0;
+                        atCommandItems.removeFirst();//移除已经发送完的指令
+                    } else {
+                        cmdRepeatCount++;
+                        if (cmdRepeatCount >= 3) {
+                            if (cmdStr.toUpperCase().contains("ERR")) {
+                                cmdStr = filterControlCharacter(commandItem.getCommand());
+                                Timber.e("%s  出错", cmdStr);
+                                ToastUtils.show(cmdStr + "  出错");
+                            }
+                            cmdRepeatCount = 0;
+                            atCommandItems.removeFirst();//移除已经发送完的指令
+                        }
+                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;

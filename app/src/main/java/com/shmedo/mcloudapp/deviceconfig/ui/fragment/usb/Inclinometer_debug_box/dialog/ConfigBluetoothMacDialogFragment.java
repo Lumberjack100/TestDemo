@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -213,7 +214,8 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
             mBtnLink.setEnabled(false);
             mProgressBar.setVisibility(View.VISIBLE);
             //与原来默认配置的 MAC 地址不同，需要先发送 at+connadd=mac 指令进行设置
-            if (!defaultMac.equals(mEtMacAddr.getText().toString().trim())) {
+            if (TextUtils.isEmpty(defaultMac) ||
+                    (!TextUtils.isEmpty(defaultMac) && !defaultMac.equals(mEtMacAddr.getText().toString().trim()))) {
                 configDefaultMac();
             } else {
                 //直接循环查询自动连接状态
