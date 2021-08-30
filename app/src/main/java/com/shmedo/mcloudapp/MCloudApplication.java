@@ -31,27 +31,23 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        xcrash.XCrash.init(this);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         mAppViewModelStore = new ViewModelStore();
-
         MCloudApp.initialize(this);
-
-        //初始化蒲公英
-        //启动 Pgyer 检测 Crash 功能
-//        PgyCrashManager.register();
 
         //异常上报和升级
         initCrashReport();
 
         //初始化吐司消息组件
         initToastUtil();
+
         //初始化日志输出
         initTimber();
+
         //初始化基于 mmap, 高性能、高可用的 Android 日志收集框架
         LogInit.init(this);
     }
@@ -70,7 +66,6 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         AppCrashHandler.getInstance(this);// crash handler
         //初始化腾讯Bugly异常上报组件
         CrashReport.initCrashReport(getApplicationContext());
-//        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPKEY, false);
     }
 
     /**

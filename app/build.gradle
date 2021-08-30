@@ -181,8 +181,6 @@ dependencies {
     //异常信息上报组件
     implementation "com.tencent.bugly:crashreport:$rootProject.thirdLib.buglyCrashReport"
     implementation "com.tencent.bugly:nativecrashreport:$rootProject.thirdLib.buglyNativeCrashReport"
-    //xCrash 能为安卓 app 提供捕获 java 崩溃，native 崩溃和 ANR 的能力。
-    implementation 'com.iqiyi.xcrash:xcrash-android-lib:3.0.0'
     implementation "com.guolindev.permissionx:permissionx:$rootProject.thirdLib.permissionx"
 
     //下拉刷新
