@@ -39,13 +39,14 @@ public class DasExternalSensorInfoParser implements IOTResultParser<DasExternalS
             info.setTubealti(TextUtils.isEmpty(keyValueMap.get("tubealti")) ? "" : keyValueMap.get("tubealti"));
             info.setRopelen(TextUtils.isEmpty(keyValueMap.get("ropelen")) ? "" : keyValueMap.get("ropelen"));
             info.setPoly_a(TextUtils.isEmpty(keyValueMap.get("poly_a")) ? "" : keyValueMap.get("poly_a"));
-            info.setPloy_b(TextUtils.isEmpty(keyValueMap.get("ploy_b")) ? "" : keyValueMap.get("ploy_b"));
-            info.setPloy_c(TextUtils.isEmpty(keyValueMap.get("ploy_c")) ? "" : keyValueMap.get("ploy_c"));
+            info.setPoly_b(TextUtils.isEmpty(keyValueMap.get("poly_b")) ? "" : keyValueMap.get("poly_b"));
+            info.setPoly_c(TextUtils.isEmpty(keyValueMap.get("poly_c")) ? "" : keyValueMap.get("poly_c"));
             info.setTemp_k(TextUtils.isEmpty(keyValueMap.get("temp_k")) ? "" : keyValueMap.get("temp_k"));
             info.setTemp_t0(TextUtils.isEmpty(keyValueMap.get("temp_t0")) ? "" : keyValueMap.get("temp_t0"));
             info.setSens_k(TextUtils.isEmpty(keyValueMap.get("sens_k")) ? "" : keyValueMap.get("sens_k"));
             info.setTemp_b(TextUtils.isEmpty(keyValueMap.get("temp_b")) ? "" : keyValueMap.get("temp_b"));
             info.setReferval_f(TextUtils.isEmpty(keyValueMap.get("referval_f")) ? "" : keyValueMap.get("referval_f"));
+            info.setElastic_mod(TextUtils.isEmpty(keyValueMap.get("elastic_mod")) ? "" : keyValueMap.get("elastic_mod"));
 
             return info;
         } catch (Exception ex) {

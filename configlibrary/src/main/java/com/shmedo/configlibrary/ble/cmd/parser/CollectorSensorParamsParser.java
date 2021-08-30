@@ -457,7 +457,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setSensorType(SensorType.JUNXING_ZLJ_300T);
         SensorJunXingZljInfo sensorInfo = new SensorJunXingZljInfo();
         sensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
-        sensorInfo.setPolynomialRatioA(strs[4]);
+        sensorInfo.setSensitivityK(strs[4]);
         sensorInfo.setReferenceValue(strs[5]);
         sensorInfo.setManualCorrection(strs[6]);
         sensorInfo.setTemperatureCoefficientB(strs[7]);

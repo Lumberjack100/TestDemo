@@ -23,14 +23,17 @@ public class DasExternalSensorInfo implements Serializable {
     private String ropelen;//安装绳长
 
     private String poly_a;//多项式系数A
-    private String ploy_b;//多项式系数B
-    private String ploy_c;//多项式系数C
+    private String poly_b;//多项式系数B
+    private String poly_c;//多项式系数C
     private String temp_k;//温度系数K
     private String temp_t0;//初始温度T0
 
     private String sens_k;//灵敏度K
     private String temp_b;//温度系数b
     private String referval_f;//基准值F
+
+    private String elastic_mod;//弹性模量(应力计)
+
 
     public String getIndex() {
         return TextUtils.isEmpty(index) ? "" : index;
@@ -112,20 +115,20 @@ public class DasExternalSensorInfo implements Serializable {
         this.poly_a = poly_a;
     }
 
-    public String getPloy_b() {
-        return TextUtils.isEmpty(ploy_b) ? "" : ploy_b;
+    public String getPoly_b() {
+        return TextUtils.isEmpty(poly_b) ? "" : poly_b;
     }
 
-    public void setPloy_b(String ploy_b) {
-        this.ploy_b = ploy_b;
+    public void setPoly_b(String poly_b) {
+        this.poly_b = poly_b;
     }
 
-    public String getPloy_c() {
-        return TextUtils.isEmpty(ploy_c) ? "" : ploy_c;
+    public String getPoly_c() {
+        return TextUtils.isEmpty(poly_c) ? "" : poly_c;
     }
 
-    public void setPloy_c(String ploy_c) {
-        this.ploy_c = ploy_c;
+    public void setPoly_c(String poly_c) {
+        this.poly_c = poly_c;
     }
 
     public String getTemp_k() {
@@ -166,5 +169,13 @@ public class DasExternalSensorInfo implements Serializable {
 
     public void setReferval_f(String referval_f) {
         this.referval_f = referval_f;
+    }
+
+    public String getElastic_mod() {
+        return TextUtils.isEmpty(elastic_mod) ? "" : elastic_mod;
+    }
+
+    public void setElastic_mod(String elastic_mod) {
+        this.elastic_mod = elastic_mod;
     }
 }

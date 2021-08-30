@@ -107,7 +107,6 @@ public class SensorVWP03View extends FrameLayout {
         if (!checkValue()) {
             return false;
         }
-
         sensorInfo.setTriggerThreshold(triggerThreshold);
         sensorInfo.setSensitivityK(coefficientK);
         sensorInfo.setTemperatureCoefficientB(coefficientB);
@@ -120,7 +119,7 @@ public class SensorVWP03View extends FrameLayout {
         return true;
     }
 
-    /**** 新添加******/
+    /**** 物联网指令******/
     public void initData(DasExternalSensorInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
@@ -149,6 +148,7 @@ public class SensorVWP03View extends FrameLayout {
 
         return true;
     }
+    /**** 物联网指令******/
 
     private boolean checkValue() {
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();

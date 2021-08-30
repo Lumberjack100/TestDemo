@@ -63,9 +63,9 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             if (IOTCollectorModel.value(collectorModel) == IOTCollectorModel.VW08) {//振弦式传感器
-                fragment = NetDasExternalVibratingWireSensorFragment.newInstance(projectDeviceInfo, addressList, externalSensorInfo);
+                fragment = NetDasExternalVibratingWireSensorFragment.newInstance(addressList, externalSensorInfo);
             } else { //数字式传感器
-                fragment = NetDasExternalDigitalSensorFragment.newInstance(projectDeviceInfo, addressList, externalSensorInfo);
+                fragment = NetDasExternalDigitalSensorFragment.newInstance(addressList, externalSensorInfo);
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
 

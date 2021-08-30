@@ -259,8 +259,8 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         entity.setTubealti(externalSensorInfo.getTubealti());
         entity.setRopelen(externalSensorInfo.getRopelen());
         entity.setPoly_a(externalSensorInfo.getPoly_a());
-        entity.setPloy_b(externalSensorInfo.getPloy_b());
-        entity.setPloy_c(externalSensorInfo.getPloy_c());
+        entity.setPloy_b(externalSensorInfo.getPoly_b());
+        entity.setPloy_c(externalSensorInfo.getPoly_c());
         entity.setTemp_k(externalSensorInfo.getTemp_k());
         entity.setTemp_t0(externalSensorInfo.getTemp_t0());
         entity.setSens_k(externalSensorInfo.getSens_k());

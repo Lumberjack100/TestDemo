@@ -19,7 +19,6 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +34,6 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
-    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     @BindView(R.id.tv_sensor_aisle)
     TextView mTvSensorAisle;
@@ -61,13 +59,11 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
     private int sensorAislePos = 0;//传感器通道选择项索引
     private int sensorTypePos = 0;//传感器类型选择项索引
     private String sensorAisle;//传感器通道
-    private ProjectDeviceInfo projectDeviceInfo;
     private DasExternalSensorInfo externalSensorInfo;
 
-    public static NetDasExternalVibratingWireSensorFragment newInstance(ProjectDeviceInfo projectDeviceInfo, ArrayList<String> aisleList, DasExternalSensorInfo externalSensorInfo) {
+    public static NetDasExternalVibratingWireSensorFragment newInstance( ArrayList<String> aisleList, DasExternalSensorInfo externalSensorInfo) {
         NetDasExternalVibratingWireSensorFragment fragment = new NetDasExternalVibratingWireSensorFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         args.putStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST, aisleList);
         args.putSerializable(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
         fragment.setArguments(args);
@@ -78,7 +74,6 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
             usedAisleList = getArguments().getStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST);
             externalSensorInfo = (DasExternalSensorInfo) getArguments().getSerializable(AppContants.Extras.SENSOR_PARAM);
 
@@ -144,15 +139,15 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorZLJ300tView.setVisibility(View.GONE);
                 sensorVWP03View.initData(externalSensorInfo);
                 break;
-//
-//            case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
-//                sensorTypePos = 2;
-//                mTvSensorType.setText(sensorTypeList.get(2));
-//                sensorBGK4500View.setVisibility(View.GONE);
-//                sensorVWP03View.setVisibility(View.GONE);
-//                sensorZLJ300tView.setVisibility(View.VISIBLE);
-//                sensorZLJ300tView.initData(parcelableData == null ? null : (SensorJunXingZljInfo) parcelableData);
-//                break;
+
+            case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
+                sensorTypePos = 2;
+                mTvSensorType.setText(sensorTypeList.get(2));
+                sensorBGK4500View.setVisibility(View.GONE);
+                sensorVWP03View.setVisibility(View.GONE);
+                sensorZLJ300tView.setVisibility(View.VISIBLE);
+                sensorZLJ300tView.initData(externalSensorInfo);
+                break;
         }
     }
 
@@ -230,11 +225,10 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
             case GUDAN_PERCOLATE:
                 updateDataSuccess = sensorVWP03View.updateSensorData(externalSensorInfo);
                 break;
-//
-//            case JUNXING_ZLJ_300T:
-//                parcelableData = new SensorJunXingZljInfo();
-//                updateDataSuccess = sensorZLJ300tView.updateSensorData((SensorJunXingZljInfo) parcelableData);
-//                break;
+
+            case JUNXING_ZLJ_300T:
+                updateDataSuccess = sensorZLJ300tView.updateSensorData(externalSensorInfo);
+                break;
         }
 
         if (!updateDataSuccess) {

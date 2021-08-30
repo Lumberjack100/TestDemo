@@ -19,7 +19,6 @@ import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.text.DecimalFormat;
@@ -35,7 +34,6 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetDasExternalDigitalSensorFragment extends BaseFragment {
-    protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     @BindView(R.id.tv_triggerThreshold)
     TextView mTvAlarmValue;
@@ -60,15 +58,13 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
     private IOTSensorType sensorType;//传感器类型
     private ArrayList<String> addressList = new ArrayList<>();
-    private ProjectDeviceInfo projectDeviceInfo;
     private DasExternalSensorInfo externalSensorInfo;
     private String sensorAddress, triggerThreshold, correctValue, measureLong;
 
 
-    public static NetDasExternalDigitalSensorFragment newInstance(ProjectDeviceInfo projectDeviceInfo, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
+    public static NetDasExternalDigitalSensorFragment newInstance( ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
         NetDasExternalDigitalSensorFragment fragment = new NetDasExternalDigitalSensorFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
         args.putStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST, addressList);
         args.putSerializable(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
         fragment.setArguments(args);
@@ -79,7 +75,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
             addressList = getArguments().getStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST);
             externalSensorInfo = (DasExternalSensorInfo) getArguments().getSerializable(AppContants.Extras.SENSOR_PARAM);
 

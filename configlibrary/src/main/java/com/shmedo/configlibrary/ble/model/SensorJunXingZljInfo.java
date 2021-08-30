@@ -13,7 +13,7 @@ import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
  */
 public class SensorJunXingZljInfo implements SensorParameter, Parcelable {
     private String triggerThreshold;   //触发阈值
-    private String polynomialRatioA;//标定系数A
+    private String sensitivityK;//灵敏度 K
     private String temperatureCoefficientB;//温度系数b
     private String referenceValue; //基准值
     private String CreateTemperature;   //初始化温度T0
@@ -24,7 +24,7 @@ public class SensorJunXingZljInfo implements SensorParameter, Parcelable {
 
     protected SensorJunXingZljInfo(Parcel in) {
         triggerThreshold = in.readString();
-        polynomialRatioA = in.readString();
+        sensitivityK = in.readString();
         temperatureCoefficientB = in.readString();
         referenceValue = in.readString();
         CreateTemperature = in.readString();
@@ -34,7 +34,7 @@ public class SensorJunXingZljInfo implements SensorParameter, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(triggerThreshold);
-        dest.writeString(polynomialRatioA);
+        dest.writeString(sensitivityK);
         dest.writeString(temperatureCoefficientB);
         dest.writeString(referenceValue);
         dest.writeString(CreateTemperature);
@@ -66,12 +66,12 @@ public class SensorJunXingZljInfo implements SensorParameter, Parcelable {
         this.triggerThreshold = triggerThreshold;
     }
 
-    public String getPolynomialRatioA() {
-        return polynomialRatioA;
+    public String getSensitivityK() {
+        return sensitivityK;
     }
 
-    public void setPolynomialRatioA(String polynomialRatioA) {
-        this.polynomialRatioA = polynomialRatioA;
+    public void setSensitivityK(String sensitivityK) {
+        this.sensitivityK = sensitivityK;
     }
 
     public String getTemperatureCoefficientB() {
@@ -115,7 +115,7 @@ public class SensorJunXingZljInfo implements SensorParameter, Parcelable {
     public String toString() {
         return "SensorJunXingZljInfo{" +
                 "triggerThreshold='" + triggerThreshold + '\'' +
-                ", polynomialRatioA='" + polynomialRatioA + '\'' +
+                ", polynomialRatioA='" + sensitivityK + '\'' +
                 ", temperatureCoefficientB='" + temperatureCoefficientB + '\'' +
                 ", referenceValue='" + referenceValue + '\'' +
                 ", CreateTemperature='" + CreateTemperature + '\'' +

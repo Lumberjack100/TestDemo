@@ -46,6 +46,9 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
     @BindView(R.id.tv_title)
     TextView mTvTitle;
 
+    @BindView(R.id.tv_modulus)
+    TextView mTvModulus;
+
     @BindView(R.id.tv_measurement_data)
     TextView mTvMeasurementData;
 
@@ -260,7 +263,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                         String temperature = hexData.substring(14, 18);
                         int modulus = StringUtil.signedHexToDec(modulusHex);
                         Timber.e("模数 F: %s", modulus);
-
+                        mTvModulus.setText(String.valueOf(modulus));
                         if (A != 0 && B != 0 && C != 0 && D != 0) {
                             try {
                                 //得到角度

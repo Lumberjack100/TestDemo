@@ -201,7 +201,7 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
 
             case JUNXING_ZLJ_300T: {//轴力计(ZLJ-300T)
                 SensorJunXingZljInfo sensorInfo = (SensorJunXingZljInfo) infoSub.getSensorData();
-                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getPolynomialRatioA()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getSensitivityK()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "B" + sensorInfo.getTemperatureCoefficientB()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "F" + sensorInfo.getReferenceValue()));
                 correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));

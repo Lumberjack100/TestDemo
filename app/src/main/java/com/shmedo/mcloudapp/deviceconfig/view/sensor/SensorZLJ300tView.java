@@ -15,6 +15,7 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
+import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.mcloudapp.R;
 
 import java.util.Locale;
@@ -30,8 +31,8 @@ import butterknife.ButterKnife;
 public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//报警值
-    @BindView(R.id.polynomialRatioA)
-    EditText mEtCoefficientA;//标定系数A
+    @BindView(R.id.sensitivityK)
+    EditText mEtSensitivityK;//标定系数A
     @BindView(R.id.temperatureCoefficient)
     EditText mEtTemperatureCoefficient;//温修系数b
     @BindView(R.id.et_ReferenceValue)
@@ -41,7 +42,7 @@ public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_correct_value)
     EditText mEtCorrectValue;//修正值
 
-    private String triggerThreshold, coefficientA, coefficientB, referenceValue, initialTemperature, correctValue;
+    private String triggerThreshold, coefficientK, coefficientB, referenceValue, initialTemperature, correctValue;
 
     public SensorZLJ300tView(@NonNull Context context) {
         this(context, null);
@@ -61,7 +62,7 @@ public class SensorZLJ300tView extends FrameLayout {
 
     private void initView() {
         mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtCoefficientA.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+        mEtSensitivityK.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtTemperatureCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
@@ -76,7 +77,7 @@ public class SensorZLJ300tView extends FrameLayout {
     public void initData(SensorJunXingZljInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
-            mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
+            mEtSensitivityK.setText(sensorInfo.getSensitivityK());
             mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
             mEtReferenceValue.setText(sensorInfo.getReferenceValue());
             mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCreateTemperature()));
@@ -91,7 +92,7 @@ public class SensorZLJ300tView extends FrameLayout {
      */
     public void initDataByScan(SensorJunXingZljInfo sensorInfo) {
         if (sensorInfo != null) {
-            mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
+            mEtSensitivityK.setText(sensorInfo.getSensitivityK());
             mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
             mEtReferenceValue.setText(TextUtils.isEmpty(sensorInfo.getReferenceValue()) ? "0" : sensorInfo.getReferenceValue());
         }
@@ -103,7 +104,7 @@ public class SensorZLJ300tView extends FrameLayout {
         }
 
         sensorInfo.setTriggerThreshold(triggerThreshold);
-        sensorInfo.setPolynomialRatioA(coefficientA);
+        sensorInfo.setSensitivityK(coefficientK);
         sensorInfo.setTemperatureCoefficientB(TextUtils.isEmpty(coefficientB) ? "0" : coefficientB);
         sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
         sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
@@ -112,10 +113,37 @@ public class SensorZLJ300tView extends FrameLayout {
         return true;
     }
 
+    /****  物联网指令******/
+    public void initData(DasExternalSensorInfo sensorInfo) {
+        if (sensorInfo != null) {
+            mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
+            mEtSensitivityK.setText(sensorInfo.getSens_k());
+            mEtTemperatureCoefficient.setText(sensorInfo.getTemp_b());
+            mEtReferenceValue.setText(sensorInfo.getReferval_f());
+            mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTemp_t0()));
+            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCorrval()));
+        }
+    }
+
+    public boolean updateSensorData(DasExternalSensorInfo sensorInfo) {
+        if (!checkValue()) {
+            return false;
+        }
+        sensorInfo.setThreshold(triggerThreshold);
+        sensorInfo.setSens_k(coefficientK);
+        sensorInfo.setTemp_b(coefficientB);
+        sensorInfo.setReferval_f(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
+        sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
+        sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
+
+        return true;
+    }
+    /****  物联网指令******/
+
     private boolean checkValue() {
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
-        coefficientA = mEtCoefficientA.getText().toString().trim();
+        coefficientK = mEtSensitivityK.getText().toString().trim();
         coefficientB = mEtTemperatureCoefficient.getText().toString().trim();
         referenceValue = mEtReferenceValue.getText().toString().trim();
         initialTemperature = mEtInitialTemperature.getText().toString().trim();
@@ -137,16 +165,16 @@ public class SensorZLJ300tView extends FrameLayout {
             return false;
         }
 
-        if (TextUtils.isEmpty(coefficientA)) {
+        if (TextUtils.isEmpty(coefficientK)) {
             ToastUtils.show("标定系数A不能为空!");
-            mEtCoefficientA.requestFocus();
+            mEtSensitivityK.requestFocus();
             return false;
         } else {
             try {
-                double value = Double.parseDouble(coefficientA);
+                double value = Double.parseDouble(coefficientK);
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的标定系数!");
-                mEtCoefficientA.requestFocus();
+                mEtSensitivityK.requestFocus();
                 return false;
             }
         }

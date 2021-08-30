@@ -125,14 +125,14 @@ public class SensorBGK4500View extends FrameLayout {
         return true;
     }
 
-    /**** 新添加******/
+    /****  物联网指令******/
     public void initData(DasExternalSensorInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
             mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCorrval()));
             mEtCoefficientA.setText(sensorInfo.getPoly_a());
-            mEtCoefficientB.setText(sensorInfo.getPloy_b());
-            mEtCoefficientC.setText(sensorInfo.getPloy_c());
+            mEtCoefficientB.setText(sensorInfo.getPoly_b());
+            mEtCoefficientC.setText(sensorInfo.getPoly_c());
             mEtCoefficientK.setText(sensorInfo.getTemp_k());
             mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTemp_t0()));
             mEtCordLength.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getRopelen()));
@@ -147,8 +147,8 @@ public class SensorBGK4500View extends FrameLayout {
         sensorInfo.setThreshold(triggerThreshold);
         sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
         sensorInfo.setPoly_a(coefficientA);
-        sensorInfo.setPloy_b(coefficientB);
-        sensorInfo.setPloy_c(coefficientC);
+        sensorInfo.setPoly_b(coefficientB);
+        sensorInfo.setPoly_c(coefficientC);
         sensorInfo.setTemp_k(coefficientK);
         sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
         sensorInfo.setRopelen(cordLength);
@@ -156,6 +156,7 @@ public class SensorBGK4500View extends FrameLayout {
 
         return true;
     }
+    /****  物联网指令******/
 
     private boolean checkValue() {
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
