@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'kotlin-android'
 
 /**
  * 获取APP名字
@@ -145,18 +146,19 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
 
-    implementation 'com.kunminx.arch:unpeek-livedata:7.1.0-beta1'
+//    implementation 'com.kunminx.arch:unpeek-livedata:6.1.0-beta1'
 
     implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.thirdLib.rxjava"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.thirdLib.rxandroid"
-    implementation "com.squareup.retrofit2:retrofit:$rootProject.thirdLib.retrofit"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.thirdLib.adapterRxjava"
-    implementation "com.squareup.retrofit2:converter-gson:$rootProject.thirdLib.converterGson"
-    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.loggingInterceptor"
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.thirdLib.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.thirdLib.retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.okHttpVersion"
 
     // Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.thirdLib.glideVersion"
@@ -215,6 +217,8 @@ dependencies {
     implementation "no.nordicsemi.android:log:$rootProject.thirdLib.nordicsemiLog"
     // BLE library, 放在 core 模块中引用
     //implementation 'no.nordicsemi.android:ble:2.3.0'
+
+    implementation "com.github.mik3y:usb-serial-for-android:$rootProject.thirdLib.usbSerialVersion" // maven jitpack
 
     // debugImplementation because LeakCanary should only run in debug builds.
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'

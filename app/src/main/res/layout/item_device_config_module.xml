@@ -45,7 +45,7 @@
             android:singleLine="true"
             android:textColor="@color/sub_title_text_color"
             android:textSize="13sp"
-            tools:text="获取当前设备状态" />
+            tools:text="配置测斜仪工作模式" />
 
     </LinearLayout>
 

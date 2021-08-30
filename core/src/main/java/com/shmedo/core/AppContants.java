@@ -32,6 +32,7 @@ public interface AppContants {
         int E40 = 0x004;
         int M20 = 0x005;
         int RN20 = 0x006;
+        int INCLINOMETER_DEBUG_BOX = 0x007;
     }
 
     /**
@@ -41,6 +42,7 @@ public interface AppContants {
         int NET_PLATFORM_CONNECT = 0x001;//通过物联网平台连接
         int BLE_CONNECT = 0x002;//通过蓝牙连接
         int TCP_CONNECT = 0x003;//通过本地TCP连接
+        int USB_SERIAL = 0x004;//通过 USB 串口连接
     }
 
     /**
@@ -87,12 +89,26 @@ public interface AppContants {
 
         // 设备类型
         String DEVICE_TYPE = "device_type";
+
+        String DEVICE_ID = "device_id";
+        String USB_PORT_NUM = "usb_port_num";
+        String USB_BAUD_RATE = "usb_baud_rate";
+
+        //蓝牙测斜仪测量间距
+        String INCLINOMETER_MEASURINGSPACING = "inclinometer_measuringSpacing";
     }
 
-    interface MsgWhat{
+    interface UsbSerial {
+        String INTENT_ACTION_GRANT_USB = "com.shmedo.mcloudapp.GRANT_USB";
+        String INTENT_ACTION_DISCONNECT = "com.shmedo.mcloudapp.Disconnect";
+    }
+
+    interface MsgWhat {
         int MSG_DEFAULT = 0x001;//
         int CONNECT_DEVICE = 0x002;//
-
+        int USB_SERIAL_DEVICE_INITIAL = 0x003;//
+        int USB_SERIAL_AT_SCAN = 0x004;//
+        int USB_SERIAL_AT_CONNECT = 0x005;//
     }
 
 }

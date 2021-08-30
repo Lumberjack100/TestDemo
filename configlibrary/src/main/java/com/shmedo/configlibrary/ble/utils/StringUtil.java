@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
@@ -101,7 +102,7 @@ public class StringUtil {
         if (hexString == null || hexString.equals("")) {
             return null;
         }
-        hexString = hexString.toUpperCase();
+        hexString = hexString.replace(" ", "").trim().toUpperCase();
         int length = hexString.length() / 2;
         char[] hexChars = hexString.toCharArray();
         byte[] d = new byte[length];
@@ -114,6 +115,47 @@ public class StringUtil {
 
     private static byte charToByte(char c) {
         return (byte) "0123456789ABCDEF".indexOf(c);
+    }
+
+    /**
+     * 将十六进制字符串转化成数组
+     *
+     * @param hexString 参数
+     * @return 返回字节数组
+     */
+    public static byte[] hexStringToBytes2(String hexString) {
+        hexString = hexString.replace(" ", "").trim();
+
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        byte b = 0;
+        int nibble = 0;
+        for (int pos = 0; pos < hexString.length(); pos++) {
+            if (nibble == 2) {
+                buf.write(b);
+                nibble = 0;
+                b = 0;
+            }
+            int c = hexString.charAt(pos);
+            if (c >= '0' && c <= '9') {
+                nibble++;
+                b *= 16;
+                b += c - '0';
+            }
+            if (c >= 'A' && c <= 'F') {
+                nibble++;
+                b *= 16;
+                b += c - 'A' + 10;
+            }
+            if (c >= 'a' && c <= 'f') {
+                nibble++;
+                b *= 16;
+                b += c - 'a' + 10;
+            }
+        }
+        if (nibble > 0)
+            buf.write(b);
+
+        return buf.toByteArray();
     }
 
     /**
@@ -132,6 +174,70 @@ public class StringUtil {
 
         return hex.toString();
     }
+
+    /**
+     * 有符号16进制转10进制
+     *
+     * @param strHex
+     * @return
+     */
+    public static int signedHexToDec(String strHex) {
+        if (strHex.length() == 0) {
+            return 0;
+        }
+        int x = 0;
+        //带符号十六进制转换十进制
+        String fristNum = strHex.substring(0, 1);
+        String hexStr2Byte = parseHexStr2Byte(fristNum);
+        String flag = hexStr2Byte.substring(0, 1);
+        if ("1".equals(flag)) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < strHex.length(); i++) {
+                String num = strHex.substring(i, i + 1);
+                int decNum = Integer.parseInt(num, 16);
+                int a = decNum ^ 15;
+                sb.append(intToHex(a));
+            }
+            x = -Integer.parseInt(sb.toString(), 16) - 1;
+        } else {
+            x = Integer.parseInt(strHex, 16);
+        }
+
+        return x;
+
+    }
+
+    //十进制转16进制
+    private static String intToHex(int n) {
+        StringBuffer s = new StringBuffer();
+        String a;
+        char[] b = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        while (n != 0) {
+            s = s.append(b[n % 16]);
+            n = n / 16;
+        }
+        a = s.reverse().toString();
+        return a;
+    }
+
+    /**
+     * 将16进制转换为二进制
+     *
+     * @param hexStr
+     * @return
+     */
+    public static String parseHexStr2Byte(String hexStr) {
+        if (hexStr.length() == 0)
+            return null;
+        int sint = Integer.valueOf(hexStr, 16);
+        //十进制在转换成二进制的字符串形式输出!
+        String bin = Integer.toBinaryString(sint);
+        for (int i = bin.length(); i < 4; i++) {
+            bin = "0" + bin;
+        }
+        return bin;
+    }
+
 
     /**
      * 倒叙
@@ -198,6 +304,7 @@ public class StringUtil {
 
     /**
      * 将 String 转换的double保留3位小数
+     *
      * @param param
      * @return
      */

@@ -17,49 +17,116 @@
 
     <declare-styleable name="CropImageView">
         <attr name="cropGuidelines">
-            <enum name="off" value="0"/>
-            <enum name="onTouch" value="1"/>
-            <enum name="on" value="2"/>
+            <enum name="off" value="0" />
+            <enum name="onTouch" value="1" />
+            <enum name="on" value="2" />
         </attr>
         <attr name="cropScaleType">
-            <enum name="fitCenter" value="0"/>
-            <enum name="center" value="1"/>
-            <enum name="centerCrop" value="2"/>
-            <enum name="centerInside" value="3"/>
+            <enum name="fitCenter" value="0" />
+            <enum name="center" value="1" />
+            <enum name="centerCrop" value="2" />
+            <enum name="centerInside" value="3" />
         </attr>
         <attr name="cropShape">
-            <enum name="rectangle" value="0"/>
-            <enum name="oval" value="1"/>
+            <enum name="rectangle" value="0" />
+            <enum name="oval" value="1" />
         </attr>
-        <attr name="cropAutoZoomEnabled" format="boolean"/>
-        <attr name="cropMaxZoom" format="integer"/>
-        <attr name="cropMultiTouchEnabled" format="boolean"/>
-        <attr name="cropFixAspectRatio" format="boolean"/>
-        <attr name="cropAspectRatioX" format="integer"/>
-        <attr name="cropAspectRatioY" format="integer"/>
-        <attr name="cropInitialCropWindowPaddingRatio" format="float"/>
-        <attr name="cropBorderLineThickness" format="dimension"/>
-        <attr name="cropBorderLineColor" format="color"/>
-        <attr name="cropBorderCornerThickness" format="dimension"/>
-        <attr name="cropBorderCornerOffset" format="dimension"/>
-        <attr name="cropBorderCornerLength" format="dimension"/>
-        <attr name="cropBorderCornerColor" format="color"/>
-        <attr name="cropGuidelinesThickness" format="dimension"/>
-        <attr name="cropGuidelinesColor" format="color"/>
-        <attr name="cropBackgroundColor" format="color"/>
-        <attr name="cropSnapRadius" format="dimension"/>
-        <attr name="cropTouchRadius" format="dimension"/>
-        <attr name="cropSaveBitmapToInstanceState" format="boolean"/>
-        <attr name="cropShowCropOverlay" format="boolean"/>
-        <attr name="cropShowProgressBar" format="boolean"/>
-        <attr name="cropMinCropWindowWidth" format="dimension"/>
-        <attr name="cropMinCropWindowHeight" format="dimension"/>
-        <attr name="cropMinCropResultWidthPX" format="float"/>
-        <attr name="cropMinCropResultHeightPX" format="float"/>
-        <attr name="cropMaxCropResultWidthPX" format="float"/>
-        <attr name="cropMaxCropResultHeightPX" format="float"/>
-        <attr name="cropFlipHorizontally" format="boolean"/>
-        <attr name="cropFlipVertically" format="boolean"/>
+        <attr name="cropAutoZoomEnabled" format="boolean" />
+        <attr name="cropMaxZoom" format="integer" />
+        <attr name="cropMultiTouchEnabled" format="boolean" />
+        <attr name="cropFixAspectRatio" format="boolean" />
+        <attr name="cropAspectRatioX" format="integer" />
+        <attr name="cropAspectRatioY" format="integer" />
+        <attr name="cropInitialCropWindowPaddingRatio" format="float" />
+        <attr name="cropBorderLineThickness" format="dimension" />
+        <attr name="cropBorderLineColor" format="color" />
+        <attr name="cropBorderCornerThickness" format="dimension" />
+        <attr name="cropBorderCornerOffset" format="dimension" />
+        <attr name="cropBorderCornerLength" format="dimension" />
+        <attr name="cropBorderCornerColor" format="color" />
+        <attr name="cropGuidelinesThickness" format="dimension" />
+        <attr name="cropGuidelinesColor" format="color" />
+        <attr name="cropBackgroundColor" format="color" />
+        <attr name="cropSnapRadius" format="dimension" />
+        <attr name="cropTouchRadius" format="dimension" />
+        <attr name="cropSaveBitmapToInstanceState" format="boolean" />
+        <attr name="cropShowCropOverlay" format="boolean" />
+        <attr name="cropShowProgressBar" format="boolean" />
+        <attr name="cropMinCropWindowWidth" format="dimension" />
+        <attr name="cropMinCropWindowHeight" format="dimension" />
+        <attr name="cropMinCropResultWidthPX" format="float" />
+        <attr name="cropMinCropResultHeightPX" format="float" />
+        <attr name="cropMaxCropResultWidthPX" format="float" />
+        <attr name="cropMaxCropResultHeightPX" format="float" />
+        <attr name="cropFlipHorizontally" format="boolean" />
+        <attr name="cropFlipVertically" format="boolean" />
+    </declare-styleable>
+
+    <attr name="wswStrokeWidth" format="reference|dimension"/>
+    <attr name="wswCornerRadius" format="reference|dimension"/>
+    <attr name="wswNormalStrokeColor" format="reference|color"/>
+    <attr name="wswNormalStrokeWidth" format="reference|dimension"/>
+    <attr name="wswNormalTextColor" format="reference|color"/>
+    <attr name="wswNormalFillColor" format="reference|color"/>
+    <attr name="wswPressedStrokeColor" format="reference|color"/>
+    <attr name="wswPressedStrokeWidth" format="reference|dimension"/>
+    <attr name="wswPressedTextColor" format="reference|color"/>
+    <attr name="wswPressedFillColor" format="reference|color"/>
+    <attr name="wswSelectedStrokeColor" format="reference|color"/>
+    <attr name="wswSelectedStrokeWidth" format="reference|dimension"/>
+    <attr name="wswSelectedTextColor" format="reference|color"/>
+    <attr name="wswSelectedFillColor" format="reference|color"/>
+    <attr name="wswDisabledStrokeColor" format="reference|color"/>
+    <attr name="wswDisabledStrokeWidth" format="reference|dimension"/>
+    <attr name="wswDisabledTextColor" format="reference|color"/>
+    <attr name="wswDisabledFillColor" format="reference|color"/>
+    <attr name="wswRippleColor" format="reference|color"/>
+
+    <!-- 圆角背景文字-->
+    <declare-styleable name="RoundTextView">
+        <attr name="wswStrokeWidth"/>
+        <attr name="wswCornerRadius"/>
+        <attr name="wswNormalStrokeColor"/>
+        <attr name="wswNormalStrokeWidth"/>
+        <attr name="wswNormalTextColor"/>
+        <attr name="wswNormalFillColor"/>
+        <attr name="wswPressedStrokeColor"/>
+        <attr name="wswPressedStrokeWidth"/>
+        <attr name="wswPressedTextColor"/>
+        <attr name="wswPressedFillColor"/>
+        <attr name="wswSelectedStrokeColor"/>
+        <attr name="wswSelectedStrokeWidth"/>
+        <attr name="wswSelectedTextColor"/>
+        <attr name="wswSelectedFillColor"/>
+        <attr name="wswDisabledStrokeColor"/>
+        <attr name="wswDisabledStrokeWidth"/>
+        <attr name="wswDisabledTextColor"/>
+        <attr name="wswDisabledFillColor"/>
+        <attr name="wswRippleColor"/>
+    </declare-styleable>
+
+    <!-- 圆角背景按钮 -->
+    <declare-styleable name="RoundButton">
+        <attr name="wswStrokeWidth"/>
+        <attr name="wswCornerRadius"/>
+        <attr name="wswNormalStrokeColor"/>
+        <attr name="wswNormalStrokeWidth"/>
+        <attr name="wswNormalTextColor"/>
+        <attr name="wswNormalFillColor"/>
+        <attr name="wswPressedStrokeColor"/>
+        <attr name="wswPressedStrokeWidth"/>
+        <attr name="wswPressedTextColor"/>
+        <attr name="wswPressedFillColor"/>
+        <attr name="wswSelectedStrokeColor"/>
+        <attr name="wswSelectedStrokeWidth"/>
+        <attr name="wswSelectedTextColor"/>
+        <attr name="wswSelectedFillColor"/>
+        <attr name="wswDisabledStrokeColor"/>
+        <attr name="wswDisabledStrokeWidth"/>
+        <attr name="wswDisabledTextColor"/>
+        <attr name="wswDisabledFillColor"/>
+        <attr name="wswRippleColor"/>
+        <attr name="wswTopBottomPaddingEnabled" format="boolean" />
     </declare-styleable>
 
 </resources>

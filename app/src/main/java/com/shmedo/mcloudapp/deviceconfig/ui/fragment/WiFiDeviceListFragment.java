@@ -124,7 +124,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             @Override
             public void onChanged(String apiKey) {
                 if (WiFiDeviceListFragment.this.isVisible() && curWiFi != null) {
-//                    dismissProgressDialog();
                     processWiFiUseSecondLibrary(curWiFi);
                 }
             }
@@ -190,7 +189,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         public void success() {
             dismissProgressDialog();
             if (curWiFi.name().contains("VMS")) {
-//                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.VMS);
 
             }else if (curWiFi.name().contains("E40")) {
@@ -411,6 +409,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     @Override
     public void onDestroy() {
+        MCloudApp.getMainHandler().removeCallbacksAndMessages(null);
         deviceApiKeyViewModel.deviceApiKeyRequest.clearDeviceApiKey();
         super.onDestroy();
     }
