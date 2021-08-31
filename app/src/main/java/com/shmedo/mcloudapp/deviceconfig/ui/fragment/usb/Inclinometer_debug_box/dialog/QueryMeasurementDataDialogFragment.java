@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.core.util.SharedUtil;
@@ -28,6 +27,7 @@ import com.shmedo.mcloudapp.util.TextUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 
 import butterknife.BindView;
@@ -48,6 +48,18 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
 
     @BindView(R.id.tv_modulus)
     TextView mTvModulus;
+
+    @BindView(R.id.tv_coefficientA)
+    TextView mTvCoefficientA;
+
+    @BindView(R.id.tv_coefficientB)
+    TextView mTvCoefficientB;
+
+    @BindView(R.id.tv_coefficientC)
+    TextView mTvCoefficientC;
+
+    @BindView(R.id.tv_coefficientD)
+    TextView mTvCoefficientD;
 
     @BindView(R.id.tv_measurement_data)
     TextView mTvMeasurementData;
@@ -234,15 +246,20 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                     if (TextUtils.isEmpty(hexData)) {
                         return;
                     }
-                    Timber.e("接收16进制串口数据: %s", hexData);
+                    Timber.e("接收16进制串口数据(系数): %s", hexData);
                     hexData = hexData.replace(" ", "").toUpperCase().trim();
                     if (hexData.length() > 54) {
-                        A = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(22, 30)));
-                        B = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(30, 38)));
-                        C = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(38, 46)));
-                        D = Float.intBitsToFloat(StringUtil.signedHexToDec(hexData.substring(46, 54)));
+                        A = Float.intBitsToFloat(new BigInteger(hexData.substring(22, 30), 16).intValue());
+                        B = Float.intBitsToFloat(new BigInteger(hexData.substring(30, 38), 16).intValue());
+                        C = Float.intBitsToFloat(new BigInteger(hexData.substring(38, 46), 16).intValue());
+                        D = Float.intBitsToFloat(new BigInteger(hexData.substring(46, 54), 16).intValue());
 
                         Timber.e("系数 A,B,C,D: %s,%s,%s,%s", A, B, C, D);
+                        mTvCoefficientA.setText(String.valueOf(A));
+                        mTvCoefficientB.setText(String.valueOf(B));
+                        mTvCoefficientC.setText(String.valueOf(C));
+                        mTvCoefficientD.setText(String.valueOf(D));
+
                         queryData();
                     }
                 }
@@ -256,12 +273,13 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                     if (TextUtils.isEmpty(hexData)) {
                         return;
                     }
-                    Timber.e("接收16进制串口数据: %s", hexData);
+                    Timber.e("接收16进制串口数据(模数): %s", hexData);
                     hexData = hexData.replace(" ", "").toUpperCase().trim();
                     if (hexData.length() >= 22) {
                         String modulusHex = hexData.substring(10, 14);
                         String temperature = hexData.substring(14, 18);
-                        int modulus = StringUtil.signedHexToDec(modulusHex);
+                        //int modulus = new BigInteger(modulusHex, 16).intValue();
+                        short modulus = (short) Integer.parseInt(modulusHex,16);
                         Timber.e("模数 F: %s", modulus);
                         mTvModulus.setText(String.valueOf(modulus));
                         if (A != 0 && B != 0 && C != 0 && D != 0) {

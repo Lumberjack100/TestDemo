@@ -172,7 +172,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
                     if (TextUtils.isEmpty(hexData)) {
                         return;
                     }
-                    Timber.e("接收16进制串口数据: %s", hexData);
+                    Timber.e("接收16进制串口数据(电压): %s", hexData);
                     hexData = hexData.replace(" ", "").toUpperCase().trim();
 
                     //CRC检验通过

@@ -54,7 +54,7 @@
 
                 <TextView
                     style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="4g信号" />
+                    android:text="4G信号" />
 
                 <TextView
                     android:id="@+id/tv_4g_signal"

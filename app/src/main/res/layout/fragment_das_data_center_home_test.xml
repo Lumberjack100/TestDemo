@@ -145,7 +145,7 @@
             android:layout_height="54dp"
             android:gravity="center_vertical"
             android:paddingStart="16.5dp"
-            android:text="4g 通讯"
+            android:text="4G 通信"
             android:textColor="@color/sub_title_text_color"
             android:textSize="@dimen/text_size_15" />
 
