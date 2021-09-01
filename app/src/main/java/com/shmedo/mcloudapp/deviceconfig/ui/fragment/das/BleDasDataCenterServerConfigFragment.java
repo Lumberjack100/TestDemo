@@ -20,6 +20,9 @@ import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.APPKeyEntity;
@@ -50,6 +53,8 @@ import timber.log.Timber;
  * Das数据中心参数配置页面
  */
 public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFragment {
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.ll_child_items)
     ViewGroup childItemsLayout;
@@ -167,7 +172,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         }
     }
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_ble_das_data_center_server_config;
@@ -178,10 +182,15 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         super.onActivityCreated(savedInstanceState);
         setView();
         setSwitchViewListener();
-        queryDataServerAddress();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void setView() {
+        childItemsLayout.setVisibility(View.GONE);
         mTvRegisterPlatform.setText("地大平台");
         registerPlatform = "0";
 
@@ -208,7 +217,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
-
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定要关闭数据中心？");
                 } else {
@@ -254,28 +262,32 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mMaterialDialog.show();
     }
 
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                queryDataServerAddress();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                        }
+                    }
+                }, DELAY_5000_MILLIS);
+            }
+        });
+    }
+
     /**
      * 查询数据服务器地址、端口
      */
     private void queryDataServerAddress() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
-
         //获取服务器地址,查询中心开启状态
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.SERVER_ADDRESS, serverNumberEntity);
         sendCommand(command);
         Timber.d("查询数据服务器%s的地址指令===%s", serverNumber.toInt(), command);
-    }
-
-    /**
-     * 关闭数据中心</br>
-     * addr和port设置为空时，关闭该数据中心
-     */
-    private void closeDataServer() {
-        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-        String command = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);
-        sendCommand(command);//关闭服务器
-        Timber.d("关闭数据服务器%s指令===%s", serverNumber.toInt(), command);
     }
 
     /**
@@ -288,6 +300,16 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         Timber.d("查询数据中心%s的参数===%s", serverNumber.toInt(), command);
     }
 
+    /**
+     * 关闭数据中心</br>
+     * addr和port设置为空时，关闭该数据中心
+     */
+    private void closeDataServer() {
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+        String command = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);
+        sendCommand(command);//关闭服务器
+        Timber.d("关闭数据服务器%s指令===%s", serverNumber.toInt(), command);
+    }
 
     @OnClick({R.id.communicationProtocolLayout, R.id.ll_register_platform_child, R.id.btn_confirm})
     public void onClick(View view) {
@@ -307,12 +329,10 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-
                 if (!checkValueIsValid()) {
                     Timber.w("数据中心参数存在错误!");
                     return;
                 }
-
                 processSave();
                 break;
         }
@@ -387,7 +407,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private void updateViewByRegisterPlatform(int position, String text) {
         registerPlatformPos = position;
         mTvRegisterPlatform.setText(text);
-
         switch (text) {
             case "地灾一期":
                 registerPlatform = "0";
@@ -431,7 +450,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             mEtDataServerAddress.requestFocus();
             return false;
         }
-
         if (!TextUtils.isEmpty(dataServerPort)) {
             try {
                 int port = Integer.parseInt(dataServerPort);
@@ -446,7 +464,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 return false;
             }
         }
-
         if (communicationProtocol.equals("4")) {//MQTT自动注册
             if (TextUtils.isEmpty(registerPlatformAddress)) {
                 ToastUtils.show("注册平台地址不能为空!");
@@ -494,7 +511,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 mEtKeepAlive.requestFocus();
                 return false;
             }
-
 
             if (TextUtils.isEmpty(deviceSn)) {
                 ToastUtils.show("设备SN号不能为空!");
@@ -556,7 +572,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 return false;
             }
         }
-
         return true;
     }
 
@@ -631,7 +646,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         switch (type) {
             case SERVER_ADDRESS://获取服务器1、2、3 的地址
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询服务器地址指令出错!");
                     ToastUtils.show("查询服务器地址指令出错!");
                     return;
@@ -646,12 +661,12 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
                     childItemsLayout.setVisibility(View.GONE);
                     mBtnSave.setVisibility(View.GONE);
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    mRefreshLayout.finishRefresh(true);
                 }
                 break;
 
             case QUERY_DATA_CENTER_PARAM://查询数据中心 1、2、3 参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                mRefreshLayout.finishRefresh(true);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询数据中心指令出错!");
                     ToastUtils.show("查询数据中心指令出错!");
@@ -681,7 +696,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     doAfterSetting();
                     return;
                 }
-
                 if (communicationProtocol.equals("2")) {//MDM协议
                     doAfterSetting();
                 } else if (communicationProtocol.equals("4") || communicationProtocol.equals("5")) {//MQTT自动注册/MQTT手动注册
@@ -869,7 +883,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 return false;
             }
         }
-
         return false;
     }
 
@@ -928,5 +941,4 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         }
         return false;
     }
-
 }

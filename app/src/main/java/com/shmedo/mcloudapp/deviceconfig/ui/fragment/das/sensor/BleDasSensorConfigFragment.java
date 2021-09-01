@@ -11,13 +11,15 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.BreakAlarmStatusEntity;
@@ -59,6 +61,8 @@ import timber.log.Timber;
  * DAS 传感器配置页面
  */
 public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.radio_close_switch_sensor)
     RadioButton rbCloseSwitchSensor;//关闭开关量传感器
@@ -143,7 +147,11 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         setFilter();
         setSwitchViewListener();
         setRadioButtonListener();
-        querySwitchSensorInfo();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void setFilter() {
@@ -153,6 +161,8 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         mEtWaterRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtOsmometerCord.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtNozzelHeight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
+
+        btnConfirm.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -263,12 +273,27 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         }
     };
 
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                querySwitchSensorInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                        }
+                    }
+                }, DELAY_5000_MILLIS);
+            }
+        });
+    }
+
     /**
      * 查询开关量传感器信息
      */
     private void querySwitchSensorInfo() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
-
         String command = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
         sendCommand(command);
         Timber.d("获取基础配置信息指令===%s", command);
@@ -551,7 +576,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         switch (type) {
             case BASE_CONFIG://基础配置信息 000
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    mRefreshLayout.finishRefresh(false);
                     Timber.e("查询基础配置信息指令出错!");
                     return;
                 }
@@ -564,7 +589,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 break;
 
             case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                mRefreshLayout.finishRefresh(true);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询数字式渗压计参数指令出错!");
                     return;
@@ -712,7 +737,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show("保存参数指令错误!");
                     return;
                 }
-                Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_LONG).show();
+                ToastUtils.show("保存成功!");
                 break;
 
             default:

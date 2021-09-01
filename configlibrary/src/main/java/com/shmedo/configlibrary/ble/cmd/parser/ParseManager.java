@@ -93,7 +93,6 @@ public class ParseManager {
                 DataCommunicateModeParser.class,
                 DataReportIntervalParser.class,
                 DigitalOsmometerFunctionParser.class,
-                GetAllSensorConfigParser.class,
                 HeartbeatSendIntervalParser.class,
                 InstantCollectionParser.class,
                 LocalTimeParser.class,

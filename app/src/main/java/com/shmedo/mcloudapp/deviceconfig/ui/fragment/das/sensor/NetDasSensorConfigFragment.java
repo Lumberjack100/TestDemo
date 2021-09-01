@@ -11,10 +11,14 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasDigitalPiezometerEntity;
@@ -34,6 +38,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommuni
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +54,9 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
+
     @BindView(R.id.radio_close_switch_sensor)
     RadioButton rbCloseSwitchSensor;//关闭开关量传感器
 
@@ -127,7 +136,11 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         setFilter();
         setRadioButtonListener();
         setSwitchViewListener();
-        querySwitchSensorInfo();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void setFilter() {
@@ -245,12 +258,28 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         });
     }
 
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                querySwitchSensorInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                        }
+                    }
+                }, DELAY_5000_MILLIS);
+            }
+        });
+    }
+
     /**
      * 查询开关量传感器信息
      */
     private void querySwitchSensorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO);
-        showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -268,7 +297,6 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryDigitalPiezometerInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO);
-        showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -523,7 +551,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_IO_SENSOR_INFO: {//查询开关量传感器参数
                 IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询开关量传感器参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -536,7 +564,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case DAS_MD_GET_DIGITAL_PIEZOMETER_INFO: {//查询数字渗压计参数
-                dismissProgressDialog();
+                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<DasDigitalPiezometerInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询数字渗压计参数出错!", commandResult.getMessage());

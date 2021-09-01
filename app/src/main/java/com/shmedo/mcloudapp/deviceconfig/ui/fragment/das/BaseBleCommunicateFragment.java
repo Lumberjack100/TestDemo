@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
 
 import timber.log.Timber;
 
@@ -55,6 +56,8 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
     public boolean isExitMode = false;
 
     protected String errMsg;
+
+    protected LinkedList<String> commandItems = new LinkedList<>();
 
     private final InnerHandler mInnerHandler = new InnerHandler(this);
 

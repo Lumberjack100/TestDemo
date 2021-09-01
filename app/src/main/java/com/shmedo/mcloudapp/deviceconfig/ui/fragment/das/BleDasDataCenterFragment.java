@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +14,9 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.DataCommunicateModeEntity;
@@ -40,6 +42,9 @@ import timber.log.Timber;
  * 蓝牙配置数据中心
  */
 public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
+
     @BindView(R.id.tv_communication_method)
     TextView mTvCommunicationMethod;
 
@@ -70,7 +75,11 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setFilter();
-        queryData();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void setFilter() {
@@ -78,14 +87,28 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         mEtBdCardNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
     }
 
-    private void queryData() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                queryData();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                        }
+                    }
+                }, DELAY_5000_MILLIS);
+            }
+        });
+    }
 
+    private void queryData() {
         String baseInfoCommand = CommandManager.getInstance().getCommand(CommandType.BASE_CONFIG);
         sendCommand(baseInfoCommand);
         Timber.d("查询基础配置信息指令===%s", baseInfoCommand);
     }
-
 
     @OnClick({R.id.communicationMethodLayout, R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.btn_confirm})
     public void onClick(View v) {
@@ -172,19 +195,16 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
             mEtReportingInterval.requestFocus();
             return;
         }
-
         if (Integer.parseInt(reportingInterval) < 1) {
             ToastUtils.show("数据上报间隔必须为正整数");
             mEtReportingInterval.requestFocus();
             return;
         }
-
         if (Integer.parseInt(reportingInterval) > 9999) {
             ToastUtils.show("数据上报间隔参数错误");
             mEtReportingInterval.requestFocus();
             return;
         }
-
         if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
             bdCardNumber = mEtBdCardNumber.getText().toString().trim();
             if (TextUtils.isEmpty(bdCardNumber)) {
@@ -192,18 +212,15 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                 mEtBdCardNumber.requestFocus();
                 return;
             }
-
             if (!ValidateUtil.isNumberSix(bdCardNumber)) {
                 ToastUtils.show("北斗卡号参数错误");
                 mEtBdCardNumber.requestFocus();
                 return;
             }
-
             //设置六位目标北斗卡号
             SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdCardNumber);
             cmdBDCardNumber = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
         }
-
         DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(Integer.parseInt(reportingInterval));
         cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
 
@@ -220,7 +237,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
             ToastUtils.show("响应超时,请稍后尝试");
         }
     }
-    
+
     @Override
     protected void parseResponseMessage(String cmdStr) {
         if (!isActive) {
@@ -234,7 +251,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case BASE_CONFIG://获取基础配置信息
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                mRefreshLayout.finishRefresh(true);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询基础配置信息指令出错!");
                     ToastUtils.show("查询基础配置信息指令出错!");
@@ -318,7 +335,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show("保存参数指令错误!");
                     return;
                 }
-                Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
+                ToastUtils.show("保存成功");
                 dataCommunicationModeOld = dataCommunicationMode;
                 break;
 
@@ -350,15 +367,12 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         if (dataCommunicationModeOld != null && dataCommunicationMode != null && !dataCommunicationModeOld.equals(dataCommunicationMode)) {
             return true;
         }
-
         if (reportingInterval != null && !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())) {
             return true;
         }
-
         if (bdCardNumber != null && !bdCardNumber.equals(mEtBdCardNumber.getText().toString().trim())) {
             return true;
         }
-
         return false;
     }
 }

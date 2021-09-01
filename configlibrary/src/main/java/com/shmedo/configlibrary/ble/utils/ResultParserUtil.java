@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.parser.ParseManager;
-import com.shmedo.configlibrary.ble.model.GetAllSensorConfigInfo;
 
 import timber.log.Timber;
 
@@ -14,22 +13,6 @@ import timber.log.Timber;
  * 描述：    获取数据解析后生成的实体对象工具类
  */
 public class ResultParserUtil {
-    /**
-     * 获取所有配置信息
-     *
-     * @param result
-     * @return
-     */
-    public static GetAllSensorConfigInfo getAllConfigInfo(String result) {
-        CommandResult<GetAllSensorConfigInfo> commandResult = ParseManager.getInstance().parse(result);
-        GetAllSensorConfigInfo allInfo = new GetAllSensorConfigInfo();
-        if (commandResult.isSuccess()) {
-            allInfo = commandResult.getResult();
-        }
-
-        return allInfo;
-    }
-
 
     /**
      * 获取实体对象
