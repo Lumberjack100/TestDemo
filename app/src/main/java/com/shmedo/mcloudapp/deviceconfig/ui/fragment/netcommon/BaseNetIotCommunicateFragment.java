@@ -50,6 +50,9 @@ import timber.log.Timber;
 public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
     public static final int DELAY_MILLIS = 60000;//超时时间
+    protected static final int DELAY_5000_MILLIS = 5000;
+    protected static final int DELAY_10000_MILLIS = 10000;
+    protected static final int DELAY_15000_MILLIS = 15000;
 
     public ProjectDeviceInfo projectDeviceInfo;
 
@@ -70,7 +73,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                     onQueryCmdResponseResultTimeOut(null);
                     return false;
                 }
-                Timber.i("handleMessage();queryNum=%s", queryNum);
+                Timber.d("handleMessage();queryNum=%s", queryNum);
                 queryCmdResultByMsgID();
             }
             return false;
@@ -236,7 +239,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             onQueryCmdResponseResultSuccess(queryCmdResult);
         } else {
             //延迟1秒后再次查询响应结果
-            startQueryCmdResponseDelayed(1000);
+            startQueryCmdResponseDelayed(100);
         }
     }
 

@@ -32,8 +32,10 @@ import timber.log.Timber;
  */
 public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     public static final int TCP_CONNECT_DELAY_MILLIS = 5000;//Tcp 连接超时时间
-
     public static final int WRITE_TIME_OUT_MILLIS = 10000;//发送指令超时时间
+    protected static final int DELAY_5000_MILLIS = 5000;
+    protected static final int DELAY_10000_MILLIS = 10000;
+    protected static final int DELAY_15000_MILLIS = 15000;
 
     protected boolean isExitMode = false;
 

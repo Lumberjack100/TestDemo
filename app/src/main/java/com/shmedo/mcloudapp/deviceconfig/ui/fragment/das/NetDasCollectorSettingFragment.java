@@ -103,16 +103,14 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 queryCollectorInfo();
-//                mRefreshLayout.finishRefresh(10000);
                 refreshLayout.getLayout().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (refreshLayout.isRefreshing()) {
                             refreshLayout.finishRefresh(false);
-                            ToastUtils.show("刷新超时");
                         }
                     }
-                }, 5000);
+                }, DELAY_5000_MILLIS);
             }
         });
     }
@@ -237,6 +235,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             mRefreshLayout.finishRefresh(false);
+            dismissProgressDialog();
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -281,7 +280,6 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultSuccess(queryCmdResult);
-        mRefreshLayout.finishRefresh(true);
         setResultData(queryCmdResult);
     }
 
@@ -290,6 +288,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case DAS_MD_GET_COLLECTOR_CONTROL: {//
+                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<DasCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询采集器参数出错!", commandResult.getMessage());

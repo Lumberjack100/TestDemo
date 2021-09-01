@@ -119,14 +119,14 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                    fragment = UniversalUSRBleDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
+                    fragment = UniversalUSRBleDataCenterAdvancedConfigFragment.newInstance(deviceType, serverNumber, serverStatus);
                     break;
 
                 case AppContants.DeviceType.ADME:
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
                         fragment = UniversalUSRBleDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
                     } else {
-                        fragment = UniversalUSRBleDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
+                        fragment = UniversalUSRBleDataCenterAdvancedConfigFragment.newInstance(deviceType, serverNumber, serverStatus);
                     }
                     break;
 
@@ -145,7 +145,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
                         fragment = UniversalTcpDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
                     } else {
-                        fragment = UniversalTcpDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
+                        fragment = UniversalTcpDataCenterAdvancedConfigFragment.newInstance(deviceType, serverNumber, serverStatus);
                     }
                     break;
             }

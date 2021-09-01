@@ -42,10 +42,11 @@ import timber.log.Timber;
  */
 public abstract class BaseBleCommunicateFragment extends BaseFragment {
     public static final int CONNECT_TIME_OUT_MILLIS = 15000;//蓝牙连接超时时间
-
     public static final int WRITE_TIME_OUT_MILLIS = 20000;//发送配置参数指令超时时间
-
     public static final int WRITE_TIME_OUT_LONG_MILLIS = 30000;//发送配置参数指令超时时间
+    protected static final int DELAY_5000_MILLIS = 5000;
+    protected static final int DELAY_10000_MILLIS = 10000;
+    protected static final int DELAY_15000_MILLIS = 15000;
 
     protected USRBleViewModel usrBleViewModel;
 

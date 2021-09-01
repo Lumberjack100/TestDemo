@@ -14,12 +14,16 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -44,6 +48,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommuni
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,6 +63,9 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment {
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
+
     @BindView(R.id.reportingIntervalET)
     EditText mEtReportingInterval;
 
@@ -71,7 +80,6 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
     @BindView(R.id.tv_baudRate)
     TextView mTvBaudRate;
-
 
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
@@ -129,7 +137,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-        showProgressDialog("加载中...");
+        mRefreshLayout.autoRefreshAnimationOnly();//自动刷新，只显示动画不执行刷新
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -155,8 +163,11 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         super.onActivityCreated(savedInstanceState);
         setFilter();
         setSwitchViewListener();
-        showProgressDialog("加载中...");
-        getReportingTimeInfo();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void setFilter() {
@@ -180,6 +191,24 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     beiDouChildsLayout.setVisibility(View.GONE);
                     disableBdTerminal();
                 }
+            }
+        });
+    }
+
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                serverNumber = -1;
+                getReportingTimeInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                        }
+                    }
+                }, DELAY_10000_MILLIS);
             }
         });
     }
@@ -329,6 +358,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            mRefreshLayout.finishRefresh(false);
             dismissProgressDialog();
             ToastUtils.show("下发指令失败");
             return;
@@ -350,6 +380,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("查询设备响应错误");
     }
 
@@ -361,6 +392,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("查询设备响应超时");
     }
 
@@ -381,7 +413,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case DAS_MD_GET_DATA_REPORT_TIME: {//
                 IOTCommandResult<DasDataReportInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询数据上报时间出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -396,7 +428,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case DAS_MD_GET_BD_TERMINAL: {//
                 IOTCommandResult<DasBdTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询北斗数传终端参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -411,7 +443,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    mRefreshLayout.finishRefresh(false);
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -426,7 +458,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        dismissProgressDialog();
+                        mRefreshLayout.finishRefresh(true);
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
@@ -436,14 +468,12 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
                     } else {
                         //表示刷新指定的数据中心
-                        dismissProgressDialog();
+                        mRefreshLayout.finishRefresh(true);
                     }
                 } else if (centerStatus.getCenterid() == 3) {
-                    dismissProgressDialog();
+                    mRefreshLayout.finishRefresh(true);
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
-                }else{
-                    dismissProgressDialog();
                 }
             }
             break;
