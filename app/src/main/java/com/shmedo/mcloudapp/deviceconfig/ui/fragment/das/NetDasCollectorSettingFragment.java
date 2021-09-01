@@ -7,9 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasCollectorEntity;
@@ -25,6 +29,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommuni
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +42,8 @@ import timber.log.Timber;
  * 通过物联网平台配置采集器
  */
 public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragment {
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.collectorAddressET)
     EditText mEtCollectorAddress;
@@ -76,7 +84,11 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setFilter();
-        queryCollectorInfo();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void setFilter() {
@@ -86,9 +98,27 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         mEtCollectTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
     }
 
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                queryCollectorInfo();
+//                mRefreshLayout.finishRefresh(10000);
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                            ToastUtils.show("刷新超时");
+                        }
+                    }
+                }, 5000);
+            }
+        });
+    }
+
     private void queryCollectorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL);
-        showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -182,7 +212,6 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         } else {
             collectTime = "";
         }
-
         return true;
     }
 
@@ -207,8 +236,8 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
-            showDispatchFailedDialog();
+            mRefreshLayout.finishRefresh(false);
+            ToastUtils.show("下发指令失败");
             return;
         }
         msgIDList.clear();
@@ -221,13 +250,6 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     }
 
     /**
-     * 指令下发失败弹框
-     */
-    private void showDispatchFailedDialog() {
-        ToastUtils.show("下发指令失败");
-    }
-
-    /**
      * 查询指令响应结果出错
      *
      * @param errMsg
@@ -235,6 +257,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("指令响应错误");
     }
 
@@ -246,6 +269,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        mRefreshLayout.finishRefresh(false);
         ToastUtils.show("指令响应超时");
     }
 
@@ -256,7 +280,8 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
      */
     @Override
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-//        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        super.onQueryCmdResponseResultSuccess(queryCmdResult);
+        mRefreshLayout.finishRefresh(true);
         setResultData(queryCmdResult);
     }
 
@@ -265,7 +290,6 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case DAS_MD_GET_COLLECTOR_CONTROL: {//
-                dismissProgressDialog();
                 IOTCommandResult<DasCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询采集器参数出错!", commandResult.getMessage());
@@ -281,26 +305,12 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             case DAS_MD_SET_COLLECTOR_CONTROL: {//
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "设置采集器参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
                 doAfterSetting();
-            }
-            break;
-
-            case MD_SAVE_CONFIG_PARAM: {
-                dismissProgressDialog();
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                ToastUtils.show("保存成功");
             }
             break;
 
@@ -332,7 +342,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         standbyTime = mEtStandbyTime.getText().toString().trim();
         collectTime = mEtCollectTime.getText().toString().trim();
 
-        saveConfigInfo();
+        ToastUtils.show("保存成功");
     }
 
     @Override

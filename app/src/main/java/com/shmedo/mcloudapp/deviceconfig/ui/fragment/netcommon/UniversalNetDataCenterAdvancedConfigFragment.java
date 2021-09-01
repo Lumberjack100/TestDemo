@@ -93,20 +93,19 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
+    @BindView(R.id.ll_data_protocol)
+    ViewGroup dataProtocolLayout;
+
     @BindView(R.id.ll_mqtt_child_items)
     ViewGroup mqttChildItemsLayout;
 
+    private int deviceType = AppContants.DeviceType.DAS;
     private ServerNumber serverNumber;
     private String serverStatus;
     private DataCenterInfo dataCenterInfo;
 
-    private int transferProtocolPos;
     private String transferProtocolOld;//
-
-    private int dataProtocolPos;
     private String dataProtocolOld;//
-
-    private int platformTypePos;
     private String platformTypeOld;//
 
     private String transferProtocol;// 传输协议
@@ -126,9 +125,10 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     private boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
 
-    public static UniversalNetDataCenterAdvancedConfigFragment newInstance(ServerNumber serverNumber, String status, ProjectDeviceInfo projectDeviceInfo) {
+    public static UniversalNetDataCenterAdvancedConfigFragment newInstance(int deviceType, ServerNumber serverNumber, String status, ProjectDeviceInfo projectDeviceInfo) {
         UniversalNetDataCenterAdvancedConfigFragment fragment = new UniversalNetDataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
+        args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
         args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
@@ -140,6 +140,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            deviceType = getArguments().getInt(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
             serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_SERVER_NUMBER);
             serverStatus = getArguments().getString(AppContants.Extras.DATA_SERVER_STATUS);
         }
@@ -177,6 +178,10 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
             enableButtonOriginalState = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
             contentLayout.setVisibility(View.VISIBLE);
+        }
+
+        if (deviceType == AppContants.DeviceType.DAS) {
+            dataProtocolLayout.setVisibility(View.GONE);
         }
     }
 
@@ -277,45 +282,48 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     }
 
     private void showTransferProtocolDialog() {
+        final String[] protocols = (deviceType == AppContants.DeviceType.DAS || deviceType == AppContants.DeviceType.ADME) ?
+                new String[]{"TCP-C", "MQTT"} : new String[]{"TCP-C", "TCP-S", "MQTT"};
+        int pos = Arrays.asList(protocols).indexOf(String.valueOf(transferProtocol));
+        pos = (pos == -1) ? 0 : pos;
+
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"TCP-C", "TCP-S", "MQTT"},
-                        null, transferProtocolPos, true,
+                .asBottomList("", protocols,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                updateViewByTransferProtocol(position, text);
+                                transferProtocol = text;
+                                mTvTransferProtocol.setText(text);
+
+                                if (!text.contains("MQTT")) {
+                                    mqttChildItemsLayout.setVisibility(View.GONE);
+                                } else {
+                                    mqttChildItemsLayout.setVisibility(View.VISIBLE);
+                                }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
-    }
-
-    private void updateViewByTransferProtocol(int position, String text) {
-        transferProtocolPos = position;
-        transferProtocol = text;
-        mTvTransferProtocol.setText(text);
-
-        if (!text.contains("MQTT")) {
-            mqttChildItemsLayout.setVisibility(View.GONE);
-        } else {
-            mqttChildItemsLayout.setVisibility(View.VISIBLE);
-        }
     }
 
     /**
      * 选择数据协议弹框
      */
     private void showDataProtocolDialog() {
+        final String[] protocols = new String[]{"CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT"};
+        int pos = Arrays.asList(protocols).indexOf(mTvDataProtocol.getText().toString());
+        pos = (pos == -1) ? 0 : pos;
+
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT"},
-                        null, dataProtocolPos, true,
+                .asBottomList("", protocols,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                dataProtocolPos = position;
                                 mTvDataProtocol.setText(text);
                                 switch (text) {
                                     case "CMD":
@@ -351,15 +359,18 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
      * 选择平台类型弹框
      */
     private void showPlatformTypeDialog() {
+        final String[] platforms = new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期"};
+        int pos = Arrays.asList(platforms).indexOf(mTvPlatformType.getText().toString());
+        pos = (pos == -1) ? 0 : pos;
+
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期"},
-                        null, platformTypePos, true,
+                .asBottomList("", platforms,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                platformTypePos = position;
                                 mTvPlatformType.setText(text);
                                 switch (text) {
                                     case "地灾一期":
@@ -623,68 +634,57 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         productId = dataCenterInfo.getProjid().trim();
         registerCode = dataCenterInfo.getRegcode().trim();
 
+        //传输协议
         mTvTransferProtocol.setText(transferProtocolOld);
         if (transferProtocolOld.contains("TCP-C")) {
             mqttChildItemsLayout.setVisibility(View.GONE);
-            transferProtocolPos = 0;
         } else if (transferProtocolOld.contains("TCP-S")) {
             mqttChildItemsLayout.setVisibility(View.GONE);
-            transferProtocolPos = 1;
         } else if (transferProtocolOld.contains("MQTT")) {
             mqttChildItemsLayout.setVisibility(View.VISIBLE);
-            transferProtocolPos = 2;
         }
 
-        //"CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT"
+        //数据协议
         switch (dataProtocolOld) {
             case "1":
-                dataProtocolPos = 0;
                 mTvDataProtocol.setText("CMD");
                 break;
 
             case "2":
-                dataProtocolPos = 1;
                 mTvDataProtocol.setText("NMEA");
                 break;
 
             case "3":
-                dataProtocolPos = 2;
                 mTvDataProtocol.setText("DIFF_IN");
                 break;
 
             case "4":
-                dataProtocolPos = 3;
                 mTvDataProtocol.setText("DIFF_OUT");
                 break;
 
             case "5":
-                dataProtocolPos = 4;
                 mTvDataProtocol.setText("RAW_OUT");
                 break;
 
             case "6":
-                dataProtocolPos = 5;
                 mTvDataProtocol.setText("RES_OUT");
                 break;
         }
 
+        //平台
         switch (platformTypeOld) {
             case "0":
-                platformTypePos = 0;
                 mTvPlatformType.setText("地灾一期");
                 break;
             case "1":
-                platformTypePos = 1;
                 mTvPlatformType.setText("成都理工平台");
                 break;
 
             case "2":
-                platformTypePos = 2;
                 mTvPlatformType.setText("MDNET");
                 break;
 
             case "3":
-                platformTypePos = 3;
                 mTvPlatformType.setText("地灾二期");
                 break;
         }

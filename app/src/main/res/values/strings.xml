@@ -1,7 +1,11 @@
 <resources>
-
     <!-- 全局 -->
     <!--  <string name="app_name"> 米易通</string>-->
+    <string name="device_module_navi">设备</string>
+    <string name="map_module_navi">地图</string>
+    <string name="project_module_navi">项目</string>
+    <string name="mine_module_navi">我的</string>
+    <string name="knowledge_module">知识库</string>
     <string name="privacy_agreement_title">温馨提示</string>
     <string name="privacy_agreement_desc">欢迎您使用米易通！\n\n我们高度重视并保护您的个人隐私，我们将严格在国家法律允许范围内，且只以为您提供服务为目的，收集必要的相关信息。为了便于您详细了解您的权利和义务，请您仔细阅读米易通《用户协议和免责条款》，并做出是否同意授权的决定。</string>
     <string name="login_protocol_desc">登录即代表已阅读并同意《用户协议与免责条款》</string>
@@ -9,27 +13,15 @@
     <string name="login_way_account_en">Account Login</string>
     <string name="login_way_phone_zh">手机登录</string>
     <string name="login_way_phone_en">Phone Number Login</string>
-
-
     <string name="login_medo_copyright">©上海米度测控科技有限公司版权所有</string>
-    <string name="login_input_username_hint">请输入用户名</string>
-    <string name="login_input_password_hint">请输入密码</string>
-    <string name="login_input_phone_hint">请输入手机号</string>
-    <string name="login_input_code_hint">请输入验证码</string>
-    <string name="reSend">重新发送</string>
-    <string name="service_set_address">请输入服务器地址/域名：端口\n如：192.168.1.101:8081\nmCloud.shmedo.cn:9901</string>
-    <string name="agent_addr">地址：%1$s</string>
     <string name="exit_login_tip">确定退出登录吗？</string>
-    <string name="user_info_status_abnormal">当前登录状态存在异常</string>
     <string name="login_status_expired">登录状态已过期</string>
-    <string name="your_phone_does_not_install_qq">您的手机还没有安装QQ</string>
-    <string name="your_phone_does_not_install_wechat">您的手机还没有安装微信</string>
     <string name="operation_failed_without_sdcard">您的手机没有SD卡，无法完成操作</string>
     <string name="empty_no_data">抱歉！暂无数据</string>
     <string name="loading_data">正在加载中...</string>
     <string name="unknown_error">发生未知错误</string>
     <string name="fetch_data_failed">获取数据失败</string>
-    <string name="empty_no_usb_device">没有 USB 设备</string>
+    <string name="button_save">保存</string>
 
 
     <!-- 网络 -->
@@ -52,180 +44,42 @@
     <string name="message_permission_storage_rationale">需要在系统 “权限” 中打开 “读写手机存储” 开关，才能继续操作 </string>
     <string name="message_permission_update_version_rationale">请在系统 “权限” 中打开 “读写手机存储” 开关，以执行版本更新 </string>
     <string name="message_permission_location_rationale">需要使用定位权限，用于提供精确的定位及导航服务，请前往设置页面授予权限 </string>
-    <string name="message_permission_rationale">授予以下权限以继续执行该程序:\n%s</string>
     <string name="message_permission_wifi_location_rational">使用WiFi扫描功能需要开启定位权限，请前往设置页面授予权限</string>
 
-
     <!-- 用户 -->
-    <string name="edit_description">编辑个人简介</string>
     <string name="take_photo">拍照</string>
     <string name="your_album">你的相册</string>
     <string name="select_avatar">选择头像照片</string>
-    <string name="hold_on_for_saving">保存中，请稍后</string>
-    <string name="save_success">保存成功</string>
-    <string name="album_is_empty">您的相册空空如也</string>
-    <string name="abort">放弃</string>
-    <string name="stay">留下</string>
     <string name="crop">裁剪</string>
     <string name="crop_failed">裁剪失败</string>
-
-    <string name="bottom_sheet_behavior" translatable="false">com.google.android.material.bottomsheet.BottomSheetBehavior</string>
     <string name="open_flash">打开闪光灯</string>
     <string name="close_flash">关闭闪光灯</string>
     <string name="gallery">相册</string>
-    <string name="input_sn"> 手动输入</string>
-    <string name="securityNo">请输入新的设备授权码</string>
-    <string name="select_device">选择一个设备连接</string>
-    <string name="tv_prompt">1台DAS可支持8只传感器接入，请根据实际接入的数量\n任意点击"启用"或"停用"，并对启用的传感器配置相应的参数。</string>
-    <string name="service_address_note1">MD-NET服务器地址：端口</string>
-    <string name="service_address_note2">mCloud服务器地址：端口</string>
-    <string name="input_server_address_hint">请输入地址</string>
-    <string name="device_configuration">设备配置</string>
-    <string name="query_data">查询数据</string>
-    <string name="device_state_info">设备详情</string>
-    <string name="advanced_configuration">高级配置</string>
-    <string name="device_module_navi">设备</string>
-    <string name="map_module_navi">地图</string>
-    <string name="project_module_navi">项目</string>
-    <string name="mine_module_navi">我的</string>
-    <string name="knowledge_module">知识库</string>
-
-    <!-- 采集器、传感器参数说明-->
-    <string name="collector_address">
-        采集器地址：当同一条RS485总线下，接入多个采集器时，区分每个采集器，采集器(DAS)可识别区分，可填入1-255任意数字。
-        这里说的采集器不是DAS，而是指支持Modbus RTU协议的传感器或采集器。
-        此处的场景是，DAS作为总的控制器，对接入的子采集器的协调控制。
-    </string>
-    <string name="calculating_time">
-        解算时间：是指DAS持续工作的时间，在这个时间段内，对采集到的数据进行解算处理(如剔除错误数据等)，提高数据精度和准确性。
-    </string>
-    <string name="standby_time">
-        待机时间：是指DAS休眠的时间，DAS休眠时功耗极底，休眠时间的设置一般推荐6小时(360秒)，具体设置多少根据情况而定。
-    </string>
-    <string name="collect_time">
-        采集时间：当DAS处于工作模式时，对外接的传感器/采集器发送采集指令，每次发送采集指令的时间间隔即为采集时间，采集时间间隔数值越小，
-        获取到的数据样本就越多，对提高数据精度和准确性有帮助，具体设置多少，要看外部传感器/采集器是否支持，以及对功耗的考量。
-    </string>
-    <string name="osmometer_address">
-        渗压计地址：当同一条RS485总线下，接入多个渗压计时，区分每个渗压计，采集器(DAS)可识别区分，可填入1-255任意数字。
-        这里说的渗压计是指数字式的，支持Modbus RTU协议。当接入振弦式渗压计时，需额外配置振弦数据采集器。
-    </string>
-    <string name="water_alarm_value">
-        水位报警值：当水位超过设定值时，自动报警。猪哥数值设定多少，需要跟业主、设计院等沟通，以便指定合理有效的报警值。
-    </string>
-    <string name="water_revised">
-        水位修正值：渗压计首次安装到现场时，需要和人工测量的水深校准，如果渗压计测量的水深和人工测量的有差值，那么将这个差值填入到"水深修正值"一栏，
-        后面自动测量的水深就校正过来了。
-    </string>
-    <string name="osmometer_cord">
-        渗压计绳长的作用：通过管口高程、渗压计绳长、渗压计测量水深三个数计算出水位高程。
-    </string>
-    <string name="nozzel_height">
-        管口高程数据来源：\n1、查阅图纸 \n 2、业主沟通 \n 3、设计院沟通 \n 4、自行测量
-    </string>
-    <string name="rain">
-        翻斗式雨量计：通过计算内置翻斗的反转次数，计算降雨量，翻斗的分辨力常用为0.1mm、0.2mm、0.5mm，这项参数和雨量计要一致，不能选错。
-    </string>
-
-    <!-- DAG采集器参数说明-->
-    <string name="dag_collector_addres">
-        采集器地址：传感器中采集器的地址 (信道号)
-    </string>
-    <string name="dag_collector_collect_interval">
-        采集器采集间隔：采集器用于进行一次数据采集的时间
-    </string>
-    <string name="dag_collector_solution_interval">
-       采集器解算间隔：采集器用于进行一次数据解算的时间(解算间隔必须大于采集间隔)
-    </string>
-    <string name="dag_communication_module_sleep_interval">
-       通讯模块休眠间隔：通讯模块的休眠时间，唤醒时间固定为5s
-    </string>
-    <string name="dag_sensor_type">
-       传感器类型：兼容的传感器类型编号
-    </string>
-    <string name="dag_sensor_address">
-       传感器地址：传感器自带的地址
-    </string>
-    <string name="dag_sensor_correction_value">
-       传感器修正值：(默认：0.00，单位：mm，2位正小数)，用于修正不同传感器的零点系统误差
-    </string>
-
-    <!-- ADME 执行机构参数说明-->
-    <string name="adme_data_settlement_method">
-        数据解算方式：顶固定法为以顶部为零向下起算的数据，底固定法以底部为零向上起算的数据
-    </string>
-    <string name="adme_data_response">
-        数据应答：开启数据应答后，平台会给予数据是否完整的反馈，如数据不完整则进行数据重发
-    </string>
-    <string name="adme_waiting_interval_per_round">
-        每轮等待间隔：两轮测量的等待间隔时间这个值可以是0
-    </string>
-    <string name="adme_log_output_mode">
-        日志输出方式：日志只能以一种方式进行输出
-    </string>
-    <string name="adme_motor_drive_address">
-        电机驱动器地址：电机驱动器自带地址
-    </string>
-    <string name="adme_motor_movement_time">
-        电机运动时间：暂无详细说明
-    </string>
-    <string name="adme_motor_pull_up_speed">
-        电机上拉速度：传感器上拉的速度
-    </string>
-    <string name="adme_motor_pull_down_speed">
-        电机下放速度：传感器下放的速度
-    </string>
-    <string name="adme_traction_line_length">
-        牵引线长：线盘线缆总长度
-    </string>
-    <string name="adme_hole_depth">
-        测孔深：需要测量的测斜孔总深度
-    </string>
-    <string name="adme_measuring_pitch">
-        测量间距：每个测点的深度间隔
-    </string>
 
     <!-- 地图模块-->
-    <string name="location_failed_hold_on">定位失败,请稍后重试</string>
-    <string name="please_select_dest_loc">请选择目的地</string>
     <string name="search_poi_hint">搜索地点</string>
-    <string name="search_nearby">搜索附近</string>
     <string name="no_result">对不起，没有搜索到相关数据！</string>
-    <string name="sear_loc_bus_subway">查找地点、公交、地铁</string>
-    <string name="please_open_gps">请开启定位</string>
 
     <!-- 我的模块-->
     <string name="company_intro">上海米度测控科技有限公司成立于2012年2月3日，是一家集GNSS产品研发、生产、销售、服务于一体的综合性高新技术企业。</string>
 
-    <!-- 项目模块 -->
-    <string name="project_desc_test">宽甸是辽宁省矿产资源大县，地质成矿条件十分优越。经过数十年国家专业地勘单位地质勘查和群众性找矿报矿，县内共发现54个矿种，现已查明地质储量的有13种。其中勘查工作程度较高并被列入储量表的有硼镁矿石矿产地12处。2006年以来，通过地质勘查和老矿山深部找矿相继发现了硼海镇大人沟硼矿床，大川头镇新丰钼矿床和振江万宝钼矿床。其中振江万宝钼矿床新增钼矿矿石储量3600多万吨，由万宝源钼矿正在开发利用。硼海镇大人沟硼矿床和大川头镇新丰钼矿床正在进一步勘探之中，储量报告尚未提交。</string>
-
     <!-- 设备模块 -->
     <string name="ble_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
+    <string name="tcp_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
+    <string name="usb_config_disconnect_warn">USB连接已断开，暂无法进行操作</string>
     <string name="disconnect_device">确定要断开连接？</string>
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="finish_activity_disconnect_tcp_device">确定要退出该页面，并断开连接吗？</string>
+    <string name="finish_activity_disconnect_usb_device">确定要退出该页面，并断开连接吗？</string>
+    <string name="ble_state_connecting">连接中…</string>
+    <string name="ble_state_initializing">初始化中…</string>
     <string name="device_enable_state_close_warn">关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】？</string>
     <string name="device_config_module_current_state">状态</string>
     <string name="cmd_response_loading_tip">等待设备响应...</string>
-    <string name="tcp_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
-    <string name="ble_state_connecting">连接中…</string>
-    <string name="ble_state_initializing">初始化中…</string>
     <string name="refresh_failed_while_device_disconnected">设备已断开连接，刷新失败</string>
-    <string name="usb_config_disconnect_warn">USB连接已断开，暂无法进行操作</string>
-    <string name="finish_activity_disconnect_usb_device">确定要退出该页面，并断开连接吗？</string>
+    <string name="empty_no_usb_device">没有 USB 设备</string>
 
-
-    <string name="location_permission_title">LOCATION PERMISSION REQUIRED</string>
-    <string name="location_permission_info">From Android 6.0 Marshmallow onwards the application requires Location permission in order to scan for Bluetooth Low Energy devices.
-      \n\nThis is because Bluetooth LE beacons, for example iBeacons or Eddystone, may be used to determine the phone\'s and user\'s location. <b>nRF Blinky</b> will not use this information in any way.</string>
-    <string name="location_permission_action">Grant permission</string>
-    <string name="location_permission_settings">Settings</string>
-
-    <string name="bluetooth_disabled_title">BLUETOOTH DISABLED</string>
-    <string name="bluetooth_disabled_info">The Bluetooth adapter is turned off. Click the button below to enable it.</string>
-    <string name="bluetooth_disabled_action">Enable</string>
-
+    <!-- USB Serial 通信 -->
     <string name="any_characters">数据格式: 任意字符</string>
     <string name="hex_characters">数据格式: aaBB1122</string>
     <string name="usb_serial_enter_command">+++a</string>

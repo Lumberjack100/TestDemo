@@ -104,7 +104,8 @@
 
             <LinearLayout
                 android:id="@+id/ll_transfer_protocol"
-                style="@style/Common_ClickableItem_LayoutStyle">
+                style="@style/Common_ClickableItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     style="@style/Common_ClickableItem_TitleStyle"
@@ -118,13 +119,10 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="14dp" />
-
             <LinearLayout
                 android:id="@+id/ll_data_protocol"
-                style="@style/Common_ClickableItem_LayoutStyle">
+                style="@style/Common_ClickableItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     style="@style/Common_ClickableItem_TitleStyle"
@@ -138,13 +136,10 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="14dp" />
-
             <LinearLayout
                 android:id="@+id/ll_platform_type"
-                style="@style/Common_ClickableItem_LayoutStyle">
+                style="@style/Common_ClickableItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     style="@style/Common_ClickableItem_TitleStyle"

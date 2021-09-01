@@ -112,7 +112,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
                         fragment = UniversalNetDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus, projectDeviceInfo);
                     } else {
-                        fragment = UniversalNetDataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus, projectDeviceInfo);
+                        fragment = UniversalNetDataCenterAdvancedConfigFragment.newInstance(deviceType, serverNumber, serverStatus, projectDeviceInfo);
                     }
                     break;
             }
@@ -138,7 +138,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                     }
                     break;
             }
-        }else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+        } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.VMS:
                 case AppContants.DeviceType.E40:

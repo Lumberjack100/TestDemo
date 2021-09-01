@@ -226,6 +226,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     public void run() {
                         if (refreshLayout.isRefreshing()) {
                             refreshLayout.finishRefresh(false);
+                            ToastUtils.show("刷新超时");
                         }
                     }
                 }, 15000);

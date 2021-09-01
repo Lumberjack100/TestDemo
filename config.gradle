@@ -28,7 +28,7 @@ ext {
 
             butterknife                  : '10.2.1',
             butterknifeCompiler          : '10.2.1',
-            timberVersion                : '4.7.1',
+            timberVersion                : '5.0.1',
             Log4a                        : '1.5.0',
             Logcat                       : '9.8',
 

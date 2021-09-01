@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/main_bg_gray"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <com.scwang.smart.refresh.header.ClassicsHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/main_bg_gray"
         android:orientation="vertical">
 
         <View
@@ -51,12 +57,14 @@
             android:background="@color/white"
             android:orientation="vertical">
 
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+            <LinearLayout
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="解算时间(s)"
+                    android:text="解算间隔(s)"
                     android:textColor="@color/text_color_343434"
                     android:textSize="@dimen/text_size_17" />
 
@@ -78,19 +86,14 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
-                android:background="@color/divider_line_bg_efefef" />
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+            <LinearLayout
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="待机时间(s)"
+                    android:text="待机时长(s)"
                     android:textColor="@color/text_color_343434"
                     android:textSize="@dimen/text_size_17" />
 
@@ -112,19 +115,14 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
-                android:background="@color/divider_line_bg_efefef" />
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+            <LinearLayout
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="采集时间(s)"
+                    android:text="采集间隔(ms)"
                     android:textColor="@color/text_color_343434"
                     android:textSize="@dimen/text_size_17" />
 
@@ -146,21 +144,17 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
-                android:background="@color/divider_line_bg_efefef" />
-
         </LinearLayout>
 
         <Button
             android:id="@+id/btn_confirm"
             style="@style/SubmitBordelessButtonStyle"
-            android:text="发送" />
+            android:text="@string/button_save" />
 
     </LinearLayout>
 
+    <com.scwang.smart.refresh.footer.ClassicsFooter
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-</LinearLayout>
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>
