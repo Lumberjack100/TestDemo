@@ -188,7 +188,9 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            mRefreshLayout.finishRefresh(false);
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(false);
+            }
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -209,7 +211,9 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备状态响应错误");
     }
 
@@ -221,7 +225,9 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备状态响应超时");
     }
 

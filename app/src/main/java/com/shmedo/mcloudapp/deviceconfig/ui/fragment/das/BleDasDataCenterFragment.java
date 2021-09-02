@@ -91,6 +91,11 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    mRefreshLayout.finishRefresh(false);
+                    return;
+                }
                 queryData();
                 refreshLayout.getLayout().postDelayed(new Runnable() {
                     @Override
@@ -251,7 +256,9 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case BASE_CONFIG://获取基础配置信息
-                mRefreshLayout.finishRefresh(true);
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(true);
+                }
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询基础配置信息指令出错!");
                     ToastUtils.show("查询基础配置信息指令出错!");

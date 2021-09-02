@@ -183,7 +183,9 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            mRefreshLayout.finishRefresh(false);
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(false);
+            }
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -204,7 +206,9 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备状态响应错误");
     }
 
@@ -216,7 +220,9 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备状态响应超时");
     }
 
@@ -279,7 +285,7 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 initLinkStatus(mTvLinkFourStatus, m20CurrentStateInfo.getDataCenter4());
 
                 boolean sensorAbnormal = false;
-                for(SensorErrnoBean errnoBean :m20CurrentStateInfo.getSensor_errno()){
+                for (SensorErrnoBean errnoBean : m20CurrentStateInfo.getSensor_errno()) {
                     if (errnoBean.getErrno() != 0) {
                         sensorAbnormal = true;
                     }

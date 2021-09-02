@@ -343,7 +343,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             case VMS_MD_GET_GATEWAY_BASE: {//获取网关的基本信息
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -360,7 +362,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             case VMS_MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -368,7 +372,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 }
                 VmsAisleInfo vmsAisleInfo = commandResult.getResult();
                 if (vmsAisleInfo == null) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     return;
                 }
                 vmsAisleListFragment.updateAisleListInfo(vmsAisleInfo);
@@ -400,7 +406,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             case VMS_MD_GET_TERMINAL_STATUS: {//获取挂载终端的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -444,7 +452,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             break;
 
             default:
-                mRefreshLayout.finishRefresh(false);
+                if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                 super.parseResponseMessage(cmdStr);
                 break;
         }
@@ -531,7 +541,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
     @Override
     public void onStop() {
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         super.onStop();
     }
 

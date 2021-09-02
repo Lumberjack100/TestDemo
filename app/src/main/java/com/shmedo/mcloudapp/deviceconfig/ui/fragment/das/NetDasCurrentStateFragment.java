@@ -351,7 +351,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            mRefreshLayout.finishRefresh(false);
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(false);
+            }
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -372,7 +374,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备状态响应错误");
     }
 
@@ -384,7 +388,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备状态响应超时");
     }
 
@@ -406,7 +412,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_DEVICE_BASE: {
                 IOTCommandResult<DasBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -421,7 +429,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_NET_STATUS: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -441,7 +451,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_SOLAR_STATUS: {
                 IOTCommandResult<DasSolarStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询太阳能控制器状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -456,7 +468,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS: {
                 IOTCommandResult<DasTemperatureAndHumidityStatusinfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询温湿度状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -471,7 +485,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_SUB_SENSOR_STATUS: {
                 IOTCommandResult<DasSubSensorStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询辅传感器状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);

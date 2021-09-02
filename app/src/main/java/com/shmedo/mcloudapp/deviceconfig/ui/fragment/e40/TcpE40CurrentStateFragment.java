@@ -300,7 +300,9 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
             case QUERY_DEVICE_EX_STATUS: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -315,7 +317,9 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
             case E40_MD_GET_SATELITTE: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询卫星数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -323,7 +327,9 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                 }
                 String content = commandResult.getResult();
                 if (TextUtils.isEmpty(content)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     return;
                 }
                 initSatelittleInfo(content);

@@ -301,7 +301,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.finishRefresh(false);
+        }
             dismissProgressDialog();
             ToastUtils.show("下发指令失败");
             return;
@@ -323,7 +325,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询数据响应错误");
     }
 
@@ -335,7 +339,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询数据响应超时");
     }
 
@@ -357,7 +363,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             case VMS_MD_GET_GATEWAY_BASE: {//获取网关的基本信息
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -374,7 +382,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             case VMS_MD_GET_GATEWAY_PARAM: {//获取网关通道的控制参数
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -382,7 +392,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 }
                 VmsAisleInfo vmsAisleInfo = commandResult.getResult();
                 if (vmsAisleInfo == null) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     return;
                 }
                 vmsAisleListFragment.updateAisleListInfo(vmsAisleInfo);
@@ -414,7 +426,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             case VMS_MD_GET_TERMINAL_STATUS: {//获取挂载终端的状态
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -495,7 +509,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     public void onStop() {
         super.onStop();
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         dismissProgressDialog();
     }
 

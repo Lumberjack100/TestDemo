@@ -22,6 +22,12 @@ public class DASSensorItem {
         this.isAddButton = isAddButton;
     }
 
+    public DASSensorItem(int resId, boolean isAddButton, String sensorAddress) {
+        this.resId = resId;
+        this.isAddButton = isAddButton;
+        this.sensorAddress = sensorAddress;
+    }
+
     public String getSensorAddress() {
         return TextUtils.isEmpty(sensorAddress) ? "" : sensorAddress;
     }

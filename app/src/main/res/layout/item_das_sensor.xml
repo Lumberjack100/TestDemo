@@ -17,6 +17,7 @@
         android:layout_height="20dp"
         android:layout_gravity="top|end"
         android:src="@drawable/item_del_btn"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </FrameLayout>

@@ -266,6 +266,11 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    mRefreshLayout.finishRefresh(false);
+                    return;
+                }
                 queryDataServerAddress();
                 refreshLayout.getLayout().postDelayed(new Runnable() {
                     @Override
@@ -646,7 +651,9 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         switch (type) {
             case SERVER_ADDRESS://获取服务器1、2、3 的地址
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询服务器地址指令出错!");
                     ToastUtils.show("查询服务器地址指令出错!");
                     return;

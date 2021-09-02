@@ -315,7 +315,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         switch (type) {
             case QUERY_DAS_STATUS_1:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询设备状态1指令出错!");
                     ToastUtils.show("查询设备状态1出错!");
                     return;
@@ -330,7 +332,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case VERSION_MESSAGE:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询设备版本信息出错!");
                     ToastUtils.show("查询设备版本信息出错!");
                     return;
@@ -348,7 +352,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case INSTALL_LOCATION:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询安装位置出错!");
                     ToastUtils.show("查询安装位置出错!");
                     return;
@@ -365,7 +371,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case SYSTEM_RUN_STATE:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询运行状态出错!");
                     ToastUtils.show("查询运行状态出错!");
                     return;
@@ -381,7 +389,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_NETWORK_STATUS://数据中心网络状态
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询数据中心网络状态出错!");
                     ToastUtils.show("查询数据中心网络状态出错!");
                     return;
@@ -422,7 +432,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_DAS_STATUS_2:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询设备状态2出错!");
                     ToastUtils.show("查询设备状态2出错!");
                     return;
@@ -437,7 +449,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_DAS_STATUS_3:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询设备状态3出错!");
                     ToastUtils.show("查询设备状态3出错!");
                     return;
@@ -450,7 +464,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     //裂缝计采集器，查询倾角计信息
                     if (collectorModel.trim().equals("2")) {
                         processQueryInclinometerInfo();
-                    }else{
+                    } else {
                         mRefreshLayout.finishRefresh(true);
                     }
                 }

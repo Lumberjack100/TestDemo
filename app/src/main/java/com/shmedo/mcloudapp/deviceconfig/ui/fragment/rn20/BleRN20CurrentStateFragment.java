@@ -167,7 +167,9 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             case RN20_MD_GET_TERMINAL_BASE: {
                 IOTCommandResult<Rn20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -183,7 +185,9 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             case DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS: {
                 IOTCommandResult<DasTemperatureAndHumidityStatusinfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询温湿度状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);

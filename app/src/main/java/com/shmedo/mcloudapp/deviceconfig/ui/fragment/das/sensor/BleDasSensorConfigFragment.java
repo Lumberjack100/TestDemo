@@ -277,6 +277,11 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    mRefreshLayout.finishRefresh(false);
+                    return;
+                }
                 querySwitchSensorInfo();
                 refreshLayout.getLayout().postDelayed(new Runnable() {
                     @Override
@@ -576,7 +581,9 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         switch (type) {
             case BASE_CONFIG://基础配置信息 000
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询基础配置信息指令出错!");
                     return;
                 }

@@ -113,6 +113,11 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    mRefreshLayout.finishRefresh(false);
+                    return;
+                }
                 queryCollectorInfo();
                 refreshLayout.getLayout().postDelayed(new Runnable() {
                     @Override

@@ -69,7 +69,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         public boolean handleMessage(@NonNull @NotNull Message msg) {
             if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
                 //轮询指令响应结果接口达到10次，判断超时
-                if (queryNum > 10) {
+                if (queryNum > 15) {
                     onQueryCmdResponseResultTimeOut(null);
                     return false;
                 }
@@ -85,7 +85,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         uiHander.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, 0);
     }
 
-    protected void startQueryCmdResponseDelayed(long delayMillis) {
+    private void startQueryCmdResponseDelayed(long delayMillis) {
         queryNum++;
         uiHander.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
     }
@@ -239,7 +239,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             onQueryCmdResponseResultSuccess(queryCmdResult);
         } else {
             //延迟1秒后再次查询响应结果
-            startQueryCmdResponseDelayed(100);
+            startQueryCmdResponseDelayed(200);
         }
     }
 

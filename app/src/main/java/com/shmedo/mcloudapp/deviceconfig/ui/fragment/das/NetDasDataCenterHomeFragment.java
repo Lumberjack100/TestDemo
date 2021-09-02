@@ -103,7 +103,6 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private boolean isBdTerminalParamChange = false;//判断有没有修改北斗数传终端参数
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭北斗数传终端操作
 
-
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;
     private static final int SERVER_NUMBER_THREE = 0x1003;
@@ -358,7 +357,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            mRefreshLayout.finishRefresh(false);
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(false);
+            }
             dismissProgressDialog();
             ToastUtils.show("下发指令失败");
             return;
@@ -380,7 +381,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备响应错误");
     }
 
@@ -392,7 +395,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备响应超时");
     }
 
@@ -413,7 +418,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case DAS_MD_GET_DATA_REPORT_TIME: {//
                 IOTCommandResult<DasDataReportInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询数据上报时间出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -428,7 +435,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case DAS_MD_GET_BD_TERMINAL: {//
                 IOTCommandResult<DasBdTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询北斗数传终端参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -443,7 +452,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);

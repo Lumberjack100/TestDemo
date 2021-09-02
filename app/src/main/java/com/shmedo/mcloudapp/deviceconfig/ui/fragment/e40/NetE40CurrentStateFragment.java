@@ -301,7 +301,9 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.finishRefresh(false);
+        }
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -322,7 +324,9 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备状态响应错误");
     }
 
@@ -334,7 +338,9 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("查询设备状态响应超时");
     }
 
@@ -356,7 +362,9 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             case QUERY_DEVICE_EX_STATUS: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -371,7 +379,9 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             case E40_MD_GET_SATELITTE: {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     String errMsg = String.format("%s %s", "查询卫星数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -379,7 +389,9 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 String content = commandResult.getResult();
                 if (TextUtils.isEmpty(content)) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
                     return;
                 }
                 initSatelittleInfo(content);

@@ -88,6 +88,11 @@ public class UniversalUSRBleDataCenterAdvancedConfigFragment extends BaseUSRBleI
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    mRefreshLayout.finishRefresh(false);
+                    return;
+                }
                 queryDataCenterInfo();
                 refreshLayout.getLayout().postDelayed(new Runnable() {
                     @Override

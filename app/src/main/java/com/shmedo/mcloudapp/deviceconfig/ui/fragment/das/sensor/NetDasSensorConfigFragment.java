@@ -270,7 +270,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                             refreshLayout.finishRefresh(false);
                         }
                     }
-                }, DELAY_5000_MILLIS);
+                }, DELAY_10000_MILLIS);
             }
         });
     }
@@ -491,8 +491,11 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(false);
+            }
             dismissProgressDialog();
-            showDispatchFailedDialog();
+            ToastUtils.show("下发指令失败");
             return;
         }
         msgIDList.clear();
@@ -505,13 +508,6 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
-     * 指令下发失败弹框
-     */
-    private void showDispatchFailedDialog() {
-        ToastUtils.show("下发指令失败");
-    }
-
-    /**
      * 查询指令响应结果出错
      *
      * @param errMsg
@@ -519,6 +515,9 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("指令响应错误");
     }
 
@@ -530,6 +529,9 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("指令响应超时");
     }
 
@@ -551,7 +553,9 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_GET_IO_SENSOR_INFO: {//查询开关量传感器参数
                 IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    mRefreshLayout.finishRefresh(false);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询开关量传感器参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);

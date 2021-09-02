@@ -110,7 +110,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
                             refreshLayout.finishRefresh(false);
                         }
                     }
-                }, DELAY_5000_MILLIS);
+                }, DELAY_10000_MILLIS);
             }
         });
     }
@@ -234,7 +234,9 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            mRefreshLayout.finishRefresh(false);
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(false);
+            }
             dismissProgressDialog();
             ToastUtils.show("下发指令失败");
             return;
@@ -256,7 +258,9 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("指令响应错误");
     }
 
@@ -268,7 +272,9 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
-        mRefreshLayout.finishRefresh(false);
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.finishRefresh(false);
+        }
         ToastUtils.show("指令响应超时");
     }
 
