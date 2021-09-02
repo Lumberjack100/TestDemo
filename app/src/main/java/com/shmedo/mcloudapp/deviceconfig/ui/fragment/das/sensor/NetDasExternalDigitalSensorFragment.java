@@ -56,16 +56,17 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-    private IOTSensorType sensorType;//传感器类型
+    private IOTSensorType iotSensorType;//传感器类型
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
     private String sensorAddress, triggerThreshold, correctValue, measureLong;
 
 
-    public static NetDasExternalDigitalSensorFragment newInstance( ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
+    public static NetDasExternalDigitalSensorFragment newInstance(ArrayList<String> addressList, IOTSensorType sensorType, DasExternalSensorInfo externalSensorInfo) {
         NetDasExternalDigitalSensorFragment fragment = new NetDasExternalDigitalSensorFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST, addressList);
+        args.putSerializable(AppContants.Extras.SENSOR_TYPE, sensorType);
         args.putSerializable(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
         fragment.setArguments(args);
         return fragment;
@@ -77,9 +78,8 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         if (getArguments() != null) {
             addressList = getArguments().getStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST);
             externalSensorInfo = (DasExternalSensorInfo) getArguments().getSerializable(AppContants.Extras.SENSOR_PARAM);
-
-            sensorType = IOTSensorType.value(externalSensorInfo.getType());
-            if (!TextUtils.isEmpty(externalSensorInfo.getAddr())) {
+            iotSensorType = (IOTSensorType) getArguments().getSerializable(AppContants.Extras.SENSOR_TYPE);
+            if (externalSensorInfo != null && !TextUtils.isEmpty(externalSensorInfo.getAddr())) {
                 addressList.remove(externalSensorInfo.getAddr());
             }
         }
@@ -99,7 +99,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
     private void setView() {
         //测斜仪
-        if (sensorType != null && sensorType == IOTSensorType.INCLINOMETER) {
+        if (iotSensorType != null && iotSensorType == IOTSensorType.INCLINOMETER) {
             measureLongLayout.setVisibility(View.VISIBLE);
         } else {
             measureLongLayout.setVisibility(View.GONE);
@@ -112,7 +112,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
     private void initValue() {
         try {
-            switch (sensorType) {
+            switch (iotSensorType) {
                 case RAIN_GAUGE://压电式雨量计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
@@ -149,13 +149,15 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvCorrectValue.setText("修正值(单位:Hz)");
                     break;
             }
+            if (externalSensorInfo == null) {
+                return;
+            }
             sensorAddress = externalSensorInfo.getAddr();
             triggerThreshold = externalSensorInfo.getThreshold();
             correctValue = externalSensorInfo.getCorrval();
             measureLong = externalSensorInfo.getSpacing();
 
             mEtModbusAddress.setText(sensorAddress);
-
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
                 mEtAlarmValue.setText(triggerThreshold);
@@ -243,7 +245,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             return false;
         }
 
-        if (sensorType == IOTSensorType.INCLINOMETER) {
+        if (iotSensorType == IOTSensorType.INCLINOMETER) {
             if (TextUtils.isEmpty(measureLong)) {
                 ToastUtils.show("测段长值不能为空!");
                 mEtMeasureLong.requestFocus();
@@ -262,15 +264,16 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     }
 
     private void processSave() {
-        Intent intent = new Intent();
         if (externalSensorInfo == null)
             externalSensorInfo = new DasExternalSensorInfo();
 
         externalSensorInfo.setAddr(sensorAddress);
-        externalSensorInfo.setType(sensorType.toString());
+        externalSensorInfo.setType(iotSensorType.toString());
         externalSensorInfo.setThreshold(triggerThreshold);
         externalSensorInfo.setCorrval(correctValue);
         externalSensorInfo.setSpacing(measureLong);
+
+        Intent intent = new Intent();
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
         mActivity.setResult(Activity.RESULT_OK, intent);
         mActivity.finish();

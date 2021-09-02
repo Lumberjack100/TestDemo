@@ -119,23 +119,18 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
         if (intent.getExtras().containsKey(SENSOR_ITEM_LIST)) {
             usedAisleList = intent.getStringArrayListExtra(SENSOR_ITEM_LIST);
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_ADDRESS)) {
             sensorAisle = intent.getStringExtra(AppContants.Extras.SENSOR_ADDRESS);
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_TYPE)) {
             selectedSensorType = (SensorType) intent.getSerializableExtra(AppContants.Extras.SENSOR_TYPE);
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             parcelableData = intent.getParcelableExtra(AppContants.Extras.SENSOR_PARAM);
         }
-
         if (!TextUtils.isEmpty(sensorAisle)) {
             usedAisleList.remove(sensorAisle);
         }
-
         unUsedAisleList.clear();
         unUsedAisleList.addAll(allAisleList);
         for (String aisle : usedAisleList) {
@@ -145,7 +140,6 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 }
             }
         }
-
         String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
         mToolbarTitle.setText(sensorName);
     }
@@ -268,7 +262,6 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
             Timber.w("传感器参数存在错误!");
             return;
         }
-
         boolean updateDataSuccess = false;
         switch (selectedSensorType) {
             case KANG_PERCOLATE:
@@ -286,7 +279,6 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 updateDataSuccess = sensorZLJ300tView.updateSensorData((SensorJunXingZljInfo) parcelableData);
                 break;
         }
-
         if (!updateDataSuccess) {
             Timber.w("传感器参数存在错误!");
             return;
@@ -314,7 +306,6 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
             ToastUtils.show("传感器通道不能重复!");
             return false;
         }
-
         return true;
     }
 
@@ -383,7 +374,6 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 break;
         }
     }
-
 
     private void showSwitchSensorTypeDialog(String type, Object object) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)

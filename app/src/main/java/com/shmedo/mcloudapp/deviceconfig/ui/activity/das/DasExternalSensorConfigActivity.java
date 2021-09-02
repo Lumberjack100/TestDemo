@@ -26,6 +26,7 @@ import java.util.Objects;
  */
 public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainerActivity {
     private String collectorModel = "";//采集器类型
+    private IOTSensorType sensorType;
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
 
@@ -55,7 +56,8 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             externalSensorInfo = (DasExternalSensorInfo) intent.getSerializableExtra(AppContants.Extras.SENSOR_PARAM);
         }
-        String sensorName = BlueResultParserUtil.getSensorName(Objects.requireNonNull(IOTSensorType.value(externalSensorInfo.getType())));
+        sensorType = BlueResultParserUtil.getSensorTypeByCollectorCode(collectorModel);
+        String sensorName = BlueResultParserUtil.getSensorName(Objects.requireNonNull(sensorType));
         mToolbarTitle.setText(sensorName);
     }
 
@@ -63,9 +65,9 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             if (IOTCollectorModel.value(collectorModel) == IOTCollectorModel.VW08) {//振弦式传感器
-                fragment = NetDasExternalVibratingWireSensorFragment.newInstance(addressList, externalSensorInfo);
+                fragment = NetDasExternalVibratingWireSensorFragment.newInstance(addressList, sensorType, externalSensorInfo);
             } else { //数字式传感器
-                fragment = NetDasExternalDigitalSensorFragment.newInstance(addressList, externalSensorInfo);
+                fragment = NetDasExternalDigitalSensorFragment.newInstance(addressList, sensorType, externalSensorInfo);
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
 

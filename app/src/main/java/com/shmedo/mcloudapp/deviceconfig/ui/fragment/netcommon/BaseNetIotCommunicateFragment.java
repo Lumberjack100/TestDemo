@@ -69,7 +69,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         public boolean handleMessage(@NonNull @NotNull Message msg) {
             if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
                 //轮询指令响应结果接口达到10次，判断超时
-                if (queryNum > 15) {
+                if (queryNum > 30) {
                     onQueryCmdResponseResultTimeOut(null);
                     return false;
                 }

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.util;
 
 import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.SensorType;
+import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
 import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 
 /**
@@ -251,5 +252,41 @@ public class BlueResultParserUtil {
         }
 
         return sensorName;
+    }
+
+    /**
+     *
+     * @param code
+     * @return
+     */
+    public static IOTSensorType getSensorTypeByCollectorCode(String code) {
+        switch (IOTCollectorModel.value(code)) {
+            case VW08:
+                return IOTSensorType.KANG_PERCOLATE;
+
+            case RAIN08:
+                return IOTSensorType.RAIN_GAUGE;
+
+            case DS08:
+                return IOTSensorType.WIRE_SHIFT;
+
+            case HD08:
+                return IOTSensorType.SOIL_MOISTURE;
+
+            case CX08:
+                return IOTSensorType.INCLINOMETER;
+
+            case UDS08:
+                return IOTSensorType.ULTRASONIC_LEVEL_GAUGE;
+
+            case RD08:
+                return IOTSensorType.RADAR_LEVEL_GAUGE;
+
+            case CS08:
+                return IOTSensorType.INFRASOUND_SENSOR;
+
+            default:
+                return null;
+        }
     }
 }

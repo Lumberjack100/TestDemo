@@ -34,7 +34,6 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
-
     @BindView(R.id.tv_sensor_aisle)
     TextView mTvSensorAisle;
 
@@ -55,16 +54,17 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
     private ArrayList<String> usedAisleList = new ArrayList<>();//已占用的通道
     private List<String> unUsedAisleList = new ArrayList<>();//未使用的通道
 
-    private IOTSensorType selectedSensorType;//传感器类型
+    private IOTSensorType iotSensorType;//传感器类型
     private int sensorAislePos = 0;//传感器通道选择项索引
     private int sensorTypePos = 0;//传感器类型选择项索引
     private String sensorAisle;//传感器通道
     private DasExternalSensorInfo externalSensorInfo;
 
-    public static NetDasExternalVibratingWireSensorFragment newInstance( ArrayList<String> aisleList, DasExternalSensorInfo externalSensorInfo) {
+    public static NetDasExternalVibratingWireSensorFragment newInstance(ArrayList<String> aisleList, IOTSensorType sensorType, DasExternalSensorInfo externalSensorInfo) {
         NetDasExternalVibratingWireSensorFragment fragment = new NetDasExternalVibratingWireSensorFragment();
         Bundle args = new Bundle();
         args.putStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST, aisleList);
+        args.putSerializable(AppContants.Extras.SENSOR_TYPE, sensorType);
         args.putSerializable(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
         fragment.setArguments(args);
         return fragment;
@@ -76,18 +76,16 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
         if (getArguments() != null) {
             usedAisleList = getArguments().getStringArrayList(AppContants.Extras.SENSOR_ADDRESS_LIST);
             externalSensorInfo = (DasExternalSensorInfo) getArguments().getSerializable(AppContants.Extras.SENSOR_PARAM);
-
-            selectedSensorType = IOTSensorType.value(externalSensorInfo.getType());
-            sensorAisle = externalSensorInfo.getAddr();
+            iotSensorType = (IOTSensorType) getArguments().getSerializable(AppContants.Extras.SENSOR_TYPE);
+            sensorAisle = externalSensorInfo == null ? "" : externalSensorInfo.getAddr();
             if (!TextUtils.isEmpty(sensorAisle)) {
                 usedAisleList.remove(sensorAisle);
             }
-
             unUsedAisleList.clear();
             unUsedAisleList.addAll(allAisleList);
             for (String aisle : usedAisleList) {
                 for (String ss : allAisleList) {
-                    if (aisle.equals(String.valueOf(Integer.parseInt(ss) - 1))) {
+                    if (Integer.parseInt(aisle) == (Integer.parseInt(ss) - 1)) {
                         unUsedAisleList.remove(ss);
                     }
                 }
@@ -121,7 +119,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 }
             }
         }
-        switch (selectedSensorType) {
+        switch (iotSensorType) {
             case KANG_PERCOLATE://基康渗压计(BGK-4500)
                 sensorTypePos = 0;
                 mTvSensorType.setText(sensorTypeList.get(0));
@@ -151,14 +149,14 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.sensorAisleLayout, R.id.sensorTypeLayout,  R.id.btn_confirm})
+    @OnClick({R.id.sensorAisleLayout, R.id.sensorTypeLayout, R.id.btn_confirm})
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.sensorAisleLayout) {
             showSensorAisleChooseDialog();
         } else if (id == R.id.sensorTypeLayout) {
             showSensorTypeChooseDialog();
-        }  else if (id == R.id.btn_confirm) {
+        } else if (id == R.id.btn_confirm) {
             processConfirm();
         }
     }
@@ -192,24 +190,21 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                                 mTvSensorType.setText(text);
 
                                 if (text.contains("基康渗压计")) {
-                                    selectedSensorType = IOTSensorType.KANG_PERCOLATE;
+                                    iotSensorType = IOTSensorType.KANG_PERCOLATE;
                                     sensorBGK4500View.setVisibility(View.VISIBLE);
                                     sensorVWP03View.setVisibility(View.GONE);
                                     sensorZLJ300tView.setVisibility(View.GONE);
                                 } else if (text.contains("葛南渗压计")) {
-                                    selectedSensorType = IOTSensorType.GUDAN_PERCOLATE;
+                                    iotSensorType = IOTSensorType.GUDAN_PERCOLATE;
                                     sensorBGK4500View.setVisibility(View.GONE);
                                     sensorVWP03View.setVisibility(View.VISIBLE);
                                     sensorZLJ300tView.setVisibility(View.GONE);
                                 } else if (text.contains("轴力计")) {
-                                    selectedSensorType = IOTSensorType.JUNXING_ZLJ_300T;
+                                    iotSensorType = IOTSensorType.JUNXING_ZLJ_300T;
                                     sensorBGK4500View.setVisibility(View.GONE);
                                     sensorVWP03View.setVisibility(View.GONE);
                                     sensorZLJ300tView.setVisibility(View.VISIBLE);
                                 }
-
-//                                String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
-//                                mToolbarTitle.setText(sensorName);
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
@@ -217,7 +212,10 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
 
     private void processConfirm() {
         boolean updateDataSuccess = false;
-        switch (selectedSensorType) {
+        if (externalSensorInfo == null)
+            externalSensorInfo = new DasExternalSensorInfo();
+
+        switch (iotSensorType) {
             case KANG_PERCOLATE:
                 updateDataSuccess = sensorBGK4500View.updateSensorData(externalSensorInfo);
                 break;
@@ -230,13 +228,15 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 updateDataSuccess = sensorZLJ300tView.updateSensorData(externalSensorInfo);
                 break;
         }
-
         if (!updateDataSuccess) {
             Timber.w("传感器参数存在错误!");
             return;
         }
-        externalSensorInfo.setAddr(mTvSensorAisle.getText().toString());
-        externalSensorInfo.setType(selectedSensorType.toString());
+        String aisle = mTvSensorAisle.getText().toString();
+        sensorAisle = String.valueOf(Integer.parseInt(aisle) - 1);
+        externalSensorInfo.setAddr(sensorAisle);
+        externalSensorInfo.setType(iotSensorType.toString());
+
         Intent intent = new Intent();
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
         mActivity.setResult(Activity.RESULT_OK, intent);

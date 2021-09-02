@@ -30,9 +30,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.das.DasCollectorEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasExternalSensorEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
-import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.das.DasCollectorInfo;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
@@ -181,16 +179,8 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             }
         }
         curSensorItem = sensorItemList.get(position);
-        DasExternalSensorInfo dasExternalSensorInfo = null;
-        if (curSensorItem.isAddButton()) {
-            isEnableNewSensor = true;
-            IOTSensorType sensorType = getSensorTypeByCollectorCode(collectorInfo.getType());
-            dasExternalSensorInfo = new DasExternalSensorInfo();
-            dasExternalSensorInfo.setType(sensorType.toString());
-        } else {
-            isEnableNewSensor = false;
-            dasExternalSensorInfo = sensorHashMap.get(curSensorItem.getSensorAddress());
-        }
+        isEnableNewSensor = curSensorItem.isAddButton();
+        DasExternalSensorInfo dasExternalSensorInfo = curSensorItem.isAddButton() ? null : sensorHashMap.get(curSensorItem.getSensorAddress());
         DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, collectorInfo.getType(), addressList, dasExternalSensorInfo);
     }
 
@@ -299,7 +289,6 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         entity.setReferval_f(externalSensorInfo.getReferval_f());
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR, entity);
-        showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -551,36 +540,5 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorInfo.getAddr());
         sensorItemList.add(sensorItem);
         sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
-    }
-
-    private IOTSensorType getSensorTypeByCollectorCode(String code) {
-        switch (IOTCollectorModel.value(code)) {
-            case VW08:
-                return IOTSensorType.KANG_PERCOLATE;
-
-            case RAIN08:
-                return IOTSensorType.RAIN_GAUGE;
-
-            case DS08:
-                return IOTSensorType.WIRE_SHIFT;
-
-            case HD08:
-                return IOTSensorType.SOIL_MOISTURE;
-
-            case CX08:
-                return IOTSensorType.INCLINOMETER;
-
-            case UDS08:
-                return IOTSensorType.ULTRASONIC_LEVEL_GAUGE;
-
-            case RD08:
-                return IOTSensorType.RADAR_LEVEL_GAUGE;
-
-            case CS08:
-                return IOTSensorType.INFRASOUND_SENSOR;
-
-            default:
-                return null;
-        }
     }
 }

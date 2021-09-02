@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.projects.adapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +25,6 @@ public class DASSensorAdapter extends BaseQuickAdapter<DASSensorItem, BaseViewHo
     protected void convert(@NotNull BaseViewHolder holder, DASSensorItem dasSensorItem) {
         holder.setImageResource(R.id.iv_das_sensor, dasSensorItem.getResId());
         holder.setGone(R.id.iv_del_item, !dasSensorItem.isRemoveState());
-
+        holder.setText(R.id.tv_address, dasSensorItem.getSensorAddress());
     }
 }

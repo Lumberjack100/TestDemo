@@ -17,7 +17,17 @@
         android:layout_height="20dp"
         android:layout_gravity="top|end"
         android:src="@drawable/item_del_btn"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="3dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="187" />
 
 </FrameLayout>
