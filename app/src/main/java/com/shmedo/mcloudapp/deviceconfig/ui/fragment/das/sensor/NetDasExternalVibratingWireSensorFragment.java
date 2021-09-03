@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorYLJView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
 
 import java.util.ArrayList;
@@ -49,7 +50,10 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
     @BindView(R.id.sensorZLJ300tView)
     SensorZLJ300tView sensorZLJ300tView;
 
-    private List<String> sensorTypeList = Arrays.asList("基康渗压计(BGK-4500)", "葛南渗压计(VWP-03)", "轴力计(ZLJ-300T)");
+    @BindView(R.id.sensorYLJView)
+    SensorYLJView sensorYLJView;
+
+    private List<String> sensorTypeList = Arrays.asList("基康渗压计(BGK-4500)", "葛南渗压计(VWP-03)", "轴力计(ZLJ-300T)", "应力计");
     private List<String> allAisleList = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");//所有通道
     private ArrayList<String> usedAisleList = new ArrayList<>();//已占用的通道
     private List<String> unUsedAisleList = new ArrayList<>();//未使用的通道
@@ -126,6 +130,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorBGK4500View.setVisibility(View.VISIBLE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.GONE);
+                sensorYLJView.setVisibility(View.GONE);
                 sensorBGK4500View.initData(externalSensorInfo);
                 break;
 
@@ -135,6 +140,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.VISIBLE);
                 sensorZLJ300tView.setVisibility(View.GONE);
+                sensorYLJView.setVisibility(View.GONE);
                 sensorVWP03View.initData(externalSensorInfo);
                 break;
 
@@ -144,8 +150,18 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.VISIBLE);
+                sensorYLJView.setVisibility(View.GONE);
                 sensorZLJ300tView.initData(externalSensorInfo);
                 break;
+
+            case GUDAN_STRESS://应力计
+                sensorTypePos = 3;
+                mTvSensorType.setText(sensorTypeList.get(3));
+                sensorBGK4500View.setVisibility(View.GONE);
+                sensorVWP03View.setVisibility(View.GONE);
+                sensorZLJ300tView.setVisibility(View.GONE);
+                sensorYLJView.setVisibility(View.VISIBLE);
+                sensorYLJView.initData(externalSensorInfo);
         }
     }
 
@@ -194,16 +210,28 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                                     sensorBGK4500View.setVisibility(View.VISIBLE);
                                     sensorVWP03View.setVisibility(View.GONE);
                                     sensorZLJ300tView.setVisibility(View.GONE);
+                                    sensorYLJView.setVisibility(View.GONE);
+
                                 } else if (text.contains("葛南渗压计")) {
                                     iotSensorType = IOTSensorType.GUDAN_PERCOLATE;
                                     sensorBGK4500View.setVisibility(View.GONE);
                                     sensorVWP03View.setVisibility(View.VISIBLE);
                                     sensorZLJ300tView.setVisibility(View.GONE);
+                                    sensorYLJView.setVisibility(View.GONE);
+
                                 } else if (text.contains("轴力计")) {
                                     iotSensorType = IOTSensorType.JUNXING_ZLJ_300T;
                                     sensorBGK4500View.setVisibility(View.GONE);
                                     sensorVWP03View.setVisibility(View.GONE);
                                     sensorZLJ300tView.setVisibility(View.VISIBLE);
+                                    sensorYLJView.setVisibility(View.GONE);
+
+                                } else if (text.contains("应力计")) {
+                                    iotSensorType = IOTSensorType.GUDAN_STRESS;
+                                    sensorBGK4500View.setVisibility(View.GONE);
+                                    sensorVWP03View.setVisibility(View.GONE);
+                                    sensorZLJ300tView.setVisibility(View.GONE);
+                                    sensorYLJView.setVisibility(View.VISIBLE);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
@@ -226,6 +254,10 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
 
             case JUNXING_ZLJ_300T:
                 updateDataSuccess = sensorZLJ300tView.updateSensorData(externalSensorInfo);
+                break;
+
+            case GUDAN_STRESS:
+                updateDataSuccess = sensorYLJView.updateSensorData(externalSensorInfo);
                 break;
         }
         if (!updateDataSuccess) {

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
@@ -59,17 +58,26 @@
         <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View
             android:id="@+id/sensorBGK4500View"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View
             android:id="@+id/sensorVWP03View"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView
             android:id="@+id/sensorZLJ300tView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorYLJView
+            android:id="@+id/sensorYLJView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_confirm"

@@ -31,6 +31,8 @@ import butterknife.ButterKnife;
 public class SensorBGK4500View extends FrameLayout {
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//报警值
+    @BindView(R.id.et_correct_value)
+    EditText mEtCorrectValue;//修正值
     @BindView(R.id.polynomialRatioA)
     EditText mEtCoefficientA;//多项式系数A
     @BindView(R.id.polynomialRatioB)
@@ -41,14 +43,12 @@ public class SensorBGK4500View extends FrameLayout {
     EditText mEtCoefficientK;//温度系数K
     @BindView(R.id.et_initialtemperature)
     EditText mEtInitialTemperature;//初始温度
-    @BindView(R.id.et_correct_value)
-    EditText mEtCorrectValue;//修正值
     @BindView(R.id.et_cord_length)
     EditText mEtCordLength;//绳长
     @BindView(R.id.et_install_elevation)
     EditText mEtInstallElevation;//安装高程
 
-    private String triggerThreshold, coefficientA, coefficientB, coefficientC, coefficientK, initialTemperature, correctValue, cordLength, installElevation;
+    private String triggerThreshold, correctValue, coefficientA, coefficientB, coefficientC, coefficientK, initialTemperature, cordLength, installElevation;
 
 
     public SensorBGK4500View(@NonNull Context context) {
@@ -69,28 +69,28 @@ public class SensorBGK4500View extends FrameLayout {
 
     private void initView() {
         mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtCoefficientA.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtCoefficientB.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtCoefficientC.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtCoefficientK.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtCordLength.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtInstallElevation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
-        mEtInitialTemperature.setText("0");
         mEtCorrectValue.setText("0");
+        mEtInitialTemperature.setText("0");
     }
 
     public void initData(SensorKangPercolateInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getTriggerThreshold())));
+            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
             mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
             mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
             mEtCoefficientC.setText(sensorInfo.getPolynomialRatioC());
             mEtCoefficientK.setText(sensorInfo.getTemperatureCoefficientK());
             mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCreateTemperature()));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
             mEtCordLength.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCordLenght()));
             mEtInstallElevation.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getInstallElevation()));
         }
@@ -113,12 +113,12 @@ public class SensorBGK4500View extends FrameLayout {
             return false;
         }
         sensorInfo.setTriggerThreshold(triggerThreshold);
+        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
         sensorInfo.setPolynomialRatioA(coefficientA);
         sensorInfo.setPolynomialRatioB(coefficientB);
         sensorInfo.setPolynomialRatioC(coefficientC);
         sensorInfo.setTemperatureCoefficientK(coefficientK);
         sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
-        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
         sensorInfo.setCordLenght(cordLength);
         sensorInfo.setInstallElevation(installElevation);
 
@@ -156,6 +156,7 @@ public class SensorBGK4500View extends FrameLayout {
 
         return true;
     }
+
     /****  物联网指令******/
 
     private boolean checkValue() {
@@ -204,7 +205,7 @@ public class SensorBGK4500View extends FrameLayout {
             ToastUtils.show("多项式系数B不能为空!");
             mEtCoefficientB.requestFocus();
             return false;
-        }else {
+        } else {
             try {
                 double value = Double.parseDouble(coefficientB);
             } catch (Exception ex) {
@@ -218,7 +219,7 @@ public class SensorBGK4500View extends FrameLayout {
             ToastUtils.show("多项式系数C不能为空!");
             mEtCoefficientC.requestFocus();
             return false;
-        }else {
+        } else {
             try {
                 double value = Double.parseDouble(coefficientC);
             } catch (Exception ex) {
@@ -232,7 +233,7 @@ public class SensorBGK4500View extends FrameLayout {
             ToastUtils.show("温度系数K不能为空!");
             mEtCoefficientK.requestFocus();
             return false;
-        }else {
+        } else {
             try {
                 double value = Double.parseDouble(coefficientK);
             } catch (Exception ex) {

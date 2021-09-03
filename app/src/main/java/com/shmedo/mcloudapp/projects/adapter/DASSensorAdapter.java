@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.projects.adapter;
 
+import android.text.TextUtils;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
@@ -25,6 +27,13 @@ public class DASSensorAdapter extends BaseQuickAdapter<DASSensorItem, BaseViewHo
     protected void convert(@NotNull BaseViewHolder holder, DASSensorItem dasSensorItem) {
         holder.setImageResource(R.id.iv_das_sensor, dasSensorItem.getResId());
         holder.setGone(R.id.iv_del_item, !dasSensorItem.isRemoveState());
-        holder.setText(R.id.tv_address, dasSensorItem.getSensorAddress());
+        if (!TextUtils.isEmpty(dasSensorItem.getSensorAddress())) {
+            try {
+                String sensorAisle = String.valueOf(Integer.parseInt(dasSensorItem.getSensorAddress()) + 1);
+                holder.setText(R.id.tv_address, sensorAisle);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

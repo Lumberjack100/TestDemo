@@ -177,6 +177,10 @@ public enum IOTCommandType {
      * 设置扩展传感器信息
      */
     DAS_MD_SET_EXTERNAL_SENSOR("md_setsensorctrl"),
+    /**
+     * 删除扩展传感器
+     */
+    DAS_MD_DEL_EXTERNAL_SENSOR("md_delsensor"),
 
     /*　VMS-LoRa网关指令  */
     /**

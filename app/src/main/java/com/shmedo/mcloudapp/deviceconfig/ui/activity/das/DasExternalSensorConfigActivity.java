@@ -31,10 +31,11 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
     private DasExternalSensorInfo externalSensorInfo;
 
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProjectDeviceInfo projectDeviceInfo, String collectorModel, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProjectDeviceInfo projectDeviceInfo, String collectorModel, IOTSensorType sensorType, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
         Intent intent = new Intent(context, DasExternalSensorConfigActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
         intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
+        intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         intent.putStringArrayListExtra(AppContants.Extras.SENSOR_ADDRESS_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -50,13 +51,15 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
         if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
             collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
         }
+        if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_TYPE)) {
+            sensorType = (IOTSensorType) intent.getSerializableExtra(AppContants.Extras.SENSOR_TYPE);
+        }
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_ADDRESS_LIST)) {
             addressList = intent.getStringArrayListExtra(AppContants.Extras.SENSOR_ADDRESS_LIST);
         }
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             externalSensorInfo = (DasExternalSensorInfo) intent.getSerializableExtra(AppContants.Extras.SENSOR_PARAM);
         }
-        sensorType = BlueResultParserUtil.getSensorTypeByCollectorCode(collectorModel);
         String sensorName = BlueResultParserUtil.getSensorName(Objects.requireNonNull(sensorType));
         mToolbarTitle.setText(sensorName);
     }

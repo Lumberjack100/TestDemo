@@ -282,6 +282,12 @@ public class BlueResultParserUtil {
             case RD08:
                 return IOTSensorType.RADAR_LEVEL_GAUGE;
 
+            case SMC08:
+                return IOTSensorType.MOISTURE_METER;
+
+            case TH08:
+                return IOTSensorType.TEMPERATURE_HUMIDITY_METER;
+
             case CS08:
                 return IOTSensorType.INFRASOUND_SENSOR;
 

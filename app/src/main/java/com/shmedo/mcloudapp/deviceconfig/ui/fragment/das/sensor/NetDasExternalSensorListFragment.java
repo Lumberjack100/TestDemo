@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -31,6 +32,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.das.DasExternalSensorEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.das.DasCollectorInfo;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
@@ -46,6 +48,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommuni
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -70,6 +73,9 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     @BindView(R.id.recyclerview_sensor)
     RecyclerView mRecyclerViewSensor;
 
+    @BindView(R.id.btn_confirm)
+    Button mBtnSave;
+
     private DASSensorAdapter sensorAdapter;
     private List<DASSensorItem> sensorItemList = new ArrayList<>();
     private DASSensorItem curSensorItem;
@@ -81,6 +87,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     private DasCollectorInfo collectorInfo;
     private int accessSum = 0;  //接入扩展传感器总数
     private int sensorIndex = 0;//接入的传感器索引号
+    private int curItemPosition = 0;
     private boolean isEnableNewSensor = false;//是启用新传感器还是编辑现有传感器
 
     private ActivityResultLauncher<Intent> resultLauncher;
@@ -115,7 +122,10 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                                     sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
                                     sensorItemList.add(sensorItem);
                                 }
-                                sensorAdapter.notifyDataSetChanged();
+                                sensorAdapter.notifyItemRangeChanged(sensorItemList.size() - 2, 21);
+                                if (sensorItemList.size() > 1) {
+                                    mBtnSave.setEnabled(true);
+                                }
                             } else {
                                 sensorHashMap.remove(curSensorItem.getSensorAddress());
                                 sensorHashMap.put(sensorAddress, sensorInfo);
@@ -135,6 +145,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initExtendSensorAdapter();
+        initDefaultSensorItem();
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);
         //是否在刷新的时候禁止内容的一切手势操作（默认false）
@@ -160,11 +171,12 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         sensorAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                curItemPosition = position;
                 DASSensorItem sensorItem = sensorItemList.get(position);
                 if (sensorItem.isAddButton()) {
                     return true;
                 }
-                warnDeleteSensorItem(position);
+                warnDeleteSensorItem();
                 return true;
             }
         });
@@ -178,13 +190,26 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 addressList.add(item.getSensorAddress());
             }
         }
+        curItemPosition = position;
         curSensorItem = sensorItemList.get(position);
         isEnableNewSensor = curSensorItem.isAddButton();
-        DasExternalSensorInfo dasExternalSensorInfo = curSensorItem.isAddButton() ? null : sensorHashMap.get(curSensorItem.getSensorAddress());
-        DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, collectorInfo.getType(), addressList, dasExternalSensorInfo);
+        IOTSensorType sensorType = null;
+        DasExternalSensorInfo dasExternalSensorInfo = null;
+        if (curSensorItem.isAddButton()) {
+            if (sensorHashMap.values().size() == 0) {
+                sensorType = BlueResultParserUtil.getSensorTypeByCollectorCode(collectorInfo.getType());
+            } else {
+                DasExternalSensorInfo sensorInfo = (DasExternalSensorInfo) sensorHashMap.values().toArray()[0];
+                sensorType = IOTSensorType.value(sensorInfo.getType());
+            }
+        } else {
+            dasExternalSensorInfo = sensorHashMap.get(curSensorItem.getSensorAddress());
+            sensorType = IOTSensorType.value(dasExternalSensorInfo.getType());
+        }
+        DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, collectorInfo.getType(), sensorType, addressList, dasExternalSensorInfo);
     }
 
-    private void warnDeleteSensorItem(int position) {
+    private void warnDeleteSensorItem() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示")
                 .content("确定移除传感器?")
@@ -198,10 +223,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        String address = sensorItemList.get(position).getSensorAddress();
-                        sensorHashMap.remove(address);
-                        sensorItemList.remove(position);
-                        sensorAdapter.notifyItemRemoved(position);
+                        removeSensor();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -253,12 +275,32 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     }
 
     /**
+     * 移除传感器
+     */
+    private void removeSensor() {
+        IndexEntity entity = new IndexEntity(curItemPosition);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
      * 当接入的传感器个数为0时，设置采集器地址为0，关闭采集器
      */
     private void closeCollector() {
         DasCollectorEntity entity = new DasCollectorEntity();
         entity.setType(collectorInfo.getType());
         entity.setAddr("0");
+
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    private void setCollector() {
+        DasCollectorEntity entity = new DasCollectorEntity();
+        entity.setType(collectorInfo.getType());
+        entity.setSensornum(sensorHashMap.values().size() + "");
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
         showProgressDialog("处理中...");
@@ -280,8 +322,8 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         entity.setTubealti(externalSensorInfo.getTubealti());
         entity.setRopelen(externalSensorInfo.getRopelen());
         entity.setPoly_a(externalSensorInfo.getPoly_a());
-        entity.setPloy_b(externalSensorInfo.getPoly_b());
-        entity.setPloy_c(externalSensorInfo.getPoly_c());
+        entity.setPoly_b(externalSensorInfo.getPoly_b());
+        entity.setPoly_c(externalSensorInfo.getPoly_c());
         entity.setTemp_k(externalSensorInfo.getTemp_k());
         entity.setTemp_t0(externalSensorInfo.getTemp_t0());
         entity.setSens_k(externalSensorInfo.getSens_k());
@@ -309,9 +351,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             closeCollector();
             return;
         }
-        sensorIndex = 0;
-        showProgressDialog("处理中...");
-        setExtendSensorConfigInfo((DasExternalSensorInfo) sensorHashMap.values().toArray()[sensorIndex]);
+        setCollector();
     }
 
     /**
@@ -423,20 +463,30 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                         sensorItemList.add(sensorItem);
                         sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
                     }
+                    if (sensorItemList.size() <= 1) {
+                        mBtnSave.setEnabled(false);
+                    } else {
+                        mBtnSave.setEnabled(true);
+                    }
                 }
             }
             break;
 
             case DAS_MD_SET_COLLECTOR_CONTROL: {//
-                dismissProgressDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "关闭采集器出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置采集器出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("保存成功");
+                if (sensorHashMap.values().isEmpty()) {
+                    dismissProgressDialog();
+                    ToastUtils.show("保存成功");
+                } else {
+                    sensorIndex = 0;
+                    setExtendSensorConfigInfo((DasExternalSensorInfo) sensorHashMap.values().toArray()[sensorIndex]);
+                }
             }
             break;
 
@@ -457,6 +507,25 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 } else {
                     dismissProgressDialog();
                     ToastUtils.show("保存成功");
+                }
+            }
+            break;
+
+            case DAS_MD_DEL_EXTERNAL_SENSOR: {//移除传感器
+                dismissProgressDialog();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "移除传感器出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                String address = sensorItemList.get(curItemPosition).getSensorAddress();
+                sensorHashMap.remove(address);
+                sensorItemList.remove(curItemPosition);
+                sensorAdapter.notifyItemRemoved(curItemPosition);
+                if (sensorItemList.size() <= 1) {
+                    mBtnSave.setEnabled(false);
                 }
             }
             break;
@@ -493,9 +562,11 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 mRefreshLayout.finishRefresh(true);
             }
             initDefaultSensorItem();
+            mBtnSave.setEnabled(false);
             return;
         }
         sensorIndex = 0;
+        sensorItemList.clear();
         queryExtendSensorConfigInfo();
     }
 
@@ -523,7 +594,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         sensorItemList.clear();
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
         sensorItemList.add(sensorItem);
-        sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
+        sensorAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -539,6 +610,6 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
 
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorInfo.getAddr());
         sensorItemList.add(sensorItem);
-        sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
+        sensorAdapter.notifyDataSetChanged();
     }
 }

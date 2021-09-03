@@ -31,18 +31,18 @@ import butterknife.ButterKnife;
 public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_trigger_threshold)
     EditText mEtTriggerThreshold;//报警值
+    @BindView(R.id.et_correct_value)
+    EditText mEtCorrectValue;//修正值
     @BindView(R.id.sensitivityK)
-    EditText mEtSensitivityK;//标定系数A
+    EditText mEtSensitivityK;//灵敏度K
     @BindView(R.id.temperatureCoefficient)
     EditText mEtTemperatureCoefficient;//温修系数b
     @BindView(R.id.et_ReferenceValue)
     EditText mEtReferenceValue;//基准值F0
     @BindView(R.id.et_initialtemperature)
     EditText mEtInitialTemperature;//初始温度
-    @BindView(R.id.et_correct_value)
-    EditText mEtCorrectValue;//修正值
 
-    private String triggerThreshold, coefficientK, coefficientB, referenceValue, initialTemperature, correctValue;
+    private String triggerThreshold, correctValue, coefficientK, coefficientB, referenceValue, initialTemperature;
 
     public SensorZLJ300tView(@NonNull Context context) {
         this(context, null);
@@ -62,26 +62,26 @@ public class SensorZLJ300tView extends FrameLayout {
 
     private void initView() {
         mEtTriggerThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtSensitivityK.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtTemperatureCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-        mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
+        mEtCorrectValue.setText("0");
         mEtTemperatureCoefficient.setText("0");
         mEtReferenceValue.setText("0");
         mEtInitialTemperature.setText("0");
-        mEtCorrectValue.setText("0");
     }
 
     public void initData(SensorJunXingZljInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
+            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
             mEtSensitivityK.setText(sensorInfo.getSensitivityK());
             mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
             mEtReferenceValue.setText(sensorInfo.getReferenceValue());
             mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCreateTemperature()));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
         }
     }
 
@@ -102,13 +102,12 @@ public class SensorZLJ300tView extends FrameLayout {
         if (!checkValue()) {
             return false;
         }
-
         sensorInfo.setTriggerThreshold(triggerThreshold);
+        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
         sensorInfo.setSensitivityK(coefficientK);
         sensorInfo.setTemperatureCoefficientB(TextUtils.isEmpty(coefficientB) ? "0" : coefficientB);
         sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
         sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
-        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
 
         return true;
     }
@@ -117,11 +116,11 @@ public class SensorZLJ300tView extends FrameLayout {
     public void initData(DasExternalSensorInfo sensorInfo) {
         if (sensorInfo != null) {
             mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
+            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCorrval()));
             mEtSensitivityK.setText(sensorInfo.getSens_k());
             mEtTemperatureCoefficient.setText(sensorInfo.getTemp_b());
             mEtReferenceValue.setText(sensorInfo.getReferval_f());
             mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTemp_t0()));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCorrval()));
         }
     }
 
@@ -130,14 +129,15 @@ public class SensorZLJ300tView extends FrameLayout {
             return false;
         }
         sensorInfo.setThreshold(triggerThreshold);
+        sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
         sensorInfo.setSens_k(coefficientK);
         sensorInfo.setTemp_b(coefficientB);
         sensorInfo.setReferval_f(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
         sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
-        sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
 
         return true;
     }
+
     /****  物联网指令******/
 
     private boolean checkValue() {
@@ -166,14 +166,14 @@ public class SensorZLJ300tView extends FrameLayout {
         }
 
         if (TextUtils.isEmpty(coefficientK)) {
-            ToastUtils.show("标定系数A不能为空!");
+            ToastUtils.show("灵敏度不能为空!");
             mEtSensitivityK.requestFocus();
             return false;
         } else {
             try {
                 double value = Double.parseDouble(coefficientK);
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的标定系数!");
+                ToastUtils.show("请输入正确的灵敏度!");
                 mEtSensitivityK.requestFocus();
                 return false;
             }

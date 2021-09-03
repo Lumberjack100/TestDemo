@@ -23,8 +23,8 @@ public class DasExternalSensorEntity implements Validater {
     private String ropelen;//安装绳长
 
     private String poly_a;//多项式系数A
-    private String ploy_b;//多项式系数B
-    private String ploy_c;//多项式系数C
+    private String poly_b;//多项式系数B
+    private String poly_c;//多项式系数C
     private String temp_k;//温度系数K
     private String temp_t0;//初始温度T0
 
@@ -72,12 +72,12 @@ public class DasExternalSensorEntity implements Validater {
         this.poly_a = poly_a;
     }
 
-    public void setPloy_b(String ploy_b) {
-        this.ploy_b = ploy_b;
+    public void setPoly_b(String poly_b) {
+        this.poly_b = poly_b;
     }
 
-    public void setPloy_c(String ploy_c) {
-        this.ploy_c = ploy_c;
+    public void setPoly_c(String poly_c) {
+        this.poly_c = poly_c;
     }
 
     public void setTemp_k(String temp_k) {
@@ -146,12 +146,12 @@ public class DasExternalSensorEntity implements Validater {
             stringBuilder.append("poly_a=" + poly_a);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(ploy_b)) {
-            stringBuilder.append("ploy_b=" + ploy_b);
+        if (!TextUtils.isEmpty(poly_b)) {
+            stringBuilder.append("poly_b=" + poly_b);
             stringBuilder.append("&");
         }
-        if (!TextUtils.isEmpty(ploy_c)) {
-            stringBuilder.append("ploy_c=" + ploy_c);
+        if (!TextUtils.isEmpty(poly_c)) {
+            stringBuilder.append("poly_c=" + poly_c);
             stringBuilder.append("&");
         }
         if (!TextUtils.isEmpty(temp_k)) {
