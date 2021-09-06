@@ -26,10 +26,9 @@ public class DASSensorAdapter extends BaseQuickAdapter<DASSensorItem, BaseViewHo
     @Override
     protected void convert(@NotNull BaseViewHolder holder, DASSensorItem dasSensorItem) {
         holder.setImageResource(R.id.iv_das_sensor, dasSensorItem.getResId());
-        holder.setGone(R.id.iv_del_item, !dasSensorItem.isRemoveState());
         if (!TextUtils.isEmpty(dasSensorItem.getSensorAddress())) {
             try {
-                String sensorAisle = String.valueOf(Integer.parseInt(dasSensorItem.getSensorAddress()) + 1);
+                String sensorAisle = dasSensorItem.isVibratingWireSensor() ? String.valueOf(Integer.parseInt(dasSensorItem.getSensorAddress()) + 1) : dasSensorItem.getSensorAddress();
                 holder.setText(R.id.tv_address, sensorAisle);
             } catch (Exception ex) {
                 ex.printStackTrace();

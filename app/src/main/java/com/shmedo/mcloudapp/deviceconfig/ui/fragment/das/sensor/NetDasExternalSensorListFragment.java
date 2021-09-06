@@ -31,6 +31,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.das.DasCollectorEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasExternalSensorEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
@@ -89,7 +90,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     private int sensorIndex = 0;//接入的传感器索引号
     private int curItemPosition = 0;
     private boolean isEnableNewSensor = false;//是启用新传感器还是编辑现有传感器
-
+    private boolean isVibratingWireSensor = false;//是否振弦式传感器
     private ActivityResultLauncher<Intent> resultLauncher;
 
 
@@ -117,6 +118,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                                 sensorHashMap.put(sensorAddress, sensorInfo);
                                 sensorItemList.remove(sensorItemList.size() - 1);
                                 DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorAddress);
+                                sensorItem.setVibratingWireSensor(isVibratingWireSensor);
                                 sensorItemList.add(sensorItem);
                                 if (sensorItemList.size() < 8) {
                                     sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
@@ -555,6 +557,9 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             collectorCloseWarn();
             return;
         }
+        if (IOTCollectorModel.value(collectorInfo.getType()) == IOTCollectorModel.VW08) {//振弦式传感器
+            isVibratingWireSensor = true;
+        }
         accessSum = Integer.parseInt(collectorInfo.getSensornum());
         //接入传感器数量为0
         if (accessSum == 0) {
@@ -609,6 +614,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         sensorHashMap.put(sensorInfo.getAddr(), sensorInfo);
 
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorInfo.getAddr());
+        sensorItem.setVibratingWireSensor(isVibratingWireSensor);
         sensorItemList.add(sensorItem);
         sensorAdapter.notifyDataSetChanged();
     }

@@ -10,8 +10,9 @@ import android.text.TextUtils;
 public class DASSensorItem {
     private String sensorAddress;
     private int resId;
-    private boolean isRemoveState = false;//是否处于可移除状态
     private boolean isAddButton = false;
+    private boolean isVibratingWireSensor = false;//是否振弦式传感器
+
 
     public DASSensorItem(int resId, boolean isAddButton) {
         this.resId = resId;
@@ -40,19 +41,19 @@ public class DASSensorItem {
         this.resId = resId;
     }
 
-    public boolean isRemoveState() {
-        return isRemoveState;
-    }
-
-    public void setRemoveState(boolean removeState) {
-        isRemoveState = removeState;
-    }
-
     public boolean isAddButton() {
         return isAddButton;
     }
 
     public void setAddButton(boolean addButton) {
         isAddButton = addButton;
+    }
+
+    public boolean isVibratingWireSensor() {
+        return isVibratingWireSensor;
+    }
+
+    public void setVibratingWireSensor(boolean vibratingWireSensor) {
+        isVibratingWireSensor = vibratingWireSensor;
     }
 }

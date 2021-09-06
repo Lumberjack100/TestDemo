@@ -62,6 +62,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
 
     private DASSensorAdapter sensorAdapter;
     private List<DASSensorItem> sensorItemList = new ArrayList<>();
+    private DASSensorItem curSensorItem;
 
     protected String collectorName;
     protected String collectorModelValue;//采集器类型
@@ -72,12 +73,11 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
     //以传感器的通道号为 Key,CollectorSensorParamsInfo 对象为 Value
     protected HashMap<String, CollectorSensorParamsInfo> collectorSensorHashMap = new HashMap<>();
     protected CollectorSensorParamsInfo defaultCollectorSensorParamsInfo = new CollectorSensorParamsInfo();
-    private boolean isEnableNewSensor = false;//是启用新传感器还是编辑现有传感器
     private CollectorSensorParamsInfo curCollectorSensorParamsInfo;
     private String curSensorAddress;
     private ArrayList<String> addressList = new ArrayList<>();
-    private DASSensorItem curSensorItem;
-
+    private boolean isEnableNewSensor = false;//是启用新传感器还是编辑现有传感器
+    private boolean isVibratingWireSensor = false;//是否振弦式传感器
 
     @Override
     public void onPause() {
@@ -91,6 +91,9 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         if (getArguments() != null) {
             collectorModelValue = getArguments().getString(AppContants.Extras.COLLECTOR_MODE);
             collectorName = BlueResultParserUtil.getCollectorName(CollectorModel.value(collectorModelValue));
+            if (CollectorModel.value(collectorModelValue) == CollectorModel.VW08) {//振弦式传感器
+                isVibratingWireSensor = true;
+            }
         }
     }
 
@@ -155,7 +158,6 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 addressList.add(item.getSensorAddress());
             }
         }
-
         if (curSensorItem.isAddButton()) {
             isEnableNewSensor = true;
             sensorType = defaultCollectorSensorParamsInfo.getSensorType();
@@ -166,7 +168,6 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
             sensorType = curCollectorSensorParamsInfo.getSensorType();
             parcelableData = (Parcelable) curCollectorSensorParamsInfo.getSensorData();
         }
-
         if (CollectorModel.value(collectorModelValue) == CollectorModel.VW08) {//振弦式传感器
             DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
 
@@ -403,6 +404,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
 
     private void addSensorItem(String address) {
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, address);
+        sensorItem.setVibratingWireSensor(isVibratingWireSensor);
         sensorItemList.add(sensorItem);
         sensorAdapter.notifyDataSetChanged();
     }
@@ -457,6 +459,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
 
                         sensorItemList.remove(sensorItemList.size() - 1);
                         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorAddress);
+                        sensorItem.setVibratingWireSensor(isVibratingWireSensor);
                         sensorItemList.add(sensorItem);
                         if (sensorItemList.size() < 8) {
                             sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
