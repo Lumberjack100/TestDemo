@@ -56,7 +56,7 @@ public class DasCollectorInfo {
     }
 
     public String getSensornum() {
-        return TextUtils.isEmpty(sensornum) ? "" : sensornum;
+        return TextUtils.isEmpty(sensornum) ? "0" : sensornum;
     }
 
     public void setSensornum(String sensornum) {

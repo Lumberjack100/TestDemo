@@ -13,10 +13,6 @@ public class DASSensorItem {
     private boolean isRemoveState = false;//是否处于可移除状态
     private boolean isAddButton = false;
 
-    public DASSensorItem(int resId) {
-        this.resId = resId;
-    }
-
     public DASSensorItem(int resId, boolean isAddButton) {
         this.resId = resId;
         this.isAddButton = isAddButton;

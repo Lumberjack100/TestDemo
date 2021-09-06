@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,6 +51,7 @@ import timber.log.Timber;
 
 /**
  * DAS扩展传感器配置页面
+ *
  * @deprecated 后面将用物联网指令模式取代
  */
 public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommunicateFragment {
@@ -132,12 +132,10 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 if (sensorItem.isAddButton()) {
                     return true;
                 }
-
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return true;
                 }
-
                 warnDeleteSensorItem(position);
                 return true;
             }
@@ -279,15 +277,13 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                     }
                     accessSum = collectorConfigInfo.getAccessSum();
                 }
-
                 if (accessSum == 0) {
                     stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     initDefaultSensorItems();
                     initEmptyDefaultCollectorSensorParamsInfo();
                     return;
                 }
-
-                // 查询传感器配置信息前,重置accessNumFlag、sbcollectorSensor参数
+                //查询传感器配置信息前,重置accessNumFlag、sbcollectorSensor参数
                 sensorIndex = 0;
                 queryExtendSensorConfigInfo();
                 break;
@@ -298,7 +294,6 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                     Timber.e("查询采集器配置信息指令出错!");
                     return;
                 }
-
                 //处理此通道的传感器配置参数
                 processCollectorSensorParamsInfo(cmdStr);
                 sensorIndex++;
@@ -334,7 +329,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                     ToastUtils.show("保存参数指令错误!");
                     return;
                 }
-                Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
+                ToastUtils.show("已保存!");
                 break;
 
             default:
@@ -401,19 +396,13 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
 
     private void initDefaultSensorItems() {
         sensorItemList.clear();
-        DASSensorItem sensorItem;
-        for (int i = 0; i < accessSum; i++) {
-            sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright);
-            sensorItemList.add(sensorItem);
-        }
-        sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
+        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
         sensorItemList.add(sensorItem);
         sensorAdapter.notifyDataSetChanged();
     }
 
     private void addSensorItem(String address) {
-        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright);
-        sensorItem.setSensorAddress(address);
+        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, address);
         sensorItemList.add(sensorItem);
         sensorAdapter.notifyDataSetChanged();
     }
@@ -467,8 +456,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                         collectorSensorHashMap.put(sensorAddress, collectorSensorParamsInfoSub);
 
                         sensorItemList.remove(sensorItemList.size() - 1);
-                        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright);
-                        sensorItem.setSensorAddress(sensorAddress);
+                        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorAddress);
                         sensorItemList.add(sensorItem);
                         if (sensorItemList.size() < 8) {
                             sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
