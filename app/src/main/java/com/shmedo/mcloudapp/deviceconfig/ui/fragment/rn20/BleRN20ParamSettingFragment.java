@@ -402,7 +402,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
     }
 
     private boolean checkValueIsChange() {
-        if (reportingMethodOld != null && reportingMethodOld != null && !reportingMethod.equals(reportingMethod)) {
+        if (reportingMethodOld != null && reportingMethod != null && !reportingMethodOld.equals(reportingMethod)) {
             return true;
         }
 

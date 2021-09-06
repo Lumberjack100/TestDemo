@@ -370,7 +370,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             return false;
         }
 
-        if (sensorType.equals("04")) {
+        if (sensorType.toString().equals("04")) {
             if (TextUtils.isEmpty(measureLong)) {
                 ToastUtils.show("测段长值不能为空!");
                 mEtMeasureLong.requestFocus();

@@ -13,7 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
@@ -54,7 +56,6 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
     private DeviceFirmWareAdpter adpter;
 
     private List<FirmWareInfo> firmWareInfoList = new ArrayList<>();
-
     private FirmWareInfo firmWareInfo = null;
 
     private static final int PAGE_SIZE = 10;
@@ -83,7 +84,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.5f);
+        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.6f);
         window.setAttributes(wlp);
     }
 
@@ -112,12 +113,18 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                 if (firmWareInfo.isChecked()) {
                     return;
                 }
-
                 for (FirmWareInfo info : firmWareInfoList) {
                     info.setChecked(false);
                 }
                 firmWareInfo.setChecked(true);
                 adpter.notifyDataSetChanged();
+            }
+        });
+        adpter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                firmWareInfo = firmWareInfoList.get(position);
+                showTip();
             }
         });
         mRecyclerView.setAdapter(adpter);
@@ -138,6 +145,21 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         adpter.getLoadMoreModule().setAutoLoadMore(true);
         // 当数据不满一页时，是否继续自动加载（默认为true）
         adpter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
+    }
+
+    private void showTip() {
+        if (firmWareInfo == null || TextUtils.isEmpty(firmWareInfo.getFwNote()))
+            return;
+
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("固件说明")
+                .content(firmWareInfo.getFwNote())
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(true)
+                .positiveText("确定")
+                .positiveColorRes(R.color.blue_52B4F8);
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     @OnClick({R.id.tv_cancel, R.id.tv_confirm})

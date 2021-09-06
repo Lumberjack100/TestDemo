@@ -19,12 +19,12 @@ import java.util.List;
 public class DeviceFirmWareAdpter extends BaseQuickAdapter<FirmWareInfo, BaseViewHolder> implements LoadMoreModule {
     public DeviceFirmWareAdpter(@Nullable List<FirmWareInfo> data) {
         super(R.layout.item_device_firmware_info, data);
+        addChildClickViewIds(R.id.iv_tip);
     }
 
     @Override
     protected void convert(@NotNull BaseViewHolder holder, FirmWareInfo firmWareInfo) {
         holder.setText(R.id.tv_versionName, firmWareInfo.getFwName() + "(" + firmWareInfo.getFwVersion() + ")");
-
         int position = getItemPosition(firmWareInfo);
         if (position == 0) {
             holder.setGone(R.id.tv_latest_flag, false);

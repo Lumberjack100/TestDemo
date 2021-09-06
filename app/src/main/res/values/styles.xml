@@ -18,12 +18,6 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <!-- ScanActivity 用到的 theme. -->
-    <style name="MCloud.ScanActivity" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#2d2e2a</item>
-        <item name="colorPrimaryDark">#2d2e2a</item>
-    </style>
-
     <style name="MCloud.MapActivity" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
@@ -45,10 +39,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-
-    <style name="DialogActivity" parent="Theme.AppCompat.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
 
     <style name="CropImageActivity" parent="Base.Theme.AppCompat" />
 
@@ -84,23 +74,6 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-    <style name="dialog_download" parent="android:Theme.Dialog">
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-    </style>
-
-    <style name="dialog_center_full" parent="android:style/Theme.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
-    </style>
 
     <!--EditSpinner控件样式-->
     <style name="edit_main_bg">
@@ -108,45 +81,6 @@
         <item name="android:textColor">@color/gray_807B7B</item>
         <item name="android:textSize">15sp</item>
         <item name="android:padding">5dp</item>
-    </style>
-
-    <!-- 传感器参数配置项布局中的LinearLayout控件样式-->
-    <style name="LinearLayout_Sensor_Config_Item">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingStart">15dp</item>
-        <item name="android:paddingEnd">15dp</item>
-    </style>
-
-    <!-- 传感器参数配置项布局中的TextView控件样式-->
-    <style name="TextView_Sensor_Config_Item">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1.5</item>
-        <item name="android:textColor">@color/gray_807B7B</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <!-- 传感器参数配置项布局中的EditText控件样式-->
-    <style name="EditText_Sensor_Config_Item">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">2</item>
-        <item name="android:background">@drawable/icon_dialog_input</item>
-        <item name="android:paddingStart">10dp</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textColorHint">@color/gray_807B7B</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <!--SwitchButton控件样式-->
-    <style name="SwitchButtonStyle">
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">10dp</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
     </style>
 
     <!--地图工具控件样式-->
@@ -345,16 +279,5 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="storage_progress_horizontal" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:indeterminateOnly">false</item>
-        <!--进度条的进度颜色drawable文件-->
-        <item name="android:progressDrawable">
-            @drawable/storage_low_progress_indeterminate_horizontal
-        </item>
-        <!--进度条的最小高度-->
-        <item name="android:minHeight">15dp</item>
-        <!--进度条的最大高度-->
-        <item name="android:maxHeight">15dp</item>
-    </style>
 
 </resources>

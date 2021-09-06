@@ -31,8 +31,7 @@ import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
-import org.jetbrains.annotations.NotNull;
-
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,35 +63,50 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     private int queryNum = 0;//当查询指令结果10次时，判断响应超时
 
-    private Handler uiHander = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull @NotNull Message msg) {
-            if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-                //轮询指令响应结果接口达到10次，判断超时
-                if (queryNum > 30) {
-                    onQueryCmdResponseResultTimeOut(null);
-                    return false;
-                }
-                Timber.d("handleMessage();queryNum=%s", queryNum);
-                queryCmdResultByMsgID();
-            }
-            return false;
+    private final InnerHandler mInnerHandler = new InnerHandler(this);
+
+
+    private static class InnerHandler extends Handler {
+        private final WeakReference<BaseNetIotCommunicateFragment> fragmentWeakReference;
+
+        public InnerHandler(BaseNetIotCommunicateFragment fragment) {
+            fragmentWeakReference = new WeakReference<>(fragment);
         }
-    });
+
+        @Override
+        public void handleMessage(Message msg) {
+            BaseNetIotCommunicateFragment fragment = fragmentWeakReference.get();
+            if (fragment != null) {
+                if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+                    //轮询指令响应结果接口达到10次，判断超时
+                    if (fragment.queryNum > 30) {
+                        fragment.onQueryCmdResponseResultTimeOut(null);
+                        return;
+                    }
+                    Timber.d("handleMessage();queryNum=%s", fragment.queryNum);
+                    fragment.queryCmdResultByMsgID();
+                }
+            }
+        }
+    }
 
     protected void startQueryCmdResponse() {
         queryNum++;
-        uiHander.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, 0);
+        mInnerHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, 0);
     }
 
     private void startQueryCmdResponseDelayed(long delayMillis) {
         queryNum++;
-        uiHander.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
+        mInnerHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
     }
 
     protected void stopQueryCmdResponse() {
         queryNum = 0;
-        uiHander.removeMessages(AppContants.MsgWhat.MSG_DEFAULT);
+        mInnerHandler.removeMessages(AppContants.MsgWhat.MSG_DEFAULT);
+    }
+
+    protected void stopProgressAll() {
+        mInnerHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -123,7 +137,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         dismissProgressDialog();
-        stopQueryCmdResponse();
+        stopProgressAll();
     }
 
     /**

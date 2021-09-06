@@ -330,7 +330,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", calculationList.toArray(new String[calculationList.size()]),
+                .asBottomList("", calculationList.toArray(new String[0]),
                         null, calculationPos, true,
                         new OnSelectListener() {
                             @Override
@@ -398,7 +398,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", sensorNameList.toArray(new String[sensorNameList.size()]),
+                .asBottomList("", sensorNameList.toArray(new String[0]),
                         null, sensorNamePos, true,
                         new OnSelectListener() {
                             @Override

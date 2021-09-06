@@ -181,7 +181,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", unUsedAisleList.toArray(new String[unUsedAisleList.size()]),
+                .asBottomList("", unUsedAisleList.toArray(new String[0]),
                         null, sensorAislePos, true,
                         new OnSelectListener() {
                             @Override

@@ -199,8 +199,7 @@ public class ClusterOverlay implements AMap.OnCameraChangeListener, AMap.OnMarke
         }
 
         //复制一份数据，规避同步
-        List<Cluster> clusters = new ArrayList<Cluster>();
-        clusters.addAll(mClusters);
+        List<Cluster> clusters = new ArrayList<Cluster>(mClusters);
         Message message = Message.obtain();
         message.what = MarkerHandler.ADD_CLUSTER_LIST;
         message.obj = clusters;
@@ -263,8 +262,7 @@ public class ClusterOverlay implements AMap.OnCameraChangeListener, AMap.OnMarke
      * 将聚合元素添加至地图上
      */
     private void addClusterToMap(List<Cluster> clusters) {
-        ArrayList<Marker> removeMarkers = new ArrayList<>();
-        removeMarkers.addAll(mAddMarkers);
+        ArrayList<Marker> removeMarkers = new ArrayList<>(mAddMarkers);
         AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
         MyAnimationListener myAnimationListener = new MyAnimationListener(removeMarkers);
         for (Marker marker : removeMarkers) {

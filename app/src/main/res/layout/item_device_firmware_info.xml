@@ -13,10 +13,18 @@
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_vertical">
 
+        <ImageView
+            android:id="@+id/iv_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_tip" />
+
         <TextView
             android:id="@+id/tv_versionName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:singleLine="true"
             android:textColor="@color/text_color_666666"
             android:textSize="17sp"

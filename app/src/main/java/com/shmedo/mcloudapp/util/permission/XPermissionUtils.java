@@ -68,10 +68,10 @@ public class XPermissionUtils {
             mRequestCode = requestCode;
             if (object instanceof Activity) {
                 ((Activity) object).requestPermissions(deniedPermissions
-                        .toArray(new String[deniedPermissions.size()]), requestCode);
+                        .toArray(new String[0]), requestCode);
             } else if (object instanceof Fragment) {
                 ((Fragment) object).requestPermissions(deniedPermissions
-                        .toArray(new String[deniedPermissions.size()]), requestCode);
+                        .toArray(new String[0]), requestCode);
             } else {
                 mRequestCode = -1;
             }
