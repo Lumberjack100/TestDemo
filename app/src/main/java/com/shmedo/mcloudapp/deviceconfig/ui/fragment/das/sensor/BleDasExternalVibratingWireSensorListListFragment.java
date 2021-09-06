@@ -13,6 +13,7 @@ import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
 import com.shmedo.configlibrary.ble.model.SensorGudanPercolateInfo;
 import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
 import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
+import com.shmedo.configlibrary.ble.model.SensorStressGaugeInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 
@@ -130,6 +131,12 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
                 value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
             }
             break;
+
+            case GUDAN_STRESS: {//应力计
+                SensorStressGaugeInfo sensorInfo = (SensorStressGaugeInfo) infoSub.getSensorData();
+                value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
+            }
+            break;
         }
 
         return value;
@@ -214,6 +221,24 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
                 configItemNameList.add("轴力计 修正值");
             }
             break;
+
+            case GUDAN_STRESS: {//应力计
+                SensorStressGaugeInfo sensorInfo = (SensorStressGaugeInfo) infoSub.getSensorData();
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "A" + sensorInfo.getSensitivityK()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "B" + sensorInfo.getTemperatureCoefficientB()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "F" + sensorInfo.getReferenceValue()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "T" + sensorInfo.getCreateTemperature()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "M" + sensorInfo.getManualCorrection()));
+                correctValueCmdList.add(cmdCorrectionValueFormat.replace("{}", "C" + sensorInfo.getElasticMode()));
+
+                configItemNameList.add("葛南渗压计 灵敏度K");
+                configItemNameList.add("葛南渗压计 温修系数b");
+                configItemNameList.add("葛南渗压计 基准值F0");
+                configItemNameList.add("葛南渗压计 初始温度T0");
+                configItemNameList.add("葛南渗压计 修正值");
+                configItemNameList.add("葛南渗压计 膨胀系数");
+            }
+            break;
         }
     }
 
@@ -225,7 +250,6 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
             Timber.d("修正参数指令已发送完毕");
             return;
         }
-
         String command = correctValueCmdList.get(0);
         sendCommand(command);
         Timber.d("设置传感器修正参数===%s", command);
@@ -275,17 +299,10 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
                     stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-
-//                if (isTimeOut) {
-//                    Timber.w("达到发送配置指令超时时间!");
-//                    return;
-//                }
-
                 if (!correctValueCmdList.isEmpty()) {
                     sendCorrectionValueCmd();
                     return;
                 }
-
                 doAfterSetting();
                 break;
 

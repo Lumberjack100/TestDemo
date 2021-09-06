@@ -269,7 +269,6 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             }
             break;
         }
-
         return value;
     }
 
@@ -301,13 +300,6 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                 break;
 
             case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值(单传感器设置) 168
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("传感器触发阈值设置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    return;
-                }
-                setCorrectionValue();
-                break;
 
             case COLLECTOR_SENSOR_THRESHOLD://传感器触发阈值(多传感器设置) 162
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {

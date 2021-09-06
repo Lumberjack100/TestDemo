@@ -24,12 +24,14 @@ import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.SensorGudanPercolateInfo;
 import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
 import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
+import com.shmedo.configlibrary.ble.model.SensorStressGaugeInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorYLJView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
 import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
@@ -47,6 +49,7 @@ import timber.log.Timber;
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/10/14 <br/>
  * 描述：     Das振弦式传感器参数配置页面
+ *
  * @deprecated 后面将用物联网指令模式取代
  */
 public class DasExternalVibratingWireSensorActivity extends BaseActivity {
@@ -73,16 +76,19 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
     @BindView(R.id.sensorZLJ300tView)
     SensorZLJ300tView sensorZLJ300tView;
 
-    private List<String> sensorTypeList = Arrays.asList("基康渗压计(BGK-4500)", "葛南渗压计(VWP-03)", "轴力计(ZLJ-300T)");
+    @BindView(R.id.sensorYLJView)
+    SensorYLJView sensorYLJView;
+
+    private List<String> sensorTypeList = Arrays.asList("基康渗压计(BGK-4500)", "葛南渗压计(VWP-03)", "轴力计(ZLJ-300T)", "应力计");
     private List<String> allAisleList = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8");//所有通道
     private ArrayList<String> usedAisleList = new ArrayList<>();//已占用的通道
     private List<String> unUsedAisleList = new ArrayList<>();//未使用的通道
 
     private SensorType selectedSensorType;//传感器类型
-    private Parcelable parcelableData;
-    private String sensorAisle;//传感器通道
     private int sensorAislePos = 0;//传感器通道选择项索引
     private int sensorTypePos = 0;//传感器类型选择项索引
+    private String sensorAisle;//传感器通道
+    private Parcelable parcelableData;
 
 
     public static void startActivityForResultByFragment(Fragment context, int requestCode, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
@@ -167,6 +173,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 sensorBGK4500View.setVisibility(View.VISIBLE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.GONE);
+                sensorYLJView.setVisibility(View.GONE);
                 sensorBGK4500View.initData(parcelableData == null ? null : (SensorKangPercolateInfo) parcelableData);
                 break;
 
@@ -176,6 +183,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.VISIBLE);
                 sensorZLJ300tView.setVisibility(View.GONE);
+                sensorYLJView.setVisibility(View.GONE);
                 sensorVWP03View.initData(parcelableData == null ? null : (SensorGudanPercolateInfo) parcelableData);
                 break;
 
@@ -185,8 +193,18 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.VISIBLE);
+                sensorYLJView.setVisibility(View.GONE);
                 sensorZLJ300tView.initData(parcelableData == null ? null : (SensorJunXingZljInfo) parcelableData);
                 break;
+
+            case GUDAN_STRESS://应力计
+                sensorTypePos = 3;
+                mTvSensorType.setText(sensorTypeList.get(3));
+                sensorBGK4500View.setVisibility(View.GONE);
+                sensorVWP03View.setVisibility(View.GONE);
+                sensorZLJ300tView.setVisibility(View.GONE);
+                sensorYLJView.setVisibility(View.VISIBLE);
+                sensorYLJView.initData(parcelableData == null ? null : (SensorStressGaugeInfo) parcelableData);
         }
     }
 
@@ -231,24 +249,34 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                             public void onSelect(int position, String text) {
                                 sensorTypePos = position;
                                 mTvSensorType.setText(text);
-
                                 if (text.contains("基康渗压计")) {
                                     selectedSensorType = SensorType.KANG_PERCOLATE;
                                     sensorBGK4500View.setVisibility(View.VISIBLE);
                                     sensorVWP03View.setVisibility(View.GONE);
                                     sensorZLJ300tView.setVisibility(View.GONE);
+                                    sensorYLJView.setVisibility(View.GONE);
+
                                 } else if (text.contains("葛南渗压计")) {
                                     selectedSensorType = SensorType.GUDAN_PERCOLATE;
                                     sensorBGK4500View.setVisibility(View.GONE);
                                     sensorVWP03View.setVisibility(View.VISIBLE);
                                     sensorZLJ300tView.setVisibility(View.GONE);
+                                    sensorYLJView.setVisibility(View.GONE);
+
                                 } else if (text.contains("轴力计")) {
                                     selectedSensorType = SensorType.JUNXING_ZLJ_300T;
                                     sensorBGK4500View.setVisibility(View.GONE);
                                     sensorVWP03View.setVisibility(View.GONE);
                                     sensorZLJ300tView.setVisibility(View.VISIBLE);
-                                }
+                                    sensorYLJView.setVisibility(View.GONE);
 
+                                } else if (text.contains("应力计")) {
+                                    selectedSensorType = SensorType.GUDAN_STRESS;
+                                    sensorBGK4500View.setVisibility(View.GONE);
+                                    sensorVWP03View.setVisibility(View.GONE);
+                                    sensorZLJ300tView.setVisibility(View.GONE);
+                                    sensorYLJView.setVisibility(View.VISIBLE);
+                                }
                                 String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
                                 mToolbarTitle.setText(sensorName);
                             }
@@ -278,12 +306,16 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 parcelableData = new SensorJunXingZljInfo();
                 updateDataSuccess = sensorZLJ300tView.updateSensorData((SensorJunXingZljInfo) parcelableData);
                 break;
+
+            case GUDAN_STRESS:
+                parcelableData = new SensorStressGaugeInfo();
+                updateDataSuccess = sensorYLJView.updateSensorData((SensorStressGaugeInfo) parcelableData);
+                break;
         }
         if (!updateDataSuccess) {
             Timber.w("传感器参数存在错误!");
             return;
         }
-
         Intent intent = getIntent();
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAisle);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, selectedSensorType);

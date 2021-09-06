@@ -18,8 +18,10 @@ public class SensorStressGaugeInfo implements SensorParameter, Parcelable {
     private String temperatureCoefficientB;//温度系数b
     private String referenceValue; //基准值
     private String CreateTemperature;   //初始化温度T0
-    private String elasticMode;// 弹性模量
+    private String elasticMode;// 膨胀系数
 
+    public SensorStressGaugeInfo() {
+    }
 
     protected SensorStressGaugeInfo(Parcel in) {
         triggerThreshold = in.readString();
