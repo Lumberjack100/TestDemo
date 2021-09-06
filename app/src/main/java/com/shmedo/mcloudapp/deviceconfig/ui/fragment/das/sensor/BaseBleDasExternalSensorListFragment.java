@@ -18,6 +18,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorConfigEntity;
@@ -41,6 +44,8 @@ import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
 import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +61,9 @@ import timber.log.Timber;
  */
 public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommunicateFragment {
     private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0102;
+
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.recyclerview_sensor)
     RecyclerView mRecyclerViewSensor;
@@ -99,14 +107,18 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_d_a_s_external_sensor;
+        return R.layout.net_das_external_sensor_list_fragment;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initExtendSensorAdapter();
-        queryCollectorInfo();
+        initRefreshLayout();
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.autoRefresh();
     }
 
     private void initExtendSensorAdapter() {
@@ -200,11 +212,37 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         mMaterialDialog.show();
     }
 
+    private void clear() {
+        accessSum = 0;
+        sensorIndex = 0;
+        sensorItemList.clear();
+        curSensorItem = null;
+        collectorSensorHashMap.clear();
+        addressList.clear();
+    }
+
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                clear();
+                queryCollectorInfo();
+                refreshLayout.getLayout().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.finishRefresh(false);
+                        }
+                    }
+                }, DELAY_10000_MILLIS);
+            }
+        });
+    }
+
     /**
      * 查询采集器配置信息
      */
     private void queryCollectorInfo() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
         CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModelValue);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
         sendCommand(command);
@@ -262,7 +300,9 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
             case COLLECTOR_CONFIG://采集器配置信息 100
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询采集器配置信息指令出错!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     initDefaultSensorItems();
                     initEmptyDefaultCollectorSensorParamsInfo();
                     return;
@@ -272,14 +312,18 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                     Timber.e("采集器配置信息为空!");
                 } else {
                     if (collectorConfigInfo.getCollectorAddress().equals("0")) {
-                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                        if (mRefreshLayout.isRefreshing()) {
+                            mRefreshLayout.finishRefresh(true);
+                        }
                         collectorCloseWarn();
                         return;
                     }
                     accessSum = collectorConfigInfo.getAccessSum();
                 }
                 if (accessSum == 0) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
                     initDefaultSensorItems();
                     initEmptyDefaultCollectorSensorParamsInfo();
                     return;
@@ -291,7 +335,9 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
 
             case COLLECTOR_CHANNEL_SENSOR_PARAMETER://获取XX采集器YY通道的传感器参数 101
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     Timber.e("查询采集器配置信息指令出错!");
                     return;
                 }
@@ -302,7 +348,9 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 if (sensorIndex < accessSum) {
                     queryExtendSensorConfigInfo();
                 } else {//所有通道的传感器参数都查询了
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
                     if (sensorItemList.size() < 8) {
                         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
                         sensorItemList.add(sensorItem);
