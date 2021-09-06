@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor;
 
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
@@ -29,6 +30,7 @@ import timber.log.Timber;
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/10/15 <br/>
  * 描述：    外接数字式传感器
+ *
  * @deprecated 后面将用物联网指令模式取代
  */
 public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExternalSensorListFragment {
@@ -70,21 +72,82 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
 
+        commandItems.clear();
+        commandItems.add(command);
+        //超声波物位计使用多传感器触发阈值配置指令
+        if (CollectorModel.value(collectorModelValue) == CollectorModel.UDS08) {
+            //获取触发值
+            command = getMultiTriggerThreshold();
+            if (!TextUtils.isEmpty(command)) {
+                commandItems.add(command);
+            }
+
+            for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
+                //获取修正值
+                command = getCorrectionValue(paramsInfoSub);
+                if (!TextUtils.isEmpty(command)) {
+                    commandItems.add(command);
+                }
+            }
+        } else {
+            for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
+                //获取触发值
+                command = getSingleTriggerThreshold(paramsInfoSub);
+                if (!TextUtils.isEmpty(command)) {
+                    commandItems.add(command);
+                }
+
+                //获取修正值
+                command = getCorrectionValue(paramsInfoSub);
+                if (!TextUtils.isEmpty(command)) {
+                    commandItems.add(command);
+                }
+            }
+
+            //测斜仪需要设置测段长
+            if (CollectorModel.value(collectorModelValue) == CollectorModel.CX08) {
+                command = getMeasureLongValue();
+                if (!TextUtils.isEmpty(command)) {
+                    commandItems.add(command);
+                }
+            }
+        }
+
         startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_LONG_MILLIS);
-        sendCommand(command);
-        Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
+        sendCommand(commandItems.getFirst());
+        Timber.d("设置 %s 接入的传感器指令===%s", collectorName, commandItems.getFirst());
+    }
+
+    /**
+     * 设置 超声波物位计 接入传感器触发阈值<br/>
+     * 指令格式: ##162xxX…X\r\n<br/>
+     * xx表示采集器类型，X…X表示阀值，X…X由接入传感器数量N决定（4*N）<br/>
+     * 例如：裂缝采集器接入两只拉线位移计，报警值分别30mm、40mm<br/>
+     * 设置举例：##1620200300040\r\n<br/>
+     * 返回信息：$$1620200300040\r\n<br/>
+     */
+    private String getMultiTriggerThreshold() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("##162");
+        stringBuilder.append(defaultCollectorSensorParamsInfo.getCollectorModel());
+        for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
+            stringBuilder.append(getTriggerThresholdBySensorType(paramsInfoSub));
+        }
+        stringBuilder.append("\r\n");
+        String command = String.valueOf(stringBuilder);
+        commandItems.add(command);
+
+        return command;
     }
 
     /**
      * 设置采集器接入传感器触发阈值(通用)
      */
-    private void setSingleTriggerThreshold() {
-        if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
-            return;
+    private String getSingleTriggerThreshold(CollectorSensorParamsInfo paramsInfoSub) {
+        if (paramsInfoSub == null) {
+            return "";
         }
-
         String command = "";
-        CollectorSensorParamsInfo paramsInfoSub = collectorSensorParamsInfoSubs.get(sensorIndex);
         CollectorModel collectorModel = paramsInfoSub.getCollectorModel();
         switch (collectorModel) {
             case RAIN08://雨量采集器
@@ -143,42 +206,20 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                         sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
                 break;
         }
-
-        sendCommand(command);
-        Timber.d("设置 %s %s 通道号的传感器触发阈值参数===%s", collectorName, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
+        return command;
+//        sendCommand(command);
+//        Timber.d("设置 %s %s 通道号的传感器触发阈值参数===%s", collectorName, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
     }
 
-    /**
-     * 设置 超声波物位计 接入传感器触发阈值<br/>
-     * 指令格式: ##162xxX…X\r\n<br/>
-     * xx表示采集器类型，X…X表示阀值，X…X由接入传感器数量N决定（4*N）<br/>
-     * 例如：裂缝采集器接入两只拉线位移计，报警值分别30mm、40mm<br/>
-     * 设置举例：##1620200300040\r\n<br/>
-     * 返回信息：$$1620200300040\r\n<br/>
-     */
-    private void setMultiTriggerThreshold() {
-        StringBuilder builderFirst = new StringBuilder();
-        builderFirst.append("##162");
-        builderFirst.append(defaultCollectorSensorParamsInfo.getCollectorModel());
-        for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
-            builderFirst.append(getTriggerThresholdBySensorType(paramsInfoSub));
-        }
-        builderFirst.append("\r\n");
-        String command = String.valueOf(builderFirst);
-        sendCommand(command);
-        Timber.d("设置传感器触发阈值===%s", command);
-    }
 
     /**
      * 设置采集器接入传感器修正值（只有墒情计用到3个修正值，其他传感器只用到一个修正值）
      */
-    private void setCorrectionValue() {
-        if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
-            return;
+    private String getCorrectionValue(CollectorSensorParamsInfo paramsInfoSub) {
+        if (paramsInfoSub == null) {
+            return "";
         }
-
         String command = "";
-        CollectorSensorParamsInfo paramsInfoSub = collectorSensorParamsInfoSubs.get(sensorIndex);
         CollectorModel collectorModel = paramsInfoSub.getCollectorModel();
         switch (collectorModel) {
             case RAIN08://雨量采集器
@@ -237,14 +278,15 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                         sensorInclinometerInfo.getCorrectionValue() + "\r\n";
                 break;
         }
-        sendCommand(command);
-        Timber.d("设置 %s 采集器 %s 地址的传感器修正值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
+        return command;
+//        sendCommand(command);
+//        Timber.d("设置 %s 采集器 %s 地址的传感器修正值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
     }
 
     /**
      * 设置测斜仪的测段长
      */
-    private void setMeasureLongValue() {
+    private String getMeasureLongValue() {
         StringBuilder builderFirst = new StringBuilder();
         builderFirst.append("##166");
         builderFirst.append(defaultCollectorSensorParamsInfo.getSensorType());
@@ -254,9 +296,9 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
         }
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
-
-        sendCommand(command);
-        Timber.d("设置 %s 的测段长指令===%s", collectorName, command);
+        return command;
+//        sendCommand(command);
+//        Timber.d("设置 %s 的测段长指令===%s", collectorName, command);
     }
 
     private String getTriggerThresholdBySensorType(CollectorSensorParamsInfo infoSub) {
@@ -290,12 +332,11 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sensorIndex = 0;
-                //超声波物位计使用多传感器触发阈值配置指令
-                if (CollectorModel.value(collectorModelValue) == CollectorModel.UDS08) {
-                    setMultiTriggerThreshold();
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
                 } else {
-                    setSingleTriggerThreshold();
+                    doAfterSetting();
                 }
                 break;
 
@@ -307,7 +348,12 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                setCorrectionValue();
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
+                } else {
+                    doAfterSetting();
+                }
                 break;
 
             case COLLECTOR_SENSOR_REVISED: //传感器修正值 165
@@ -316,20 +362,11 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sensorIndex++;
-                if (CollectorModel.value(collectorModelValue) == CollectorModel.UDS08) {
-                    setCorrectionValue();
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
                 } else {
-                    setSingleTriggerThreshold();
-                }
-
-                if (sensorIndex >= collectorSensorParamsInfoSubs.size()) {
-                    //测斜仪需要设置测段长
-                    if (CollectorModel.value(collectorModelValue) == CollectorModel.CX08) {
-                        setMeasureLongValue();
-                    } else {
-                        doAfterSetting();
-                    }
+                    doAfterSetting();
                 }
                 break;
 
@@ -339,7 +376,12 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                doAfterSetting();
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
+                } else {
+                    doAfterSetting();
+                }
                 break;
 
             default:
