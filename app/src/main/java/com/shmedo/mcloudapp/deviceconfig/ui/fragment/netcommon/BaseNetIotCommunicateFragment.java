@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -19,6 +18,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.callback.XyHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,18 +65,15 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     private final InnerHandler mInnerHandler = new InnerHandler(this);
 
 
-    private static class InnerHandler extends Handler {
-        private final WeakReference<BaseNetIotCommunicateFragment> fragmentWeakReference;
-
-        public InnerHandler(BaseNetIotCommunicateFragment fragment) {
-            fragmentWeakReference = new WeakReference<>(fragment);
+    private static final class InnerHandler extends XyHandler<BaseNetIotCommunicateFragment> {
+        private InnerHandler(BaseNetIotCommunicateFragment fragment) {
+            super(fragment);
         }
 
         @Override
-        public void handleMessage(Message msg) {
-            BaseNetIotCommunicateFragment fragment = fragmentWeakReference.get();
-            if (fragment != null) {
-                if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+        protected void handleMessage(Message msg, BaseNetIotCommunicateFragment fragment) {
+            switch (msg.what) {
+                case AppContants.MsgWhat.MSG_DEFAULT:
                     //轮询指令响应结果接口达到10次，判断超时
                     if (fragment.queryNum > 30) {
                         fragment.onQueryCmdResponseResultTimeOut(null);
@@ -85,7 +81,10 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                     }
                     Timber.d("handleMessage();queryNum=%s", fragment.queryNum);
                     fragment.queryCmdResultByMsgID();
-                }
+                    break;
+
+                default:
+                    break;
             }
         }
     }
