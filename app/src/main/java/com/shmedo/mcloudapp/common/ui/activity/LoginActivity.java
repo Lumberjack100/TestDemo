@@ -35,8 +35,8 @@ import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
 
 public class LoginActivity extends BaseActivity implements LoginManager.LoginCallback {

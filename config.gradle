@@ -12,10 +12,10 @@ ext {
             material                     : '1.4.0',
             recyclerview                 : '1.2.1',
 
-            rxjava                       : '2.2.20',
-            rxandroid                    : '2.1.1',
+            rxjava                       : '3.1.1',
+            rxandroid                    : '3.0.0',
             retrofitVersion              : '2.9.0',
-            adapterRxjava                : '2.6.0',
+            adapterRxjava3                : '2.9.0',
             okHttpVersion                : '5.0.0-alpha.2',
 
             glideVersion                 : '4.12.0',

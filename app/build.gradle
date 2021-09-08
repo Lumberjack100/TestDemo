@@ -153,9 +153,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.thirdLib.rxjava"
-    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.thirdLib.rxandroid"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.thirdLib.adapterRxjava"
+    implementation "io.reactivex.rxjava3:rxjava:$rootProject.thirdLib.rxjava"
+    implementation "io.reactivex.rxjava3:rxandroid:$rootProject.thirdLib.rxandroid"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$rootProject.thirdLib.adapterRxjava3"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.thirdLib.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.thirdLib.retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.okHttpVersion"
@@ -219,7 +219,7 @@ dependencies {
     implementation "com.github.mik3y:usb-serial-for-android:$rootProject.thirdLib.usbSerialVersion" // maven jitpack
 
     // debugImplementation because LeakCanary should only run in debug builds.
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
     // 日志调试框架：https://github.com/getActivity/Logcat
     debugImplementation "com.github.getActivity:Logcat:$rootProject.thirdLib.Logcat"
 

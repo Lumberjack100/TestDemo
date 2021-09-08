@@ -1,15 +1,15 @@
 package com.shmedo.mcloudapp.network.api;
 
 import com.shmedo.core.model.UserInfo;
+import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
-import com.shmedo.mcloudapp.common.model.PageResult;
-import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.network.ResultWrapper;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
@@ -24,7 +24,7 @@ import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
 
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
