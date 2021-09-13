@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -56,11 +58,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -301,8 +305,10 @@ public class NetDeviceListFragment extends BaseFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryDeviceType(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<PageResult<DeviceTypeInfo>>() {
                     @Override
                     protected void onResponse(PageResult<DeviceTypeInfo> data, ErrCode errCode) {
@@ -337,8 +343,10 @@ public class NetDeviceListFragment extends BaseFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryCompanyDeviceOnlineTypeStatistics(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<DeviceOnlineTypeStatistic>>() {
                     @Override
                     protected void onResponse(List<DeviceOnlineTypeStatistic> data, ErrCode errCode) {
@@ -425,8 +433,10 @@ public class NetDeviceListFragment extends BaseFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryCompanyDevice(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
                     protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {

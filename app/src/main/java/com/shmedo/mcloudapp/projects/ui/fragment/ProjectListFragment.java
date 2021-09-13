@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.projects.ui.fragment;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -70,11 +72,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 项目列表页面
@@ -442,8 +446,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryUserListProject(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<ProjectBaseInfo>>() {
                     @Override
                     protected void onResponse(List<ProjectBaseInfo> data, ErrCode errCode) {
@@ -493,8 +499,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .GetLevelProjList(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<CustomLevelProjectInfo>>() {
                     @Override
                     protected void onResponse(List<CustomLevelProjectInfo> data, ErrCode errCode) {
@@ -537,8 +545,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryUserRegionListProject(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<RegionProjectInfo>>() {
                     @Override
                     protected void onResponse(List<RegionProjectInfo> data, ErrCode errCode) {
@@ -582,8 +592,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryUserTypeProject(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<IndustryTypeProjectInfo>>() {
                     @Override
                     protected void onResponse(List<IndustryTypeProjectInfo> data, ErrCode errCode) {
@@ -627,8 +639,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryProjectListInfo(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<ProjectDetailInfo>>() {
                     @Override
                     protected void onResponse(List<ProjectDetailInfo> data, ErrCode errCode) {
@@ -881,8 +895,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .TopUserProject(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String s, ErrCode errCode) {
@@ -916,8 +932,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .UnTopUserProject(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String s, ErrCode errCode) {

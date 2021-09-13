@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.user.ui.activity;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -55,6 +57,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -467,8 +470,10 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         MDRetrofit.getInstance()
                 .createService()
                 .setUserHeadPhoto(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String data, ErrCode errCode) {
@@ -508,8 +513,10 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         MDRetrofit.getInstance()
                 .createService()
                 .UpdateMyInfo(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String s, ErrCode errCode) {

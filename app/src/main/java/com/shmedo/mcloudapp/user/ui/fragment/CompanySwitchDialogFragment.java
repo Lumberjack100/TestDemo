@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.user.ui.fragment;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
@@ -42,11 +44,13 @@ import com.shmedo.mcloudapp.util.ResponseHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 企业切换列表弹框
@@ -258,8 +262,10 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         MDRetrofit.getInstance()
                 .createService()
                 .QueryUserInCompany(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<PageResult<CompanySimpleInfo>>() {
                     @Override
                     protected void onResponse(PageResult<CompanySimpleInfo> data, ErrCode errCode) {

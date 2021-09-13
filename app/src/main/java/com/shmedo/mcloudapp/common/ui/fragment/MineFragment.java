@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.common.ui.fragment;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -30,12 +32,14 @@ import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 我的模块主页面
@@ -171,8 +175,10 @@ public class MineFragment extends BaseTranslucentFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .GetCompanyInfo(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<CompanyInfo>() {
                     @Override
                     protected void onResponse(CompanyInfo companyInfo, ErrCode errCode) {

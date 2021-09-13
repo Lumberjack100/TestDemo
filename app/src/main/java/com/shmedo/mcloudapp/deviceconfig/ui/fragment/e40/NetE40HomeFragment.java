@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.os.Bundle;
 import android.view.View;
 
@@ -41,9 +43,11 @@ import com.shmedo.mcloudapp.util.ResponseHandler;
 import java.util.Arrays;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -180,8 +184,10 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .FirmwareUpgrade(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String msgId, ErrCode errCode) {

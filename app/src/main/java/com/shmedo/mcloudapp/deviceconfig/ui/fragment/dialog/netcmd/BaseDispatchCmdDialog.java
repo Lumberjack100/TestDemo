@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -37,6 +39,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -226,8 +229,10 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryCmdResultByMsgID(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<QueryCmdResult>>() {
                     @Override
                     protected void onResponse(List<QueryCmdResult> data, ErrCode errCode) {

@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.projects.ui.activity;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,11 +43,13 @@ import com.shmedo.mcloudapp.util.ResponseHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 public class DeviceSearchActivity extends BaseActivity {
     private static final String PROJECT_NAME = "project_name";
@@ -237,8 +241,10 @@ public class DeviceSearchActivity extends BaseActivity {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryCompanyDevice(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
                     protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {

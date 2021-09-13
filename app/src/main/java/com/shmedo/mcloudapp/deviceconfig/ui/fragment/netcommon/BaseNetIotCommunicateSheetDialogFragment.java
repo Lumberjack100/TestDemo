@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -21,6 +23,7 @@ import com.shmedo.mcloudapp.util.ResponseHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
@@ -118,8 +121,10 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
         MDRetrofit.getInstance()
                 .createService()
                 .DispatchRawCmd(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
                     @Override
                     protected void onResponse(List<DispatchCmdItem> data, ErrCode errCode) {
@@ -161,8 +166,10 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
         MDRetrofit.getInstance()
                 .createService()
                 .QueryCmdResultByMsgID(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<QueryCmdResult>>() {
                     @Override
                     protected void onResponse(List<QueryCmdResult> data, ErrCode errCode) {

@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.user.ui.activity;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,11 +26,13 @@ import com.shmedo.mcloudapp.user.model.UpdatePasswordParam;
 import com.shmedo.mcloudapp.util.MD5Util;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 public class UpdatePasswordActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)
@@ -196,8 +200,10 @@ public class UpdatePasswordActivity extends BaseActivity {
         MDRetrofit.getInstance()
                 .createService()
                 .ChangeMyPassword(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String s, ErrCode errCode) {

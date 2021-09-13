@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -45,6 +47,7 @@ import com.shmedo.mcloudapp.util.ResponseHandler;
 import java.util.Arrays;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -420,8 +423,10 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
         MDRetrofit.getInstance()
                 .createService()
                 .FirmwareUpgrade(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String msgId, ErrCode errCode) {

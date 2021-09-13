@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.user.ui.activity;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,11 +26,13 @@ import com.shmedo.mcloudapp.user.model.UpdateMobileParam;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 修改手机号
@@ -104,8 +108,10 @@ public class UpdatePhoneActivity extends BaseActivity {
         MDRetrofit.getInstance()
                 .createService()
                 .sendSmsCode(body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String s, ErrCode errCode) {
@@ -174,8 +180,10 @@ public class UpdatePhoneActivity extends BaseActivity {
         MDRetrofit.getInstance()
                 .createService()
                 .UpdateMyCellPhone(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String s, ErrCode errCode) {

@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.user.ui.activity;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,11 +24,13 @@ import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
 import com.shmedo.mcloudapp.user.ui.fragment.CompanySwitchDialogFragment;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 public class CompanyHomePageActivity extends BaseActivity {
     private static final String ARG_PARAM1 = "param1";
@@ -151,8 +155,10 @@ public class CompanyHomePageActivity extends BaseActivity {
         MDRetrofit.getInstance()
                 .createService()
                 .GetCompanyInfo(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<CompanyInfo>() {
                     @Override
                     protected void onResponse(CompanyInfo companyInfo, ErrCode errCode) {

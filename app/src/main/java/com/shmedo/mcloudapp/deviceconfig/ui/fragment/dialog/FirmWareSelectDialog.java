@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -37,11 +39,13 @@ import com.shmedo.mcloudapp.util.ResponseHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 固件选择列表弹框
@@ -212,8 +216,10 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         MDRetrofit.getInstance()
                 .createService()
                 .QueryFirmwareList(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<PageResult<FirmWareInfo>>() {
                     @Override
                     protected void onResponse(PageResult<FirmWareInfo> data, ErrCode errCode) {

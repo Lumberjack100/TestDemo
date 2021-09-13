@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.common.ui.activity;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -33,11 +35,13 @@ import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.io.Serializable;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 public class LoginActivity extends BaseActivity implements LoginManager.LoginCallback {
     @BindView(R.id.tv_login_way_title_zh)
@@ -288,7 +292,10 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         MDRetrofit.getInstance()
                 .createService()
                 .CellPhoneExists(body)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<Boolean>() {
                     @Override
                     protected void onResponse(Boolean data, ErrCode errCode) {

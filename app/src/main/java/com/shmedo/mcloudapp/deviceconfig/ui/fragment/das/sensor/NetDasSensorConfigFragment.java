@@ -263,16 +263,18 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 querySwitchSensorInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_10000_MILLIS);
+//                refreshLayout.getLayout().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (refreshLayout.isRefreshing()) {
+//                            refreshLayout.finishRefresh(false);
+//                        }
+//                    }
+//                }, DELAY_10000_MILLIS);
             }
         });
+
+        mRefreshLayout.finishRefresh(DELAY_10000_MILLIS, false, Boolean.FALSE);
     }
 
     /**
@@ -724,6 +726,14 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             depthCorrection = mEtWaterRevised.getText().toString().trim();
             osmometerLength = mEtOsmometerCord.getText().toString().trim();
             nozzelHeight = mEtNozzelHeight.getText().toString().trim();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setOnRefreshListener(null);
         }
     }
 
