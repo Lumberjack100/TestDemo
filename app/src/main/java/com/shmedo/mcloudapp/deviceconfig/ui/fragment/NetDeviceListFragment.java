@@ -192,7 +192,7 @@ public class NetDeviceListFragment extends BaseFragment {
                 int deviceType = AppContants.DeviceType.UnKnown;
                 if (deviceInfo.getDeviceTypeName().contains("DAS")) {
                     deviceType = AppContants.DeviceType.DAS;
-                } else if (deviceInfo.getDeviceTypeName().contains("ADME")) {
+                } else if (deviceInfo.getDeviceTypeName().contains("ADME")||deviceInfo.getName().contains("T")) {
                     deviceType = AppContants.DeviceType.ADME;
                 } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
                     deviceType = AppContants.DeviceType.M20;

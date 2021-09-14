@@ -13,11 +13,11 @@ import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.model.SensorJunXingZljInfo;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.mcloudapp.R;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -43,6 +43,9 @@ public class SensorZLJ300tView extends FrameLayout {
     EditText mEtInitialTemperature;//初始温度
 
     private String triggerThreshold, correctValue, coefficientK, coefficientB, referenceValue, initialTemperature;
+
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
 
     public SensorZLJ300tView(@NonNull Context context) {
         this(context, null);
@@ -74,17 +77,6 @@ public class SensorZLJ300tView extends FrameLayout {
         mEtInitialTemperature.setText("0");
     }
 
-    public void initData(SensorJunXingZljInfo sensorInfo) {
-        if (sensorInfo != null) {
-            mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
-            mEtSensitivityK.setText(sensorInfo.getSensitivityK());
-            mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
-            mEtReferenceValue.setText(sensorInfo.getReferenceValue());
-            mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCreateTemperature()));
-        }
-    }
-
     /**
      * 通过扫描二维码填充多项式参数
      *
@@ -98,29 +90,62 @@ public class SensorZLJ300tView extends FrameLayout {
         }
     }
 
+    public void initData(SensorJunXingZljInfo sensorInfo) {
+        if (sensorInfo != null) {
+            try {
+                mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
+
+                decimalFormat.applyPattern("#.###");
+                mEtCorrectValue.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getManualCorrection())));
+                mEtSensitivityK.setText(sensorInfo.getSensitivityK());
+                mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
+                mEtReferenceValue.setText(sensorInfo.getReferenceValue());
+                decimalFormat.applyPattern("#.##");
+                mEtInitialTemperature.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getCreateTemperature())));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public boolean updateSensorData(SensorJunXingZljInfo sensorInfo) {
         if (!checkValue()) {
             return false;
         }
-        sensorInfo.setTriggerThreshold(triggerThreshold);
-        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
-        sensorInfo.setSensitivityK(coefficientK);
-        sensorInfo.setTemperatureCoefficientB(TextUtils.isEmpty(coefficientB) ? "0" : coefficientB);
-        sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
-        sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
+        try {
+            sensorInfo.setTriggerThreshold(triggerThreshold);
 
+            decimalFormat.applyPattern("#.###");
+            sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : decimalFormat.format(Double.parseDouble(correctValue)));
+            sensorInfo.setSensitivityK(coefficientK);
+            sensorInfo.setTemperatureCoefficientB(TextUtils.isEmpty(coefficientB) ? "0" : coefficientB);
+            sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
+
+            decimalFormat.applyPattern("#.##");
+            sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : decimalFormat.format(Double.parseDouble(initialTemperature)));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return true;
     }
 
-    /****  物联网指令******/
+    /****  物联网指令  start ******/
     public void initData(DasExternalSensorInfo sensorInfo) {
         if (sensorInfo != null) {
-            mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCorrval()));
-            mEtSensitivityK.setText(sensorInfo.getSens_k());
-            mEtTemperatureCoefficient.setText(sensorInfo.getTemp_b());
-            mEtReferenceValue.setText(sensorInfo.getReferval_f());
-            mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTemp_t0()));
+            try {
+                mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
+
+                decimalFormat.applyPattern("#.###");
+                mEtCorrectValue.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getCorrval())));
+                mEtSensitivityK.setText(sensorInfo.getSens_k());
+                mEtTemperatureCoefficient.setText(sensorInfo.getTemp_b());
+                mEtReferenceValue.setText(sensorInfo.getReferval_f());
+
+                decimalFormat.applyPattern("#.##");
+                mEtInitialTemperature.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getTemp_t0())));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -128,17 +153,23 @@ public class SensorZLJ300tView extends FrameLayout {
         if (!checkValue()) {
             return false;
         }
-        sensorInfo.setThreshold(triggerThreshold);
-        sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
-        sensorInfo.setSens_k(coefficientK);
-        sensorInfo.setTemp_b(coefficientB);
-        sensorInfo.setReferval_f(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
-        sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
+        try {
+            sensorInfo.setThreshold(triggerThreshold);
+            decimalFormat.applyPattern("#.###");
+            sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : decimalFormat.format(Double.parseDouble(correctValue)));
 
+            sensorInfo.setSens_k(coefficientK);
+            sensorInfo.setTemp_b(coefficientB);
+            sensorInfo.setReferval_f(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
+
+            decimalFormat.applyPattern("#.##");
+            sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : decimalFormat.format(Double.parseDouble(initialTemperature)));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return true;
     }
-
-    /****  物联网指令******/
+    /****  物联网指令  end ******/
 
     private boolean checkValue() {
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
@@ -159,10 +190,14 @@ public class SensorZLJ300tView extends FrameLayout {
             return false;
         }
 
-        if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
-            ToastUtils.show("请输入正确的修正值!");
-            mEtCorrectValue.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(correctValue)) {
+            try {
+                double value = Double.parseDouble(correctValue);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的修正值!");
+                mEtCorrectValue.requestFocus();
+                return false;
+            }
         }
 
         if (TextUtils.isEmpty(coefficientK)) {
@@ -189,18 +224,25 @@ public class SensorZLJ300tView extends FrameLayout {
             }
         }
 
-        if (!TextUtils.isEmpty(referenceValue) && !ValidateUtil.isDouble(referenceValue)) {
-            ToastUtils.show("请输入正确的基准值!");
-            mEtReferenceValue.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(referenceValue)) {
+            try {
+                double value = Double.parseDouble(referenceValue);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的基准值!");
+                mEtReferenceValue.requestFocus();
+                return false;
+            }
         }
 
-        if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
-            ToastUtils.show("请输入正确的初始温度!");
-            mEtInitialTemperature.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(initialTemperature)) {
+            try {
+                double value = Double.parseDouble(initialTemperature);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的初始温度!");
+                mEtInitialTemperature.requestFocus();
+                return false;
+            }
         }
-
         return true;
     }
 }

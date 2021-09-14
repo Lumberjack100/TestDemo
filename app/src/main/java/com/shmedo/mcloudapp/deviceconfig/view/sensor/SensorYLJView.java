@@ -13,11 +13,11 @@ import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.model.SensorStressGaugeInfo;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.mcloudapp.R;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -45,6 +45,9 @@ public class SensorYLJView extends FrameLayout {
     EditText mEtElasticMod;//弹性模量
 
     private String triggerThreshold, correctValue, coefficientK, coefficientB, referenceValue, initialTemperature, elasticMod;
+
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
 
     public SensorYLJView(@NonNull Context context) {
         this(context, null);
@@ -77,18 +80,6 @@ public class SensorYLJView extends FrameLayout {
         mEtInitialTemperature.setText("0");
     }
 
-    public void initData(SensorStressGaugeInfo sensorInfo) {
-        if (sensorInfo != null) {
-            mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
-            mEtSensitivityK.setText(sensorInfo.getSensitivityK());
-            mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
-            mEtReferenceValue.setText(sensorInfo.getReferenceValue());
-            mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCreateTemperature()));
-            mEtElasticMod.setText(sensorInfo.getElasticMode());
-        }
-    }
-
     /**
      * 通过扫描二维码填充多项式参数
      *
@@ -102,30 +93,68 @@ public class SensorYLJView extends FrameLayout {
         }
     }
 
+    public void initData(SensorStressGaugeInfo sensorInfo) {
+        if (sensorInfo != null) {
+            try {
+                mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
+
+                decimalFormat.applyPattern("#.###");
+                mEtCorrectValue.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getManualCorrection())));
+
+                mEtSensitivityK.setText(sensorInfo.getSensitivityK());
+                mEtTemperatureCoefficient.setText(sensorInfo.getTemperatureCoefficientB());
+                mEtReferenceValue.setText(sensorInfo.getReferenceValue());
+
+                decimalFormat.applyPattern("#.##");
+                mEtInitialTemperature.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getCreateTemperature())));
+
+                mEtElasticMod.setText(sensorInfo.getElasticMode());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public boolean updateSensorData(SensorStressGaugeInfo sensorInfo) {
         if (!checkValue()) {
             return false;
         }
-        sensorInfo.setTriggerThreshold(triggerThreshold);
-        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
-        sensorInfo.setSensitivityK(coefficientK);
-        sensorInfo.setTemperatureCoefficientB(TextUtils.isEmpty(coefficientB) ? "0" : coefficientB);
-        sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
-        sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
-        sensorInfo.setElasticMode(TextUtils.isEmpty(elasticMod) ? "0" : elasticMod);
+        try {
+            sensorInfo.setTriggerThreshold(triggerThreshold);
+
+            decimalFormat.applyPattern("#.###");
+            sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : decimalFormat.format(Double.parseDouble(correctValue)));
+            sensorInfo.setSensitivityK(coefficientK);
+            sensorInfo.setTemperatureCoefficientB(TextUtils.isEmpty(coefficientB) ? "0" : coefficientB);
+            sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
+
+            decimalFormat.applyPattern("#.##");
+            sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : decimalFormat.format(Double.parseDouble(initialTemperature)));
+            sensorInfo.setElasticMode(TextUtils.isEmpty(elasticMod) ? "0" : elasticMod);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return true;
     }
 
-    /****  物联网指令******/
+    /****  物联网指令 start ******/
     public void initData(DasExternalSensorInfo sensorInfo) {
         if (sensorInfo != null) {
-            mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCorrval()));
-            mEtSensitivityK.setText(sensorInfo.getSens_k());
-            mEtTemperatureCoefficient.setText(sensorInfo.getTemp_b());
-            mEtReferenceValue.setText(sensorInfo.getReferval_f());
-            mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTemp_t0()));
-            mEtElasticMod.setText(sensorInfo.getElastic_mod());
+            try {
+                mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
+
+                decimalFormat.applyPattern("#.###");
+                mEtCorrectValue.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getCorrval())));
+                mEtSensitivityK.setText(sensorInfo.getSens_k());
+                mEtTemperatureCoefficient.setText(sensorInfo.getTemp_b());
+                mEtReferenceValue.setText(sensorInfo.getReferval_f());
+
+                decimalFormat.applyPattern("#.##");
+                mEtInitialTemperature.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getTemp_t0())));
+                mEtElasticMod.setText(sensorInfo.getElastic_mod());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -133,17 +162,24 @@ public class SensorYLJView extends FrameLayout {
         if (!checkValue()) {
             return false;
         }
-        sensorInfo.setThreshold(triggerThreshold);
-        sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
-        sensorInfo.setSens_k(coefficientK);
-        sensorInfo.setTemp_b(coefficientB);
-        sensorInfo.setReferval_f(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
-        sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
-        sensorInfo.setElastic_mod(TextUtils.isEmpty(elasticMod) ? "0" : elasticMod);
+        try {
+            sensorInfo.setThreshold(triggerThreshold);
+
+            decimalFormat.applyPattern("#.###");
+            sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : decimalFormat.format(Double.parseDouble(correctValue)));
+            sensorInfo.setSens_k(coefficientK);
+            sensorInfo.setTemp_b(coefficientB);
+            sensorInfo.setReferval_f(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
+
+            decimalFormat.applyPattern("#.##");
+            sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : decimalFormat.format(Double.parseDouble(initialTemperature)));
+            sensorInfo.setElastic_mod(TextUtils.isEmpty(elasticMod) ? "0" : elasticMod);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return true;
     }
-
-    /****  物联网指令******/
+    /****  物联网指令 end ******/
 
     private boolean checkValue() {
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
@@ -165,10 +201,14 @@ public class SensorYLJView extends FrameLayout {
             return false;
         }
 
-        if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
-            ToastUtils.show("请输入正确的修正值!");
-            mEtCorrectValue.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(correctValue)) {
+            try {
+                double value = Double.parseDouble(correctValue);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的修正值!");
+                mEtCorrectValue.requestFocus();
+                return false;
+            }
         }
 
         if (TextUtils.isEmpty(coefficientK)) {
@@ -195,21 +235,34 @@ public class SensorYLJView extends FrameLayout {
             }
         }
 
-        if (!TextUtils.isEmpty(referenceValue) && !ValidateUtil.isDouble(referenceValue)) {
-            ToastUtils.show("请输入正确的基准值!");
-            mEtReferenceValue.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(referenceValue)) {
+            try {
+                double value = Double.parseDouble(referenceValue);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的基准值!");
+                mEtReferenceValue.requestFocus();
+                return false;
+            }
         }
 
-        if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
-            ToastUtils.show("请输入正确的初始温度!");
-            mEtInitialTemperature.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(initialTemperature)) {
+            try {
+                double value = Double.parseDouble(initialTemperature);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的初始温度!");
+                mEtInitialTemperature.requestFocus();
+                return false;
+            }
         }
-        if (!TextUtils.isEmpty(elasticMod) && !ValidateUtil.isDouble(elasticMod)) {
-            ToastUtils.show("请输入正确的弹性模量!");
-            mEtElasticMod.requestFocus();
-            return false;
+
+        if (!TextUtils.isEmpty(elasticMod)) {
+            try {
+                double value = Double.parseDouble(elasticMod);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的弹性模量!");
+                mEtElasticMod.requestFocus();
+                return false;
+            }
         }
         return true;
     }

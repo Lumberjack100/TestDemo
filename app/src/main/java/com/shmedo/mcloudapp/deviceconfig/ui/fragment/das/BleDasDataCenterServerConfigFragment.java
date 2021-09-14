@@ -25,7 +25,6 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
-import com.shmedo.configlibrary.ble.cmd.entity.APPKeyEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.DataCenterCommunicateProtoclEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.MQTTKeepAliveEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.RegistrationPlatformEntity;
@@ -74,9 +73,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     @BindView(R.id.et_data_server_port)
     ClearEditText mEtDataServerPort;
 
-    @BindView(R.id.appKeyET)
-    ClearEditText mEtAppKey;
-
     @BindView(R.id.et_register_platform_address)
     ClearEditText mEtRegisterPlatformAddress;
 
@@ -103,9 +99,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
     @BindView(R.id.ll_register_platform)
     ViewGroup registerPlatformLayout;
-
-    @BindView(R.id.ll_app_key)
-    ViewGroup appKeyLayout;
 
     @BindView(R.id.ll_register_platform_address)
     ViewGroup registerPlatformAddressLayout;
@@ -141,7 +134,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String registerCode;
     private String registerPlatform;//自动注册选择平台
     private String registerPlatformAddress;// 自动注册平台地址、端口
-    private String appKey;//米度平台 AppKey
     private String mqttDeviceId;
     private String mqttUsername;
     private String mqttPassword;
@@ -152,7 +144,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String cmdRegistrationPlatformAddress;// 自动注册平台地址、端口
     private String cmdKeepAliveValue;//
     private String cmdPlatformParam;//手动/自动注册平台参数
-    private String cmdAppKey;//米度平台 AppKey
 
     private String[] platforms = new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期"};
 
@@ -196,7 +187,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
         mEtDataServerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
         mEtDataServerPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtAppKey.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
         mEtKeepAlive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtDeviceSN.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
         mEtProductId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
@@ -223,7 +213,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     childItemsLayout.setVisibility(View.VISIBLE);
                     mBtnSave.setVisibility(View.VISIBLE);
 
-                    startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
                     queryDataCenterInfo();
                 }
             }
@@ -380,7 +369,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         switch (text) {
             case "MDM协议":
                 communicationProtocol = "2";
-                appKeyLayout.setVisibility(View.GONE);
                 registerPlatformLayout.setVisibility(View.GONE);
                 registerPlatformAddressLayout.setVisibility(View.GONE);
                 keepAliveLayout.setVisibility(View.GONE);
@@ -399,7 +387,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
             case "MQTT手动注册":
                 communicationProtocol = "5";
-                appKeyLayout.setVisibility(View.GONE);
                 registerPlatformLayout.setVisibility(View.VISIBLE);
                 registerPlatformAddressLayout.setVisibility(View.GONE);
                 keepAliveLayout.setVisibility(View.VISIBLE);
@@ -415,24 +402,18 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         switch (text) {
             case "地灾一期":
                 registerPlatform = "0";
-                appKeyLayout.setVisibility(View.GONE);
                 break;
 
             case "成都理工平台":
                 registerPlatform = "1";
-                appKeyLayout.setVisibility(View.GONE);
                 break;
 
             case "MDNET":
                 registerPlatform = "2";
-                if (communicationProtocol.equals("4")) {//MQTT自动注册
-                    appKeyLayout.setVisibility(View.VISIBLE);
-                }
                 break;
 
             case "地灾二期":
                 registerPlatform = "3";
-                appKeyLayout.setVisibility(View.GONE);
                 break;
         }
     }
@@ -440,7 +421,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private boolean checkValueIsValid() {
         dataServerAddress = mEtDataServerAddress.getText().toString().trim();
         dataServerPort = mEtDataServerPort.getText().toString().trim();
-        appKey = mEtAppKey.getText().toString().trim();
         registerPlatformAddress = mEtRegisterPlatformAddress.getText().toString().trim();
         keepAliveValue = mEtKeepAlive.getText().toString().trim();
         deviceSn = mEtDeviceSN.getText().toString().trim();
@@ -533,13 +513,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 return false;
             }
 
-            if (registerPlatform.equals("2")) {//米度平台
-                if (TextUtils.isEmpty(appKey)) {
-                    ToastUtils.show("AppKey不能为空!");
-                    mEtAppKey.requestFocus();
-                    return false;
-                }
-            }
         } else if (communicationProtocol.equals("5")) {//MQTT手动注册
             if (TextUtils.isEmpty(keepAliveValue)) {
                 ToastUtils.show("KeepAlive值不能为空!");
@@ -606,11 +579,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             //自动注册平台参数：设备SN号+产品ID+注册码
             RegistrationPlatformEntity registrationPlatformEntity = new RegistrationPlatformEntity(serverNumber.toInt(), deviceSn, productId, registerCode);
             cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
-            if (registerPlatform.equals("2")) {
-                //appKey(米度/北京平台特有)
-                APPKeyEntity appKeyEntity = new APPKeyEntity(serverNumber.toInt(), appKey);
-                cmdAppKey = CommandManager.getInstance().getCommand(CommandType.SET_MEDO_PLATFORM_APPKEY, appKeyEntity);
-            }
         } else if (communicationProtocol.equals("5")) {//MQTT手动注册
             //选择注册平台
             RegistrationPlatformSelectionEntity platformSelectionEntity = new RegistrationPlatformSelectionEntity(serverNumber.toInt(), Integer.parseInt(registerPlatform));
@@ -674,6 +642,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
             case QUERY_DATA_CENTER_PARAM://查询数据中心 1、2、3 参数
                 mRefreshLayout.finishRefresh(true);
+                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询数据中心指令出错!");
                     ToastUtils.show("查询数据中心指令出错!");
@@ -751,22 +720,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_AUTO_REGISTRATION_PLATFORM_PARAM:// MQTT 自动注册设置参数时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("自动注册平台参数配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    return;
-                }
-                //米度平台需要额外配置 APPKey
-                if (!TextUtils.isEmpty(registerPlatform) && registerPlatform.equals("2")) {
-                    sendCommand(cmdAppKey);
-                    Timber.d("设置 AppKey===%s", cmdAppKey);
-                    return;
-                } else {
-                    doAfterSetting();
-                }
-                break;
-
-            case SET_MEDO_PLATFORM_APPKEY://设置appKey(米度/北京平台特有)
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("AppKey配置错误!");
                     stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
@@ -851,7 +804,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             dataServerAddress = strs[0];
             dataServerPort = strs[1];
         }
-        appKey = mqttConfigInfo.getAppKey().trim();
         registerPlatformAddress = mqttConfigInfo.getRegisterPlatformAddress().trim();
         keepAliveValue = mqttConfigInfo.getKeepAliveValue().trim();
         deviceSn = mqttConfigInfo.getDeviceSn().trim();
@@ -863,7 +815,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
         mEtDataServerAddress.setText(dataServerAddress);
         mEtDataServerPort.setText(TextUtils.isEmpty(dataServerPort) ? "0" : dataServerPort);
-        mEtAppKey.setText(appKey);
         mEtRegisterPlatformAddress.setText(registerPlatformAddress);
         mEtKeepAlive.setText(keepAliveValue);
         mEtDeviceSN.setText(deviceSn);
@@ -911,11 +862,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         if (communicationProtocol != null && communicationProtocol.equals("4")) {//MQTT自动注册
             if (registerPlatformOld != null && registerPlatform != null && !registerPlatformOld.equals(registerPlatform)) {
                 return true;
-            }
-            if (registerPlatform != null && registerPlatform.equals("2")) {//米度平台
-                if (appKey != null && !appKey.equals(mEtAppKey.getText().toString().trim())) {
-                    return true;
-                }
             }
             if (registerPlatformAddress != null && !registerPlatformAddress.equals(mEtRegisterPlatformAddress.getText().toString().trim())) {
                 return true;

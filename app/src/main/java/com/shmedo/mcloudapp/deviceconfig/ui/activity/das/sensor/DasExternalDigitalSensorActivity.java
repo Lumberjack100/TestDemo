@@ -65,7 +65,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
     @BindView(R.id.measure_long_layout)
     ViewGroup measureLongLayout;
 
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private DecimalFormat decimalFormat = new DecimalFormat();
 
     private SensorType sensorType;//传感器类型
     private Parcelable parcelableData;
@@ -106,19 +106,15 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         if (intent.getExtras().containsKey(SENSOR_ITEM_LIST)) {
             addressList = intent.getStringArrayListExtra(SENSOR_ITEM_LIST);
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_ADDRESS)) {
             sensorAddress = intent.getStringExtra(AppContants.Extras.SENSOR_ADDRESS);
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_TYPE)) {
             sensorType = (SensorType) intent.getSerializableExtra(AppContants.Extras.SENSOR_TYPE);
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             parcelableData = intent.getParcelableExtra(AppContants.Extras.SENSOR_PARAM);
         }
-
         if (!TextUtils.isEmpty(sensorAddress)) {
             addressList.remove(sensorAddress);
         }
@@ -217,10 +213,13 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         }
 
         try {
+            decimalFormat.applyPattern("#.#");
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
                 mEtAlarmValue.setText(triggerThreshold);
             }
+
+            decimalFormat.applyPattern("#.###");
             if (!TextUtils.isEmpty(correctValue)) {
                 correctValue = decimalFormat.format(Double.parseDouble(correctValue));
                 mEtCorrectValue.setText(correctValue);
@@ -324,7 +323,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             mEtModbusAddress.requestFocus();
             return false;
         }
-
         if (!ValidateUtil.isInteger(sensorAddress) || Integer.parseInt(sensorAddress) <= 0) {
             ToastUtils.show("请输入正确的传感器地址!");
             mEtModbusAddress.requestFocus();
@@ -348,7 +346,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             mEtAlarmValue.requestFocus();
             return false;
         }
-
         if (!ValidateUtil.isInteger(triggerThreshold)) {
             ToastUtils.show("请输入正确的触发值!");
             mEtAlarmValue.requestFocus();
@@ -360,7 +357,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             mEtCorrectValue.requestFocus();
             return false;
         }
-
         try {
             double value = Double.parseDouble(correctValue);
 
@@ -376,7 +372,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 mEtMeasureLong.requestFocus();
                 return false;
             }
-
             try {
                 double value = Double.parseDouble(measureLong);
 
@@ -386,9 +381,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 return false;
             }
         }
-
         return true;
     }
-
-
 }

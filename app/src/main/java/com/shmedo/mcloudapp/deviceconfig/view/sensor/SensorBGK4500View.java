@@ -13,11 +13,11 @@ import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.model.SensorKangPercolateInfo;
-import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.mcloudapp.R;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -49,6 +49,8 @@ public class SensorBGK4500View extends FrameLayout {
     EditText mEtInstallElevation;//安装高程
 
     private String triggerThreshold, correctValue, coefficientA, coefficientB, coefficientC, coefficientK, initialTemperature, cordLength, installElevation;
+
+    private DecimalFormat decimalFormat = new DecimalFormat();
 
 
     public SensorBGK4500View(@NonNull Context context) {
@@ -82,19 +84,6 @@ public class SensorBGK4500View extends FrameLayout {
         mEtInitialTemperature.setText("0");
     }
 
-    public void initData(SensorKangPercolateInfo sensorInfo) {
-        if (sensorInfo != null) {
-            mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getTriggerThreshold())));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getManualCorrection()));
-            mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
-            mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
-            mEtCoefficientC.setText(sensorInfo.getPolynomialRatioC());
-            mEtCoefficientK.setText(sensorInfo.getTemperatureCoefficientK());
-            mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCreateTemperature()));
-            mEtCordLength.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCordLenght()));
-            mEtInstallElevation.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getInstallElevation()));
-        }
-    }
 
     /**
      * 通过扫描二维码填充多项式参数
@@ -108,35 +97,80 @@ public class SensorBGK4500View extends FrameLayout {
         }
     }
 
+    public void initData(SensorKangPercolateInfo sensorInfo) {
+        if (sensorInfo != null) {
+            try {
+                mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getTriggerThreshold())));
+
+                decimalFormat.applyPattern("#.###");
+                mEtCorrectValue.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getManualCorrection())));
+                mEtCoefficientA.setText(sensorInfo.getPolynomialRatioA());
+                mEtCoefficientB.setText(sensorInfo.getPolynomialRatioB());
+                mEtCoefficientC.setText(sensorInfo.getPolynomialRatioC());
+                mEtCoefficientK.setText(sensorInfo.getTemperatureCoefficientK());
+
+                decimalFormat.applyPattern("#.##");
+                mEtInitialTemperature.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getCreateTemperature())));
+
+                decimalFormat.applyPattern("#.###");
+                mEtCordLength.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getCordLenght())));
+                mEtInstallElevation.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getInstallElevation())));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public boolean updateSensorData(SensorKangPercolateInfo sensorInfo) {
         if (!checkValue()) {
             return false;
         }
-        sensorInfo.setTriggerThreshold(triggerThreshold);
-        sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
-        sensorInfo.setPolynomialRatioA(coefficientA);
-        sensorInfo.setPolynomialRatioB(coefficientB);
-        sensorInfo.setPolynomialRatioC(coefficientC);
-        sensorInfo.setTemperatureCoefficientK(coefficientK);
-        sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
-        sensorInfo.setCordLenght(cordLength);
-        sensorInfo.setInstallElevation(installElevation);
+        try {
+            sensorInfo.setTriggerThreshold(triggerThreshold);
+
+            decimalFormat.applyPattern("#.###");
+            sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : decimalFormat.format(Double.parseDouble(correctValue)));
+            sensorInfo.setPolynomialRatioA(coefficientA);
+            sensorInfo.setPolynomialRatioB(coefficientB);
+            sensorInfo.setPolynomialRatioC(coefficientC);
+            sensorInfo.setTemperatureCoefficientK(coefficientK);
+
+            decimalFormat.applyPattern("#.##");
+            sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : decimalFormat.format(Double.parseDouble(initialTemperature)));
+
+            decimalFormat.applyPattern("#.###");
+            sensorInfo.setCordLenght(decimalFormat.format(Double.parseDouble(cordLength)));
+            sensorInfo.setInstallElevation(decimalFormat.format(Double.parseDouble(installElevation)));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         return true;
     }
 
-    /****  物联网指令******/
+    /****  物联网指令 start ******/
     public void initData(DasExternalSensorInfo sensorInfo) {
         if (sensorInfo != null) {
-            mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
-            mEtCorrectValue.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getCorrval()));
-            mEtCoefficientA.setText(sensorInfo.getPoly_a());
-            mEtCoefficientB.setText(sensorInfo.getPoly_b());
-            mEtCoefficientC.setText(sensorInfo.getPoly_c());
-            mEtCoefficientK.setText(sensorInfo.getTemp_k());
-            mEtInitialTemperature.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTemp_t0()));
-            mEtCordLength.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getRopelen()));
-            mEtInstallElevation.setText(StringUtil.getDouble3AccuracyString(sensorInfo.getTubealti()));
+            try {
+                mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
+
+                decimalFormat.applyPattern("#.###");
+                mEtCorrectValue.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getCorrval())));
+
+                mEtCoefficientA.setText(sensorInfo.getPoly_a());
+                mEtCoefficientB.setText(sensorInfo.getPoly_b());
+                mEtCoefficientC.setText(sensorInfo.getPoly_c());
+                mEtCoefficientK.setText(sensorInfo.getTemp_k());
+
+                decimalFormat.applyPattern("#.##");
+                mEtInitialTemperature.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getTemp_t0())));
+
+                decimalFormat.applyPattern("#.###");
+                mEtCordLength.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getRopelen())));
+                mEtInstallElevation.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getTubealti())));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -144,20 +178,29 @@ public class SensorBGK4500View extends FrameLayout {
         if (!checkValue()) {
             return false;
         }
-        sensorInfo.setThreshold(triggerThreshold);
-        sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : correctValue);
-        sensorInfo.setPoly_a(coefficientA);
-        sensorInfo.setPoly_b(coefficientB);
-        sensorInfo.setPoly_c(coefficientC);
-        sensorInfo.setTemp_k(coefficientK);
-        sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : initialTemperature);
-        sensorInfo.setRopelen(cordLength);
-        sensorInfo.setTubealti(installElevation);
+        try {
+            sensorInfo.setThreshold(triggerThreshold);
 
+            decimalFormat.applyPattern("#.###");
+            sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : decimalFormat.format(Double.parseDouble(correctValue)));
+            sensorInfo.setPoly_a(coefficientA);
+            sensorInfo.setPoly_b(coefficientB);
+            sensorInfo.setPoly_c(coefficientC);
+            sensorInfo.setTemp_k(coefficientK);
+
+            decimalFormat.applyPattern("#.##");
+            sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : decimalFormat.format(Double.parseDouble(initialTemperature)));
+
+            decimalFormat.applyPattern("#.###");
+            sensorInfo.setRopelen(decimalFormat.format(Double.parseDouble(cordLength)));
+            sensorInfo.setTubealti(decimalFormat.format(Double.parseDouble(installElevation)));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return true;
     }
 
-    /****  物联网指令******/
+    /****  物联网指令  end ******/
 
     private boolean checkValue() {
         triggerThreshold = mEtTriggerThreshold.getText().toString().trim();
@@ -181,10 +224,14 @@ public class SensorBGK4500View extends FrameLayout {
             return false;
         }
 
-        if (!TextUtils.isEmpty(correctValue) && !ValidateUtil.isDouble(correctValue)) {
-            ToastUtils.show("请输入正确的修正值!");
-            mEtCorrectValue.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(correctValue)) {
+            try {
+                double value = Double.parseDouble(correctValue);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的修正值!");
+                mEtCorrectValue.requestFocus();
+                return false;
+            }
         }
 
         if (TextUtils.isEmpty(coefficientA)) {
@@ -243,32 +290,42 @@ public class SensorBGK4500View extends FrameLayout {
             }
         }
 
-        if (!TextUtils.isEmpty(initialTemperature) && !ValidateUtil.isDouble(initialTemperature)) {
-            ToastUtils.show("请输入正确的初始温度!");
-            mEtInitialTemperature.requestFocus();
-            return false;
+        if (!TextUtils.isEmpty(initialTemperature)) {
+            try {
+                double value = Double.parseDouble(initialTemperature);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的初始温度!");
+                mEtInitialTemperature.requestFocus();
+                return false;
+            }
         }
 
         if (TextUtils.isEmpty(cordLength)) {
             ToastUtils.show("绳长不能为空!");
             mEtCordLength.requestFocus();
             return false;
-        }
-        if (!ValidateUtil.isDouble(cordLength)) {
-            ToastUtils.show("请输入正确的绳长!");
-            mEtCordLength.requestFocus();
-            return false;
+        } else {
+            try {
+                double value = Double.parseDouble(cordLength);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的绳长!");
+                mEtCordLength.requestFocus();
+                return false;
+            }
         }
 
         if (TextUtils.isEmpty(installElevation)) {
             ToastUtils.show("安装高程不能为空!");
             mEtInstallElevation.requestFocus();
             return false;
-        }
-        if (!ValidateUtil.isDouble(installElevation)) {
-            ToastUtils.show("请输入正确的安装高程!");
-            mEtInstallElevation.requestFocus();
-            return false;
+        } else {
+            try {
+                double value = Double.parseDouble(installElevation);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的安装高程!");
+                mEtInstallElevation.requestFocus();
+                return false;
+            }
         }
         return true;
     }

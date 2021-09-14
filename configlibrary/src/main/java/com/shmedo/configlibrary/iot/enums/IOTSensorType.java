@@ -82,7 +82,10 @@ public enum IOTSensorType {
     /**
      * 轴力计 ZLJ-300T
      */
-    JUNXING_ZLJ_300T("58");
+    JUNXING_ZLJ_300T("58"),
+
+
+    UNKNOWN_TYPE("-1");
 
     private String type;
 
@@ -133,7 +136,7 @@ public enum IOTSensorType {
             case "58":
                 return JUNXING_ZLJ_300T;
             default:
-                return null;
+                return UNKNOWN_TYPE;
         }
     }
 

@@ -282,11 +282,11 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                 }
 
                 if (collectorModel.equals("3")) {
-                    holder.setText(R.id.tv_value, result[2] + "%rh");
+                    holder.setText(R.id.tv_value1, result[2] + "%rh");
                 } else if (collectorModel.equals("21")) {
-                    holder.setText(R.id.tv_value, result[2] + "Hz");
+                    holder.setText(R.id.tv_value1, result[2] + "Hz");
                 } else {
-                    holder.setText(R.id.tv_value, result[2] + "mm");
+                    holder.setText(R.id.tv_value1, result[2] + "mm");
                 }
             }
         };

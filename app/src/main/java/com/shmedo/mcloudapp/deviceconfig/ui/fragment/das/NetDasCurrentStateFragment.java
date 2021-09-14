@@ -24,6 +24,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.das.DasBaseInfo;
 import com.shmedo.configlibrary.iot.model.das.DasNetStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSensorStatusInfo;
@@ -100,6 +101,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     /**
      * 太阳能控制器
      */
+    @BindView(R.id.solarInfoLayout)
+    View solarInfoLayout;
+
     @BindView(R.id.tv_solar_status)
     TextView mTvSolarStatus;
 
@@ -118,6 +122,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     /**
      * 机箱内部温湿度
      */
+    @BindView(R.id.internalTempHumidityLayout)
+    View internalTempHumidityLayout;
+
     @BindView(R.id.tv_internal_status)
     TextView mTvInternalStatus;
 
@@ -130,6 +137,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     /**
      * 机箱外部温湿度
      */
+    @BindView(R.id.externalTempHumidityLayout)
+    View externalTempHumidityLayout;
+
     @BindView(R.id.tv_external_status)
     TextView mTvExternalStatus;
 
@@ -162,18 +172,36 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     TextView mTvAlarmStatus;//断线报警器状态
 
     //数字式渗压计
-    @BindView(R.id.dasDigitalPiezometerInfo)
+    @BindView(R.id.dasPiezometerInfo)
     View dasDigitalPiezometerLayout;
 
-    @BindView(R.id.tv_digitalPiezometer_status)
-    TextView mTvDigitalPiezometerStatus;
+    @BindView(R.id.emptyPipeDistanceLayout)
+    View emptyPipeDistanceLayout;
 
-    @BindView(R.id.tv_digitalPiezometer_value)
-    TextView mTvDigitalPiezometerValue;
+    @BindView(R.id.waterTemperatureLayout)
+    View waterTemperatureLayout;
+
+    @BindView(R.id.tv_piezometer_title)
+    TextView mTvPiezometerTitle;
+
+    @BindView(R.id.tv_piezometer_status)
+    TextView mTvPiezometerStatus;
+
+    @BindView(R.id.tv_piezometer_value)
+    TextView mTvPiezometerValue;
+
+    @BindView(R.id.tv_emptyPipeDistance)
+    TextView mTvEmptyPipeDistance;
+
+    @BindView(R.id.tv_waterTemperature)
+    TextView mTvWaterTemperature;
 
     //Das倾角计
     @BindView(R.id.dasInclinometerInfo)
     View inclinometerLayout;
+
+    @BindView(R.id.tv_mems_title)
+    TextView mTvMemsTitle;
 
     @BindView(R.id.tv_inclinometer_status)
     TextView mTvInclinometerStatus;
@@ -181,10 +209,14 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_inclinometer_axis)
     TextView mTvInclinometerAxis;
 
+    @BindView(R.id.mainSensorInfo)
+    View mainSensorInfoLayout;
+
+    @BindView(R.id.tv_mainSensor)
+    TextView mTvMainSensor;
+
     @BindView(R.id.sensor_recyclerView)
     RecyclerView sensorRecyclerView;
-
-    private String collectorModel = "";//采集器类型
 
     private List<DasNetStatusInfo> netStatusInfoList = new ArrayList<>();
     private List<DasSensorStatusInfo> sensorList = new ArrayList<>();
@@ -271,15 +303,137 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         sensorAdapter = new CommonAdapter<DasSensorStatusInfo>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, DasSensorStatusInfo sensorStatusInfo, int position) {
+                String type = sensorStatusInfo.getType();
+                type = type.charAt(0) == '0' ? type.substring(1) : type;
+                IOTSensorType sensorType = IOTSensorType.value(type);
+                switch (sensorType) {
+                    case WIRE_SHIFT://拉绳式裂缝计
+                        mTvMainSensor.setText("拉绳式裂缝计");
+                        holder.setVisibleOrGone(R.id.value2Layout, false);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "裂缝值(mm)");
+                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        break;
+
+                    case SOIL_MOISTURE://土壤含水率
+                        mTvMainSensor.setText("土壤含水率");
+                        holder.setVisibleOrGone(R.id.value2Layout, false);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "含水率(%)");
+                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        break;
+
+                    case INCLINOMETER: {//测斜仪
+                        mTvMainSensor.setText("测斜仪");
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "X轴(mm)");
+                        holder.setText(R.id.tv_title2, "Y轴(mm)");
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 2) {
+                            holder.setText(R.id.tv_value1, values[0]);
+                            holder.setText(R.id.tv_value2, values[1]);
+                        }
+                    }
+                    break;
+
+                    case ULTRASONIC_LEVEL_GAUGE://超声波物位计
+                        mTvMainSensor.setText("超声波物位计");
+                        holder.setVisibleOrGone(R.id.value2Layout, false);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "空高值(mm)");
+                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        break;
+
+                    case RADAR_LEVEL_GAUGE://雷达物位计
+                        mTvMainSensor.setText("雷达物位计");
+                        holder.setVisibleOrGone(R.id.value2Layout, false);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "空高值(mm)");
+                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        break;
+
+                    case UPLIFT_PRESSURE_GAUGE: {//数字式渗压计
+                        mTvMainSensor.setText("数字式渗压计");
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, true);
+                        holder.setText(R.id.tv_title1, "水深(m)");
+                        holder.setText(R.id.tv_title2, "空管(m)");
+                        holder.setText(R.id.tv_title3, "水温(℃)");
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 3) {
+                            holder.setText(R.id.tv_value1, values[0]);
+                            holder.setText(R.id.tv_value2, values[1]);
+                            holder.setText(R.id.tv_value3, values[2]);
+                        }
+                    }
+                    break;
+
+                    case KANG_PERCOLATE: {//基康渗压计
+                        mTvMainSensor.setText("基康渗压计");
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, true);
+                        holder.setText(R.id.tv_title1, "水深(m)");
+                        holder.setText(R.id.tv_title2, "空管(m)");
+                        holder.setText(R.id.tv_title3, "水温(℃)");
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 3) {
+                            holder.setText(R.id.tv_value1, values[0]);
+                            holder.setText(R.id.tv_value2, values[1]);
+                            holder.setText(R.id.tv_value3, values[2]);
+                        }
+                    }
+                    break;
+
+                    case GUDAN_PERCOLATE: {//葛南渗压计
+                        mTvMainSensor.setText("葛南渗压计");
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, true);
+                        holder.setText(R.id.tv_title1, "水深(m)");
+                        holder.setText(R.id.tv_title2, "空管(m)");
+                        holder.setText(R.id.tv_title3, "水温(℃)");
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 3) {
+                            holder.setText(R.id.tv_value1, values[0]);
+                            holder.setText(R.id.tv_value2, values[1]);
+                            holder.setText(R.id.tv_value3, values[2]);
+                        }
+                    }
+                    break;
+
+                    case GUDAN_STRESS: {//葛南应变计
+                        mTvMainSensor.setText("葛南应变计");
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "应变(μ)");
+                        holder.setText(R.id.tv_title2, "温度(℃)");
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 2) {
+                            holder.setText(R.id.tv_value1, values[0]);
+                            holder.setText(R.id.tv_value2, values[1]);
+                        }
+                    }
+                    break;
+
+                    case JUNXING_ZLJ_300T: {//轴力计
+                        mTvMainSensor.setText("轴力计");
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "轴力(KN)");
+                        holder.setText(R.id.tv_title2, "温度(℃)");
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 2) {
+                            holder.setText(R.id.tv_value1, values[0]);
+                            holder.setText(R.id.tv_value2, values[1]);
+                        }
+                    }
+                    break;
+
+                    default:
+                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        break;
+                }
                 holder.setText(R.id.tv_address, "通道" + sensorStatusInfo.getAddr());
-//                if (collectorModel.equals("3")) {
-//                    holder.setText(R.id.tv_value, sensorStatusInfo.getVal() + "%rh");
-//                } else if (collectorModel.equals("21")) {
-//                    holder.setText(R.id.tv_value, sensorStatusInfo.getVal()  + "Hz");
-//                } else {
-//                    holder.setText(R.id.tv_value, sensorStatusInfo.getVal()  + "mm");
-//                }
-                holder.setText(R.id.tv_value, sensorStatusInfo.getVal() + "");
                 holder.setText(R.id.tv_status, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(sensorStatusInfo.getErrno())));
 
                 if (sensorStatusInfo.getErrno() == 0) {
@@ -511,6 +665,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 if (commandResult.getResult() != null) {
                     sensorList.clear();
                     sensorList.addAll(commandResult.getResult());
+                    mainSensorInfoLayout.setVisibility(sensorList.size() > 0 ? View.VISIBLE : View.GONE);
                     sensorAdapter.notifyDataSetChanged();
                 }
             }
@@ -570,6 +725,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             Timber.e("SolarBean 为空!");
             return;
         }
+        solarInfoLayout.setVisibility(View.VISIBLE);
         setDeviceStatus(mTvSolarStatus, dasSolarStatusInfo.getSolar().getErrno());
         mTvSolarVoltage.setText(dasSolarStatusInfo.getSolar().getSolarvolt() + "V");
         mTvBatteryVoltage.setText(dasSolarStatusInfo.getSolar().getBatvolt() + "V");
@@ -587,18 +743,19 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             Timber.e("DasTemperatureAndHumidityStatusinfo 为空!");
             return;
         }
-
         if (dasTemperatureAndHumidityStatusinfo.getInth() != null) {
             //机箱内部温湿度
+            internalTempHumidityLayout.setVisibility(View.VISIBLE);
             setDeviceStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
-            mTvInternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getInth().getTemp() + "°");
+            mTvInternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getInth().getTemp() + "℃");
             mTvInternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getInth().getHumi() + "%");
         }
 
         if (dasTemperatureAndHumidityStatusinfo.getOutth() != null) {
             //机箱外部温湿度
+            externalTempHumidityLayout.setVisibility(View.VISIBLE);
             setDeviceStatus(mTvExternalStatus, dasTemperatureAndHumidityStatusinfo.getOutth().getErrno());
-            mTvExternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp() + "°");
+            mTvExternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp() + "℃");
             mTvExternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getHumi() + "%");
         }
     }
@@ -617,11 +774,12 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         if (dasSubSensorStatusInfo.getIo() != null) {
             ioSensorLayout.setVisibility(View.VISIBLE);
 
+            mTvSwitchStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getIo().getErrno())));
+            setSensorStatusColor(mTvSwitchStatus, dasSubSensorStatusInfo.getIo().getErrno());
+
             if (dasSubSensorStatusInfo.getIo().getType() == 1) {
                 rainLayout.setVisibility(View.VISIBLE);
                 wireBreakAlarmLayout.setVisibility(View.GONE);
-                mTvSwitchStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getIo().getErrno())));
-                setDeviceStatus(mTvSwitchStatus, dasSubSensorStatusInfo.getIo().getErrno());
                 mTvRain.setText(dasSubSensorStatusInfo.getIo().getVaule() + "mm");
 
             } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
@@ -632,8 +790,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
                 rainLayout.setVisibility(View.GONE);
                 wireBreakAlarmLayout.setVisibility(View.VISIBLE);
-                mTvSwitchStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getIo().getErrno())));
-                setDeviceStatus(mTvSwitchStatus, dasSubSensorStatusInfo.getIo().getErrno());
                 if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
                     mTvAlarmStatus.setText("断开");
                     mTvAlarmStatus.setTextColor(Color.RED);
@@ -646,15 +802,33 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
         if (dasSubSensorStatusInfo.getVwp() != null) {
             dasDigitalPiezometerLayout.setVisibility(View.VISIBLE);
-            mTvDigitalPiezometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
-            setDeviceStatus(mTvDigitalPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());
-            mTvDigitalPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue() + "");
+            if (dasSubSensorStatusInfo.getVwp().getType() == 15) {
+                mTvPiezometerTitle.setText("数字式渗压计");
+            }
+            mTvPiezometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
+            setSensorStatusColor(mTvPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());
+            if (dasSubSensorStatusInfo.getVwp().getValue().contains(",")) {
+                String[] values = dasSubSensorStatusInfo.getVwp().getValue().split(",");
+                if (values.length >= 3) {
+                    mTvPiezometerValue.setText(values[0]);
+
+                    emptyPipeDistanceLayout.setVisibility(View.VISIBLE);
+                    waterTemperatureLayout.setVisibility(View.VISIBLE);
+                    mTvEmptyPipeDistance.setText(values[1]);
+                    mTvWaterTemperature.setText(values[2]);
+                }
+            } else {
+                mTvPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue());
+            }
         }
 
         if (dasSubSensorStatusInfo.getMems() != null) {
             inclinometerLayout.setVisibility(View.VISIBLE);
+            if (dasSubSensorStatusInfo.getMems().getType() == 1) {
+                mTvMemsTitle.setText("倾角计");
+            }
             mTvInclinometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
-            setDeviceStatus(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
+            setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
             mTvInclinometerAxis.setText(dasSubSensorStatusInfo.getMems().getValue());
         }
     }
@@ -666,6 +840,14 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         } else if (status == 1) {
             textView.setText("正常");
             textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+        }
+    }
+
+    private void setSensorStatusColor(TextView textView, int status) {
+        if (status == 0) {
+            textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+        } else {
+            textView.setTextColor(Color.RED);
         }
     }
 }

@@ -54,7 +54,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.measure_long_layout)
     ViewGroup measureLongLayout;
 
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private DecimalFormat decimalFormat = new DecimalFormat();
 
     private IOTSensorType iotSensorType;//传感器类型
     private ArrayList<String> addressList = new ArrayList<>();
@@ -158,10 +158,14 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             measureLong = externalSensorInfo.getSpacing();
 
             mEtModbusAddress.setText(sensorAddress);
+
+            decimalFormat.applyPattern("#.#");
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
                 mEtAlarmValue.setText(triggerThreshold);
             }
+
+            decimalFormat.applyPattern("#.###");
             if (!TextUtils.isEmpty(correctValue)) {
                 correctValue = decimalFormat.format(Double.parseDouble(correctValue));
                 mEtCorrectValue.setText(correctValue);

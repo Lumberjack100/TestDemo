@@ -208,22 +208,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="设备Key"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/et_device_key"
-                    style="@style/DataCenter_EditText_Style"
-                    android:hint="请输入" />
-
-            </LinearLayout>
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="设备注册地址"
                     android:textColor="@color/text_color_343434"
                     android:textSize="@dimen/text_size_17" />

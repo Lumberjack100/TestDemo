@@ -620,8 +620,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");
-        configModuleList.add(configModule);
+//        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");
+//        configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_current_time, 1, "时间", "获取当前设备时间");
         configModuleList.add(configModule);

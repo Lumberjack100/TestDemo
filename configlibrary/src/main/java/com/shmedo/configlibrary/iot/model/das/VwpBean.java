@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.iot.model.das;
 
+import android.text.TextUtils;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/4/16 <br/>
@@ -7,7 +9,7 @@ package com.shmedo.configlibrary.iot.model.das;
  */
 public class VwpBean {
     private int type;
-    private double value;
+    private String value;
     private int errno;
 
     public int getType() {
@@ -18,11 +20,11 @@ public class VwpBean {
         this.type = type;
     }
 
-    public double getValue() {
-        return value;
+    public String getValue() {
+        return TextUtils.isEmpty(value) ? "0" : value;
     }
 
-    public void setValue(double value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
