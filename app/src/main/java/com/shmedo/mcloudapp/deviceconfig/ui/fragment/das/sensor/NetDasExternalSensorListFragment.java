@@ -162,7 +162,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         //设置每个item间距
         mRecyclerViewSensor.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         sensorAdapter = new DASSensorAdapter(sensorItemList);
-        sensorAdapter.setAnimationEnable(true);
+        sensorAdapter.setAnimationEnable(false);
         sensorAdapter.setAnimationFirstOnly(false);
         sensorAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -261,7 +261,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                             refreshLayout.finishRefresh(false);
                         }
                     }
-                }, DELAY_10000_MILLIS);
+                }, DELAY_15000_MILLIS);
             }
         });
     }

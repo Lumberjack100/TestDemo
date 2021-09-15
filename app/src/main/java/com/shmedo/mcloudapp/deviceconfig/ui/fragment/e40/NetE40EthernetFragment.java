@@ -139,10 +139,10 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
                                 mTvDhcp.setText(text);
                                 if (position == 0) {
                                     dhcp = "0";
-                                    onDhcpChanged(true);
+                                    onDhcpChanged(false);
                                 } else {
                                     dhcp = "1";
-                                    onDhcpChanged(false);
+                                    onDhcpChanged(true);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
@@ -316,11 +316,11 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
         if (dhcpOld.equals("0")) {
             dhcpPos = 0;
             mTvDhcp.setText("手动");
-            onDhcpChanged(true);
+            onDhcpChanged(false);
         } else {
             dhcpPos = 1;
             mTvDhcp.setText("自动");
-            onDhcpChanged(false);
+            onDhcpChanged(true);
         }
         mEtIpAddress.setText(ip);
         mEtGateWayAddress.setText(gateway);

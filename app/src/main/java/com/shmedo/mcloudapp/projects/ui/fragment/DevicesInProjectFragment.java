@@ -23,7 +23,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
@@ -193,23 +192,7 @@ public class DevicesInProjectFragment extends BaseFragment {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 ProjectDeviceInfo deviceInfo = deviceInfoList.get(position);
-                int deviceType = AppContants.DeviceType.UnKnown;
-                if (deviceInfo.getDeviceTypeName().contains("DAS")) {
-                    deviceType = AppContants.DeviceType.DAS;
-                } else if (deviceInfo.getDeviceTypeName().contains("ADME")) {
-                    deviceType = AppContants.DeviceType.ADME;
-                } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
-                    deviceType = AppContants.DeviceType.M20;
-                } else if (deviceInfo.getDeviceTypeName().contains("E40") || deviceInfo.getDeviceTypeName().contains("E60")) {
-                    deviceType = AppContants.DeviceType.E40;
-                } else if (deviceInfo.getDeviceTypeName().contains("VMS")||deviceInfo.getDeviceTypeName().contains("GW300")) {
-                    deviceType = AppContants.DeviceType.VMS;
-                }
-                if (deviceType == AppContants.DeviceType.UnKnown) {
-                    ToastUtils.show("此设备暂不支持!");
-                    return;
-                }
-                DeviceConfigActivity.startActivity(mActivity, deviceInfo, deviceType);
+                DeviceConfigActivity.startActivity(mActivity, deviceInfo);
             }
         });
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);

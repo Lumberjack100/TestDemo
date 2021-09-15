@@ -196,6 +196,24 @@
 
             </LinearLayout>
 
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设备Key"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_device_key"
+                    style="@style/DataCenter_EditText_Style"
+                    android:hint="请输入" />
+
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"

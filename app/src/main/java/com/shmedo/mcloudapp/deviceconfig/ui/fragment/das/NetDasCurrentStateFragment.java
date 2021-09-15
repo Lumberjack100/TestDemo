@@ -791,12 +791,11 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         if (dasSubSensorStatusInfo.getIo() != null) {
             ioSensorLayout.setVisibility(View.VISIBLE);
 
-            mTvSwitchStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getIo().getErrno())));
-            setSensorStatusColor(mTvSwitchStatus, dasSubSensorStatusInfo.getIo().getErrno());
-
             if (dasSubSensorStatusInfo.getIo().getType() == 1) {
                 rainLayout.setVisibility(View.VISIBLE);
                 wireBreakAlarmLayout.setVisibility(View.GONE);
+                mTvSwitchStatus.setText("接入");
+                mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
 
                 decimalFormat.applyPattern("#.#");
                 mTvRain.setText(decimalFormat.format(dasSubSensorStatusInfo.getIo().getVaule()) + "mm");
@@ -804,16 +803,20 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
                 rainLayout.setVisibility(View.GONE);
                 wireBreakAlarmLayout.setVisibility(View.GONE);
-                mTvSwitchStatus.setText("关闭");
+                mTvSwitchStatus.setText("未接入");
+                mTvSwitchStatus.setTextColor(Color.RED);
 
             } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
                 rainLayout.setVisibility(View.GONE);
                 wireBreakAlarmLayout.setVisibility(View.VISIBLE);
+                mTvSwitchStatus.setText("接入");
+                mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+
                 if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
-                    mTvAlarmStatus.setText("断开");
+                    mTvAlarmStatus.setText("断线");
                     mTvAlarmStatus.setTextColor(Color.RED);
                 } else if (dasSubSensorStatusInfo.getIo().getVaule() == 0) {
-                    mTvAlarmStatus.setText("闭合");
+                    mTvAlarmStatus.setText("未断线");
                     mTvAlarmStatus.setTextColor(getResources().getColor(R.color.text_color_3AD094));
                 }
             }

@@ -7,6 +7,7 @@ import android.view.View;
 
 import androidx.fragment.app.Fragment;
 
+import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -37,9 +38,26 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
     private DiscoveredBluetoothDevice device;
 
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, int deviceType) {
+    public static void startActivity(Context context, ProjectDeviceInfo deviceInfo) {
+        int deviceType = AppContants.DeviceType.UnKnown;
+        if (deviceInfo.getDeviceTypeName().contains("DAS")) {
+            deviceType = AppContants.DeviceType.DAS;
+        } else if (deviceInfo.getDeviceTypeName().contains("ADME") || deviceInfo.getName().contains("T")) {
+            deviceType = AppContants.DeviceType.ADME;
+        } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
+            deviceType = AppContants.DeviceType.M20;
+        } else if (deviceInfo.getDeviceTypeName().contains("E40") || deviceInfo.getDeviceTypeName().contains("E60")) {
+            deviceType = AppContants.DeviceType.E40;
+        } else if (deviceInfo.getDeviceTypeName().contains("VMS") || deviceInfo.getDeviceTypeName().contains("GW300")) {
+            deviceType = AppContants.DeviceType.VMS;
+        }
+        if (deviceType == AppContants.DeviceType.UnKnown) {
+            ToastUtils.show("此设备暂不支持!");
+            return;
+        }
+
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(EXTRA_DEVICE, projectDeviceInfo);
+        intent.putExtra(EXTRA_DEVICE, deviceInfo);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
