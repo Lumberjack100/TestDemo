@@ -9,7 +9,7 @@ import android.text.TextUtils;
  */
 public class VwpBean {
     private int type;
-    private String value;
+    private String vaule;
     private int errno;
 
     public int getType() {
@@ -21,11 +21,11 @@ public class VwpBean {
     }
 
     public String getValue() {
-        return TextUtils.isEmpty(value) ? "0" : value;
+        return TextUtils.isEmpty(vaule) ? "0" : vaule;
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.vaule = value;
     }
 
     public int getErrno() {

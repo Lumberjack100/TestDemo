@@ -48,6 +48,7 @@ import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -222,6 +223,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     private List<DasSensorStatusInfo> sensorList = new ArrayList<>();
     private CommonAdapter dataCenterAdapter, sensorAdapter;
 
+    private DecimalFormat decimalFormat = new DecimalFormat();
 
     public static NetDasCurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetDasCurrentStateFragment fragment = new NetDasCurrentStateFragment();
@@ -312,7 +314,8 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "裂缝值(mm)");
-                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        decimalFormat.applyPattern("#");
+                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                         break;
 
                     case SOIL_MOISTURE://土壤含水率
@@ -320,7 +323,8 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "含水率(%)");
-                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        decimalFormat.applyPattern("#.#");
+                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                         break;
 
                     case INCLINOMETER: {//测斜仪
@@ -331,8 +335,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setText(R.id.tv_title2, "Y轴(mm)");
                         String[] values = sensorStatusInfo.getVal().split(",");
                         if (values.length >= 2) {
-                            holder.setText(R.id.tv_value1, values[0]);
-                            holder.setText(R.id.tv_value2, values[1]);
+                            decimalFormat.applyPattern("#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
                         }
                     }
                     break;
@@ -342,7 +347,8 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "空高值(mm)");
-                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        decimalFormat.applyPattern("#");
+                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                         break;
 
                     case RADAR_LEVEL_GAUGE://雷达物位计
@@ -350,7 +356,8 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "空高值(mm)");
-                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                        decimalFormat.applyPattern("#");
+                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                         break;
 
                     case UPLIFT_PRESSURE_GAUGE: {//数字式渗压计
@@ -362,9 +369,11 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setText(R.id.tv_title3, "水温(℃)");
                         String[] values = sensorStatusInfo.getVal().split(",");
                         if (values.length >= 3) {
-                            holder.setText(R.id.tv_value1, values[0]);
-                            holder.setText(R.id.tv_value2, values[1]);
-                            holder.setText(R.id.tv_value3, values[2]);
+                            decimalFormat.applyPattern("#.###");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
                         }
                     }
                     break;
@@ -378,9 +387,11 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setText(R.id.tv_title3, "水温(℃)");
                         String[] values = sensorStatusInfo.getVal().split(",");
                         if (values.length >= 3) {
-                            holder.setText(R.id.tv_value1, values[0]);
-                            holder.setText(R.id.tv_value2, values[1]);
-                            holder.setText(R.id.tv_value3, values[2]);
+                            decimalFormat.applyPattern("#.###");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
                         }
                     }
                     break;
@@ -394,9 +405,11 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setText(R.id.tv_title3, "水温(℃)");
                         String[] values = sensorStatusInfo.getVal().split(",");
                         if (values.length >= 3) {
-                            holder.setText(R.id.tv_value1, values[0]);
-                            holder.setText(R.id.tv_value2, values[1]);
-                            holder.setText(R.id.tv_value3, values[2]);
+                            decimalFormat.applyPattern("#.###");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
                         }
                     }
                     break;
@@ -409,8 +422,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setText(R.id.tv_title2, "温度(℃)");
                         String[] values = sensorStatusInfo.getVal().split(",");
                         if (values.length >= 2) {
-                            holder.setText(R.id.tv_value1, values[0]);
-                            holder.setText(R.id.tv_value2, values[1]);
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
                         }
                     }
                     break;
@@ -423,8 +437,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setText(R.id.tv_title2, "温度(℃)");
                         String[] values = sensorStatusInfo.getVal().split(",");
                         if (values.length >= 2) {
-                            holder.setText(R.id.tv_value1, values[0]);
-                            holder.setText(R.id.tv_value2, values[1]);
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
                         }
                     }
                     break;
@@ -435,7 +450,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 holder.setText(R.id.tv_address, "通道" + sensorStatusInfo.getAddr());
                 holder.setText(R.id.tv_status, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(sensorStatusInfo.getErrno())));
-
                 if (sensorStatusInfo.getErrno() == 0) {
                     holder.setTextColorRes(R.id.tv_status, R.color.text_color_3AD094);
                 } else {
@@ -727,10 +741,11 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         }
         solarInfoLayout.setVisibility(View.VISIBLE);
         setDeviceStatus(mTvSolarStatus, dasSolarStatusInfo.getSolar().getErrno());
-        mTvSolarVoltage.setText(dasSolarStatusInfo.getSolar().getSolarvolt() + "V");
-        mTvBatteryVoltage.setText(dasSolarStatusInfo.getSolar().getBatvolt() + "V");
-        mTvSupplyPower.setText(dasSolarStatusInfo.getSolar().getSolarpwr() + "W");
-        mTvConsumePower.setText(dasSolarStatusInfo.getSolar().getLoadpwr() + "W");
+        decimalFormat.applyPattern("#.#");
+        mTvSolarVoltage.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getSolarvolt()) + "V");
+        mTvBatteryVoltage.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getBatvolt()) + "V");
+        mTvSupplyPower.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getSolarpwr()) + "W");
+        mTvConsumePower.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getLoadpwr()) + "W");
     }
 
     /**
@@ -747,16 +762,18 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             //机箱内部温湿度
             internalTempHumidityLayout.setVisibility(View.VISIBLE);
             setDeviceStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
-            mTvInternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getInth().getTemp() + "℃");
-            mTvInternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getInth().getHumi() + "%");
+            decimalFormat.applyPattern("#.#");
+            mTvInternalTemperature.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getInth().getTemp()) + "℃");
+            mTvInternalHumidity.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getInth().getHumi()) + "%");
         }
 
         if (dasTemperatureAndHumidityStatusinfo.getOutth() != null) {
             //机箱外部温湿度
             externalTempHumidityLayout.setVisibility(View.VISIBLE);
             setDeviceStatus(mTvExternalStatus, dasTemperatureAndHumidityStatusinfo.getOutth().getErrno());
-            mTvExternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp() + "℃");
-            mTvExternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getHumi() + "%");
+            decimalFormat.applyPattern("#.#");
+            mTvExternalTemperature.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp()) + "℃");
+            mTvExternalHumidity.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getOutth().getHumi()) + "%");
         }
     }
 
@@ -780,7 +797,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             if (dasSubSensorStatusInfo.getIo().getType() == 1) {
                 rainLayout.setVisibility(View.VISIBLE);
                 wireBreakAlarmLayout.setVisibility(View.GONE);
-                mTvRain.setText(dasSubSensorStatusInfo.getIo().getVaule() + "mm");
+
+                decimalFormat.applyPattern("#.#");
+                mTvRain.setText(decimalFormat.format(dasSubSensorStatusInfo.getIo().getVaule()) + "mm");
 
             } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
                 rainLayout.setVisibility(View.GONE);
@@ -810,12 +829,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             if (dasSubSensorStatusInfo.getVwp().getValue().contains(",")) {
                 String[] values = dasSubSensorStatusInfo.getVwp().getValue().split(",");
                 if (values.length >= 3) {
-                    mTvPiezometerValue.setText(values[0]);
-
                     emptyPipeDistanceLayout.setVisibility(View.VISIBLE);
                     waterTemperatureLayout.setVisibility(View.VISIBLE);
-                    mTvEmptyPipeDistance.setText(values[1]);
-                    mTvWaterTemperature.setText(values[2]);
+
+                    decimalFormat.applyPattern("#.###");
+                    mTvPiezometerValue.setText(decimalFormat.format(Double.parseDouble(values[0])) + "m");
+                    mTvEmptyPipeDistance.setText(decimalFormat.format(Double.parseDouble(values[1])) + "m");
+
+                    decimalFormat.applyPattern("#.#");
+                    mTvWaterTemperature.setText(decimalFormat.format(Double.parseDouble(values[2])) + "℃");
                 }
             } else {
                 mTvPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue());
@@ -829,7 +851,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             }
             mTvInclinometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
             setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
-            mTvInclinometerAxis.setText(dasSubSensorStatusInfo.getMems().getValue());
+
+            decimalFormat.applyPattern("#.#");
+            mTvInclinometerAxis.setText(decimalFormat.format(Double.parseDouble(dasSubSensorStatusInfo.getMems().getValue())) + "°");
         }
     }
 
