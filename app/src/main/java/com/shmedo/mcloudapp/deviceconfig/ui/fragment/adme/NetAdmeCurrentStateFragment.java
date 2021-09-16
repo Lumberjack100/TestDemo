@@ -160,14 +160,6 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 queryStateInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, 10000);
             }
         });
     }

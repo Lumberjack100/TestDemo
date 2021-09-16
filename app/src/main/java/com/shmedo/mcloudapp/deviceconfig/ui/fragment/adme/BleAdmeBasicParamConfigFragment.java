@@ -71,7 +71,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
      * 获取设备的基础配置参数
      */
     private void queryBasicParamConfigInfo() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC);
         sendCommand(command);
     }
@@ -149,7 +149,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
             }
             String command = admeBasicParamConfigView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
-                startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
                 sendCommand(command);
             }
         }
@@ -189,7 +189,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
             break;
 
             case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
@@ -203,7 +203,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
             break;
 
             case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
 //                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
@@ -219,7 +219,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
             case ADME_MD_SET_BASIC: {//设置设备的基础配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "保存基础配置参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -231,7 +231,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

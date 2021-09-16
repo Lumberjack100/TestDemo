@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -15,6 +14,7 @@ import com.hjq.toast.ToastUtils;
 import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
@@ -32,9 +32,8 @@ import timber.log.Timber;
  */
 public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     public static final int TCP_CONNECT_DELAY_MILLIS = 5000;//Tcp 连接超时时间
-    public static final int WRITE_TIME_OUT_MILLIS = 10000;//发送指令超时时间
     protected static final int DELAY_5000_MILLIS = 5000;
-    protected static final int DELAY_10000_MILLIS = 10000;
+    protected static final int DELAY_10000_MILLIS = 10000;//发送指令超时时间
     protected static final int DELAY_15000_MILLIS = 15000;
 
     protected boolean isExitMode = false;
@@ -43,37 +42,46 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
     protected DeviceApiKeyViewModel deviceApiKeyViewModel;
 
+    private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
+
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
 
     }
 
-    private Handler uiHander = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull @NotNull Message msg) {
-            dismissProgressDialog();
-            customHandleMessage(msg);
-            return false;
+    private static final class DefaultHandler extends WeakHandler<BaseTcpIotCommunicateFragment> {
+        private DefaultHandler(BaseTcpIotCommunicateFragment fragment) {
+            super(fragment);
         }
-    });
 
-    protected void startProgress(String dialogContent, int what, long delayMillis) {
+        @Override
+        protected void handleMessage(Message msg, BaseTcpIotCommunicateFragment fragment) {
+            fragment.dismissProgressDialog();
+            fragment.customHandleMessage(msg);
+        }
+    }
+
+    protected void startDefaultProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        uiHander.sendEmptyMessageDelayed(what, delayMillis);
+        mDefaultHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    public void stopProgress(int what) {
+    protected void stopDefaultProgress(int what) {
         dismissProgressDialog();
-        uiHander.removeMessages(what);
+        mDefaultHandler.removeMessages(what);
+    }
+
+    protected void stopAllProgress() {
+        dismissProgressDialog();
+        mDefaultHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
     public void onStop() {
-        dismissProgressDialog();
-        uiHander.removeCallbacksAndMessages(null);
         super.onStop();
+        stopAllProgress();
     }
 
     @Override

@@ -255,14 +255,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 queryDeviceBaseInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, 15000);
             }
         });
     }

@@ -261,14 +261,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     return;
                 }
                 queryDataServerAddress();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_5000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -593,16 +586,9 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
         }
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         sendCommand(cmdCommunicationProtocol);
         Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
-    }
-
-    @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-            ToastUtils.show("响应超时,请稍后尝试");
-        }
     }
 
     @Override
@@ -642,7 +628,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
             case QUERY_DATA_CENTER_PARAM://查询数据中心 1、2、3 参数
                 mRefreshLayout.finishRefresh(true);
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询数据中心指令出错!");
                     ToastUtils.show("查询数据中心指令出错!");
@@ -654,7 +640,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case NET_LINK_COMMUN_PROTOCOL://设置通讯协议应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("网络中心通讯协议配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdDataServerAddress);
@@ -664,7 +650,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_SERVER_ADDRESS_PORT://设置数据服务器地址、端口应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据服务器地址、端口配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 //处理关闭中心1、2、3的开关时，接收到的应答指令
@@ -684,7 +670,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case AUTO_REGISTRATION_PLATFORM:// MQTT 自动注册设置通选择注册平台时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("选择平台配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (communicationProtocol.equals("4")) {//MQTT自动注册
@@ -700,7 +686,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT:// MQTT 自动注册设置注册平台地址时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("自动注册平台地址配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdKeepAliveValue);
@@ -710,7 +696,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case MQTT_KEEP_ALIVE://设置KeepAlive值应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("设置MQTT KeepAlive值错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdPlatformParam);
@@ -720,7 +706,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_AUTO_REGISTRATION_PLATFORM_PARAM:// MQTT 自动注册设置参数时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("自动注册平台参数配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 doAfterSetting();
@@ -729,7 +715,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case SET_MANUAL_REGISTRATION_PLATFORM_PARAM:// MQTT 手动注册设置参数时应答
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("手动注册平台参数配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 doAfterSetting();
@@ -826,9 +812,25 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     }
 
     private void doAfterSetting() {
-        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
 //        isExitMode = true;
         saveConfigInfoNoReboot();
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
     }
 
     @Override

@@ -105,11 +105,12 @@ public interface AppContants {
 
     interface MsgWhat {
         int MSG_DEFAULT = 0x001;//
-        int MSG_HEART = 0x0010;//
         int CONNECT_DEVICE = 0x002;//
         int USB_SERIAL_DEVICE_INITIAL = 0x003;//
         int USB_SERIAL_AT_SCAN = 0x004;//
         int USB_SERIAL_AT_CONNECT = 0x005;//
+        int MSG_HEART = 0x006;//
+        int MSG_SMART_REFRESH = 0x007;//
     }
 
 }

@@ -66,7 +66,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
      * 获取执行机构参数
      */
     private void queryParamInfo() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
         sendCommand(command);
     }
@@ -93,7 +93,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             }
             String command = admeExecutiveAgencyView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
-                startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
                 sendCommand(command);
             }
         }
@@ -117,7 +117,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EXECUTIVE_AGENCY: {//获取ADME的执行机构配置参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询执行机构参数出错!", commandResult.getMessage());
@@ -134,7 +134,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             case ADME_MD_SET_EXECUTIVE_AGENCY: {//设置ADME的执行机构配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -146,7 +146,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

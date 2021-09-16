@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeCurrentStateInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
@@ -155,15 +157,7 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                     return;
                 }
                 queryParamInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                            ToastUtils.show("刷新超时");
-                        }
-                    }
-                }, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -229,5 +223,17 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         mTvInclinometerLocationInfo.setText(currentStateInfo.getIncloc());
         mTvInclinometerVoltage.setText(String.format("%s V", currentStateInfo.getIncvoltage()));
         mTvInclinometerTemperature.setText(String.format("%s ℃", currentStateInfo.getIntertempe()));
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+        }
     }
 }

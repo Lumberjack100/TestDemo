@@ -174,7 +174,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * 获取电机运动配置参数
      */
     private void queryMotorMotionConfig() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH);
         sendCommand(command);
     }
@@ -191,7 +191,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * 清空电机运动数据记录指令
      */
     private void clearMotorMotionData() {
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA);
         sendCommand(command);
     }
@@ -316,7 +316,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             entity.setMovedistance(totalDistanceGoal);
 
             mBtnRun.setEnabled(false);
-            startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH, entity);
             sendCommand(command);
         } catch (Exception ex) {
@@ -385,7 +385,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {//获取ADME的堵转参数
                 IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -402,7 +402,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             break;
 
             case ADME_MD_GET_MEASURING_HOLEDEPTH: {//获取ADME的测量孔深配置参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeMeasuringHoleDepthInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取测量孔深配置参数出错!", commandResult.getMessage());
@@ -423,7 +423,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {//设置堵转参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -434,7 +434,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送保存指令出错!", cmdResult.getReason());
@@ -465,7 +465,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             break;
 
             case ADME_MD_SET_MEASURING_HOLEDEPTH: {//设置ADME的测量孔深配置参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置测量孔深配置参数出错!", cmdResult.getReason());
@@ -479,7 +479,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             break;
 
             case ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA: {//ADME测量孔深清空
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "清空数据出错!", cmdResult.getReason());

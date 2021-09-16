@@ -164,7 +164,7 @@ public class BleAdmeStepperMotorFragment extends BaseUSRBleIotCommunicateFragmen
      * 获取设备的步进电机参数
      */
     private void queryParamInfo() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
         sendCommand(command);
     }
@@ -275,7 +275,7 @@ public class BleAdmeStepperMotorFragment extends BaseUSRBleIotCommunicateFragmen
             paramEnableInitial = mSbParamEnable.isChecked();
             isSaveParamOperation = true;
 
-            startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
             sendCommand(command);
         } catch (Exception ex) {
@@ -299,7 +299,7 @@ public class BleAdmeStepperMotorFragment extends BaseUSRBleIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
@@ -315,7 +315,7 @@ public class BleAdmeStepperMotorFragment extends BaseUSRBleIotCommunicateFragmen
             case ADME_MD_SET_STEPPER_MOTOR: {//设置ADME的步进电机配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置步进电机参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -326,7 +326,7 @@ public class BleAdmeStepperMotorFragment extends BaseUSRBleIotCommunicateFragmen
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Message;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
 import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
@@ -119,15 +121,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                     return;
                 }
                 queryBaseInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                            ToastUtils.show("刷新超时");
-                        }
-                    }
-                }, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_15000_MILLIS);
             }
         });
     }
@@ -168,8 +162,8 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                 IOTCommandResult<Rn20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -186,8 +180,8 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                 IOTCommandResult<DasTemperatureAndHumidityStatusinfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询温湿度状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -218,6 +212,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                 break;
         }
     }
+
     /**
      * 基本信息
      *
@@ -292,4 +287,15 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         }
     }
 
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+        }
+    }
 }

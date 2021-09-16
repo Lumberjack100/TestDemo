@@ -50,9 +50,10 @@ import timber.log.Timber;
  */
 public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-    public static final int DELAY_MILLIS = 60000;//超时时间
     protected static final int DELAY_10000_MILLIS = 10000;
     protected static final int DELAY_15000_MILLIS = 15000;
+    protected static final int DELAY_20000_MILLIS = 20000;
+    protected static final int DELAY_60000_MILLIS = 60000;//超时时间
 
     public ProjectDeviceInfo projectDeviceInfo;
 
@@ -64,11 +65,11 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     private int queryNum = 0;//当查询指令结果10次时，判断响应超时
 
-    private final InnerHandler mInnerHandler = new InnerHandler(this);
+    private final CommandHandler mCommandHandler = new CommandHandler(this);
 
 
-    private static final class InnerHandler extends WeakHandler<BaseNetIotCommunicateFragment> {
-        private InnerHandler(BaseNetIotCommunicateFragment fragment) {
+    private static final class CommandHandler extends WeakHandler<BaseNetIotCommunicateFragment> {
+        private CommandHandler(BaseNetIotCommunicateFragment fragment) {
             super(fragment);
         }
 
@@ -84,30 +85,29 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                     Timber.d("handleMessage();queryNum=%s", fragment.queryNum);
                     fragment.queryCmdResultByMsgID();
                     break;
-
-                default:
-                    break;
             }
         }
     }
 
     protected void startQueryCmdResponse() {
         queryNum++;
-        mInnerHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, 0);
+        mCommandHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, 0);
     }
 
     private void startQueryCmdResponseDelayed(long delayMillis) {
         queryNum++;
-        mInnerHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
+        mCommandHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_DEFAULT, delayMillis);
     }
 
-    protected void stopQueryCmdResponse() {
+    private void stopQueryCmdResponse() {
         queryNum = 0;
-        mInnerHandler.removeMessages(AppContants.MsgWhat.MSG_DEFAULT);
+        mCommandHandler.removeMessages(AppContants.MsgWhat.MSG_DEFAULT);
     }
 
-    protected void stopProgressAll() {
-        mInnerHandler.removeCallbacksAndMessages(null);
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopQueryCmdResponse();
     }
 
     @Override
@@ -132,13 +132,6 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     }
 
     protected void onEditableChanged(boolean isEditable) {
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        dismissProgressDialog();
-        stopProgressAll();
     }
 
     /**
@@ -257,6 +250,9 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             stopQueryCmdResponse();
             onQueryCmdResponseResultSuccess(queryCmdResult);
         } else {
+            //已经调用 stopQueryCmdResponse() 或 stopAllProgress() 停止查询
+            if (queryNum == 0)
+                return;
             //延迟1秒后再次查询响应结果
             startQueryCmdResponseDelayed(500);
         }

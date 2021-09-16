@@ -330,7 +330,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
      * 获取参数
      */
     private void queryParamInfo() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
         sendCommand(command);
     }
@@ -514,7 +514,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             entity.setUpsusrana(pullUpTorqueDetectionStart);
             entity.setUpsusranb(pullUpTorqueDetectionEnd);
 
-            startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
             sendCommand(command);
         } catch (Exception ex) {
@@ -538,7 +538,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
@@ -554,7 +554,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -566,7 +566,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送保存指令出错!", cmdResult.getReason());

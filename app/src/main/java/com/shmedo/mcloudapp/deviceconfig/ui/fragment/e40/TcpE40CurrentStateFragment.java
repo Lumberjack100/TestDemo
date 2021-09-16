@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ import com.shmedo.configlibrary.iot.model.e40.GPSBean;
 import com.shmedo.configlibrary.iot.model.e40.SatelitteBean;
 import com.shmedo.configlibrary.iot.model.e40.SensorBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
@@ -259,15 +261,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                     return;
                 }
                 queryStateInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                            ToastUtils.show("刷新超时");
-                        }
-                    }
-                }, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -301,8 +295,8 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -318,8 +312,8 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询卫星数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -328,15 +322,15 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                 String content = commandResult.getResult();
                 if (TextUtils.isEmpty(content)) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     return;
                 }
                 initSatelittleInfo(content);
                 if (content.contains("BDS")) {
                     if (satelitteBean != null && satelitteBean.getBdsBeanList() != null) {
                         initBDSInfo(satelitteBean.getBdsBeanList());
-                    }else {
+                    } else {
                         mTvBDSatelliteRedNum.setText("!");
                         mTvBDSatelliteBlueNum.setText("!");
                         mTvBDSatelliteGreenNum.setText("!");
@@ -345,7 +339,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                 } else if (content.contains("GPS")) {
                     if (satelitteBean != null && satelitteBean.getGpsBeanList() != null) {
                         initGPSInfo(satelitteBean.getGpsBeanList());
-                    }else {
+                    } else {
                         mTvGpsSatelliteRedNum.setText("!");
                         mTvGpsSatelliteBlueNum.setText("!");
                         mTvGpsSatelliteGreenNum.setText("!");
@@ -355,7 +349,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                     mRefreshLayout.finishRefresh(true);
                     if (satelitteBean != null && satelitteBean.getGloBeanList() != null) {
                         initGLOInfo(satelitteBean.getGloBeanList());
-                    }else {
+                    } else {
                         mTvGloSatelliteRedNum.setText("!");
                         mTvGloSatelliteBlueNum.setText("!");
                         mTvGloSatelliteGreenNum.setText("!");
@@ -616,6 +610,18 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
 
             default:
                 return "未知类型";
+        }
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
         }
     }
 }

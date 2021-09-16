@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -23,14 +22,15 @@ import com.shmedo.configlibrary.ble.enums.LowEnergyModel;
 import com.shmedo.configlibrary.ble.enums.SaveConfigMode;
 import com.shmedo.configlibrary.ble.utils.DesUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
@@ -42,12 +42,12 @@ import timber.log.Timber;
  * 描述：     TODO #gh#
  */
 public abstract class BaseBleCommunicateFragment extends BaseFragment {
-    public static final int CONNECT_TIME_OUT_MILLIS = 15000;//蓝牙连接超时时间
-    public static final int WRITE_TIME_OUT_MILLIS = 20000;//发送配置参数指令超时时间
-    public static final int WRITE_TIME_OUT_LONG_MILLIS = 30000;//发送配置参数指令超时时间
     protected static final int DELAY_5000_MILLIS = 5000;
     protected static final int DELAY_10000_MILLIS = 10000;
-    protected static final int DELAY_15000_MILLIS = 15000;
+    protected static final int DELAY_15000_MILLIS = 15000;//蓝牙连接超时时间
+    protected static final int DELAY_20000_MILLIS = 20000;//发送配置参数指令超时时间
+    protected static final int DELAY_30000_MILLIS = 30000;//发送配置参数指令超时时间
+    protected static final int DELAY_40000_MILLIS = 40000;
 
     protected USRBleViewModel usrBleViewModel;
 
@@ -59,71 +59,70 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
 
     protected LinkedList<String> commandItems = new LinkedList<>();
 
-    private final InnerHandler mInnerHandler = new InnerHandler(this);
-
-    private Handler heartHander = new Handler();
-
-    private HeartRunnable heartRunnable;
+    private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
+    private final HeartHandler mHeartHandler = new HeartHandler(this);
 
     /**
      * 发送心跳包任务
      */
-    private class HeartRunnable implements Runnable {
+    private static final class HeartHandler extends WeakHandler<BaseBleCommunicateFragment> {
+        private HeartHandler(BaseBleCommunicateFragment fragment) {
+            super(fragment);
+        }
+
         @Override
-        public void run() {
-            if (isConnected()) {
-                sendHeartData();
-                heartHander.postDelayed(this, 40000);
+        protected void handleMessage(Message msg, BaseBleCommunicateFragment fragment) {
+            if (fragment.isConnected()) {
+                fragment.sendHeartData();
+                fragment.startHeart();
             }
         }
     }
-    protected void startHeartRunnable() {
-        if (heartRunnable == null) {
-            heartRunnable = new HeartRunnable();
-            heartHander.postDelayed(heartRunnable, 10000);
-        }
+
+    protected void startHeart() {
+        mHeartHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.MSG_HEART, DELAY_40000_MILLIS);
     }
-    protected void stopHeartRunnable() {
-        heartHander.removeCallbacksAndMessages(null);
-        heartRunnable = null;
+
+    protected void stopHeart() {
+        mHeartHandler.removeCallbacksAndMessages(null);
     }
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-
     }
 
-    private static class InnerHandler extends Handler {
-        private final WeakReference<BaseBleCommunicateFragment> fragmentWeakReference;
-
-        public InnerHandler(BaseBleCommunicateFragment fragment) {
-            fragmentWeakReference = new WeakReference<>(fragment);
+    private static final class DefaultHandler extends WeakHandler<BaseBleCommunicateFragment> {
+        private DefaultHandler(BaseBleCommunicateFragment fragment) {
+            super(fragment);
         }
 
         @Override
-        public void handleMessage(Message msg) {
-            BaseBleCommunicateFragment fragment = fragmentWeakReference.get();
-            if (fragment != null) {
-                fragment.dismissProgressDialog();
-                fragment.customHandleMessage(msg);
-            }
+        protected void handleMessage(Message msg, BaseBleCommunicateFragment fragment) {
+            fragment.dismissProgressDialog();
+            fragment.customHandleMessage(msg);
         }
     }
 
-    protected void startProgress(String dialogContent, int what, long delayMillis) {
+    protected void startDefaultProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        mInnerHandler.sendEmptyMessageDelayed(what, delayMillis);
+        mDefaultHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    public void stopProgress(int what) {
+    protected void stopDefaultProgress(int what) {
         dismissProgressDialog();
-        mInnerHandler.removeMessages(what);
+        mDefaultHandler.removeMessages(what);
     }
 
-    protected void stopProgressAll() {
+    protected void stopAllProgress() {
         dismissProgressDialog();
-        mInnerHandler.removeCallbacksAndMessages(null);
+        mDefaultHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopAllProgress();
     }
 
     @Override
@@ -369,11 +368,5 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopProgressAll();
     }
 }

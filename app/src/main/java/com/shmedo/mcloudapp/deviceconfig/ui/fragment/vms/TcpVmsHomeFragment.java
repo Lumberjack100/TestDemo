@@ -186,15 +186,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 }
                 //查询网关基本信息
                 getGatewayBaseInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                            ToastUtils.show("刷新超时");
-                        }
-                    }
-                }, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -220,7 +212,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
      */
     private void setupTcpConnect() {
         tcpViewModel.initTcpClient(ipAddress, 10002);
-        startProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
+        startDefaultProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
         tcpViewModel.connect();
     }
 
@@ -229,7 +221,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
      */
     @Override
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
 
         if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
@@ -269,7 +261,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {
             if (!tcpViewModel.getConnectStatus()) {
-                startProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
+                startDefaultProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
                 tcpViewModel.connect();
             } else {
                 isExitMode = false;
@@ -312,24 +304,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     public void removeTerminal(String sn) {
         TerminalSNEntity entity = new TerminalSNEntity(sn);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
-        startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
-    }
-
-    @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        switch (msg.what) {
-            case AppContants.MsgWhat.MSG_DEFAULT:
-                ToastUtils.show("响应超时,请稍后尝试");
-                break;
-
-            case AppContants.MsgWhat.CONNECT_DEVICE: {
-                if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show("连接超时");
-                }
-            }
-            break;
-        }
     }
 
     @Override
@@ -344,8 +320,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -363,8 +339,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -373,8 +349,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 VmsAisleInfo vmsAisleInfo = commandResult.getResult();
                 if (vmsAisleInfo == null) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     return;
                 }
                 vmsAisleListFragment.updateAisleListInfo(vmsAisleInfo);
@@ -407,8 +383,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -439,7 +415,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             break;
 
             case VMS_MD_DELETE_TERMINAL: {//删除终端设备
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "删除终端出错!", cmdResult.getReason());
@@ -453,8 +429,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
             default:
                 if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                    mRefreshLayout.finishRefresh(false);
+                }
                 super.parseResponseMessage(cmdStr);
                 break;
         }
@@ -540,11 +516,26 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     }
 
     @Override
-    public void onStop() {
-        if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show("连接超时");
+                }
+            }
+            break;
         }
-        super.onStop();
     }
 
     @Override

@@ -67,7 +67,7 @@ public class BleAdmeInclinometerFragment extends BaseUSRBleIotCommunicateFragmen
      * 获取ADME的测斜仪参数
      */
     private void queryParamConfigInfo() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_INCLINOMETER);
         sendCommand(command);
     }
@@ -96,7 +96,7 @@ public class BleAdmeInclinometerFragment extends BaseUSRBleIotCommunicateFragmen
             }
             String command = admeInclinometerView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
-                startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
                 sendCommand(command);
             }
         }
@@ -118,7 +118,7 @@ public class BleAdmeInclinometerFragment extends BaseUSRBleIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_INCLINOMETER: {//获取ADME的测斜仪配置参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeInclinometerInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备的测斜仪参数出错!", commandResult.getMessage());
@@ -135,7 +135,7 @@ public class BleAdmeInclinometerFragment extends BaseUSRBleIotCommunicateFragmen
             case ADME_MD_SET_INCLINOMETER: {//设置ADME的测斜仪配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "保存测斜仪参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -147,7 +147,7 @@ public class BleAdmeInclinometerFragment extends BaseUSRBleIotCommunicateFragmen
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

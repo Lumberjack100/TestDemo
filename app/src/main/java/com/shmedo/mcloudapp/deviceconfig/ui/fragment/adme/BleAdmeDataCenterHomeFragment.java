@@ -86,7 +86,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -114,7 +114,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
@@ -168,7 +168,7 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -183,10 +183,10 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 2) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }

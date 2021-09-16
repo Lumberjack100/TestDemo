@@ -179,7 +179,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
      */
     private void setupTcpConnect() {
         tcpViewModel.initTcpClient(ipAddress, 10002);
-        startProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
+        startDefaultProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
         tcpViewModel.connect();
     }
 
@@ -188,7 +188,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
      */
     @Override
     protected void onConnectionChange(TcpConnectionState tcpConnectionState) {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         updateViewStateByConnectState(tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS);
 
         if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
@@ -332,7 +332,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {
             if (!tcpViewModel.getConnectStatus()) {
-                startProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
+                startDefaultProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);
                 tcpViewModel.connect();
             } else {
                 isExitMode = false;
@@ -345,7 +345,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
      * 获取网关的基本信息
      */
     private void getGatewayBaseInfo() {
-        startProgress(null, AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress(null, AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_BASE);
         sendCommand(command);
     }
@@ -377,7 +377,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case VMS_MD_GET_GATEWAY_BASE: {//获取网关的基本信息
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 swipeRefresh.setRefreshing(false);
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {

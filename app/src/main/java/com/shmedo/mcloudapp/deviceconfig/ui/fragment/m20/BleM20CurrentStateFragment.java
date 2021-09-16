@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
 import com.shmedo.configlibrary.iot.model.m20.SensorErrnoBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
@@ -26,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import butterknife.BindView;
 import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  1/18/21 <br/>
@@ -150,15 +153,7 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                     return;
                 }
                 queryStateInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                            ToastUtils.show("刷新超时");
-                        }
-                    }
-                }, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -228,7 +223,7 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 initLinkStatus(mTvLinkFourStatus, m20CurrentStateInfo.getDataCenter4());
 
                 boolean sensorAbnormal = false;
-                for(SensorErrnoBean errnoBean :m20CurrentStateInfo.getSensor_errno()){
+                for (SensorErrnoBean errnoBean : m20CurrentStateInfo.getSensor_errno()) {
                     if (errnoBean.getErrno() != 0) {
                         sensorAbnormal = true;
                     }
@@ -265,4 +260,17 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
             tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_not_connected_platform));
         }
     }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+        }
+    }
+
 }

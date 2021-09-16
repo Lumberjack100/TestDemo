@@ -756,9 +756,9 @@
                 android:id="@+id/dasInclinometerInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:visibility="gone"
-                tools:visibility="visible"
-                android:orientation="vertical">
+                tools:visibility="visible">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -937,11 +937,22 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tv_mainSensor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@color/main_bg_gray"
+                android:padding="16dp"
+                android:text="主传感器数据"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="15sp" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/sensor_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:splitMotionEvents="false"/>
+                android:splitMotionEvents="false" />
 
         </LinearLayout>
 

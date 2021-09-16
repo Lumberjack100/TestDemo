@@ -200,14 +200,6 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 serverNumber = -1;
                 getReportingTimeInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_10000_MILLIS);
             }
         });
     }

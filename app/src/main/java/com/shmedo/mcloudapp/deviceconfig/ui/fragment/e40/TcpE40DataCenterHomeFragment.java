@@ -93,7 +93,7 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -121,7 +121,7 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
@@ -182,7 +182,7 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
             case MD_GET_DATA_CENTER_STATUS: {//获取数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -197,7 +197,7 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
@@ -207,7 +207,7 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
@@ -217,10 +217,10 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
                         getDataCenterStatus(ServerNumber.NUMBER_FOUR);
                     } else {
                         //表示刷新指定的数据中心
-                        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     }
                 } else if (centerStatus.getCenterid() == 4) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }

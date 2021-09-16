@@ -103,14 +103,6 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 queryCollectorInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_10000_MILLIS);
             }
         });
     }

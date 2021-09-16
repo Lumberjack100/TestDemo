@@ -229,7 +229,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
                     case CONNECTING://A connection to the device was initiated.
-                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                        startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                         showProgressBar();
                         mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
@@ -312,7 +312,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     private void hideProgressBar() {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -355,7 +355,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      */
     private void queryTerminalTime() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -365,7 +365,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void sampleTerminal() {
         TerminalSNEntity entity = new TerminalSNEntity(sn);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_TERMINAL_QUERY_SAMPLE, entity);
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -375,7 +375,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void rebootTerminal() {
         TerminalSNEntity entity = new TerminalSNEntity(sn);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -392,7 +392,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      */
     private void setSwitchSensorInfo(DasIOSensorEntity entity) {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO, entity);
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -457,7 +457,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
         if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -506,7 +506,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             break;
 
             case QUERY_TERMINAL_TIME: {//获取终端时间
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<DeviceTimeInfo> cmdResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!cmdResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取终端时间出错!", cmdResult.getMessage());
@@ -521,7 +521,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             break;
 
             case VMS_TERMINAL_QUERY_SAMPLE: {//终端遥测
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "遥测出错!", cmdResult.getReason());
@@ -534,7 +534,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             break;
 
             case VMS_MD_REBOOT_TERMINAL: {//重启终端
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "重启出错!", cmdResult.getReason());
@@ -547,7 +547,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             break;
 
             case DAS_MD_SET_IO_SENSOR_INFO: {//设置开关量传感器
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置雨量精度出错!", cmdResult.getReason());
@@ -608,7 +608,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     public void onStop() {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         super.onStop();
     }
 

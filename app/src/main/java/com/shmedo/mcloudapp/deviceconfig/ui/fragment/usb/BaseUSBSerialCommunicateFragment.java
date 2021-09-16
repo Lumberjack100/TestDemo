@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 
@@ -14,13 +13,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.profile.USBSerialViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
-import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 
 import timber.log.Timber;
@@ -28,7 +27,7 @@ import timber.log.Timber;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/8/11 <br/>
- * 描述：     TODO
+ * 描述：     USB 串口通讯基类
  */
 public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     protected static final int WRITE_TIME_OUT_500_MILLIS = 500;//发送指令超时时间
@@ -44,39 +43,40 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
 
     protected ByteArrayOutputStream resultByteBuf = new ByteArrayOutputStream();
 
-    private final InnerHandler mInnerHandler = new InnerHandler(this);
+    private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
 
-    private static class InnerHandler extends Handler {
-        private final WeakReference<BaseUSBSerialCommunicateFragment> fragmentWeakReference;
-
-        public InnerHandler(BaseUSBSerialCommunicateFragment fragment) {
-            fragmentWeakReference = new WeakReference<>(fragment);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            BaseUSBSerialCommunicateFragment fragment = fragmentWeakReference.get();
-            if (fragment != null) {
-//                fragment.dismissProgressDialog();
-                fragment.customHandleMessage(msg);
-            }
-        }
-    }
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
 
     }
 
-    protected void startProgress(int what, long delayMillis) {
-        mInnerHandler.sendEmptyMessageDelayed(what, delayMillis);
+    private static final class DefaultHandler extends WeakHandler<BaseUSBSerialCommunicateFragment> {
+        private DefaultHandler(BaseUSBSerialCommunicateFragment fragment) {
+            super(fragment);
+        }
+
+        @Override
+        protected void handleMessage(Message msg, BaseUSBSerialCommunicateFragment fragment) {
+            fragment.customHandleMessage(msg);
+        }
     }
 
-    protected void stopProgress(int what) {
-        mInnerHandler.removeMessages(what);
+    protected void startDefaultProgress(int what, long delayMillis) {
+        mDefaultHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    protected void stopProgressAll() {
-        mInnerHandler.removeCallbacksAndMessages(null);
+    protected void stopDefaultProgress(int what) {
+        mDefaultHandler.removeMessages(what);
+    }
+
+    protected void stopAllProgress() {
+        mDefaultHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopAllProgress();
     }
 
     @Override
@@ -94,7 +94,6 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
             }
         });
     }
-
 
     /**
      * USB建立连接
@@ -130,7 +129,7 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
         if (atCommandItems.size() > 0) {
             String command = atCommandItems.getFirst().getCommand();
             usbSerialViewModel.sendData(command);
-            startProgress(what, delayMillis);
+            startDefaultProgress(what, delayMillis);
         }
     }
 
@@ -163,11 +162,5 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopProgressAll();
     }
 }

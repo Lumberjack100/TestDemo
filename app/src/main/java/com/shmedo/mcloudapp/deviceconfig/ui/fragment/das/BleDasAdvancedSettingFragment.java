@@ -141,7 +141,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             if (!TextUtils.isEmpty(location)) {
                 installLocation = location;
 
-                startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+                startDefaultProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
                 String command = "##9161" + location + "\r\n";
                 sendCommand(command);
                 Timber.i("同步安装位置指令：%s", command);
@@ -169,7 +169,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case INSTALL_LOCATION: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     String msg;
                     if (tempStr.charAt(3) == '1') {
@@ -191,7 +191,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             break;
 
             case RESTORE_FACTORY_SETTING:
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("保存参数指令错误!");
                     return;

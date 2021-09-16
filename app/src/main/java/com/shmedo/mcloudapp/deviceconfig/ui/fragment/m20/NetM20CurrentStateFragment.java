@@ -154,15 +154,6 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 queryStateInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-//                            ToastUtils.show("刷新超时");
-                        }
-                    }
-                }, 10000);
             }
         });
     }

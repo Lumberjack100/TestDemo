@@ -94,14 +94,7 @@ public class UniversalUSRBleDataCenterAdvancedConfigFragment extends BaseUSRBleI
                     return;
                 }
                 queryDataCenterInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_5000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_5000_MILLIS);
             }
         });
     }
@@ -122,20 +115,13 @@ public class UniversalUSRBleDataCenterAdvancedConfigFragment extends BaseUSRBleI
 
     @Override
     public void onSaveConfig(String command) {
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_5000_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_5000_MILLIS);
         sendCommand(command);
     }
 
     @Override
     public boolean onCheckConnect() {
         return isConnected();
-    }
-
-    @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-            ToastUtils.show("响应超时,请稍后尝试");
-        }
     }
 
     @Override
@@ -163,7 +149,7 @@ public class UniversalUSRBleDataCenterAdvancedConfigFragment extends BaseUSRBleI
             case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -175,7 +161,7 @@ public class UniversalUSRBleDataCenterAdvancedConfigFragment extends BaseUSRBleI
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
@@ -191,6 +177,22 @@ public class UniversalUSRBleDataCenterAdvancedConfigFragment extends BaseUSRBleI
 
             default:
                 super.parseResponseMessage(cmdStr);
+                break;
+        }
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
                 break;
         }
     }

@@ -227,14 +227,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 clear();
                 queryCollectorInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_10000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -267,7 +260,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         SetCollectorAddressEntity collectorAddressEntity = new SetCollectorAddressEntity(0);
         String cmdCollectorAddress = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_ADDRESS, collectorAddressEntity);
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         sendCommand(cmdCollectorAddress);
         Timber.d("设置采集器地址指令===%s", cmdCollectorAddress);
     }
@@ -365,7 +358,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 break;
 
             case SET_COLLECTOR_ADDRESS://当接入的传感器为0时，设置采集器地址为0
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器地址配置错误!");
                     return;
@@ -458,7 +451,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
     }
 
     protected void doAfterSetting() {
-        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
 //        isExitMode = true;
         saveConfigInfoNoReboot();
     }

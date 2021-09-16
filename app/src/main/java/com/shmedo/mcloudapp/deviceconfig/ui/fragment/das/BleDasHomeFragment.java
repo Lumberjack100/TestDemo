@@ -259,7 +259,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
             case "传感器初始化":
                 isInitialSensorOpera = true;
-                startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+                startDefaultProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
                 //发送激活DAS命令
                 setLowEnergyModel(true);
                 break;
@@ -295,7 +295,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void doQueryTimeCmd() {
-        startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+        startDefaultProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
 
         String command = CommandManager.getInstance().getCommand(CommandType.LOCAL_TIME, null);
         sendCommand(command);
@@ -303,7 +303,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void doTelemetryCmd() {
-        startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+        startDefaultProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
 
         String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);
         sendCommand(command);
@@ -319,7 +319,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
                     case CONNECTING:
-                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
+                        startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                         showProgressBar();
                         mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
@@ -394,7 +394,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void hideProgressBar() {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -439,7 +439,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         }
         if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -482,7 +482,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case LOW_ENERGY:
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     if (isInitialSensorOpera) {
                         isInitialSensorOpera = false;
@@ -505,7 +505,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case LOCAL_TIME:
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询终端时间指令出错!");
                     ToastUtils.show("查询终端时间指令出错!");
@@ -529,7 +529,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case INSTANT_COLLEACTOR: {
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("遥测指令出错!");
                     ToastUtils.show("遥测指令出错!");
@@ -552,7 +552,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             break;
 
             case SAVE_CONFIG_INFO:
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("保存参数指令错误!");
                     return;
@@ -678,7 +678,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     @Override
     public void onStop() {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         LocationUtils.getInstance().stopLocalService();
         super.onStop();
     }

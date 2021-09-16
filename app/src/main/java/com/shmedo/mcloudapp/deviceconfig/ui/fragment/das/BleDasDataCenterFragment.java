@@ -97,14 +97,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 queryData();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_5000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -229,18 +222,11 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(Integer.parseInt(reportingInterval));
         cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
         String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
         sendCommand(cmd);
         Timber.d("设置数据通讯模式===%s", cmd);
-    }
-
-    @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-            ToastUtils.show("响应超时,请稍后尝试");
-        }
     }
 
     @Override
@@ -307,7 +293,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
             case DATA_MASSAGE_MODEL://设置数据通讯方式
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据通讯方式配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sendCommand(cmdDataReport);
@@ -317,7 +303,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
             case DATA_REPORT_INTERVAL://设置数据上报间隔
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据上报配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
@@ -329,7 +315,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                 break;
 
             case SIX_TARGER_BD_NUMBER://北斗配置
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("北斗配置错误!");
                     return;
@@ -353,8 +339,24 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
         saveConfigInfoNoReboot();
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
     }
 
     @Override

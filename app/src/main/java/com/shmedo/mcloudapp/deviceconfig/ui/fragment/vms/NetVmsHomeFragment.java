@@ -179,15 +179,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 getGatewayBaseInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                            ToastUtils.show("刷新超时");
-                        }
-                    }
-                }, DELAY_MILLIS);
             }
         });
     }

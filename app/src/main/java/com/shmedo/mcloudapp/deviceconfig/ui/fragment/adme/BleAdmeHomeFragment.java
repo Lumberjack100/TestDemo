@@ -193,7 +193,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onStop() {
         super.onStop();
         isFirstCreate = false;
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         stopQueryMotorStateRunnable();
     }
 
@@ -281,7 +281,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
                     case CONNECTING://A connection to the device was initiated.
-                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                        startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                         showProgressBar();
                         mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
@@ -364,7 +364,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     private void hideProgressBar() {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -422,7 +422,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;

@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -17,12 +16,12 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
 import com.shmedo.mcloudapp.profile.GOCBleViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -33,8 +32,8 @@ import timber.log.Timber;
  * 描述：    与深圳市顾凯信息技术有限公司GOC-MD-400蓝牙模块通讯的页面基类
  */
 public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
-    public static final int CONNECT_TIME_OUT_MILLIS = 15000;//蓝牙连接超时时间
-    public static final int WRITE_TIME_OUT_MILLIS = 10000;//发送指令超时时间
+    public static final int DELAY_10000_MILLIS = 10000;//发送指令超时时间
+    public static final int DELAY_15000_MILLIS = 15000;//蓝牙连接超时时间
 
     protected GOCBleViewModel bleViewModel;
 
@@ -42,44 +41,45 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
 
     public boolean isExitMode = false;//是否退出页面标志
 
-    private final InnerHandler mInnerHandler = new InnerHandler(this);
-
-    private static class InnerHandler extends Handler {
-        private final WeakReference<BaseGOCBleIotCommunicateFragment> fragmentWeakReference;
-
-        public InnerHandler(BaseGOCBleIotCommunicateFragment fragment) {
-            fragmentWeakReference = new WeakReference<>(fragment);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            BaseGOCBleIotCommunicateFragment fragment = fragmentWeakReference.get();
-            if (fragment != null) {
-                fragment.dismissProgressDialog();
-                fragment.customHandleMessage(msg);
-            }
-        }
-    }
+    private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
 
     }
 
-    protected void startProgress(String dialogContent, int what, long delayMillis) {
+    private static final class DefaultHandler extends WeakHandler<BaseGOCBleIotCommunicateFragment> {
+        private DefaultHandler(BaseGOCBleIotCommunicateFragment fragment) {
+            super(fragment);
+        }
+
+        @Override
+        protected void handleMessage(Message msg, BaseGOCBleIotCommunicateFragment fragment) {
+            fragment.dismissProgressDialog();
+            fragment.customHandleMessage(msg);
+        }
+    }
+
+    protected void startDefaultProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        mInnerHandler.sendEmptyMessageDelayed(what, delayMillis);
+        mDefaultHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    public void stopProgress(int what) {
+    public void stopDefaultProgress(int what) {
         dismissProgressDialog();
-        mInnerHandler.removeMessages(what);
+        mDefaultHandler.removeMessages(what);
     }
 
-    protected void stopProgressAll() {
+    protected void stopAllProgress() {
         dismissProgressDialog();
-        mInnerHandler.removeCallbacksAndMessages(null);
+        mDefaultHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopAllProgress();
     }
 
     @Override
@@ -113,12 +113,6 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
     protected void onEditableChanged(boolean isEditable) {
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopProgressAll();
-    }
-
     /**
      * ble 建立连接
      */
@@ -150,7 +144,7 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     protected void parseResponseMessage(String cmdStr) {
-        stopProgressAll();
+        stopAllProgress();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         if (type == IOTCommandType.UNKNOWN_TYPE) {
             Timber.e("未知的命令:%s", cmdStr);

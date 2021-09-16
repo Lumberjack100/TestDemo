@@ -91,7 +91,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
                     entity.setLongitude(strs[0]);
                     entity.setLatitude(strs[1]);
                     String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
-                    startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+                    startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
                     sendCommand(command);
                 } catch (NumberFormatException ex) {
                     ex.printStackTrace();

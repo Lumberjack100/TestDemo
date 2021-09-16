@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -33,6 +34,7 @@ import com.shmedo.configlibrary.ble.model.SystemRunStateInfo;
 import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
@@ -221,7 +223,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.das_current_state_fragment;
+        return R.layout.ble_das_current_state_fragment;
     }
 
     public static BleDasCurrentStateFragment newInstance() {
@@ -249,15 +251,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 queryStatusOne();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                            ToastUtils.show("刷新超时");
-                        }
-                    }
-                }, WRITE_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_20000_MILLIS);
             }
         });
 
@@ -696,7 +690,6 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_INCLINOMETER_INFO);
         sendCommand(command);
         Timber.i("查询倾角计信息：%s", command);
-
 //        if (TextUtils.isEmpty(versionMessageInfo.getFirmwareVersion()))
 //            return;
 //
@@ -725,12 +718,23 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
             inclinometerLayout.setVisibility(View.GONE);
             return;
         }
-
         inclinometerLayout.setVisibility(View.VISIBLE);
         setDeviceStatus(mTvInclinometerStatus, inclinometerInfo.getStatus());
         mTvInclinometerXaxis.setText(inclinometerInfo.getxAxis());
         mTvInclinometerYaxis.setText(inclinometerInfo.getyAxis());
         mTvInclinometerZaxis.setText(inclinometerInfo.getzAxis());
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+        }
     }
 
     @Override

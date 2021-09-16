@@ -202,7 +202,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
                     case CONNECTING://A connection to the device was initiated.
-                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                        startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                         showProgressBar();
                         mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
@@ -285,7 +285,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     private void hideProgressBar() {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         progressOverlay.setVisibility(View.GONE);
         //get user interaction back
         mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -322,7 +322,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         }
         if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -427,7 +427,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
 
     @Override
     public void onStop() {
-        stopProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         super.onStop();
     }
 

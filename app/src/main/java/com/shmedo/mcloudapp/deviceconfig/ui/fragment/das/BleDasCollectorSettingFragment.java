@@ -119,14 +119,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 queryCollectorInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_5000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_5000_MILLIS);
             }
         });
     }
@@ -261,15 +254,8 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             commandItems.add(command);
         }
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         sendCommand(commandItems.getFirst());
-    }
-
-    @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-            ToastUtils.show("响应超时,请稍后尝试");
-        }
     }
 
     @Override
@@ -297,7 +283,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             case SET_COLLECTOR_ADDRESS:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器地址配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 commandItems.removeFirst();
@@ -311,7 +297,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             case COLLECTOR_SOLUTION_FREQUENCY:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器解算频度配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 commandItems.removeFirst();
@@ -325,7 +311,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             case COLLECTOR_STANDBY_TIME:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器待机时长配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 commandItems.removeFirst();
@@ -337,7 +323,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                 break;
 
             case COLLECTOR_FREQUENCY:
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器采集频度配置错误!");
                     return;
@@ -385,8 +371,24 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
         saveConfigInfoNoReboot();
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+
+                case AppContants.MsgWhat.MSG_HEART:
+                    ToastUtils.show("响应超时,请稍后尝试");
+                    break;
+        }
     }
 
     @Override

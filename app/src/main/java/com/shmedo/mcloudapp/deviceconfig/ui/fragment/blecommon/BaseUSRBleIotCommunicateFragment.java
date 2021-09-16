@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
@@ -18,13 +17,13 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.AdmeViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -35,11 +34,9 @@ import timber.log.Timber;
  * 描述：    与有人物联网蓝牙模块通讯的页面基类
  */
 public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
-    public static final int CONNECT_TIME_OUT_MILLIS = 15000;//蓝牙连接超时时间
-    public static final int WRITE_TIME_OUT_MILLIS = 10000;//发送指令超时时间
     protected static final int DELAY_5000_MILLIS = 5000;
-    protected static final int DELAY_10000_MILLIS = 10000;
-    protected static final int DELAY_15000_MILLIS = 15000;
+    protected static final int DELAY_10000_MILLIS = 10000;//发送指令超时时间
+    protected static final int DELAY_15000_MILLIS = 15000;//蓝牙连接超时时间
 
     //自定义心跳包指令
     private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
@@ -54,73 +51,46 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
 
     public boolean isExitMode = false;//是否退出页面标志
 
-    private final InnerHandler mInnerHandler = new InnerHandler(this);
+    private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
 
-    private Handler heartHander = new Handler();//心跳包处理
-
-    private HeartRunnable heartRunnable;//心跳包任务
-
-    /**
-     * 发送心跳包任务
-     */
-    private class HeartRunnable implements Runnable {
-        @Override
-        public void run() {
-            if (isConnected()) {
-                sendHeartData();
-                heartHander.postDelayed(this, 30000);
-            }
-        }
-    }
-
-    protected void startHeartRunnable() {
-        if (heartRunnable == null) {
-            heartRunnable = new HeartRunnable();
-            heartHander.postDelayed(heartRunnable, 10000);
-        }
-    }
-
-    protected void stopHeartRunnable() {
-        heartHander.removeCallbacksAndMessages(null);
-        heartRunnable = null;
-    }
-
-    private static class InnerHandler extends Handler {
-        private final WeakReference<BaseUSRBleIotCommunicateFragment> fragmentWeakReference;
-
-        public InnerHandler(BaseUSRBleIotCommunicateFragment fragment) {
-            fragmentWeakReference = new WeakReference<>(fragment);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            BaseUSRBleIotCommunicateFragment fragment = fragmentWeakReference.get();
-            if (fragment != null) {
-                fragment.dismissProgressDialog();
-                fragment.customHandleMessage(msg);
-            }
-        }
-    }
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
 
     }
 
-    protected void startProgress(String dialogContent, int what, long delayMillis) {
+    private static final class DefaultHandler extends WeakHandler<BaseUSRBleIotCommunicateFragment> {
+        private DefaultHandler(BaseUSRBleIotCommunicateFragment fragment) {
+            super(fragment);
+        }
+
+        @Override
+        protected void handleMessage(Message msg, BaseUSRBleIotCommunicateFragment fragment) {
+            fragment.dismissProgressDialog();
+            fragment.customHandleMessage(msg);
+        }
+    }
+
+    protected void startDefaultProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
             showProgressDialog(dialogContent, null, null);
         }
-        mInnerHandler.sendEmptyMessageDelayed(what, delayMillis);
+        mDefaultHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
 
-    protected void stopProgress(int what) {
+    protected void stopDefaultProgress(int what) {
         dismissProgressDialog();
-        mInnerHandler.removeMessages(what);
+        mDefaultHandler.removeMessages(what);
     }
 
-    protected void stopProgressAll() {
+    protected void stopAllProgress() {
         dismissProgressDialog();
-        mInnerHandler.removeCallbacksAndMessages(null);
+        mDefaultHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopAllProgress();
     }
 
     @Override
@@ -155,12 +125,6 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
     protected void onEditableChanged(boolean isEditable) {
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        stopProgressAll();
-    }
-
     /**
      * ble 建立连接
      */
@@ -192,7 +156,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
      * 解析设备的参数指令
      */
     protected void parseResponseMessage(String cmdStr) {
-        stopProgressAll();
+        stopAllProgress();
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         if (type == IOTCommandType.UNKNOWN_TYPE) {
             Timber.e("未知的命令:%s", cmdStr);

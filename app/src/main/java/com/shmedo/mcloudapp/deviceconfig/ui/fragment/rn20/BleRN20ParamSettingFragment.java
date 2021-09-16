@@ -108,7 +108,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
     private void queryTerminalCollecotrInfo() {
         TerminalSNEntity entity = new TerminalSNEntity(MCloudApp.getCurDeviceToken());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_COLLECTOR, entity);
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -250,7 +250,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
         entity.setReptgap(reportingInterval);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_COLLECTOR, entity);
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -288,7 +288,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
             case VMS_MD_GET_TERMINAL_COLLECTOR: {//获取Vms终端采集参数
                 IOTCommandResult<VmsTerminalCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询终端采集参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -301,7 +301,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
             break;
 
             case VMS_MD_GET_TERMINAL_COMMUNICATE: {//获取Vms终端通信参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<VmsTerminalCommInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询终端通信参数出错!", commandResult.getMessage());
@@ -317,7 +317,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
             case VMS_MD_SET_TERMINAL_COLLECTOR: {//设置Vms终端采集参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -328,7 +328,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
             break;
 
             case VMS_MD_SET_TERMINAL_COMMUNICATE: {//设置Vms终端通信参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());

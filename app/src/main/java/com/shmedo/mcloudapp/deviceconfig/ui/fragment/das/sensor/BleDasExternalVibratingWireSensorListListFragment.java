@@ -84,7 +84,7 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
         sendCommand(command);
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
     }
@@ -261,13 +261,6 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
     }
 
     @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-            ToastUtils.show("响应超时,请稍后尝试");
-        }
-    }
-
-    @Override
     protected void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
@@ -275,7 +268,7 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
             case SET_COLLECTOR_SENSOR://设置采集器接入的传感器 150
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("接入传感器设置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 sensorIndex = 0;
@@ -285,7 +278,7 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
             case COLLECTOR_SENSOR_THRESHOLD://传感器触发阈值 162
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("传感器触发阈值配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 setCorrectionValue();
@@ -296,7 +289,7 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.w("%s配置错误!", curConfigItemName);
                     ToastUtils.show(curConfigItemName + "配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!correctValueCmdList.isEmpty()) {
@@ -308,6 +301,22 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
 
             default:
                 super.setResultData(cmdStr);
+                break;
+        }
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
                 break;
         }
     }

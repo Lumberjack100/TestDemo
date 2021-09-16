@@ -113,7 +113,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             }
         }
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
         sendCommand(commandItems.getFirst());
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, commandItems.getFirst());
     }
@@ -315,13 +315,6 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
     }
 
     @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-            ToastUtils.show("响应超时,请稍后尝试");
-        }
-    }
-
-    @Override
     protected void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
@@ -329,7 +322,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case SET_COLLECTOR_SENSOR://设置采集器接入的传感器 150
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("接入传感器设置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 commandItems.removeFirst();
@@ -345,7 +338,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case COLLECTOR_SENSOR_THRESHOLD://传感器触发阈值(多传感器设置) 162
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("传感器触发阈值设置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 commandItems.removeFirst();
@@ -359,7 +352,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case COLLECTOR_SENSOR_REVISED: //传感器修正值 165
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("传感器修正值设置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 commandItems.removeFirst();
@@ -373,7 +366,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case SET_INCLINOMETER_LONG: //设置测斜仪测段长 166
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("测段长设置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 commandItems.removeFirst();
@@ -390,4 +383,19 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
         }
     }
 
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
+    }
 }

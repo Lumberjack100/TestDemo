@@ -225,7 +225,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
      * 获取设备的数据中心参数
      */
     private void queryDataCenterInfo() {
-        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
         sendCommand(command);
@@ -441,7 +441,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         enableButtonOriginalState = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
         sendCommand(command);
     }
@@ -464,7 +464,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
@@ -478,7 +478,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
             break;
 
             case MD_SET_DATA_CENTER: {//设置设备的数据中心参数
-                stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置数据中心参数出错!", cmdResult.getReason());

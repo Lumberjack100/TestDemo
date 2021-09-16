@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -88,14 +89,7 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 queryDataCenterInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_5000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_5000_MILLIS);
             }
         });
     }
@@ -163,6 +157,18 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
 
             default:
                 super.parseResponseMessage(cmdStr);
+                break;
+        }
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
                 break;
         }
     }
