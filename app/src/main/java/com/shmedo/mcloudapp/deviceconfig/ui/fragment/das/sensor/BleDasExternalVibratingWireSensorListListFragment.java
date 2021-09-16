@@ -84,7 +84,7 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_LONG_MILLIS);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
         sendCommand(command);
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, command);
     }

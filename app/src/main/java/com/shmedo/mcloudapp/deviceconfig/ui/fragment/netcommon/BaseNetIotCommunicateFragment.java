@@ -20,7 +20,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
-import com.shmedo.mcloudapp.deviceconfig.callback.XyHandler;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
@@ -67,7 +67,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     private final InnerHandler mInnerHandler = new InnerHandler(this);
 
 
-    private static final class InnerHandler extends XyHandler<BaseNetIotCommunicateFragment> {
+    private static final class InnerHandler extends WeakHandler<BaseNetIotCommunicateFragment> {
         private InnerHandler(BaseNetIotCommunicateFragment fragment) {
             super(fragment);
         }

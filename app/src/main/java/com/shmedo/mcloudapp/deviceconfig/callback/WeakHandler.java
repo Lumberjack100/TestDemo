@@ -10,11 +10,11 @@ import java.lang.ref.WeakReference;
  * 创建时间:  2021/9/7 <br/>
  * 描述：     TODO
  */
-public abstract class XyHandler<T> extends Handler {
+public abstract class WeakHandler<T> extends Handler {
 
     private WeakReference<T> mWeak;
 
-    public XyHandler(T t) {
+    public WeakHandler(T t) {
         mWeak = new WeakReference<>(t);
     }
 

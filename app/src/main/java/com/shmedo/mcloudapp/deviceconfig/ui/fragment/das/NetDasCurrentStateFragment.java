@@ -235,7 +235,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.das_current_state_fragment_test;
+        return R.layout.net_das_current_state_fragment;
     }
 
     @Override

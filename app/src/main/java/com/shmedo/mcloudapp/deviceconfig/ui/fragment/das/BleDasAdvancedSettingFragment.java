@@ -141,7 +141,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             if (!TextUtils.isEmpty(location)) {
                 installLocation = location;
 
-                startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+                startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
                 String command = "##9161" + location + "\r\n";
                 sendCommand(command);
                 Timber.i("同步安装位置指令：%s", command);

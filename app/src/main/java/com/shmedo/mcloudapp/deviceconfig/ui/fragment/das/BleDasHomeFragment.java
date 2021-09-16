@@ -259,7 +259,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
             case "传感器初始化":
                 isInitialSensorOpera = true;
-                startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+                startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
                 //发送激活DAS命令
                 setLowEnergyModel(true);
                 break;
@@ -295,7 +295,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void doQueryTimeCmd() {
-        startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
 
         String command = CommandManager.getInstance().getCommand(CommandType.LOCAL_TIME, null);
         sendCommand(command);
@@ -303,7 +303,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void doTelemetryCmd() {
-        startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
 
         String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);
         sendCommand(command);
@@ -319,7 +319,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
                     case CONNECTING:
-                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                        startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                         showProgressBar();
                         mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
@@ -350,7 +350,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
                     // fallthrough
                     case DISCONNECTING:
-                        stopHeartRunnable();
+                        stopHeart();
                         break;
                 }
             }
@@ -439,7 +439,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         }
         if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, CONNECT_TIME_OUT_MILLIS);
+                startProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -471,7 +471,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case VERSION_MESSAGE:
-                startHeartRunnable();
+                startHeart();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询版本信息指令出错!");
                     return;

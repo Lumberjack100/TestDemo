@@ -593,7 +593,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
         }
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         sendCommand(cmdCommunicationProtocol);
         Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
     }

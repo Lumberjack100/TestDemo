@@ -261,7 +261,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             commandItems.add(command);
         }
 
-        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         sendCommand(commandItems.getFirst());
     }
 
