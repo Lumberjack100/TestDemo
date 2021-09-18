@@ -241,13 +241,13 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initDataCenterAdapter();
+        initSensorAdapter();
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);
         //是否在刷新的时候禁止内容的一切手势操作（默认false）
         mRefreshLayout.setDisableContentWhenRefresh(true);
         mRefreshLayout.autoRefresh();
-        initDataCenterAdapter();
-        initSensorAdapter();
     }
 
     private void initRefreshLayout() {
@@ -302,7 +302,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 IOTSensorType sensorType = IOTSensorType.value(type);
                 switch (sensorType) {
                     case WIRE_SHIFT://拉绳式裂缝计
-                        mTvMainSensor.setText("拉绳式裂缝计");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_wire_shift));
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "裂缝值(mm)");
@@ -311,7 +311,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                     case SOIL_MOISTURE://土壤含水率
-                        mTvMainSensor.setText("土壤含水率");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_soil_moisture));
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "含水率(%)");
@@ -320,7 +320,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                     case INCLINOMETER: {//测斜仪
-                        mTvMainSensor.setText("测斜仪");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_inclinometer));
                         holder.setVisibleOrGone(R.id.value2Layout, true);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "X轴(mm)");
@@ -335,7 +335,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     break;
 
                     case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                        mTvMainSensor.setText("超声波物位计");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_ultrasonic_level_gauge));
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "空高值(mm)");
@@ -344,7 +344,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                     case RADAR_LEVEL_GAUGE://雷达物位计
-                        mTvMainSensor.setText("雷达物位计");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_radar_level_gauge));
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "空高值(mm)");
@@ -353,7 +353,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                     case UPLIFT_PRESSURE_GAUGE: {//数字式渗压计
-                        mTvMainSensor.setText("数字式渗压计");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_uplift_pressure_gauge));
                         holder.setVisibleOrGone(R.id.value2Layout, true);
                         holder.setVisibleOrGone(R.id.value3Layout, true);
                         holder.setText(R.id.tv_title1, "水深(m)");
@@ -371,7 +371,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     break;
 
                     case KANG_PERCOLATE: {//基康渗压计
-                        mTvMainSensor.setText("基康渗压计");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_kang_percolate));
                         holder.setVisibleOrGone(R.id.value2Layout, true);
                         holder.setVisibleOrGone(R.id.value3Layout, true);
                         holder.setText(R.id.tv_title1, "水深(m)");
@@ -389,7 +389,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     break;
 
                     case GUDAN_PERCOLATE: {//葛南渗压计
-                        mTvMainSensor.setText("葛南渗压计");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_gudan_percolate));
                         holder.setVisibleOrGone(R.id.value2Layout, true);
                         holder.setVisibleOrGone(R.id.value3Layout, true);
                         holder.setText(R.id.tv_title1, "水深(m)");
@@ -407,7 +407,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     break;
 
                     case GUDAN_STRESS: {//葛南应变计
-                        mTvMainSensor.setText("葛南应变计");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_gudan_stress));
                         holder.setVisibleOrGone(R.id.value2Layout, true);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "应变(μ)");
@@ -422,7 +422,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     break;
 
                     case JUNXING_ZLJ_300T: {//轴力计
-                        mTvMainSensor.setText("轴力计");
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_junxing_zlj_300t));
                         holder.setVisibleOrGone(R.id.value2Layout, true);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
                         holder.setText(R.id.tv_title1, "轴力(KN)");
@@ -440,7 +440,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
                         break;
                 }
-                holder.setText(R.id.tv_address, "通道" + sensorStatusInfo.getAddr());
+                try {
+                    String sensorAisle = (sensorType == IOTSensorType.KANG_PERCOLATE ||
+                            sensorType == IOTSensorType.GUDAN_PERCOLATE ||
+                            sensorType == IOTSensorType.GUDAN_STRESS ||
+                            sensorType == IOTSensorType.JUNXING_ZLJ_300T) ? String.valueOf(sensorStatusInfo.getAddr() + 1) : String.valueOf(sensorStatusInfo.getAddr());
+                    holder.setText(R.id.tv_address, "通道" + sensorAisle);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
                 holder.setText(R.id.tv_status, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(sensorStatusInfo.getErrno())));
                 if (sensorStatusInfo.getErrno() == 0) {
                     holder.setTextColorRes(R.id.tv_status, R.color.text_color_3AD094);
@@ -449,7 +457,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
             }
         };
-
         sensorRecyclerView.setAdapter(sensorAdapter);
     }
 
@@ -784,25 +791,25 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             ioSensorLayout.setVisibility(View.VISIBLE);
 
             if (dasSubSensorStatusInfo.getIo().getType() == 1) {
-                rainLayout.setVisibility(View.VISIBLE);
-                wireBreakAlarmLayout.setVisibility(View.GONE);
                 mTvSwitchStatus.setText("接入");
                 mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                rainLayout.setVisibility(View.VISIBLE);
+                wireBreakAlarmLayout.setVisibility(View.GONE);
 
                 decimalFormat.applyPattern("#.#");
                 mTvRain.setText(decimalFormat.format(dasSubSensorStatusInfo.getIo().getVaule()) + "mm");
 
             } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
-                rainLayout.setVisibility(View.GONE);
-                wireBreakAlarmLayout.setVisibility(View.GONE);
                 mTvSwitchStatus.setText("未接入");
                 mTvSwitchStatus.setTextColor(Color.RED);
+                rainLayout.setVisibility(View.GONE);
+                wireBreakAlarmLayout.setVisibility(View.GONE);
 
             } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
-                rainLayout.setVisibility(View.GONE);
-                wireBreakAlarmLayout.setVisibility(View.VISIBLE);
                 mTvSwitchStatus.setText("接入");
                 mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                rainLayout.setVisibility(View.GONE);
+                wireBreakAlarmLayout.setVisibility(View.VISIBLE);
 
                 if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
                     mTvAlarmStatus.setText("断线");

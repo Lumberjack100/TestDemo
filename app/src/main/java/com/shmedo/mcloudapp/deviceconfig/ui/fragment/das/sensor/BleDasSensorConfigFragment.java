@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.InputFilter;
@@ -50,11 +51,13 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.wandersnail.widget.textview.RoundTextView;
 import timber.log.Timber;
 
 /**
@@ -70,8 +73,11 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     @BindView(R.id.radio_rain_gauge)
     RadioButton rbRainGauge;
 
-    @BindView(R.id.rainPrecisionEt)
-    EditText mEtRainPrecision;//雨量计精度
+    @BindView(R.id.rainPrecisionLayout)
+    View rainPrecisionLayout;
+
+    @BindView(R.id.tvPrecision)
+    RoundTextView mTvPrecision;
 
     @BindView(R.id.radio_break_alarm)
     RadioButton rbBreakAlarm;
@@ -111,7 +117,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
     private boolean isFirstEnterPage = true;//是否第一次进入页面
 
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private DecimalFormat decimalFormat = new DecimalFormat();
 
     private String collectorModel = "";//采集器类型
     private BaseConfigInfo baseConfigInfo;
@@ -155,52 +161,15 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     }
 
     private void setFilter() {
-        mEtRainPrecision.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtOsmometerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtWaterAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtWaterRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtOsmometerCord.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtNozzelHeight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
 
+        rainPrecision = "0.1";
+        mTvPrecision.setText(rainPrecision);
         btnConfirm.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * 开关控件事件
-     */
-    private void setSwitchViewListener() {
-        //数字式渗压计启用开关事件
-        mSbDigitalOsmometerEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(!isChecked);
-                    return;
-                }
-                if (isChecked) {
-                    enableOrDisableDigitalOsmometerCmd(OsmometerStatus.OSMOMETER_OPEN);
-                    digitalOsmometerChildsLayout.setVisibility(View.VISIBLE);
-                    btnConfirm.setEnabled(true);
-                    isFirstEnterPage = false;
-                } else {
-                    enableOrDisableDigitalOsmometerCmd(OsmometerStatus.OSMOMETER_CLOSE);
-                    digitalOsmometerChildsLayout.setVisibility(View.GONE);
-
-                    //恢复刚进入页面时的渗压计原始数据
-                    mEtOsmometerAddress.setText(osmometerAddress);
-                    mEtWaterAlarmValue.setText(depthTriggerValue);
-                    mEtWaterRevised.setText(depthCorrection);
-                    mEtOsmometerCord.setText(osmometerLength);
-                    mEtNozzelHeight.setText(nozzelHeight);
-
-                    //判断是否禁用保存按钮
-                    if (!rbRainGauge.isChecked()) {
-                        btnConfirm.setEnabled(false);
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -247,13 +216,13 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 if (isChecked) {
                     setSwitchSensorCmd(RainStation.OPEN);
                     rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
-                    mEtRainPrecision.setEnabled(true);
+                    rainPrecisionLayout.setVisibility(View.VISIBLE);
                     rbCloseSwitchSensor.setChecked(false);
                     rbBreakAlarm.setChecked(false);
                     btnConfirm.setEnabled(true);
                 } else {
                     rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
-                    mEtRainPrecision.setEnabled(false);
+                    rainPrecisionLayout.setVisibility(View.GONE);
                 }
             } else if (id == R.id.radio_break_alarm) {  //断线报警器单选按钮
                 if (isChecked) {
@@ -273,6 +242,44 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         }
     };
 
+    /**
+     * 数字式渗压计启用开关事件
+     */
+    private void setSwitchViewListener() {
+        //数字式渗压计启用开关事件
+        mSbDigitalOsmometerEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+                if (isChecked) {
+                    enableOrDisableDigitalOsmometerCmd(OsmometerStatus.OSMOMETER_OPEN);
+                    digitalOsmometerChildsLayout.setVisibility(View.VISIBLE);
+                    btnConfirm.setEnabled(true);
+                    isFirstEnterPage = false;
+                } else {
+                    enableOrDisableDigitalOsmometerCmd(OsmometerStatus.OSMOMETER_CLOSE);
+                    digitalOsmometerChildsLayout.setVisibility(View.GONE);
+
+                    //恢复刚进入页面时的渗压计原始数据
+                    mEtOsmometerAddress.setText(osmometerAddress);
+                    mEtWaterAlarmValue.setText(depthTriggerValue);
+                    mEtWaterRevised.setText(depthCorrection);
+                    mEtOsmometerCord.setText(osmometerLength);
+                    mEtNozzelHeight.setText(nozzelHeight);
+
+                    //判断是否禁用保存按钮
+                    if (!rbRainGauge.isChecked()) {
+                        btnConfirm.setEnabled(false);
+                    }
+                }
+            }
+        });
+    }
+
     private void initRefreshLayout() {
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -283,14 +290,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 querySwitchSensorInfo();
-                refreshLayout.getLayout().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.finishRefresh(false);
-                        }
-                    }
-                }, DELAY_5000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -347,7 +347,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         Timber.d("设置数字式渗压计指令==%s", command);
     }
 
-    @OnClick({R.id.extendSensorLayout, R.id.btn_confirm})
+    @OnClick({R.id.tvPrecision, R.id.extendSensorLayout, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -357,7 +357,18 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             return;
         }
         int id = view.getId();
-        if (id == R.id.extendSensorLayout) {
+        if (id == R.id.tvPrecision) {
+            String[] values = getResources().getStringArray(R.array.rain_value);
+            int pos = Arrays.asList(values).indexOf(rainPrecision);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("雨量精度");
+            builder.setSingleChoiceItems(values, pos, (dialog, item1) -> {
+                rainPrecision = values[item1];
+                mTvPrecision.setText(values[item1]);
+                dialog.dismiss();
+            });
+            builder.create().show();
+        } else if (id == R.id.extendSensorLayout) {
             DasExternalSensorListActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
 
         } else if (id == R.id.btn_confirm) {
@@ -368,7 +379,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             cmdDepthCorrection = "";
             cmdOsmometerLength = "";
             cmdNozzelHeight = "";
-            if (!processRainPrecisionParam() || !processDigitalOsmometerParam()) {
+            if (!checkRainPrecisionParam() || !checkDigitalOsmometerParam()) {
                 return;
             }
             processSave();
@@ -380,30 +391,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
      *
      * @return 校验通过返回 true,否则返回 false
      */
-    private boolean processRainPrecisionParam() {
-        rainPrecision = mEtRainPrecision.getText().toString().trim();
-        if (!rbRainGauge.isChecked()) {
-            return true;
-        }
-
-        if (TextUtils.isEmpty(rainPrecision)) {
-            ToastUtils.show("请输入雨量计精度!");
-            mEtRainPrecision.requestFocus();
-            return false;
-        }
-        try {
-            double value = Double.parseDouble(rainPrecision);
-            if (value >= 1) {
-                ToastUtils.show("请输入正确的雨量计精度!");
-                mEtRainPrecision.requestFocus();
-                return false;
-            }
-        } catch (Exception ex) {
-            ToastUtils.show("请输入正确的雨量计精度!");
-            mEtRainPrecision.requestFocus();
-            return false;
-        }
-
+    private boolean checkRainPrecisionParam() {
         int precision = (int) (Double.parseDouble(rainPrecision) * 100);
         SetRainPrecisionEntity entity = new SetRainPrecisionEntity(precision);
         cmdRainPrecision = CommandManager.getInstance().getCommand(CommandType.SETTING_RAIN_PRECISION, entity);
@@ -415,7 +403,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
      *
      * @return 校验通过返回 true,否则返回 false
      */
-    private boolean processDigitalOsmometerParam() {
+    private boolean checkDigitalOsmometerParam() {
         if (!mSbDigitalOsmometerEnable.isChecked()) {
             return true;
         }
@@ -540,7 +528,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             cmdList.add(cmdNozzelHeight);
         }
         if (!cmdList.isEmpty()) {
-            startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
+            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         }
         sendParamConfigCmd();
     }
@@ -558,13 +546,6 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         Timber.d("设置雨量计或渗压计配置参数指令===%s", command);
         //移除已发送的指令
         cmdList.remove(0);
-    }
-
-    @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
-            ToastUtils.show("响应超时,请稍后尝试");
-        }
     }
 
     @Override
@@ -624,7 +605,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
             case BREAK_ALARM_STATUS: //查询或设置断线报警器状态 227
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     if (tempStr.contains("2270")) {
                         Timber.e("查询断线报警器状态指令出错!");
                     } else {
@@ -652,7 +633,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SETTING_RAIN_PRECISION://设置雨量计精度 121
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("雨量计精度配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -667,7 +648,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SET_OSMOMETER_ADDRESS://设置数字渗压计地址 402
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计地址配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -682,7 +663,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SET_OSMOMETER_TRIGGER://设置数字渗压计水位报警值 403
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计水位报警值配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -697,7 +678,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SET_OSMOMETR_CORRECT://设置数字渗压计水深修正值 404
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计水深修正值配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -712,7 +693,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             case SET_CORD_LENGTH://设置数字渗压计绳长 405
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数字渗压计绳长配置错误!");
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -726,7 +707,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
             case SET_OSMOMETR_NOZZEL_HEIGHT://设置数字渗压计安装高程 406
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     ToastUtils.show("数字渗压计安装高程配置错误!");
                     return;
                 }
@@ -770,8 +751,13 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
      */
     private void initSwitchSensor() {
         try {
-            rainPrecision = decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000);
-            mEtRainPrecision.setText(rainPrecision);
+            try {
+                decimalFormat.applyPattern("#.#");
+                rainPrecision = decimalFormat.format((double) baseConfigInfo.getRainAccuracy() / 10000);
+                mTvPrecision.setText(rainPrecision);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -783,7 +769,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 rbCloseSwitchSensor.setOnCheckedChangeListener(null);
                 rbCloseSwitchSensor.setChecked(true);
                 rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
-                mEtRainPrecision.setEnabled(false);
+                rainPrecisionLayout.setVisibility(View.GONE);
                 rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbCloseSwitchSensor.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -794,6 +780,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 rbRainGauge.setOnCheckedChangeListener(null);
                 rbRainGauge.setChecked(true);
                 rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rainPrecisionLayout.setVisibility(View.VISIBLE);
                 rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -806,7 +793,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 rgBreakAlarmItems.setVisibility(View.VISIBLE);
                 rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
                 rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
-                mEtRainPrecision.setEnabled(false);
+                rainPrecisionLayout.setVisibility(View.GONE);
                 rbBreakAlarm.setOnCheckedChangeListener(onCheckedChangeListener);
 
                 //查询断线报警器状态
@@ -870,9 +857,25 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     }
 
     private void doAfterSetting() {
-        stopProgress(AppContants.MsgWhat.MSG_DEFAULT);
+        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
 //        isExitMode = true;
         saveConfigInfoNoReboot();
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_SMART_REFRESH:
+                if (mRefreshLayout.isRefreshing()) {
+                    mRefreshLayout.finishRefresh(false);
+                    ToastUtils.show("刷新超时");
+                }
+                break;
+
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
+        }
     }
 
     @Override
@@ -889,9 +892,6 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (rbRainGauge.isChecked() && rainPrecision != null && !rainPrecision.equals(mEtRainPrecision.getText().toString().trim())) {
-            return true;
-        }
         if (osmometerAddress != null && !osmometerAddress.equals(mEtOsmometerAddress.getText().toString().trim())) {
             return true;
         }

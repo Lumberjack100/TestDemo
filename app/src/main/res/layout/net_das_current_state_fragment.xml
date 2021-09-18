@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/refreshLayout"
@@ -653,7 +652,7 @@
                     android:layout_marginBottom="10dp"
                     android:background="@color/main_bg_gray"
                     android:padding="16dp"
-                    android:text="主传感器数据"
+                    android:text="扩展传感器"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="15sp" />
 
