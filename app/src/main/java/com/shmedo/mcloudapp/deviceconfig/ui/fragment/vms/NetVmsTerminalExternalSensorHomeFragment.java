@@ -255,6 +255,13 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         if (sensorInfo == null)
             return;
 
+        //解析出传感器编号
+        String[] strs = sensorInfo.getName().split("_");
+        String sensorSerialNumber = strs.length > 1 ? strs[0] : "";
+        if (sensorSerialNumber.equals("201")) {
+            accessSum = 1;
+        }
+
         if (curSensorIndex == -1) {
             sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
 

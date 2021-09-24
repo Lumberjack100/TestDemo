@@ -1,67 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测段长(单位:m)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
-
-        <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/ropeLength"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:gravity="center_vertical|right"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:textColor="@color/text_color_666666"
-            android:textColorHint="@color/text_color_cccccc"
-            android:textSize="@dimen/text_size_17" />
-
-    </LinearLayout>
-
-    <View
+    <ViewStub
+        android:id="@+id/viewstub_rainfall"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/divider_line_bg_efefef" />
+        android:layout_height="match_parent"
+        android:layout="@layout/vms_magnification_sensor_config_rainfall" />
 
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="修正值(单位:m)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
-
-        <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/correctValue"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:gravity="center_vertical|right"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:textColor="@color/text_color_666666"
-            android:textColorHint="@color/text_color_cccccc"
-            android:textSize="@dimen/text_size_17" />
-
-    </LinearLayout>
-
-</LinearLayout>
+    <ViewStub
+        android:id="@+id/viewstub_inclinometer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/vms_magnification_sensor_config_inclinometer" />
+</merge>

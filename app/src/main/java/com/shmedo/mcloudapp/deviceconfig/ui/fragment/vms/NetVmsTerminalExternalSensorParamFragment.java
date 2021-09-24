@@ -99,7 +99,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     //模数计算方式下支持的传感器
     private List<String> modulusSensorNameList = Arrays.asList("轴力计");
     //倍率计算方式下支持的传感器
-    private List<String> magnificationSensorNameList = Arrays.asList("钻孔测斜仪");
+    private List<String> magnificationSensorNameList = Arrays.asList("雨量计", "钻孔测斜仪");
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
@@ -131,7 +131,6 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
             sensorInfo = getArguments().getParcelable(AppContants.Extras.SENSOR_PARAM);
         }
     }
-
 
     @Override
     protected int getLayoutId() {
@@ -193,7 +192,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
 
             sensorNameList.clear();
             sensorNameList.addAll(digitalSensorNameList);
-        }else if (sensorCalculation == VmsSensorCalculation.MODULUS) {//模数
+        } else if (sensorCalculation == VmsSensorCalculation.MODULUS) {//模数
             calculationPosOld = 3;
             calculationPos = 3;
             mTvSensorCalculation.setText(calculationList.get(3));
@@ -205,7 +204,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
 
             sensorNameList.clear();
             sensorNameList.addAll(modulusSensorNameList);
-        }else if (sensorCalculation == VmsSensorCalculation.MAGNIFICATION) {//倍率
+        } else if (sensorCalculation == VmsSensorCalculation.MAGNIFICATION) {//倍率
             calculationPosOld = 4;
             calculationPos = 4;
             mTvSensorCalculation.setText(calculationList.get(4));
@@ -361,7 +360,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                                     magnificationView.setVisibility(View.GONE);
                                     sensorNameList.clear();
                                     sensorNameList.addAll(digitalSensorNameList);
-                                }else if (text.contains("模数")) {
+                                } else if (text.contains("模数")) {
                                     sensorCalculation = VmsSensorCalculation.MODULUS;
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.GONE);
@@ -369,7 +368,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                                     magnificationView.setVisibility(View.GONE);
                                     sensorNameList.clear();
                                     sensorNameList.addAll(modulusSensorNameList);
-                                }else if (text.contains("倍率")) {
+                                } else if (text.contains("倍率")) {
                                     sensorCalculation = VmsSensorCalculation.MAGNIFICATION;
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.GONE);
@@ -406,6 +405,18 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                                 sensorNamePos = position;
                                 sensorName = text;
                                 mTvMonitorType.setText(text);
+
+                                if (mTvSensorCalculation.getText().toString().contains("直线式")) {
+
+                                } else if (mTvSensorCalculation.getText().toString().contains("多项式")) {
+
+                                } else if (mTvSensorCalculation.getText().toString().contains("MEMS")) {
+
+                                } else if (mTvSensorCalculation.getText().toString().contains("模数")) {
+
+                                } else if (mTvSensorCalculation.getText().toString().contains("倍率")) {
+                                    magnificationView.setVisibilityBySensorType(sensorName);
+                                }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();
@@ -598,9 +609,9 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
             return linearParamView.checkValueIsChange();
         } else if (sensorCalculation == VmsSensorCalculation.POLYNOMIAL) {
             return polynomialParamView.checkValueIsChange();
-        }else if (sensorCalculation == VmsSensorCalculation.MODULUS) {
+        } else if (sensorCalculation == VmsSensorCalculation.MODULUS) {
             return modulusView.checkValueIsChange();
-        }else if (sensorCalculation == VmsSensorCalculation.MAGNIFICATION) {
+        } else if (sensorCalculation == VmsSensorCalculation.MAGNIFICATION) {
             return magnificationView.checkValueIsChange();
         }
         return false;

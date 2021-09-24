@@ -104,7 +104,8 @@
                 android:layout_marginEnd="16dp"
                 android:background="@color/divider_line_bg_efefef" />
 
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+            <LinearLayout style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -130,10 +131,6 @@
                     android:textSize="@dimen/text_size_17" />
 
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="14dp" />
 
             <com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.LinearParamView
                 android:id="@+id/linearParamView"

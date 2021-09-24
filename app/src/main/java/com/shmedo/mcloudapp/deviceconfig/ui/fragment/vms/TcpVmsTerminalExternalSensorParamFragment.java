@@ -96,7 +96,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     //模数结算方式下支持的传感器
     private List<String> modulusSensorNameList = Arrays.asList("轴力计");
     //倍率计算方式下支持的传感器
-    private List<String> magnificationSensorNameList = Arrays.asList("钻孔测斜仪");
+    private List<String> magnificationSensorNameList = Arrays.asList("雨量计", "钻孔测斜仪");
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
@@ -407,6 +407,18 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                                 sensorNamePos = position;
                                 sensorName = text;
                                 mTvSensorName.setText(text);
+
+                                if (mTvSensorCalculation.getText().toString().contains("直线式")) {
+
+                                } else if (mTvSensorCalculation.getText().toString().contains("多项式")) {
+
+                                } else if (mTvSensorCalculation.getText().toString().contains("MEMS")) {
+
+                                } else if (mTvSensorCalculation.getText().toString().contains("模数")) {
+
+                                } else if (mTvSensorCalculation.getText().toString().contains("倍率")) {
+                                    magnificationView.setVisibilityBySensorType(sensorName);
+                                }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
                 .show();

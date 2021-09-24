@@ -42,7 +42,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         int deviceType = AppContants.DeviceType.UnKnown;
         if (deviceInfo.getDeviceTypeName().contains("DAS")) {
             deviceType = AppContants.DeviceType.DAS;
-        } else if (deviceInfo.getDeviceTypeName().contains("ADME") || deviceInfo.getName().contains("T")) {
+        } else if (deviceInfo.getDeviceTypeName().contains("ADME") || deviceInfo.getToken().contains("T")) {
             deviceType = AppContants.DeviceType.ADME;
         } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
             deviceType = AppContants.DeviceType.M20;
