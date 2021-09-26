@@ -1,165 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="温度修正系数B"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="温度修正系数B" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/temperatureCoefficient"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:gravity="center_vertical|right"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:textColor="@color/text_color_666666"
-            android:textColorHint="@color/text_color_cccccc"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_EditItem_EditText_Style" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/divider_line_bg_efefef" />
-
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="灵敏度K"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="灵敏度K" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/sensitivityCoefficient"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:gravity="center_vertical|right"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:textColor="@color/text_color_666666"
-            android:textColorHint="@color/text_color_cccccc"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_EditItem_EditText_Style" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/divider_line_bg_efefef" />
-
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="初始温度T"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="初始温度T" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/initialTemperature"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:gravity="center_vertical|right"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:textColor="@color/text_color_666666"
-            android:textColorHint="@color/text_color_cccccc"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_EditItem_EditText_Style" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/divider_line_bg_efefef" />
-
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="初始模数F"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="初始模数F" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/initialModulus"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:gravity="center_vertical|right"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:textColor="@color/text_color_666666"
-            android:textColorHint="@color/text_color_cccccc"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_EditItem_EditText_Style" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/divider_line_bg_efefef" />
-
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="修正值M"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="修正值M" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/correctValue"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:gravity="center_vertical|right"
-            android:hint="请输入"
-            android:singleLine="true"
-            android:textColor="@color/text_color_666666"
-            android:textColorHint="@color/text_color_cccccc"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_EditItem_EditText_Style" />
 
     </LinearLayout>
 

@@ -309,6 +309,23 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
+    /**
+     * 设置渗压计参数
+     */
+    private void setDigitalOsmometerParam() {
+        DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
+        entity.setSw("1");
+        entity.setAddr(osmometerAddress);
+        entity.setThreshold(depthTriggerValue);
+        entity.setCorrval(depthCorrection);
+        entity.setRopelen(osmometerLength);
+        entity.setTubealti(nozzelHeight);
+
+        isSaveParamOperation = true;
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
     @OnClick({R.id.tvPrecision, R.id.extendSensorLayout, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
@@ -449,20 +466,6 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             setDigitalOsmometerParam();
             showProgressDialog("处理中...");
         }
-    }
-
-    private void setDigitalOsmometerParam() {
-        DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
-        entity.setSw("1");
-        entity.setAddr(osmometerAddress);
-        entity.setThreshold(depthTriggerValue);
-        entity.setCorrval(depthCorrection);
-        entity.setRopelen(osmometerLength);
-        entity.setTubealti(nozzelHeight);
-
-        isSaveParamOperation = true;
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     /**

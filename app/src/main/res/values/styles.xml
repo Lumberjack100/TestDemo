@@ -182,6 +182,21 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
+    <style name="Common_EditItem_EditText_Style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:drawablePadding">15dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:hint">请输入</item>
+        <item name="android:textColorHint">@color/text_color_cccccc</item>
+        <item name="android:textColor">@color/text_color_666666</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
     <style name="Common_ClickableItem_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">55dp</item>
@@ -212,9 +227,10 @@
         <item name="android:singleLine">true</item>
         <item name="android:textColorHint">@color/text_color_cccccc</item>
         <item name="android:textColor">@color/text_color_666666</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">17sp</item>
     </style>
 
+    <!-- Button 样式-->
     <style name="SubmitBordelessButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/ripple_button_with_corner</item>
         <item name="android:textColor">@color/white</item>
@@ -251,21 +267,6 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <!--数据中心配置页面输入框样式-->
-    <style name="DataCenter_EditText_Style">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_marginStart">20dp</item>
-        <item name="android:drawablePadding">15dp</item>
-        <item name="android:background">@null</item>
-        <item name="android:gravity">center_vertical|right</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:hint">请输入</item>
-        <item name="android:textColor">@color/text_color_666666</item>
-        <item name="android:textColorHint">@color/text_color_cccccc</item>
-        <item name="android:textSize">17sp</item>
-    </style>
 
     <style name="bg_empty_view">
         <item name="android:layout_width">match_parent</item>

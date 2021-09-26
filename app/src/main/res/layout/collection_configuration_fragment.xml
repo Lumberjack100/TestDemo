@@ -20,33 +20,28 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="执行间隔(s)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="执行间隔(s)" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_execution_interval"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="[30,86400]"
                 android:inputType="number" />
 
         </LinearLayout>
+
         <LinearLayout
             style="@style/Common_EditItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="休眠时间(s)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="休眠时间(s)" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_dormancy_time"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="[5,255]"
                 android:inputType="number" />
 
@@ -57,15 +52,12 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="解算时间(s)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="解算时间(s)" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_solution_time"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="[2,60]"
                 android:inputType="number" />
 
@@ -76,15 +68,12 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="采集间隔(s)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="采集间隔(s)" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_collection_interval"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="[1,10]"
                 android:inputType="number" />
 
@@ -95,16 +84,12 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="传感器类型"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="传感器类型" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_sensor_type"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
+                style="@style/Common_EditItem_EditText_Style"
                 android:inputType="number" />
 
         </LinearLayout>
@@ -114,16 +99,12 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="传感器地址"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="传感器地址" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_sensor_addr"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
+                style="@style/Common_EditItem_EditText_Style"
                 android:inputType="number" />
 
         </LinearLayout>
@@ -133,15 +114,12 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="采集点数"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="采集点数"/>
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_collection_points"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="[5,255]"
                 android:inputType="number" />
 
@@ -152,15 +130,12 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="测量间距(mm)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="测量间距(mm)"/>
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_measuring_spacing"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="[100,5000]"
                 android:inputType="number" />
 
@@ -171,15 +146,12 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="采集器待机间隔(s)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="采集器待机间隔(s)"/>
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_collector_standby_interval"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="[60,3600]"
                 android:inputType="number" />
 
@@ -190,16 +162,12 @@
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="运动加速度"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="运动加速度"/>
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_motion_acceleration"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
+                style="@style/Common_EditItem_EditText_Style"
                 android:inputType="number" />
 
         </LinearLayout>

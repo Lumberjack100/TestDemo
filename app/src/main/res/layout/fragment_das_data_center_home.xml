@@ -31,7 +31,8 @@
 
             <LinearLayout
                 android:id="@+id/communicationMethodLayout"
-                style="@style/Common_ClickableItem_LayoutStyle">
+                style="@style/Common_ClickableItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     style="@style/Common_ClickableItem_TitleStyle"
@@ -40,85 +41,43 @@
                 <TextView
                     android:id="@+id/tv_communication_method"
                     style="@style/Common_ClickableItem_ValueStyle"
-                    android:textSize="17sp"
                     tools:text="4g" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/divider_line_bg_efefef" />
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+            <LinearLayout
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="上报间隔(min)"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="上报间隔(min)" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/reportingIntervalET"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dimen_size_25"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:drawablePadding="@dimen/dimen_size_15"
-                    android:gravity="center_vertical|right"
-                    android:hint="请输入"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textColor="@color/text_color_666666"
-                    android:textColorHint="@color/text_color_cccccc"
-                    android:textSize="@dimen/text_size_17" />
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:inputType="number" />
 
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/divider_line_bg_efefef" />
 
             <LinearLayout
                 android:id="@+id/ll_bd_card_number"
                 style="@style/Common_EditItem_LayoutStyle">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="北斗目标卡号"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="北斗目标卡号" />
 
                 <com.shmedo.mcloudapp.common.view.ClearEditText
                     android:id="@+id/bdCardNumberET"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dimen_size_25"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:drawablePadding="@dimen/dimen_size_15"
-                    android:gravity="center_vertical|right"
-                    android:hint="请输入"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textColor="@color/text_color_666666"
-                    android:textColorHint="@color/text_color_cccccc"
-                    android:textSize="@dimen/text_size_17" />
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:inputType="number" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="14dp" />
-
 
             <LinearLayout
                 android:id="@+id/dataCenterOneLayout"
@@ -131,7 +90,6 @@
                 <TextView
                     android:id="@+id/tv_data_center_one"
                     style="@style/Common_ClickableItem_ValueStyle"
-                    android:textSize="17sp"
                     tools:text="未启用" />
 
             </LinearLayout>
@@ -151,7 +109,6 @@
                 <TextView
                     android:id="@+id/tv_data_center_two"
                     style="@style/Common_ClickableItem_ValueStyle"
-                    android:textSize="17sp"
                     tools:text="未启用" />
 
             </LinearLayout>
@@ -171,7 +128,6 @@
                 <TextView
                     android:id="@+id/tv_data_center_three"
                     style="@style/Common_ClickableItem_ValueStyle"
-                    android:textSize="17sp"
                     tools:text="未启用" />
 
             </LinearLayout>

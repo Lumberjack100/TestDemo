@@ -348,7 +348,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     private void queryStatusOne() {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_1);
         sendCommand(command);
-        Timber.i("查询设备基本信息：%s", command);
+        Timber.d("查询设备基本信息：%s", command);
     }
 
     /**
@@ -381,7 +381,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     private void querySignalStrength() {
         String command = CommandManager.getInstance().getCommand(CommandType.SYSTEM_RUN_STATE);
         sendCommand(command);
-        Timber.i("获取信号强度：%s", command);
+        Timber.d("获取信号强度：%s", command);
     }
 
     /**
@@ -403,7 +403,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     private void queryDataCenter(ServerNumberEntity addressNumberEntity) {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_NETWORK_STATUS, addressNumberEntity);
         sendCommand(command);
-        Timber.i("查询数据中心网络状态：%s", command);
+        Timber.d("查询数据中心网络状态：%s", command);
     }
 
     /**
@@ -432,7 +432,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     private void queryStatusTwo() {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_2);
         sendCommand(command);
-        Timber.i("查询设备状态2：%s", command);
+        Timber.d("查询设备状态2：%s", command);
     }
 
     /**
@@ -449,7 +449,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     private void querySensorStatus() {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_DAS_STATUS_3);
         sendCommand(command);
-        Timber.i("查询扩展传感器：%s", command);
+        Timber.d("查询扩展传感器：%s", command);
     }
 
 
@@ -459,7 +459,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     private void queryInclinometerInfo() {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_INCLINOMETER_INFO);
         sendCommand(command);
-        Timber.i("查询倾角计信息：%s", command);
+        Timber.d("查询倾角计信息：%s", command);
 //        if (TextUtils.isEmpty(versionMessageInfo.getFirmwareVersion()))
 //            return;
 //
@@ -489,7 +489,6 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     }
 
     private void setResultData(final String cmdStr) {
-        String command;
         String tempStr = cmdStr.replace(CommandResult.COMMAND_RESULT_HEADER, "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {

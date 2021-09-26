@@ -21,7 +21,6 @@
         <TextView
             android:id="@+id/tv_data_settlement_method"
             style="@style/Common_ClickableItem_ValueStyle"
-            android:textSize="17sp"
             tools:text="顶固定法" />
 
     </LinearLayout>
@@ -38,7 +37,6 @@
         <TextView
             android:id="@+id/tv_data_response"
             style="@style/Common_ClickableItem_ValueStyle"
-            android:textSize="17sp"
             tools:text="启用" />
 
     </LinearLayout>
@@ -49,16 +47,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="每轮等待时间(min)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="每轮等待时间(min)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_waiting_interval_per_round"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -69,16 +63,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="数据读取间隔(s)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="数据读取间隔(s)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_data_reading_interval"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -89,16 +79,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测量补偿时间(s)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测量补偿时间(s)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_measurement_compensation_time"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -109,16 +95,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="电机驱动器地址(0-99)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="电机驱动器地址(0-99)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_motor_drive_address"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -129,16 +111,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="电机下放速度(r/min)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="电机下放速度(r/min)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_decentralization_speed"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -149,16 +127,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测斜管孔深(m)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测斜管孔深(m)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_inclination_tube_hole_depth"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
@@ -169,16 +143,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="下放等待时间(min)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="下放等待时间(min)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_decentralization_waiting_time"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -189,16 +159,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="电机上拉速度(r/min)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="电机上拉速度(r/min)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_pull_up_speed"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -209,16 +175,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测量间距(mm)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测量间距(mm)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_measuring_distance"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -229,16 +191,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测量间隔时间(s)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测量间隔时间(s)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_measurement_interval_time"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
 
     </LinearLayout>
@@ -249,16 +207,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测量基准深度(m)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测量基准深度(m)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_measuring_reference_depth"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
@@ -269,16 +223,12 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="距离补偿区间h1(m)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="距离补偿区间h1(m)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_interval_compensation"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
@@ -289,35 +239,28 @@
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="数据拟合区间h2(m)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="数据拟合区间h2(m)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_interval_fitting"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
 
-    <LinearLayout android:id="@+id/ll_point_offset"
+    <LinearLayout
+        android:id="@+id/ll_point_offset"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测点偏移距离h3(m)"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测点偏移距离h3(m)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_point_offset"
-            style="@style/DataCenter_EditText_Style"
-            android:hint="请输入"
+            style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>

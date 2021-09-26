@@ -28,7 +28,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/white"
+                android:background="@drawable/layer_common_click_item_with_divider"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
@@ -40,7 +40,6 @@
                     android:text="开关量类型传感器"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17" />
-
 
                 <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/switchSensorEnableSBtn"
@@ -65,11 +64,6 @@
                 android:background="@color/white"
                 android:orientation="vertical">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/divider_line_bg_efefef" />
-
                 <RadioButton
                     android:id="@+id/radio_close_switch_sensor"
                     android:layout_width="wrap_content"
@@ -87,7 +81,9 @@
                     android:layout_marginEnd="16dp"
                     android:background="@color/divider_line_bg_efefef" />
 
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <RadioButton
                         android:id="@+id/radio_rain_gauge"
@@ -97,23 +93,6 @@
                         android:text="雨量计精度(mm)"
                         android:textColor="@color/text_color_343434"
                         android:textSize="@dimen/text_size_17" />
-
-                    <com.shmedo.mcloudapp.common.view.ClearEditText
-                        android:id="@+id/rainPrecisionEt"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入"
-                        android:inputType="phone"
-                        android:singleLine="true"
-                        android:textColor="@color/text_color_666666"
-                        android:textColorHint="@color/text_color_cccccc"
-                        android:textSize="@dimen/text_size_17"
-                        android:visibility="gone" />
 
                     <View
                         android:layout_width="0dp"
@@ -153,13 +132,6 @@
                     </FrameLayout>
 
                 </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/divider_line_bg_efefef" />
 
                 <RadioButton
                     android:id="@+id/radio_break_alarm"
@@ -215,7 +187,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/white"
+                android:background="@drawable/layer_common_click_item_with_divider"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
@@ -227,7 +199,6 @@
                     android:text="渗压计配置"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17" />
-
 
                 <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/digitalOsmometerEnableSBtn"
@@ -253,173 +224,78 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/divider_line_bg_efefef" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="渗压计地址"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="渗压计地址"/>
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/osmometerAddressEt"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:textColor="@color/text_color_666666"
-                        android:textColorHint="@color/text_color_cccccc"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="number"/>
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/divider_line_bg_efefef" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="水位报警值(mm)"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="水位报警值(mm)"/>
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/waterAlarmValueEt"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        android:textColor="@color/text_color_666666"
-                        android:textColorHint="@color/text_color_cccccc"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="number"/>
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/divider_line_bg_efefef" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="水深修正值(m)"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
-
-                    -
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="水深修正值(m)"/>
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/waterRevisedEt"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入"
-                        android:inputType="numberSigned|numberDecimal"
-                        android:singleLine="true"
-                        android:textColor="@color/text_color_666666"
-                        android:textColorHint="@color/text_color_cccccc"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="numberSigned|numberDecimal"/>
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/divider_line_bg_efefef" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="渗压计绳长(m)"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="渗压计绳长(m)"/>
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/osmometerCordEt"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入"
-                        android:inputType="numberDecimal"
-                        android:singleLine="true"
-                        android:textColor="@color/text_color_666666"
-                        android:textColorHint="@color/text_color_cccccc"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="numberDecimal"/>
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/divider_line_bg_efefef" />
-
-                <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="安装高程值(m)"
-                        android:textColor="@color/text_color_343434"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="安装高程值(m)"/>
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/nozzelHeightEt"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dimen_size_25"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:drawablePadding="@dimen/dimen_size_15"
-                        android:gravity="center_vertical|right"
-                        android:hint="请输入"
-                        android:inputType="numberDecimal"
-                        android:singleLine="true"
-                        android:textColor="@color/text_color_666666"
-                        android:textColorHint="@color/text_color_cccccc"
-                        android:textSize="@dimen/text_size_17" />
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="numberDecimal"/>
 
                 </LinearLayout>
 
@@ -438,8 +314,7 @@
                     android:text="扩展传感器配置" />
 
                 <TextView
-                    style="@style/Common_ClickableItem_ValueStyle"
-                    android:textSize="17sp" />
+                    style="@style/Common_ClickableItem_ValueStyle"/>
 
             </LinearLayout>
 
@@ -449,18 +324,10 @@
 
             <Button
                 android:id="@+id/btn_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/btn_select"
+                style="@style/SubmitBordelessButtonStyle"
                 android:text="保存"
-                android:textColor="@color/white"
-                android:textSize="17sp"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                tools:visibility="visible"/>
 
         </LinearLayout>
 

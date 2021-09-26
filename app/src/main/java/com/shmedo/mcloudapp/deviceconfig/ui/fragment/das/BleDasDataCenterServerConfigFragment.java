@@ -298,14 +298,14 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         Timber.d("关闭数据服务器%s指令===%s", serverNumber.toInt(), command);
     }
 
-    @OnClick({R.id.communicationProtocolLayout, R.id.ll_register_platform_child, R.id.btn_confirm})
+    @OnClick({R.id.communicationProtocolLayout, R.id.ll_register_platform, R.id.btn_confirm})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.communicationProtocolLayout:
                 showCommunicationProtocolDialog();
                 break;
 
-            case R.id.ll_register_platform_child:
+            case R.id.ll_register_platform:
                 showRegisterPlatformDialog();
                 break;
 

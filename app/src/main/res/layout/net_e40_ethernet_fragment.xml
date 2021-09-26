@@ -47,7 +47,7 @@
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_ip"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="请输入" />
 
         </LinearLayout>
@@ -67,7 +67,7 @@
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_gateway"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="请输入" />
 
         </LinearLayout>
@@ -87,7 +87,7 @@
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_dns"
-                style="@style/DataCenter_EditText_Style"
+                style="@style/Common_EditItem_EditText_Style"
                 android:hint="请输入" />
 
         </LinearLayout>

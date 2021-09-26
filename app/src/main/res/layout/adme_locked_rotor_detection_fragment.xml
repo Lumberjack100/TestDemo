@@ -63,66 +63,45 @@
                     android:background="@color/white"
                     android:orientation="vertical">
 
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                    <LinearLayout
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="单位时间脉冲数(p/s)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17" />
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="单位时间脉冲数(p/s)" />
 
                         <com.shmedo.mcloudapp.common.view.ClearEditText
                             android:id="@+id/et_decentralized_pulses_per_unit_time"
-                            style="@style/DataCenter_EditText_Style"
-                            android:hint="请输入"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:inputType="number" />
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/divider_line_bg_efefef" />
-
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                    <LinearLayout
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="检测判断时间(s)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17" />
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="检测判断时间(s)" />
 
                         <com.shmedo.mcloudapp.common.view.ClearEditText
                             android:id="@+id/et_decentralized_pulse_detection_time"
-                            style="@style/DataCenter_EditText_Style"
-                            android:hint="请输入"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:inputType="numberDecimal" />
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/divider_line_bg_efefef" />
-
                     <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="堵转检测区间(%)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17" />
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="堵转检测区间(%)" />
 
                         <TextView
                             android:id="@+id/tv_decentralized_stall_detection_interval"
-                            style="@style/DataCenter_EditText_Style"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:hint=""
                             android:textColor="@color/text_color_51B4F8"
                             tools:text="17%-55%" />
@@ -150,67 +129,46 @@
                         android:layout_marginEnd="16dp"
                         android:background="@color/divider_line_bg_efefef" />
 
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                    <LinearLayout
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="力矩堵转阈值(A)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17" />
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="力矩堵转阈值(A)" />
 
                         <com.shmedo.mcloudapp.common.view.ClearEditText
                             android:id="@+id/et_decentralized_torque_stall_threshold"
-                            style="@style/DataCenter_EditText_Style"
-                            android:hint="请输入"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:inputType="numberDecimal" />
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/divider_line_bg_efefef" />
-
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                    <LinearLayout
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="力矩检测判断时间(s)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17" />
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="力矩检测判断时间(s)" />
 
                         <com.shmedo.mcloudapp.common.view.ClearEditText
                             android:id="@+id/et_decentralized_torque_detection_time"
-                            style="@style/DataCenter_EditText_Style"
-                            android:hint="请输入"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:inputType="numberDecimal" />
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/divider_line_bg_efefef" />
-
                     <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            style="@style/Common_ClickableItem_TitleStyle"
                             android:text="下放缓停区间(%)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_decentralized_slow_stop_interval"
-                            style="@style/DataCenter_EditText_Style"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:hint=""
                             android:textColor="@color/text_color_51B4F8"
                             tools:text="17%-55%" />
@@ -300,67 +258,46 @@
                         android:layout_marginEnd="16dp"
                         android:background="@color/divider_line_bg_efefef" />
 
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                    <LinearLayout
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="力矩堵转阈值(A)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17" />
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="力矩堵转阈值(A)" />
 
                         <com.shmedo.mcloudapp.common.view.ClearEditText
                             android:id="@+id/et_pull_up_torque_stall_threshold"
-                            style="@style/DataCenter_EditText_Style"
-                            android:hint="请输入"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:inputType="numberDecimal" />
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/divider_line_bg_efefef" />
-
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                    <LinearLayout
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="力矩检测判断时间(s)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17" />
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="力矩检测判断时间(s)" />
 
                         <com.shmedo.mcloudapp.common.view.ClearEditText
                             android:id="@+id/et_pull_up_torque_detection_time"
-                            style="@style/DataCenter_EditText_Style"
-                            android:hint="请输入"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:inputType="numberDecimal" />
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/divider_line_bg_efefef" />
-
                     <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            style="@style/Common_ClickableItem_TitleStyle"
                             android:text="上拉缓停区间(%)"
-                            android:textColor="@color/text_color_343434"
-                            android:textSize="@dimen/text_size_17"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_pull_up_slow_stop_interval"
-                            style="@style/DataCenter_EditText_Style"
+                            style="@style/Common_EditItem_EditText_Style"
                             android:hint=""
                             android:textColor="@color/text_color_51B4F8"
                             tools:text="17%-55%" />

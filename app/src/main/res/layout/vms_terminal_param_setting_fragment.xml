@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
@@ -11,13 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
 
         <LinearLayout
             android:id="@+id/ll_reporting_method"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -31,26 +32,15 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="数据上报间隔(s)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="数据上报间隔(s)" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_reporting_interval"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
+                style="@style/Common_EditItem_EditText_Style"
                 android:inputType="number" />
 
         </LinearLayout>
@@ -61,45 +51,31 @@
 
         <LinearLayout
             android:id="@+id/ll_aisle_address"
-            style="@style/Common_EditItem_LayoutStyle">
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="通道网络号"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+        <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="通道网络号" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_network_number"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
+                style="@style/Common_EditItem_EditText_Style"
                 android:inputType="number" />
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
 
         <LinearLayout
             android:id="@+id/ll_channel_number"
             style="@style/Common_EditItem_LayoutStyle">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="通道信道号"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="通道信道号" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_channel_number"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
+                style="@style/Common_EditItem_EditText_Style"
                 android:inputType="number" />
 
         </LinearLayout>
@@ -113,16 +89,12 @@
             style="@style/Common_EditItem_LayoutStyle">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="空中波特率"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="空中波特率" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_air_baud_rate"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入"
+                style="@style/Common_EditItem_EditText_Style"
                 android:inputType="number" />
 
         </LinearLayout>

@@ -151,8 +151,8 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setFilter();
-        setSwitchViewListener();
         setRadioButtonListener();
+        setSwitchViewListener();
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);
         //是否在刷新的时候禁止内容的一切手势操作（默认false）
@@ -163,8 +163,8 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     private void setFilter() {
         mEtOsmometerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtWaterAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtWaterRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtOsmometerCord.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtWaterRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtOsmometerCord.setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
         mEtNozzelHeight.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
 
         rainPrecision = "0.1";
@@ -182,18 +182,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
         //断线报警器单选按钮
         rbBreakAlarm.setOnCheckedChangeListener(onCheckedChangeListener);
-        rgBreakAlarmItems.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                //断线报警器常开
-                if (checkedId == R.id.radio_break_alarm_open) {
-                    queryOrSetBreakAlarmCmd(BreakAlarmStatus.OPEN);
-
-                } else if (checkedId == R.id.radio_break_alarm_close) {
-                    queryOrSetBreakAlarmCmd(BreakAlarmStatus.CLOSE);
-                }
-            }
-        });
+        rgBreakAlarmItems.setOnCheckedChangeListener(breakAlarmOnCheckedChangeListener);
     }
 
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -238,6 +227,19 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                     rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
                     rgBreakAlarmItems.setVisibility(View.GONE);
                 }
+            }
+        }
+    };
+
+    private RadioGroup.OnCheckedChangeListener breakAlarmOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            //断线报警器常开
+            if (checkedId == R.id.radio_break_alarm_open) {
+                queryOrSetBreakAlarmCmd(BreakAlarmStatus.OPEN);
+
+            } else if (checkedId == R.id.radio_break_alarm_close) {
+                queryOrSetBreakAlarmCmd(BreakAlarmStatus.CLOSE);
             }
         }
     };

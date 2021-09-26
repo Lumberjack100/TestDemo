@@ -43,16 +43,12 @@
         <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="测斜仪 MAC 地址:"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="测斜仪 MAC 地址:" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_mac_address"
-                style="@style/DataCenter_EditText_Style"
-                android:hint="请输入" />
+                style="@style/Common_EditItem_EditText_Style" />
 
         </LinearLayout>
 
