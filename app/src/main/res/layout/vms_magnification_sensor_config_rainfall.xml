@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <!--<LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
@@ -15,6 +15,6 @@
             style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout>

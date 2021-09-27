@@ -73,6 +73,12 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     @BindView(R.id.sensorSerialNumber)
     EditText mEtSensorSerialNumber;//传感器序号
 
+    @BindView(R.id.tv_threshold_title)
+    TextView mTvThresholdTitle;//触发阈值
+
+    @BindView(R.id.et_trigger_threshold)
+    EditText mEtThreshold;//触发阈值
+
     @BindView(R.id.linearParamView)
     LinearParamView linearParamView;//直线式参数
 
@@ -104,10 +110,11 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
     private String sensorSerialNumber;//传感器序号
-    private int calculationPos;//计算方式索引
+    private String threshold;
+    private int sensorNamePosOld;// 传感器名称索引
     private int sensorNamePos;// 传感器名称索引
     private int calculationPosOld;//计算方式索引
-    private int sensorNamePosOld;// 传感器名称索引
+    private int calculationPos;//计算方式索引
 
     private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
@@ -148,6 +155,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
 
     private void setView() {
         mEtSensorSerialNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
     }
 
     private void initData() {
@@ -229,6 +237,9 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
             sensorSerialNumber = strs.length > 1 ? strs[1] : "";
             mEtSensorSerialNumber.setText(sensorSerialNumber);
         }
+
+        threshold = sensorInfo.getGateval();
+        mEtThreshold.setText(threshold);
 
         //为0表示未接入传感器
         if (sensorInfo.getInsert().trim().equals("0")) {
@@ -424,7 +435,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
 
     private boolean checkValueIsValid() {
         sensorSerialNumber = mEtSensorSerialNumber.getText().toString().trim();
-
+        threshold = mEtThreshold.getText().toString().trim();
         if (TextUtils.isEmpty(mTvMonitorType.getText())) {
             ToastUtils.show("请选择监测类型!");
             return false;
@@ -438,6 +449,20 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
             ToastUtils.show("请输入正确的传感器序号!");
             mEtSensorSerialNumber.requestFocus();
             return false;
+        }
+        if (TextUtils.isEmpty(threshold)) {
+            ToastUtils.show("请输入触发阈值!");
+            mEtThreshold.requestFocus();
+            return false;
+        }
+        if (!TextUtils.isEmpty(threshold)) {
+            try {
+                double value = Double.parseDouble(threshold);
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的触发阈值!");
+                mEtThreshold.requestFocus();
+                return false;
+            }
         }
         return true;
     }
@@ -472,6 +497,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         entity.setType(sensorCalculation.toString());
         String sensorNameNo = IOTSensorUtil.getInstance().getSensorTypeCodeByName(sensorName) + "_" + sensorSerialNumber;
         entity.setName(sensorNameNo);
+        entity.setGateval(threshold);
 
         enableButtonOriginalState = mSbSensorEnable.isChecked();
         isSaveParamOperation = true;
@@ -604,6 +630,9 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         if (sensorSerialNumber != null && !sensorSerialNumber.equals(mEtSensorSerialNumber.getText().toString().trim())) {
             return true;
         }
+//        if (threshold != null && !threshold.equals(mEtThreshold.getText().toString().trim())) {
+//            return true;
+//        }
 
         if (sensorCalculation == VmsSensorCalculation.LINEAR) {
             return linearParamView.checkValueIsChange();
