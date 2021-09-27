@@ -143,12 +143,16 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         sensorAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (!isConnected()) {
+                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    return true;
+                }
                 DASSensorItem sensorItem = sensorItemList.get(position);
                 if (sensorItem.isAddButton()) {
                     return true;
                 }
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                if (sensorItemList.size() <= 2) {
+                    ToastUtils.show("最少保留一个传感器!");
                     return true;
                 }
                 warnDeleteSensorItem(position);

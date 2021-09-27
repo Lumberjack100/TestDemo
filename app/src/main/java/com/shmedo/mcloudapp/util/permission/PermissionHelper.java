@@ -7,6 +7,7 @@ import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -14,6 +15,12 @@ import com.hjq.toast.ToastUtils;
 import com.huawei.hms.hmsscankit.ScanUtil;
 import com.huawei.hms.ml.scan.HmsScan;
 import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.ExplainReasonCallbackWithBeforeParam;
+import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
+import com.permissionx.guolindev.callback.RequestCallback;
+import com.permissionx.guolindev.request.ExplainScope;
+import com.permissionx.guolindev.request.ForwardScope;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 
@@ -31,48 +38,59 @@ public class PermissionHelper {
     public static final int REQUEST_CODE_NAVI = 0x1002;
     public static final int REQUEST_CODE_ROUTE = 0x1003;
 
-    public static void requestScanPermissions(Activity activity) {
-        XPermissionUtils.requestPermissionsResult(activity, 200, new String[]{
-                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
-                new XPermissionUtils.OnPermissionListener() {
+    public static void requestScanPermissions(FragmentActivity activity) {
+        PermissionX.init(activity)
+                .permissions(Manifest.permission.CAMERA)
+//                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
                     @Override
-                    public void onPermissionGranted() {
-                        //申请权限之后，调用DefaultView扫码界面
-                        int result = ScanUtil.startScan(activity, XPermissionUtils.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
                     }
-
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            int result = ScanUtil.startScan(activity, XPermissionUtils.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
 
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(activity, deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.message_permission_camera_rationale));
                         } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_camera_denied));
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
                         }
                     }
                 });
     }
 
     public static void requestScanPermissions(Fragment fragment) {
-        XPermissionUtils.requestPermissionsResult(fragment, 200, new String[]{
-                        Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
-                new XPermissionUtils.OnPermissionListener() {
+        PermissionX.init(fragment)
+                .permissions(Manifest.permission.CAMERA)
+//                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
                     @Override
-                    public void onPermissionGranted() {
-                        //申请权限之后，调用DefaultView扫码界面
-                        int result = ScanUtil.startScan(fragment.getActivity(), XPermissionUtils.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
                     }
-
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(fragment.getActivity(), deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(fragment.getActivity(), GlobalUtil.getString(R.string.message_permission_camera_rationale));
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            int result = ScanUtil.startScan(fragment.getActivity(), XPermissionUtils.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
+
                         } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_camera_denied));
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
                         }
                     }
                 });

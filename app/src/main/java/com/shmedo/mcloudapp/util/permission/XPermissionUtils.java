@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -203,7 +204,7 @@ public class XPermissionUtils {
                         if (object instanceof Fragment) {
                             startAppSettings((Fragment) object);
                         } else {
-                            startAppSettings((Activity) object);
+                            startAppSettings((FragmentActivity) object);
                         }
                     }
                 });
@@ -214,7 +215,7 @@ public class XPermissionUtils {
     /**
      * 启动当前应用设置页面
      */
-    public static void startAppSettings(Activity activity) {
+    public static void startAppSettings(FragmentActivity activity) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + activity.getPackageName()));
         activity.startActivityForResult(intent, REQUEST_CODE_OPEN_APPLICATION_SETTING);

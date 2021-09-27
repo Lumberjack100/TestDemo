@@ -625,12 +625,12 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 //初始化时不需要触发 OnCheckedChangeListener 事件
                 rbRainGauge.setOnCheckedChangeListener(null);
                 rbRainGauge.setChecked(true);
-                rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
                 rainPrecisionLayout.setVisibility(View.VISIBLE);
+                rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
                 rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
-                btnConfirm.setVisibility(View.VISIBLE);
                 rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
+                btnConfirm.setVisibility(View.VISIBLE);
                 try {
                     decimalFormat.applyPattern("#.#");
                     rainPrecision = decimalFormat.format(Double.parseDouble(ioSensorInfo.getValue()));

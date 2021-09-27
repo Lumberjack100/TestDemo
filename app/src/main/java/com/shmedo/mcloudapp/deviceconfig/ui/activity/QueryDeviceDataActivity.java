@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,11 +38,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -169,7 +173,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
                 XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
                 new XPopup.Builder(QueryDeviceDataActivity.this)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                        .asBottomList("", new String[]{"30", "100", "500", "1000", "10000", "20000"},
+                        .asBottomList("", new String[]{"30", "100", "500", "800"},
                                 null, pos, true,
                                 new OnSelectListener() {
                                     @Override
@@ -240,14 +244,16 @@ public class QueryDeviceDataActivity extends BaseActivity {
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance().createService(ServiceAddressType.HTTPS_NO_API_VERSION)
                 .QueryCloudData(body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
                     @Override
                     protected void onResponse(List<QueryCloudDataInfo> queryCloudDataInfos, ErrCode errCode) {
                         dismissLoadingDialog();
-                        queryCloudDataInfoList.clear();
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                            queryCloudDataInfoList.clear();
                             if (errCode.getCode() == 0) {
                                 if (queryCloudDataInfos == null || queryCloudDataInfos.size() == 0) {
                                     adapter.setEmptyView(R.layout.empty_view);

@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.util;
 
+import android.text.TextUtils;
+
 import com.hjq.toast.ToastUtils;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
@@ -48,7 +50,7 @@ public class ResponseHandler {
         switch (errCode.getCode()) {
             case 8:
                 Timber.w("handleResponse: errCode code is 8");
-                ToastUtils.show(GlobalUtil.getString(R.string.server_internal_error));
+                ToastUtils.show(TextUtils.isEmpty(errCode.getErrMessage()) ? GlobalUtil.getString(R.string.server_internal_error) : errCode.getErrMessage());
                 return true;
 
             case 10:
