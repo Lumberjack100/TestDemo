@@ -32,6 +32,9 @@ public class DasExternalSensorEntity implements Validater {
     private String temp_b;//温度系数b
     private String referval_f;//基准值F
 
+    private String elastic_mod;//膨胀系数(应力计)
+
+
     public void setIndex(String index) {
         this.index = index;
     }
@@ -98,6 +101,10 @@ public class DasExternalSensorEntity implements Validater {
 
     public void setReferval_f(String referval_f) {
         this.referval_f = referval_f;
+    }
+
+    public void setElastic_mod(String elastic_mod) {
+        this.elastic_mod = elastic_mod;
     }
 
     @Override
@@ -172,6 +179,10 @@ public class DasExternalSensorEntity implements Validater {
         }
         if (!TextUtils.isEmpty(referval_f)) {
             stringBuilder.append("referval_f=" + referval_f);
+            stringBuilder.append("&");
+        }
+        if (!TextUtils.isEmpty(elastic_mod)) {
+            stringBuilder.append("elastic_mod=" + elastic_mod);
             stringBuilder.append("&");
         }
 

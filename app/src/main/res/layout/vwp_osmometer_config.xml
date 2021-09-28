@@ -20,9 +20,10 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
-        <TextView
+    <TextView
             style="@style/Common_ClickableItem_TitleStyle"
             android:text="修正值(m)" />
 
@@ -34,11 +35,6 @@
             android:text="0" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="14dp"
-        android:background="@color/main_bg_gray" />
 
     <LinearLayout
         style="@style/Common_EditItem_LayoutStyle"

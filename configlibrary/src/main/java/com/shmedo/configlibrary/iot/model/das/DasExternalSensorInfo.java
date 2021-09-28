@@ -32,7 +32,7 @@ public class DasExternalSensorInfo implements Serializable {
     private String temp_b;//温度系数b
     private String referval_f;//基准值F
 
-    private String elastic_mod;//弹性模量(应力计)
+    private String elastic_mod;//膨胀系数(应力计)
 
 
     public String getIndex() {

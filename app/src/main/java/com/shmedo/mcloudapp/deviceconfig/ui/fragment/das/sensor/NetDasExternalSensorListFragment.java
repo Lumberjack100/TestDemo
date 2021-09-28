@@ -318,19 +318,40 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         entity.setAddr(externalSensorInfo.getAddr());
         entity.setThreshold(externalSensorInfo.getThreshold());
         entity.setCorrval(externalSensorInfo.getCorrval());
-        entity.setSpacing(externalSensorInfo.getSpacing());
-        entity.setHolenum(externalSensorInfo.getHolenum());
-        entity.setTubealti(externalSensorInfo.getTubealti());
-        entity.setRopelen(externalSensorInfo.getRopelen());
-        entity.setPoly_a(externalSensorInfo.getPoly_a());
-        entity.setPoly_b(externalSensorInfo.getPoly_b());
-        entity.setPoly_c(externalSensorInfo.getPoly_c());
-        entity.setTemp_k(externalSensorInfo.getTemp_k());
-        entity.setTemp_t0(externalSensorInfo.getTemp_t0());
-        entity.setSens_k(externalSensorInfo.getSens_k());
-        entity.setTemp_b(externalSensorInfo.getTemp_b());
-        entity.setReferval_f(externalSensorInfo.getReferval_f());
 
+        if (externalSensorInfo.getType().equals("50")) {
+            entity.setTubealti(externalSensorInfo.getTubealti());
+            entity.setRopelen(externalSensorInfo.getRopelen());
+            entity.setPoly_a(externalSensorInfo.getPoly_a());
+            entity.setPoly_b(externalSensorInfo.getPoly_b());
+            entity.setPoly_c(externalSensorInfo.getPoly_c());
+            entity.setTemp_k(externalSensorInfo.getTemp_k());
+            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+
+        } else if (externalSensorInfo.getType().equals("51")) {
+            entity.setTubealti(externalSensorInfo.getTubealti());
+            entity.setRopelen(externalSensorInfo.getRopelen());
+            entity.setSens_k(externalSensorInfo.getSens_k());
+            entity.setTemp_b(externalSensorInfo.getTemp_b());
+            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+            entity.setReferval_f(externalSensorInfo.getReferval_f());
+        } else if (externalSensorInfo.getType().equals("52")) {
+            entity.setSens_k(externalSensorInfo.getSens_k());
+            entity.setTemp_b(externalSensorInfo.getTemp_b());
+            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+            entity.setReferval_f(externalSensorInfo.getReferval_f());
+
+        } else if (externalSensorInfo.getType().equals("53")) {
+            entity.setSens_k(externalSensorInfo.getSens_k());
+            entity.setTemp_b(externalSensorInfo.getTemp_b());
+            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+            entity.setReferval_f(externalSensorInfo.getReferval_f());
+            entity.setElastic_mod(externalSensorInfo.getElastic_mod());
+
+        } else if (externalSensorInfo.getType().equals("4")) {//测斜仪
+            entity.setSpacing(externalSensorInfo.getSpacing());
+            entity.setHolenum(externalSensorInfo.getHolenum());
+        }
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }

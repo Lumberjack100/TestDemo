@@ -72,7 +72,7 @@ public class SensorYLJView extends FrameLayout {
         mEtTemperatureCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtReferenceValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-        mEtElasticMod.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtElasticMod.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
 
         mEtCorrectValue.setText("0");
         mEtTemperatureCoefficient.setText("0");
