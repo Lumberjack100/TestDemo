@@ -1,5 +1,8 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,6 +21,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.hjq.toast.ToastUtils;
+import com.huawei.hms.hmsscankit.ScanUtil;
+import com.huawei.hms.ml.scan.HmsScan;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
@@ -43,6 +48,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommuni
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.util.permission.PermissionHelper;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -96,7 +103,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private TabLayoutMediator tabLayoutMediator;
 
     private VmsAisleListFragment vmsAisleListFragment;
-    private NetVmsTerminalListFragment vmsTerminalListFragmentTest;
+    private NetVmsTerminalListFragment vmsTerminalListFragment;
     public ProjectDeviceInfo projectDeviceInfo;
     private VmsViewModel vmsViewModel;
     private VmsBasicInfo vmsBasicInfo;
@@ -129,11 +136,11 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     protected void initView() {
         vmsAisleListFragment = new VmsAisleListFragment();
-        vmsTerminalListFragmentTest = NetVmsTerminalListFragment.newInstance(projectDeviceInfo);
+        vmsTerminalListFragment = NetVmsTerminalListFragment.newInstance(projectDeviceInfo);
 
         List<Fragment> mFragments = new ArrayList<>();
         mFragments.add(vmsAisleListFragment);
-        mFragments.add(vmsTerminalListFragmentTest);
+        mFragments.add(vmsTerminalListFragment);
         pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(1);
@@ -236,7 +243,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         });
     }
 
-    @OnClick({R.id.search_placeholder})
+    @OnClick({R.id.search_placeholder, R.id.ll_scan_add_device})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -245,6 +252,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         int id = v.getId();
         if (id == R.id.search_placeholder) {
             VmsTerminalSearchActivity.startActivity(mActivity, projectDeviceInfo);
+        } else if (id == R.id.ll_scan_add_device) {
+            PermissionHelper.requestScanPermissions(NetVmsHomeFragment.this);
         }
     }
 
@@ -293,8 +302,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                mRefreshLayout.finishRefresh(false);
+            }
             dismissProgressDialog();
             ToastUtils.show("下发指令失败");
             return;
@@ -355,8 +364,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 IOTCommandResult<VmsBasicInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询网关基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -374,8 +383,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 IOTCommandResult<VmsAisleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询网关通道的控制参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -384,8 +393,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 VmsAisleInfo vmsAisleInfo = commandResult.getResult();
                 if (vmsAisleInfo == null) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     return;
                 }
                 vmsAisleListFragment.updateAisleListInfo(vmsAisleInfo);
@@ -407,7 +416,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                     tabLayout.getTabAt(1).select();
 
                     terminalIndex1 = 0;
-                    vmsTerminalListFragmentTest.clearTerminalList();
+                    vmsTerminalListFragment.clearTerminalList();
                     vmsViewModel.clearCacheTerminalList();
                     getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
                 }
@@ -418,8 +427,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 IOTCommandResult<VmsAisleTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询网关通道下的挂载终端信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -428,7 +437,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
                 vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-                vmsTerminalListFragmentTest.updateTerminalList(vmsAisleTerminalInfo.getTerminal());
+                vmsTerminalListFragment.updateTerminalList(vmsAisleTerminalInfo.getTerminal());
 
                 if (vmsAisleTerminalInfo.getChannel() == vmsAisleInfo1.getChannel()) {
                     terminalIndex1++;
@@ -522,5 +531,87 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            return;
+        }
+        if (requestCode == XPermissionUtils.REQUEST_CODE_SCAN) {
+            HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
+            if (obj != null) {
+                Timber.d("扫描结果为：%s", obj.originalValue);
+                scanResult(obj.originalValue);
+            }
+        }
+    }
+
+    private void scanResult(String result) {
+        if (TextUtils.isEmpty(result)) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (result.contains("MEDO")) {
+            if (result.contains("=")) {
+                result = result.substring(result.indexOf("=") + 1);
+            }
+            parseOldDeviceCode(result);
+        } else if (result.startsWith("https://cloud.shmedo.cn/mcloudapp/device")) {
+            parseNewDeviceCode(result);
+        }
+    }
+
+    /**
+     * 处理老设备条码规则，例如：MEDO,189150L,DAS
+     */
+    private void parseOldDeviceCode(String barCode) {
+        if (!barCode.startsWith("MEDO")) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        String[] localData = barCode.split(",");
+        if (localData.length != 3) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (localData[1].length() != 7) {
+            showTipDialog("设备标识有误,请扫描正确的设备二维码");
+            return;
+        }
+
+        String sn = localData[1].replace("MD-", "");
+        ToastUtils.show("SN: " + sn);
+    }
+
+    /**
+     * 处理新设备条码规则，例如：https://cloud.shmedo.cn/mcloudapp/device?sn=189150L
+     */
+    private void parseNewDeviceCode(String barCode) {
+        if (!barCode.startsWith("https://cloud.shmedo.cn/mcloudapp/device?sn=")) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        String[] localData = barCode.split("=");
+        if (localData.length != 2) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (TextUtils.isEmpty(localData[1])) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (localData[1].length() != 7) {
+            showTipDialog("设备标识有误,请扫描正确的设备二维码");
+            return;
+        }
+        String sn = localData[1].replace("MD-", "");
+
     }
 }

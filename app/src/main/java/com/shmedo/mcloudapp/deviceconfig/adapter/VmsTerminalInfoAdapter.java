@@ -31,6 +31,7 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
 
     public VmsTerminalInfoAdapter(@Nullable List<VmsTerminalInfo> data) {
         super(R.layout.item_vms_terminal_info, data);
+        addChildClickViewIds(R.id.tv_look_sensors);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
                 holder.setTextColorRes(R.id.tv_terminal_state, R.color.title_text_color);
             }
         }
-        processSensorInsertState(holder, vmsTerminalInfo.getSensor());
+        processSensorInsertState(holder, vmsTerminalInfo);
     }
 
     private String processTerminalState(String lastTime, String logintime) {
@@ -82,7 +83,8 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
         }
     }
 
-    private void processSensorInsertState(BaseViewHolder holder, List<SensorErrnoInfo> errnoInfoList) {
+    private void processSensorInsertState(BaseViewHolder holder, VmsTerminalInfo vmsTerminalInfo) {
+        List<SensorErrnoInfo> errnoInfoList = vmsTerminalInfo.getSensor();
         if (errnoInfoList == null || errnoInfoList.size() == 0) {
             holder.setGone(R.id.ll_sensor_container, true);
             return;
@@ -92,16 +94,28 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
         LayoutInflater inflater = LayoutInflater.from(MCloudApp.getContext());
         LinearLayout sensorContainer = holder.getView(R.id.ll_sensor_container);
         sensorContainer.removeAllViews();
-        for (SensorErrnoInfo errnoInfo : errnoInfoList) {
-            TextView tvSensor = (TextView) inflater.inflate(R.layout.item_sensor_insert_state, null);
-            tvSensor.setText(errnoInfo.getNum().equals("0") ? "" : errnoInfo.getNum());
-            tvSensor.setBackgroundResource(errnoInfo.getIn().equals("0") ? R.drawable.bg_sensor_uninsert : R.drawable.bg_sensor_insert);
-            // 定义LayoutParam
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.Dp2Px(MCloudApp.getContext(), 28), ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.leftMargin = sensorContainer.getChildCount() > 0 ? DensityUtil.Dp2Px(MCloudApp.getContext(), 5) : 0;
-            tvSensor.setLayoutParams(params);
 
-            sensorContainer.addView(tvSensor);
+        //终端接入的是雨量计时，只显示一个传感器
+        if (vmsTerminalInfo.getSn().toUpperCase().endsWith("Y")) {
+            SensorErrnoInfo errnoInfo = errnoInfoList.get(0);
+            addSensorView(inflater, sensorContainer, errnoInfo);
+
+        } else {
+            for (SensorErrnoInfo errnoInfo : errnoInfoList) {
+                addSensorView(inflater, sensorContainer, errnoInfo);
+            }
         }
+    }
+
+    private void addSensorView(LayoutInflater inflater, LinearLayout sensorContainer, SensorErrnoInfo errnoInfo) {
+        TextView tvSensor = (TextView) inflater.inflate(R.layout.item_sensor_insert_state, null);
+        tvSensor.setText(errnoInfo.getNum().equals("0") ? "" : errnoInfo.getNum());
+        tvSensor.setBackgroundResource(errnoInfo.getIn().equals("0") ? R.drawable.bg_sensor_uninsert : R.drawable.bg_sensor_insert);
+        // 定义LayoutParam
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.Dp2Px(MCloudApp.getContext(), 28), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = sensorContainer.getChildCount() > 0 ? DensityUtil.Dp2Px(MCloudApp.getContext(), 5) : 0;
+        tvSensor.setLayoutParams(params);
+
+        sensorContainer.addView(tvSensor);
     }
 }

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
@@ -36,6 +37,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
 import com.shmedo.mcloudapp.util.KeyBordUtils;
 
@@ -129,9 +131,27 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    return true;
+                }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
                 showRemoveTerminalDialog();
                 return true;
+            }
+        });
+        adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                if (isDoubleClick(view)) {
+                    return;
+                }
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    return;
+                }
+                vmsTerminalInfo = vmsTerminalInfoList.get(position);
+                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
             }
         });
         mRecyclerView.setAdapter(adapter);

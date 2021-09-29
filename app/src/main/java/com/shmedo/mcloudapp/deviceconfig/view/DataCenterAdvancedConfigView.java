@@ -163,7 +163,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             contentLayout.setVisibility(View.VISIBLE);
         }
 
-        if (deviceType == AppContants.DeviceType.DAS) {
+        if (deviceType == AppContants.DeviceType.DAS || deviceType == AppContants.DeviceType.ADME || deviceType == AppContants.DeviceType.VMS) {
             dataProtocolLayout.setVisibility(View.GONE);
         }
     }

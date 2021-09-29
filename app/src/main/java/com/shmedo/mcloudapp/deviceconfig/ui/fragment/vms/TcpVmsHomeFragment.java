@@ -1,6 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -25,6 +28,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.hjq.toast.ToastUtils;
+import com.huawei.hms.hmsscankit.ScanUtil;
+import com.huawei.hms.ml.scan.HmsScan;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
@@ -47,6 +52,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalSearchActivity;
 import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
+import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
@@ -101,7 +107,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     private TabLayoutMediator tabLayoutMediator;
 
     private VmsAisleListFragment vmsAisleListFragment;
-    private TcpVmsTerminalListFragment tcpVmsTerminalListFragmentTest;
+    private TcpVmsTerminalListFragment vmsTerminalListFragment;
 
     private final String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
@@ -123,11 +129,11 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     @Override
     protected void initView() {
         vmsAisleListFragment = new VmsAisleListFragment();
-        tcpVmsTerminalListFragmentTest = new TcpVmsTerminalListFragment();
+        vmsTerminalListFragment = new TcpVmsTerminalListFragment();
 
         List<Fragment> mFragments = new ArrayList<>();
         mFragments.add(vmsAisleListFragment);
-        mFragments.add(tcpVmsTerminalListFragmentTest);
+        mFragments.add(vmsTerminalListFragment);
         pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(1);
@@ -372,7 +378,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                     tabLayout.getTabAt(1).select();
 
                     terminalIndex1 = 0;
-                    tcpVmsTerminalListFragmentTest.clearTerminalList();
+                    vmsTerminalListFragment.clearTerminalList();
                     vmsViewModel.clearCacheTerminalList();
                     getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
                 }
@@ -393,7 +399,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
                 vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-                tcpVmsTerminalListFragmentTest.updateTerminalList(vmsAisleTerminalInfo.getTerminal());
+                vmsTerminalListFragment.updateTerminalList(vmsAisleTerminalInfo.getTerminal());
 
                 if (vmsAisleTerminalInfo.getChannel() == vmsAisleInfo1.getChannel()) {
                     terminalIndex1++;
@@ -536,6 +542,88 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             }
             break;
         }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK || data == null) {
+            return;
+        }
+        if (requestCode == XPermissionUtils.REQUEST_CODE_SCAN) {
+            HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
+            if (obj != null) {
+                Timber.d("扫描结果为：%s", obj.originalValue);
+                scanResult(obj.originalValue);
+            }
+        }
+    }
+
+    private void scanResult(String result) {
+        if (TextUtils.isEmpty(result)) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (result.contains("MEDO")) {
+            if (result.contains("=")) {
+                result = result.substring(result.indexOf("=") + 1);
+            }
+            parseOldDeviceCode(result);
+        } else if (result.startsWith("https://cloud.shmedo.cn/mcloudapp/device")) {
+            parseNewDeviceCode(result);
+        }
+    }
+
+    /**
+     * 处理老设备条码规则，例如：MEDO,189150L,DAS
+     */
+    private void parseOldDeviceCode(String barCode) {
+        if (!barCode.startsWith("MEDO")) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        String[] localData = barCode.split(",");
+        if (localData.length != 3) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (TextUtils.isEmpty(localData[0]) || TextUtils.isEmpty(localData[1]) || TextUtils.isEmpty(localData[2])) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (localData[1].length() != 7) {
+            showTipDialog("设备标识有误,请扫描正确的设备二维码");
+            return;
+        }
+
+        String sn = localData[1].replace("MD-", "");
+        ToastUtils.show("SN: " + sn);
+    }
+
+    /**
+     * 处理新设备条码规则，例如：https://cloud.shmedo.cn/mcloudapp/device?sn=189150L
+     */
+    private void parseNewDeviceCode(String barCode) {
+        if (!barCode.startsWith("https://cloud.shmedo.cn/mcloudapp/device?sn=")) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        String[] localData = barCode.split("=");
+        if (localData.length != 2) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (TextUtils.isEmpty(localData[1])) {
+            showTipDialog("请扫描正确的设备二维码");
+            return;
+        }
+        if (localData[1].length() != 7) {
+            showTipDialog("设备标识有误,请扫描正确的设备二维码");
+            return;
+        }
+        String sn = localData[1].replace("MD-", "");
+
     }
 
     @Override

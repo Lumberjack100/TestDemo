@@ -66,7 +66,11 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     protected void setHeadInfo() {
         if (vmsTerminalInfo != null) {
             if (vmsTerminalInfo.getSn().toUpperCase().endsWith("D")) {
-                mTvDeviceName.setText("VMS终端");
+                mTvDeviceName.setText("振弦式采集器");
+            } else if (vmsTerminalInfo.getSn().toUpperCase().endsWith(" F")) {
+                mTvDeviceName.setText("数字式采集器");
+            } else if (vmsTerminalInfo.getSn().toUpperCase().endsWith("Y")) {
+                mTvDeviceName.setText("雨量计");
             } else if (vmsTerminalInfo.getSn().toUpperCase().endsWith("W")) {
                 mTvDeviceName.setText("崩滑仪");
             }

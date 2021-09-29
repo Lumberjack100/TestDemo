@@ -171,8 +171,7 @@
 
             <LinearLayout
                 style="@style/Common_EditItem_LayoutStyle"
-                android:background="@drawable/layer_common_click_item_with_divider"
-                android:visibility="gone">
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     style="@style/Common_ClickableItem_TitleStyle"

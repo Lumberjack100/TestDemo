@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
@@ -25,6 +26,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsHomeFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
+import java.util.List;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/11/20<br/>
@@ -42,7 +45,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         int deviceType = AppContants.DeviceType.UnKnown;
         if (deviceInfo.getDeviceTypeName().contains("DAS")) {
             deviceType = AppContants.DeviceType.DAS;
-        } else if (deviceInfo.getDeviceTypeName().contains("ADME") || deviceInfo.getToken().contains("T")) {
+        } else if (deviceInfo.getDeviceTypeName().contains("ADME") || deviceInfo.getToken().endsWith("T")) {
             deviceType = AppContants.DeviceType.ADME;
         } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
             deviceType = AppContants.DeviceType.M20;
@@ -184,6 +187,24 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, MCloudApp.getCurDeviceToken());
+        }
+    }
+
+    /**
+     * 解决Fragment中的onActivityResult()方法无响应问题。
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        /**
+         * 1.使用getSupportFragmentManager().getFragments()获取到当前Activity中添加的Fragment集合
+         * 2.遍历Fragment集合，手动调用在当前Activity中的Fragment中的onActivityResult()方法。
+         */
+        if (getSupportFragmentManager().getFragments() != null && getSupportFragmentManager().getFragments().size() > 0) {
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            for (Fragment mFragment : fragments) {
+                mFragment.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 }

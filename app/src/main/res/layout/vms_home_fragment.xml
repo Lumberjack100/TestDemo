@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:visibility="visible" />
 
-        <include layout="@layout/device_config_head_info" />
+        <include layout="@layout/device_config_head_info_vms" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
