@@ -148,6 +148,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvAlarmValue.setText("报警值(单位:Hz)");
                     mTvCorrectValue.setText("修正值(单位:Hz)");
                     break;
+
+                case WEATHER_STATION://气象站
+                    mTvAlarmValue.setText("报警值(单位:m/s)");
+                    mTvCorrectValue.setText("修正值(单位:m/s)");
+                    break;
             }
             if (externalSensorInfo == null) {
                 return;

@@ -291,6 +291,9 @@ public class BlueResultParserUtil {
             case CS08:
                 return IOTSensorType.INFRASOUND_SENSOR;
 
+            case QXZ:
+                return IOTSensorType.WEATHER_STATION;
+
             default:
                 return null;
         }

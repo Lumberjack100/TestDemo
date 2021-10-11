@@ -139,24 +139,6 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
         return CRC16.getCRC(rawData).equals(crcStr);
     }
 
-    protected int parserModbusValue(String hexData) {
-        int result = 0;
-
-        hexData = hexData.replace(" ", "").trim();
-        hexData = hexData.substring(6, hexData.length() - 4);
-        int len = hexData.length();
-        if (!(len % 2 == 0)) {
-            return 0;
-        }
-        int num = len / 2;
-        for (int i = 0; i < num; i++) {
-            int value = Integer.valueOf(hexData.substring(i * 2, 2 * (i + 1)), 16);
-            result += value;
-        }
-
-        return result;
-    }
-
     @Override
     public void onStop() {
         super.onStop();

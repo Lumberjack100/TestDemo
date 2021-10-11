@@ -56,6 +56,10 @@ public enum SensorType {
      */
     INFRASOUND_SENSOR("21"),
     /**
+     * 气象站
+     */
+    WEATHER_STATION("25"),
+    /**
      * 基康渗压计 BGK-4500
      */
     KANG_PERCOLATE("50"),
@@ -118,6 +122,8 @@ public enum SensorType {
                 return LUYAN_INCLINOMETER;
             case "21":
                 return INFRASOUND_SENSOR;
+            case "25":
+                return WEATHER_STATION;
             case "50":
                 return KANG_PERCOLATE;
             case "51":

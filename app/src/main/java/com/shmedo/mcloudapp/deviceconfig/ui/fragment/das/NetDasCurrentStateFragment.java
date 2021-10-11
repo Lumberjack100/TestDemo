@@ -436,6 +436,31 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     }
                     break;
 
+                    case WEATHER_STATION: {//气象站
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weather_station));
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, true);
+                        holder.setVisibleOrGone(R.id.value4Layout, true);
+                        holder.setVisibleOrGone(R.id.value5Layout, true);
+
+                        holder.setText(R.id.tv_title1, "风速(m/s)");
+                        holder.setText(R.id.tv_title2, "风向(°)");
+                        holder.setText(R.id.tv_title3, "湿度(RH)");
+                        holder.setText(R.id.tv_title4, "温度(℃)");
+                        holder.setText(R.id.tv_title5, "气压(KPa)");
+
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 5) {
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                            holder.setText(R.id.tv_value4, decimalFormat.format(Double.parseDouble(values[3])));
+                            holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[4])));
+                        }
+                    }
+                    break;
+
                     default:
                         holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
                         break;

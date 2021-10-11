@@ -340,7 +340,6 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
 
                     //CRC检验通过
                     if (hexData.length() > 4 && checkCRCData(hexData)) {
-                        hexData = hexData.replace(" ", "").trim();
                         hexData = hexData.substring(6, hexData.length() - 4);
 
                         int result = Integer.valueOf(hexData, 16);
@@ -365,7 +364,6 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
 
                     //CRC检验通过
                     if (hexData.length() > 4 && checkCRCData(hexData)) {
-                        hexData = hexData.replace(" ", "").trim();
                         hexData = hexData.substring(6, hexData.length() - 4);
 
                         int result = Integer.valueOf(hexData, 16);

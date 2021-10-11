@@ -18,6 +18,7 @@ import com.shmedo.configlibrary.ble.model.SensorPiezoelectricRainGauge;
 import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
+import com.shmedo.configlibrary.ble.model.SensorWeatherStation;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
@@ -205,10 +206,16 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
                 break;
+
+            case QXZ://气象站
+                SensorWeatherStation sensorWeatherStation = (SensorWeatherStation) paramsInfoSub.getSensorData();
+                command = "##168" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorWeatherStation.getTriggerThreshold() + "\r\n";
+                break;
         }
         return command;
-//        sendCommand(command);
-//        Timber.d("设置 %s %s 通道号的传感器触发阈值参数===%s", collectorName, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
     }
 
 
@@ -277,10 +284,16 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         sensorInclinometerInfo.getCorrectionValue() + "\r\n";
                 break;
+
+            case QXZ://气象站
+                SensorWeatherStation sensorWeatherStation = (SensorWeatherStation) paramsInfoSub.getSensorData();
+                command = "##165" +
+                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                        sensorWeatherStation.getCorrectionValue() + "\r\n";
+                break;
         }
         return command;
-//        sendCommand(command);
-//        Timber.d("设置 %s 采集器 %s 地址的传感器修正值参数===%s", collectorModel, StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()), command);
     }
 
     /**
@@ -297,8 +310,6 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
         return command;
-//        sendCommand(command);
-//        Timber.d("设置 %s 的测段长指令===%s", collectorName, command);
     }
 
     private String getTriggerThresholdBySensorType(CollectorSensorParamsInfo infoSub) {

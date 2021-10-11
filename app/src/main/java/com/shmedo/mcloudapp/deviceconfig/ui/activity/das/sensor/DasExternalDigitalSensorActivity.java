@@ -20,6 +20,7 @@ import com.shmedo.configlibrary.ble.model.SensorPiezoelectricRainGauge;
 import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
+import com.shmedo.configlibrary.ble.model.SensorWeatherStation;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
@@ -38,6 +39,7 @@ import timber.log.Timber;
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/10/14 <br/>
  * 描述：     Das数字传感器参数配置页面
+ *
  * @deprecated 后面将用物联网指令模式取代
  */
 public class DasExternalDigitalSensorActivity extends BaseActivity {
@@ -210,6 +212,16 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     correctValue = sensorInfrasoundInfo.getCorrectionValue();
                 }
                 break;
+
+            case WEATHER_STATION://气象站
+                mTvAlarmValue.setText("报警值(单位:m/s)");
+                mTvCorrectValue.setText("修正值(单位:m/s)");
+                if (parcelableData != null) {
+                    SensorWeatherStation sensorWeatherStation = (SensorWeatherStation) parcelableData;
+                    triggerThreshold = sensorWeatherStation.getTriggerThreshold();
+                    correctValue = sensorWeatherStation.getCorrectionValue();
+                }
+                break;
         }
 
         try {
@@ -304,6 +316,14 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 sensorInfrasoundInfo.setTriggerThreshold(triggerThreshold);
                 sensorInfrasoundInfo.setCorrectionValue(correctValue);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInfrasoundInfo);
+            }
+            break;
+
+            case WEATHER_STATION: {//气象站
+                SensorWeatherStation sensorWeatherStation = new SensorWeatherStation();
+                sensorWeatherStation.setTriggerThreshold(triggerThreshold);
+                sensorWeatherStation.setCorrectionValue(correctValue);
+                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorWeatherStation);
             }
             break;
         }

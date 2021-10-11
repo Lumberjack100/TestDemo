@@ -24,6 +24,7 @@ import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorTemperHumidityInfo;
 import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
 import com.shmedo.configlibrary.ble.model.SensorUpliftPressureInfo;
+import com.shmedo.configlibrary.ble.model.SensorWeatherStation;
 import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 
@@ -60,6 +61,8 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
                 return parserUpliftPressure(strs);
             case "21"://次声传感器
                 return parserInfrasound(strs);
+            case "25"://气象站
+                return parserWeatherStation(strs);
             case "50"://基康渗压计 BGK-4500
                 return parserKangPercolate(strs);
             case "51"://葛南渗压计 VWP-03
@@ -276,7 +279,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
     }
 
     /**
-     * 次声传感器  17
+     * 次声传感器  21
      *
      * @param strs
      * @return
@@ -284,6 +287,25 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
     public static CollectorSensorParamsInfo<SensorInfrasoundInfo> parserInfrasound(String[] strs) {
         CollectorSensorParamsInfo bean = new CollectorSensorParamsInfo();
         SensorInfrasoundInfo info = new SensorInfrasoundInfo();
+        bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
+        bean.setChannelNumber(strs[0].substring(7, 9));
+        bean.setSensorAddress(strs[1]);
+        bean.setSensorType(SensorType.INFRASOUND_SENSOR);
+        info.setTriggerThreshold(strs[3]);
+        info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
+        bean.setSensorData(info);
+        return bean;
+    }
+
+    /**
+     * 气象站 25
+     *
+     * @param strs
+     * @return
+     */
+    public static CollectorSensorParamsInfo<SensorWeatherStation> parserWeatherStation(String[] strs) {
+        CollectorSensorParamsInfo bean = new CollectorSensorParamsInfo();
+        SensorWeatherStation info = new SensorWeatherStation();
         bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
         bean.setChannelNumber(strs[0].substring(7, 9));
         bean.setSensorAddress(strs[1]);

@@ -421,6 +421,10 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 defaultCollectorSensorParamsInfo.setSensorType(SensorType.INFRASOUND_SENSOR);
                 break;
 
+            case QXZ:
+                defaultCollectorSensorParamsInfo.setSensorType(SensorType.WEATHER_STATION);
+                break;
+
             default:
                 break;
         }

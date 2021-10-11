@@ -62,7 +62,11 @@ public enum IOTCollectorModel {
     /**
      * 次声采集器
      */
-    CS08("21");
+    CS08("21"),
+    /**
+     * 气象站
+     */
+    QXZ("25");
 
     private String model;
 
@@ -104,6 +108,8 @@ public enum IOTCollectorModel {
                 return VW01;
             case "21":
                 return CS08;
+            case "25":
+                return QXZ;
             default:
                 return VW08;
         }

@@ -145,6 +145,64 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/value4Layout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_value4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="17sp"
+                    tools:text="878" />
+
+                <TextView
+                    android:id="@+id/tv_title4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="数值"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/value5Layout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_value5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="17sp"
+                    tools:text="878" />
+
+                <TextView
+                    android:id="@+id/tv_title5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="数值"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
