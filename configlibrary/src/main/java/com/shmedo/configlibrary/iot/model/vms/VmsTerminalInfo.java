@@ -29,6 +29,10 @@ public class VmsTerminalInfo implements Parcelable {
      * lastpackagetime : 2020/09/28 11:23:24
      */
 
+    public static final int NORMAL_DEVICE = 1;
+    public static final int SCAN_ADD_DEVICE = 2;
+    private int itemType = NORMAL_DEVICE;
+
     private int asileNumber;//通道号
     private int netid;//网络号
     private int chl;//信道
@@ -45,8 +49,12 @@ public class VmsTerminalInfo implements Parcelable {
     private String lastpackagetime;//最后交互时间
     private List<SensorErrnoInfo> sensor;
 
+    public VmsTerminalInfo(int itemType) {
+        this.itemType = itemType;
+    }
 
     protected VmsTerminalInfo(Parcel in) {
+        itemType = in.readInt();
         asileNumber = in.readInt();
         netid = in.readInt();
         chl = in.readInt();
@@ -65,6 +73,7 @@ public class VmsTerminalInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(itemType);
         dest.writeInt(asileNumber);
         dest.writeInt(netid);
         dest.writeInt(chl);
@@ -97,6 +106,14 @@ public class VmsTerminalInfo implements Parcelable {
             return new VmsTerminalInfo[size];
         }
     };
+
+    public int getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
 
     public int getAsileNumber() {
         return asileNumber;

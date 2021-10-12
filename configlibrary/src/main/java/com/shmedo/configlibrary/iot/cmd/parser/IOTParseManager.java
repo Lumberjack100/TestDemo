@@ -48,6 +48,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsBasicInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalCollectorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalCommInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalSensorInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.vms.VmsTerminalSnParser;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
@@ -162,6 +163,7 @@ public class IOTParseManager {
                 VmsTerminalSensorInfoParser.class,
                 VmsTerminalCollectorInfoParser.class,
                 VmsTerminalCommInfoParser.class,
+                VmsTerminalSnParser.class,
                 TerminalTelemetryParser.class,
                 AdmeBaseInfoParser.class,
                 AdmeBasicConfigParamParser.class,

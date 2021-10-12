@@ -36,6 +36,22 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
 
     @Override
     protected void convert(@NotNull BaseViewHolder holder, VmsTerminalInfo vmsTerminalInfo) {
+        //扫码添加新终端设备
+        if (vmsTerminalInfo.getItemType() == VmsTerminalInfo.SCAN_ADD_DEVICE) {
+            holder.setText(R.id.tv_terminal_sn, String.valueOf(vmsTerminalInfo.getSn()));
+            holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
+            holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
+            holder.setVisible(R.id.tv_battery_value, false);
+            holder.setGone(R.id.tv_asile_number, true);
+            holder.setGone(R.id.tv_address, true);
+            holder.setVisible(R.id.tv_signal_strength, false);
+            holder.setGone(R.id.tv_terminal_state, true);
+            holder.setGone(R.id.ll_sensor_container, true);
+            holder.setVisible(R.id.tv_look_sensors, false);
+            holder.setText(R.id.tv_last_data_time, DateUtil.getNowDateString());
+            return;
+        }
+        //正常终端设备
         holder.setText(R.id.tv_terminal_sn, String.valueOf(vmsTerminalInfo.getSn()));
         holder.setText(R.id.tv_asile_number, String.valueOf(vmsTerminalInfo.getAsileNumber()));
         holder.setText(R.id.tv_address, String.valueOf(vmsTerminalInfo.getAddr()));

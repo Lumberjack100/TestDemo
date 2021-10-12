@@ -39,6 +39,7 @@ import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSn;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -284,6 +285,24 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     }
 
     /**
+     * 扫描添加新的终端
+     */
+    private void scanAddTerminal(String sn) {
+        TerminalSNEntity entity = new TerminalSNEntity(sn);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SCAN_ADD_TERMINAL, entity);
+        showProgressDialog("处理中...");
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
+     * 获取扫码添加的终端添列表
+     */
+    private void getTerminalSN() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_SN) + "&type=2";
+        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+    }
+
+    /**
      * 移除网关挂载的终端
      */
     public void removeTerminal(String sn) {
@@ -410,10 +429,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 } else if (vmsAisleInfo.getChannel() == 2) {
                     vmsAisleInfo2 = vmsAisleInfo;
 
-                    TextView textView = (TextView) tabLayout.getTabAt(1).getCustomView();
                     int totalCount = Integer.parseInt(vmsAisleInfo1.getTerminalnum()) + Integer.parseInt(vmsAisleInfo2.getTerminalnum());
-                    textView.setText("设备(" + totalCount + ")");
-                    tabLayout.getTabAt(1).select();
+                    updateTerminalTabText(totalCount);
 
                     terminalIndex1 = 0;
                     vmsTerminalListFragment.clearTerminalList();
@@ -452,17 +469,53 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                     if (terminalIndex2 < Integer.parseInt(vmsAisleInfo2.getTerminalnum())) {
                         getTerminalStatus(vmsAisleInfo2.getChannel(), terminalIndex2);
                     } else {
-
                         mRefreshLayout.finishRefresh(true);
                     }
                 }
             }
             break;
 
-            case VMS_MD_DELETE_TERMINAL: {//删除终端设备
+            case VMS_MD_SCAN_ADD_TERMINAL: {//扫码添加终端
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     dismissProgressDialog();
+                    String errMsg = String.format("%s %s", "扫码添加终端出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                getTerminalSN();
+            }
+            break;
+
+            case VMS_MD_GET_TERMINAL_SN: {//获取扫码添加终端列表
+                dismissProgressDialog();
+                IOTCommandResult<VmsTerminalSn> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "获取扫码添加终端列表出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                VmsTerminalSn vmsTerminalSn = commandResult.getResult();
+                if (!TextUtils.isEmpty(vmsTerminalSn.getSn())) {
+                    List<VmsTerminalInfo> dataList = new ArrayList<>();
+                    String[] values = vmsTerminalSn.getSn().split(",");
+                    for (String sn : values) {
+                        VmsTerminalInfo terminalInfo = new VmsTerminalInfo(VmsTerminalInfo.SCAN_ADD_DEVICE);
+                        terminalInfo.setSn(sn);
+                        dataList.add(terminalInfo);
+                    }
+                    vmsTerminalListFragment.updateTerminalList(dataList);
+                    updateTerminalTabText(vmsTerminalListFragment.getTerminalSize());
+                }
+            }
+            break;
+
+            case VMS_MD_DELETE_TERMINAL: {//删除终端设备
+                dismissProgressDialog();
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "删除终端出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -495,14 +548,14 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
     private void doAfterSetting() {
         ToastUtils.show("删除成功");
-        dismissProgressDialog();
-        updateTerminalTabText();
+        int totalCount = vmsViewModel.getCacheVmsTerminalList().size();
+        updateTerminalTabText(totalCount);
     }
 
-    private void updateTerminalTabText() {
+    private void updateTerminalTabText(int totalCount) {
         TextView textView = (TextView) tabLayout.getTabAt(1).getCustomView();
-        int totalCount = vmsViewModel.getCacheVmsTerminalList().size();
         textView.setText("设备(" + totalCount + ")");
+        tabLayout.invalidate();
         tabLayout.getTabAt(1).select();
     }
 
@@ -588,6 +641,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
         String sn = localData[1].replace("MD-", "");
         ToastUtils.show("SN: " + sn);
+        scanAddTerminal(sn);
     }
 
     /**
@@ -612,6 +666,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             return;
         }
         String sn = localData[1].replace("MD-", "");
-
+        scanAddTerminal(sn);
     }
 }

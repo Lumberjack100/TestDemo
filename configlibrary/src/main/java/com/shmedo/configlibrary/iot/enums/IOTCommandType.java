@@ -204,6 +204,16 @@ public enum IOTCommandType {
     VMS_MD_GET_TERMINAL_STATUS("md_getterminalstatus"),
 
     /**
+     * 扫描添加新的终端
+     */
+    VMS_MD_SCAN_ADD_TERMINAL("md_addterminal"),
+
+    /**
+     * 获取扫码添加的终端添列表
+     */
+    VMS_MD_GET_TERMINAL_SN("md_getterminalsn"),
+
+    /**
      * 删除Vms终端
      */
     VMS_MD_DELETE_TERMINAL("md_delterminal"),

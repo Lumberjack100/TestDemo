@@ -92,6 +92,9 @@ public class NetVmsTerminalListFragment extends BaseFragment {
                     return;
                 }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
+                if (vmsTerminalInfo.getItemType() == VmsTerminalInfo.SCAN_ADD_DEVICE) {
+                    return;
+                }
                 VmsTerminalHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
             }
         });
@@ -155,9 +158,24 @@ public class NetVmsTerminalListFragment extends BaseFragment {
     }
 
     public void updateTerminalList(List<VmsTerminalInfo> dataList) {
-        vmsTerminalInfoList.addAll(dataList);
+        for (VmsTerminalInfo newterminalInfo : dataList) {
+            boolean isExist = false;
+            for (VmsTerminalInfo terminalInfo : vmsTerminalInfoList) {
+                if (newterminalInfo.getSn().equals(terminalInfo.getSn())) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist) {
+                vmsTerminalInfoList.add(newterminalInfo);
+            }
+        }
         adapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
+    }
+
+    public int getTerminalSize(){
+        return vmsTerminalInfoList.size();
     }
 
 }
