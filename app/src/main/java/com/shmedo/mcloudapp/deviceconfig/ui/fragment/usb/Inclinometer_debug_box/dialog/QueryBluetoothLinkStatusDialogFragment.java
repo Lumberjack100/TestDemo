@@ -23,8 +23,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -35,7 +33,6 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFragment {
-    private int USB_SERIAL_LINK_QUERY = 0x10001;//
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -88,32 +85,6 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
         }
     }
 
-    /**
-     * 进入命令模式
-     */
-    private void enterCommand() {
-        atCommandItems.clear();
-
-        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
-        atCommandItems.add(atCommandItem);//进入命令模式
-
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
-    }
-
-    /**
-     * 查询蓝牙测斜仪设备连接状态
-     */
-    private void QueryBluetoothLinkStatus() {
-        atCommandItems.clear();
-
-        String command = ATCommand.COMMAND_HEADER + WHBLE102CommandType.LINK.toString() + ATCommand.QUERY_FLAG + ATCommand.NEWLINE_CRLF;
-        ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.LINK, command);
-        atCommandItems.add(atCommandItem);
-
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
-    }
-
-
     @OnClick({R.id.iv_close, R.id.btn_query_link})
     public void onClick(View view) {
         int id = view.getId();
@@ -131,22 +102,14 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
         }
     }
 
-    @Override
-    protected void parseResponseMessage(byte[] data) {
-        try {
-            resultByteBuf.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (atCommandItems.size() == 0)
+            return;
         String cmdStr = resultByteBuf.toString();
         resultByteBuf.reset();
         Timber.e("接收串口数据: %s", cmdStr);
-        if (atCommandItems.size() == 0)
-            return;
 
         ATCommandItem commandItem = atCommandItems.getFirst();
         atCommandItems.removeFirst();//移除已经发送完的指令
@@ -178,7 +141,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
                         } else {
                             mTvLinkStatus.setText("Offline");
                         }
-                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                    } else if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");

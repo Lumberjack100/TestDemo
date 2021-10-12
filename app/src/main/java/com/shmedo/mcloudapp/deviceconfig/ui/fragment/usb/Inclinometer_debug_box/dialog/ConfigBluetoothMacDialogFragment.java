@@ -27,8 +27,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -239,26 +237,15 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
     }
 
     @Override
-    protected void parseResponseMessage(byte[] data) {
-        try {
-            resultByteBuf.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         if (atCommandItems.size() == 0)
             return;
 
-        ATCommandItem commandItem = atCommandItems.getFirst();
-        atCommandItems.removeFirst();//移除已经发送完的指令
-
         String cmdStr = resultByteBuf.toString();
         resultByteBuf.reset();
         Timber.e("接收串口数据: %s", cmdStr);
-
+        commandItem = atCommandItems.getFirst();
+        atCommandItems.removeFirst();//移除已经发送完的指令
         if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {

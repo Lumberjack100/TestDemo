@@ -64,7 +64,7 @@
     <string name="company_intro">上海米度测控科技有限公司成立于2012年2月3日，是一家集GNSS产品研发、生产、销售、服务于一体的综合性高新技术企业。</string>
 
     <!-- 设备模块 -->
-    <string name="ble_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
+    <string name="ble_config_disconnect_warn">蓝牙连接已断开，暂无法进行操作</string>
     <string name="tcp_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
     <string name="usb_config_disconnect_warn">USB连接已断开，暂无法进行操作</string>
     <string name="disconnect_device">确定要断开连接？</string>

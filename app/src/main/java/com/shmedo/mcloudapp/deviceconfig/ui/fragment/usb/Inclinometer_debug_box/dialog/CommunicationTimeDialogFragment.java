@@ -27,7 +27,6 @@ import com.shmedo.mcloudapp.util.TextUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import butterknife.BindView;
@@ -97,7 +96,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
         if (isConnected()) {
             mBtnQuery.setEnabled(false);
             mBtnSave.setEnabled(false);
-            exitCommand();
+            enterCommand();
         }
     }
 
@@ -205,9 +204,6 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
 
     @OnClick({R.id.iv_close, R.id.ll_sleep_time, R.id.ll_waiting_link_time, R.id.btn_query_data, R.id.btn_save})
     public void onClick(View view) {
-//        if (isDoubleClick(view)) {
-//            return;
-//        }
         int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
@@ -223,6 +219,10 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            if (!isBluetoothConnected) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             stopProgressAll();
             mBtnQuery.setEnabled(false);
             mBtnSave.setEnabled(false);
@@ -230,6 +230,10 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
         } else if (id == R.id.btn_save) {
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                return;
+            }
+            if (!isBluetoothConnected) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             stopProgressAll();
@@ -296,22 +300,22 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
     }
 
     @Override
-    protected void parseResponseMessage(byte[] data) {
-        try {
-            resultByteBuf.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         if (atCommandItems.size() == 0)
             return;
-
-        ATCommandItem commandItem = atCommandItems.getFirst();
-        atCommandItems.removeFirst();//移除已经发送完的指令
-        if (msg.what == USB_SERIAL_COMMUNICATION_TIME) {
+        super.customHandleMessage(msg);
+        if (msg.what == USB_SERIAL_LINK_QUERY) {
+            if (commandItem.getCommandType() == WHBLE102CommandType.LINK) {
+                if (isBluetoothConnected) {
+                    exitCommand();
+                } else {
+                    mBtnQuery.setEnabled(false);
+                    ToastUtils.show("蓝牙未连接");
+                }
+            }
+        } else if (msg.what == USB_SERIAL_COMMUNICATION_TIME) {
+            ATCommandItem commandItem = atCommandItems.getFirst();
+            atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case ENTM: {//退出命令模式
                     String cmdStr = resultByteBuf.toString();
@@ -341,7 +345,6 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     //CRC检验通过
                     if (hexData.length() > 4 && checkCRCData(hexData)) {
                         hexData = hexData.substring(6, hexData.length() - 4);
-
                         int result = Integer.valueOf(hexData, 16);
                         sleepTime = result + "s";
                         mTvSleepTime.setText(sleepTime);
@@ -365,7 +368,6 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     //CRC检验通过
                     if (hexData.length() > 4 && checkCRCData(hexData)) {
                         hexData = hexData.substring(6, hexData.length() - 4);
-
                         int result = Integer.valueOf(hexData, 16);
                         waitingLinkTime = result + "s";
                         mTvWaitingLinkTime.setText(waitingLinkTime);
@@ -384,7 +386,6 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     }
                     Timber.e("接收16进制串口数据: %s", hexData);
                     hexData = hexData.replace(" ", "").toUpperCase().trim();
-
                     if (hexData.equals("011008260001E262")) {
                         if (atCommandItems.size() > 0) {
                             sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
@@ -406,7 +407,6 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     }
                     Timber.e("接收16进制串口数据: %s", hexData);
                     hexData = hexData.replace(" ", "").toUpperCase().trim();
-
                     if (hexData.equals("011008270001B3A2")) {
                         ToastUtils.show("保存成功");
                     }

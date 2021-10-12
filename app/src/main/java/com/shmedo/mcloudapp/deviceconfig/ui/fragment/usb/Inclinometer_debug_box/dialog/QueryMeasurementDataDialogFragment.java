@@ -23,10 +23,10 @@ import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.util.TextUtil;
+import com.shmedo.mcloudapp.util.TimeUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 
@@ -64,6 +64,9 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
     @BindView(R.id.tv_measurement_data)
     TextView mTvMeasurementData;
 
+    @BindView(R.id.tv_data_time)
+    TextView mTvDataTime;
+
     @BindView(R.id.btn_query_data)
     Button mBtnQuery;
 
@@ -94,7 +97,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.9f);
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.6f);
+        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.8f);
         window.setAttributes(wlp);
     }
 
@@ -113,7 +116,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         if (isConnected()) {
             mBtnQuery.setEnabled(false);
             mBtnContinuousCollect.setEnabled(false);
-            exitCommand();
+            enterCommand();
         }
     }
 
@@ -178,9 +181,6 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
 
     @OnClick({R.id.iv_close, R.id.btn_query_data, R.id.btn_continuous_collection})
     public void onClick(View view) {
-//        if (isDoubleClick(view)) {
-//            return;
-//        }
         int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
@@ -188,6 +188,10 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         } else if (id == R.id.btn_query_data) {
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                return;
+            }
+            if (!isBluetoothConnected) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             stopProgressAll();
@@ -200,6 +204,10 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            if (!isBluetoothConnected) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             stopProgressAll();
             mBtnQuery.setEnabled(false);
             mBtnContinuousCollect.setEnabled(false);
@@ -209,22 +217,23 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
     }
 
     @Override
-    protected void parseResponseMessage(byte[] data) {
-        try {
-            resultByteBuf.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         if (atCommandItems.size() == 0)
             return;
 
-        ATCommandItem commandItem = atCommandItems.getFirst();
-        atCommandItems.removeFirst();//移除已经发送完的指令
-        if (msg.what == USB_SERIAL_DATA_QUERY) {
+        super.customHandleMessage(msg);
+        if (msg.what == USB_SERIAL_LINK_QUERY) {
+            if (commandItem.getCommandType() == WHBLE102CommandType.LINK) {
+                if (isBluetoothConnected) {
+                    exitCommand();
+                } else {
+                    mBtnQuery.setEnabled(false);
+                    ToastUtils.show("蓝牙未连接");
+                }
+            }
+        } else if (msg.what == USB_SERIAL_DATA_QUERY) {
+            ATCommandItem commandItem = atCommandItems.getFirst();
+            atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case ENTM: {//退出命令模式
                     String cmdStr = resultByteBuf.toString();
@@ -279,7 +288,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                         String modulusHex = hexData.substring(10, 14);
                         String temperature = hexData.substring(14, 18);
                         //int modulus = new BigInteger(modulusHex, 16).intValue();
-                        short modulus = (short) Integer.parseInt(modulusHex,16);
+                        short modulus = (short) Integer.parseInt(modulusHex, 16);
                         Timber.e("模数 F: %s", modulus);
                         mTvModulus.setText(String.valueOf(modulus));
                         if (A != 0 && B != 0 && C != 0 && D != 0) {
@@ -295,11 +304,11 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                                 double result = measuringSpacing * Math.sin(radian);
                                 String value = df.format(result) + "mm";
                                 mTvMeasurementData.setText(value);
+                                mTvDataTime.setText("接收时间: " + TimeUtil.getSysTimeStr());
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
                         }
-
                         if (isContinuousCollection) {
                             queryData();
                         }
@@ -308,6 +317,8 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                 break;
             }
         } else if (msg.what == USB_SERIAL_OPEN_COMMUNICATION) {
+            ATCommandItem commandItem = atCommandItems.getFirst();
+            atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case ALLOW_CONNECT: {//允许连接指令
                     resultByteBuf.reset();

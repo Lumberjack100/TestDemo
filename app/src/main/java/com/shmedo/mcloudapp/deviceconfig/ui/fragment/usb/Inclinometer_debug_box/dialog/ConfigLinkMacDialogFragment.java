@@ -35,7 +35,6 @@ import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -215,15 +214,6 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
         atCommandItems.add(atCommandItem);
 
         sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, 500);
-    }
-
-    @Override
-    protected void parseResponseMessage(byte[] data) {
-        try {
-            resultByteBuf.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 //    private void setResultData(String cmdStr) {

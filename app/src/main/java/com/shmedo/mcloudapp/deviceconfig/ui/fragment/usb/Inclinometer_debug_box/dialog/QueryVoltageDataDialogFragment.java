@@ -24,7 +24,6 @@ import com.shmedo.mcloudapp.util.TextUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 
 import butterknife.BindView;
@@ -81,7 +80,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
         super.onResume();
         if (isConnected()) {
             mBtnQuery.setEnabled(false);
-            exitCommand();
+            enterCommand();
         }
     }
 
@@ -115,9 +114,6 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
 
     @OnClick({R.id.iv_close, R.id.btn_query_data})
     public void onClick(View view) {
-//        if (isDoubleClick(view)) {
-//            return;
-//        }
         int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
@@ -127,6 +123,10 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
+            if (!isBluetoothConnected) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             stopProgressAll();
             mBtnQuery.setEnabled(false);
             queryVoltage();
@@ -134,22 +134,22 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
     }
 
     @Override
-    protected void parseResponseMessage(byte[] data) {
-        try {
-            resultByteBuf.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         if (atCommandItems.size() == 0)
             return;
-
-        ATCommandItem commandItem = atCommandItems.getFirst();
-        atCommandItems.removeFirst();//移除已经发送完的指令
-        if (msg.what == USB_SERIAL_DATA_QUERY) {
+        super.customHandleMessage(msg);
+        if (msg.what == USB_SERIAL_LINK_QUERY) {
+            if (commandItem.getCommandType() == WHBLE102CommandType.LINK) {
+                if (isBluetoothConnected) {
+                    exitCommand();
+                } else {
+                    mBtnQuery.setEnabled(false);
+                    ToastUtils.show("蓝牙未连接");
+                }
+            }
+        } else if (msg.what == USB_SERIAL_DATA_QUERY) {
+            commandItem = atCommandItems.getFirst();
+            atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case ENTM: {//退出命令模式
                     String cmdStr = resultByteBuf.toString();
@@ -157,7 +157,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
                     Timber.e("接收串口数据: %s", cmdStr);
                     if ((cmdStr.contains("ENTM:OK") && cmdStr.contains(ATCommand.OK_FLAG)) || TextUtils.isEmpty(cmdStr)) {
                         queryVoltage();
-                    }else if (cmdStr.toUpperCase().contains("ERR")) {
+                    } else if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");

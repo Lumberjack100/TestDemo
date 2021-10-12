@@ -36,7 +36,8 @@
 
     </RelativeLayout>
 
-    <LinearLayout style="@style/Common_ClickableItem_LayoutStyle"
+    <LinearLayout
+        style="@style/Common_ClickableItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
@@ -52,7 +53,8 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/Common_ClickableItem_LayoutStyle"
+    <LinearLayout
+        style="@style/Common_ClickableItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
@@ -68,7 +70,8 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/Common_ClickableItem_LayoutStyle"
+    <LinearLayout
+        style="@style/Common_ClickableItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
@@ -84,7 +87,8 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/Common_ClickableItem_LayoutStyle"
+    <LinearLayout
+        style="@style/Common_ClickableItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
@@ -100,7 +104,8 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/Common_ClickableItem_LayoutStyle"
+    <LinearLayout
+        style="@style/Common_ClickableItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
@@ -135,10 +140,16 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+    <TextView
+        android:id="@+id/tv_data_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:textColor="@color/text_color_3AD094"
+        android:textSize="13sp"
+        tools:text="接收时间: 14:08:21" />
 
     <Button
         android:id="@+id/btn_query_data"
