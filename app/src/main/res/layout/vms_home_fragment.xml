@@ -35,7 +35,7 @@
             app:tabIndicatorColor="@color/project_detail_tab_indicator_color"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="3dp"
-            app:tabMode="fixed"
+            app:tabMode="scrollable"
             app:tabMaxWidth="0dp"
             app:tabGravity="fill"
             android:layout_width="match_parent"

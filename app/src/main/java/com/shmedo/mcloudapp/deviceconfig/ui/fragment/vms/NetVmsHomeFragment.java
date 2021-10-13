@@ -555,7 +555,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private void updateTerminalTabText(int totalCount) {
         TextView textView = (TextView) tabLayout.getTabAt(1).getCustomView();
         textView.setText("设备(" + totalCount + ")");
-        tabLayout.invalidate();
+        tabLayout.requestLayout();
         tabLayout.getTabAt(1).select();
     }
 
@@ -640,7 +640,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         }
 
         String sn = localData[1].replace("MD-", "");
-        ToastUtils.show("SN: " + sn);
         scanAddTerminal(sn);
     }
 
