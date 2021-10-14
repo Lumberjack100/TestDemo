@@ -415,6 +415,16 @@ public enum IOTCommandType {
      */
     ADME_MD_SET_WORK_MODE("md_setworkmode"),
 
+    /**
+     * 获取ADME的低功耗状态
+     */
+    ADME_MD_GET_LOW_ENERGY_MODE("md_getlowenergy"),
+
+    /**
+     * 设置ADME的低功耗状态
+     */
+    ADME_MD_SET_LOW_ENERGY_MODE("md_setlowenergy"),
+
     /*　 M20 指令  */
     /**
      * 获取M20的基本信息

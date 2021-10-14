@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeAdvancedConfigModuleAdapter
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeExecutiveAgencyActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeLowEnergyModeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
@@ -117,6 +118,10 @@ public class NetAdmeAdvancedConfigFragment extends BaseFragment {
             case "堵转缓停":
                 BleAdmeLockedRotorDetectionActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
+
+            case "继电器使能":
+                AdmeLowEnergyModeActivity.startActivity(mActivity, projectDeviceInfo);
+                break;
         }
     }
 
@@ -136,6 +141,9 @@ public class NetAdmeAdvancedConfigFragment extends BaseFragment {
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "堵转缓停", "参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "继电器使能", "参数配置");
         configModuleList.add(configModule);
     }
 }

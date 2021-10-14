@@ -20,6 +20,7 @@ import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeBasicConfigEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeLockedRotorDetectionEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBasicConfigInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo;
@@ -280,7 +281,10 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         return true;
     }
 
-    public String getSetCommand() {
+    /**
+     * 获取设备的基础配置指令
+     */
+    public String getBasicCommand() {
         String command = "";
         try {
             AdmeBasicConfigEntity entity = new AdmeBasicConfigEntity();
@@ -298,6 +302,31 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             command = "";
             ex.printStackTrace();
         }
+        return command;
+    }
+
+    /**
+     * 获取堵转检测配置指令
+     */
+    public String getLockRotorCommand(boolean isChecked) {
+        AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
+        entity.setLowtbtss(isChecked ? "1" : "0");
+        entity.setNumpput(lockedRotorDetectionInfo.getNumpput());
+        entity.setPdajtime(lockedRotorDetectionInfo.getPdajtime());
+        entity.setDetintiona(lockedRotorDetectionInfo.getDetintiona());
+        entity.setDetintionb(lockedRotorDetectionInfo.getDetintionb());
+        entity.setLowtorblothr(lockedRotorDetectionInfo.getLowtorblothr());
+        entity.setLowtordetime(lockedRotorDetectionInfo.getLowtordetime());
+        entity.setLowsusrana(lockedRotorDetectionInfo.getLowsusrana());
+        entity.setLowsusranb(lockedRotorDetectionInfo.getLowsusranb());
+
+        entity.setUptbtss(lockedRotorDetectionInfo.getUptbtss());
+        entity.setUptorblothr(lockedRotorDetectionInfo.getUptorblothr());
+        entity.setUptordetime(lockedRotorDetectionInfo.getUptordetime());
+        entity.setUpsusrana(lockedRotorDetectionInfo.getUpsusrana());
+        entity.setUpsusranb(lockedRotorDetectionInfo.getUpsusranb());
+
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
         return command;
     }
 

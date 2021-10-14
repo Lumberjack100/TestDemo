@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeLockedRotorDetectionEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
@@ -85,7 +84,6 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
      */
     private void queryLockRotorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-//        showProgressDialog("加载中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -97,33 +95,12 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     admeBasicParamConfigView.mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
-                setLockRotorInfo(isChecked);
+                String command = admeBasicParamConfigView.getLockRotorCommand(isChecked);
+                if (!TextUtils.isEmpty(command)) {
+                    doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                }
             }
         });
-    }
-
-    private void setLockRotorInfo(boolean isChecked) {
-
-        AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
-        entity.setLowtbtss(isChecked ? "1" : "0");
-        entity.setNumpput(admeBasicParamConfigView.lockedRotorDetectionInfo.getNumpput());
-        entity.setPdajtime(admeBasicParamConfigView.lockedRotorDetectionInfo.getPdajtime());
-        entity.setDetintiona(admeBasicParamConfigView.lockedRotorDetectionInfo.getDetintiona());
-        entity.setDetintionb(admeBasicParamConfigView.lockedRotorDetectionInfo.getDetintionb());
-        entity.setLowtorblothr(admeBasicParamConfigView.lockedRotorDetectionInfo.getLowtorblothr());
-        entity.setLowtordetime(admeBasicParamConfigView.lockedRotorDetectionInfo.getLowtordetime());
-        entity.setLowsusrana(admeBasicParamConfigView.lockedRotorDetectionInfo.getLowsusrana());
-        entity.setLowsusranb(admeBasicParamConfigView.lockedRotorDetectionInfo.getLowsusranb());
-
-        entity.setUptbtss(admeBasicParamConfigView.lockedRotorDetectionInfo.getUptbtss());
-        entity.setUptorblothr(admeBasicParamConfigView.lockedRotorDetectionInfo.getUptorblothr());
-        entity.setUptordetime(admeBasicParamConfigView.lockedRotorDetectionInfo.getUptordetime());
-        entity.setUpsusrana(admeBasicParamConfigView.lockedRotorDetectionInfo.getUpsusrana());
-        entity.setUpsusranb(admeBasicParamConfigView.lockedRotorDetectionInfo.getUpsusranb());
-
-//        startProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_inclinometer_type, R.id.ll_data_settlement_method, R.id.btn_confirm})
@@ -142,7 +119,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                 Timber.w("参数存在错误!");
                 return;
             }
-            String command = admeBasicParamConfigView.getSetCommand();
+            String command = admeBasicParamConfigView.getBasicCommand();
             if (!TextUtils.isEmpty(command)) {
                 showProgressDialog("处理中...");
                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
@@ -216,9 +193,9 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_BASIC: {//获取设备的基础配置参数
-//                dismissProgressDialog();
                 IOTCommandResult<AdmeBasicConfigInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    dismissProgressDialog();
                     String errMsg = String.format("%s %s", "获取设备的基础配置参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(commandResult.getMessage().contains("unsupported") ? "设备版本不支持!" : errMsg);
@@ -254,7 +231,6 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     ToastUtils.show(errMsg);
                     return;
                 }
-//                doAfterSetting();
             }
             break;
 
