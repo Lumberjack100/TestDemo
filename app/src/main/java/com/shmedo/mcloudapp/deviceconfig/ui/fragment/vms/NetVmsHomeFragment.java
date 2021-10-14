@@ -290,7 +290,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private void scanAddTerminal(String sn) {
         TerminalSNEntity entity = new TerminalSNEntity(sn);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SCAN_ADD_TERMINAL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -308,7 +308,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     public void removeTerminal(String sn) {
         TerminalSNEntity entity = new TerminalSNEntity(sn);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -323,7 +323,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
             }
-            dismissProgressDialog();
+            dismissWaitDialog();
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -478,7 +478,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             case VMS_MD_SCAN_ADD_TERMINAL: {//扫码添加终端
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "扫码添加终端出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -489,7 +489,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             break;
 
             case VMS_MD_GET_TERMINAL_SN: {//获取扫码添加终端列表
-                dismissProgressDialog();
+                dismissWaitDialog();
                 IOTCommandResult<VmsTerminalSn> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取扫码添加终端列表出错!", commandResult.getMessage());
@@ -513,7 +513,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
             break;
 
             case VMS_MD_DELETE_TERMINAL: {//删除终端设备
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "删除终端出错!", cmdResult.getReason());
@@ -565,7 +565,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.finishRefresh(false);
         }
-        dismissProgressDialog();
+        dismissWaitDialog();
     }
 
     @Override

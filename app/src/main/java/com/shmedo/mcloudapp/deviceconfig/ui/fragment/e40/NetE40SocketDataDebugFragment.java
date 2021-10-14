@@ -356,7 +356,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     private void queryDataCenterInfo(int number) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(number);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -365,13 +365,13 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
      */
     private void queryNmeaTimeInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_NMEA_TIME);
-//        showProgressDialog("处理中...");
+//        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     private void setNmeaTimeInfo(boolean isOpen) {
         String command = isOpen ? "$cmd=md_setnmeatime&gga=1" : "$cmd=md_setnmeatime&gga=0";
-//        showProgressDialog("处理中...");
+//        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -383,7 +383,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }
@@ -443,7 +443,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
             case MD_GET_DATA_CENTER: {//获取设备的数据中心参数
                 IOTCommandResult<DataCenterInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询数据中心参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -469,13 +469,13 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
                 } else if (dataCenterInfo.getCenterid().equals("3")) {
                     queryDataCenterInfo(4);
                 } else if (dataCenterInfo.getCenterid().equals("4")) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                 }
             }
             break;
 
             case E40_MD_SET_NMEA_TIME: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置NMEA参数出错!", cmdResult.getReason());

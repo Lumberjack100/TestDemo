@@ -229,7 +229,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -336,7 +336,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         DasDataReportEntity entity = new DasDataReportEntity();
         entity.setReport_intv(reportingInterval);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DATA_REPORT_TIME, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -352,7 +352,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
             }
-            dismissProgressDialog();
+            dismissWaitDialog();
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -484,7 +484,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case DAS_MD_SET_DATA_REPORT_TIME: {//
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置数据上报时间出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -501,14 +501,14 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
                     doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                 } else {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     ToastUtils.show("保存成功");
                 }
             }
             break;
 
             case DAS_MD_SET_BD_TERMINAL: {//
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置北斗数传终端参数出错!", cmdResult.getReason());

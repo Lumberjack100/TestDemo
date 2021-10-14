@@ -91,7 +91,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             if (curSensorIndex != -1) {
                                 sensorIndex = curSensorIndex;
-                                showProgressDialog("处理中...");
+                                showWaitDialog("处理中...");
                                 queryTerminalAisleParamInfo();
                             }
                         }
@@ -111,7 +111,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         sensorIndex = 0;
         sensorHashMap.clear();
         sensorItemList.clear();
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         queryTerminalAisleParamInfo();
     }
 
@@ -164,7 +164,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }
@@ -224,7 +224,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             case VMS_MD_GET_TERMINAL_CHL: {//获取终端传感器的参数
                 IOTCommandResult<VmsTerminalSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询获取终端传感器参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -240,10 +240,10 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
                     if (sensorIndex < accessSum) {
                         queryTerminalAisleParamInfo();
                     } else {//所有通道的传感器参数都查询了
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                     }
                 } else {//只刷新单个通道的传感器数据
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                 }
             }
             default:

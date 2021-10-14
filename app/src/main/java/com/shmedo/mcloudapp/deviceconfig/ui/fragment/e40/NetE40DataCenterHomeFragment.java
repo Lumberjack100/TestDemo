@@ -98,7 +98,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-        showProgressDialog("加载中...");
+        showWaitDialog("加载中...");
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -126,7 +126,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showProgressDialog("加载中...");
+        showWaitDialog("加载中...");
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
@@ -171,7 +171,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -223,7 +223,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -238,7 +238,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
@@ -248,7 +248,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
                     } else {
                         //表示刷新指定的数据中心
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                     }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
@@ -258,10 +258,10 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                         getDataCenterStatus(ServerNumber.NUMBER_FOUR);
                     } else {
                         //表示刷新指定的数据中心
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                     }
                 } else if (centerStatus.getCenterid() == 4) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }

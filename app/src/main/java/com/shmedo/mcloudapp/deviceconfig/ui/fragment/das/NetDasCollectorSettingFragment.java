@@ -214,7 +214,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         entity.setCollgap(collectTime);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -229,7 +229,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
             }
-            dismissProgressDialog();
+            dismissWaitDialog();
             ToastUtils.show("下发指令失败");
             return;
         }

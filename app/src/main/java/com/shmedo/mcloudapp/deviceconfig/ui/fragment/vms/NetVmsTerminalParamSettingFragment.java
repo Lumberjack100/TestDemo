@@ -124,7 +124,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
     private void queryTerminalCollecotrInfo() {
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_COLLECTOR, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -260,7 +260,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
         entity.setReptgap(reportingInterval);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_COLLECTOR, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -286,7 +286,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }
@@ -346,7 +346,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
             case VMS_MD_GET_TERMINAL_COLLECTOR: {//获取Vms终端采集参数
                 IOTCommandResult<VmsTerminalCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询终端采集参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -359,7 +359,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
             break;
 
             case VMS_MD_GET_TERMINAL_COMMUNICATE: {//获取Vms终端通信参数
-                dismissProgressDialog();
+                dismissWaitDialog();
                 IOTCommandResult<VmsTerminalCommInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询终端通信参数出错!", commandResult.getMessage());
@@ -375,7 +375,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
             case VMS_MD_SET_TERMINAL_COLLECTOR: {//设置Vms终端采集参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -386,7 +386,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
             break;
 
             case VMS_MD_SET_TERMINAL_COMMUNICATE: {//设置Vms终端通信参数
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置参数失败!", cmdResult.getReason());

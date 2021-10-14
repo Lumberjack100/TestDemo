@@ -169,6 +169,7 @@ dependencies {
 
     //Material Dialog
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
+    implementation "com.github.kongzue.DialogX:DialogX:$rootProject.thirdLib.dialogxVersion"
     //Toast 吐司
     implementation "com.github.getActivity:ToastUtils:$rootProject.thirdLib.ToastUtils"
     implementation "com.github.li-xiaojun:XPopup:$rootProject.thirdLib.xpopupVersion"
@@ -221,7 +222,7 @@ dependencies {
     implementation "com.github.mik3y:usb-serial-for-android:$rootProject.thirdLib.usbSerialVersion" // maven jitpack
 
     // debugImplementation because LeakCanary should only run in debug builds.
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 
     // 日志调试框架：https://github.com/getActivity/Logcat
 //    debugImplementation "com.github.getActivity:Logcat:$rootProject.thirdLib.Logcat"

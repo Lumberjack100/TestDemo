@@ -176,7 +176,7 @@ public class UniversalNetDataCenterBasicConfigFragment extends BaseNetIotCommuni
     private void queryDataCenterInfo() {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -192,7 +192,7 @@ public class UniversalNetDataCenterBasicConfigFragment extends BaseNetIotCommuni
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -250,7 +250,7 @@ public class UniversalNetDataCenterBasicConfigFragment extends BaseNetIotCommuni
         isSaveParamOperation = true;
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -262,7 +262,7 @@ public class UniversalNetDataCenterBasicConfigFragment extends BaseNetIotCommuni
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }

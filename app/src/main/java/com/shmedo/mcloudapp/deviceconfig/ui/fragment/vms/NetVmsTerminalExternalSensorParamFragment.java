@@ -309,7 +309,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -502,7 +502,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         enableButtonOriginalState = mSbSensorEnable.isChecked();
         isSaveParamOperation = true;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -514,7 +514,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }

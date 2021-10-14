@@ -281,7 +281,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     private void removeSensor() {
         IndexEntity entity = new IndexEntity(curItemPosition);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -294,7 +294,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         entity.setAddr("0");
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -304,7 +304,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         entity.setSensornum(sensorHashMap.values().size() + "");
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -387,7 +387,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
             }
-            dismissProgressDialog();
+            dismissWaitDialog();
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -504,7 +504,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                     return;
                 }
                 if (sensorHashMap.values().isEmpty()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     ToastUtils.show("保存成功");
                 } else {
                     sensorIndex = 0;
@@ -516,7 +516,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             case DAS_MD_SET_EXTERNAL_SENSOR: {//
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "保存传感器参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -528,14 +528,14 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                     setExtendSensorConfigInfo((DasExternalSensorInfo) sensorHashMap.values().toArray()[sensorIndex]);
 
                 } else {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     ToastUtils.show("保存成功");
                 }
             }
             break;
 
             case DAS_MD_DEL_EXTERNAL_SENSOR: {//移除传感器
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "移除传感器出错!", cmdResult.getReason());

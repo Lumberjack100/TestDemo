@@ -111,13 +111,13 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
     @Override
     public void onCloseDataServer(String command) {
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
     @Override
     public void onSaveConfig(String command) {
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -137,7 +137,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
             }
-            dismissProgressDialog();
+            dismissWaitDialog();
             ToastUtils.show("下发指令失败");
             return;
         }

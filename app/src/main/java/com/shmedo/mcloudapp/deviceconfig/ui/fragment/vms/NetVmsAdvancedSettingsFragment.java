@@ -114,7 +114,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
      * 刷新指定的数据中心状态
      */
     private void refreshSpecifiedServerStatus() {
-        showProgressDialog("加载中...");
+        showWaitDialog("加载中...");
         switch (serverNumber) {
             case SERVER_NUMBER_ONE:
                 getDataCenterStatus(ServerNumber.NUMBER_ONE);
@@ -138,7 +138,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         serverNumber = -1;
-        showProgressDialog("加载中...");
+        showWaitDialog("加载中...");
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
@@ -196,7 +196,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
      */
     private void rebootGateWay() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -205,7 +205,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
      */
     private void resetGateWay() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -222,7 +222,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
      */
     private void setLogOutput(IotLogOutputEntity entity) {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -290,7 +290,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -310,12 +310,12 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case REBOOT:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
                 break;
 
             case RESET:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 
@@ -369,7 +369,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
             case MD_GET_DATA_CENTER_STATUS: {//获取Vms数据中心状态
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -384,7 +384,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
                     } else {
                         //表示刷新指定的数据中心
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
@@ -394,7 +394,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
                     } else {
                         //表示刷新指定的数据中心
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                     }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
@@ -404,10 +404,10 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
                         getDataCenterStatus(ServerNumber.NUMBER_FOUR);
                     } else {
                         //表示刷新指定的数据中心
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                     }
                 } else if (centerStatus.getCenterid() == 4) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
                     queryLogOutput();
@@ -416,7 +416,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
             break;
 
             case GET_LOG_OUTPUT_MODE_LEVEL: {//获取日志输出方式和等级
-                dismissProgressDialog();
+                dismissWaitDialog();
                 IOTCommandResult<IotLogOutputInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询日志输出方式出错!", commandResult.getMessage());
@@ -431,7 +431,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
             break;
 
             case SET_LOG_OUTPUT_MODE_LEVEL: {//设置日志输出方式和等级
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置日志输出方式失败!", cmdResult.getReason());

@@ -157,7 +157,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     private void sampleTerminal() {
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_TERMINAL_QUERY_SAMPLE, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -167,7 +167,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     private void rebootTerminal() {
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -208,7 +208,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             doDispatchFailed(cmdStr);
             return;
         }
@@ -243,12 +243,12 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case VMS_TERMINAL_QUERY_SAMPLE:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new TelemetryDialog("遥测", msgIDList);
                 break;
 
             case VMS_MD_REBOOT_TERMINAL:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
                 break;
         }

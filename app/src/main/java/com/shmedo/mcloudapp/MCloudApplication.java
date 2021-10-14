@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.config.IToastInterceptor;
+import com.kongzue.dialogx.DialogX;
+import com.kongzue.dialogx.style.MaterialStyle;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
@@ -44,6 +46,9 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
 
         //初始化吐司消息组件
         initToastUtil();
+
+        //初始化kongzue/DialogX组件
+        initDialogX();
 
         //初始化日志输出
         initTimber();
@@ -110,6 +115,15 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         // 初始化吐司工具类
         ToastUtils.init(this);
         ToastUtils.setStyle(new MyToastBlackStyle());
+    }
+
+    private void initDialogX() {
+        DialogX.init(this);
+        DialogX.implIMPLMode = DialogX.IMPL_MODE.VIEW;
+        DialogX.useHaptic = true;
+        DialogX.globalStyle = new MaterialStyle();
+        DialogX.globalTheme = DialogX.THEME.AUTO;
+        DialogX.onlyOnePopTip = false;
     }
 }
 

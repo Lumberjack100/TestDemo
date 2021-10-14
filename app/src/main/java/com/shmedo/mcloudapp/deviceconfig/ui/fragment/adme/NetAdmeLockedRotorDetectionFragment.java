@@ -270,7 +270,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-        showProgressDialog("加载中...");
+        showWaitDialog("加载中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -459,7 +459,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
             mBtnSave.setEnabled(false);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
-            showProgressDialog("处理中...");
+            showWaitDialog("处理中...");
             doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -474,7 +474,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }
@@ -532,7 +532,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询堵转参数出错!", commandResult.getMessage());
@@ -548,7 +548,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -560,7 +560,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "发送保存指令出错!", cmdResult.getReason());

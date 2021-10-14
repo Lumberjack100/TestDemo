@@ -93,7 +93,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
     protected void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态": {
-//                showProgressDialog("处理中...");
+//                showWaitDialog("处理中...");
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
 //                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                 DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
@@ -103,20 +103,20 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
             case "传感器初始化": {
                 DasActiveEntity entity = new DasActiveEntity();
                 entity.setMode("1");
-                showProgressDialog("处理中...");
+                showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_ACTIVE, entity);
                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
 
             case "时间": {
-                showProgressDialog("处理中...");
+                showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
             break;
 
             case "遥测": {
-                showProgressDialog("处理中...");
+                showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_SAMPLE);
                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
@@ -164,7 +164,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                         switch (operateType) {
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                showProgressDialog("处理中...");
+                                showWaitDialog("处理中...");
                                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
@@ -185,7 +185,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             doDispatchFailed(cmdStr);
             return;
         }
@@ -241,7 +241,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case QUERY_DEVICE_STATUS:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
@@ -258,17 +258,17 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case QUERY_TERMINAL_TIME:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new QueryTerminalTimeDialog("终端时间", msgIDList);
                 break;
 
             case QUERY_SAMPLE:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new TelemetryDialog("遥测", msgIDList);
                 break;
 
             case REBOOT:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
                 break;
 

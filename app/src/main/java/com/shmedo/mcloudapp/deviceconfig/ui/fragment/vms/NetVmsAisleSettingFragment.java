@@ -82,7 +82,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
     private void queryVmsAisleInfo() {
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleSettingView.vmsAisleNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -100,7 +100,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
             }
             String command = vmsAisleSettingView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
-                showProgressDialog("处理中...");
+                showWaitDialog("处理中...");
                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
         }
@@ -114,7 +114,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }

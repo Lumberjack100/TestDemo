@@ -123,7 +123,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryRtkMode() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_RTK);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -242,7 +242,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
         entity.setMode(rtkMode);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_RTK, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -254,7 +254,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
         entity.setAlt(TextUtils.isEmpty(elevation) ? "" : elevation);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_BASE_POSITION, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -266,7 +266,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }
@@ -326,7 +326,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
             case E40_MD_GET_RTK: {
                 IOTCommandResult<E40RTKModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询RTK模式出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(commandResult.getMessage().contains("unsupported") ? "设备版本不支持!" : errMsg);
@@ -339,7 +339,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case E40_MD_SET_RTK: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置RTK模式出错!", cmdResult.getReason());
@@ -350,7 +350,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
             }
             break;
             case E40_MD_GET_BASE_POSITION: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 IOTCommandResult<E40BasePositionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询基站位置信息出错!", commandResult.getMessage());
@@ -364,7 +364,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case E40_MD_SET_BASE_POSITION: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置基站位置信息出错!", cmdResult.getReason());
@@ -382,7 +382,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
 
     private void initRtkMode() {
         if (rtkModeInfo == null) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             Timber.e("E40RTKModeInfo 为空!");
             rtkModeInfo = new E40RTKModeInfo();
             return;
@@ -397,7 +397,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
             //查询基站位置信息
             queryBasePositionInfo();
         } else {
-            dismissProgressDialog();
+            dismissWaitDialog();
             rtkModePos = 1;
             mTvRTKMode.setText("移动站");
             baseStationParamsView.setVisibility(View.GONE);

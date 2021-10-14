@@ -73,7 +73,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "状态":
-//                showProgressDialog("处理中...");
+//                showWaitDialog("处理中...");
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
 //                doCommonDispatchRawCmd(command);
                 DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.M20);
@@ -114,7 +114,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             doDispatchFailed(cmdStr);
             return;
         }
@@ -158,7 +158,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case QUERY_DEVICE_STATUS:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
@@ -169,7 +169,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case M20_MD_LEVEL_INITIAL:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 if (setupWizardDialogFragment != null && setupWizardDialogFragment.isVisible()) {
                     setupWizardDialogFragment.updateDispatchCmdResult(true, msgIDList);
                 }

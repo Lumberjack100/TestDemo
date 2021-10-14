@@ -39,6 +39,7 @@ ext {
 
             SmartRefreshLayout           : '2.0.3',
             BaseRecyclerViewAdapterHelper: '3.0.4',
+            dialogxVersion               : '0.0.43.beta13',
             materialDialogsCore          : '0.9.6.0',
             xpopupVersion                : '2.5.8',
             ToastUtils                   : '9.5',

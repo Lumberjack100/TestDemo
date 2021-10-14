@@ -96,7 +96,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
         public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-//            showProgressDialog("指令下发中...");
+//            showWaitDialog("指令下发中...");
             doFirmwareUpgrade(firmWareInfo.getId());
             return true;
         }
@@ -126,21 +126,21 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                         switch (operateType) {
                             case LEVEL_INITIAL: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
-                                showProgressDialog("处理中...");
+                                showWaitDialog("处理中...");
                                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
 
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                showProgressDialog("处理中...");
+                                showWaitDialog("处理中...");
                                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
 
                             case RESET: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
-                                showProgressDialog("处理中...");
+                                showWaitDialog("处理中...");
                                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
@@ -158,7 +158,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
      */
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
-        dismissProgressDialog();
+        dismissWaitDialog();
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             doDispatchFailed(cmdStr);
             return;
@@ -249,7 +249,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String msgId, ErrCode errCode) {
-                        dismissProgressDialog();
+//                        dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 msgIDList.clear();
@@ -263,7 +263,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissProgressDialog();
+//                        dismissWaitDialog();
                         doDispatchFailed("$cmd=md_upgrade");
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }

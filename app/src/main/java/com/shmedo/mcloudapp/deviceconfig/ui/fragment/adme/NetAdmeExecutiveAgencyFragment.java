@@ -74,7 +74,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
-        showProgressDialog("加载中...");
+        showWaitDialog("加载中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -96,7 +96,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
             }
             String command = admeExecutiveAgencyView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
-                showProgressDialog("处理中...");
+                showWaitDialog("处理中...");
                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
             }
         }
@@ -110,7 +110,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             showDispatchFailedDialog(cmdStr);
             return;
         }
@@ -168,7 +168,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_EXECUTIVE_AGENCY: {//获取ADME的执行机构配置参数
-                dismissProgressDialog();
+                dismissWaitDialog();
                 IOTCommandResult<AdmeExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询执行机构参数出错!", commandResult.getMessage());
@@ -185,7 +185,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
             case ADME_MD_SET_EXECUTIVE_AGENCY: {//设置ADME的执行机构配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -197,7 +197,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

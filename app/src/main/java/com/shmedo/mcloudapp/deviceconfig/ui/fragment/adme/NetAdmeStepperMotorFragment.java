@@ -164,8 +164,8 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
-        showProgressDialog("加载中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        showWaitDialog("加载中...");
     }
 
     /**
@@ -177,8 +177,8 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
-        showProgressDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        showWaitDialog("处理中...");
     }
 
     @OnClick({R.id.btn_confirm})
@@ -271,8 +271,8 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
             isSaveParamOperation = true;
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
-            showProgressDialog("处理中...");
             doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+            showWaitDialog("处理中...");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -344,7 +344,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
-                dismissProgressDialog();
+                dismissWaitDialog();
                 IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
@@ -360,7 +360,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
             case ADME_MD_SET_STEPPER_MOTOR: {//设置ADME的步进电机配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置步进电机参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -371,7 +371,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());

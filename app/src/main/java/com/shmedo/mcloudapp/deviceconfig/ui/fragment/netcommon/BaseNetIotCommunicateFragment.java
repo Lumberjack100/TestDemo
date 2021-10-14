@@ -13,6 +13,8 @@ import androidx.lifecycle.Observer;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.AppContants;
@@ -39,6 +41,7 @@ import java.util.List;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import timber.log.Timber;
@@ -67,6 +70,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     private final CommandHandler mCommandHandler = new CommandHandler(this);
 
+    private Disposable cmdResultDisposable;
 
     private static final class CommandHandler extends WeakHandler<BaseNetIotCommunicateFragment> {
         private CommandHandler(BaseNetIotCommunicateFragment fragment) {
@@ -219,6 +223,11 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<QueryCmdResult>>() {
                     @Override
+                    public void onSubscribe(Disposable d) {
+                        cmdResultDisposable = d;
+                    }
+
+                    @Override
                     protected void onResponse(List<QueryCmdResult> data, ErrCode errCode) {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
@@ -264,7 +273,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      * @param queryCmdResult
      */
     protected void onQueryCmdResponseResultSuccess(QueryCmdResult queryCmdResult) {
-        dismissProgressDialog();
+        dismissWaitDialog();
     }
 
     /**
@@ -273,7 +282,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      * @param errMsg
      */
     protected void onQueryCmdResponseResultError(String errMsg) {
-        dismissProgressDialog();
+        dismissWaitDialog();
         //停止轮询指令响应结果接口
         stopQueryCmdResponse();
     }
@@ -284,9 +293,34 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      * @param queryCmdResult
      */
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
-        dismissProgressDialog();
+        dismissWaitDialog();
         //停止轮询指令响应结果接口
         stopQueryCmdResponse();
+    }
+
+    protected void dismissWaitDialog() {
+        WaitDialog.dismiss();
+    }
+
+    protected void showWaitDialog(String message) {
+        WaitDialog.show(message)
+                .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
+                    @Override
+                    public boolean onBackPressed() {
+                        cancelRequest();
+                        WaitDialog.dismiss();
+                        return false;
+                    }
+                });
+    }
+
+    // 取消请求
+    private void cancelRequest() {
+        if (cmdResultDisposable != null && !cmdResultDisposable.isDisposed()) {
+            stopQueryCmdResponse();
+            cmdResultDisposable.dispose();
+            cmdResultDisposable = null;
+        }
     }
 
     protected void warnNotYetSettingBeforeLeavePage() {

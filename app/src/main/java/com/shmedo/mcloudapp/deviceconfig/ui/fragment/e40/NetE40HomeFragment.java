@@ -94,7 +94,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
         switch (selectedConfigModule.getName()) {
             case "状态":
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-//                showProgressDialog("处理中...");
+//                showWaitDialog("处理中...");
 //                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                 DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.E40);
                 break;
@@ -128,7 +128,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
      */
     private void rebootDevice() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -163,7 +163,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
         public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-//            showProgressDialog("指令下发中...");
+//            showWaitDialog("指令下发中...");
             doFirmwareUpgrade(firmWareInfo.getId());
             return true;
         }
@@ -191,7 +191,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String msgId, ErrCode errCode) {
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 msgIDList.clear();
@@ -205,7 +205,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissProgressDialog();
+                        dismissWaitDialog();
                         doDispatchFailed("$cmd=md_upgrade");
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
@@ -221,7 +221,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             doDispatchFailed(cmdStr);
             return;
         }
@@ -269,7 +269,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case QUERY_DEVICE_STATUS:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new QueryCurrentStateDialog("运行状态", msgIDList);
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
@@ -280,12 +280,12 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case REBOOT:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
                 break;
 
             case MD_UPGRADE:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 

@@ -102,14 +102,14 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                         switch (operateType) {
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                showProgressDialog("处理中...");
+                                showWaitDialog("处理中...");
                                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
 
                             case RESET: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
-                                showProgressDialog("处理中...");
+                                showWaitDialog("处理中...");
                                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
                             }
                             break;
@@ -128,7 +128,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     @Override
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
-            dismissProgressDialog();
+            dismissWaitDialog();
             doDispatchFailed(cmdStr);
             return;
         }
@@ -175,17 +175,17 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
 //            case MD_UPGRADE:
-//                dismissProgressDialog();
+//                dismissWaitDialog();
 //                newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
 //                break;
 //
 //            case REBOOT:
-//                dismissProgressDialog();
+//                dismissWaitDialog();
 //                newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
 //                break;
 
             case RESET:
-                dismissProgressDialog();
+                dismissWaitDialog();
                 newFragment = new CommonCmdDialog("恢复出厂设置", "设备开始恢复出厂设置...", "此过程耗时较长,请耐心等待", msgIDList);
                 break;
 

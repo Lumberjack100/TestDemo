@@ -284,7 +284,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
      */
     private void setSwitchSensorInfo(DasIOSensorEntity entity) {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -305,7 +305,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
-        showProgressDialog("处理中...");
+        showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
@@ -464,7 +464,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             setSwitchSensorInfo(entity);
         } else if (mSbDigitalOsmometerEnable.isChecked()) {
             setDigitalOsmometerParam();
-            showProgressDialog("处理中...");
+            showWaitDialog("处理中...");
         }
     }
 
@@ -479,7 +479,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
             }
-            dismissProgressDialog();
+            dismissWaitDialog();
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -569,7 +569,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             case DAS_MD_SET_IO_SENSOR_INFO: {//设置开关量传感器
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置开关量传感器参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -579,14 +579,14 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 if (mSbDigitalOsmometerEnable.isChecked() && isDigitalPiezometerChange) {
                     setDigitalOsmometerParam();
                 } else {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     ToastUtils.show("设置成功");
                 }
             }
             break;
 
             case DAS_MD_SET_DIGITAL_PIEZOMETER_INFO: {//设置数字渗压计
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置数字渗压计参数出错!", cmdResult.getReason());

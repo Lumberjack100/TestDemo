@@ -73,8 +73,8 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_METER_WHEEL);
-        showProgressDialog("加载中...");
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        showWaitDialog("加载中...");
     }
 
     @OnClick({R.id.btn_confirm})
@@ -91,8 +91,8 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
             }
             String command = admeMeterWheelView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
-                showProgressDialog("处理中...");
                 doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                showWaitDialog("处理中...");
             }
         }
     }
@@ -163,7 +163,7 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_METER_WHEEL: {//获取ADME的计米轮配置参数
-                dismissProgressDialog();
+                dismissWaitDialog();
                 IOTCommandResult<AdmeMeterWheelInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取计米轮配置参数出错!", commandResult.getMessage());
@@ -180,7 +180,7 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
             case ADME_MD_SET_METER_WHEEL: {//设置ADME的计米轮配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissProgressDialog();
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "保存计米轮配置参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -192,7 +192,7 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
-                dismissProgressDialog();
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
