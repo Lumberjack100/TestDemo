@@ -35,12 +35,6 @@ import butterknife.BindView;
 public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
-    @BindView(R.id.progress_overlay)
-    protected View progressOverlay;
-
-    @BindView(R.id.tv_progress_text)
-    protected TextView mTvProgressText;
-
     @BindView(R.id.tv_device_name)
     protected TextView mTvDeviceName;//设备名称
 

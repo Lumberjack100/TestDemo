@@ -90,7 +90,7 @@ public class BleAdmeLowEnergyModeFragment extends BaseUSRBleIotCommunicateFragme
      */
     private void enableOrDisableLowEnergy(boolean isOpen) {
         AdmeLowEnergyModelEntity entity = new AdmeLowEnergyModelEntity();
-        entity.setModel(isOpen ? "1" : "0");
+        entity.setMode(isOpen ? "1" : "0");
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOW_ENERGY_MODE, entity);
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_5000_MILLIS);
@@ -123,7 +123,7 @@ public class BleAdmeLowEnergyModeFragment extends BaseUSRBleIotCommunicateFragme
                 }
                 AdmeLowEnergyModeInfo admeLowEnergyModeInfo = commandResult.getResult();
                 if (admeLowEnergyModeInfo != null) {
-                    if (admeLowEnergyModeInfo.getModel().trim().equals("0")) {
+                    if (admeLowEnergyModeInfo.getMode().trim().equals("0")) {
                         mSbEnable.setCheckedImmediatelyNoEvent(false);
                     } else {
                         mSbEnable.setCheckedImmediatelyNoEvent(true);

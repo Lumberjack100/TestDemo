@@ -29,7 +29,7 @@ public class AdmeLowEnergyModeInfoParser implements IOTResultParser<AdmeLowEnerg
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setModel(TextUtils.isEmpty(keyValueMap.get("model")) ? "" : keyValueMap.get("model"));
+            info.setMode(TextUtils.isEmpty(keyValueMap.get("mode")) ? "" : keyValueMap.get("mode"));
 
             return info;
         } catch (Exception ex) {

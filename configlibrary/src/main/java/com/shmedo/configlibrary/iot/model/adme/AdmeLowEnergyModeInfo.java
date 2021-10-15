@@ -8,13 +8,13 @@ import android.text.TextUtils;
  * 描述：      ADME 低功耗模式
  */
 public class AdmeLowEnergyModeInfo {
-    private String model;//工作模式(0:正常模式，1:低功耗模式)
+    private String mode;//工作模式(0:正常模式，1:低功耗模式)
 
-    public String getModel() {
-        return TextUtils.isEmpty(model) ? "" : model;
+    public String getMode() {
+        return TextUtils.isEmpty(mode) ? "" : mode;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 }

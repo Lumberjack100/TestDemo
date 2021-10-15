@@ -47,14 +47,14 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         //初始化吐司消息组件
         initToastUtil();
 
-        //初始化kongzue/DialogX组件
-        initDialogX();
-
         //初始化日志输出
         initTimber();
 
         //初始化基于 mmap, 高性能、高可用的 Android 日志收集框架
         LogInit.init(this);
+
+        //初始化kongzue/DialogX组件
+        initDialogX();
     }
 
     @NonNull

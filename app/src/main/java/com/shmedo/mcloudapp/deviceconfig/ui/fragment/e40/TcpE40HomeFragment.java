@@ -68,12 +68,6 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
     @BindView(R.id.swipeLayout)
     SwipeRefreshLayout swipeRefresh;
 
-    @BindView(R.id.progress_overlay)
-    View progressOverlay;
-
-    @BindView(R.id.tv_progress_text)
-    TextView mTvProgressText;
-
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
 
@@ -105,32 +99,6 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
     private final String ipAddress = "192.168.5.2";//172.168.5.250   192.168.5.2
 
     private VmsBasicInfo vmsBasicInfo;
-
-//    private static Handler myHander = new Handler();
-//    private static RefreshRunnable refreshRunnable;
-//
-//    private class RefreshRunnable implements Runnable {
-//        @Override
-//        public void run() {
-//            refreshRunnable = null;
-//            swipeRefresh.setRefreshing(false);
-//            updateHeadInfo();
-//            ToastUtils.show("查询数据超时");
-//        }
-//    }
-//
-//    private void startRefreshRunnable(long delayMillis) {
-//        if (refreshRunnable == null) {
-//            refreshRunnable = new RefreshRunnable();
-//            myHander.postDelayed(refreshRunnable, delayMillis);
-//        }
-//    }
-//
-//    private void stopRefreshRunnable() {
-//        myHander.removeCallbacksAndMessages(null);
-//        refreshRunnable = null;
-//        swipeRefresh.setRefreshing(false);
-//    }
 
     public static TcpE40HomeFragment newInstance() {
         return new TcpE40HomeFragment();

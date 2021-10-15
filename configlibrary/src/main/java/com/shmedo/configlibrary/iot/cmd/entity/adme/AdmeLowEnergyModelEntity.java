@@ -11,21 +11,21 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  * 描述：     ADME 低功耗模式
  */
 public class AdmeLowEnergyModelEntity implements Validater {
-    private String model;
+    private String mode;
 
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     @Override
     public void validate() {
-        if (TextUtils.isEmpty(model))
+        if (TextUtils.isEmpty(mode))
             throw new DASParameterException("ADME 模式不正确");
     }
 
     @Override
     public String toString() {
-        return "model=" + model;
+        return "mode=" + mode;
     }
 }

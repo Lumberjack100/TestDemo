@@ -91,7 +91,7 @@ public class NetAdmeLowEnergyModeFragment extends BaseNetIotCommunicateFragment 
      */
     private void enableOrDisableLowEnergy(boolean isOpen) {
         AdmeLowEnergyModelEntity entity = new AdmeLowEnergyModelEntity();
-        entity.setModel(isOpen ? "1" : "0");
+        entity.setMode(isOpen ? "1" : "0");
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOW_ENERGY_MODE, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
@@ -174,7 +174,7 @@ public class NetAdmeLowEnergyModeFragment extends BaseNetIotCommunicateFragment 
                 }
                 AdmeLowEnergyModeInfo admeLowEnergyModeInfo = commandResult.getResult();
                 if (admeLowEnergyModeInfo != null) {
-                    if (admeLowEnergyModeInfo.getModel().trim().equals("0")) {
+                    if (admeLowEnergyModeInfo.getMode().trim().equals("0")) {
                         mSbEnable.setCheckedImmediatelyNoEvent(false);
                     } else {
                         mSbEnable.setCheckedImmediatelyNoEvent(true);

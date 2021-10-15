@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -21,6 +20,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
@@ -46,8 +47,8 @@ import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasSensorConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
@@ -80,12 +81,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private static final int LOW_ENERGY_MODEL = 0x0001;
     private static final int REBOOT = 0x0002;
-
-    @BindView(R.id.progress_overlay)
-    View progressOverlay;
-
-    @BindView(R.id.tv_progress_text)
-    TextView mTvProgressText;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -321,7 +316,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     case CONNECTING:
                         startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                         showProgressBar();
-                        mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
 
                     case INITIALIZING:
@@ -329,7 +323,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
                     case READY:
                         onConnectionStateChanged(true);
-                        mTvProgressText.setText("认证中...");
+                        WaitDialog.show("认证中...");
                         setAuthenticateWay();
                         break;
 
@@ -386,18 +380,20 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void showProgressBar() {
-        progressOverlay.setVisibility(View.VISIBLE);
-        //TODO #gh# android:clickable="true" 和 android:focusable="true" 已经实现了禁止触摸遮罩层下面的 View,
-        // 防止点击未遮住的ToolBar，添加下面代码禁用窗体触摸
-        mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        WaitDialog.show(getString(R.string.ble_state_connecting))
+                .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
+                    @Override
+                    public boolean onBackPressed() {
+                        disconnectDevice();
+                        WaitDialog.dismiss();
+                        return false;
+                    }
+                });
     }
 
     private void hideProgressBar() {
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        progressOverlay.setVisibility(View.GONE);
-        //get user interaction back
-        mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        WaitDialog.dismiss();
     }
 
     private void onConnectionStateChanged(boolean isConnected) {

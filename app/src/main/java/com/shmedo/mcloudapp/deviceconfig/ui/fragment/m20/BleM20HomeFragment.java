@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
@@ -56,12 +57,6 @@ import timber.log.Timber;
  */
 public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
-
-    @BindView(R.id.progress_overlay)
-    View progressOverlay;
-
-    @BindView(R.id.tv_progress_text)
-    TextView mTvProgressText;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -204,7 +199,6 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                     case CONNECTING://A connection to the device was initiated.
                         startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                         showProgressBar();
-                        mTvProgressText.setText(R.string.ble_state_connecting);
                         break;
 
                     case INITIALIZING://The device has connected and begun service discovery and initialization.
@@ -212,7 +206,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        mTvProgressText.setText("初始化中...");
+                        WaitDialog.show("初始化中...");
                         //查询设备 ApiKey
                         bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
@@ -277,18 +271,20 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     private void showProgressBar() {
-        progressOverlay.setVisibility(View.VISIBLE);
-        //TODO #gh# android:clickable="true" 和 android:focusable="true" 已经实现了禁止触摸遮罩层下面的 View,
-        // 防止点击未遮住的ToolBar，添加下面代码禁用窗体触摸
-        mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        WaitDialog.show(getString(R.string.ble_state_connecting))
+                .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
+                    @Override
+                    public boolean onBackPressed() {
+                        disconnectDevice();
+                        WaitDialog.dismiss();
+                        return false;
+                    }
+                });
     }
 
     private void hideProgressBar() {
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        progressOverlay.setVisibility(View.GONE);
-        //get user interaction back
-        mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        WaitDialog.dismiss();
     }
 
     private void initConfigModuleData() {

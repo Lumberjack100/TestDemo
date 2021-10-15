@@ -56,11 +56,6 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
-    @BindView(R.id.progress_overlay)
-    View progressOverlay;
-
-    @BindView(R.id.tv_progress_text)
-    TextView mTvProgressText;
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称

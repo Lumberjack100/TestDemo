@@ -70,8 +70,8 @@
 
     </LinearLayout>
 
-    <include
-        layout="@layout/include_progress_overlay" />
+   <!-- <include
+        layout="@layout/include_progress_overlay" />-->
 
 </RelativeLayout>
 
