@@ -445,7 +445,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
                         holder.setText(R.id.tv_title1, "风速(m/s)");
                         holder.setText(R.id.tv_title2, "风向(°)");
-                        holder.setText(R.id.tv_title3, "湿度(RH)");
+                        holder.setText(R.id.tv_title3, "湿度(%RH)");
                         holder.setText(R.id.tv_title4, "温度(℃)");
                         holder.setText(R.id.tv_title5, "气压(KPa)");
 
