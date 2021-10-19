@@ -14,176 +14,106 @@ public enum CollectorModel {
     /**
      * 振弦式采集器
      */
-    VW08("00"){
-        @Override
-        public String getDescription() {
-            return "振弦式采集器";
-        }
-    },
+    VW08("00","振弦式采集器"),
 
     /**
      * 雨量采集器
      */
-    RAIN08("01"){
-        @Override
-        public String getDescription() {
-            return "雨量计";
-        }
-    },
+    RAIN08("01","雨量计"),
 
     /**
      * 裂缝计采集器
      */
-    DS08("02"){
-        @Override
-        public String getDescription() {
-            return "裂缝计";
-        }
-    },
+    DS08("02","裂缝计"),
 
     /**
      * 土壤湿度采集器
      */
-    HD08("03"){
-        @Override
-        public String getDescription() {
-            return "管式含水率计";
-        }
-    },
+    HD08("03","管式含水率计"),
 
     /**
      * 测斜仪采集器
      */
-    CX08("04"){
-        @Override
-        public String getDescription() {
-            return "固定测斜仪";
-        }
-    },
+    CX08("04","固定测斜仪"),
 
     /**
      * 超声波采集器
      */
-    UDS08("06"){
-        @Override
-        public String getDescription() {
-            return "超声波液(物)位计";
-        }
-    },
+    UDS08("06","超声波液(物)位计"),
 
     /**
      * 雷达采集器
      */
-    RD08("07"){
-        @Override
-        public String getDescription() {
-            return "雷达液(物)位计";
-        }
-    },
+    RD08("07","雷达液(物)位计"),
 
     /**
      * 墒情采集器
      */
-    SMC08("08"){
-        @Override
-        public String getDescription() {
-            return "墒情计";
-        }
-    },
+    SMC08("08","墒情计"),
 
     /**
      * 温湿度采集器
      */
-    TH08("12"){
-        @Override
-        public String getDescription() {
-            return "温湿度计";
-        }
-    },
+    TH08("12","温湿度计"),
 
     /**
      * 数字式渗压计采集器
      */
-    DVWP("15"){
-        @Override
-        public String getDescription() {
-            return "扬压力计";
-        }
-    },
+    DVWP("15","扬压力计"),
 
     /**
      * 倾角仪采集器
      */
-    QJY08("16"){
-        @Override
-        public String getDescription() {
-            return "倾角仪";
-        }
-    },
+    QJY08("16","倾角仪"),
 
     /**
      * 单通道采集器
      */
-    VW01("20"){
-        @Override
-        public String getDescription() {
-            return "单通道采集器";
-        }
-    },
+    VW01("20","单通道采集器"),
 
     /**
      * 次声采集器
      */
-    CS08("21"){
-        @Override
-        public String getDescription() {
-            return "次声仪";
-        }
-    },
+    CS08("21","次声仪"),
 
     /**
      * 量水堰
      */
-    LSY("22"){
-        @Override
-        public String getDescription() {
-            return "量水堰计";
-        }
-    },
+    LSY("22","量水堰计"),
 
     /**
      * 气象站
      */
-    QXZ("25"){
-        @Override
-        public String getDescription() {
-            return "气象计";
-        }
-    },
+    QXZ("25","气象计"),
 
     /**
      * 浊度仪传感器
      */
-    ZDY("26"){
-        @Override
-        public String getDescription() {
-            return "浊度仪";
-        }
-    };
+    ZDY("26","浊度仪");
 
-    private String code;
-
-    CollectorModel(String code) {
+    CollectorModel(String code,String description) {
         this.code = code;
+        this.description = description;
     }
 
+    private String code;
+    private String description;
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     @Override
     public String toString() {
-        return this.code;
+        return "CollectorModel{" +
+                "code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
-
-    public abstract String getDescription(); // 抽象方法
 
     public static CollectorModel value(String code) {
         if (TextUtils.isEmpty(code))

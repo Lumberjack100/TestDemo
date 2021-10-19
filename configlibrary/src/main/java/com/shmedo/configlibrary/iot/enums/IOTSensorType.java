@@ -14,238 +14,140 @@ public enum IOTSensorType {
     /**
      * 压电式雨量计
      */
-    RAIN_GAUGE("1"){
-        @Override
-        public String getDescription() {
-            return "雨量计";
-        }
-    },
+    RAIN_GAUGE("1", "雨量计"),
 
     /**
      * 拉线位移计 MPS-M-2000
      */
-    WIRE_SHIFT("2"){
-        @Override
-        public String getDescription() {
-            return "裂缝计";
-        }
-    },
+    WIRE_SHIFT("2", "裂缝计"),
 
     /**
      * 土壤含水率 TR-3000
      */
-    SOIL_MOISTURE("3"){
-        @Override
-        public String getDescription() {
-            return "管式含水率计";
-        }
-    },
+    SOIL_MOISTURE("3", "管式含水率计"),
 
     /**
      * 测斜仪 I-P-I
      */
-    INCLINOMETER("4"){
-        @Override
-        public String getDescription() {
-            return "固定测斜仪";
-        }
-    },
+    INCLINOMETER("4", "固定测斜仪"),
 
     /**
      * 超声波物位计 HBRD908
      */
-    ULTRASONIC_LEVEL_GAUGE("6"){
-        @Override
-        public String getDescription() {
-            return "超声波液(物)位计";
-        }
-    },
+    ULTRASONIC_LEVEL_GAUGE("6", "超声波液(物)位计"),
 
     /**
      * 雷达物位计 MH-A15R
      */
-    RADAR_LEVEL_GAUGE("7"){
-        @Override
-        public String getDescription() {
-            return "雷达液(物)位计";
-        }
-    },
+    RADAR_LEVEL_GAUGE("7", "雷达液(物)位计"),
 
     /**
      * 墒情计 EP100G
      */
-    MOISTURE_METER("8"){
-        @Override
-        public String getDescription() {
-            return "墒情计";
-        }
-    },
+    MOISTURE_METER("8", "墒情计"),
 
     /**
      * 温湿度计 CSW18
      */
-    TEMPERATURE_HUMIDITY_METER("12"){
-        @Override
-        public String getDescription() {
-            return "温湿度计";
-        }
-    },
+    TEMPERATURE_HUMIDITY_METER("12", "温湿度计"),
 
     /**
      * 扬压力计 VWP-G
      */
-    UPLIFT_PRESSURE_GAUGE("15"){
-        @Override
-        public String getDescription() {
-            return "扬压力计";
-        }
-    },
+    UPLIFT_PRESSURE_GAUGE("15", "扬压力计"),
 
     /**
      * 陆岩倾角仪 LY215
      */
-    LUYAN_INCLINOMETER("16"){
-        @Override
-        public String getDescription() {
-            return "倾角仪";
-        }
-    },
+    LUYAN_INCLINOMETER("16", "倾角仪"),
 
     /**
      * 次声传感器
      */
-    INFRASOUND("21"){
-        @Override
-        public String getDescription() {
-            return "次声仪";
-        }
-    },
+    INFRASOUND("21", "次声仪"),
 
     /**
      * 量水堰传感器
      */
-    WEIR("22"){
-        @Override
-        public String getDescription() {
-            return "量水堰计";
-        }
-    },
+    WEIR("22", "量水堰计"),
 
     /**
      * 气象站
      */
-    WEATHER_STATION("25"){
-        @Override
-        public String getDescription() {
-            return "气象计";
-        }
-    },
+    WEATHER_STATION("25", "气象计"),
 
     /**
      * 浊度仪传感器
      */
-    TURBIDITY_METER("26"){
-        @Override
-        public String getDescription() {
-            return "浊度仪";
-        }
-    },
+    TURBIDITY_METER("26", "浊度仪"),
 
     /**
      * 基康渗压计 BGK-4500
      */
-    KANG_PERCOLATE("50"){
-        @Override
-        public String getDescription() {
-            return "基康渗压计";
-        }
-    },
+    KANG_PERCOLATE("50", "基康渗压计"),
 
     /**
      * 葛南渗压计 VWP-03
      */
-    GUDAN_PERCOLATE("51"){
-        @Override
-        public String getDescription() {
-            return "葛南渗压计";
-        }
-    },
+    GUDAN_PERCOLATE("51", "葛南渗压计"),
 
     /**
      * 葛南土压力盒 VWE-0.6
      */
-    GUDAN_SOIL_PRESSURE("52"){
-        @Override
-        public String getDescription() {
-            return "葛南土压力计";
-        }
-    },
+    GUDAN_SOIL_PRESSURE("52", "葛南土压力计"),
 
     /**
      * 葛南应力计 VWS-15
      */
-    GUDAN_STRESS("53"){
-        @Override
-        public String getDescription() {
-            return "葛南应力计";
-        }
-    },
+    GUDAN_STRESS("53", "葛南应力计"),
 
     /**
      * 葛南无应力计 VWS-15M
      */
-    GUDAN_NOT_STRESS("54"){
-        @Override
-        public String getDescription() {
-            return "葛南无应力计";
-        }
-    },
+    GUDAN_NOT_STRESS("54", "葛南无应力计"),
 
     /**
      * 葛南位移计 VWD-100
      */
-    GUDAN_DISPLACEMENT_METER("55"){
-        @Override
-        public String getDescription() {
-            return "葛南位移计";
-        }
-    },
+    GUDAN_DISPLACEMENT_METER("55", "葛南位移计"),
 
     /**
      * 轴力计 ZLJ-300T
      */
-    JUNXING_ZLJ_300T("58"){
-        @Override
-        public String getDescription() {
-            return "轴力计";
-        }
-    },
+    JUNXING_ZLJ_300T("58", "轴力计"),
 
-    UNKNOWN_TYPE("-1"){
-        @Override
-        public String getDescription() {
-            return "未知类型";
-        }
-    };
+    UNKNOWN_TYPE("-1", "未知类型");
 
-    private String code;
-
-    IOTSensorType(String code) {
+    IOTSensorType(String code, String description) {
         this.code = code;
+        this.description = description;
     }
 
-    public String toString() {
+    private String code;
+    private String description;
+
+    public String getCode() {
         return code;
     }
 
-    public abstract String getDescription(); // 抽象方法
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public String toString() {
+        return "IOTSensorType{" +
+                "code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 
     public static IOTSensorType value(String code) {
         if (TextUtils.isEmpty(code))
             return UNKNOWN_TYPE;
 
         for (IOTSensorType sensorType : IOTSensorType.values()) {
-            if(sensorType.code.equals(code))
+            if (sensorType.code.equals(code))
                 return sensorType;
         }
 
