@@ -34,6 +34,9 @@ public class DasExternalSensorEntity implements Validater {
 
     private String elastic_mod;//膨胀系数(应力计)
 
+    private String lsycsds;//初始读数
+    private String lsyysst;//堰上水头
+
 
     public void setIndex(String index) {
         this.index = index;
@@ -105,6 +108,14 @@ public class DasExternalSensorEntity implements Validater {
 
     public void setElastic_mod(String elastic_mod) {
         this.elastic_mod = elastic_mod;
+    }
+
+    public void setLsycsds(String lsycsds) {
+        this.lsycsds = lsycsds;
+    }
+
+    public void setLsyysst(String lsyysst) {
+        this.lsyysst = lsyysst;
     }
 
     @Override
@@ -183,6 +194,15 @@ public class DasExternalSensorEntity implements Validater {
         }
         if (!TextUtils.isEmpty(elastic_mod)) {
             stringBuilder.append("elastic_mod=" + elastic_mod);
+            stringBuilder.append("&");
+        }
+
+        if (!TextUtils.isEmpty(lsycsds)) {
+            stringBuilder.append("lsycsds=" + lsycsds);
+            stringBuilder.append("&");
+        }
+        if (!TextUtils.isEmpty(lsyysst)) {
+            stringBuilder.append("lsyysst=" + lsyysst);
             stringBuilder.append("&");
         }
 

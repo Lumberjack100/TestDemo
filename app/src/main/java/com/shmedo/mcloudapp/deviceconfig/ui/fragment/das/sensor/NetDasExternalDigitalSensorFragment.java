@@ -223,6 +223,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                         mEtHeadOnWeir.setText(headOnWeir);
                     }
                     break;
+
+                case TURBIDITY_METER_SENSOR://浊度仪传感器
+                    mTvAlarmValue.setText("报警值(单位:m/s)");
+                    mTvCorrectValue.setText("修正值(单位:m/s)");
+                    break;
             }
         } catch (Exception ex) {
             ex.printStackTrace();

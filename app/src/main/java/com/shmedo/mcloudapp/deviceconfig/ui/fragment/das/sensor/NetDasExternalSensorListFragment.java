@@ -351,6 +351,10 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         } else if (externalSensorInfo.getType().equals("4")) {//测斜仪
             entity.setSpacing(externalSensorInfo.getSpacing());
             entity.setHolenum(externalSensorInfo.getHolenum());
+
+        }else if (externalSensorInfo.getType().equals("22")) {//量水堰
+            entity.setLsycsds(externalSensorInfo.getLsycsds());
+            entity.setLsyysst(externalSensorInfo.getLsyysst());
         }
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));

@@ -477,6 +477,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     }
                     break;
 
+                    case TURBIDITY_METER_SENSOR://浊度仪传感器
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_radar_level_gauge));
+                        holder.setVisibleOrGone(R.id.value2Layout, false);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "浊度(NTU)");
+                        decimalFormat.applyPattern("#.##");
+                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                        break;
+
                     default:
                         holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
                         break;

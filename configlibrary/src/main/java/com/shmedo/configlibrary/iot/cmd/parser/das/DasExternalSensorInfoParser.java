@@ -47,6 +47,8 @@ public class DasExternalSensorInfoParser implements IOTResultParser<DasExternalS
             info.setTemp_b(TextUtils.isEmpty(keyValueMap.get("temp_b")) ? "" : keyValueMap.get("temp_b"));
             info.setReferval_f(TextUtils.isEmpty(keyValueMap.get("referval_f")) ? "" : keyValueMap.get("referval_f"));
             info.setElastic_mod(TextUtils.isEmpty(keyValueMap.get("elastic_mod")) ? "" : keyValueMap.get("elastic_mod"));
+            info.setLsycsds(TextUtils.isEmpty(keyValueMap.get("lsycsds")) ? "" : keyValueMap.get("lsycsds"));
+            info.setLsyysst(TextUtils.isEmpty(keyValueMap.get("lsyysst")) ? "" : keyValueMap.get("lsyysst"));
 
             return info;
         } catch (Exception ex) {

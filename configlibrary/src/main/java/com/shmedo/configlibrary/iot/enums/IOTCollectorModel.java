@@ -72,7 +72,12 @@ public enum IOTCollectorModel {
     /**
      * 气象站
      */
-    QXZ("25");
+    QXZ("25"),
+
+    /**
+     * 浊度仪传感器
+     */
+    ZDY("26");
 
     private String model;
 
@@ -80,47 +85,21 @@ public enum IOTCollectorModel {
         this.model = model;
     }
 
-
     @Override
     public String toString() {
         return this.model;
     }
 
     public static IOTCollectorModel value(String model) {
-        switch (model) {
-            case "0":
-                return VW08;
-            case "1":
-                return RAIN08;
-            case "2":
-                return DS08;
-            case "3":
-                return HD08;
-            case "4":
-                return CX08;
-            case "6":
-                return UDS08;
-            case "7":
-                return RD08;
-            case "8":
-                return SMC08;
-            case "12":
-                return TH08;
-            case "15":
-                return DVWP;
-            case "16":
-                return QJY08;
-            case "20":
-                return VW01;
-            case "21":
-                return CS08;
-            case "22":
-                return LSY;
-            case "25":
-                return QXZ;
-            default:
-                return VW08;
+        if (TextUtils.isEmpty(model))
+            return VW08;
+
+        for (IOTCollectorModel collectorModel : IOTCollectorModel.values()) {
+            if(collectorModel.model.equals(model))
+                return collectorModel;
         }
+
+        return VW08;
     }
 
     public static boolean isValidCollector(String coll) {

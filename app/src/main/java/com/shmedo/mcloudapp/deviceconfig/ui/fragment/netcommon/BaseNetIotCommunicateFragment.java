@@ -316,7 +316,8 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     // 取消请求
     private void cancelRequest() {
-        if (cmdResultDisposable != null && !cmdResultDisposable.isDisposed()) {
+        if (cmdResultDisposable != null) {
+            Timber.d("取消请求");
             stopQueryCmdResponse();
             cmdResultDisposable.dispose();
             cmdResultDisposable = null;
