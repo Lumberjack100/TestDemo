@@ -39,7 +39,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_trigger_threshold"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="number" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
@@ -55,7 +55,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_revised"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberDecimal" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
@@ -72,7 +72,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_measure_long"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberDecimal" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
@@ -97,7 +97,7 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_initial_reading"
                 style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberDecimal" />
+                android:inputType="numberSigned|numberDecimal" />
 
         </LinearLayout>
 
@@ -114,7 +114,7 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_head_on_weir"
                 style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberDecimal" />
+                android:inputType="numberSigned|numberDecimal" />
 
         </LinearLayout>
 

@@ -76,7 +76,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     ViewGroup weirLayout;
 
 
-    private DecimalFormat decimalFormat = new DecimalFormat();
+    private DecimalFormat decimalFormat = new DecimalFormat("#.###");
 
     private IOTSensorType iotSensorType;//传感器类型
     private ArrayList<String> addressList = new ArrayList<>();
@@ -148,12 +148,12 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             headOnWeir = externalSensorInfo.getLsyysst();
 
             mEtModbusAddress.setText(sensorAddress);
-            decimalFormat.applyPattern("#.#");
+//            decimalFormat.applyPattern("#.###");
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
                 mEtAlarmValue.setText(triggerThreshold);
             }
-            decimalFormat.applyPattern("#.###");
+//            decimalFormat.applyPattern("#.###");
             if (!TextUtils.isEmpty(correctValue)) {
                 correctValue = decimalFormat.format(Double.parseDouble(correctValue));
                 mEtCorrectValue.setText(correctValue);
@@ -180,7 +180,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvCorrectValue.setText("修正值(单位:m)");
                     mTvMeasureLong.setText("测段长(单位:mm)");
 
-                    decimalFormat.applyPattern("#.#");
+//                    decimalFormat.applyPattern("#.#");
                     if (!TextUtils.isEmpty(measureLong)) {
                         measureLong = decimalFormat.format(Double.parseDouble(measureLong));
                         mEtMeasureLong.setText(measureLong);
@@ -213,7 +213,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvInitialReading.setText("初始读数(单位:mm)");
                     mTvHeadOnWeir.setText("堰上水头(单位:mm)");
 
-                    decimalFormat.applyPattern("#.#");
+//                    decimalFormat.applyPattern("#.#");
                     if (!TextUtils.isEmpty(initialReading)) {
                         initialReading = decimalFormat.format(Double.parseDouble(initialReading));
                         mEtInitialReading.setText(initialReading);
@@ -282,12 +282,15 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         }
 
         if (TextUtils.isEmpty(triggerThreshold)) {
-            ToastUtils.show("触发值不能为空!");
+            ToastUtils.show("报警值不能为空!");
             mEtAlarmValue.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(triggerThreshold)) {
-            ToastUtils.show("请输入正确的触发值!");
+        try {
+            double value = Double.parseDouble(triggerThreshold);
+
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的报警值!");
             mEtAlarmValue.requestFocus();
             return false;
         }

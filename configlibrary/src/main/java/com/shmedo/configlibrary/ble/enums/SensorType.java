@@ -86,7 +86,9 @@ public enum SensorType {
     /**
      * 轴力计 ZLJ-300T
      */
-    JUNXING_ZLJ_300T("58");
+    JUNXING_ZLJ_300T("58"),
+
+    UNKNOWN_TYPE("-1");
 
     private String type;
 
@@ -99,48 +101,15 @@ public enum SensorType {
     }
 
     public static SensorType value(String type) {
-        switch (type) {
-            case "01":
-                return RAIN_GAUGE;
-            case "02":
-                return WIRE_SHIFT;
-            case "03":
-                return SOIL_MOISTURE;
-            case "04":
-                return INCLINOMETER;
-            case "06":
-                return ULTRASONIC_LEVEL_GAUGE;
-            case "07":
-                return RADAR_LEVEL_GAUGE;
-            case "08":
-                return MOISTURE_METER;
-            case "12":
-                return TEMPERATURE_HUMIDITY_METER;
-            case "15":
-                return UPLIFT_PRESSURE_GAUGE;
-            case "16":
-                return LUYAN_INCLINOMETER;
-            case "21":
-                return INFRASOUND_SENSOR;
-            case "25":
-                return WEATHER_STATION;
-            case "50":
-                return KANG_PERCOLATE;
-            case "51":
-                return GUDAN_PERCOLATE;
-            case "52":
-                return GUDAN_SOIL_PRESSURE;
-            case "53":
-                return GUDAN_STRESS;
-            case "54":
-                return GUDAN_NOT_STRESS;
-            case "55":
-                return GUDAN_DISPLACEMENT_METER;
-            case "58":
-                return JUNXING_ZLJ_300T;
-            default:
-                return null;
+        if (TextUtils.isEmpty(type))
+            return UNKNOWN_TYPE;
+
+        for (SensorType sensorType : SensorType.values()) {
+            if(sensorType.type.equals(type))
+                return sensorType;
         }
+
+        return UNKNOWN_TYPE;
     }
 
     public static boolean isValidSensor(String coll) {
