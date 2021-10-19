@@ -290,7 +290,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
         bean.setChannelNumber(strs[0].substring(7, 9));
         bean.setSensorAddress(strs[1]);
-        bean.setSensorType(SensorType.INFRASOUND_SENSOR);
+        bean.setSensorType(SensorType.INFRASOUND);
         info.setTriggerThreshold(strs[3]);
         info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
         bean.setSensorData(info);
@@ -309,7 +309,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         bean.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
         bean.setChannelNumber(strs[0].substring(7, 9));
         bean.setSensorAddress(strs[1]);
-        bean.setSensorType(SensorType.INFRASOUND_SENSOR);
+        bean.setSensorType(SensorType.INFRASOUND);
         info.setTriggerThreshold(strs[3]);
         info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
         bean.setSensorData(info);

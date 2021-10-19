@@ -461,7 +461,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     }
                     break;
 
-                    case WEIR_SENSOR: {//量水堰
+                    case WEIR: {//量水堰
                         holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weir));
                         holder.setVisibleOrGone(R.id.value2Layout, true);
                         holder.setVisibleOrGone(R.id.value3Layout, false);
@@ -477,7 +477,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     }
                     break;
 
-                    case TURBIDITY_METER_SENSOR://浊度仪传感器
+                    case TURBIDITY_METER://浊度仪传感器
                         holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_radar_level_gauge));
                         holder.setVisibleOrGone(R.id.value2Layout, false);
                         holder.setVisibleOrGone(R.id.value3Layout, false);

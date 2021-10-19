@@ -33,7 +33,6 @@ import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorYLJView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
-import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -146,7 +145,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                 }
             }
         }
-        String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
+        String sensorName = selectedSensorType.getDescription();
         mToolbarTitle.setText(sensorName);
     }
 
@@ -277,7 +276,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                                     sensorZLJ300tView.setVisibility(View.GONE);
                                     sensorYLJView.setVisibility(View.VISIBLE);
                                 }
-                                String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
+                                String sensorName = selectedSensorType.getDescription();
                                 mToolbarTitle.setText(sensorName);
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_match)
@@ -445,7 +444,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                             default:
                                 break;
                         }
-                        String sensorName = BlueResultParserUtil.getSensorName(selectedSensorType);
+                        String sensorName = selectedSensorType.getDescription();
                         mToolbarTitle.setText(sensorName);
                     }
                 });

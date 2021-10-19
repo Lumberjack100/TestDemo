@@ -71,6 +71,6 @@ public class SensorInfrasoundInfo implements SensorParameter, Parcelable {
 
     @Override
     public SensorType getSensorType() {
-        return SensorType.INFRASOUND_SENSOR;
+        return SensorType.INFRASOUND;
     }
 }

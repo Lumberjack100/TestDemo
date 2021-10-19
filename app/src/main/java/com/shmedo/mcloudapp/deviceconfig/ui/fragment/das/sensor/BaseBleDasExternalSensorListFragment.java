@@ -42,7 +42,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalVibra
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
-import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -98,7 +97,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             collectorModelValue = getArguments().getString(AppContants.Extras.COLLECTOR_MODE);
-            collectorName = BlueResultParserUtil.getCollectorName(CollectorModel.value(collectorModelValue));
+            collectorName = CollectorModel.value(collectorModelValue).getDescription();
             if (CollectorModel.value(collectorModelValue) == CollectorModel.VW08) {//振弦式传感器
                 isVibratingWireSensor = true;
             }
@@ -418,7 +417,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 break;
 
             case CS08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.INFRASOUND_SENSOR);
+                defaultCollectorSensorParamsInfo.setSensorType(SensorType.INFRASOUND);
                 break;
 
             case QXZ:

@@ -125,7 +125,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             measureLongLayout.setVisibility(View.VISIBLE);
         }
 
-        if (iotSensorType != null && iotSensorType == IOTSensorType.WEIR_SENSOR) {
+        if (iotSensorType != null && iotSensorType == IOTSensorType.WEIR) {
             weirLayout.setVisibility(View.VISIBLE);
         }
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
@@ -197,7 +197,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvCorrectValue.setText("安装高程(单位:m)");
                     break;
 
-                case INFRASOUND_SENSOR://次声
+                case INFRASOUND://次声
                     mTvAlarmValue.setText("报警值(单位:Hz)");
                     mTvCorrectValue.setText("修正值(单位:Hz)");
                     break;
@@ -207,7 +207,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvCorrectValue.setText("修正值(单位:m/s)");
                     break;
 
-                case WEIR_SENSOR://量水堰
+                case WEIR://量水堰
                     mTvAlarmValue.setText("报警值(单位:m³/s)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
                     mTvInitialReading.setText("初始读数(单位:mm)");
@@ -224,7 +224,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     }
                     break;
 
-                case TURBIDITY_METER_SENSOR://浊度仪传感器
+                case TURBIDITY_METER://浊度仪传感器
                     mTvAlarmValue.setText("报警值(单位:m/s)");
                     mTvCorrectValue.setText("修正值(单位:m/s)");
                     break;
@@ -325,7 +325,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             }
         }
 
-        if (iotSensorType == IOTSensorType.WEIR_SENSOR) {
+        if (iotSensorType == IOTSensorType.WEIR) {
             if (TextUtils.isEmpty(initialReading)) {
                 ToastUtils.show("初始读数不能为空!");
                 mEtInitialReading.requestFocus();

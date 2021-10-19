@@ -26,7 +26,6 @@ import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -121,7 +120,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             addressList.remove(sensorAddress);
         }
 
-        String sensorName = BlueResultParserUtil.getSensorName(sensorType);
+        String sensorName = sensorType.getDescription();
         mToolbarTitle.setText(sensorName);
     }
 
@@ -203,7 +202,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 }
                 break;
 
-            case INFRASOUND_SENSOR://次声
+            case INFRASOUND://次声
                 mTvAlarmValue.setText("报警值(单位:Hz)");
                 mTvCorrectValue.setText("修正值(单位:Hz)");
                 if (parcelableData != null) {
@@ -311,7 +310,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             }
             break;
 
-            case INFRASOUND_SENSOR: {//次声
+            case INFRASOUND: {//次声
                 SensorInfrasoundInfo sensorInfrasoundInfo = new SensorInfrasoundInfo();
                 sensorInfrasoundInfo.setTriggerThreshold(triggerThreshold);
                 sensorInfrasoundInfo.setCorrectionValue(correctValue);

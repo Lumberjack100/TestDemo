@@ -55,7 +55,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDial
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
-import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
@@ -578,7 +577,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         //获取采集器类型
         if (!TextUtils.isEmpty(collectorModel)) {
             CollectorModel model = CollectorModel.value(collectorModel);
-            String collectorName = BlueResultParserUtil.getCollectorName(model);
+            String collectorName = model.getDescription();
             mTvSubModel.setText(String.format("采集器型号：%s", TextUtils.isEmpty(collectorName) ? "" : collectorName));
         }
 
