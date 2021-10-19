@@ -36,30 +36,52 @@ import timber.log.Timber;
 public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
     @BindView(R.id.tv_triggerThreshold)
-    TextView mTvAlarmValue;
+    TextView mTvAlarmValue;//报警值
+
     @BindView(R.id.tv_correctionValue)
-    TextView mTvCorrectValue;
+    TextView mTvCorrectValue;//修正值
+
     @BindView(R.id.tv_measure_long)
-    TextView mTvMeasureLong;
+    TextView mTvMeasureLong;//测段长
+
+    @BindView(R.id.tv_initial_reading)
+    TextView mTvInitialReading;//初始读数
+
+    @BindView(R.id.tv_head_on_weir)
+    TextView mTvHeadOnWeir;//堰上水头
+
 
     @BindView(R.id.et_modbus_address)
     EditText mEtModbusAddress;
+
     @BindView(R.id.et_trigger_threshold)
     EditText mEtAlarmValue;
+
     @BindView(R.id.et_revised)
     EditText mEtCorrectValue;
+
     @BindView(R.id.et_measure_long)
     EditText mEtMeasureLong;
 
+    @BindView(R.id.et_initial_reading)
+    EditText mEtInitialReading;
+
+    @BindView(R.id.et_head_on_weir)
+    EditText mEtHeadOnWeir;
+
     @BindView(R.id.measure_long_layout)
     ViewGroup measureLongLayout;
+
+    @BindView(R.id.weir_layout)
+    ViewGroup weirLayout;
+
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
     private IOTSensorType iotSensorType;//传感器类型
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
-    private String sensorAddress, triggerThreshold, correctValue, measureLong;
+    private String sensorAddress, triggerThreshold, correctValue, measureLong, initialReading, headOnWeir;
 
 
     public static NetDasExternalDigitalSensorFragment newInstance(ArrayList<String> addressList, IOTSensorType sensorType, DasExternalSensorInfo externalSensorInfo) {
@@ -101,17 +123,42 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         //测斜仪
         if (iotSensorType != null && iotSensorType == IOTSensorType.INCLINOMETER) {
             measureLongLayout.setVisibility(View.VISIBLE);
-        } else {
-            measureLongLayout.setVisibility(View.GONE);
+        }
+
+        if (iotSensorType != null && iotSensorType == IOTSensorType.WEIR_SENSOR) {
+            weirLayout.setVisibility(View.VISIBLE);
         }
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtMeasureLong.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtInitialReading.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtHeadOnWeir.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     private void initValue() {
         try {
+            if (externalSensorInfo == null)
+                externalSensorInfo = new DasExternalSensorInfo();
+            sensorAddress = externalSensorInfo.getAddr();
+            triggerThreshold = externalSensorInfo.getThreshold();
+            correctValue = externalSensorInfo.getCorrval();
+            measureLong = externalSensorInfo.getSpacing();
+            initialReading = externalSensorInfo.getLsycsds();
+            headOnWeir = externalSensorInfo.getLsyysst();
+
+            mEtModbusAddress.setText(sensorAddress);
+            decimalFormat.applyPattern("#.#");
+            if (!TextUtils.isEmpty(triggerThreshold)) {
+                triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
+                mEtAlarmValue.setText(triggerThreshold);
+            }
+            decimalFormat.applyPattern("#.###");
+            if (!TextUtils.isEmpty(correctValue)) {
+                correctValue = decimalFormat.format(Double.parseDouble(correctValue));
+                mEtCorrectValue.setText(correctValue);
+            }
+
             switch (iotSensorType) {
                 case RAIN_GAUGE://压电式雨量计
                     mTvAlarmValue.setText("报警值(单位:mm)");
@@ -132,6 +179,12 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     mTvMeasureLong.setText("测段长(单位:mm)");
+
+                    decimalFormat.applyPattern("#.#");
+                    if (!TextUtils.isEmpty(measureLong)) {
+                        measureLong = decimalFormat.format(Double.parseDouble(measureLong));
+                        mEtMeasureLong.setText(measureLong);
+                    }
                     break;
 
                 case ULTRASONIC_LEVEL_GAUGE://超声波物位计
@@ -153,31 +206,23 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvAlarmValue.setText("报警值(单位:m/s)");
                     mTvCorrectValue.setText("修正值(单位:m/s)");
                     break;
-            }
-            if (externalSensorInfo == null) {
-                return;
-            }
-            sensorAddress = externalSensorInfo.getAddr();
-            triggerThreshold = externalSensorInfo.getThreshold();
-            correctValue = externalSensorInfo.getCorrval();
-            measureLong = externalSensorInfo.getSpacing();
 
-            mEtModbusAddress.setText(sensorAddress);
+                case WEIR_SENSOR://量水堰
+                    mTvAlarmValue.setText("报警值(单位:m³/s)");
+                    mTvCorrectValue.setText("修正值(单位:mm)");
+                    mTvInitialReading.setText("初始读数(单位:mm)");
+                    mTvHeadOnWeir.setText("堰上水头(单位:mm)");
 
-            decimalFormat.applyPattern("#.#");
-            if (!TextUtils.isEmpty(triggerThreshold)) {
-                triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
-                mEtAlarmValue.setText(triggerThreshold);
-            }
-
-            decimalFormat.applyPattern("#.###");
-            if (!TextUtils.isEmpty(correctValue)) {
-                correctValue = decimalFormat.format(Double.parseDouble(correctValue));
-                mEtCorrectValue.setText(correctValue);
-            }
-            if (!TextUtils.isEmpty(measureLong)) {
-                measureLong = decimalFormat.format(Double.parseDouble(measureLong));
-                mEtMeasureLong.setText(measureLong);
+                    decimalFormat.applyPattern("#.#");
+                    if (!TextUtils.isEmpty(initialReading)) {
+                        initialReading = decimalFormat.format(Double.parseDouble(initialReading));
+                        mEtInitialReading.setText(initialReading);
+                    }
+                    if (!TextUtils.isEmpty(headOnWeir)) {
+                        headOnWeir = decimalFormat.format(Double.parseDouble(headOnWeir));
+                        mEtHeadOnWeir.setText(headOnWeir);
+                    }
+                    break;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -205,6 +250,8 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         triggerThreshold = mEtAlarmValue.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
         measureLong = mEtMeasureLong.getText().toString().trim();
+        initialReading = mEtInitialReading.getText().toString().trim();
+        headOnWeir = mEtHeadOnWeir.getText().toString().trim();
 
         if (TextUtils.isEmpty(sensorAddress)) {
             ToastUtils.show("传感器地址不能为空!");
@@ -269,6 +316,36 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 return false;
             }
         }
+
+        if (iotSensorType == IOTSensorType.WEIR_SENSOR) {
+            if (TextUtils.isEmpty(initialReading)) {
+                ToastUtils.show("初始读数不能为空!");
+                mEtInitialReading.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(initialReading);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的初始读数!");
+                mEtInitialReading.requestFocus();
+                return false;
+            }
+
+            if (TextUtils.isEmpty(headOnWeir)) {
+                ToastUtils.show("堰上水头不能为空!");
+                mEtHeadOnWeir.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(headOnWeir);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的堰上水头!");
+                mEtHeadOnWeir.requestFocus();
+                return false;
+            }
+        }
         return true;
     }
 
@@ -281,6 +358,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         externalSensorInfo.setThreshold(triggerThreshold);
         externalSensorInfo.setCorrval(correctValue);
         externalSensorInfo.setSpacing(measureLong);
+        externalSensorInfo.setLsycsds(initialReading);
+        externalSensorInfo.setLsyysst(headOnWeir);
+
 
         Intent intent = new Intent();
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);

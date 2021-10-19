@@ -461,6 +461,22 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     }
                     break;
 
+                    case WEIR_SENSOR: {//量水堰
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weir));
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "液位值(mm)");
+                        holder.setText(R.id.tv_title2, "渗流量(m³/s)");
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 2) {
+                            decimalFormat.applyPattern("#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            decimalFormat.applyPattern("#.###");
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                        }
+                    }
+                    break;
+
                     default:
                         holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
                         break;

@@ -55,6 +55,12 @@ public enum IOTSensorType {
      * 次声传感器
      */
     INFRASOUND_SENSOR("21"),
+
+    /**
+     * 量水堰传感器
+     */
+    WEIR_SENSOR("22"),
+
     /**
      * 气象站
      */
@@ -102,45 +108,68 @@ public enum IOTSensorType {
     }
 
     public static IOTSensorType value(String type) {
+
         switch (type) {
             case "1":
                 return RAIN_GAUGE;
+
             case "2":
                 return WIRE_SHIFT;
+
             case "3":
                 return SOIL_MOISTURE;
+
             case "4":
                 return INCLINOMETER;
+
             case "6":
                 return ULTRASONIC_LEVEL_GAUGE;
+
             case "7":
                 return RADAR_LEVEL_GAUGE;
+
             case "8":
                 return MOISTURE_METER;
+
             case "12":
                 return TEMPERATURE_HUMIDITY_METER;
+
             case "15":
                 return UPLIFT_PRESSURE_GAUGE;
+
             case "16":
                 return LUYAN_INCLINOMETER;
+
             case "21":
                 return INFRASOUND_SENSOR;
+
+            case "22":
+                return WEIR_SENSOR;
+
             case "25":
                 return WEATHER_STATION;
+
             case "50":
                 return KANG_PERCOLATE;
+
             case "51":
                 return GUDAN_PERCOLATE;
+
             case "52":
                 return GUDAN_SOIL_PRESSURE;
+
             case "53":
                 return GUDAN_STRESS;
+
             case "54":
                 return GUDAN_NOT_STRESS;
+
             case "55":
                 return GUDAN_DISPLACEMENT_METER;
+
             case "58":
                 return JUNXING_ZLJ_300T;
+
             default:
                 return UNKNOWN_TYPE;
         }

@@ -34,6 +34,10 @@ public class DasExternalSensorInfo implements Serializable {
 
     private String elastic_mod;//膨胀系数(应力计)
 
+    private String lsycsds;//初始读数
+    private String lsyysst;//堰上水头
+
+
 
     public String getIndex() {
         return TextUtils.isEmpty(index) ? "" : index;
@@ -177,5 +181,21 @@ public class DasExternalSensorInfo implements Serializable {
 
     public void setElastic_mod(String elastic_mod) {
         this.elastic_mod = elastic_mod;
+    }
+
+    public String getLsycsds() {
+        return TextUtils.isEmpty(lsycsds) ? "" : lsycsds;
+    }
+
+    public void setLsycsds(String lsycsds) {
+        this.lsycsds = lsycsds;
+    }
+
+    public String getLsyysst() {
+        return TextUtils.isEmpty(lsyysst) ? "" : lsyysst;
+    }
+
+    public void setLsyysst(String lsyysst) {
+        this.lsyysst = lsyysst;
     }
 }

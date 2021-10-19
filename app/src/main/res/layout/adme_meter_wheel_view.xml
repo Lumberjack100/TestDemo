@@ -61,7 +61,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_up_correction_parameters_one"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberDecimal" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
@@ -77,7 +77,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_up_correction_parameters_two"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberDecimal" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
@@ -93,7 +93,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_up_constant"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberDecimal" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
@@ -133,7 +133,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_down_correction_parameters_one"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberDecimal" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
@@ -149,7 +149,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_down_correction_parameters_two"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberDecimal" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
@@ -165,7 +165,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_down_constant"
             style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberDecimal" />
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 

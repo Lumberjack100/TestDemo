@@ -294,6 +294,9 @@ public class BlueResultParserUtil {
             case QXZ:
                 return IOTSensorType.WEATHER_STATION;
 
+            case LSY:
+                return IOTSensorType.WEIR_SENSOR;
+
             default:
                 return null;
         }

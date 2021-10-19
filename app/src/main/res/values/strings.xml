@@ -100,6 +100,7 @@
     <string name="sensor_gudan_stress">葛南应变计</string>
     <string name="sensor_junxing_zlj_300t">轴力计</string>
     <string name="sensor_weather_station">气象站</string>
+    <string name="sensor_weir">量水堰</string>
 
 
 </resources>
