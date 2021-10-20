@@ -15,6 +15,7 @@ import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
 import com.shmedo.configlibrary.ble.utils.CRC16;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.profile.USBSerialViewModel;
@@ -34,7 +35,6 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
-    protected int USB_SERIAL_LINK_QUERY = 0x11101;//
 
     protected static final int WRITE_TIME_OUT_500_MILLIS = 500;//发送指令超时时间
     protected static final int WRITE_TIME_OUT_1000_MILLIS = 1000;//发送指令超时时间
@@ -109,7 +109,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
     }
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == USB_SERIAL_LINK_QUERY) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode()) {
             String cmdStr = resultByteBuf.toString();
             resultByteBuf.reset();
             Timber.e("接收串口数据: %s", cmdStr);
@@ -156,7 +156,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
         atCommandItems.add(atCommandItem);//进入命令模式
 
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -169,7 +169,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.LINK, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**

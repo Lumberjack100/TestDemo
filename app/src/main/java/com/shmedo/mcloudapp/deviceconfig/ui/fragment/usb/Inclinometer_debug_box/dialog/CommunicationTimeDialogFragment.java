@@ -20,6 +20,7 @@ import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
 import com.shmedo.configlibrary.ble.utils.CRC16;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
@@ -39,7 +40,6 @@ import timber.log.Timber;
  * 描述：     设置蓝牙通讯时间
  */
 public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment {
-    private int USB_SERIAL_COMMUNICATION_TIME = 0x10001;//
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -110,7 +110,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_COMMUNICATION_TIME.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -131,7 +131,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
         atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_WAITING_LINK_TIME, command);
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_COMMUNICATION_TIME.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     private void setTime() {
@@ -147,7 +147,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
             atCommandItems.add(atCommandItem);
         }
 
-        sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_COMMUNICATION_TIME.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -304,7 +304,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
         if (atCommandItems.size() == 0)
             return;
         super.customHandleMessage(msg);
-        if (msg.what == USB_SERIAL_LINK_QUERY) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode()) {
             if (commandItem.getCommandType() == WHBLE102CommandType.LINK) {
                 if (isBluetoothConnected) {
                     exitCommand();
@@ -313,7 +313,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     ToastUtils.show("蓝牙未连接");
                 }
             }
-        } else if (msg.what == USB_SERIAL_COMMUNICATION_TIME) {
+        } else if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_COMMUNICATION_TIME.getCode()) {
             ATCommandItem commandItem = atCommandItems.getFirst();
             atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
@@ -350,7 +350,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                         mTvSleepTime.setText(sleepTime);
                         assembleSleepTimeCmd(sleepTime);
                     }
-                    sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
+                    sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_COMMUNICATION_TIME.getCode(), WRITE_TIME_OUT_500_MILLIS);
                 }
                 break;
 
@@ -388,7 +388,7 @@ public class CommunicationTimeDialogFragment extends BaseDebugBoxDialogFragment 
                     hexData = hexData.replace(" ", "").toUpperCase().trim();
                     if (hexData.equals("011008260001E262")) {
                         if (atCommandItems.size() > 0) {
-                            sendHexCommandFromCmdList(USB_SERIAL_COMMUNICATION_TIME, WRITE_TIME_OUT_500_MILLIS);
+                            sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_COMMUNICATION_TIME.getCode(), WRITE_TIME_OUT_500_MILLIS);
                         } else {
                             ToastUtils.show("保存成功");
                         }

@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
@@ -37,7 +38,6 @@ import timber.log.Timber;
  * 描述：     工作模式配置
  */
 public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
-    private int USB_SERIAL_WORK_MODE = 0x10001;//
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -101,7 +101,7 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_WORK_MODE, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_WORK_MODE.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -114,7 +114,7 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_WORK_MODE, "010304040001C4FB");
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_WORK_MODE, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_WORK_MODE.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -134,7 +134,7 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_WORK_MODE, command);
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_WORK_MODE, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_WORK_MODE.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     @OnClick({R.id.iv_close, R.id.ll_work_mode, R.id.btn_query_data, R.id.btn_save})
@@ -207,7 +207,7 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
         if (atCommandItems.size() == 0)
             return;
         super.customHandleMessage(msg);
-        if (msg.what == USB_SERIAL_LINK_QUERY) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode()) {
             if (commandItem.getCommandType() == WHBLE102CommandType.LINK) {
                 if (isBluetoothConnected) {
                     exitCommand();
@@ -216,7 +216,7 @@ public class ConfigWorkModeDialogFragment extends BaseDebugBoxDialogFragment {
                     ToastUtils.show("蓝牙未连接");
                 }
             }
-        } else if (msg.what == USB_SERIAL_WORK_MODE) {
+        } else if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_WORK_MODE.getCode()) {
             ATCommandItem commandItem = atCommandItems.getFirst();
             atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {

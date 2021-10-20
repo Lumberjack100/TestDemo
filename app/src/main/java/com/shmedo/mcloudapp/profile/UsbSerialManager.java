@@ -17,7 +17,6 @@ import com.hoho.android.usbserial.driver.UsbSerialPort;
 import com.hoho.android.usbserial.driver.UsbSerialProber;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.usbserial.livedata.USBConnectionStateLiveData;
 import com.shmedo.core.usbserial.livedata.state.USBConnectionState;
 import com.shmedo.mcloudapp.profile.callback.SerialListener;
@@ -35,6 +34,7 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class UsbSerialManager implements SerialListener {
+    private static final String INTENT_ACTION_GRANT_USB = "com.shmedo.mcloudapp.GRANT_USB";
 
     private enum Connected {False, Pending, True}
 
@@ -59,7 +59,7 @@ public class UsbSerialManager implements SerialListener {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (AppContants.UsbSerial.INTENT_ACTION_GRANT_USB.equals(intent.getAction())) {
+                if (INTENT_ACTION_GRANT_USB.equals(intent.getAction())) {
                     Boolean granted = intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false);
                     connect(granted);
                 }
@@ -86,7 +86,7 @@ public class UsbSerialManager implements SerialListener {
     }
 
     public void connect(Boolean permissionGranted) {
-        mContext.registerReceiver(broadcastReceiver, new IntentFilter(AppContants.UsbSerial.INTENT_ACTION_GRANT_USB));
+        mContext.registerReceiver(broadcastReceiver, new IntentFilter(INTENT_ACTION_GRANT_USB));
 
         UsbDevice device = null;
         UsbManager usbManager = (UsbManager) mContext.getSystemService(Context.USB_SERVICE);
@@ -114,7 +114,7 @@ public class UsbSerialManager implements SerialListener {
         usbSerialPort = driver.getPorts().get(portNum);
         UsbDeviceConnection usbConnection = usbManager.openDevice(driver.getDevice());
         if (usbConnection == null && permissionGranted == null && !usbManager.hasPermission(driver.getDevice())) {
-            PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(AppContants.UsbSerial.INTENT_ACTION_GRANT_USB), 0);
+            PendingIntent usbPermissionIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(INTENT_ACTION_GRANT_USB), 0);
             usbManager.requestPermission(driver.getDevice(), usbPermissionIntent);
             return;
         }

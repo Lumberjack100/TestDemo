@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
@@ -36,7 +37,6 @@ import timber.log.Timber;
  * 描述：    查询测斜仪电池电压数据
  */
 public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
-    private int USB_SERIAL_DATA_QUERY = 0x10001;//
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -94,7 +94,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DATA_QUERY.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -109,7 +109,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_BATTERY_VOLTAGE, command);
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DATA_QUERY.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     @OnClick({R.id.iv_close, R.id.btn_query_data})
@@ -138,7 +138,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
         if (atCommandItems.size() == 0)
             return;
         super.customHandleMessage(msg);
-        if (msg.what == USB_SERIAL_LINK_QUERY) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode()) {
             if (commandItem.getCommandType() == WHBLE102CommandType.LINK) {
                 if (isBluetoothConnected) {
                     exitCommand();
@@ -147,7 +147,7 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
                     ToastUtils.show("蓝牙未连接");
                 }
             }
-        } else if (msg.what == USB_SERIAL_DATA_QUERY) {
+        } else if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_DATA_QUERY.getCode()) {
             commandItem = atCommandItems.getFirst();
             atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {

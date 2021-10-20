@@ -33,7 +33,6 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFragment {
-    private int USB_SERIAL_COLLECTION_CONFIGURATION = 0x10001;//
 
     @BindView(R.id.et_execution_interval)
     ClearEditText mEtExecutionInterval;// 执行间隔
@@ -132,7 +131,7 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_COLLECTION_CONFIGURATION, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_COLLECTION_CONFIGURATION.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     @OnClick({R.id.ll_collector_debug_mode_switch, R.id.btn_save})
@@ -367,7 +366,7 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
         atCommandItems.clear();
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SET_COLLECTION_CONFIGURATION, command);
         atCommandItems.add(atCommandItem);
-        sendCommandFromCmdList(USB_SERIAL_COLLECTION_CONFIGURATION, WRITE_TIME_OUT_1000_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_COLLECTION_CONFIGURATION.getCode(), WRITE_TIME_OUT_1000_MILLIS);
     }
 
     @Override
@@ -389,7 +388,7 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
 
         ATCommandItem commandItem = atCommandItems.getFirst();
         atCommandItems.removeFirst();//移除已经发送完的指令
-        if (msg.what == USB_SERIAL_COLLECTION_CONFIGURATION) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_COLLECTION_CONFIGURATION.getCode()) {
             switch (commandItem.getCommandType()) {
                 case ENTM: {//退出命令模式
                     String cmdStr = resultByteBuf.toString();

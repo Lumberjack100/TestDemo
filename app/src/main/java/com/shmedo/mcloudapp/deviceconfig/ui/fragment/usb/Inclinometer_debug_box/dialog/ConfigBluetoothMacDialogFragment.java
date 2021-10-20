@@ -37,8 +37,6 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment {
-    private int USB_SERIAL_LINK_QUERY = 0x10001;//
-    private int USB_SERIAL_OPEN_COMMUNICATION = 0x10002;//
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -109,7 +107,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItem = new ATCommandItem(WHBLE102CommandType.CONNADD, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -128,7 +126,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItem = new ATCommandItem(WHBLE102CommandType.AUTOCONN, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -158,7 +156,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItems.add(atCommandItem);
 
         //发送 AT+Z 指令后,延迟 1000 ms 发送下一条指令
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, 3000);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode(), 3000);
     }
 
     /**
@@ -171,7 +169,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -188,7 +186,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         atCommandItem = new ATCommandItem(WHBLE102CommandType.ALLOW_BLUETOOTH_COMMUNICATION, "011008170001025A5A962C");
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_OPEN_COMMUNICATION.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     @OnClick({R.id.iv_close, R.id.btn_link})
@@ -246,7 +244,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
         Timber.e("接收串口数据: %s", cmdStr);
         commandItem = atCommandItems.getFirst();
         atCommandItems.removeFirst();//移除已经发送完的指令
-        if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode()) {
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {
                     if (cmdStr.toUpperCase().contains("ERR")) {
@@ -254,7 +252,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                         Timber.e("%s  出错", cmdStr);
                         ToastUtils.show(cmdStr + "  出错");
                     } else {
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_1000_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), WRITE_TIME_OUT_1000_MILLIS);
                     }
                 }
                 break;
@@ -272,7 +270,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
 
                         //说明还有 AT+AUTOCONN 指令,表示进行连接处理
                         if (atCommandItems.size() > 0) {
-                            sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
+                            sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), WRITE_TIME_OUT_500_MILLIS);
                         }
                     }
                 }
@@ -291,7 +289,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                 }
                 break;
             }
-        } else if (msg.what == USB_SERIAL_LINK_QUERY) {
+        } else if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode()) {
             switch (commandItem.getCommandType()) {
                 case Z:
 
@@ -301,7 +299,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                         updateFailureStatus(cmdStr + "  出错");
 
                     } else {
-                        sendCommandFromCmdList(USB_SERIAL_LINK_QUERY, WRITE_TIME_OUT_1000_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode(), WRITE_TIME_OUT_1000_MILLIS);
                     }
                 }
                 break;
@@ -337,10 +335,10 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
                 }
                 break;
             }
-        } else if (msg.what == USB_SERIAL_OPEN_COMMUNICATION) {
+        } else if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_OPEN_COMMUNICATION.getCode()) {
             switch (commandItem.getCommandType()) {
                 case ALLOW_CONNECT: {//允许连接指令
-                    sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
+                    sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_OPEN_COMMUNICATION.getCode(), WRITE_TIME_OUT_500_MILLIS);
                 }
                 break;
 

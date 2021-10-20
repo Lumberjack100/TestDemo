@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
@@ -113,7 +114,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
 
         ATCommandItem commandItem = atCommandItems.getFirst();
         atCommandItems.removeFirst();//移除已经发送完的指令
-        if (msg.what == USB_SERIAL_LINK_QUERY) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode()) {
             switch (commandItem.getCommandType()) {
                 case ENTER_COMMAND: {
                     cmdStr = filterControlCharacter(cmdStr);

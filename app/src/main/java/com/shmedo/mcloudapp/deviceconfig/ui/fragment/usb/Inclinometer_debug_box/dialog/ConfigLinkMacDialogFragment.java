@@ -137,7 +137,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.SCAN, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_SCAN, SCAN_TIME_OUT_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_SCAN.getCode(), SCAN_TIME_OUT_MILLIS);
     }
 
     /**
@@ -213,7 +213,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
         atCommandItem = new ATCommandItem(WHBLE102CommandType.CONN, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, 500);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), 500);
     }
 
 //    private void setResultData(String cmdStr) {
@@ -296,10 +296,10 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_SCAN) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_SCAN.getCode()) {
 
 
-        } else if (msg.what == AppContants.MsgWhat.USB_SERIAL_AT_CONNECT) {
+        } else if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode()) {
             String cmdStr = resultByteBuf.toString();
             resultByteBuf.reset();
             Timber.e("接收串口数据: %s", cmdStr);
@@ -311,7 +311,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
             switch (commandItem.getCommandType()) {
                 case CONNADD: {
                     if (cmdStr.contains(WHBLE102CommandType.CONNADD.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");
                     }
@@ -320,7 +320,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
 
                 case AUTOCONN: {
                     if (cmdStr.contains(WHBLE102CommandType.AUTOCONN.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");
                     }
@@ -333,7 +333,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
                             ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTER_COMMAND, WHBLE102CommandType.ENTER_COMMAND.toString());
                             atCommandItems.add(atCommandItem);//进入命令模式
                         }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");
                     }
@@ -347,7 +347,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
                             queryCont = 1;
                             queryBluetoothLinkStatus();
                         }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;
@@ -361,13 +361,13 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
                         } else {
                             //查询连接状态超过10次，判定超时
                             if (queryCont >= 3 || !isConnected()) {
-                                stopProgress(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT);
+                                stopProgress(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode());
                                 updateFailureStatus("蓝牙测斜仪连接超时！");
                                 return;
                             }
                             queryCont++;
                             queryBluetoothLinkStatus();
-                            sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_AT_CONNECT, 1000);
+                            sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_AT_CONNECT.getCode(), 1000);
                         }
                     } else {
                         updateFailureStatus("蓝牙测斜仪连接失败！");

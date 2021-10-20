@@ -8,7 +8,6 @@ package com.shmedo.core;
  * 创建时间:  2019/1/24 11:45
  */
 public interface AppContants {
-    String SERVICE_ADDRESS = "service_address";
     String TOKEN_UPDATE_TIME = "token_update_time";
     //是否显示隐私协议
     String PRIVACY_AGREEMENT = "privacy_agreement";
@@ -98,19 +97,34 @@ public interface AppContants {
         String INCLINOMETER_MEASURINGSPACING = "inclinometer_measuringSpacing";
     }
 
-    interface UsbSerial {
-        String INTENT_ACTION_GRANT_USB = "com.shmedo.mcloudapp.GRANT_USB";
-        String INTENT_ACTION_DISCONNECT = "com.shmedo.mcloudapp.Disconnect";
-    }
-
     interface MsgWhat {
         int MSG_DEFAULT = 0x001;//
         int CONNECT_DEVICE = 0x002;//
-        int USB_SERIAL_DEVICE_INITIAL = 0x003;//
-        int USB_SERIAL_AT_SCAN = 0x004;//
-        int USB_SERIAL_AT_CONNECT = 0x005;//
         int MSG_HEART = 0x006;//
         int MSG_SMART_REFRESH = 0x007;//
+    }
+
+    enum UsbSerialMsgWhat implements INumberEnum{
+        USB_SERIAL_DEVICE_INITIAL(1),
+        USB_SERIAL_AT_SCAN(2),
+        USB_SERIAL_AT_CONNECT(3),
+        USB_SERIAL_LINK_QUERY(4),
+        USB_SERIAL_COMMUNICATION_TIME(5),
+        USB_SERIAL_OPEN_COMMUNICATION(6),
+        USB_SERIAL_WORK_MODE(7),
+        USB_SERIAL_DATA_QUERY(8),
+        USB_SERIAL_COLLECTION_CONFIGURATION(9);
+
+        private final int code;
+
+        UsbSerialMsgWhat(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public int getCode() {
+            return code;
+        }
     }
 
 }

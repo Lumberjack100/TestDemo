@@ -221,7 +221,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
                         connectInitialCommands();
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DEVICE_INITIAL.getCode(), WRITE_TIME_OUT_500_MILLIS);
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -350,7 +350,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
 
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        if (msg.what == AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_DEVICE_INITIAL.getCode()) {
             String cmdStr = resultByteBuf.toString();
             Timber.e("接收串口数据: %s", cmdStr);
             resultByteBuf.reset();
@@ -366,7 +366,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
 //                            initialStart = false;
 //                            queryDeviceNameAndVerison();
 //                        }
-//                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
+//                        sendCommandFromCmdList(AppContants.UsbSerial.USB_SERIAL_DEVICE_INITIAL.getCode(), WRITE_TIME_OUT_MILLIS);
 //                    } else
                     if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
@@ -378,14 +378,14 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                             initialStart = false;
                             queryDeviceNameAndVerison();
                         }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DEVICE_INITIAL.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;
 
                 case MODE: {
 //                    if (cmdStr.contains(WHBLE102CommandType.MODE.toString()) && cmdStr.contains(ATCommand.OK_FLAG)) {
-//                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_MILLIS);
+//                        sendCommandFromCmdList(AppContants.UsbSerial.USB_SERIAL_DEVICE_INITIAL.getCode(), WRITE_TIME_OUT_MILLIS);
 //                    } else
                     if (cmdStr.toUpperCase().contains("ERR")) {
                         cmdStr = filterControlCharacter(commandItem.getCommand());
@@ -393,7 +393,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                         ToastUtils.show(cmdStr + "  出错");
                     } else {
                         atCommandItems.removeFirst();//移除已经发送完的指令
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DEVICE_INITIAL.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;
@@ -406,7 +406,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
 
                         cmdRepeatCount = 0;
                         atCommandItems.removeFirst();//移除已经发送完的指令
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DEVICE_INITIAL.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     } else {
                         cmdRepeatCount++;
                         if (cmdRepeatCount >= 3) {
@@ -418,7 +418,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                             cmdRepeatCount = 0;
                             atCommandItems.removeFirst();//移除已经发送完的指令
                         }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DEVICE_INITIAL.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;
@@ -442,7 +442,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                             cmdRepeatCount = 0;
                             atCommandItems.removeFirst();//移除已经发送完的指令
                         }
-                        sendCommandFromCmdList(AppContants.MsgWhat.USB_SERIAL_DEVICE_INITIAL, WRITE_TIME_OUT_500_MILLIS);
+                        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DEVICE_INITIAL.getCode(), WRITE_TIME_OUT_500_MILLIS);
                     }
                 }
                 break;

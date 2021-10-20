@@ -40,8 +40,6 @@ import timber.log.Timber;
  * 描述：    查询测斜仪测量数据
  */
 public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragment {
-    private int USB_SERIAL_DATA_QUERY = 0x10001;//
-    private int USB_SERIAL_OPEN_COMMUNICATION = 0x10002;//
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -130,7 +128,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.ENTM, command);
         atCommandItems.add(atCommandItem);
 
-        sendCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DATA_QUERY.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -147,7 +145,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         atCommandItem = new ATCommandItem(WHBLE102CommandType.ALLOW_BLUETOOTH_COMMUNICATION, "011008170001025A5A962C");
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_OPEN_COMMUNICATION.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -161,7 +159,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_EQUATION_COEFFICIENT, command);
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DATA_QUERY.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     /**
@@ -176,7 +174,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         ATCommandItem atCommandItem = new ATCommandItem(WHBLE102CommandType.QUERY_MEASUREMENT_DATA, command);
         atCommandItems.add(atCommandItem);
 
-        sendHexCommandFromCmdList(USB_SERIAL_DATA_QUERY, WRITE_TIME_OUT_500_MILLIS);
+        sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_DATA_QUERY.getCode(), WRITE_TIME_OUT_500_MILLIS);
     }
 
     @OnClick({R.id.iv_close, R.id.btn_query_data, R.id.btn_continuous_collection})
@@ -222,7 +220,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
             return;
 
         super.customHandleMessage(msg);
-        if (msg.what == USB_SERIAL_LINK_QUERY) {
+        if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_LINK_QUERY.getCode()) {
             if (commandItem.getCommandType() == WHBLE102CommandType.LINK) {
                 if (isBluetoothConnected) {
                     exitCommand();
@@ -231,7 +229,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                     ToastUtils.show("蓝牙未连接");
                 }
             }
-        } else if (msg.what == USB_SERIAL_DATA_QUERY) {
+        } else if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_DATA_QUERY.getCode()) {
             ATCommandItem commandItem = atCommandItems.getFirst();
             atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
@@ -316,13 +314,13 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                 }
                 break;
             }
-        } else if (msg.what == USB_SERIAL_OPEN_COMMUNICATION) {
+        } else if (msg.what == AppContants.UsbSerialMsgWhat.USB_SERIAL_OPEN_COMMUNICATION.getCode()) {
             ATCommandItem commandItem = atCommandItems.getFirst();
             atCommandItems.removeFirst();//移除已经发送完的指令
             switch (commandItem.getCommandType()) {
                 case ALLOW_CONNECT: {//允许连接指令
                     resultByteBuf.reset();
-                    sendHexCommandFromCmdList(USB_SERIAL_OPEN_COMMUNICATION, WRITE_TIME_OUT_500_MILLIS);
+                    sendHexCommandFromCmdList(AppContants.UsbSerialMsgWhat.USB_SERIAL_OPEN_COMMUNICATION.getCode(), WRITE_TIME_OUT_500_MILLIS);
                 }
                 break;
 
