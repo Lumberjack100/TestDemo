@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
@@ -171,16 +172,24 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     }
 
     /**
+     * 获取堵转检测参数
+     */
+    private void queryLockRotorInfo() {
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
+        sendCommand(command);
+    }
+
+    /**
      * 获取电机运动配置参数
      */
     private void queryMotorMotionConfig() {
-        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH);
         sendCommand(command);
     }
 
     /**
-     * 查询ADME测孔深运动的脉冲数、运动距离指令
+     * 查询ADME测孔深运动的脉冲数、运动距离
      */
     private void getMotorMotionData() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE);
@@ -188,7 +197,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     }
 
     /**
-     * 清空电机运动数据记录指令
+     * 清空电机运动数据记录
      */
     private void clearMotorMotionData() {
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
@@ -197,14 +206,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     }
 
     /**
-     * 获取堵转检测参数
+     * ADME的电机运动堵转检测使能
      */
-    private void queryLockRotorInfo() {
-//        startProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, WRITE_TIME_OUT_MILLIS);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-        sendCommand(command);
-    }
-
     private void setLockRotorInfo(boolean isChecked) {
         AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
         entity.setLowtbtss(isChecked ? "1" : "0");
@@ -228,13 +231,33 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         sendCommand(command);
     }
 
+    /**
+     * 设置ADME的测量孔深配置参数
+     */
+    private void setMeasuringHoledepth() {
+        try {
+            AdmeMeasuringHoleDepthEntity entity = new AdmeMeasuringHoleDepthEntity();
+            entity.setMovementway(motionWay);
+            entity.setMotorspeed(movementSpeed);
+            decimalFormat.applyPattern("#.###");
+            totalDistanceGoal = decimalFormat.format(Double.parseDouble(totalDistanceGoal));
+            entity.setMovedistance(totalDistanceGoal);
+
+            mBtnRun.setEnabled(false);
+            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH, entity);
+            sendCommand(command);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     @OnClick({R.id.ll_motion_type, R.id.btn_run, R.id.ll_clear_motion_data})
     public void onClick(View view) {
         int id = view.getId();
         if (isDoubleClick(view)) {
             return;
         }
-
         if (id == R.id.ll_motion_type) {
             showMotionTypeDialog();
 
@@ -248,7 +271,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 Timber.w("配置参数错误!");
                 return;
             }
-            processSave();
+            setMeasuringHoledepth();
 
         } else if (id == R.id.ll_clear_motion_data) {
             KeyBordUtils.hideSoftKeyboard(view);
@@ -306,24 +329,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         return true;
     }
 
-    private void processSave() {
-        try {
-            AdmeMeasuringHoleDepthEntity entity = new AdmeMeasuringHoleDepthEntity();
-            entity.setMovementway(motionWay);
-            entity.setMotorspeed(movementSpeed);
-            decimalFormat.applyPattern("#.###");
-            totalDistanceGoal = decimalFormat.format(Double.parseDouble(totalDistanceGoal));
-            entity.setMovedistance(totalDistanceGoal);
-
-            mBtnRun.setEnabled(false);
-            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH, entity);
-            sendCommand(command);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     /**
      * 选择运动方式
      */
@@ -375,6 +380,13 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     }
 
     @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
+            ToastUtils.show("响应超时,请稍后尝试");
+        }
+    }
+
+    @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
     }
@@ -415,12 +427,13 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     motorMotionDistanceFragment.processMotorMotionState(measuringHoleDepthInfo);
                 } else {
                     initParamConfigInfo();
+                    //查询ADME测孔深运动的脉冲数、运动距离
                     getMotorMotionData();
                 }
             }
             break;
 
-            case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {//设置堵转参数
+            case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {//电机运动堵转检测使能
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
@@ -445,7 +458,21 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             }
             break;
 
-            case ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE: {//查询电机实时运动数据
+            case ADME_MD_SET_MEASURING_HOLEDEPTH: {//设置ADME的测量孔深配置参数
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "设置测量孔深配置参数出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    mBtnRun.setEnabled(true);
+                    return;
+                }
+                doAfterSetting();
+            }
+            break;
+
+            case ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE: {//查询ADME测孔深运动的脉冲数、运动距离
                 IOTCommandResult<AdmeMotorMotionDistanceInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取电机的实时运动数据出错!", commandResult.getMessage());
@@ -461,20 +488,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     motorMotionDistanceFragment.updateMotionData(motorMotionDistanceInfo);
                     return;
                 }
-            }
-            break;
-
-            case ADME_MD_SET_MEASURING_HOLEDEPTH: {//设置ADME的测量孔深配置参数
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置测量孔深配置参数出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    mBtnRun.setEnabled(true);
-                    return;
-                }
-                doAfterSetting();
             }
             break;
 

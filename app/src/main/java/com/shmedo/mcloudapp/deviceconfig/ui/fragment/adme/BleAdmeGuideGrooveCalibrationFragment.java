@@ -133,7 +133,6 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
         if (isDoubleClick(view)) {
             return;
         }
-
         if (id == R.id.ll_motion_type) {//选择运动方式
             showMotionTypeDialog();
 
@@ -300,6 +299,20 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
             }
             break;
 
+            case ADME_MD_SET_GUIDE_GROOVE_CALIBRATION: {//设置ADME的导槽校准配置参数
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "设置导槽校准配置参数出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    mBtnRun.setEnabled(true);
+                    return;
+                }
+                doAfterSetting();
+            }
+            break;
+
             case ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE: {//查询电机实时运动数据
                 IOTCommandResult<AdmeMotorMotionAngleInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -316,20 +329,6 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
                     motorMotionAngleFragment.updateMotionData(motorMotionAngleInfo);
                     return;
                 }
-            }
-            break;
-
-            case ADME_MD_SET_GUIDE_GROOVE_CALIBRATION: {//设置ADME的导槽校准配置参数
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置导槽校准配置参数出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    mBtnRun.setEnabled(true);
-                    return;
-                }
-                doAfterSetting();
             }
             break;
 
