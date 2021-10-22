@@ -49,8 +49,11 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     @BindView(R.id.iv_close)
     ImageView mIvClose;
 
-    @BindView(R.id.tv_motion_pulse)
-    TextView mTvMotionPulse;
+    @BindView(R.id.tv_data_left_title)
+    TextView mTvDataLeftTitle;
+
+    @BindView(R.id.tv_data_left)
+    TextView mTvDataLeft;
 
     @BindView(R.id.tv_motion_distance)
     TextView mTvMotionDistance;
@@ -170,7 +173,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         btnPause.setVisibility(View.VISIBLE);
         btnExit.setVisibility(View.GONE);
 
-        mTvMotionPulse.setText("0");
+        mTvDataLeft.setText("0");
         mTvMotionDistance.setText("0");
     }
 
@@ -303,7 +306,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     /**
      * 实时刷新脉冲和运动距离
      */
-    public void updateMotionData(AdmeMotorMotionDistanceInfo motorMotionDistanceInfo) {
+    public void updateMotionData(AdmeMotorMotionDistanceInfo motorMotionDistanceInfo, boolean isManualMeasureMode) {
         if (motorMotionDistanceInfo == null) {
             Timber.e("AdmeMotorMotionDistanceInfo is Null!");
             return;
@@ -323,7 +326,8 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         }
         curPulse = motorMotionDistanceInfo.getPulsenumber();
         curDistance = motorMotionDistanceInfo.getRealmovedistance();
-        mTvMotionPulse.setText(curPulse);
+        mTvDataLeftTitle.setText(isManualMeasureMode ? "脉冲数(次)" : "测孔深度(m)");
+        mTvDataLeft.setText(isManualMeasureMode ? curPulse : motorMotionDistanceInfo.getRealholedepth());
         mTvMotionDistance.setText(curDistance);
         //继续轮询电机脉冲数据
         startQueryMotorMotionDataProgress();
@@ -374,7 +378,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     }
 
     public void processContinueMotorMotion() {
-        Timber.d("start Motion: lastDistance=%s,curDistance=%s,continueDistanceGoal=%s,curPulse=%s", lastDistance, curDistance, continueDistanceGoal, curPulse);
+        Timber.d("Continue Motion: lastDistance=%s,curDistance=%s,continueDistanceGoal=%s,curPulse=%s", lastDistance, curDistance, continueDistanceGoal, curPulse);
         if (btnPause.getText().toString().equals("继续")) {
             btnPause.setText("暂停");
             btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);

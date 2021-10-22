@@ -31,6 +31,7 @@ public class AdmeMotorMotionDistanceInfoParser implements IOTResultParser<AdmeMo
             }
             info.setPulsenumber(TextUtils.isEmpty(keyValueMap.get("pulsenumber")) ? "" : keyValueMap.get("pulsenumber"));
             info.setRealmovedistance(TextUtils.isEmpty(keyValueMap.get("realmovedistance")) ? "" : keyValueMap.get("realmovedistance"));
+            info.setRealholedepth(TextUtils.isEmpty(keyValueMap.get("realholedepth")) ? "" : keyValueMap.get("realholedepth"));
             info.setRealmoveangle(TextUtils.isEmpty(keyValueMap.get("realmoveangle")) ? "" : keyValueMap.get("realmoveangle"));
 
             return info;

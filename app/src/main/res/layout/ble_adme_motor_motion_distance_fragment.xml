@@ -64,6 +64,7 @@
             android:paddingBottom="24dp">
 
             <TextView
+                android:id="@+id/tv_data_left_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_motor_motion_pulse"
@@ -73,7 +74,7 @@
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/tv_motion_pulse"
+                android:id="@+id/tv_data_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

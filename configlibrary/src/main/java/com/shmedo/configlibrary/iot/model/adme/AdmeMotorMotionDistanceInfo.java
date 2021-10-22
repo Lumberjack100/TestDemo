@@ -10,6 +10,7 @@ import android.text.TextUtils;
 public class AdmeMotorMotionDistanceInfo {
     private String pulsenumber;//脉冲数
     private String realmovedistance;//实时运动距离
+    private String realholedepth;// 实时测量孔深
     private String realmoveangle;// 实时运动角度
 
     public String getPulsenumber() {
@@ -26,6 +27,14 @@ public class AdmeMotorMotionDistanceInfo {
 
     public void setRealmovedistance(String realmovedistance) {
         this.realmovedistance = realmovedistance;
+    }
+
+    public String getRealholedepth() {
+        return TextUtils.isEmpty(realholedepth) ? "" : realholedepth;
+    }
+
+    public void setRealholedepth(String realholedepth) {
+        this.realholedepth = realholedepth;
     }
 
     public String getRealmoveangle() {

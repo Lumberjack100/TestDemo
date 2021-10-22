@@ -366,6 +366,12 @@ public enum IOTCommandType {
     ADME_MD_SET_MEASURING_HOLEDEPTH("md_setmhdmeasth"),
 
     /**
+     * 设置ADME的自动测量孔深参数
+     */
+    ADME_MD_SET_AUTO_MEASURING_HOLEDEPTH("md_setautomhdmeasth"),
+
+
+    /**
      * 查询ADME测孔深运动的脉冲数、运动距离
      */
     ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE("md_getmhdpulsedistance"),

@@ -10,10 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="20dp" />
 
+    <LinearLayout
+        android:id="@+id/ll_measure_mode"
+        style="@style/Common_ClickableItem_LayoutStyle">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测量模式" />
+
+        <TextView
+            android:id="@+id/tv_measure_mode"
+            style="@style/Common_ClickableItem_ValueStyle"
+            android:text="手动测孔深模式" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="14dp" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/white"
+        android:background="@drawable/layer_common_click_item_with_divider"
         android:paddingStart="18dp"
         android:paddingEnd="16dp">
 
@@ -41,81 +60,119 @@
 
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="14dp" />
-
     <LinearLayout
-        android:id="@+id/ll_motion_type"
-        style="@style/Common_ClickableItem_LayoutStyle">
-
-        <TextView
-            style="@style/Common_ClickableItem_TitleStyle"
-            android:text="运动方式" />
-
-        <TextView
-            android:id="@+id/tv_motion_way"
-            style="@style/Common_ClickableItem_ValueStyle"
-            tools:text="上拉" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="14dp" />
-
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-        <TextView
-            style="@style/Common_ClickableItem_TitleStyle"
-            android:text="电机速度(r/min)" />
-
-        <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_motor_movement_speed"
-            style="@style/Common_EditItem_EditText_Style"
-            android:inputType="number" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="14dp" />
-
-    <LinearLayout
+        android:id="@+id/ll_manual_measure_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_motion_type"
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="运动方式" />
+
+            <TextView
+                android:id="@+id/tv_motion_way"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:text="上拉" />
+
+        </LinearLayout>
 
         <LinearLayout
             style="@style/Common_EditItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <RadioButton
-                android:id="@+id/radio_auto_control"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:button="@drawable/switch_sensor_radio_selector"
-                android:text="运动距离(m)"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="电机速度(r/min)" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/motionDistanceEt"
+                android:id="@+id/et_motor_movement_speed"
+                style="@style/Common_EditItem_EditText_Style"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+            <LinearLayout
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <RadioButton
+                    android:id="@+id/radio_auto_control"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/switch_sensor_radio_selector"
+                    android:text="运动距离(m)"
+                    android:textColor="@color/text_color_343434"
+                    android:textSize="@dimen/text_size_17" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/motionDistanceEt"
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+
+            <RadioButton
+                android:id="@+id/radio_manual_control"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginStart="16dp"
+                android:button="@drawable/switch_sensor_radio_selector"
+                android:text="手动模式"
+                android:textColor="@color/text_color_343434"
+                android:textSize="@dimen/text_size_17" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_auto_measure_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="下放速度(r/min)" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_down_speed"
+                style="@style/Common_EditItem_EditText_Style"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="安全距离补偿(m)" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_safe_distance"
                 style="@style/Common_EditItem_EditText_Style"
                 android:inputType="numberDecimal" />
 
         </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/radio_manual_control"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginStart="16dp"
-            android:button="@drawable/switch_sensor_radio_selector"
-            android:text="手动模式"
-            android:textColor="@color/text_color_343434"
-            android:textSize="@dimen/text_size_17" />
     </LinearLayout>
 
     <Button
