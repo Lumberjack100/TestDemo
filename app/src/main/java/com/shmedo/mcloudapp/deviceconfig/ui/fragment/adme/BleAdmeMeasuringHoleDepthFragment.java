@@ -54,7 +54,7 @@ import timber.log.Timber;
  * 描述：     ADME 测量孔深
  */
 public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateFragment {
-    @BindView(R.id.ll_measure_mode)
+    @BindView(R.id.tv_measure_mode)
     TextView mTvMeasureMode;
 
     @BindView(R.id.decentralizedEnableSBtn)
