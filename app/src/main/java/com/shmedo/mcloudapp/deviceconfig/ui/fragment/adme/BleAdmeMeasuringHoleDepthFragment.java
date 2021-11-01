@@ -87,6 +87,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @BindView(R.id.et_safe_distance)
     ClearEditText mEtSafeDistance;//安全距离补偿
 
+    @BindView(R.id.tv_hole_depth)
+    TextView mTvHoleDepth;//测孔深度
+
     @BindView(R.id.ll_manual_measure_mode)
     ViewGroup manualMeasureModeLayout;
 
@@ -111,6 +114,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
     private String downSpeed;// 电机下放速度(r/min)
     private String safeDistance;// 安全距离补偿
+    private String holeDepth;// 测量孔深
 
     private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
     private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
@@ -618,9 +622,13 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 AdmeMotorMotionDistanceInfo motorMotionDistanceInfo = commandResult.getResult();
                 if (motorMotionDistanceInfo != null) {
                     lastDistance = motorMotionDistanceInfo.getRealmovedistance();
+                    holeDepth = motorMotionDistanceInfo.getRealholedepth();
+                    if (!TextUtils.isEmpty(holeDepth) && !holeDepth.equals("0")) {
+                        mTvHoleDepth.setText(holeDepth);
+                    }
                 }
                 if (motorMotionDistanceFragment != null && motorMotionDistanceFragment.isVisible()) {
-                    motorMotionDistanceFragment.updateMotionData(motorMotionDistanceInfo, isManualMeasureMode);
+                    motorMotionDistanceFragment.updateMotionData(motorMotionDistanceInfo);
                     return;
                 }
             }

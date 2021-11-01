@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -63,7 +64,8 @@
         android:id="@+id/ll_manual_measure_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/ll_motion_type"
@@ -169,6 +171,21 @@
                 android:id="@+id/et_safe_distance"
                 style="@style/Common_EditItem_EditText_Style"
                 android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="测孔深度(m)" />
+
+            <TextView
+                android:id="@+id/tv_hole_depth"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:drawableEnd="@null"
+                android:textSize="17sp"
+                tools:text="10" />
 
         </LinearLayout>
 
