@@ -101,7 +101,7 @@
     <string name="sensor_junxing_zlj_300t">轴力计</string>
     <string name="sensor_weather_station">气象计</string>
     <string name="sensor_weir">量水堰计</string>
-    <string name="sensor_turbidity_meter">浊度计</string>
+    <string name="sensor_turbidity_meter">浊度仪</string>
 
 
 </resources>
