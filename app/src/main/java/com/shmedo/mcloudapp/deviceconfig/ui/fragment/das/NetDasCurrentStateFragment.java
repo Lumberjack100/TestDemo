@@ -486,6 +486,20 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                         break;
 
+                    case LUYAN_INCLINOMETER://倾角仪
+                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_qingjiao));
+                        holder.setVisibleOrGone(R.id.value2Layout, true);
+                        holder.setVisibleOrGone(R.id.value3Layout, false);
+                        holder.setText(R.id.tv_title1, "X轴角度(°)");
+                        holder.setText(R.id.tv_title2, "Y轴角度(°)");
+                        String[] values = sensorStatusInfo.getVal().split(",");
+                        if (values.length >= 2) {
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                        }
+                        break;
+
                     default:
                         holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
                         break;

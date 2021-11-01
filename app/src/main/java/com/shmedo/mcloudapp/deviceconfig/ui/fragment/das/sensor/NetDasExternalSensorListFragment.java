@@ -319,7 +319,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         entity.setThreshold(externalSensorInfo.getThreshold());
         entity.setCorrval(externalSensorInfo.getCorrval());
 
-        if (externalSensorInfo.getType().equals("50")) {
+        if (externalSensorInfo.getType().equals("50")) {//基康渗压计
             entity.setTubealti(externalSensorInfo.getTubealti());
             entity.setRopelen(externalSensorInfo.getRopelen());
             entity.setPoly_a(externalSensorInfo.getPoly_a());
@@ -328,20 +328,21 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             entity.setTemp_k(externalSensorInfo.getTemp_k());
             entity.setTemp_t0(externalSensorInfo.getTemp_t0());
 
-        } else if (externalSensorInfo.getType().equals("51")) {
+        } else if (externalSensorInfo.getType().equals("51")) {//葛南渗压计
             entity.setTubealti(externalSensorInfo.getTubealti());
             entity.setRopelen(externalSensorInfo.getRopelen());
             entity.setSens_k(externalSensorInfo.getSens_k());
             entity.setTemp_b(externalSensorInfo.getTemp_b());
             entity.setTemp_t0(externalSensorInfo.getTemp_t0());
             entity.setReferval_f(externalSensorInfo.getReferval_f());
-        } else if (externalSensorInfo.getType().equals("52")) {
+
+        } else if (externalSensorInfo.getType().equals("52")) {//葛南土压力计
             entity.setSens_k(externalSensorInfo.getSens_k());
             entity.setTemp_b(externalSensorInfo.getTemp_b());
             entity.setTemp_t0(externalSensorInfo.getTemp_t0());
             entity.setReferval_f(externalSensorInfo.getReferval_f());
 
-        } else if (externalSensorInfo.getType().equals("53")) {
+        } else if (externalSensorInfo.getType().equals("53")) {//葛南应力计
             entity.setSens_k(externalSensorInfo.getSens_k());
             entity.setTemp_b(externalSensorInfo.getTemp_b());
             entity.setTemp_t0(externalSensorInfo.getTemp_t0());
@@ -352,9 +353,13 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             entity.setSpacing(externalSensorInfo.getSpacing());
             entity.setHolenum(externalSensorInfo.getHolenum());
 
-        }else if (externalSensorInfo.getType().equals("22")) {//量水堰
+        }else if (externalSensorInfo.getType().equals("22")) {//量水堰计
             entity.setLsycsds(externalSensorInfo.getLsycsds());
             entity.setLsyysst(externalSensorInfo.getLsyysst());
+
+        }else if (externalSensorInfo.getType().equals("16")) {//倾角仪
+            entity.setInitvalx(externalSensorInfo.getInitvalx());
+            entity.setInitvaly(externalSensorInfo.getInitvaly());
         }
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));

@@ -34,9 +34,13 @@ public class DasExternalSensorInfo implements Serializable {
 
     private String elastic_mod;//膨胀系数(应力计)
 
+    //量水堰计
     private String lsycsds;//初始读数
     private String lsyysst;//堰上水头
 
+    //倾角仪
+    private String initvalx;//X轴初始值
+    private String initvaly;//Y轴初始值
 
 
     public String getIndex() {
@@ -197,5 +201,21 @@ public class DasExternalSensorInfo implements Serializable {
 
     public void setLsyysst(String lsyysst) {
         this.lsyysst = lsyysst;
+    }
+
+    public String getInitvalx() {
+        return TextUtils.isEmpty(initvalx) ? "" : initvalx;
+    }
+
+    public void setInitvalx(String initvalx) {
+        this.initvalx = initvalx;
+    }
+
+    public String getInitvaly() {
+        return TextUtils.isEmpty(initvaly) ? "" : initvaly;
+    }
+
+    public void setInitvaly(String initvaly) {
+        this.initvaly = initvaly;
     }
 }

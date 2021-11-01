@@ -34,8 +34,13 @@ public class DasExternalSensorEntity implements Validater {
 
     private String elastic_mod;//膨胀系数(应力计)
 
+    //量水堰计
     private String lsycsds;//初始读数
     private String lsyysst;//堰上水头
+
+    //倾角仪
+    private String initvalx;//X轴初始值
+    private String initvaly;//Y轴初始值
 
 
     public void setIndex(String index) {
@@ -116,6 +121,14 @@ public class DasExternalSensorEntity implements Validater {
 
     public void setLsyysst(String lsyysst) {
         this.lsyysst = lsyysst;
+    }
+
+    public void setInitvalx(String initvalx) {
+        this.initvalx = initvalx;
+    }
+
+    public void setInitvaly(String initvaly) {
+        this.initvaly = initvaly;
     }
 
     @Override
@@ -203,6 +216,15 @@ public class DasExternalSensorEntity implements Validater {
         }
         if (!TextUtils.isEmpty(lsyysst)) {
             stringBuilder.append("lsyysst=" + lsyysst);
+            stringBuilder.append("&");
+        }
+
+        if (!TextUtils.isEmpty(initvalx)) {
+            stringBuilder.append("initvalx=" + initvalx);
+            stringBuilder.append("&");
+        }
+        if (!TextUtils.isEmpty(initvaly)) {
+            stringBuilder.append("initvaly=" + initvaly);
             stringBuilder.append("&");
         }
 
