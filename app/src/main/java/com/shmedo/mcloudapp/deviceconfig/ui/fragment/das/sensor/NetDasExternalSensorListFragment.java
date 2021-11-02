@@ -210,11 +210,11 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 sensorType = BlueResultParserUtil.getSensorTypeByCollectorCode(collectorInfo.getType());
             } else {
                 DasExternalSensorInfo sensorInfo = (DasExternalSensorInfo) sensorHashMap.values().toArray()[0];
-                sensorType = IOTSensorType.value(sensorInfo.getType());
+                sensorType = sensorInfo.getType().equals("0") ? BlueResultParserUtil.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(sensorInfo.getType());
             }
         } else {
             dasExternalSensorInfo = sensorHashMap.get(curSensorItem.getSensorAddress());
-            sensorType = IOTSensorType.value(dasExternalSensorInfo.getType());
+            sensorType = dasExternalSensorInfo.getType().equals("0") ? BlueResultParserUtil.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(dasExternalSensorInfo.getType());
         }
         DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, collectorInfo.getType(), sensorType, addressList, dasExternalSensorInfo);
     }
@@ -353,11 +353,11 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             entity.setSpacing(externalSensorInfo.getSpacing());
             entity.setHolenum(externalSensorInfo.getHolenum());
 
-        }else if (externalSensorInfo.getType().equals("22")) {//量水堰计
+        } else if (externalSensorInfo.getType().equals("22")) {//量水堰计
             entity.setLsycsds(externalSensorInfo.getLsycsds());
             entity.setLsyysst(externalSensorInfo.getLsyysst());
 
-        }else if (externalSensorInfo.getType().equals("16")) {//倾角仪
+        } else if (externalSensorInfo.getType().equals("16")) {//倾角仪
             entity.setInitvalx(externalSensorInfo.getInitvalx());
             entity.setInitvaly(externalSensorInfo.getInitvaly());
         }

@@ -297,6 +297,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             safeDistance = decimalFormat.format(Double.parseDouble(safeDistance));
             entity.setSafedistance(safeDistance);
 
+            mTvHoleDepth.setText("0");
             mBtnRun.setEnabled(false);
             startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_AUTO_MEASURING_HOLEDEPTH, entity);
@@ -623,8 +624,13 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 if (motorMotionDistanceInfo != null) {
                     lastDistance = motorMotionDistanceInfo.getRealmovedistance();
                     holeDepth = motorMotionDistanceInfo.getRealholedepth();
-                    if (!TextUtils.isEmpty(holeDepth) && !holeDepth.equals("0")) {
-                        mTvHoleDepth.setText(holeDepth);
+                    try {
+                        decimalFormat.applyPattern("#.###");
+                        if (!TextUtils.isEmpty(holeDepth) && !decimalFormat.format(Double.parseDouble(holeDepth)).equals("-2")) {
+                            mTvHoleDepth.setText(holeDepth);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
                 if (motorMotionDistanceFragment != null && motorMotionDistanceFragment.isVisible()) {

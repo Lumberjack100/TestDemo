@@ -307,7 +307,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
         String aisle = mTvSensorAisle.getText().toString();
         sensorAisle = String.valueOf(Integer.parseInt(aisle) - 1);
         externalSensorInfo.setAddr(sensorAisle);
-        externalSensorInfo.setType(iotSensorType.toString());
+        externalSensorInfo.setType(iotSensorType.getCode());
 
         Intent intent = new Intent();
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);

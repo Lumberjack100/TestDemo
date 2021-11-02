@@ -136,10 +136,7 @@ public enum IOTSensorType {
 
     @Override
     public String toString() {
-        return "IOTSensorType{" +
-                "code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return code;
     }
 
     public static IOTSensorType value(String code) {

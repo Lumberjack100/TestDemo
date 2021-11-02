@@ -57,6 +57,9 @@ public class BlueResultParserUtil {
             case LSY:
                 return IOTSensorType.WEIR;
 
+            case QJY08:
+                return IOTSensorType.LUYAN_INCLINOMETER;
+
             default:
                 return null;
         }

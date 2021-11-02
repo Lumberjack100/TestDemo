@@ -174,8 +174,8 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             initialReading = externalSensorInfo.getLsycsds();
             headOnWeir = externalSensorInfo.getLsyysst();
 
-            xAngle = externalSensorInfo.getLsycsds();
-            yAngle = externalSensorInfo.getLsyysst();
+            xAngle = externalSensorInfo.getInitvalx();
+            yAngle = externalSensorInfo.getInitvaly();
 
             mEtModbusAddress.setText(sensorAddress);
             if (!TextUtils.isEmpty(triggerThreshold)) {
@@ -434,7 +434,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             externalSensorInfo = new DasExternalSensorInfo();
 
         externalSensorInfo.setAddr(sensorAddress);
-        externalSensorInfo.setType(iotSensorType.toString());
+        externalSensorInfo.setType(iotSensorType.getCode());
         externalSensorInfo.setThreshold(triggerThreshold);
         externalSensorInfo.setCorrval(correctValue);
         externalSensorInfo.setSpacing(measureLong);
