@@ -178,17 +178,14 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             yAngle = externalSensorInfo.getLsyysst();
 
             mEtModbusAddress.setText(sensorAddress);
-//            decimalFormat.applyPattern("#.###");
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
                 mEtAlarmValue.setText(triggerThreshold);
             }
-//            decimalFormat.applyPattern("#.###");
             if (!TextUtils.isEmpty(correctValue)) {
                 correctValue = decimalFormat.format(Double.parseDouble(correctValue));
                 mEtCorrectValue.setText(correctValue);
             }
-
             switch (iotSensorType) {
                 case RAIN_GAUGE://压电式雨量计
                     mTvAlarmValue.setText("报警值(单位:mm)");
@@ -209,7 +206,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     mTvMeasureLong.setText("测段长(单位:mm)");
-//                    decimalFormat.applyPattern("#.#");
                     if (!TextUtils.isEmpty(measureLong)) {
                         measureLong = decimalFormat.format(Double.parseDouble(measureLong));
                         mEtMeasureLong.setText(measureLong);
@@ -241,7 +237,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvCorrectValue.setText("修正值(单位:mm)");
                     mTvInitialReading.setText("初始读数(单位:mm)");
                     mTvHeadOnWeir.setText("堰上水头(单位:mm)");
-//                    decimalFormat.applyPattern("#.#");
                     if (!TextUtils.isEmpty(initialReading)) {
                         initialReading = decimalFormat.format(Double.parseDouble(initialReading));
                         mEtInitialReading.setText(initialReading);
@@ -300,6 +295,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         initialReading = mEtInitialReading.getText().toString().trim();
         headOnWeir = mEtHeadOnWeir.getText().toString().trim();
 
+        xAngle = mEtXAngle.getText().toString().trim();
+        yAngle = mEtYAngle.getText().toString().trim();
+
         if (TextUtils.isEmpty(sensorAddress)) {
             ToastUtils.show("传感器地址不能为空!");
             mEtModbusAddress.requestFocus();
@@ -337,7 +335,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             return false;
         }
 
-        if (iotSensorType != IOTSensorType.WEIR) {
+        if (iotSensorType != IOTSensorType.LUYAN_INCLINOMETER) {
             if (TextUtils.isEmpty(correctValue)) {
                 ToastUtils.show("修正值不能为空!");
                 mEtCorrectValue.requestFocus();
