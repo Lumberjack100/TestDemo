@@ -47,31 +47,62 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
     @BindView(R.id.tv_title)
     TextView mToolbarTitle;
 
-    @BindView(R.id.tv_triggerThreshold)
-    TextView mTvAlarmValue;
-    @BindView(R.id.tv_correctionValue)
-    TextView mTvCorrectValue;
-    @BindView(R.id.tv_measure_long)
-    TextView mTvMeasureLong;
-
     @BindView(R.id.et_modbus_address)
     EditText mEtModbusAddress;
+    
+    @BindView(R.id.tv_triggerThreshold)
+    TextView mTvAlarmValue;
+
     @BindView(R.id.et_trigger_threshold)
     EditText mEtAlarmValue;
+    
+    
+    @BindView(R.id.tv_correctionValue)
+    TextView mTvCorrectValue;
+    
     @BindView(R.id.et_revised)
     EditText mEtCorrectValue;
-    @BindView(R.id.et_measure_long)
-    EditText mEtMeasureLong;
 
-    @BindView(R.id.measure_long_layout)
-    ViewGroup measureLongLayout;
+    @BindView(R.id.correction_layout)
+    ViewGroup correctionLayout;
 
-    private DecimalFormat decimalFormat = new DecimalFormat();
+    //扩展字段
+    @BindView(R.id.tv_extension1)
+    TextView mTvExtension1;
+
+    @BindView(R.id.et_extension1)
+    EditText mEtExtension1;
+
+    @BindView(R.id.extension_layout1)
+    ViewGroup extensionLayout1;
+
+    //扩展字段
+    @BindView(R.id.tv_extension2)
+    TextView mTvExtension2;
+
+    @BindView(R.id.et_extension2)
+    EditText mEtExtension2;
+
+    @BindView(R.id.extension_layout2)
+    ViewGroup extensionLayout2;
+
+    //扩展字段
+    @BindView(R.id.tv_extension3)
+    TextView mTvExtension3;
+
+    @BindView(R.id.et_extension3)
+    EditText mEtExtension3;
+
+    @BindView(R.id.extension_layout3)
+    ViewGroup extensionLayout3;
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#.###");
 
     private SensorType sensorType;//传感器类型
     private Parcelable parcelableData;
     private ArrayList<String> addressList = new ArrayList<>();
-    private String sensorAddress, triggerThreshold, correctValue, measureLong;
+    private String sensorAddress, triggerThreshold, correctValue;
+    private String extension1, extension2, extension3;
 
 
     public static void startActivityForResultByFragment(Fragment context, int requestCode, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
@@ -126,19 +157,29 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
 
     private void initView() {
         //测斜仪
-        if (sensorType == SensorType.INCLINOMETER) {
-            measureLongLayout.setVisibility(View.VISIBLE);
-        } else {
-            measureLongLayout.setVisibility(View.GONE);
+        if (sensorType != null && sensorType == SensorType.INCLINOMETER) {
+            extensionLayout1.setVisibility(View.VISIBLE);
+        }
+        //量水堰计
+        if (sensorType != null && sensorType == SensorType.WEIR) {
+            extensionLayout1.setVisibility(View.VISIBLE);
+            extensionLayout2.setVisibility(View.VISIBLE);
+        }
+        //倾角仪
+        if (sensorType != null && sensorType == SensorType.LUYAN_INCLINOMETER) {
+            correctionLayout.setVisibility(View.GONE);
+            extensionLayout1.setVisibility(View.VISIBLE);
+            extensionLayout2.setVisibility(View.VISIBLE);
         }
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-        mEtMeasureLong.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtExtension1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtExtension2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtExtension3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     private void initValue() {
-        mEtModbusAddress.setText(sensorAddress);
         switch (sensorType) {
             case RAIN_GAUGE://压电式雨量计
                 mTvAlarmValue.setText("报警值(单位:mm)");
@@ -173,12 +214,16 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             case INCLINOMETER://测斜仪
                 mTvAlarmValue.setText("报警值(单位:mm)");
                 mTvCorrectValue.setText("修正值(单位:m)");
-                mTvMeasureLong.setText("测段长(单位:mm)");
+                mTvExtension1.setText("测段长(单位:mm)");
                 if (parcelableData != null) {
                     SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) parcelableData;
                     triggerThreshold = sensorInclinometerInfo.getTriggerThreshold();
                     correctValue = sensorInclinometerInfo.getCorrectionValue();
-                    measureLong = sensorInclinometerInfo.getMeasureLength();
+                    extension1 = sensorInclinometerInfo.getMeasureLength();
+                    if (!TextUtils.isEmpty(extension1)) {
+                        extension1 = decimalFormat.format(Double.parseDouble(extension1));
+                        mEtExtension1.setText(extension1);
+                    }
                 }
                 break;
 
@@ -222,22 +267,16 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 }
                 break;
         }
-
         try {
-            decimalFormat.applyPattern("#.#");
+            mEtModbusAddress.setText(sensorAddress);
+
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
                 mEtAlarmValue.setText(triggerThreshold);
             }
-
-            decimalFormat.applyPattern("#.###");
             if (!TextUtils.isEmpty(correctValue)) {
                 correctValue = decimalFormat.format(Double.parseDouble(correctValue));
                 mEtCorrectValue.setText(correctValue);
-            }
-            if (!TextUtils.isEmpty(measureLong)) {
-                measureLong = decimalFormat.format(Double.parseDouble(measureLong));
-                mEtMeasureLong.setText(measureLong);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -289,7 +328,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 SensorInclinometerInfo sensorInclinometerInfo = new SensorInclinometerInfo();
                 sensorInclinometerInfo.setTriggerThreshold(triggerThreshold);
                 sensorInclinometerInfo.setCorrectionValue(correctValue);
-                sensorInclinometerInfo.setMeasureLength(measureLong);
+                sensorInclinometerInfo.setMeasureLength(extension1);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInclinometerInfo);
             }
             break;
@@ -335,7 +374,9 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         sensorAddress = mEtModbusAddress.getText().toString().trim();
         triggerThreshold = mEtAlarmValue.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
-        measureLong = mEtMeasureLong.getText().toString().trim();
+
+        extension1 = mEtExtension1.getText().toString().trim();
+        extension2 = mEtExtension2.getText().toString().trim();
 
         if (TextUtils.isEmpty(sensorAddress)) {
             ToastUtils.show("传感器地址不能为空!");
@@ -347,7 +388,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             mEtModbusAddress.requestFocus();
             return false;
         }
-
         int num = 0;
         for (String ss : addressList) {
             if (ss.equals(sensorAddress)) {
@@ -361,12 +401,15 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         }
 
         if (TextUtils.isEmpty(triggerThreshold)) {
-            ToastUtils.show("触发值不能为空!");
+            ToastUtils.show("报警值不能为空!");
             mEtAlarmValue.requestFocus();
             return false;
         }
-        if (!ValidateUtil.isInteger(triggerThreshold)) {
-            ToastUtils.show("请输入正确的触发值!");
+        try {
+            double value = Double.parseDouble(triggerThreshold);
+
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的报警值!");
             mEtAlarmValue.requestFocus();
             return false;
         }
@@ -386,17 +429,17 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         }
 
         if (sensorType.toString().equals("04")) {
-            if (TextUtils.isEmpty(measureLong)) {
+            if (TextUtils.isEmpty(extension1)) {
                 ToastUtils.show("测段长值不能为空!");
-                mEtMeasureLong.requestFocus();
+                mEtExtension1.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(measureLong);
+                double value = Double.parseDouble(extension1);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的测段长值!");
-                mEtMeasureLong.requestFocus();
+                mEtExtension1.requestFocus();
                 return false;
             }
         }

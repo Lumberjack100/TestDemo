@@ -38,24 +38,14 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.tv_triggerThreshold)
     TextView mTvAlarmValue;//报警值
 
-    @BindView(R.id.tv_correctionValue)
-    TextView mTvCorrectValue;//修正值
-
-    @BindView(R.id.tv_measure_long)
-    TextView mTvMeasureLong;//测段长
-
-    @BindView(R.id.tv_initial_reading)
-    TextView mTvInitialReading;//初始读数
-
-    @BindView(R.id.tv_head_on_weir)
-    TextView mTvHeadOnWeir;//堰上水头
-
+    @BindView(R.id.et_trigger_threshold)
+    EditText mEtAlarmValue;
 
     @BindView(R.id.et_modbus_address)
     EditText mEtModbusAddress;
 
-    @BindView(R.id.et_trigger_threshold)
-    EditText mEtAlarmValue;
+    @BindView(R.id.tv_correctionValue)
+    TextView mTvCorrectValue;//修正值
 
     @BindView(R.id.et_revised)
     EditText mEtCorrectValue;
@@ -63,40 +53,43 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.correction_layout)
     ViewGroup correctionLayout;
 
-    //测斜仪 测段长
-    @BindView(R.id.et_measure_long)
-    EditText mEtMeasureLong;
+    //扩展字段
+    @BindView(R.id.tv_extension1)
+    TextView mTvExtension1;
 
-    @BindView(R.id.measure_long_layout)
-    ViewGroup measureLongLayout;
+    @BindView(R.id.et_extension1)
+    EditText mEtExtension1;
 
-    //量水堰计 测段长
-    @BindView(R.id.et_initial_reading)
-    EditText mEtInitialReading;
+    @BindView(R.id.extension_layout1)
+    ViewGroup extensionLayout1;
 
-    @BindView(R.id.et_head_on_weir)
-    EditText mEtHeadOnWeir;
+    //扩展字段
+    @BindView(R.id.tv_extension2)
+    TextView mTvExtension2;
 
-    @BindView(R.id.weir_layout)
-    ViewGroup weirLayout;
+    @BindView(R.id.et_extension2)
+    EditText mEtExtension2;
 
-    //倾角仪 测段长
-    @BindView(R.id.et_x_angle)
-    EditText mEtXAngle;
+    @BindView(R.id.extension_layout2)
+    ViewGroup extensionLayout2;
 
-    @BindView(R.id.et_y_angle)
-    EditText mEtYAngle;
+    //扩展字段
+    @BindView(R.id.tv_extension3)
+    TextView mTvExtension3;
 
-    @BindView(R.id.qingjiao_layout)
-    ViewGroup qingJiaoLayout;
+    @BindView(R.id.et_extension3)
+    EditText mEtExtension3;
+
+    @BindView(R.id.extension_layout3)
+    ViewGroup extensionLayout3;
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.###");
 
     private IOTSensorType iotSensorType;//传感器类型
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
-    private String sensorAddress, triggerThreshold, correctValue, measureLong, initialReading, headOnWeir, xAngle, yAngle;
-
+    private String sensorAddress, triggerThreshold, correctValue;
+    private String extension1, extension2, extension3;
 
     public static NetDasExternalDigitalSensorFragment newInstance(ArrayList<String> addressList, IOTSensorType sensorType, DasExternalSensorInfo externalSensorInfo) {
         NetDasExternalDigitalSensorFragment fragment = new NetDasExternalDigitalSensorFragment();
@@ -136,28 +129,26 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     private void setView() {
         //测斜仪
         if (iotSensorType != null && iotSensorType == IOTSensorType.INCLINOMETER) {
-            measureLongLayout.setVisibility(View.VISIBLE);
+            extensionLayout1.setVisibility(View.VISIBLE);
         }
         //量水堰计
         if (iotSensorType != null && iotSensorType == IOTSensorType.WEIR) {
-            weirLayout.setVisibility(View.VISIBLE);
+            extensionLayout1.setVisibility(View.VISIBLE);
+            extensionLayout2.setVisibility(View.VISIBLE);
         }
         //倾角仪
         if (iotSensorType != null && iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) {
-            qingJiaoLayout.setVisibility(View.VISIBLE);
             correctionLayout.setVisibility(View.GONE);
+            extensionLayout1.setVisibility(View.VISIBLE);
+            extensionLayout2.setVisibility(View.VISIBLE);
         }
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
-        mEtMeasureLong.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-
-        mEtInitialReading.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-        mEtHeadOnWeir.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-
-        mEtXAngle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
-        mEtYAngle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
+        mEtExtension1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtExtension2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtExtension3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     private void initValue() {
@@ -169,14 +160,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             triggerThreshold = externalSensorInfo.getThreshold();
             correctValue = externalSensorInfo.getCorrval();
 
-            measureLong = externalSensorInfo.getSpacing();
-
-            initialReading = externalSensorInfo.getLsycsds();
-            headOnWeir = externalSensorInfo.getLsyysst();
-
-            xAngle = externalSensorInfo.getInitvalx();
-            yAngle = externalSensorInfo.getInitvaly();
-
             mEtModbusAddress.setText(sensorAddress);
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
@@ -186,6 +169,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 correctValue = decimalFormat.format(Double.parseDouble(correctValue));
                 mEtCorrectValue.setText(correctValue);
             }
+
             switch (iotSensorType) {
                 case RAIN_GAUGE://压电式雨量计
                     mTvAlarmValue.setText("报警值(单位:mm)");
@@ -205,10 +189,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 case INCLINOMETER://测斜仪
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
-                    mTvMeasureLong.setText("测段长(单位:mm)");
-                    if (!TextUtils.isEmpty(measureLong)) {
-                        measureLong = decimalFormat.format(Double.parseDouble(measureLong));
-                        mEtMeasureLong.setText(measureLong);
+                    mTvExtension1.setText("测段长(单位:mm)");
+                    extension1 = externalSensorInfo.getSpacing();
+                    if (!TextUtils.isEmpty(extension1)) {
+                        extension1 = decimalFormat.format(Double.parseDouble(extension1));
+                        mEtExtension1.setText(extension1);
                     }
                     break;
 
@@ -235,15 +220,17 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 case WEIR://量水堰计
                     mTvAlarmValue.setText("报警值(单位:m³/s)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
-                    mTvInitialReading.setText("初始读数(单位:mm)");
-                    mTvHeadOnWeir.setText("堰上水头(单位:mm)");
-                    if (!TextUtils.isEmpty(initialReading)) {
-                        initialReading = decimalFormat.format(Double.parseDouble(initialReading));
-                        mEtInitialReading.setText(initialReading);
+                    mTvExtension1.setText("初始读数(单位:mm)");
+                    mTvExtension2.setText("堰上水头(单位:mm)");
+                    extension1 = externalSensorInfo.getLsycsds();
+                    extension2 = externalSensorInfo.getLsyysst();
+                    if (!TextUtils.isEmpty(extension1)) {
+                        extension1 = decimalFormat.format(Double.parseDouble(extension1));
+                        mEtExtension1.setText(extension1);
                     }
-                    if (!TextUtils.isEmpty(headOnWeir)) {
-                        headOnWeir = decimalFormat.format(Double.parseDouble(headOnWeir));
-                        mEtHeadOnWeir.setText(headOnWeir);
+                    if (!TextUtils.isEmpty(extension2)) {
+                        extension2 = decimalFormat.format(Double.parseDouble(extension2));
+                        mEtExtension2.setText(extension2);
                     }
                     break;
 
@@ -254,13 +241,17 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
                 case LUYAN_INCLINOMETER://倾角仪
                     mTvAlarmValue.setText("报警值(单位:°)");
-                    if (!TextUtils.isEmpty(xAngle)) {
-                        xAngle = decimalFormat.format(Double.parseDouble(xAngle));
-                        mEtXAngle.setText(xAngle);
+                    mTvExtension1.setText("X轴角度(°)");
+                    mTvExtension2.setText("Y轴角度(°)");
+                    extension1 = externalSensorInfo.getInitvalx();
+                    extension2 = externalSensorInfo.getInitvaly();
+                    if (!TextUtils.isEmpty(extension1)) {
+                        extension1 = decimalFormat.format(Double.parseDouble(extension1));
+                        mEtExtension1.setText(extension1);
                     }
-                    if (!TextUtils.isEmpty(yAngle)) {
-                        yAngle = decimalFormat.format(Double.parseDouble(yAngle));
-                        mEtYAngle.setText(yAngle);
+                    if (!TextUtils.isEmpty(extension2)) {
+                        extension2 = decimalFormat.format(Double.parseDouble(extension2));
+                        mEtExtension2.setText(extension2);
                     }
                     break;
             }
@@ -290,13 +281,8 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         triggerThreshold = mEtAlarmValue.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
 
-        measureLong = mEtMeasureLong.getText().toString().trim();
-
-        initialReading = mEtInitialReading.getText().toString().trim();
-        headOnWeir = mEtHeadOnWeir.getText().toString().trim();
-
-        xAngle = mEtXAngle.getText().toString().trim();
-        yAngle = mEtYAngle.getText().toString().trim();
+        extension1 = mEtExtension1.getText().toString().trim();
+        extension2 = mEtExtension2.getText().toString().trim();
 
         if (TextUtils.isEmpty(sensorAddress)) {
             ToastUtils.show("传感器地址不能为空!");
@@ -308,7 +294,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             mEtModbusAddress.requestFocus();
             return false;
         }
-
         int num = 0;
         for (String ss : addressList) {
             if (ss.equals(sensorAddress)) {
@@ -352,77 +337,77 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         }
 
         if (iotSensorType == IOTSensorType.INCLINOMETER) {//测斜仪
-            if (TextUtils.isEmpty(measureLong)) {
+            if (TextUtils.isEmpty(extension1)) {
                 ToastUtils.show("测段长值不能为空!");
-                mEtMeasureLong.requestFocus();
+                mEtExtension1.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(measureLong);
+                double value = Double.parseDouble(extension1);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的测段长值!");
-                mEtMeasureLong.requestFocus();
+                mEtExtension1.requestFocus();
                 return false;
             }
         }
 
         if (iotSensorType == IOTSensorType.WEIR) {//量水堰计
-            if (TextUtils.isEmpty(initialReading)) {
+            if (TextUtils.isEmpty(extension1)) {
                 ToastUtils.show("初始读数不能为空!");
-                mEtInitialReading.requestFocus();
+                mEtExtension1.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(initialReading);
+                double value = Double.parseDouble(extension1);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的初始读数!");
-                mEtInitialReading.requestFocus();
+                mEtExtension1.requestFocus();
                 return false;
             }
 
-            if (TextUtils.isEmpty(headOnWeir)) {
+            if (TextUtils.isEmpty(extension2)) {
                 ToastUtils.show("堰上水头不能为空!");
-                mEtHeadOnWeir.requestFocus();
+                mEtExtension2.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(headOnWeir);
+                double value = Double.parseDouble(extension2);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的堰上水头!");
-                mEtHeadOnWeir.requestFocus();
+                mEtExtension2.requestFocus();
                 return false;
             }
         }
 
         if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) {//倾角仪
-            if (TextUtils.isEmpty(xAngle)) {
+            if (TextUtils.isEmpty(extension1)) {
                 ToastUtils.show("X轴初始值不能为空!");
-                mEtXAngle.requestFocus();
+                mEtExtension1.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(xAngle);
+                double value = Double.parseDouble(extension1);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的X轴初始值!");
-                mEtXAngle.requestFocus();
+                mEtExtension1.requestFocus();
                 return false;
             }
 
-            if (TextUtils.isEmpty(yAngle)) {
+            if (TextUtils.isEmpty(extension2)) {
                 ToastUtils.show("Y轴初始值不能为空!");
-                mEtYAngle.requestFocus();
+                mEtExtension2.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(yAngle);
+                double value = Double.parseDouble(extension2);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的Y轴初始值!");
-                mEtYAngle.requestFocus();
+                mEtExtension2.requestFocus();
                 return false;
             }
         }
@@ -433,15 +418,21 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         if (externalSensorInfo == null)
             externalSensorInfo = new DasExternalSensorInfo();
 
-        externalSensorInfo.setAddr(sensorAddress);
         externalSensorInfo.setType(iotSensorType.getCode());
+        externalSensorInfo.setAddr(sensorAddress);
         externalSensorInfo.setThreshold(triggerThreshold);
         externalSensorInfo.setCorrval(correctValue);
-        externalSensorInfo.setSpacing(measureLong);
-        externalSensorInfo.setLsycsds(initialReading);
-        externalSensorInfo.setLsyysst(headOnWeir);
-        externalSensorInfo.setInitvalx(xAngle);
-        externalSensorInfo.setInitvaly(yAngle);
+        if (iotSensorType == IOTSensorType.INCLINOMETER) {//测斜仪
+            externalSensorInfo.setSpacing(extension1);
+        }
+        if (iotSensorType == IOTSensorType.WEIR) {//量水堰计
+            externalSensorInfo.setLsycsds(extension1);
+            externalSensorInfo.setLsyysst(extension2);
+        }
+        if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) {//倾角仪
+            externalSensorInfo.setInitvalx(extension1);
+            externalSensorInfo.setInitvaly(extension2);
+        }
 
         Intent intent = new Intent();
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);

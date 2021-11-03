@@ -61,103 +61,59 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/measure_long_layout"
+        android:id="@+id/extension_layout1"
         style="@style/Common_EditItem_LayoutStyle"
-        android:visibility="gone">
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
-            android:id="@+id/tv_measure_long"
+            android:id="@+id/tv_extension1"
             style="@style/Common_ClickableItem_TitleStyle"
-            tools:text="测段长" />
+            tools:text="扩展1" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_measure_long"
+            android:id="@+id/et_extension1"
             style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/weir_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:id="@+id/extension_layout2"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <LinearLayout
-            android:id="@+id/initial_reading_layout"
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+        <TextView
+            android:id="@+id/tv_extension2"
+            style="@style/Common_ClickableItem_TitleStyle"
+            tools:text="扩展2" />
 
-            <TextView
-                android:id="@+id/tv_initial_reading"
-                style="@style/Common_ClickableItem_TitleStyle"
-                tools:text="初始读数" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_initial_reading"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/head_on_weir_layout"
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                android:id="@+id/tv_head_on_weir"
-                style="@style/Common_ClickableItem_TitleStyle"
-                tools:text="堰上水头" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_head_on_weir"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
-
-        </LinearLayout>
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_extension2"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/qingjiao_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:id="@+id/extension_layout3"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+        <TextView
+            android:id="@+id/tv_extension3"
+            style="@style/Common_ClickableItem_TitleStyle"
+            tools:text="扩展3" />
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="X轴角度(°)" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_x_angle"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="Y轴角度(°)" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_y_angle"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
-
-        </LinearLayout>
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_extension3"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="numberSigned|numberDecimal" />
 
     </LinearLayout>
 

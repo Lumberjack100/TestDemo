@@ -109,10 +109,7 @@ public enum IOTCollectorModel {
 
     @Override
     public String toString() {
-        return "IOTCollectorModel{" +
-                "code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return code;
     }
 
     public static IOTCollectorModel value(String code) {
@@ -120,7 +117,7 @@ public enum IOTCollectorModel {
             return VW08;
 
         for (IOTCollectorModel collectorModel : IOTCollectorModel.values()) {
-            if(collectorModel.code.equals(code))
+            if(collectorModel.getCode().equals(code))
                 return collectorModel;
         }
 
@@ -133,7 +130,7 @@ public enum IOTCollectorModel {
 
         List<String> allCollectors = new ArrayList<>();
         for (IOTCollectorModel modle : IOTCollectorModel.values()) {
-            allCollectors.add(modle.toString());
+            allCollectors.add(modle.getCode());
         }
 
         return allCollectors.contains(coll);

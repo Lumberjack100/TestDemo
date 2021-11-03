@@ -572,7 +572,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             return;
         }
 
-        collectorModel = baseConfigInfo.getCollectorModel().toString();
+        collectorModel = baseConfigInfo.getCollectorModel().getCode();
 
         //获取采集器类型
         if (!TextUtils.isEmpty(collectorModel)) {

@@ -744,7 +744,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             Timber.e("基础配置信息为空!");
             return;
         }
-        collectorModel = baseConfigInfo.getCollectorModel().toString();
+        collectorModel = baseConfigInfo.getCollectorModel().getCode();
         switch (baseConfigInfo.getRainStation()) {
             case CLOSE:
                 //初始化时不需要触发 OnCheckedChangeListener 事件

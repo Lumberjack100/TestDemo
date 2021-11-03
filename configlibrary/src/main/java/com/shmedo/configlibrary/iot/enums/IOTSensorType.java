@@ -144,7 +144,7 @@ public enum IOTSensorType {
             return UNKNOWN_TYPE;
 
         for (IOTSensorType sensorType : IOTSensorType.values()) {
-            if (sensorType.code.equals(code))
+            if (sensorType.getCode().equals(code))
                 return sensorType;
         }
 
@@ -157,7 +157,7 @@ public enum IOTSensorType {
 
         List<String> allSensors = new ArrayList<>();
         for (IOTSensorType type : IOTSensorType.values()) {
-            allSensors.add(type.toString());
+            allSensors.add(type.getCode());
         }
         return allSensors.contains(coll);
     }

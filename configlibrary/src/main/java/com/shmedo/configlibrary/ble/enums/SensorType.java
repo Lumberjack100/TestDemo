@@ -136,10 +136,7 @@ public enum SensorType {
 
     @Override
     public String toString() {
-        return "SensorType{" +
-                "code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return code;
     }
 
     public static SensorType value(String code) {
@@ -147,7 +144,7 @@ public enum SensorType {
             return UNKNOWN_TYPE;
 
         for (SensorType sensorType : SensorType.values()) {
-            if(sensorType.code.equals(code))
+            if(sensorType.getCode().equals(code))
                 return sensorType;
         }
 
@@ -160,7 +157,7 @@ public enum SensorType {
 
         List<String> allSensors = new ArrayList<>();
         for (SensorType type : SensorType.values()) {
-            allSensors.add(type.toString());
+            allSensors.add(type.getCode());
         }
         return allSensors.contains(coll);
     }

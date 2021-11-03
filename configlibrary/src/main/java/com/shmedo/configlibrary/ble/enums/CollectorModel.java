@@ -109,10 +109,7 @@ public enum CollectorModel {
 
     @Override
     public String toString() {
-        return "CollectorModel{" +
-                "code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return code;
     }
 
     public static CollectorModel value(String code) {
@@ -120,7 +117,7 @@ public enum CollectorModel {
             return VW08;
 
         for (CollectorModel collectorModel : CollectorModel.values()) {
-            if(collectorModel.code.equals(code))
+            if(collectorModel.getCode().equals(code))
                 return collectorModel;
         }
         return VW08;
@@ -132,7 +129,7 @@ public enum CollectorModel {
 
         List<String> allCollectors = new ArrayList<>();
         for (CollectorModel modle : CollectorModel.values()) {
-            allCollectors.add(modle.toString());
+            allCollectors.add(modle.getCode());
         }
 
         return allCollectors.contains(coll);
