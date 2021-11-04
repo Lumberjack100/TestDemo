@@ -81,13 +81,17 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         protected void handleMessage(Message msg, BaseNetIotCommunicateFragment fragment) {
             switch (msg.what) {
                 case AppContants.MsgWhat.MSG_DEFAULT:
-                    //轮询指令响应结果接口达到10次，判断超时
-                    if (fragment.queryNum > 30) {
-                        fragment.onQueryCmdResponseResultTimeOut(null);
-                        return;
+                    try {
+                        //轮询指令响应结果接口达到10次，判断超时
+                        if (fragment.queryNum > 30) {
+                            fragment.onQueryCmdResponseResultTimeOut(null);
+                            return;
+                        }
+                        Timber.d("handleMessage();queryNum=%s", fragment.queryNum);
+                        fragment.queryCmdResultByMsgID();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                    Timber.d("handleMessage();queryNum=%s", fragment.queryNum);
-                    fragment.queryCmdResultByMsgID();
                     break;
             }
         }
@@ -152,12 +156,16 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      * @param content
      */
     protected void doCommonDispatchRawCmd(String content, List<Integer> deviceIDList) {
-        DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-        rawCmdParam.setContent(content);
-        rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-        rawCmdParam.setDeviceIDList(deviceIDList);
+        try {
+            DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
+            rawCmdParam.setContent(content);
+            rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
+            rawCmdParam.setDeviceIDList(deviceIDList);
 
-        processDispatchRawCmd(rawCmdParam);
+            processDispatchRawCmd(rawCmdParam);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**

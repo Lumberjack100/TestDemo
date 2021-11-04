@@ -49,17 +49,17 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
 
     @BindView(R.id.et_modbus_address)
     EditText mEtModbusAddress;
-    
+
     @BindView(R.id.tv_triggerThreshold)
     TextView mTvAlarmValue;
 
     @BindView(R.id.et_trigger_threshold)
     EditText mEtAlarmValue;
-    
-    
+
+
     @BindView(R.id.tv_correctionValue)
     TextView mTvCorrectValue;
-    
+
     @BindView(R.id.et_revised)
     EditText mEtCorrectValue;
 
@@ -180,94 +180,94 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
     }
 
     private void initValue() {
-        switch (sensorType) {
-            case RAIN_GAUGE://压电式雨量计
-                mTvAlarmValue.setText("报警值(单位:mm)");
-                mTvCorrectValue.setText("修正值(单位:m)");
-                if (parcelableData != null) {
-                    SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = (SensorPiezoelectricRainGauge) parcelableData;
-                    triggerThreshold = sensorPiezoelectricRainGauge.getTriggerThreshold();
-                    correctValue = sensorPiezoelectricRainGauge.getCorrectionValue();
-                }
-                break;
-
-            case WIRE_SHIFT://拉线位移计
-                mTvAlarmValue.setText("报警值(单位:mm)");
-                mTvCorrectValue.setText("修正值(单位:m)");
-                if (parcelableData != null) {
-                    SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) parcelableData;
-                    triggerThreshold = sensorWireShiftInfo.getTriggerThreshold();
-                    correctValue = sensorWireShiftInfo.getCorrectionValue();
-                }
-                break;
-
-            case SOIL_MOISTURE://土壤含水率
-                mTvAlarmValue.setText("报警值(单位:%rh)");
-                mTvCorrectValue.setText("修正值(单位:%rh)");
-                if (parcelableData != null) {
-                    SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) parcelableData;
-                    triggerThreshold = sensorSoilMoistureInfo.getTriggerThreshold();
-                    correctValue = sensorSoilMoistureInfo.getCorrectionValue();
-                }
-                break;
-
-            case INCLINOMETER://测斜仪
-                mTvAlarmValue.setText("报警值(单位:mm)");
-                mTvCorrectValue.setText("修正值(单位:m)");
-                mTvExtension1.setText("测段长(单位:mm)");
-                if (parcelableData != null) {
-                    SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) parcelableData;
-                    triggerThreshold = sensorInclinometerInfo.getTriggerThreshold();
-                    correctValue = sensorInclinometerInfo.getCorrectionValue();
-                    extension1 = sensorInclinometerInfo.getMeasureLength();
-                    if (!TextUtils.isEmpty(extension1)) {
-                        extension1 = decimalFormat.format(Double.parseDouble(extension1));
-                        mEtExtension1.setText(extension1);
-                    }
-                }
-                break;
-
-            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                mTvAlarmValue.setText("报警值(单位:mm)");
-                mTvCorrectValue.setText("安装高程(单位:m)");
-                if (parcelableData != null) {
-                    SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) parcelableData;
-                    triggerThreshold = sensorUltrasonicLevelInfo.getTriggerThreshold();
-                    correctValue = sensorUltrasonicLevelInfo.getCorrectionValue();
-                }
-                break;
-
-            case RADAR_LEVEL_GAUGE://雷达物位计
-                mTvAlarmValue.setText("报警值(单位:mm)");
-                mTvCorrectValue.setText("安装高程(单位:m)");
-                if (parcelableData != null) {
-                    SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) parcelableData;
-                    triggerThreshold = sensorRadarLevelInfo.getTriggerThreshold();
-                    correctValue = sensorRadarLevelInfo.getCorrectionValue();
-                }
-                break;
-
-            case INFRASOUND://次声
-                mTvAlarmValue.setText("报警值(单位:Hz)");
-                mTvCorrectValue.setText("修正值(单位:Hz)");
-                if (parcelableData != null) {
-                    SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) parcelableData;
-                    triggerThreshold = sensorInfrasoundInfo.getTriggerThreshold();
-                    correctValue = sensorInfrasoundInfo.getCorrectionValue();
-                }
-                break;
-
-            case WEATHER_STATION://气象站
-                mTvAlarmValue.setText("报警值(单位:m/s)");
-                mTvCorrectValue.setText("修正值(单位:m/s)");
-                if (parcelableData != null) {
-                    SensorWeatherStation sensorWeatherStation = (SensorWeatherStation) parcelableData;
-                    triggerThreshold = sensorWeatherStation.getTriggerThreshold();
-                    correctValue = sensorWeatherStation.getCorrectionValue();
-                }
-                break;
-        }
         try {
+            switch (sensorType) {
+                case RAIN_GAUGE://压电式雨量计
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("修正值(单位:m)");
+                    if (parcelableData != null) {
+                        SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = (SensorPiezoelectricRainGauge) parcelableData;
+                        triggerThreshold = sensorPiezoelectricRainGauge.getTriggerThreshold();
+                        correctValue = sensorPiezoelectricRainGauge.getCorrectionValue();
+                    }
+                    break;
+
+                case WIRE_SHIFT://拉线位移计
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("修正值(单位:m)");
+                    if (parcelableData != null) {
+                        SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) parcelableData;
+                        triggerThreshold = sensorWireShiftInfo.getTriggerThreshold();
+                        correctValue = sensorWireShiftInfo.getCorrectionValue();
+                    }
+                    break;
+
+                case SOIL_MOISTURE://土壤含水率
+                    mTvAlarmValue.setText("报警值(单位:%rh)");
+                    mTvCorrectValue.setText("修正值(单位:%rh)");
+                    if (parcelableData != null) {
+                        SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) parcelableData;
+                        triggerThreshold = sensorSoilMoistureInfo.getTriggerThreshold();
+                        correctValue = sensorSoilMoistureInfo.getCorrectionValue();
+                    }
+                    break;
+
+                case INCLINOMETER://测斜仪
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("修正值(单位:m)");
+                    mTvExtension1.setText("测段长(单位:mm)");
+                    if (parcelableData != null) {
+                        SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) parcelableData;
+                        triggerThreshold = sensorInclinometerInfo.getTriggerThreshold();
+                        correctValue = sensorInclinometerInfo.getCorrectionValue();
+                        extension1 = sensorInclinometerInfo.getMeasureLength();
+                        if (!TextUtils.isEmpty(extension1)) {
+                            extension1 = decimalFormat.format(Double.parseDouble(extension1));
+                            mEtExtension1.setText(extension1);
+                        }
+                    }
+                    break;
+
+                case ULTRASONIC_LEVEL_GAUGE://超声波物位计
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("安装高程(单位:m)");
+                    if (parcelableData != null) {
+                        SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) parcelableData;
+                        triggerThreshold = sensorUltrasonicLevelInfo.getTriggerThreshold();
+                        correctValue = sensorUltrasonicLevelInfo.getCorrectionValue();
+                    }
+                    break;
+
+                case RADAR_LEVEL_GAUGE://雷达物位计
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("安装高程(单位:m)");
+                    if (parcelableData != null) {
+                        SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) parcelableData;
+                        triggerThreshold = sensorRadarLevelInfo.getTriggerThreshold();
+                        correctValue = sensorRadarLevelInfo.getCorrectionValue();
+                    }
+                    break;
+
+                case INFRASOUND://次声
+                    mTvAlarmValue.setText("报警值(单位:Hz)");
+                    mTvCorrectValue.setText("修正值(单位:Hz)");
+                    if (parcelableData != null) {
+                        SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) parcelableData;
+                        triggerThreshold = sensorInfrasoundInfo.getTriggerThreshold();
+                        correctValue = sensorInfrasoundInfo.getCorrectionValue();
+                    }
+                    break;
+
+                case WEATHER_STATION://气象站
+                    mTvAlarmValue.setText("报警值(单位:m/s)");
+                    mTvCorrectValue.setText("修正值(单位:m/s)");
+                    if (parcelableData != null) {
+                        SensorWeatherStation sensorWeatherStation = (SensorWeatherStation) parcelableData;
+                        triggerThreshold = sensorWeatherStation.getTriggerThreshold();
+                        correctValue = sensorWeatherStation.getCorrectionValue();
+                    }
+                    break;
+            }
             mEtModbusAddress.setText(sensorAddress);
 
             if (!TextUtils.isEmpty(triggerThreshold)) {

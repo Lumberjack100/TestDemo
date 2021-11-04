@@ -70,6 +70,7 @@ import timber.log.Timber;
 public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements TabLayout.OnTabSelectedListener {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
+    @NonNull
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 

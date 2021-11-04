@@ -151,7 +151,6 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
                     return;
                 }
                 sendAuthenticateCodeCmd(cmdArray[3]);
-                return;
 
             } else if (cmdStr.startsWith("$$223")) {//设备登录验证结果指令
                 Timber.d("设备登录验证状态===%s", cmdArray[1].contains("1"));
@@ -162,26 +161,21 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
                     disconnectDevice();
                     onAuthenticateResult(false);
                 }
-                return;
 
             } else if (cmdStr.contains("Please verify the equipment.\r\n")) {
                 ToastUtils.show("设备认证失败!");
                 disconnectDevice();
                 onAuthenticateResult(false);
-                return;
 
             } else if (cmdStr.contains("Equipment Verify OK.\r\n")) {
                 onAuthenticateResult(true);
-                return;
 
             } else {
                 if (cmdStr.startsWith("$$888")) {
                     return;
                 }
-
                 parseResponseMessage(cmdStr);
             }
-
         } catch (Exception ex) {
             Timber.e(ex);
         }

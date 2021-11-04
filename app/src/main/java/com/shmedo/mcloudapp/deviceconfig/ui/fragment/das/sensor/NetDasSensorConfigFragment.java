@@ -347,12 +347,16 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             DasExternalSensorListNewActivity.startActivity(mActivity, projectDeviceInfo);
 
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
-            if (!checkDigitalOsmometerParam()) {
-                Timber.w("参数存在错误!");
-                return;
+            try {
+                KeyBordUtils.hideSoftKeyboard(view);
+                if (!checkDigitalOsmometerParam()) {
+                    Timber.w("参数存在错误!");
+                    return;
+                }
+                processSave();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            processSave();
         }
     }
 

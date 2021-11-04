@@ -376,17 +376,21 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             DasExternalSensorListActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, collectorModel);
 
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
-            cmdRainPrecision = "";
-            cmdOsmometerAddress = "";
-            cmdDepthTriggerValue = "";
-            cmdDepthCorrection = "";
-            cmdOsmometerLength = "";
-            cmdNozzelHeight = "";
-            if (!checkRainPrecisionParam() || !checkDigitalOsmometerParam()) {
-                return;
+            try {
+                KeyBordUtils.hideSoftKeyboard(view);
+                cmdRainPrecision = "";
+                cmdOsmometerAddress = "";
+                cmdDepthTriggerValue = "";
+                cmdDepthCorrection = "";
+                cmdOsmometerLength = "";
+                cmdNozzelHeight = "";
+                if (!checkRainPrecisionParam() || !checkDigitalOsmometerParam()) {
+                    return;
+                }
+                processSave();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            processSave();
         }
     }
 

@@ -299,212 +299,212 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             protected void convert(CommonViewHolder holder, DasSensorStatusInfo sensorStatusInfo, int position) {
                 String type = sensorStatusInfo.getType();
                 type = type.charAt(0) == '0' ? type.substring(1) : type;
-                IOTSensorType sensorType = IOTSensorType.value(type);
-                switch (sensorType) {
-                    case WIRE_SHIFT://拉绳式裂缝计
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_wire_shift));
-                        holder.setVisibleOrGone(R.id.value2Layout, false);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "裂缝值(mm)");
-                        decimalFormat.applyPattern("#");
-                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
-                        break;
-
-                    case SOIL_MOISTURE://土壤含水率
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_soil_moisture));
-                        holder.setVisibleOrGone(R.id.value2Layout, false);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "含水率(%)");
-                        decimalFormat.applyPattern("#.#");
-                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
-                        break;
-
-                    case INCLINOMETER: {//测斜仪
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_inclinometer));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "X轴(mm)");
-                        holder.setText(R.id.tv_title2, "Y轴(mm)");
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 2) {
-                            decimalFormat.applyPattern("#");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                        }
-                    }
-                    break;
-
-                    case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_ultrasonic_level_gauge));
-                        holder.setVisibleOrGone(R.id.value2Layout, false);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "空高值(mm)");
-                        decimalFormat.applyPattern("#");
-                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
-                        break;
-
-                    case RADAR_LEVEL_GAUGE://雷达物位计
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_radar_level_gauge));
-                        holder.setVisibleOrGone(R.id.value2Layout, false);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "空高值(mm)");
-                        decimalFormat.applyPattern("#");
-                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
-                        break;
-
-                    case UPLIFT_PRESSURE_GAUGE: {//数字式渗压计
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_uplift_pressure_gauge));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, true);
-                        holder.setText(R.id.tv_title1, "水深(m)");
-                        holder.setText(R.id.tv_title2, "空管(m)");
-                        holder.setText(R.id.tv_title3, "水温(℃)");
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 3) {
-                            decimalFormat.applyPattern("#.###");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                            decimalFormat.applyPattern("#.#");
-                            holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
-                        }
-                    }
-                    break;
-
-                    case KANG_PERCOLATE: {//基康渗压计
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_kang_percolate));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, true);
-                        holder.setText(R.id.tv_title1, "水深(m)");
-                        holder.setText(R.id.tv_title2, "空管(m)");
-                        holder.setText(R.id.tv_title3, "水温(℃)");
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 3) {
-                            decimalFormat.applyPattern("#.###");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                            decimalFormat.applyPattern("#.#");
-                            holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
-                        }
-                    }
-                    break;
-
-                    case GUDAN_PERCOLATE: {//葛南渗压计
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_gudan_percolate));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, true);
-                        holder.setText(R.id.tv_title1, "水深(m)");
-                        holder.setText(R.id.tv_title2, "空管(m)");
-                        holder.setText(R.id.tv_title3, "水温(℃)");
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 3) {
-                            decimalFormat.applyPattern("#.###");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                            decimalFormat.applyPattern("#.#");
-                            holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
-                        }
-                    }
-                    break;
-
-                    case GUDAN_STRESS: {//葛南应变计
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_gudan_stress));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "应变(μ)");
-                        holder.setText(R.id.tv_title2, "温度(℃)");
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 2) {
-                            decimalFormat.applyPattern("#.#");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                        }
-                    }
-                    break;
-
-                    case JUNXING_ZLJ_300T: {//轴力计
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_junxing_zlj_300t));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "轴力(KN)");
-                        holder.setText(R.id.tv_title2, "温度(℃)");
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 2) {
-                            decimalFormat.applyPattern("#.#");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                        }
-                    }
-                    break;
-
-                    case WEATHER_STATION: {//气象站
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weather_station));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, true);
-                        holder.setVisibleOrGone(R.id.value4Layout, true);
-                        holder.setVisibleOrGone(R.id.value5Layout, true);
-
-                        holder.setText(R.id.tv_title1, "风速(m/s)");
-                        holder.setText(R.id.tv_title2, "风向(°)");
-                        holder.setText(R.id.tv_title3, "湿度(%RH)");
-                        holder.setText(R.id.tv_title4, "温度(℃)");
-                        holder.setText(R.id.tv_title5, "气压(KPa)");
-
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 5) {
-                            decimalFormat.applyPattern("#.#");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                            holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
-                            holder.setText(R.id.tv_value4, decimalFormat.format(Double.parseDouble(values[3])));
-                            holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[4])));
-                        }
-                    }
-                    break;
-
-                    case WEIR: {//量水堰
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weir));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "液位值(mm)");
-                        holder.setText(R.id.tv_title2, "渗流量(m³/s)");
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 2) {
-                            decimalFormat.applyPattern("#");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            decimalFormat.applyPattern("#.###");
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                        }
-                    }
-                    break;
-
-                    case TURBIDITY_METER://浊度仪传感器
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_turbidity_meter));
-                        holder.setVisibleOrGone(R.id.value2Layout, false);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "浊度(NTU)");
-                        decimalFormat.applyPattern("#.##");
-                        holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
-                        break;
-
-                    case LUYAN_INCLINOMETER://倾角仪
-                        holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_qingjiao));
-                        holder.setVisibleOrGone(R.id.value2Layout, true);
-                        holder.setVisibleOrGone(R.id.value3Layout, false);
-                        holder.setText(R.id.tv_title1, "X轴角度(°)");
-                        holder.setText(R.id.tv_title2, "Y轴角度(°)");
-                        String[] values = sensorStatusInfo.getVal().split(",");
-                        if (values.length >= 2) {
-                            decimalFormat.applyPattern("#.#");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                            holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                        }
-                        break;
-
-                    default:
-                        holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
-                        break;
-                }
                 try {
+                    IOTSensorType sensorType = IOTSensorType.value(type);
+                    switch (sensorType) {
+                        case WIRE_SHIFT://拉绳式裂缝计
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_wire_shift));
+                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "裂缝值(mm)");
+                            decimalFormat.applyPattern("#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                            break;
+
+                        case SOIL_MOISTURE://土壤含水率
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_soil_moisture));
+                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "含水率(%)");
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                            break;
+
+                        case INCLINOMETER: {//测斜仪
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_inclinometer));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "X轴(mm)");
+                            holder.setText(R.id.tv_title2, "Y轴(mm)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case ULTRASONIC_LEVEL_GAUGE://超声波物位计
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_ultrasonic_level_gauge));
+                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "空高值(mm)");
+                            decimalFormat.applyPattern("#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                            break;
+
+                        case RADAR_LEVEL_GAUGE://雷达物位计
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_radar_level_gauge));
+                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "空高值(mm)");
+                            decimalFormat.applyPattern("#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                            break;
+
+                        case UPLIFT_PRESSURE_GAUGE: {//数字式渗压计
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_uplift_pressure_gauge));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, true);
+                            holder.setText(R.id.tv_title1, "水深(m)");
+                            holder.setText(R.id.tv_title2, "空管(m)");
+                            holder.setText(R.id.tv_title3, "水温(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 3) {
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                            }
+                        }
+                        break;
+
+                        case KANG_PERCOLATE: {//基康渗压计
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_kang_percolate));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, true);
+                            holder.setText(R.id.tv_title1, "水深(m)");
+                            holder.setText(R.id.tv_title2, "空管(m)");
+                            holder.setText(R.id.tv_title3, "水温(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 3) {
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                            }
+                        }
+                        break;
+
+                        case GUDAN_PERCOLATE: {//葛南渗压计
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_gudan_percolate));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, true);
+                            holder.setText(R.id.tv_title1, "水深(m)");
+                            holder.setText(R.id.tv_title2, "空管(m)");
+                            holder.setText(R.id.tv_title3, "水温(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 3) {
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                            }
+                        }
+                        break;
+
+                        case GUDAN_STRESS: {//葛南应变计
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_gudan_stress));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "应变(μ)");
+                            holder.setText(R.id.tv_title2, "温度(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case JUNXING_ZLJ_300T: {//轴力计
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_junxing_zlj_300t));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "轴力(KN)");
+                            holder.setText(R.id.tv_title2, "温度(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case WEATHER_STATION: {//气象站
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weather_station));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, true);
+                            holder.setVisibleOrGone(R.id.value4Layout, true);
+                            holder.setVisibleOrGone(R.id.value5Layout, true);
+
+                            holder.setText(R.id.tv_title1, "风速(m/s)");
+                            holder.setText(R.id.tv_title2, "风向(°)");
+                            holder.setText(R.id.tv_title3, "湿度(%RH)");
+                            holder.setText(R.id.tv_title4, "温度(℃)");
+                            holder.setText(R.id.tv_title5, "气压(KPa)");
+
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 5) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                                holder.setText(R.id.tv_value4, decimalFormat.format(Double.parseDouble(values[3])));
+                                holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[4])));
+                            }
+                        }
+                        break;
+
+                        case WEIR: {//量水堰
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weir));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "液位值(mm)");
+                            holder.setText(R.id.tv_title2, "渗流量(m³/s)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case TURBIDITY_METER://浊度仪传感器
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_turbidity_meter));
+                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "浊度(NTU)");
+                            decimalFormat.applyPattern("#.##");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                            break;
+
+                        case LUYAN_INCLINOMETER://倾角仪
+                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_qingjiao));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "X轴角度(°)");
+                            holder.setText(R.id.tv_title2, "Y轴角度(°)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                            break;
+
+                        default:
+                            holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
+                            break;
+                    }
                     String sensorAisle = (sensorType == IOTSensorType.KANG_PERCOLATE ||
                             sensorType == IOTSensorType.GUDAN_PERCOLATE ||
                             sensorType == IOTSensorType.GUDAN_STRESS ||
