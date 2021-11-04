@@ -25,13 +25,13 @@ import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.IOTSensorType;
+import com.shmedo.configlibrary.iot.enums.SensorErrorType;
 import com.shmedo.configlibrary.iot.model.das.DasBaseInfo;
 import com.shmedo.configlibrary.iot.model.das.DasNetStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
-import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
@@ -513,7 +513,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                holder.setText(R.id.tv_status, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(sensorStatusInfo.getErrno())));
+                holder.setText(R.id.tv_status, SensorErrorType.getErrorMessageByCode(String.valueOf(sensorStatusInfo.getErrno())));
                 if (sensorStatusInfo.getErrno() == 0) {
                     holder.setTextColorRes(R.id.tv_status, R.color.text_color_3AD094);
                 } else {
@@ -890,7 +890,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             if (dasSubSensorStatusInfo.getVwp().getType() == 15) {
                 mTvPiezometerTitle.setText("数字式渗压计");
             }
-            mTvPiezometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
+            mTvPiezometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
             setSensorStatusColor(mTvPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());
             if (dasSubSensorStatusInfo.getVwp().getValue().contains(",")) {
                 String[] values = dasSubSensorStatusInfo.getVwp().getValue().split(",");
@@ -915,7 +915,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             if (dasSubSensorStatusInfo.getMems().getType() == 1) {
                 mTvMemsTitle.setText("倾角计");
             }
-            mTvInclinometerStatus.setText(IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
+            mTvInclinometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
             setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
 
             decimalFormat.applyPattern("#.#");

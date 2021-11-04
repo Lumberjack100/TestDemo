@@ -7,9 +7,10 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.shmedo.configlibrary.iot.enums.MonitoringType;
+import com.shmedo.configlibrary.iot.enums.SensorErrorType;
 import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
-import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -77,6 +78,9 @@ public class VmsTerminalCurrentStateFragment extends BaseFragment {
 
     private VmsTerminalInfo vmsTerminalInfo;
 
+    private DecimalFormat decimalFormat = new DecimalFormat();
+
+
     public static VmsTerminalCurrentStateFragment newInstance(VmsTerminalInfo vmsTerminalInfo) {
         VmsTerminalCurrentStateFragment fragment = new VmsTerminalCurrentStateFragment();
         Bundle args = new Bundle();
@@ -112,20 +116,60 @@ public class VmsTerminalCurrentStateFragment extends BaseFragment {
         sensorRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         sensorRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        sensorAdapter = new CommonAdapter<SensorErrnoInfo>(getActivity(), R.layout.item_vms_terminal_sensor_state, sensorList) {
+        sensorAdapter = new CommonAdapter<SensorErrnoInfo>(getActivity(), R.layout.item_vms_terminal_sensor_state ,sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, SensorErrnoInfo errnoBean, int position) {
-                holder.setText(R.id.tv_number, "地址 " + errnoBean.getId());
-                holder.setText(R.id.tv_sensor_name, IOTSensorUtil.getInstance().getSensorNameByTypeCode(errnoBean.getName()));
-                DecimalFormat df = new DecimalFormat("#.###");//格式化小数
-                String value = df.format(Double.valueOf(errnoBean.getVal()));
-                holder.setText(R.id.tv_sensor_value, value);
-                holder.setText(R.id.tv_sensor_status, IOTSensorUtil.getInstance().getErrorMessageByNo(String.valueOf(errnoBean.getErrno())));
+                try {
+                    holder.setText(R.id.tv_address, "地址 " + errnoBean.getId());
+                    holder.setText(R.id.tv_sensor_name, MonitoringType.valueByCode(errnoBean.getName()).getDescription());
+                    MonitoringType monitoringType = MonitoringType.valueByCode(errnoBean.getName());
+                    switch (monitoringType) {
+                        case AVALANCHE_METER: {//崩滑仪
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, true);
+                            holder.setVisibleOrGone(R.id.ll_group2, true);
+                            holder.setVisibleOrGone(R.id.value4Layout, true);
+                            holder.setVisibleOrGone(R.id.value5Layout, true);
+                            holder.setVisibleOrGone(R.id.value6Layout, true);
+                            holder.setVisibleOrGone(R.id.ll_group3, true);
+                            holder.setVisibleOrGone(R.id.value7Layout, true);
 
-                if (errnoBean.getErrno() == 0) {
-                    holder.setTextColorRes(R.id.tv_sensor_status, R.color.text_color_3AD094);
-                } else {
-                    holder.setTextColorRes(R.id.tv_sensor_status, R.color.red);
+                            holder.setText(R.id.tv_title1, "X轴加速度(mg)");
+                            holder.setText(R.id.tv_title2, "Y轴加速度(mg)");
+                            holder.setText(R.id.tv_title3, "Z轴加速度(mg)");
+                            holder.setText(R.id.tv_title4, "X轴角度(°)");
+                            holder.setText(R.id.tv_title5, "Y轴角度(°)");
+                            holder.setText(R.id.tv_title6, "Z轴角度(°)");
+                            holder.setText(R.id.tv_title7, "方位角(°)");
+                            String[] values = errnoBean.getVal().split(",");
+                            if (values.length >= 7) {
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                                holder.setText(R.id.tv_value4, decimalFormat.format(Double.parseDouble(values[3])));
+                                holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[4])));
+                                holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[5])));
+                                holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[6])));
+                            }
+                        }
+                        break;
+
+                        default: {
+                            decimalFormat.applyPattern("#.###");//格式化小数
+                            String value = decimalFormat.format(Double.valueOf(errnoBean.getVal()));
+                            holder.setText(R.id.tv_value1, value);
+                        }
+                        break;
+                    }
+                    holder.setText(R.id.tv_status, SensorErrorType.getErrorMessageByCode(String.valueOf(errnoBean.getErrno())));
+                    if (errnoBean.getErrno() == 0) {
+                        holder.setTextColorRes(R.id.tv_status, R.color.text_color_3AD094);
+                    } else {
+                        holder.setTextColorRes(R.id.tv_status, R.color.red);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         };

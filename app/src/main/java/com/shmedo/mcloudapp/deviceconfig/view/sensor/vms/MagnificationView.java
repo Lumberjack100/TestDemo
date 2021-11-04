@@ -15,8 +15,8 @@ import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.entity.vms.SetVmsTerminalSensorParamsEntity;
+import com.shmedo.configlibrary.iot.enums.MonitoringType;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
-import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.mcloudapp.R;
 
 import butterknife.BindView;
@@ -62,7 +62,7 @@ public class MagnificationView extends FrameLayout {
     }
 
     public void setVisibilityBySensorType(String sensorName) {
-        String code = IOTSensorUtil.getInstance().getSensorTypeCodeByName(sensorName);
+        String code = MonitoringType.valueByDesc(sensorName).getCode();
         if (code.equals("201")) {
 //            initRainView();
             if (viewInclinometer != null) {

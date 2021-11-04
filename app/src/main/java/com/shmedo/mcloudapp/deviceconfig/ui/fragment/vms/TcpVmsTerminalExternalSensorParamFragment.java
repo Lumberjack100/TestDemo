@@ -26,10 +26,10 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.vms.SetVmsTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.MonitoringType;
 import com.shmedo.configlibrary.iot.enums.VmsSensorCalculation;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
-import com.shmedo.configlibrary.iot.utils.IOTSensorUtil;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -89,14 +89,14 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
     private List<String> calculationList = Arrays.asList("直线式", "多项式", "MEMS", "模数", "倍率");
     private List<String> sensorNameList = new ArrayList<>();
-    //直线式和多项式结算方式下支持的传感器
-    private List<String> vibratingWireSensorNameList = Arrays.asList("裂缝计", "轴力计", "水压力计", "水位计", "渗压计");
-    //MEMS结算方式下支持的传感器
-    private List<String> digitalSensorNameList = Arrays.asList("加速度计", "倾角计", "崩滑仪");
-    //模数结算方式下支持的传感器
-    private List<String> modulusSensorNameList = Arrays.asList("轴力计");
+    //直线式和多项式计算方式下支持的传感器
+    private List<String> vibratingWireSensorNameList = Arrays.asList(MonitoringType.CRACK_METER.getDescription(), MonitoringType.AXIAL_FORCE_METER.getDescription(), MonitoringType.WATER_PRESSURE_METER.getDescription(), MonitoringType.WATER_LEVEL_METER.getDescription(), MonitoringType.OSMOMETER.getDescription());
+    //MEMS计算方式下支持的传感器
+    private List<String> digitalSensorNameList = Arrays.asList(MonitoringType.ACCELEROMETER.getDescription(), MonitoringType.INCLINOMETER_METER.getDescription(), MonitoringType.AVALANCHE_METER.getDescription());
+    //模数计算方式下支持的传感器
+    private List<String> modulusSensorNameList = Arrays.asList(MonitoringType.AXIAL_FORCE_METER.getDescription());
     //倍率计算方式下支持的传感器
-    private List<String> magnificationSensorNameList = Arrays.asList("雨量计", "钻孔测斜仪");
+    private List<String> magnificationSensorNameList = Arrays.asList(MonitoringType.RAIN_METER.getDescription(), MonitoringType.BOREHOLE_INCLINOMETER.getDescription());
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
@@ -212,7 +212,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             sensorNameList.addAll(magnificationSensorNameList);
         }
         //解析出传感器名称
-        sensorName = IOTSensorUtil.getInstance().getSensorNameByTypeCode(sensorInfo.getName());
+        sensorName = MonitoringType.valueByCode(sensorInfo.getName()).getDescription();
         sensorNamePosOld = sensorNameList.indexOf(sensorName);
         sensorNamePos = sensorNamePosOld;
         mTvSensorName.setText(sensorName);
@@ -472,7 +472,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         entity.setChannel(sensorInfo.getChannel());
         entity.setInsert("1");
         entity.setType(sensorCalculation.toString());
-        String sensorNameNo = IOTSensorUtil.getInstance().getSensorTypeCodeByName(sensorName) + "_" + sensorSerialNumber;
+        String sensorNameNo = MonitoringType.valueByDesc(sensorName).getCode()+ "_" + sensorSerialNumber;
         entity.setName(sensorNameNo);
 
         enableButtonOriginalState = mSbSensorEnable.isChecked();
