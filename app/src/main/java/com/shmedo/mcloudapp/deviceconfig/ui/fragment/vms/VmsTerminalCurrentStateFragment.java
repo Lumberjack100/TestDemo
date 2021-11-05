@@ -116,7 +116,7 @@ public class VmsTerminalCurrentStateFragment extends BaseFragment {
         sensorRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         sensorRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
-        sensorAdapter = new CommonAdapter<SensorErrnoInfo>(getActivity(), R.layout.item_vms_terminal_sensor_state ,sensorList) {
+        sensorAdapter = new CommonAdapter<SensorErrnoInfo>(getActivity(), R.layout.item_vms_terminal_sensor_state, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, SensorErrnoInfo errnoBean, int position) {
                 try {
@@ -125,24 +125,25 @@ public class VmsTerminalCurrentStateFragment extends BaseFragment {
                     MonitoringType monitoringType = MonitoringType.valueByCode(errnoBean.getName());
                     switch (monitoringType) {
                         case AVALANCHE_METER: {//崩滑仪
-                            holder.setVisibleOrGone(R.id.value2Layout, true);
-                            holder.setVisibleOrGone(R.id.value3Layout, true);
-                            holder.setVisibleOrGone(R.id.ll_group2, true);
-                            holder.setVisibleOrGone(R.id.value4Layout, true);
-                            holder.setVisibleOrGone(R.id.value5Layout, true);
-                            holder.setVisibleOrGone(R.id.value6Layout, true);
-                            holder.setVisibleOrGone(R.id.ll_group3, true);
-                            holder.setVisibleOrGone(R.id.value7Layout, true);
-
-                            holder.setText(R.id.tv_title1, "X轴加速度(mg)");
-                            holder.setText(R.id.tv_title2, "Y轴加速度(mg)");
-                            holder.setText(R.id.tv_title3, "Z轴加速度(mg)");
-                            holder.setText(R.id.tv_title4, "X轴角度(°)");
-                            holder.setText(R.id.tv_title5, "Y轴角度(°)");
-                            holder.setText(R.id.tv_title6, "Z轴角度(°)");
-                            holder.setText(R.id.tv_title7, "方位角(°)");
                             String[] values = errnoBean.getVal().split(",");
                             if (values.length >= 7) {
+                                holder.setVisibleOrGone(R.id.value2Layout, true);
+                                holder.setVisibleOrGone(R.id.value3Layout, true);
+                                holder.setVisibleOrGone(R.id.ll_group2, true);
+                                holder.setVisibleOrGone(R.id.value4Layout, true);
+                                holder.setVisibleOrGone(R.id.value5Layout, true);
+                                holder.setVisibleOrGone(R.id.value6Layout, true);
+                                holder.setVisibleOrGone(R.id.ll_group3, true);
+                                holder.setVisibleOrGone(R.id.value7Layout, true);
+
+                                holder.setText(R.id.tv_title1, "X轴加速度(mg)");
+                                holder.setText(R.id.tv_title2, "Y轴加速度(mg)");
+                                holder.setText(R.id.tv_title3, "Z轴加速度(mg)");
+                                holder.setText(R.id.tv_title4, "X轴角度(°)");
+                                holder.setText(R.id.tv_title5, "Y轴角度(°)");
+                                holder.setText(R.id.tv_title6, "Z轴角度(°)");
+                                holder.setText(R.id.tv_title7, "方位角(°)");
+
                                 decimalFormat.applyPattern("#.###");
                                 holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
                                 holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
@@ -151,6 +152,10 @@ public class VmsTerminalCurrentStateFragment extends BaseFragment {
                                 holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[4])));
                                 holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[5])));
                                 holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[6])));
+                            } else {
+                                decimalFormat.applyPattern("#.###");//格式化小数
+                                String value = decimalFormat.format(Double.valueOf(errnoBean.getVal()));
+                                holder.setText(R.id.tv_value1, value);
                             }
                         }
                         break;
