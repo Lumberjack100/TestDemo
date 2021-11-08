@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.common.ui.activity;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceModuleMainFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.List;
 
@@ -66,16 +64,14 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setCheckNetWork(true);
         initView(savedInstanceState);
-        if (XPermissionUtils.checkPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            UpdataManagerUtil.requestPermissionForInstallPackage(this, false);//版本更新
-        }
+        UpdataManagerUtil.checkNewVersion(this, false);
     }
 
     private void initView(Bundle savedInstanceState) {
         if (savedInstanceState != null) {  // “内存重启”时调用
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
-            deviceModuleMainFragment=(DeviceModuleMainFragment)getSupportFragmentManager().findFragmentByTag(DeviceModuleMainFragment.class.getName());
+            deviceModuleMainFragment = (DeviceModuleMainFragment) getSupportFragmentManager().findFragmentByTag(DeviceModuleMainFragment.class.getName());
             projectListFragment = (ProjectListFragment) getSupportFragmentManager().findFragmentByTag(ProjectListFragment.class.getName());
             mineFragment = (MineFragment) getSupportFragmentManager().findFragmentByTag(MineFragment.class.getName());
 

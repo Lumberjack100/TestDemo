@@ -24,6 +24,8 @@
     <color name="app_color_theme_10">#E1EFDA</color> <!-- Pink Rose -->
     <color name="orange_FF7502">#ff7502</color>
 
+    <color name="update_theme_color">#FFFFAC5D</color>
+
     <color name="black_505050">#505050</color>
     <color name="gray_80666666">#80666666</color>
     <color name="gray_E0E0E0">#E0E0E0</color>

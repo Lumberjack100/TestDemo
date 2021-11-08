@@ -16,7 +16,7 @@ buildscript {
         maven {url 'https://developer.huawei.com/repo/'}
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.1.3'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0'
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -31,6 +31,7 @@ allprojects {
         maven { url 'https://jitpack.io' }
         // 配置HMS Core SDK的Maven仓地址。
         maven {url 'https://developer.huawei.com/repo/'}
+        maven { url "https://frontjs-static.pgyer.com/dist/sdk/pgyersdk" }  //蒲公英主力仓库
     }
 }
 

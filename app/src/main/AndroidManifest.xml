@@ -63,24 +63,18 @@
 
         <service android:name="com.amap.api.location.APSService" />
 
-        <activity android:name="com.pgyersdk.feedback.FeedbackActivity" /> <!-- 蒲公英配置 -->
         <meta-data
-            android:name="PGYER_APPID"
-            android:value="${pgyerKey}" /> <!-- 配置APP ID -->
+            android:name="PGYER_API_KEY"
+            android:value="${pgyerKey}" />
+
+        <meta-data
+            android:name="PGYER_FRONTJS_KEY"
+            android:value="${frontJSToken}"/>
+
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${buglyAppId}" /> <!-- 配置APP版本号 -->
-        <!--
-   <meta-data
-            android:name="BUGLY_APP_VERSION"
-            android:value="<APP_Version>" />
-        -->
-        <!-- 配置APP渠道号 -->
-        <!--
-  <meta-data
-            android:name="BUGLY_APP_CHANNEL"
-            android:value="<APP_Channel>" />
-        -->
+
         <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
