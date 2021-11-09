@@ -182,7 +182,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                         deviceType = AppContants.DeviceType.ADME;
                 } else if (deviceName.endsWith("V")) {
                     deviceType = AppContants.DeviceType.M20;
-                } else if (deviceName.endsWith("W")) {
+                } else if (deviceName.endsWith("Y")) {
                     deviceType = AppContants.DeviceType.RN20;
                 }
                 if(deviceType == AppContants.DeviceType.UnKnown){

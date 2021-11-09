@@ -13,6 +13,8 @@ import com.shmedo.mcloudapp.R;
 import com.xuexiang.xupdate.XUpdate;
 import com.xuexiang.xupdate.entity.UpdateEntity;
 
+import timber.log.Timber;
+
 /**
  * 版本更新
  */
@@ -62,6 +64,7 @@ public class UpdataManagerUtil {
 
             @Override
             public void onNonentityVersionExist(String string) {
+                Timber.d("已是最新版本");
                 //无新版本
                 if (isShowToast)
                     ToastUtils.show("已是最新版本");
@@ -69,6 +72,7 @@ public class UpdataManagerUtil {
 
             @Override
             public void onFail(String error) {
+                Timber.w(error);
                 //请求异常
                 if (isShowToast && TextUtils.isEmpty(error))
                     ToastUtils.show(error);
