@@ -196,38 +196,42 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
      * 更新头部信息
      */
     private void updateHeadInfo() {
-        if (vmsBasicInfo != null) {
-            mTvDeviceName.setText("VMS网关");
-            mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBasicInfo.getSn()));
-            mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
-            mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
-            if (!TextUtils.isEmpty(vmsBasicInfo.getOnline()) && !vmsBasicInfo.getOnline().equals("0")) {
-                mTvDeviceState.setText("在线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+        try {
+            if (vmsBasicInfo != null) {
+                mTvDeviceName.setText("VMS网关");
+                mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBasicInfo.getSn()));
+                mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
+                mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
+                if (!TextUtils.isEmpty(vmsBasicInfo.getOnline()) && !vmsBasicInfo.getOnline().equals("0")) {
+                    mTvDeviceState.setText("在线");
+                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
 
-            } else if (vmsBasicInfo.getOnline().equals("0")) {
-                mTvDeviceState.setText("离线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-            }
-        } else {
-            mTvDeviceName.setText("VMS网关");
-            mTvDeviceSn.setText(String.format("设备SN号：%s", projectDeviceInfo.getToken()));
-            mTvProductModel.setText(String.format("版本信息：%s", projectDeviceInfo.getFirmwareVersion()));
-            mTvSubModel.setText("网关电压：--");
-            if (projectDeviceInfo.isOnline()) {
-                mTvDeviceState.setText("在线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+                } else if (vmsBasicInfo.getOnline().equals("0")) {
+                    mTvDeviceState.setText("离线");
+                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+                }
             } else {
-                mTvDeviceState.setText("离线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+                mTvDeviceName.setText("VMS网关");
+                mTvDeviceSn.setText(String.format("设备SN号：%s", projectDeviceInfo.getToken()));
+                mTvProductModel.setText(String.format("版本信息：%s", projectDeviceInfo.getFirmwareVersion()));
+                mTvSubModel.setText("网关电压：--");
+                if (projectDeviceInfo.isOnline()) {
+                    mTvDeviceState.setText("在线");
+                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+                } else {
+                    mTvDeviceState.setText("离线");
+                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+                }
             }
+            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            mTvDeviceConnectOperate.setVisibility(View.GONE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        mTvPlatformCommunicationState.setVisibility(View.GONE);
-        mTvDeviceConnectOperate.setVisibility(View.GONE);
     }
 
     /**

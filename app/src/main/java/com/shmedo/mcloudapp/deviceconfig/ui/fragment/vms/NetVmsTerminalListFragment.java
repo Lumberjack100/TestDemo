@@ -158,23 +158,27 @@ public class NetVmsTerminalListFragment extends BaseFragment {
     }
 
     public void updateTerminalList(List<VmsTerminalInfo> dataList) {
-        for (VmsTerminalInfo newterminalInfo : dataList) {
-            boolean isExist = false;
-            for (VmsTerminalInfo terminalInfo : vmsTerminalInfoList) {
-                if (newterminalInfo.getSn().equals(terminalInfo.getSn())) {
-                    isExist = true;
-                    break;
+        try {
+            for (VmsTerminalInfo newterminalInfo : dataList) {
+                boolean isExist = false;
+                for (VmsTerminalInfo terminalInfo : vmsTerminalInfoList) {
+                    if (newterminalInfo.getSn().equals(terminalInfo.getSn())) {
+                        isExist = true;
+                        break;
+                    }
+                }
+                if (!isExist) {
+                    vmsTerminalInfoList.add(newterminalInfo);
                 }
             }
-            if (!isExist) {
-                vmsTerminalInfoList.add(newterminalInfo);
-            }
+            adapter.notifyDataSetChanged();
+            mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        adapter.notifyDataSetChanged();
-        mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
-    public int getTerminalSize(){
+    public int getTerminalSize() {
         return vmsTerminalInfoList.size();
     }
 
