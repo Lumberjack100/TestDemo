@@ -42,7 +42,7 @@ android {
 
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "x86","armeabi", "armeabi-v7a"//"x86", "armeabi", "armeabi-v7a"
+            abiFilters "x86", "armeabi", "armeabi-v7a"//"x86", "armeabi", "armeabi-v7a"
         }
     }
 
@@ -99,10 +99,10 @@ android {
             dimension "version"
             applicationId rootProject.android.applicationId
             resValue "string", "app_name", getAppName()   // 设置默认的app_name
-            manifestPlaceholders = ["mapApikey" : "31d7ee436c402270e11183ce1b5d01dc",
-                                    "pgyerKey"  : "64454bf76fe2abd8dec45200c11fc93b",
+            manifestPlaceholders = ["mapApikey"   : "31d7ee436c402270e11183ce1b5d01dc",
+                                    "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
                                     "frontJSToken": "d8b5d3a412f8493008be2052611789ea",
-                                    "buglyAppId": "6b0340b2b8"]
+                                    "buglyAppId"  : "6b0340b2b8"]
 
             buildConfigField "String", "Dingding_APP_ID", "\"dingoa6lbfnghbtn0xeju0\""
         }
@@ -138,21 +138,18 @@ dependencies {
     implementation project(path: ':configlibrary')
     implementation project(path: ':core')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.legacy:legacy-support-v4:$rootProject.thirdLib.legacyVersion"
     //AppCompat 依赖 androidx.fragment:fragment:1.3.0-alpha08 和 androidx.activity:activity:1.2.0-alpha08
 //    implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+
     implementation "androidx.lifecycle:lifecycle-runtime:2.3.1"
     implementation "androidx.lifecycle:lifecycle-common-java8:2.3.1"
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
-
-    implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
-    implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.thirdLib.rxjava"
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.thirdLib.rxandroid"
@@ -162,9 +159,14 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.okHttpVersion"
     implementation 'com.uber.autodispose2:autodispose-androidx-lifecycle:2.1.1'
 
+    implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
+
+    implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
+
     // Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.thirdLib.glideVersion"
-    //annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.thirdLib.glideCompilerVersion"
+    //annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.thirdLib.glideVersion"
     implementation "de.hdodenhof:circleimageview:$rootProject.thirdLib.circleimageview"
     implementation "com.youth.banner:banner:$rootProject.thirdLib.banner"
 
@@ -180,20 +182,20 @@ dependencies {
     //开关 Button
     implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
 
-    //华为扫码服务
-    implementation 'com.huawei.hms:scan:2.0.0.300'
-
     //蒲公英SDk
     implementation "com.pgyer:analytics:$rootProject.thirdLib.pgyerSdk"
     //异常信息上报组件
     implementation "com.tencent.bugly:crashreport:$rootProject.thirdLib.buglyCrashReport"
     implementation "com.tencent.bugly:nativecrashreport:$rootProject.thirdLib.buglyNativeCrashReport"
+
     //An open source Android library that makes handling runtime permissions extremely easy.
     implementation "com.guolindev.permissionx:permissionx:$rootProject.thirdLib.permissionx"
 
     //下拉刷新
-    implementation  "com.scwang.smart:refresh-layout-kernel:$rootProject.thirdLib.SmartRefreshLayout"      //核心必须依赖
-    implementation  "com.scwang.smart:refresh-header-classics:$rootProject.thirdLib.SmartRefreshLayout"    //经典刷新头
+    implementation "com.scwang.smart:refresh-layout-kernel:$rootProject.thirdLib.SmartRefreshLayout"
+    //经典刷新头,核心必须依赖
+    implementation "com.scwang.smart:refresh-header-classics:$rootProject.thirdLib.SmartRefreshLayout"
+
     //RecyclerView侧滑菜单，Item拖拽，滑动删除Item，自动加载更多，HeaderView，FooterView，Item分组黏贴
     implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
     //一个强大并且灵活的RecyclerViewAdapter
@@ -223,10 +225,11 @@ dependencies {
     implementation "no.nordicsemi.android.support.v18:scanner:$rootProject.thirdLib.nordicsemiScanner"
     // Log Bluetooth LE events in nRF Logger APP
     implementation "no.nordicsemi.android:log:$rootProject.thirdLib.nordicsemiLog"
-    // BLE library, 放在 core 模块中引用
-    //implementation 'no.nordicsemi.android:ble:2.3.0'
 
-    implementation "com.github.mik3y:usb-serial-for-android:$rootProject.thirdLib.usbSerialVersion" // maven jitpack
+    implementation "com.github.mik3y:usb-serial-for-android:$rootProject.thirdLib.usbSerialVersion"
+
+    //华为扫码服务
+    implementation 'com.huawei.hms:scan:2.2.0.300'
 
     // 一个轻量级、高可用性的Android版本更新框架
     implementation 'com.github.xuexiangjys:XUpdate:2.1.0'
