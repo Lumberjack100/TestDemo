@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.text.TextUtils;
 
+import com.blankj.utilcode.util.CleanUtils;
+import com.blankj.utilcode.util.Utils;
 import com.hjq.toast.ToastUtils;
 import com.pgyer.pgyersdk.PgyerSDKManager;
 import com.pgyer.pgyersdk.callback.CheckoutCallBack;
@@ -68,6 +70,10 @@ public class UpdataManagerUtil {
                 //无新版本
                 if (isShowToast)
                     ToastUtils.show("已是最新版本");
+
+                String updatePath = Utils.getApp().getExternalCacheDir() + "/xupdate";
+                boolean cleanResult = CleanUtils.cleanCustomDir(updatePath);
+                Timber.d("清除结果：%s", cleanResult);
             }
 
             @Override

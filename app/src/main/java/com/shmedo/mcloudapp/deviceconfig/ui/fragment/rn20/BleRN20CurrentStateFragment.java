@@ -223,17 +223,21 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             Timber.e("Rn20BaseInfo 为空!");
             return;
         }
-        mTvDeviceSn.setText(rn20BaseInfo.getSn());
-        mTvNetId.setText(rn20BaseInfo.getNetid());
-        mTvAddress.setText(rn20BaseInfo.getAddr());
-        mTvChannel.setText(rn20BaseInfo.getChannel());
-        mTvPosition.setText(rn20BaseInfo.getLocal());
-        mTvRegisterTime.setText(rn20BaseInfo.getLogintime());
-        mTvUpdateTime.setText(rn20BaseInfo.getFinaltime());
+        try {
+            mTvDeviceSn.setText(rn20BaseInfo.getSn());
+            mTvNetId.setText(rn20BaseInfo.getNetid());
+            mTvAddress.setText(rn20BaseInfo.getAddr());
+            mTvChannel.setText(rn20BaseInfo.getChannel());
+            mTvPosition.setText(rn20BaseInfo.getLocal());
+            mTvRegisterTime.setText(rn20BaseInfo.getLogintime());
+            mTvUpdateTime.setText(rn20BaseInfo.getFinaltime());
 
-        mTvSignalStrength.setText(rn20BaseInfo.getSsi());
-        mTvSendData.setText(rn20BaseInfo.getSendbuf());
-        mTvReceiveData.setText(rn20BaseInfo.getRecvbuf());
+            mTvSignalStrength.setText(rn20BaseInfo.getSsi());
+            mTvSendData.setText(rn20BaseInfo.getSendbuf());
+            mTvReceiveData.setText(rn20BaseInfo.getRecvbuf());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -246,18 +250,22 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             Timber.e("DasTemperatureAndHumidityStatusinfo 为空!");
             return;
         }
-        if (dasTemperatureAndHumidityStatusinfo.getInth() != null) {
-            //机箱内部温湿度
-            setDeviceStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
-            mTvInternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getInth().getTemp() + "°");
-            mTvInternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getInth().getHumi() + "%");
-        }
+        try {
+            if (dasTemperatureAndHumidityStatusinfo.getInth() != null) {
+                //机箱内部温湿度
+                setDeviceStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
+                mTvInternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getInth().getTemp() + "°");
+                mTvInternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getInth().getHumi() + "%");
+            }
 //        if (dasTemperatureAndHumidityStatusinfo.getOutth() != null) {
 //            //机箱外部温湿度
 //            setDeviceStatus(mTvExternalStatus, dasTemperatureAndHumidityStatusinfo.getOutth().getErrno());
 //            mTvExternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp() + "°");
 //            mTvExternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getHumi() + "%");
 //        }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -270,10 +278,14 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             Timber.e("DasSubSensorStatusInfo 为空!");
             return;
         }
-        if (dasSubSensorStatusInfo.getIo() != null) {
-            if (dasSubSensorStatusInfo.getIo().getType() == 1) {
-                mTvRain.setText(dasSubSensorStatusInfo.getIo().getVaule() + "mm");
+        try {
+            if (dasSubSensorStatusInfo.getIo() != null) {
+                if (dasSubSensorStatusInfo.getIo().getType() == 1) {
+                    mTvRain.setText(dasSubSensorStatusInfo.getIo().getVaule() + "mm");
+                }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

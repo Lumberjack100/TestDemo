@@ -763,29 +763,33 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             Timber.e("DasBaseInfo 为空!");
             return;
         }
-        mTvDeviceSn.setText(dasBaseInfo.getSn());
-        mTVSimCardNumber.setText(dasBaseInfo.getIccid());
-        mTvImeiNumber.setText(dasBaseInfo.getImei());
-        mTvDeviceStartCode.setText(dasBaseInfo.getCode());
-        mTvFirmwareVersion.setText(dasBaseInfo.getVer());
-        mTvInstallPosition.setText(dasBaseInfo.getLocal());
+        try {
+            mTvDeviceSn.setText(dasBaseInfo.getSn());
+            mTVSimCardNumber.setText(dasBaseInfo.getIccid());
+            mTvImeiNumber.setText(dasBaseInfo.getImei());
+            mTvDeviceStartCode.setText(dasBaseInfo.getCode());
+            mTvFirmwareVersion.setText(dasBaseInfo.getVer());
+            mTvInstallPosition.setText(dasBaseInfo.getLocal());
 
-        mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(dasBaseInfo.getCsq())), 0);
-        mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType(dasBaseInfo.getIsp()));
+            mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(dasBaseInfo.getCsq())), 0);
+            mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType(dasBaseInfo.getIsp()));
 
-        String powerStr = dasBaseInfo.getInvolt();
-        double power = Double.parseDouble(powerStr.replace("%", ""));
-        SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
-        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        mTvDeviceInternalPower.setText(builder);
+            String powerStr = dasBaseInfo.getInvolt();
+            double power = Double.parseDouble(powerStr.replace("%", ""));
+            SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+            builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mTvDeviceInternalPower.setText(builder);
 
-        String voltageStr = dasBaseInfo.getOutvolt();
-        double voltage = Double.parseDouble(voltageStr);
-        builder = new SpannableStringBuilder(voltageStr + "V");
-        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
-        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        mTvDeviceExternalVoltage.setText(builder);
+            String voltageStr = dasBaseInfo.getOutvolt();
+            double voltage = Double.parseDouble(voltageStr);
+            builder = new SpannableStringBuilder(voltageStr + "V");
+            colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+            builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mTvDeviceExternalVoltage.setText(builder);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -802,13 +806,17 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             Timber.e("SolarBean 为空!");
             return;
         }
-        solarInfoLayout.setVisibility(View.VISIBLE);
-        setDeviceStatus(mTvSolarStatus, dasSolarStatusInfo.getSolar().getErrno());
-        decimalFormat.applyPattern("#.#");
-        mTvSolarVoltage.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getSolarvolt()) + "V");
-        mTvBatteryVoltage.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getBatvolt()) + "V");
-        mTvSupplyPower.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getSolarpwr()) + "W");
-        mTvConsumePower.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getLoadpwr()) + "W");
+        try {
+            solarInfoLayout.setVisibility(View.VISIBLE);
+            setDeviceStatus(mTvSolarStatus, dasSolarStatusInfo.getSolar().getErrno());
+            decimalFormat.applyPattern("#.#");
+            mTvSolarVoltage.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getSolarvolt()) + "V");
+            mTvBatteryVoltage.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getBatvolt()) + "V");
+            mTvSupplyPower.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getSolarpwr()) + "W");
+            mTvConsumePower.setText(decimalFormat.format(dasSolarStatusInfo.getSolar().getLoadpwr()) + "W");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -821,22 +829,26 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             Timber.e("DasTemperatureAndHumidityStatusinfo 为空!");
             return;
         }
-        if (dasTemperatureAndHumidityStatusinfo.getInth() != null) {
-            //机箱内部温湿度
-            internalTempHumidityLayout.setVisibility(View.VISIBLE);
-            setDeviceStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
-            decimalFormat.applyPattern("#.#");
-            mTvInternalTemperature.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getInth().getTemp()) + "℃");
-            mTvInternalHumidity.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getInth().getHumi()) + "%");
-        }
+        try {
+            if (dasTemperatureAndHumidityStatusinfo.getInth() != null) {
+                //机箱内部温湿度
+                internalTempHumidityLayout.setVisibility(View.VISIBLE);
+                setDeviceStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
+                decimalFormat.applyPattern("#.#");
+                mTvInternalTemperature.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getInth().getTemp()) + "℃");
+                mTvInternalHumidity.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getInth().getHumi()) + "%");
+            }
 
-        if (dasTemperatureAndHumidityStatusinfo.getOutth() != null) {
-            //机箱外部温湿度
-            externalTempHumidityLayout.setVisibility(View.VISIBLE);
-            setDeviceStatus(mTvExternalStatus, dasTemperatureAndHumidityStatusinfo.getOutth().getErrno());
-            decimalFormat.applyPattern("#.#");
-            mTvExternalTemperature.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp()) + "℃");
-            mTvExternalHumidity.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getOutth().getHumi()) + "%");
+            if (dasTemperatureAndHumidityStatusinfo.getOutth() != null) {
+                //机箱外部温湿度
+                externalTempHumidityLayout.setVisibility(View.VISIBLE);
+                setDeviceStatus(mTvExternalStatus, dasTemperatureAndHumidityStatusinfo.getOutth().getErrno());
+                decimalFormat.applyPattern("#.#");
+                mTvExternalTemperature.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp()) + "℃");
+                mTvExternalHumidity.setText(decimalFormat.format(dasTemperatureAndHumidityStatusinfo.getOutth().getHumi()) + "%");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -851,75 +863,77 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             return;
         }
 
-        if (dasSubSensorStatusInfo.getIo() != null) {
-            ioSensorLayout.setVisibility(View.VISIBLE);
+        try {
+            if (dasSubSensorStatusInfo.getIo() != null) {
+                ioSensorLayout.setVisibility(View.VISIBLE);
 
-            if (dasSubSensorStatusInfo.getIo().getType() == 1) {
-                mTvSwitchStatus.setText("接入");
-                mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
-                rainLayout.setVisibility(View.VISIBLE);
-                wireBreakAlarmLayout.setVisibility(View.GONE);
-
-                decimalFormat.applyPattern("#.#");
-                mTvRain.setText(decimalFormat.format(dasSubSensorStatusInfo.getIo().getVaule()) + "mm");
-
-            } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
-                mTvSwitchStatus.setText("未接入");
-                mTvSwitchStatus.setTextColor(Color.RED);
-                rainLayout.setVisibility(View.GONE);
-                wireBreakAlarmLayout.setVisibility(View.GONE);
-
-            } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
-                mTvSwitchStatus.setText("接入");
-                mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
-                rainLayout.setVisibility(View.GONE);
-                wireBreakAlarmLayout.setVisibility(View.VISIBLE);
-
-                if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
-                    mTvAlarmStatus.setText("断线");
-                    mTvAlarmStatus.setTextColor(Color.RED);
-                } else if (dasSubSensorStatusInfo.getIo().getVaule() == 0) {
-                    mTvAlarmStatus.setText("未断线");
-                    mTvAlarmStatus.setTextColor(getResources().getColor(R.color.text_color_3AD094));
-                }
-            }
-        }
-
-        if (dasSubSensorStatusInfo.getVwp() != null) {
-            dasDigitalPiezometerLayout.setVisibility(View.VISIBLE);
-            if (dasSubSensorStatusInfo.getVwp().getType() == 15) {
-                mTvPiezometerTitle.setText("数字式渗压计");
-            }
-            mTvPiezometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
-            setSensorStatusColor(mTvPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());
-            if (dasSubSensorStatusInfo.getVwp().getValue().contains(",")) {
-                String[] values = dasSubSensorStatusInfo.getVwp().getValue().split(",");
-                if (values.length >= 3) {
-                    emptyPipeDistanceLayout.setVisibility(View.VISIBLE);
-                    waterTemperatureLayout.setVisibility(View.VISIBLE);
-
-                    decimalFormat.applyPattern("#.###");
-                    mTvPiezometerValue.setText(decimalFormat.format(Double.parseDouble(values[0])) + "m");
-                    mTvEmptyPipeDistance.setText(decimalFormat.format(Double.parseDouble(values[1])) + "m");
+                if (dasSubSensorStatusInfo.getIo().getType() == 1) {
+                    mTvSwitchStatus.setText("接入");
+                    mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                    rainLayout.setVisibility(View.VISIBLE);
+                    wireBreakAlarmLayout.setVisibility(View.GONE);
 
                     decimalFormat.applyPattern("#.#");
-                    mTvWaterTemperature.setText(decimalFormat.format(Double.parseDouble(values[2])) + "℃");
+                    mTvRain.setText(decimalFormat.format(dasSubSensorStatusInfo.getIo().getVaule()) + "mm");
+
+                } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
+                    mTvSwitchStatus.setText("未接入");
+                    mTvSwitchStatus.setTextColor(Color.RED);
+                    rainLayout.setVisibility(View.GONE);
+                    wireBreakAlarmLayout.setVisibility(View.GONE);
+
+                } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
+                    mTvSwitchStatus.setText("接入");
+                    mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                    rainLayout.setVisibility(View.GONE);
+                    wireBreakAlarmLayout.setVisibility(View.VISIBLE);
+
+                    if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
+                        mTvAlarmStatus.setText("断线");
+                        mTvAlarmStatus.setTextColor(Color.RED);
+                    } else if (dasSubSensorStatusInfo.getIo().getVaule() == 0) {
+                        mTvAlarmStatus.setText("未断线");
+                        mTvAlarmStatus.setTextColor(getResources().getColor(R.color.text_color_3AD094));
+                    }
                 }
-            } else {
-                mTvPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue());
             }
-        }
 
-        if (dasSubSensorStatusInfo.getMems() != null) {
-            inclinometerLayout.setVisibility(View.VISIBLE);
-            if (dasSubSensorStatusInfo.getMems().getType() == 1) {
-                mTvMemsTitle.setText("倾角计");
+            if (dasSubSensorStatusInfo.getVwp() != null) {
+                dasDigitalPiezometerLayout.setVisibility(View.VISIBLE);
+                if (dasSubSensorStatusInfo.getVwp().getType() == 15) {
+                    mTvPiezometerTitle.setText("数字式渗压计");
+                }
+                mTvPiezometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
+                setSensorStatusColor(mTvPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());
+                if (dasSubSensorStatusInfo.getVwp().getValue().contains(",")) {
+                    String[] values = dasSubSensorStatusInfo.getVwp().getValue().split(",");
+                    if (values.length >= 3) {
+                        emptyPipeDistanceLayout.setVisibility(View.VISIBLE);
+                        waterTemperatureLayout.setVisibility(View.VISIBLE);
+
+                        decimalFormat.applyPattern("#.###");
+                        mTvPiezometerValue.setText(decimalFormat.format(Double.parseDouble(values[0])) + "m");
+                        mTvEmptyPipeDistance.setText(decimalFormat.format(Double.parseDouble(values[1])) + "m");
+
+                        decimalFormat.applyPattern("#.#");
+                        mTvWaterTemperature.setText(decimalFormat.format(Double.parseDouble(values[2])) + "℃");
+                    }
+                } else {
+                    mTvPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue());
+                }
             }
-            mTvInclinometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
-            setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
 
-            decimalFormat.applyPattern("#.#");
-            mTvInclinometerAxis.setText(decimalFormat.format(Double.parseDouble(dasSubSensorStatusInfo.getMems().getValue())) + "°");
+            if (dasSubSensorStatusInfo.getMems() != null) {
+                inclinometerLayout.setVisibility(View.VISIBLE);
+                if (dasSubSensorStatusInfo.getMems().getType() == 1) {
+                    mTvMemsTitle.setText("倾角计");
+                }
+                mTvInclinometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
+                setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
+                mTvInclinometerAxis.setText(dasSubSensorStatusInfo.getMems().getVaule());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

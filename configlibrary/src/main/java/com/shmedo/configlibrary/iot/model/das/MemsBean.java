@@ -7,7 +7,7 @@ package com.shmedo.configlibrary.iot.model.das;
  */
 public class MemsBean {
     private int type;
-    private String value;
+    private String vaule;
     private int errno;
 
     public int getType() {
@@ -18,12 +18,12 @@ public class MemsBean {
         this.type = type;
     }
 
-    public String getValue() {
-        return value;
+    public String getVaule() {
+        return vaule;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setVaule(String vaule) {
+        this.vaule = vaule;
     }
 
     public int getErrno() {
