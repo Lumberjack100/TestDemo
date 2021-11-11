@@ -625,8 +625,10 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     lastDistance = motorMotionDistanceInfo.getRealmovedistance();
                     holeDepth = motorMotionDistanceInfo.getRealholedepth();
                     try {
-                        decimalFormat.applyPattern("#.###");
-                        if (!TextUtils.isEmpty(holeDepth) && !decimalFormat.format(Double.parseDouble(holeDepth)).equals("-2")) {
+                        double holeValue = Math.abs(Double.parseDouble(holeDepth));
+                        double safeValue = Math.abs(Double.parseDouble(safeDistance));
+                        //测孔深值不等于安全补偿距离表示测孔深值有效
+                        if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safeDistance) && holeValue != safeValue) {
                             mTvHoleDepth.setText(holeDepth);
                         }
                     } catch (Exception ex) {
