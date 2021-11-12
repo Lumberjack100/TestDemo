@@ -15,11 +15,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
+import com.shmedo.configlibrary.iot.cmd.IOTCommand;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.GsonFactory;
+import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
@@ -34,10 +37,13 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -163,6 +169,14 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             rawCmdParam.setDeviceIDList(deviceIDList);
 
             processDispatchRawCmd(rawCmdParam);
+
+            String command_type = content.contains("&") ? content.substring(content.indexOf(IOTCommand.COMMAND_HEADER) + 1, content.indexOf("&")) : content.substring(content.indexOf(IOTCommand.COMMAND_HEADER) + 1);
+            Map<String, Object> valueMap = new HashMap<String, Object>();
+            valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+            valueMap.put("device_sn", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken());
+            valueMap.put("command_type", command_type);
+            valueMap.put("command_content", content);
+            MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -266,6 +280,18 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
             stopQueryCmdResponse();
             onQueryCmdResponseResultSuccess(queryCmdResult);
+            try {
+                IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
+                String content = queryCmdResult.getResponseContent();
+                Map<String, Object> valueMap = new HashMap<String, Object>();
+                valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+                valueMap.put("device_sn", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken());
+                valueMap.put("command_type", type.toString());
+                valueMap.put("command_content", content);
+                MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         } else {
             //已经调用 stopQueryCmdResponse() 或 stopAllProgress() 停止查询
             if (queryNum == 0)

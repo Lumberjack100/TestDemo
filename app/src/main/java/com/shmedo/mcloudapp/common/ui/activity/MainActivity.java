@@ -223,8 +223,8 @@ public class MainActivity extends BaseActivity {
                 //并记录下本次点击“返回键”的时刻，以便下次进行判断
                 mExitTime = System.currentTimeMillis();
             } else {
-                //小于2000ms则认为是用户确实希望退出程序-调用System.exit()方法进行退出
-                System.exit(0);
+                //小于2000ms则认为是用户确实希望退出程序
+                android.os.Process.killProcess(android.os.Process.myPid());
             }
             return true;
         }

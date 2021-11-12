@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.user.ui.activity.UserHomePageActivity;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
@@ -164,6 +165,8 @@ public class MineFragment extends BaseTranslucentFragment {
 //        startActivity(intent);
 //        mActivity.finish();
 
+        //登出
+        MobclickAgent.onProfileSignOff();
         LoginActivity.startActivity(getActivity());
     }
 

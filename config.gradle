@@ -65,6 +65,12 @@ ext {
             nordicsemiLog                : '2.3.0',
             nordicsemiBle                : '2.3.0',
 
+            hmsScanVersion               : '2.2.0.300',
+
+            umsdkCommonVersion           : '9.4.4',
+            umsdkAsmsVersion             : '1.4.1',
+            umsdkApmVersion              : '1.5.2',
+
             usbSerialVersion             : '3.4.2',
 
             nettyVersion                 : '4.1.70.Final',

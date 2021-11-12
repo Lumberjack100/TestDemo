@@ -37,6 +37,7 @@ import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.UiUtils;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -161,6 +162,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         isActive = true;
         String name = getClass().getName();
         Timber.i("onResume,activity=%s", name);
+        //统计时长
+        MobclickAgent.onResume(this);
 
         //在无网络情况下打开APP时，系统不会发送网络状况变更的Intent，需要自己手动检查
         netStateChangedUI(NetworkUtils.isConnected());
@@ -172,6 +175,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         isActive = false;
         String name = getClass().getName();
         Timber.i("onPause,activity=%s", name);
+        MobclickAgent.onPause(this);
     }
 
     @Override

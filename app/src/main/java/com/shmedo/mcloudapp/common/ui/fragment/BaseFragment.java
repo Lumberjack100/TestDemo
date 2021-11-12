@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.callback.HandleBackInterface;
 import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -249,6 +250,9 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onResume();
         isActive = true;
         Timber.i("onResume,Fragment=%s", name);
+        if (!isExcludedFragment())
+            MobclickAgent.onPageStart(getClass().getSimpleName().intern()); //统计页面
+
     }
 
     @Override
@@ -256,6 +260,8 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onPause();
         isActive = false;
         Timber.i("onPause,Fragment=%s", name);
+        if (!isExcludedFragment())
+            MobclickAgent.onPageEnd(getClass().getSimpleName().intern());
     }
 
     @Override
@@ -388,5 +394,15 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         if (activity == null) {
             throw new IllegalStateException("Can't create ViewModelProvider for detached fragment");
         }
+    }
+
+    private boolean isExcludedFragment() {
+        if (name.contains("DeviceModuleMainFragment")
+                || name.contains("NetVmsHomeFragment")
+                || name.contains("TcpVmsHomeFragment")) {
+            return true;
+        }
+
+        return false;
     }
 }

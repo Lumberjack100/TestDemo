@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp.common.ui.activity;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -22,6 +24,8 @@ import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.commonsdk.UMConfigure;
 
 import java.util.Date;
 import java.util.List;
@@ -71,29 +75,45 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         mPassword = SharedUtil.read(AppContants.User.PWD, "");
 
         String mPrivacy = SharedUtil.read(AppContants.PRIVACY_AGREEMENT, "");
-        if (TextUtils.isEmpty(mPrivacy) || mPrivacy.toLowerCase().equals("refuse")) {
+        if (!TextUtils.isEmpty(mPrivacy) && mPrivacy.equalsIgnoreCase("agree")) {
+            checkLogin();
+        } else {
             DialogFragment privacyTipDialog = new PrivacyTipDialog();
             privacyTipDialog.show(getSupportFragmentManager(), "dialog");
-        } else {
-            checkLogin();
         }
     }
 
     @Override
     public void onPositiveClick(View view) {
+        /*** 友盟sdk正式初始化*/
         SharedUtil.save(AppContants.PRIVACY_AGREEMENT, "agree");
+        UMConfigure.submitPolicyGrantResult(getApplicationContext(), true);
+        String um_appkey;
+        try {
+            ApplicationInfo appInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            um_appkey = appInfo.metaData.getString("UMENG_APP_KEY");
+        } catch (PackageManager.NameNotFoundException e) {
+            um_appkey = "618cdd28e014255fcb75af8a";
+            e.printStackTrace();
+        }
+        UMConfigure.init(this, um_appkey, "production", UMConfigure.DEVICE_TYPE_PHONE, "");
+
         checkLogin();
     }
 
     @Override
     public void onNegativeClick(View view) {
-        SharedUtil.save(AppContants.PRIVACY_AGREEMENT, "refuse");
-        WelcomeActivity.this.finish();
+        //不同意隐私协议，退出app
+        UMConfigure.submitPolicyGrantResult(getApplicationContext(), false);
+//        WelcomeActivity.this.finish();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     private void checkLogin() {
         //自动登录
         if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
+            //当用户使用自有账号登录时，可以这样统计：
+            MobclickAgent.onProfileSignIn(mAccount);
             makeAutoLogin(mAccount, mPassword);
         } else {
             redirectToLoginActivity(1000);
@@ -102,7 +122,6 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
 
     private void makeAutoLogin(String account, String password) {
         LoginManager.getInstance().login(account, password, this);
-
 //        if (MCloudApp.isIsNetworkConnected()) {
 //            LoginManager.getInstance().login(account, password, this);
 //        } else {

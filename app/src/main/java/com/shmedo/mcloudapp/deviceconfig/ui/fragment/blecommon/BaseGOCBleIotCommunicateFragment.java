@@ -14,14 +14,20 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
 import com.shmedo.mcloudapp.profile.GOCBleViewModel;
+import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -96,6 +102,12 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
                 }
                 try {
                     parseResponseMessage(result);
+
+                    Map<String, Object> valueMap = new HashMap<String, Object>();
+                    valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+                    valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
+                    valueMap.put("command_content", result);
+                    MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
                 } catch (Exception ex) {
                     Timber.e(ex);
                 }

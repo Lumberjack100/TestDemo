@@ -12,15 +12,21 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.littlegreens.netty.client.listener.MessageStateListener;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
+import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -108,6 +114,16 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
                     return;
                 }
                 parseResponseMessage(msg);
+
+                try {
+                    Map<String, Object> valueMap = new HashMap<String, Object>();
+                    valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+                    valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
+                    valueMap.put("command_content", msg);
+                    MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
+                } catch (Exception ex) {
+                    Timber.e(ex);
+                }
             }
         });
         deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
@@ -137,6 +153,16 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
         }
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString();
+
+        try {
+            Map<String, Object> valueMap = new HashMap<String, Object>();
+            valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+            valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
+            valueMap.put("command_content", cmdStr);
+            MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         tcpViewModel.sendMsgToServer(cmdStr, new MessageStateListener() {
             @Override

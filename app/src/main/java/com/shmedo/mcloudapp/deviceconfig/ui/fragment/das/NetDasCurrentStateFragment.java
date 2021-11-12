@@ -33,6 +33,7 @@ import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.DensityUtil;
 import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.GsonFactory;
@@ -43,6 +44,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.umeng.analytics.MobclickAgent;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -51,7 +53,9 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -744,6 +748,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     sensorList.addAll(commandResult.getResult());
                     mainSensorInfoLayout.setVisibility(sensorList.size() > 0 ? View.VISIBLE : View.GONE);
                     sensorAdapter.notifyDataSetChanged();
+
+                    //上报埋点数据到友盟+服务端
+                    Map<String, Object> sensorValue = new HashMap<String, Object>();
+                    String keyName;
+                    for (int i = 0; i < sensorList.size(); i++) {
+                        keyName = "Sensor" + (i + 1);
+                        sensorValue.put(keyName, sensorList.get(i).getVal());
+                    }
+                    MobclickAgent.onEventObject(MCloudApp.getContext(), "DASExpandSensorValue", sensorValue);
                 }
             }
             break;
@@ -862,17 +875,14 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             Timber.e("DasSubSensorStatusInfo 为空!");
             return;
         }
-
         try {
             if (dasSubSensorStatusInfo.getIo() != null) {
                 ioSensorLayout.setVisibility(View.VISIBLE);
-
                 if (dasSubSensorStatusInfo.getIo().getType() == 1) {
                     mTvSwitchStatus.setText("接入");
                     mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
                     rainLayout.setVisibility(View.VISIBLE);
                     wireBreakAlarmLayout.setVisibility(View.GONE);
-
                     decimalFormat.applyPattern("#.#");
                     mTvRain.setText(decimalFormat.format(dasSubSensorStatusInfo.getIo().getVaule()) + "mm");
 
@@ -887,7 +897,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
                     rainLayout.setVisibility(View.GONE);
                     wireBreakAlarmLayout.setVisibility(View.VISIBLE);
-
                     if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
                         mTvAlarmStatus.setText("断线");
                         mTvAlarmStatus.setTextColor(Color.RED);
@@ -931,6 +940,10 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 mTvInclinometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
                 setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
                 mTvInclinometerAxis.setText(dasSubSensorStatusInfo.getMems().getVaule());
+
+                Map<String, Object> valueMap = new HashMap<String, Object>();
+                valueMap.put("axis_value", dasSubSensorStatusInfo.getMems().getVaule());//自定义参数：音乐类型，值：流行
+                MobclickAgent.onEventObject(MCloudApp.getContext(), "qingjiao_axis", valueMap);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

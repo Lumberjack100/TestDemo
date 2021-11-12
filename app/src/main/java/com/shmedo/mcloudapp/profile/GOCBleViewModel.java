@@ -9,7 +9,14 @@ import androidx.lifecycle.LiveData;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
+import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.deviceconfig.data.DeviceApiKeyRequest;
+import com.umeng.analytics.MobclickAgent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import no.nordicsemi.android.log.LogSession;
@@ -108,6 +115,17 @@ public class GOCBleViewModel extends AndroidViewModel {
             return;
         }
         gocManager.writeMessage(command);
+
+        try {
+            Map<String, Object> valueMap = new HashMap<String, Object>();
+            valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+            valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
+            valueMap.put("command_type", "##");
+            valueMap.put("command_content", command);
+            MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

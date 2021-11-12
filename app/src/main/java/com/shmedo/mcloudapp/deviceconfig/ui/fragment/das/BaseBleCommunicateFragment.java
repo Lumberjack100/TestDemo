@@ -24,15 +24,19 @@ import com.shmedo.configlibrary.ble.utils.DesUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
+import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
+import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -138,6 +142,15 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
                     }
                 }
                 handleResponseMessage(result);
+                try {
+                    Map<String, Object> valueMap = new HashMap<String, Object>();
+                    valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+                    valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
+                    valueMap.put("command_content", result);
+                    MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
