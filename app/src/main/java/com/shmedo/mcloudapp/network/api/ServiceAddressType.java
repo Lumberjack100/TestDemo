@@ -7,19 +7,23 @@ package com.shmedo.mcloudapp.network.api;
  */
 public enum ServiceAddressType {
     /**
-     * http 访问
-     */
-    HTTP(1),
-
-    /**
      * https 访问
      */
-    HTTPS(2),
+    BUSINESS_SERVICE_ADDRESS(1),
 
 
-    HTTPS_NO_API_VERSION(3);
+    /**
+     * 云平台原始数据地址
+     */
+    CLOUD_PLATFORM_DATA_ADDRESS(2),
+
+    /**
+     * 日志系统服务地址
+     */
+    LOGAN_SERVICE_ADDRESS(3);
 
     private int type;
+
     ServiceAddressType(int type) {
         this.type = type;
     }

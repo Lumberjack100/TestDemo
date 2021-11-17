@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public abstract class BaseRetrofit {
 
     protected <T> T getService(final Class<T> service, final HttpLoggingInterceptor.Level level) {
-        return this.getService(service, level, ServiceAddressType.HTTPS);
+        return this.getService(service, level, ServiceAddressType.BUSINESS_SERVICE_ADDRESS);
     }
 
     protected <T> T getService(final Class<T> service, final HttpLoggingInterceptor.Level level, ServiceAddressType addressType) {
@@ -37,16 +37,13 @@ public abstract class BaseRetrofit {
 
         String baseUrl = "";
         switch (addressType) {
-            case HTTP:
-                baseUrl = MCloudApp.getHttpServiceAddress();
+
+            case BUSINESS_SERVICE_ADDRESS:
+                baseUrl = MCloudApp.getBusinessServiceAddress();
                 break;
 
-            case HTTPS:
-                baseUrl = MCloudApp.getHttpsServiceAddress();
-                break;
-
-            case HTTPS_NO_API_VERSION:
-                baseUrl = MCloudApp.getHttpsNoApiVersionAddress();
+            case CLOUD_PLATFORM_DATA_ADDRESS:
+                baseUrl = MCloudApp.getCloudPlatformDataAddress();
                 break;
 
             default:

@@ -242,7 +242,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
 
         String json = GsonFactory.getGson().toJson(paramter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
-        MDRetrofit.getInstance().createService(ServiceAddressType.HTTPS_NO_API_VERSION)
+        MDRetrofit.getInstance().createService(ServiceAddressType.CLOUD_PLATFORM_DATA_ADDRESS)
                 .QueryCloudData(body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())

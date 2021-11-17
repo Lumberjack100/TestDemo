@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.core.util.SharedUtil;
@@ -32,9 +31,11 @@ public class MCloudApp {
 
     private static int companyID;
 
-    private static String httpsServiceAddress = "mdnetservice.shmedo.cn";
+    private static String businessServiceAddress = "mdnetservice.shmedo.cn";//业务数据服务接口地址
 
-    private static String httpsNoApiVersionAddress = "chaxun.shmedo.cn";
+    private static String cloudPlatformDataAddress = "chaxun.shmedo.cn";//云平台原始数据地址
+
+    private static String logServiceAddress = "172.168.5.235:8088";//日志系统服务地址
 
     private static String curDeviceToken;//设备名称
 
@@ -68,30 +69,17 @@ public class MCloudApp {
     }
 
 
-    public static String getHttpsServiceAddress() {
-        if (TextUtils.isEmpty(httpsServiceAddress))
-            return httpsServiceAddress;
-        return "https://" + httpsServiceAddress + "/api/v1/";
+    public static String getBusinessServiceAddress() {
+        return "https://" + businessServiceAddress + "/api/v1/";
     }
 
-    public static void setHttpsServiceAddress(String httpsServiceAddress) {
-        MCloudApp.httpsServiceAddress = httpsServiceAddress;
+    public static String getCloudPlatformDataAddress() {
+        return "https://" + cloudPlatformDataAddress;
     }
 
-    public static String getHttpsNoApiVersionAddress() {
-        if (TextUtils.isEmpty(httpsNoApiVersionAddress))
-            return httpsNoApiVersionAddress;
-        return "https://" + httpsNoApiVersionAddress;
+    public static String getLogServiceAddress() {
+        return logServiceAddress;
     }
-
-
-    public static String getHttpServiceAddress() {
-        String httpServiceAddress = "chaxun.shmedo.cn";
-        if (TextUtils.isEmpty(httpServiceAddress))
-            return httpServiceAddress;
-        return "http://" + httpServiceAddress;
-    }
-
 
     public static UserInfo getCurrentUserInfo() {
         return currentUserInfo;

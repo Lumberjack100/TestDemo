@@ -23,7 +23,7 @@ import timber.log.Timber;
 public class UpdataManagerUtil {
 
     /**
-     *
+     * 检查新版本
      */
     public static void checkNewVersion(final Activity activity, boolean isShowToast) {
         PgyerSDKManager.checkVersionUpdate(activity, new CheckoutCallBack() {
