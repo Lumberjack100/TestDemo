@@ -13,12 +13,11 @@ import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.ColorUtils;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.bumptech.glide.Glide;
 import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -115,10 +114,10 @@ public class ProjectIntroductionActivity extends BaseActivity {
     }
 
     private void updateSystemBarColor(boolean isLightMode) {
-        mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, GlobalUtil.getColor(R.color.white), 0));
+        mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, com.blankj.utilcode.util.ColorUtils.getColor(R.color.white), 0));
         if (isLightMode) {
             mToolbar.setNavigationIcon(R.drawable.ic_navi_def_light);
-            mToolbarTitle.setTextColor(GlobalUtil.getColor(R.color.white));
+            mToolbarTitle.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.white));
 
             ImmersionBar.with(this)
                     .titleBar(mToolbar)
@@ -129,7 +128,7 @@ public class ProjectIntroductionActivity extends BaseActivity {
                     .init();
         } else {
             mToolbar.setNavigationIcon(R.drawable.ic_navi_def_dark);
-            mToolbarTitle.setTextColor(GlobalUtil.getColor(R.color.title_text_color));
+            mToolbarTitle.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.title_text_color));
 
             ImmersionBar.with(this)
                     .titleBar(mToolbar)
@@ -192,7 +191,7 @@ public class ProjectIntroductionActivity extends BaseActivity {
         }
         if (!TextUtils.isEmpty(projInfoBean.getCenterPoint())) {
             try {
-                CenterPoint centerPoint = GsonFactory.getGson().fromJson(projInfoBean.getCenterPoint(), CenterPoint.class);
+                CenterPoint centerPoint = GsonUtils.fromJson(projInfoBean.getCenterPoint(), CenterPoint.class);
                 if (centerPoint != null) {
                     tvProjectLoction.setText(String.format("%s\n%s", centerPoint.getLat(), centerPoint.getLng()));
                 }

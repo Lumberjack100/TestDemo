@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -22,7 +23,6 @@ import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
@@ -217,7 +217,7 @@ public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragmen
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterOne.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
@@ -228,7 +228,7 @@ public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragmen
                 } else if (centerStatus.getCenterid() == 2) {
                     dismissWaitDialog();
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterTwo.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }
             }
             break;

@@ -7,12 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.deviceconfig.data.DeviceApiKeyRequest;
 import com.umeng.analytics.MobclickAgent;
 
@@ -121,7 +121,7 @@ public class USRBleViewModel extends AndroidViewModel {
 
         try {
             Map<String, Object> valueMap = new HashMap<String, Object>();
-            valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+            valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
             valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
             valueMap.put("command_content", command.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, ""));
             MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);

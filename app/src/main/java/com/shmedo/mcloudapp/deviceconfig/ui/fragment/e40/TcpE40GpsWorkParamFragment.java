@@ -22,7 +22,6 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.BaseTcpIotCommunicateFragment;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -101,7 +100,7 @@ public class TcpE40GpsWorkParamFragment extends BaseTcpIotCommunicateFragment {
             showDataFrequencyDialog();
 
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;

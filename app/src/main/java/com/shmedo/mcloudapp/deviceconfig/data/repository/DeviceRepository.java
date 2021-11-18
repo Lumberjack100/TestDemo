@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.deviceconfig.data.repository;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -57,7 +57,7 @@ public class DeviceRepository {
         parameter.setCurrentPage(1);
         parameter.setSn(sn);
 
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()

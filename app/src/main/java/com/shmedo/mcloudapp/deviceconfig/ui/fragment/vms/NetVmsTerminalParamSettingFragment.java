@@ -30,7 +30,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -144,7 +143,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
             showReportingMethodDialog();
 
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;

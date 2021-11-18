@@ -16,14 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DeviceInfo;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceFirmWareAdpter;
@@ -88,7 +88,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.6f);
+        wlp.height = (int) (ScreenUtils.getScreenHeight() * 0.6f);
         window.setAttributes(wlp);
     }
 
@@ -105,7 +105,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
     private void initAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-//        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.divider_line_bg_efefef), 0, DensityUtil.Dp2Px(getActivity(), 0.5f));
+//        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.divider_line_bg_efefef), 0, ConvertUtils.dp2px(0.5f));
 //        mRecyclerView.addItemDecoration(mItemDecoration);
         adpter = new DeviceFirmWareAdpter(firmWareInfoList);
         adpter.setAnimationEnable(true);
@@ -211,7 +211,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         parameter.setPageSize(PAGE_SIZE);
         parameter.setCurrentPage(pageInfo.getPage());
 
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()

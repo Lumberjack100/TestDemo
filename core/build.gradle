@@ -29,7 +29,7 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*. jar'])
     api "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "androidx.recyclerview:recyclerview:$rootProject.thirdLib.recyclerview"
-    api "com.google.code.gson:gson:$rootProject.thirdLib.gsonVersion"
+//    api "com.google.code.gson:gson:$rootProject.thirdLib.gsonVersion"
 
     api "com.kunminx.arch:unpeek-livedata:$rootProject.thirdLib.unpeekLivedataVersion"
 

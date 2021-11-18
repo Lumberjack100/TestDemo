@@ -17,13 +17,13 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DistanceItem;
 import com.amap.api.services.route.DistanceResult;
 import com.amap.api.services.route.DistanceSearch;
-import com.shmedo.core.util.DensityUtil;
+import com.blankj.utilcode.util.ConvertUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.maps.model.MapMode;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
-import com.shmedo.mcloudapp.maps.view.DistanceToolbarView;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
+import com.shmedo.mcloudapp.maps.view.DistanceToolbarView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -55,8 +55,8 @@ public class GaoDeCaculateDistanceHelper implements AMap.OnMapClickListener, Dis
     }
 
     private void initDistanceToolView() {
-        markerHeight = DensityUtil.Dp2Px(mapActivity, 12);
-        markerWidth = DensityUtil.Dp2Px(mapActivity, 12);
+        markerHeight = ConvertUtils.dp2px(12);
+        markerWidth = ConvertUtils.dp2px(12);
         mDistanceToolbarView.mIvRemoveMarker.setEnabled(false);
         mDistanceToolbarView.mIvClearMarkers.setEnabled(false);
         mDistanceToolbarView.mTvDistance.setText("0米");

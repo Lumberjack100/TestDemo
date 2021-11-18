@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -21,7 +22,6 @@ import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinf
 import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
@@ -295,7 +295,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             textView.setTextColor(Color.RED);
         } else if (status == 1) {
             textView.setText("正常");
-            textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 

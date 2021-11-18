@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.shmedo.core.util.GlobalUtil;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -90,9 +90,9 @@ public abstract class CheckMapNeedPermissionsActivity extends BaseActivity {
                 boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(CheckMapNeedPermissionsActivity.this, deniedPermissions);
                 // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
                 if (allNeverAskAgain) {
-                    XPermissionUtils.showRefusePermissionDialog(CheckMapNeedPermissionsActivity.this, GlobalUtil.getString(R.string.message_permission_location_rationale));
+                    XPermissionUtils.showRefusePermissionDialog(CheckMapNeedPermissionsActivity.this, StringUtils.getString(R.string.message_permission_location_rationale));
                 } else {
-                    ToastUtils.show(GlobalUtil.getString(R.string.message_permissions_denied));
+                    ToastUtils.show(StringUtils.getString(R.string.message_permissions_denied));
                 }
             }
         });

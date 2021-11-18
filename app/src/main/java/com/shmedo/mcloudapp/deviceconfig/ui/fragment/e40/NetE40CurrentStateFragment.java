@@ -14,6 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -30,9 +33,6 @@ import com.shmedo.configlibrary.iot.model.e40.GPSBean;
 import com.shmedo.configlibrary.iot.model.e40.SatelitteBean;
 import com.shmedo.configlibrary.iot.model.e40.SensorBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -239,7 +239,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<SensorBean>(getActivity(), R.layout.item_e40_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, SensorBean sensorBean, int position) {
@@ -425,7 +425,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void initStatusInfo(String content) {
         try {
             content = content.replace("\\", "");
-            extendStateInfo = GsonFactory.getGson().fromJson(content, CurrentExtendStateInfo.class);
+            extendStateInfo = GsonUtils.fromJson(content, CurrentExtendStateInfo.class);
             if (extendStateInfo != null) {
                 //基本信息
                 if (extendStateInfo.getBase() != null) {
@@ -549,7 +549,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
             content = content.replace("\"GLO\":{", "\"GLO\":[");
             content = content.replace("}}}", "}]}");
             content = content.replaceAll("\"[GRC]\\d{2}\":", "");
-            satelitteBean = GsonFactory.getGson().fromJson(content, SatelitteBean.class);
+            satelitteBean = GsonUtils.fromJson(content, SatelitteBean.class);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -631,20 +631,20 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void initLinkStatus(TextView tvLinkStatus, int linkStatus) {
         if (linkStatus == 0) {
             tvLinkStatus.setText("未开启");
-            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_unopened_platform));
+            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
         } else if (linkStatus == 1) {
             tvLinkStatus.setText("已连接");
-            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
         } else if (linkStatus == 2) {
             tvLinkStatus.setText("未连接");
-            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_not_connected_platform));
+            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_not_connected_platform));
         }
     }
 
     private void setDeviceStatus(TextView textView, boolean status) {
         if (status) {
             textView.setText("正常");
-            textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
         } else {
             textView.setText("未接入");
             textView.setTextColor(Color.RED);

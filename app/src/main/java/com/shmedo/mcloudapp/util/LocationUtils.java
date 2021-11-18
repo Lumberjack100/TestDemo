@@ -10,11 +10,11 @@ import android.os.Build;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -90,9 +90,9 @@ public class LocationUtils {
                         boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(activity, deniedPermissions);
                         // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
                         if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(activity, GlobalUtil.getString(R.string.message_permission_location_rationale));
+                            XPermissionUtils.showRefusePermissionDialog(activity, StringUtils.getString(R.string.message_permission_location_rationale));
                         } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
+                            ToastUtils.show(StringUtils.getString(R.string.message_permission_location_denied));
                         }
                     }
                 });

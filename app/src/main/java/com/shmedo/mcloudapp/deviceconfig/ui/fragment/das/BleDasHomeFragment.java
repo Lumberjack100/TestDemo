@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -35,8 +37,6 @@ import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.core.util.JZLocationConverter;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -221,7 +221,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(mActivity, 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
@@ -612,7 +612,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void initConfigModuleData() {
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, GlobalUtil.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
         configModuleList.add(configModule);
 
 //        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");

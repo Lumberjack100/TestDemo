@@ -26,7 +26,6 @@ import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -133,7 +132,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
             showReportingMethodDialog();
 
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
 
             if (!tcpViewModel.getConnectStatus()) {
                 ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));

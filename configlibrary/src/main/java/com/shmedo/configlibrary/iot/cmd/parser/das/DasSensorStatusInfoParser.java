@@ -1,10 +1,10 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasSensorStatusInfo;
-import com.shmedo.core.util.GsonFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +31,7 @@ public class DasSensorStatusInfoParser implements IOTResultParser<List<DasSensor
                 }
             }
             String status = keyValueMap.get("status");
-            sensorStatusInfoList = GsonFactory.getGson().fromJson(status, new TypeToken<List<DasSensorStatusInfo>>() {
+            sensorStatusInfoList = GsonUtils.fromJson(status, new TypeToken<List<DasSensorStatusInfo>>() {
             }.getType());
 
             return sensorStatusInfoList;

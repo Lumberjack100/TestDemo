@@ -12,24 +12,25 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.IotLogOutputEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.util.TimeUtil;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -132,7 +133,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     float xStart = -mIvClearLog.getWidth();
-                    float xEnd = DensityUtil.Dp2Px(getActivity(), 10);
+                    float xEnd = ConvertUtils.dp2px(10);
                     ObjectAnimator heightAnimator = ObjectAnimator
                             .ofFloat(mIvClearLog, "x", xStart, xEnd)
                             .setDuration(2000);
@@ -164,7 +165,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
             logDataList.clear();
             cmdAdapter.notifyDataSetChanged();
         } else if (id == R.id.btn_send) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                 return;
@@ -188,7 +189,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
             }
             sendCommand(command);
 //            btnSend.setEnabled(false);
-            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
+            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
             logDataList.add(cmdLogInfo);
             cmdAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
@@ -210,7 +211,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
                     + "&msgid=" + UUID.randomUUID().toString().substring(30);
         }
         sendCommand(command);
-        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
+        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
         logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
@@ -229,7 +230,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
         Log4a.i(TAG, cmdStr);
         Log4a.flush();
 
-        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), cmdStr);
+        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), cmdStr);
         logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);

@@ -45,7 +45,7 @@ public class UiUtils {
             Field field = Activity.class.getDeclaredField("mActivityInfo");
             field.setAccessible(true);
             ActivityInfo o = (ActivityInfo)field.get(activity);
-            o.screenOrientation = -1;
+            o.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
             field.setAccessible(false);
             return true;
         } catch (Exception e) {

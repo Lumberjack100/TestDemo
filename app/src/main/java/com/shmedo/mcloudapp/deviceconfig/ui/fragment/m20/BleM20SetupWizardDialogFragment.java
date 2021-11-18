@@ -13,11 +13,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ScreenUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
@@ -92,7 +92,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
         Dialog mDialog = getDialog();
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.8f);
+        wlp.width = (int) (ScreenUtils.getScreenWidth() * 0.8f);
         wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(wlp);
     }

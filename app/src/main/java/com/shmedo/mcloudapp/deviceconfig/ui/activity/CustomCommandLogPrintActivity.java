@@ -9,6 +9,7 @@ import android.view.View;
 
 import androidx.fragment.app.Fragment;
 
+import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.LogFileUtil;
@@ -16,7 +17,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.USRBleIotCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CustomCommandLogPrintFragment;
-import com.shmedo.mcloudapp.util.FileProviderUtils;
 
 import java.io.File;
 
@@ -108,8 +108,7 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
             ToastUtils.show("日志文件不存在");
             return;
         }
-        Uri contentUri = FileProviderUtils.uriFromFile(this, file);
-
+        Uri contentUri = UriUtils.file2Uri(file);
         new Share2.Builder(this)
                 .setContentType(ShareContentType.FILE)
                 .setShareFileUri(contentUri)

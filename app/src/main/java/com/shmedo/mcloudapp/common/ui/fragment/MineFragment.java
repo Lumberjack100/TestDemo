@@ -12,11 +12,10 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.AppUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.ActivityCollector;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -30,7 +29,7 @@ import com.shmedo.mcloudapp.user.ui.activity.UpdatePasswordActivity;
 import com.shmedo.mcloudapp.user.ui.activity.UserHomePageActivity;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
-import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
+import com.shmedo.mcloudapp.util.UpdataManagerUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
@@ -96,7 +95,7 @@ public class MineFragment extends BaseTranslucentFragment {
             }
             mTvUserName.setText(user.getName() != null ? user.getName() : "");
             mTvUserTitle.setText(user.getPosition() != null ? user.getPosition() : "");
-            mTvVersionName.setText(GlobalUtil.getAppVersionName());
+            mTvVersionName.setText(AppUtils.getAppVersionName());
         }
     }
 
@@ -145,9 +144,6 @@ public class MineFragment extends BaseTranslucentFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-
-                        MCloudApp.logout();
-                        ActivityCollector.finishAll();
                         exitLogin();   //注销账号
                     }
                 });
@@ -165,6 +161,7 @@ public class MineFragment extends BaseTranslucentFragment {
 //        startActivity(intent);
 //        mActivity.finish();
 
+        MCloudApp.logout();
         //登出
         MobclickAgent.onProfileSignOff();
         LoginActivity.startActivity(getActivity());

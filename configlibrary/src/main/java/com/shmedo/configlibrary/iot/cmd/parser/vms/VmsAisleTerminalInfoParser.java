@@ -1,9 +1,9 @@
 package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
-import com.shmedo.core.util.GsonFactory;
 
 import java.util.HashMap;
 
@@ -31,7 +31,7 @@ public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTermi
             }
 
             String status = keyValueMap.get("status");
-            info = GsonFactory.getGson().fromJson(status, VmsAisleTerminalInfo.class);
+            info = GsonUtils.fromJson(status, VmsAisleTerminalInfo.class);
             info.setChannel(Integer.parseInt(keyValueMap.get("channel")));
 
             return info;

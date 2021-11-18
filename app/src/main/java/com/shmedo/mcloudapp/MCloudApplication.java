@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelStore;
 import androidx.lifecycle.ViewModelStoreOwner;
 
+import com.blankj.utilcode.util.SPStaticUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.hjq.toast.ToastUtils;
 import com.hjq.toast.config.IToastInterceptor;
 import com.kongzue.dialogx.DialogX;
@@ -23,7 +25,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
 import com.shmedo.core.log.log4a.LogInit;
-import com.shmedo.core.util.SharedUtil;
+import com.shmedo.core.util.ActivityPool;
 import com.shmedo.mcloudapp.network.OKHttpUpdateHttpService;
 import com.shmedo.mcloudapp.util.MyToastBlackStyle;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -68,7 +70,11 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
     public void onCreate() {
         super.onCreate();
         mAppViewModelStore = new ViewModelStore();
+
+        //管理Activity
+        new ActivityPool().init(this);
         MCloudApp.initialize(this);
+
         //友盟预初始化
         setUmeng();
 
@@ -237,7 +243,8 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         // 页面自动采集选择
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL);
 
-        String mPrivacy = SharedUtil.read(AppContants.PRIVACY_AGREEMENT, "");
+        SPStaticUtils.setDefaultSPUtils(SPUtils.getInstance(getPackageName() + "_preferences"));
+        String mPrivacy = SPStaticUtils.getString(AppContants.PRIVACY_AGREEMENT);
         //用户同意隐私政策授权
         if (!TextUtils.isEmpty(mPrivacy) && mPrivacy.equalsIgnoreCase("agree")) {
             //初始化组件化基础库, 所有友盟业务SDK都必须调用此初始化接口

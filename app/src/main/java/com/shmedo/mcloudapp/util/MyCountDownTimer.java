@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.util;
 import android.os.CountDownTimer;
 import android.widget.TextView;
 
-import com.shmedo.core.util.GlobalUtil;
+import com.blankj.utilcode.util.ColorUtils;
 
 /**
  * 项目名：  mCloudapp
@@ -33,7 +33,7 @@ public class MyCountDownTimer extends CountDownTimer {
         btnTime.setText("剩余" + l / 1000 + "秒");
 //        btnTime.setBackgroundResource(R.drawable.shape_verify_btn_press);
         if (timerColorId != -1) {
-            btnTime.setTextColor(GlobalUtil.getColor(timerColorId));
+            btnTime.setTextColor(ColorUtils.getColor(timerColorId));
         }
     }
 
@@ -46,7 +46,7 @@ public class MyCountDownTimer extends CountDownTimer {
         btnTime.setClickable(true);
 //        btnTime.setBackgroundResource(R.drawable.btn_blue_selector);
         if (orginalColorId != -1) {
-            btnTime.setTextColor(GlobalUtil.getColor(orginalColorId));
+            btnTime.setTextColor(ColorUtils.getColor(orginalColorId));
         }
     }
 

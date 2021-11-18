@@ -28,7 +28,6 @@ import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -141,7 +140,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         }
         int id = view.getId();
         if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;

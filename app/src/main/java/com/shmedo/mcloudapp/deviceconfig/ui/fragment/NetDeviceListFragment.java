@@ -18,6 +18,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
@@ -26,9 +29,6 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -143,7 +143,7 @@ public class NetDeviceListFragment extends BaseFragment {
     private void initDeviceTypeAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerViewDeviceType.setLayoutManager(linearLayoutManager);
-//        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), DensityUtil.Dp2Px(getActivity(), 1), 0);
+//        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), ConvertUtils.dp2px(1), 0);
 //        mRecyclerViewDeviceType.addItemDecoration(mItemDecoration);
         deviceTypeAdapter = new DeviceTypeAdapter(deviceTypeStatisticList);
         deviceTypeAdapter.setAnimationEnable(true);
@@ -177,7 +177,7 @@ public class NetDeviceListFragment extends BaseFragment {
 
     private void initDeviceInfoAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(getActivity(), 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerViewDevice.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewDevice.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -283,7 +283,7 @@ public class NetDeviceListFragment extends BaseFragment {
         parameter.setPageSize(20);
         parameter.setCurrentPage(1);
 
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -337,7 +337,7 @@ public class NetDeviceListFragment extends BaseFragment {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     mRefreshLayout.finishRefresh(false);
-                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+                                    showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setDeviceTypeData(data);
@@ -347,10 +347,10 @@ public class NetDeviceListFragment extends BaseFragment {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
-                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
                         } else {
-                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -393,7 +393,7 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceTypeAdapter.notifyDataSetChanged();
         if (deviceTypeStatisticList.size() <= 1) {
             mRefreshLayout.finishRefresh(false);
-            showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+            showNoContentView(StringUtils.getString(R.string.empty_no_data));
         } else {
             processOnlineData(deviceTypeStatisticList.get(0));
             refreshDevices();
@@ -411,7 +411,7 @@ public class NetDeviceListFragment extends BaseFragment {
         parameter.setPageSize(PAGE_SIZE);
         parameter.setCurrentPage(pageInfo.getPage());
 
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()

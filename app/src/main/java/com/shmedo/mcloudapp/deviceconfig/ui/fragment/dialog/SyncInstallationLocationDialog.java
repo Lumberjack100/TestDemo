@@ -20,15 +20,14 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.core.util.JZLocationConverter;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.entity.SyncPositionBean;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
 import java.util.Locale;
@@ -81,7 +80,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
         Dialog mDialog = getDialog();
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.8f);
+        wlp.width = (int) (ScreenUtils.getScreenWidth() * 0.8f);
         wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(wlp);
     }
@@ -162,18 +161,18 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.iv_close) {
-            KeyBordUtils.hideSoftKeyboard(mEtLatLong);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtLatLong);
             dismiss();
 
         } else if (id == R.id.iv_locate) {
             LocationUtils.getInstance().getPositionPermission(activity);
 
         } else if (id == R.id.tv_cancel) {
-            KeyBordUtils.hideSoftKeyboard(mEtLatLong);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtLatLong);
             dismiss();
 
         } else if (id == R.id.tv_confirm) {
-            KeyBordUtils.hideSoftKeyboard(mEtLatLong);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtLatLong);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;

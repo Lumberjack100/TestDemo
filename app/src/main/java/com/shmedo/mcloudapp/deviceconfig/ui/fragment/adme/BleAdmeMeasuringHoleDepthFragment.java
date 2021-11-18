@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -33,11 +34,9 @@ import com.shmedo.configlibrary.iot.model.adme.AdmeMeasuringHoleDepthInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDistanceInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -145,7 +144,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         mEtMovementSpeed.setHint("1-180");
         mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
         rbAutoControl.setChecked(true);
-        rbManualControl.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+        rbManualControl.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
 
         mEtDownSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDownSpeed.setHint("1-120");
@@ -181,11 +180,11 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    rbAutoControl.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
+                    rbAutoControl.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
                     mEtMotionDistance.setEnabled(true);
                     rbManualControl.setChecked(false);
                 } else {
-                    rbAutoControl.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                    rbAutoControl.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                     mEtMotionDistance.setEnabled(false);
                 }
             }
@@ -196,10 +195,10 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    rbManualControl.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
+                    rbManualControl.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
                     rbAutoControl.setChecked(false);
                 } else {
-                    rbManualControl.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                    rbManualControl.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                 }
             }
         });
@@ -320,7 +319,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             showMotionTypeDialog();
 
         } else if (id == R.id.btn_run) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
@@ -335,7 +334,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 autoMeasuringHoledepth();
 
         } else if (id == R.id.ll_clear_motion_data) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;

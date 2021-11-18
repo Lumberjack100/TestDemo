@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.widget.TextView;
 
-import com.shmedo.core.util.GlobalUtil;
+import com.blankj.utilcode.util.ColorUtils;
 import com.shmedo.mcloudapp.R;
 
 
@@ -81,7 +81,7 @@ public class DeviceCurrentRunStateUtils {
         if (enable.equals("1")) {
             if (status.equals("1")) {
                 tvLinkStatus.setText("已上线");
-                tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
             } else if (status.equals("0")) {
                 tvLinkStatus.setText("未上线");
                 tvLinkStatus.setTextColor(Color.RED);

@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
+import com.blankj.utilcode.util.NetworkUtils;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.event.NetworkChangeEvent;
-import com.shmedo.core.util.NetworkUtils;
 
 /**
  * 创建者:   gonghe <br/>

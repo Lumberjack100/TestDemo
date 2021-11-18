@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.MineFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceModuleMainFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
-import com.shmedo.mcloudapp.util.permission.UpdataManagerUtil;
+import com.shmedo.mcloudapp.util.UpdataManagerUtil;
 
 import java.util.List;
 

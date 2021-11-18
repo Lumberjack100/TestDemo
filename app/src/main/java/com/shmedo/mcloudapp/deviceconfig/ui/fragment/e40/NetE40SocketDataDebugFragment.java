@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.littlegreens.netty.client.NettyTcpClient;
@@ -35,7 +36,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.util.FileProviderUtils;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -313,8 +313,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
             ToastUtils.show("日志文件不存在");
             return;
         }
-        Uri contentUri = FileProviderUtils.uriFromFile(mActivity, logFile);
-
+        Uri contentUri = UriUtils.file2Uri(logFile);
         new Share2.Builder(mActivity)
                 .setContentType(ShareContentType.FILE)
                 .setShareFileUri(contentUri)

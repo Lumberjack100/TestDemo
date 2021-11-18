@@ -14,11 +14,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ScreenUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.util.TextUtil;
@@ -64,8 +64,8 @@ public class QueryVoltageDataDialogFragment extends BaseDebugBoxDialogFragment {
         Dialog mDialog = getDialog();
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.9f);
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.5f);
+        wlp.width = (int) (ScreenUtils.getScreenWidth() * 0.9f);
+        wlp.height = (int) (ScreenUtils.getScreenHeight() * 0.5f);
         window.setAttributes(wlp);
     }
 

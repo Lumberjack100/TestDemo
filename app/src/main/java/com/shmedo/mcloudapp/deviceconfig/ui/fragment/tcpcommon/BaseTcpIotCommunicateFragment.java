@@ -10,11 +10,11 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
@@ -117,7 +117,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
                 try {
                     Map<String, Object> valueMap = new HashMap<String, Object>();
-                    valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+                    valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
                     valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
                     valueMap.put("command_content", msg);
                     MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
@@ -156,7 +156,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
         try {
             Map<String, Object> valueMap = new HashMap<String, Object>();
-            valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+            valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
             valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
             valueMap.put("command_content", cmdStr);
             MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);

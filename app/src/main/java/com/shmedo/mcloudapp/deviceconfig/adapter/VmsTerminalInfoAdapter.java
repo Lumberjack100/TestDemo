@@ -6,12 +6,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.DateUtil;
 
@@ -128,8 +128,9 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
         tvSensor.setText(errnoInfo.getNum().equals("0") ? "" : errnoInfo.getNum());
         tvSensor.setBackgroundResource(errnoInfo.getIn().equals("0") ? R.drawable.bg_sensor_uninsert : R.drawable.bg_sensor_insert);
         // 定义LayoutParam
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(DensityUtil.Dp2Px(MCloudApp.getContext(), 28), ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = sensorContainer.getChildCount() > 0 ? DensityUtil.Dp2Px(MCloudApp.getContext(), 5) : 0;
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ConvertUtils.dp2px(28), ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = sensorContainer.getChildCount() > 0 ? ConvertUtils.dp2px(5) : 0;
         tvSensor.setLayoutParams(params);
 
         sensorContainer.addView(tvSensor);

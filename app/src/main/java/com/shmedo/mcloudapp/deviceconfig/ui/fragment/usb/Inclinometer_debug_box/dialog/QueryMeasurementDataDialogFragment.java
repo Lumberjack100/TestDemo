@@ -14,21 +14,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.SPStaticUtils;
+import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.DeviceInfo;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.util.TextUtil;
-import com.shmedo.mcloudapp.util.TimeUtil;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -94,8 +96,8 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
         Dialog mDialog = getDialog();
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.9f);
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.8f);
+        wlp.width = (int) (ScreenUtils.getScreenWidth() * 0.9f);
+        wlp.height = (int) (ScreenUtils.getScreenHeight() * 0.8f);
         window.setAttributes(wlp);
     }
 
@@ -103,8 +105,8 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("测量数据");
-        if (SharedUtil.contains(AppContants.Extras.INCLINOMETER_MEASURINGSPACING)) {
-            measuringSpacing = SharedUtil.read(AppContants.Extras.INCLINOMETER_MEASURINGSPACING, 500);
+        if (SPStaticUtils.contains(AppContants.Extras.INCLINOMETER_MEASURINGSPACING)) {
+            measuringSpacing = SPStaticUtils.getInt(AppContants.Extras.INCLINOMETER_MEASURINGSPACING, 500);
         }
     }
 
@@ -302,7 +304,7 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
                                 double result = measuringSpacing * Math.sin(radian);
                                 String value = df.format(result) + "mm";
                                 mTvMeasurementData.setText(value);
-                                mTvDataTime.setText("接收时间: " + TimeUtil.getSysTimeStr());
+                                mTvDataTime.setText("接收时间: " + TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())));
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }

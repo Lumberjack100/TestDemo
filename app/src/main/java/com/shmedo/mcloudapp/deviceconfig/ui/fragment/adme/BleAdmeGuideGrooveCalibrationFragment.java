@@ -30,7 +30,6 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -137,7 +136,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
             showMotionTypeDialog();
 
         } else if (id == R.id.btn_run) {//运行
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
@@ -149,7 +148,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
             processSave();
 
         } else if (id == R.id.ll_clear_motion_data) {//清空数据
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;

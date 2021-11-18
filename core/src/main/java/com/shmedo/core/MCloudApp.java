@@ -5,8 +5,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.blankj.utilcode.util.ActivityUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.SharedUtil;
 
 
 /**
@@ -131,7 +132,7 @@ public class MCloudApp {
         accessToken = null;
         account = null;
         currentUserInfo = null;
-
-        SharedUtil.clear(AppContants.User.PWD);
+        SPStaticUtils.remove(AppContants.User.PWD);
+        ActivityUtils.finishAllActivities();
     }
 }

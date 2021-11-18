@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.shmedo.core.util.GlobalUtil;
+import com.blankj.utilcode.util.AppUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.ui.activity.WebViewActivity;
@@ -73,8 +73,7 @@ public class AboutAppActivity extends BaseActivity {
 
 
     private void initData() {
-        String localVersion = GlobalUtil.getAppVersionName();
-        mTvVersion.setText(String.format("米易通 v%s", localVersion));
+        mTvVersion.setText(String.format("米易通 v%s", AppUtils.getAppVersionName()));
         connectTestLayout.setVisibility(View.GONE);
     }
 

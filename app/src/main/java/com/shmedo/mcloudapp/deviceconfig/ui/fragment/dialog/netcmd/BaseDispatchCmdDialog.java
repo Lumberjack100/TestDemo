@@ -22,11 +22,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DeviceInfo;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -158,7 +158,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
         window.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = gravity;
-        wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.8f);
+        wlp.width = (int) (ScreenUtils.getScreenWidth() * 0.8f);
         wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(wlp);
     }
@@ -224,7 +224,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     }
 
     private void queryCmdResultByMsgID() {
-        String json = GsonFactory.getGson().toJson(msgIDList);
+        String json = GsonUtils.toJson(msgIDList);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()

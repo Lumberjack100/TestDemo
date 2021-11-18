@@ -19,7 +19,6 @@ import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -267,7 +266,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         }
         int id = view.getId();
         if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;

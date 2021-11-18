@@ -26,12 +26,14 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.DeviceInfo;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -41,8 +43,6 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdateMyInfoParam;
 import com.shmedo.mcloudapp.user.model.params.SetUserHeadPhotoParameter;
-import com.shmedo.mcloudapp.util.FileProviderUtils;
-import com.shmedo.mcloudapp.util.FileUtils;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -273,7 +273,7 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
             Timber.w(ex);
         }
 
-        photoUri = FileProviderUtils.uriFromFile(this, outputImage);
+        photoUri = UriUtils.file2Uri(outputImage);
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
@@ -301,14 +301,14 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
      * @param uri 图片的uri地址。
      */
     private void cropPhoto(Uri uri) {
-        int reqWidth = DeviceInfo.getScreenWidth();
+        int reqWidth = ScreenUtils.getScreenWidth();
         int reqHeight = reqWidth;
 
         CropImage.activity(uri)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setFixAspectRatio(true)
                 .setAspectRatio(reqWidth, reqHeight)
-                .setActivityTitle(GlobalUtil.getString(R.string.crop))
+                .setActivityTitle(StringUtils.getString(R.string.crop))
                 .setRequestedSize(reqWidth, reqHeight)
                 .setCropMenuCropButtonIcon(R.drawable.ic_crop)
                 .start(this);
@@ -342,9 +342,9 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                         boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(UserHomePageActivity.this, deniedPermissions);
                         // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
                         if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(UserHomePageActivity.this, GlobalUtil.getString(R.string.message_permission_camera_rationale));
+                            XPermissionUtils.showRefusePermissionDialog(UserHomePageActivity.this, StringUtils.getString(R.string.message_permission_camera_rationale));
                         } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_camera_denied));
+                            ToastUtils.show(StringUtils.getString(R.string.message_permission_camera_denied));
                         }
                     }
                 });
@@ -364,9 +364,9 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                         boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(UserHomePageActivity.this, deniedPermissions);
                         // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
                         if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(UserHomePageActivity.this, GlobalUtil.getString(R.string.message_permission_storage_rationale));
+                            XPermissionUtils.showRefusePermissionDialog(UserHomePageActivity.this, StringUtils.getString(R.string.message_permission_storage_rationale));
                         } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_storage_denied));
+                            ToastUtils.show(StringUtils.getString(R.string.message_permission_storage_denied));
                         }
                     }
                 });
@@ -395,7 +395,7 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                     showCroppedPhoto(result.getUri());
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Timber.w(result.getError(), "Cropping failed: %s", result.getError().getMessage());
-                    ToastUtils.show(GlobalUtil.getString(R.string.crop_failed));
+                    ToastUtils.show(StringUtils.getString(R.string.crop_failed));
                 }
                 break;
         }
@@ -454,6 +454,7 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         if (TextUtils.isEmpty(filePath)) {
             return;
         }
+
         String fileName = FileUtils.getFileName(filePath);
         String fileContent = getBase64ImageString(filePath);
         if (TextUtils.isEmpty(fileName) || TextUtils.isEmpty(fileContent)) {
@@ -464,7 +465,7 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         SetUserHeadPhotoParameter parameter = new SetUserHeadPhotoParameter();
         parameter.setPhotoName(fileName);
         parameter.setPhotoContent(fileContent);
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         showLoadingDialog("正在上传...");
         MDRetrofit.getInstance()
@@ -507,7 +508,7 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         parameter.setName(userName);
         parameter.setPosition(title);
         parameter.setEmail(email);
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
         MDRetrofit.getInstance()

@@ -19,13 +19,13 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DeviceInfo;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -38,7 +38,6 @@ import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.user.adapter.CompanySimpleInfoAdapter;
 import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
 import com.shmedo.mcloudapp.user.model.params.QueryCompanySimpleInfoListParam;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
@@ -94,7 +93,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.8f);
+        wlp.height = (int) (ScreenUtils.getScreenHeight() * 0.8f);
         window.setAttributes(wlp);
     }
 
@@ -158,7 +157,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
                     if (TextUtils.isEmpty(textView.getText())) {
                         ToastUtils.show("请输入搜索内容");
                     } else {
-                        KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+                        com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
                         searchProcess();
                     }
                     return true;
@@ -176,7 +175,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
     @Override
     public void onTextChanged(CharSequence text, int start, int before, int count) {
         if (TextUtils.isEmpty(text)) {
-            KeyBordUtils.popSoftKeyboard(mEtKeyWords, true);
+            com.blankj.utilcode.util.KeyboardUtils.showSoftInput(mEtKeyWords);
             simpleInfoAdapter.setList(tempList);
             return;
         }
@@ -214,7 +213,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
             mEtKeyWords.setText("");
 
         } else if (id == R.id.tv_cancel_search) {// 当按了搜索之后关闭软键盘
-            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
             searchPlaceholder.setVisibility(View.VISIBLE);
             searchContainer.setVisibility(View.GONE);
             resetCompanyInfo();
@@ -257,7 +256,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         parameter.setCurrentPage(pageInfo.getPage());
         parameter.setIncludeSubCompany(false);
 
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()

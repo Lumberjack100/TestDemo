@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -33,7 +34,6 @@ import com.shmedo.configlibrary.iot.model.IotLogOutputInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAisleSettingActivity;
@@ -306,7 +306,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterOne.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
@@ -316,7 +316,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterTwo.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
@@ -326,7 +326,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                     }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterThree.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_FOUR);
@@ -337,7 +337,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                 } else if (centerStatus.getCenterid() == 4) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterFour.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterFour.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     queryLogOutput();
                 }
             }

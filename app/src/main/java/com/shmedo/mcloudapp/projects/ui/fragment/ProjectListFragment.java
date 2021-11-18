@@ -20,15 +20,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
@@ -151,7 +151,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         ViewGroup.LayoutParams bannerParams = ivTopBg.getLayoutParams();
         ViewGroup.LayoutParams titleBarParams = mToolbar.getLayoutParams();
         //计算公式=底图高度-toolbar高度-状态栏高度-人为定义的偏差(这里取值30)
-        topBgImageTranslucentScrollDistance = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - DensityUtil.Dp2Px(getActivity(), 30);
+        topBgImageTranslucentScrollDistance = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - ConvertUtils.dp2px(30);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
     private void initSimpleAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), 0, DensityUtil.Dp2Px(getActivity(), 14));
+        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), 0, ConvertUtils.dp2px(14));
         mRecyclerView.addItemDecoration(mItemDecoration);
         simpleAdapter = new CommonAdapter<ProjectItem>(getActivity(), R.layout.item_project_info_normal, simpleProjectItems) {
             @Override
@@ -441,7 +441,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      */
     private void queryUserListProject() {
         ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -457,7 +457,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     swipeRefresh.setRefreshing(false);
-                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+                                    showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 baseInfoList.clear();
@@ -473,10 +473,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
-                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
                         } else {
-                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -494,7 +494,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      */
     private void getLevelProjList() {
         ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -510,7 +510,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+                                    showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setCustomLevelModeAdapterData(data);
@@ -519,10 +519,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
-                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
                         } else {
-                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -540,7 +540,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      */
     private void queryUserRegionProject() {
         ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -556,7 +556,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+                                    showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setRegionModeAdapterData(data);
@@ -565,10 +565,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
-                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
                         } else {
-                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -587,7 +587,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      */
     private void queryUserTypeProject() {
         ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -603,7 +603,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+                                    showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
                                 }
                                 setTypeModeAdapterData(data);
@@ -612,10 +612,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
-                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
                         } else {
-                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -634,7 +634,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      * @param projectIDs
      */
     private void QueryProjectListInfo(List<Integer> projectIDs) {
-        String json = GsonFactory.getGson().toJson(projectIDs);
+        String json = GsonUtils.toJson(projectIDs);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -650,7 +650,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errCode)) {
                             if (errCode.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-                                    showNoContentView(GlobalUtil.getString(R.string.empty_no_data));
+                                    showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
                                 }
 
@@ -688,10 +688,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 if (!TextUtils.isEmpty(errCode.getErrMessage())) {
                                     ToastUtils.show(errCode.getErrMessage());
                                 }
-                                loadFailed(GlobalUtil.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
                             }
                         } else {
-                            loadFailed(GlobalUtil.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
                         }
                     }
 
@@ -890,7 +890,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      * @param projectIDs
      */
     private void processTopUserProject(List<Integer> projectIDs) {
-        String json = GsonFactory.getGson().toJson(projectIDs);
+        String json = GsonUtils.toJson(projectIDs);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -927,7 +927,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      * @param projectIDs
      */
     private void processUnTopUserProject(List<Integer> projectIDs) {
-        String json = GsonFactory.getGson().toJson(projectIDs);
+        String json = GsonUtils.toJson(projectIDs);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -968,10 +968,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
     private void updateSystemBarColor() {
         if (alpha < 1) {
-            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, GlobalUtil.getColor(R.color.white), alpha));
+            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, com.blankj.utilcode.util.ColorUtils.getColor(R.color.white), alpha));
             searchLayout.setBackgroundResource(R.drawable.bg_search_project_white);
             mIvSearchIcon.setImageResource(R.drawable.ic_search_project_white);
-            mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.white));
+            mTvSearchHint.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.white));
             ivMap.setImageResource(R.drawable.ic_project_map_light);
             ivFilter.setImageResource(R.drawable.ic_filter_project_light);
 
@@ -982,10 +982,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                     .navigationBarColor(R.color.white)
                     .init();
         } else {
-            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, GlobalUtil.getColor(R.color.white), 1));
+            mToolbar.setBackgroundColor(ColorUtils.blendARGB(Color.TRANSPARENT, com.blankj.utilcode.util.ColorUtils.getColor(R.color.white), 1));
             searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
             mIvSearchIcon.setImageResource(R.drawable.ic_search_project);
-            mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.text_color_b3b3b3));
+            mTvSearchHint.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_b3b3b3));
             ivMap.setImageResource(R.drawable.ic_project_map_dark);
             ivFilter.setImageResource(R.drawable.ic_filter_project_dark);
 

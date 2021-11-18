@@ -1,9 +1,9 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
-import com.shmedo.core.util.GsonFactory;
 
 import java.util.HashMap;
 
@@ -29,7 +29,7 @@ public class DasTemperatureAndHumidityStatusinfoParser implements IOTResultParse
                 }
             }
             String status = keyValueMap.get("status");
-            info = GsonFactory.getGson().fromJson(status, DasTemperatureAndHumidityStatusinfo.class);
+            info = GsonUtils.fromJson(status, DasTemperatureAndHumidityStatusinfo.class);
 
             return info;
         } catch (Exception ex) {

@@ -7,10 +7,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
@@ -117,16 +117,16 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
         content = content.replace("\\", "");
         content = content.replace("000_1:", "");
         try {
-            devcieCurrentState = GsonFactory.getGson().fromJson(content, DevcieCurrentState.class);
+            devcieCurrentState = GsonUtils.fromJson(content, DevcieCurrentState.class);
             if (devcieCurrentState != null) {
                 mTvExtPowerVolt.setText(String.format("%s V", devcieCurrentState.getExt_power_volt()));
                 mTvFirmwareVersion.setText(TextUtils.isEmpty(devcieCurrentState.getSw_version()) ? "--" : devcieCurrentState.getSw_version());
                 mTvOnlineState.setText(devcieCurrentState.isOn_4g() ? "在线" : "离线");
                 if (devcieCurrentState.isOn_4g()) {
-                    mTvOnlineState.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                    mTvOnlineState.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
 
                 } else {
-                    mTvOnlineState.setTextColor(GlobalUtil.getColor(R.color.red));
+                    mTvOnlineState.setTextColor(ColorUtils.getColor(R.color.red));
                 }
                 mTv4gSignal.setText(devcieCurrentState.get_$4g_signal() + "dBm");
             }
@@ -135,13 +135,13 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
         }
 
         mTvConfirm.setText("查看详情");
-        mTvConfirm.setTextColor(GlobalUtil.getColor(R.color.blue_52B4F8));
+        mTvConfirm.setTextColor(ColorUtils.getColor(R.color.blue_52B4F8));
     }
 
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
         mTvConfirm.setText("好的");
-        mTvConfirm.setTextColor(GlobalUtil.getColor(R.color.sub_title_text_color));
+        mTvConfirm.setTextColor(ColorUtils.getColor(R.color.sub_title_text_color));
     }
 }

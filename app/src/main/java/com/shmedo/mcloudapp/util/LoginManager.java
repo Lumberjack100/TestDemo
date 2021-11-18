@@ -4,12 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.blankj.utilcode.util.EncryptUtils;
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.GsonFactory;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.common.model.UserInfoWrapper;
 import com.shmedo.mcloudapp.common.model.params.SignInParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -79,8 +80,8 @@ public class LoginManager implements DefaultLifecycleObserver {
      */
     private void makeLoginByAccount() {
         SignInParameter parameter = new SignInParameter(mAccount, mPassword);
-        parameter.setPassword(MD5Util.MD5(mAccount + mPassword));
-        String json = GsonFactory.getGson().toJson(parameter);
+        parameter.setPassword(EncryptUtils.encryptMD5ToString(mAccount + mPassword));
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
         MDRetrofit.getInstance().createService()
@@ -114,7 +115,7 @@ public class LoginManager implements DefaultLifecycleObserver {
      */
     private void makeQuickLogin() {
         SignInParameter parameter = new SignInParameter(Mobile, Code);
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
         MDRetrofit.getInstance().createService().SmsLogin(body).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<String>() {
@@ -174,16 +175,16 @@ public class LoginManager implements DefaultLifecycleObserver {
                             Long id = (long) userInfo.getUser().getId();
                             UserInfoWrapper userInfoWrapper = new UserInfoWrapper();
                             userInfoWrapper.setId(id);
-                            userInfoWrapper.setUserInfo(GsonFactory.getGson().toJson(userInfo));
+                            userInfoWrapper.setUserInfo(GsonUtils.toJson(userInfo));
                             DaoManager manager = DaoManager.getInstance();
                             manager.getDaoSession().getUserInfoWrapperDao().insertOrReplace(userInfoWrapper);
 
                             //持久化保存用户数据到SharedPreferences文件中
-                            SharedUtil.save(NetworkConst.ACCESS_TOKEN, token);
-                            SharedUtil.save(AppContants.TOKEN_UPDATE_TIME, new Date().getTime() + "");
+                            SPStaticUtils.put(NetworkConst.ACCESS_TOKEN, token);
+                            SPStaticUtils.put(AppContants.TOKEN_UPDATE_TIME, new Date().getTime() + "");
                             if (mAccount != null && mPassword != null) {
-                                SharedUtil.save(AppContants.User.UID, mAccount);
-                                SharedUtil.save(AppContants.User.PWD, mPassword);
+                                SPStaticUtils.put(AppContants.User.UID, mAccount);
+                                SPStaticUtils.put(AppContants.User.PWD, mPassword);
                             }
 
                             if (loginCallback != null) {

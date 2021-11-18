@@ -19,7 +19,6 @@ import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.view.vms.VmsAisleSettingView;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -87,7 +86,7 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
         }
         int id = view.getId();
         if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!tcpViewModel.getConnectStatus()) {
                 ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                 return;

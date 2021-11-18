@@ -17,12 +17,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -130,8 +131,8 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
     }
 
     private void initLastAccount() {
-        String uid = SharedUtil.read(AppContants.User.UID);
-        String pwd = SharedUtil.read(AppContants.User.PWD);
+        String uid = SPStaticUtils.getString(AppContants.User.UID);
+        String pwd = SPStaticUtils.getString(AppContants.User.PWD);
         if (!TextUtils.isEmpty(uid)) {
             mEtAccount.setText(uid);
             mEtAccount.setSelection(uid.length());
@@ -207,20 +208,21 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
             case R.id.iv_login_way://登录方式切换
                 if (loginWay == LOGIN_ACCOUNT) {//切换为手机验证码登录
                     loginWay = LOGIN_PHONE;
-                    mTvLoginWayTitleZh.setText(GlobalUtil.getString(R.string.login_way_phone_zh));
-                    mTvLoginWayTitleEn.setText(GlobalUtil.getString(R.string.login_way_phone_en));
+
+                    mTvLoginWayTitleZh.setText(StringUtils.getString(R.string.login_way_phone_zh));
+                    mTvLoginWayTitleEn.setText(StringUtils.getString(R.string.login_way_phone_en));
                     accountLoginLayout.setVisibility(View.GONE);
                     phoneLoginLayout.setVisibility(View.VISIBLE);
                     mIvLoginWay.setImageResource(R.drawable.icon_account_login);
-                    mTvLoginWayDesc.setText(GlobalUtil.getString(R.string.login_way_account_zh));
+                    mTvLoginWayDesc.setText(StringUtils.getString(R.string.login_way_account_zh));
                 } else if (loginWay == LOGIN_PHONE) {//切换为账号密码登录
                     loginWay = LOGIN_ACCOUNT;
-                    mTvLoginWayTitleZh.setText(GlobalUtil.getString(R.string.login_way_account_zh));
-                    mTvLoginWayTitleEn.setText(GlobalUtil.getString(R.string.login_way_account_en));
+                    mTvLoginWayTitleZh.setText(StringUtils.getString(R.string.login_way_account_zh));
+                    mTvLoginWayTitleEn.setText(StringUtils.getString(R.string.login_way_account_en));
                     accountLoginLayout.setVisibility(View.VISIBLE);
                     phoneLoginLayout.setVisibility(View.GONE);
                     mIvLoginWay.setImageResource(R.drawable.icon_phone_login);
-                    mTvLoginWayDesc.setText(GlobalUtil.getString(R.string.login_way_phone_zh));
+                    mTvLoginWayDesc.setText(StringUtils.getString(R.string.login_way_phone_zh));
                 }
                 break;
         }
@@ -331,7 +333,10 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         MDRetrofit.getInstance()
                 .createService()
                 .sendSmsCode(body)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String data, ErrCode errCode) {
@@ -376,7 +381,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         public void updateDrawState(TextPaint ds) {
             super.updateDrawState(ds);
             //设置文本的颜色
-            ds.setColor(GlobalUtil.getColor(R.color.colorPrimary));
+            ds.setColor(ColorUtils.getColor(R.color.colorPrimary));
             //超链接形式的下划线，false 表示不显示下划线，true表示显示下划线
             ds.setUnderlineText(false);
         }

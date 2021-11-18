@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Looper;
 import android.widget.Toast;
 
-import com.shmedo.core.util.ActivityCollector;
+import com.blankj.utilcode.util.ActivityUtils;
 
 import timber.log.Timber;
 
@@ -80,15 +80,13 @@ public class AppCrashHandler implements Thread.UncaughtExceptionHandler {
             }
         }).start();
 
-        ActivityCollector.finishAll();
-
         try {
             Thread.sleep(2000);
         } catch (InterruptedException ex) {
-            Timber.e("CrashHandler.InterruptedException--->" + ex.toString());
+            Timber.e("CrashHandler.InterruptedException--->%s", ex.toString());
         }
+        ActivityUtils.finishAllActivities();
         //退出程序
         android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
     }
 }

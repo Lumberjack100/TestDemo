@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.util.common;
+package com.shmedo.mcloudapp.util;
 
 
 import androidx.fragment.app.Fragment;

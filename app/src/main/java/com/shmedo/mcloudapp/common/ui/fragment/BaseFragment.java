@@ -24,7 +24,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.callback.HandleBackInterface;
-import com.shmedo.mcloudapp.util.common.HandleBackUtil;
+import com.shmedo.mcloudapp.util.HandleBackUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.umeng.analytics.MobclickAgent;
 

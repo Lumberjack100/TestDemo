@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
@@ -116,7 +116,7 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
         if (dispatchRawCmdParam == null) {
             throw new IllegalArgumentException("dispatchRawCmdParam 为null");
         }
-        String json = GsonFactory.getGson().toJson(dispatchRawCmdParam);
+        String json = GsonUtils.toJson(dispatchRawCmdParam);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -161,7 +161,7 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
      * 查询设备对下发/透传的指令响应结果
      */
     private void queryCmdResultByMsgID() {
-        String json = GsonFactory.getGson().toJson(msgIDList);
+        String json = GsonUtils.toJson(msgIDList);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()

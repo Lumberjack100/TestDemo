@@ -12,6 +12,8 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
@@ -21,8 +23,6 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GsonFactory;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
@@ -172,7 +172,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
             String command_type = content.contains("&") ? content.substring(content.indexOf(IOTCommand.COMMAND_HEADER) + 1, content.indexOf("&")) : content.substring(content.indexOf(IOTCommand.COMMAND_HEADER) + 1);
             Map<String, Object> valueMap = new HashMap<String, Object>();
-            valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+            valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
             valueMap.put("device_sn", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken());
             valueMap.put("command_type", command_type);
             valueMap.put("command_content", content);
@@ -189,7 +189,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         if (dispatchRawCmdParam == null) {
             throw new IllegalArgumentException("dispatchRawCmdParam 为null");
         }
-        String json = GsonFactory.getGson().toJson(dispatchRawCmdParam);
+        String json = GsonUtils.toJson(dispatchRawCmdParam);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -234,7 +234,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      * 查询设备对下发/透传的指令响应结果
      */
     private void queryCmdResultByMsgID() {
-        String json = GsonFactory.getGson().toJson(msgIDList);
+        String json = GsonUtils.toJson(msgIDList);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
@@ -284,7 +284,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                 IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
                 String content = queryCmdResult.getResponseContent();
                 Map<String, Object> valueMap = new HashMap<String, Object>();
-                valueMap.put("login_user", SharedUtil.read(AppContants.User.UID, ""));
+                valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
                 valueMap.put("device_sn", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken());
                 valueMap.put("command_type", type.toString());
                 valueMap.put("command_content", content);

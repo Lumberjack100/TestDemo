@@ -26,20 +26,18 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.NetworkUtils;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.ForceToLoginEvent;
 import com.shmedo.core.event.NetworkChangeEvent;
-import com.shmedo.core.util.ActivityCollector;
-import com.shmedo.core.util.NetworkUtils;
 import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.viewmodels.ShareViewModel;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
+import com.shmedo.mcloudapp.util.HandleBackUtil;
 import com.shmedo.mcloudapp.util.UiUtils;
-import com.shmedo.mcloudapp.util.common.HandleBackUtil;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.umeng.analytics.MobclickAgent;
 
-import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 import butterknife.ButterKnife;
@@ -77,8 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected boolean mNetConnected;/*网络连接的状态，true表示有网络，flase表示无网络连接*/
 
-    private WeakReference<Activity> weakRefActivity = null;
-
     protected ShareViewModel shareViewModel;
 
     protected abstract int getLayoutId();
@@ -97,9 +93,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
-
-        weakRefActivity = new WeakReference<Activity>(this);
-        ActivityCollector.add(weakRefActivity);
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         //初始化沉浸式
@@ -120,7 +113,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             public void onChanged(ForceToLoginEvent forceToLoginEvent) {
                 if (isActive) { // 判断Activity是否在前台，防止非前台的Activity也处理这个事件，造成打开多个LoginActivity的问题。
                     // force to login
-                    ActivityCollector.finishAll();
+                    MCloudApp.logout();
                     LoginActivity.startActivity(BaseActivity.this);
                 }
             }
@@ -189,7 +182,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //ActionBar Home按钮返回事件
         if (item.getItemId() == android.R.id.home) {
-            KeyBordUtils.hideSoftKeyboard(this.getWindow().getDecorView());
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(this.getWindow().getDecorView());
             onBackPressed();
             return true;
         }
@@ -250,7 +243,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {  //把操作放在用户点击的时候
             View v = getCurrentFocus();      //得到当前页面的焦点,ps:有输入框的页面焦点一般会被输入框占据
             if (isShouldHideKeyboard(v, motionEvent)) { //判断用户点击的是否是输入框以外的区域
-                KeyBordUtils.hideSoftKeyboard(v);
+                com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(v);
             }
         }
         return super.dispatchTouchEvent(motionEvent);
@@ -358,12 +351,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                     + "Application. You can't request ViewModel before onCreate call.");
         }
         return application;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ActivityCollector.remove(weakRefActivity);
     }
 
     @Override

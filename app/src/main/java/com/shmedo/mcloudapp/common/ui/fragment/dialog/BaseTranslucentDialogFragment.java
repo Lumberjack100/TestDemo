@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.gyf.immersionbar.ImmersionBar;
-import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,6 @@ public abstract class BaseTranslucentDialogFragment extends DialogFragment {
     protected View mRootView;
     protected Window mWindow;
     private Unbinder unbinder;
-    public Integer[] mWidthAndHeight;
 
     @Override
     public void onAttach(Context context) {
@@ -56,7 +54,6 @@ public abstract class BaseTranslucentDialogFragment extends DialogFragment {
         //点击外部消失
         dialog.setCanceledOnTouchOutside(true);
         mWindow = dialog.getWindow();
-        mWidthAndHeight = DeviceInfo.getWidthAndHeight(mWindow);
     }
 
     @Nullable
@@ -89,7 +86,6 @@ public abstract class BaseTranslucentDialogFragment extends DialogFragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mWidthAndHeight = DeviceInfo.getWidthAndHeight(mWindow);
     }
 
     /**

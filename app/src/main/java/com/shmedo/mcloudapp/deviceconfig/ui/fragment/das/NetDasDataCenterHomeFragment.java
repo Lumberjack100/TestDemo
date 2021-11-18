@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -39,14 +40,12 @@ import com.shmedo.configlibrary.iot.model.das.DasBdTerminalInfo;
 import com.shmedo.configlibrary.iot.model.das.DasDataReportInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -263,7 +262,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             serverNumber = SERVER_NUMBER_THREE;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;
@@ -455,7 +454,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterOne.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterOne.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
@@ -465,7 +464,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterTwo.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterTwo.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
@@ -476,7 +475,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                 } else if (centerStatus.getCenterid() == 3) {
                     mRefreshLayout.finishRefresh(true);
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterThree.setTextColor(GlobalUtil.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterThree.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }
             }
             break;

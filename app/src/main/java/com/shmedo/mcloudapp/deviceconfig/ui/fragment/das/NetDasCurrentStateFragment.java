@@ -14,6 +14,10 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -34,9 +38,6 @@ import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -265,7 +266,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initDataCenterAdapter() {
         dataCenterRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
+        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
         dataCenterAdapter = new CommonAdapter<DasNetStatusInfo>(getActivity(), R.layout.item_das_data_center_status, netStatusInfoList) {
             @Override
             protected void convert(CommonViewHolder holder, DasNetStatusInfo netStatusInfo, int position) {
@@ -297,7 +298,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<DasSensorStatusInfo>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, DasSensorStatusInfo sensorStatusInfo, int position) {
@@ -307,7 +308,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     IOTSensorType sensorType = IOTSensorType.value(type);
                     switch (sensorType) {
                         case WIRE_SHIFT://拉绳式裂缝计
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_wire_shift));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_wire_shift));
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "裂缝值(mm)");
@@ -316,7 +317,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case SOIL_MOISTURE://土壤含水率
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_soil_moisture));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_soil_moisture));
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "含水率(%)");
@@ -325,7 +326,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case INCLINOMETER: {//测斜仪
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_inclinometer));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_inclinometer));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "X轴(mm)");
@@ -340,7 +341,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_ultrasonic_level_gauge));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_ultrasonic_level_gauge));
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "空高值(mm)");
@@ -349,7 +350,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case RADAR_LEVEL_GAUGE://雷达物位计
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_radar_level_gauge));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_radar_level_gauge));
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "空高值(mm)");
@@ -358,7 +359,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case UPLIFT_PRESSURE_GAUGE: {//数字式渗压计
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_uplift_pressure_gauge));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_uplift_pressure_gauge));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, true);
                             holder.setText(R.id.tv_title1, "水深(m)");
@@ -376,7 +377,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case KANG_PERCOLATE: {//基康渗压计
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_kang_percolate));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_kang_percolate));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, true);
                             holder.setText(R.id.tv_title1, "水深(m)");
@@ -394,7 +395,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case GUDAN_PERCOLATE: {//葛南渗压计
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_gudan_percolate));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_gudan_percolate));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, true);
                             holder.setText(R.id.tv_title1, "水深(m)");
@@ -412,7 +413,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case GUDAN_STRESS: {//葛南应变计
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_gudan_stress));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_gudan_stress));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "应变(μ)");
@@ -427,7 +428,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case JUNXING_ZLJ_300T: {//轴力计
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_junxing_zlj_300t));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_junxing_zlj_300t));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "轴力(KN)");
@@ -442,7 +443,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case WEATHER_STATION: {//气象站
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weather_station));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_weather_station));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, true);
                             holder.setVisibleOrGone(R.id.value4Layout, true);
@@ -467,7 +468,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case WEIR: {//量水堰
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_weir));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_weir));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "液位值(mm)");
@@ -483,7 +484,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case TURBIDITY_METER://浊度仪传感器
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_turbidity_meter));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_turbidity_meter));
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "浊度(NTU)");
@@ -492,7 +493,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case LUYAN_INCLINOMETER://倾角仪
-                            holder.setText(R.id.tv_sensor_name, GlobalUtil.getString(R.string.sensor_qingjiao));
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_qingjiao));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "X轴角度(°)");
@@ -673,7 +674,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     return;
                 }
                 if (!TextUtils.isEmpty(commandResult.getResult())) {
-                    List<DasNetStatusInfo> tempList = GsonFactory.getGson().fromJson(commandResult.getResult(), new TypeToken<List<DasNetStatusInfo>>() {
+                    List<DasNetStatusInfo> tempList = GsonUtils.fromJson(commandResult.getResult(), new TypeToken<List<DasNetStatusInfo>>() {
                     }.getType());
                     netStatusInfoList.clear();
                     netStatusInfoList.addAll(tempList);
@@ -880,7 +881,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 ioSensorLayout.setVisibility(View.VISIBLE);
                 if (dasSubSensorStatusInfo.getIo().getType() == 1) {
                     mTvSwitchStatus.setText("接入");
-                    mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                    mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
                     rainLayout.setVisibility(View.VISIBLE);
                     wireBreakAlarmLayout.setVisibility(View.GONE);
                     decimalFormat.applyPattern("#.#");
@@ -894,7 +895,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
                 } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
                     mTvSwitchStatus.setText("接入");
-                    mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                    mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
                     rainLayout.setVisibility(View.GONE);
                     wireBreakAlarmLayout.setVisibility(View.VISIBLE);
                     if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
@@ -956,13 +957,13 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             textView.setTextColor(Color.RED);
         } else if (status == 1) {
             textView.setText("正常");
-            textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 
     private void setSensorStatusColor(TextView textView, int status) {
         if (status == 0) {
-            textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
         } else {
             textView.setTextColor(Color.RED);
         }

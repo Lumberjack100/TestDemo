@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.shmedo.core.util.GlobalUtil;
+import com.blankj.utilcode.util.ColorUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.DateUtil;
 
@@ -235,8 +235,8 @@ public class MyDatePicker extends BaseDialogFragment {
             if (index >= 0 && index < getItemsCount()) {
                 if (convertView == null) {
                     convertView = new WheelTextView(context);
-                    ((WheelTextView) convertView).setDefaultColor(GlobalUtil.getColor(R.color.text_color_cccccc));//LTGRAY
-                    ((WheelTextView) convertView).setCurrentColor(GlobalUtil.getColor(R.color.title_text_color));
+                    ((WheelTextView) convertView).setDefaultColor(ColorUtils.getColor(R.color.text_color_cccccc));//LTGRAY
+                    ((WheelTextView) convertView).setCurrentColor(ColorUtils.getColor(R.color.title_text_color));
 
                     ((WheelTextView) convertView).setDefaultSize(15);
                     ((WheelTextView) convertView).setCurrentSize(18);

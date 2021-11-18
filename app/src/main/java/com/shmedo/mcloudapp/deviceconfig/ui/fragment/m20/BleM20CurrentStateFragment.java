@@ -7,6 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -19,8 +21,6 @@ import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
 import com.shmedo.configlibrary.iot.model.m20.SensorErrnoBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 
@@ -199,7 +199,7 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
 
     private void initStatusInfo(String content) {
         try {
-            m20CurrentStateInfo = GsonFactory.getGson().fromJson(content, M20CurrentStateInfo.class);
+            m20CurrentStateInfo = GsonUtils.fromJson(content, M20CurrentStateInfo.class);
             if (m20CurrentStateInfo != null) {
                 mTvDeviceSn.setText(m20CurrentStateInfo.getSN());
                 mTVSimCardNumber.setText(m20CurrentStateInfo.getCCID());
@@ -215,9 +215,9 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 mTvAmsConnectionStatus.setText("--");
                 mTv4gSignalStrength.setText(String.format("%sdBm", m20CurrentStateInfo.get_$4g_signal()));
                 mTvLinkOneStatus.setText("未开启");
-                mTvLinkOneStatus.setTextColor(GlobalUtil.getColor(R.color.device_unopened_platform));
+                mTvLinkOneStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
                 mTvLinkTwoStatus.setText("未开启");
-                mTvLinkTwoStatus.setTextColor(GlobalUtil.getColor(R.color.device_unopened_platform));
+                mTvLinkTwoStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
 
                 initLinkStatus(mTvLinkThreeStatus, m20CurrentStateInfo.getDataCenter3());
                 initLinkStatus(mTvLinkFourStatus, m20CurrentStateInfo.getDataCenter4());
@@ -229,7 +229,7 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                     }
                 }
                 mTvSensorStatus.setText(sensorAbnormal ? "未接入" : "正常");
-                mTvSensorStatus.setTextColor(sensorAbnormal ? GlobalUtil.getColor(R.color.red) : GlobalUtil.getColor(R.color.text_color_3AD094));
+                mTvSensorStatus.setTextColor(sensorAbnormal ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
 
                 mTvInclination.setText(m20CurrentStateInfo.getZ_Angle());
                 mTvInternalVoltage.setText(String.format("%s V", m20CurrentStateInfo.getInner_power_volt()));
@@ -254,10 +254,10 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
     private void initLinkStatus(TextView tvLinkStatus, String linkStatus) {
         if (linkStatus.equals("1")) {
             tvLinkStatus.setText("已连接");
-            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.title_text_color));
+            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.title_text_color));
         } else if (linkStatus.equals("0")) {
             tvLinkStatus.setText("未连接");
-            tvLinkStatus.setTextColor(GlobalUtil.getColor(R.color.device_not_connected_platform));
+            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_not_connected_platform));
         }
     }
 

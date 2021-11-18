@@ -2,13 +2,18 @@ package com.shmedo.mcloudapp.maps.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.lifecycle.Observer;
 
-import com.shmedo.core.util.NetworkUtils;
+import com.blankj.utilcode.util.NetworkUtils;
+import com.blankj.utilcode.util.PhoneUtils;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
@@ -132,44 +137,15 @@ public class SpeedTestResultActivity extends BaseActivity {
         NetworkUtils.NetworkType networkType = NetworkUtils.getNetworkType();
         if (networkType == NetworkUtils.NetworkType.NETWORK_WIFI) {
             //获取连接的wifi名称
-            mTvOperatorName.setText(NetworkUtils.getConnectWifiSsid());
+            mTvOperatorName.setText(getConnectWifiSsid());
         } else {
             showOperatorName();
         }
     }
 
     private void showOperatorName() {
-        String name = "";
-        int opeType = NetworkUtils.getCellularOperatorType();
-        switch (opeType) {
-            case 0:
-                name = "other";
-                break;
-
-            case 1:
-                name = "中国移动";
-                break;
-
-            case 2:
-                name = "中国联通";
-                break;
-
-            case 3:
-                name = "中国电信";
-                break;
-
-            case -1:
-                name = "无sim卡";
-                break;
-
-            case -2:
-                name = "数据流量未打开";
-                break;
-
-            default:
-                break;
-        }
-        mTvOperatorName.setText(name);
+        String name = PhoneUtils.getSimOperatorByMnc();
+        mTvOperatorName.setText(TextUtils.isEmpty(name)?"other":name);
     }
 
     @OnClick({R.id.back, R.id.tv_screenshot})
@@ -180,6 +156,20 @@ public class SpeedTestResultActivity extends BaseActivity {
             ScreenShotAction screenShotAction = new ScreenShotAction(this);
             screenShotAction.execute();
         }
+    }
+
+    /**
+     * 打开或关闭wifi
+     * <p>android8.0以上需要开启位置信息</p>
+     * <p>android9.0以上需要申请定位权限</p>
+     * <p>android10.0需要申请新添加的隐私权限ACCESS_FINE_LOCATION详情见android官方10.0重大隐私权变更，如果还需要后台获取或者使用wifi api则还需要申请后台使用定位权限ACCESS_BACKGROUND_LOCATION</p>
+     */
+    private String getConnectWifiSsid() {
+        WifiManager wifiMgr = (WifiManager) MCloudApp.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifiMgr.getConnectionInfo();
+        String wifiId = info != null ? info.getSSID() : "未知的 ssid";
+
+        return wifiId;
     }
 
 

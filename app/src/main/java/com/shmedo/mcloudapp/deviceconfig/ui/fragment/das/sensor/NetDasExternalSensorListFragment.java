@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
@@ -39,7 +40,6 @@ import com.shmedo.configlibrary.iot.model.das.DasCollectorInfo;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -49,7 +49,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommuni
 import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
 import com.shmedo.mcloudapp.projects.model.DASSensorItem;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.util.BlueResultParserUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -157,7 +156,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
 
     private void initExtendSensorAdapter() {
         int spanCount = 4;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(getActivity(), 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerViewSensor.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewSensor.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -207,14 +206,14 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         DasExternalSensorInfo dasExternalSensorInfo = null;
         if (curSensorItem.isAddButton()) {
             if (sensorHashMap.values().size() == 0) {
-                sensorType = BlueResultParserUtil.getSensorTypeByCollectorCode(collectorInfo.getType());
+                sensorType = IOTSensorType.getSensorTypeByCollectorCode(collectorInfo.getType());
             } else {
                 DasExternalSensorInfo sensorInfo = (DasExternalSensorInfo) sensorHashMap.values().toArray()[0];
-                sensorType = sensorInfo.getType().equals("0") ? BlueResultParserUtil.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(sensorInfo.getType());
+                sensorType = sensorInfo.getType().equals("0") ? IOTSensorType.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(sensorInfo.getType());
             }
         } else {
             dasExternalSensorInfo = sensorHashMap.get(curSensorItem.getSensorAddress());
-            sensorType = dasExternalSensorInfo.getType().equals("0") ? BlueResultParserUtil.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(dasExternalSensorInfo.getType());
+            sensorType = dasExternalSensorInfo.getType().equals("0") ? IOTSensorType.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(dasExternalSensorInfo.getType());
         }
         DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, collectorInfo.getType(), sensorType, addressList, dasExternalSensorInfo);
     }

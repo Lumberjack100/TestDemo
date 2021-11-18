@@ -1,16 +1,16 @@
-package com.shmedo.mcloudapp.util.permission;
+package com.shmedo.mcloudapp.util;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.CleanUtils;
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.Utils;
 import com.hjq.toast.ToastUtils;
 import com.pgyer.pgyersdk.PgyerSDKManager;
 import com.pgyer.pgyersdk.callback.CheckoutCallBack;
 import com.pgyer.pgyersdk.model.CheckSoftModel;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.xuexiang.xupdate.XUpdate;
 import com.xuexiang.xupdate.entity.UpdateEntity;
@@ -56,7 +56,7 @@ public class UpdataManagerUtil {
                         .setDownloadUrl(model.getDownloadURL());
 
                 XUpdate.newBuild(activity)
-                        .promptThemeColor(GlobalUtil.getColor(R.color.update_theme_color))
+                        .promptThemeColor(ColorUtils.getColor(R.color.update_theme_color))
                         .promptButtonTextColor(Color.WHITE)
                         .promptTopResId(R.drawable.bg_update_top)
 //                        .promptWidthRatio(0.7F)

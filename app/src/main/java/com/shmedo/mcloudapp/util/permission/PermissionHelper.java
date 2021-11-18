@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.huawei.hms.hmsscankit.ScanUtil;
 import com.huawei.hms.ml.scan.HmsScan;
@@ -21,7 +23,6 @@ import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.permissionx.guolindev.request.ExplainScope;
 import com.permissionx.guolindev.request.ForwardScope;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 
 import java.util.List;
@@ -98,11 +99,11 @@ public class PermissionHelper {
 
     public static void showGPSSettingDialog(Activity activity) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(activity)
-                .title("权限申请").content(GlobalUtil.getString(R.string.permission_request_location_hardware))
+                .title("权限申请").content(StringUtils.getString(R.string.permission_request_location_hardware))
                 .negativeText("暂不开启")
                 .positiveText("去设置")
-                .negativeColor(GlobalUtil.getColor(R.color.gray_797979))
-                .positiveColor(GlobalUtil.getColor(R.color.colorPrimary))
+                .negativeColor(ColorUtils.getColor(R.color.gray_797979))
+                .positiveColor(ColorUtils.getColor(R.color.colorPrimary))
                 .canceledOnTouchOutside(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override

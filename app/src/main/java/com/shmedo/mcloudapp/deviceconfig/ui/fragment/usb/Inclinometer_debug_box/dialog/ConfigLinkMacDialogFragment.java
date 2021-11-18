@@ -19,14 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.DeviceInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.adapter.usb_serial.InclinometerAddrInfoAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
@@ -81,8 +81,8 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
         Dialog mDialog = getDialog();
         Window window = mDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.width = (int) (DeviceInfo.getScreenWidth() * 0.9f);
-        wlp.height = (int) (DeviceInfo.getScreenHeight() * 0.7f);
+        wlp.width = (int) (ScreenUtils.getScreenWidth() * 0.9f);
+        wlp.height = (int) (ScreenUtils.getScreenHeight() * 0.7f);
         window.setAttributes(wlp);
     }
 
@@ -96,7 +96,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
     private void initAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.divider_line_bg_efefef), 0, DensityUtil.Dp2Px(getActivity(), 0.5f));
+        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.divider_line_bg_efefef), 0, ConvertUtils.dp2px(0.5f));
         mRecyclerView.addItemDecoration(mItemDecoration);
         adapter = new InclinometerAddrInfoAdapter(macInfoList);
 //        adapter.setAnimationEnable(true);

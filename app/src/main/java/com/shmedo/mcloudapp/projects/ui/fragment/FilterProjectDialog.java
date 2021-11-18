@@ -12,20 +12,20 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gyf.immersionbar.ImmersionBar;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.dialog.BaseTranslucentDialogFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.projects.adapter.FilterItemAdapter;
 import com.shmedo.mcloudapp.projects.model.FilterItem;
-import com.shmedo.mcloudapp.projects.model.enums.ProjectState;
-import com.shmedo.mcloudapp.projects.model.enums.ProjectGroupViewMode;
 import com.shmedo.mcloudapp.projects.model.StateFilterItem;
 import com.shmedo.mcloudapp.projects.model.TypeFilterItem;
+import com.shmedo.mcloudapp.projects.model.enums.ProjectGroupViewMode;
+import com.shmedo.mcloudapp.projects.model.enums.ProjectState;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -106,7 +106,7 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
         toolbar.setBackgroundResource(R.color.white);
         searchLayout.setBackgroundResource(R.drawable.bg_search_project_gray);
         mIvSearchIcon.setImageResource(R.drawable.ic_search_project);
-        mTvSearchHint.setTextColor(GlobalUtil.getColor(R.color.text_color_b3b3b3));
+        mTvSearchHint.setTextColor(ColorUtils.getColor(R.color.text_color_b3b3b3));
         ivMap.setImageResource(R.drawable.ic_project_map_dark);
         ivFilter.setImageResource(R.drawable.ic_filter_project_checked);
         setUpProjectTypeRecyclerView();
@@ -121,7 +121,7 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
 
     private void setUpProjectTypeRecyclerView() {
         int spanCount = 4;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(getActivity(), 7);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(7);//每一个矩形的间距
         mRecyclerViewProType.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewProType.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -147,7 +147,7 @@ public class FilterProjectDialog extends BaseTranslucentDialogFragment {
 
     private void setUpProjectStateRecyclerView() {
         int spanCount = 4;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(getActivity(), 7);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(7);//每一个矩形的间距
         mRecyclerViewProState.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewProState.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));

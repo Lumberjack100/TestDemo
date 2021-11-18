@@ -40,7 +40,6 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -310,7 +309,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 break;
 
             case R.id.btn_confirm:
-                KeyBordUtils.hideSoftKeyboard(view);
+                com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
 
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));

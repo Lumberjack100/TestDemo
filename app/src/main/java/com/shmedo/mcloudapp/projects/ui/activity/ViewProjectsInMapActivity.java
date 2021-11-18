@@ -19,11 +19,11 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.ProjectDetailInfoDao;
@@ -156,7 +156,7 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
             public void run() {
                 List<ClusterItem> clusterItemList = new ArrayList<ClusterItem>();
                 for (ProjectDetailInfo detailInfo : detailInfoList) {
-                    LocationResult location = GsonFactory.getGson()
+                    LocationResult location = GsonUtils
                             .fromJson(detailInfo.getCenterPoint(), new TypeToken<LocationResult>() {
                             }.getType());
                     if (location != null) {
@@ -167,7 +167,7 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
                 }
 
                 mClusterOverlay = new ClusterOverlay(aMap, clusterItemList,
-                        DensityUtil.Dp2Px(getApplicationContext(), clusterRadius), getApplicationContext());
+                        ConvertUtils.dp2px(clusterRadius), getApplicationContext());
                 mClusterOverlay.setClusterRenderer(ViewProjectsInMapActivity.this);
                 mClusterOverlay.setOnClusterClickListener(ViewProjectsInMapActivity.this);
             }
@@ -196,7 +196,7 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
 
     @Override
     public Drawable getDrawAble(int clusterNum) {
-        int radius = DensityUtil.Dp2Px(getApplicationContext(), 80);
+        int radius = ConvertUtils.dp2px(80);
         if (clusterNum == 1) {
             Drawable bitmapDrawable = mBackDrawAbles.get(1);
             if (bitmapDrawable == null) {

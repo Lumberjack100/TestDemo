@@ -42,7 +42,6 @@ import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.ModulusView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -324,7 +323,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         } else if (id == R.id.sensorNameLayout) {
             showcSensorNameChooseDialog();
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
                 Timber.w("传感器参数存在错误!");
                 return;

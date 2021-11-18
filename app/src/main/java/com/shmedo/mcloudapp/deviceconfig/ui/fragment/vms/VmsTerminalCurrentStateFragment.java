@@ -7,11 +7,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ConvertUtils;
 import com.shmedo.configlibrary.iot.enums.MonitoringType;
 import com.shmedo.configlibrary.iot.enums.SensorErrorType;
 import com.shmedo.configlibrary.iot.model.SensorErrnoInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
-import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
@@ -112,7 +112,7 @@ public class VmsTerminalCurrentStateFragment extends BaseFragment {
 
     private void initAdapter() {
         int spanCount = 1;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(mActivity, 16);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px( 16);//每一个矩形的间距
         sensorRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         sensorRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));

@@ -12,11 +12,11 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.GsonFactory;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.UserInfoWrapper;
 import com.shmedo.mcloudapp.common.ui.fragment.PrivacyTipDialog;
@@ -71,10 +71,10 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     }
 
     private void initData() {
-        mAccount = SharedUtil.read(AppContants.User.UID, "");
-        mPassword = SharedUtil.read(AppContants.User.PWD, "");
+        mAccount = SPStaticUtils.getString(AppContants.User.UID, "");
+        mPassword = SPStaticUtils.getString(AppContants.User.PWD, "");
 
-        String mPrivacy = SharedUtil.read(AppContants.PRIVACY_AGREEMENT, "");
+        String mPrivacy = SPStaticUtils.getString(AppContants.PRIVACY_AGREEMENT, "");
         if (!TextUtils.isEmpty(mPrivacy) && mPrivacy.equalsIgnoreCase("agree")) {
             checkLogin();
         } else {
@@ -86,7 +86,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     @Override
     public void onPositiveClick(View view) {
         /*** 友盟sdk正式初始化*/
-        SharedUtil.save(AppContants.PRIVACY_AGREEMENT, "agree");
+        SPStaticUtils.put(AppContants.PRIVACY_AGREEMENT, "agree");
         UMConfigure.submitPolicyGrantResult(getApplicationContext(), true);
         String um_appkey;
         try {
@@ -133,9 +133,9 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
      * 离线登录
      */
     private void loginForOffline() {
-        String account = SharedUtil.read(AppContants.User.UID);
-        String token = SharedUtil.read(NetworkConst.ACCESS_TOKEN);
-        String time = SharedUtil.read(AppContants.TOKEN_UPDATE_TIME);
+        String account = SPStaticUtils.getString(AppContants.User.UID);
+        String token = SPStaticUtils.getString(NetworkConst.ACCESS_TOKEN);
+        String time = SPStaticUtils.getString(AppContants.TOKEN_UPDATE_TIME);
 
         if (TextUtils.isEmpty(token) || TextUtils.isEmpty(token)) {
             Timber.d("token或time为空，不能离线登录");
@@ -153,7 +153,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         List<UserInfoWrapper> userInfoWrapperList = manager.getDaoSession().getUserInfoWrapperDao().queryBuilder().list();
         if (userInfoWrapperList != null) {
             for (UserInfoWrapper userInfoWrapper : userInfoWrapperList) {
-                UserInfo userInfo = GsonFactory.getGson().fromJson(userInfoWrapper.getUserInfo(), UserInfo.class);
+                UserInfo userInfo = GsonUtils.fromJson(userInfoWrapper.getUserInfo(), UserInfo.class);
                 if (userInfo != null && account.equals(userInfo.getUser().getAccount())) {
                     MCloudApp.setCurrentUserInfo(userInfo);
                     break;

@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -42,11 +43,9 @@ import com.shmedo.configlibrary.ble.model.QueryOsmometerParameterInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalSensorListActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -190,7 +189,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             int id = buttonView.getId();
             if (id == R.id.radio_close_switch_sensor) {//关闭开关传感器单选按钮
                 if (isChecked) {
-                    rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
+                    rbCloseSwitchSensor.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
                     rbRainGauge.setChecked(false);
                     rbBreakAlarm.setChecked(false);
                     if (!mSbDigitalOsmometerEnable.isChecked()) {
@@ -199,23 +198,23 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                     //发送关闭传感器指令
                     setSwitchSensorCmd(RainStation.CLOSE);
                 } else {
-                    rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                    rbCloseSwitchSensor.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                 }
             } else if (id == R.id.radio_rain_gauge) {//雨量计单选按钮
                 if (isChecked) {
-                    rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
+                    rbRainGauge.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
                     rainPrecisionLayout.setVisibility(View.VISIBLE);
                     rbCloseSwitchSensor.setChecked(false);
                     rbBreakAlarm.setChecked(false);
                     btnConfirm.setVisibility(View.VISIBLE);
                     setSwitchSensorCmd(RainStation.OPEN);
                 } else {
-                    rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                    rbRainGauge.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                     rainPrecisionLayout.setVisibility(View.GONE);
                 }
             } else if (id == R.id.radio_break_alarm) {  //断线报警器单选按钮
                 if (isChecked) {
-                    rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_343434));
+                    rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
                     rgBreakAlarmItems.setVisibility(View.VISIBLE);
                     rbCloseSwitchSensor.setChecked(false);
                     rbRainGauge.setChecked(false);
@@ -224,7 +223,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                     }
                     setSwitchSensorCmd(RainStation.ALARM_OPEN);
                 } else {
-                    rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                    rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                     rgBreakAlarmItems.setVisibility(View.GONE);
                 }
             }
@@ -377,7 +376,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
         } else if (id == R.id.btn_confirm) {
             try {
-                KeyBordUtils.hideSoftKeyboard(view);
+                com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
                 cmdRainPrecision = "";
                 cmdOsmometerAddress = "";
                 cmdDepthTriggerValue = "";
@@ -754,9 +753,9 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 //初始化时不需要触发 OnCheckedChangeListener 事件
                 rbCloseSwitchSensor.setOnCheckedChangeListener(null);
                 rbCloseSwitchSensor.setChecked(true);
-                rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rbRainGauge.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                 rainPrecisionLayout.setVisibility(View.GONE);
-                rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbCloseSwitchSensor.setOnCheckedChangeListener(onCheckedChangeListener);
                 //查询数字式渗压计
@@ -768,8 +767,8 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 rbRainGauge.setOnCheckedChangeListener(null);
                 rbRainGauge.setChecked(true);
                 rainPrecisionLayout.setVisibility(View.VISIBLE);
-                rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
-                rbBreakAlarm.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rbCloseSwitchSensor.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
                 btnConfirm.setVisibility(View.VISIBLE);
@@ -789,8 +788,8 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 rbBreakAlarm.setOnCheckedChangeListener(null);
                 rbBreakAlarm.setChecked(true);
                 rgBreakAlarmItems.setVisibility(View.VISIBLE);
-                rbCloseSwitchSensor.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
-                rbRainGauge.setTextColor(GlobalUtil.getColor(R.color.text_color_cccccc));
+                rbCloseSwitchSensor.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                rbRainGauge.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                 rainPrecisionLayout.setVisibility(View.GONE);
                 rbBreakAlarm.setOnCheckedChangeListener(onCheckedChangeListener);
                 //查询断线报警器状态

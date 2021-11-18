@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.GsonUtils;
 import com.google.gson.internal.LinkedTreeMap;
 import com.hjq.toast.ToastUtils;
 import com.huawei.hms.hmsscankit.ScanUtil;
@@ -22,7 +23,6 @@ import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.SensorScanResult;
@@ -336,7 +336,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
             ToastUtils.show("二维码不正确!");
             return;
         }
-        SensorScanResult sensorScanResult = GsonFactory.getGson().fromJson(result, SensorScanResult.class);
+        SensorScanResult sensorScanResult = GsonUtils.fromJson(result, SensorScanResult.class);
         if (sensorScanResult == null) {
             ToastUtils.show("二维码不正确!");
             return;

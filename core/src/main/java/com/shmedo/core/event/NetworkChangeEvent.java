@@ -1,7 +1,7 @@
 package com.shmedo.core.event;
 
 
-import com.shmedo.core.util.NetworkUtils;
+import com.blankj.utilcode.util.NetworkUtils;
 
 /**
  * 项目名：  mCloudapp

@@ -2,12 +2,11 @@ package com.shmedo.mcloudapp.util;
 
 import android.text.TextUtils;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.ForceToLoginEvent;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.network.ErrCode;
 
@@ -50,14 +49,13 @@ public class ResponseHandler {
         switch (errCode.getCode()) {
             case 8:
                 Timber.w("handleResponse: errCode code is 8");
-                ToastUtils.show(TextUtils.isEmpty(errCode.getErrMessage()) ? GlobalUtil.getString(R.string.server_internal_error) : errCode.getErrMessage());
+                ToastUtils.show(TextUtils.isEmpty(errCode.getErrMessage()) ? StringUtils.getString(R.string.server_internal_error) : errCode.getErrMessage());
                 return true;
 
             case 10:
             case 11:
                 Timber.w("handleResponse: errCode code is %s", errCode.getCode());
-                ToastUtils.show(GlobalUtil.getString(R.string.login_status_expired));
-                MCloudApp.logout();
+                ToastUtils.show(StringUtils.getString(R.string.login_status_expired));
                 forceToLoginEventLiveData.postValue(new ForceToLoginEvent());
                 return true;
 
@@ -73,19 +71,18 @@ public class ResponseHandler {
      */
     public void handleFailure(Exception ex) {
         if (ex instanceof ConnectException) {
-            ToastUtils.show(GlobalUtil.getString(R.string.network_connect_error));
+            ToastUtils.show(StringUtils.getString(R.string.network_connect_error));
             return;
         } else if (ex instanceof SocketTimeoutException) {
-            ToastUtils.show(GlobalUtil.getString(R.string.network_connect_timeout));
+            ToastUtils.show(StringUtils.getString(R.string.network_connect_timeout));
             return;
         } else if (ex instanceof NoRouteToHostException) {
-            ToastUtils.show(GlobalUtil.getString(R.string.no_route_to_host));
+            ToastUtils.show(StringUtils.getString(R.string.no_route_to_host));
             return;
         } else if (ex instanceof UnknownHostException) {
-            ToastUtils.show(GlobalUtil.getString(R.string.no_route_to_host));
+            ToastUtils.show(StringUtils.getString(R.string.no_route_to_host));
             return;
         }
-
         Timber.w(ex, "handleFailure exception ");
         ToastUtils.show(ex.getMessage());
     }

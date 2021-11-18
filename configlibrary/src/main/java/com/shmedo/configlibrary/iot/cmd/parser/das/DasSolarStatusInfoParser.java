@@ -1,9 +1,9 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
+import com.blankj.utilcode.util.GsonUtils;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo;
-import com.shmedo.core.util.GsonFactory;
 
 import java.util.HashMap;
 
@@ -29,7 +29,7 @@ public class DasSolarStatusInfoParser implements IOTResultParser<DasSolarStatusI
                 }
             }
             String status = keyValueMap.get("status");
-            info = GsonFactory.getGson().fromJson(status, DasSolarStatusInfo.class);
+            info = GsonUtils.fromJson(status, DasSolarStatusInfo.class);
 
             return info;
         } catch (Exception ex) {

@@ -15,13 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
@@ -120,7 +119,7 @@ public class DeviceSearchActivity extends BaseActivity {
                     } else {
                         keyWords = textView.getText().toString();
                         // 当按了搜索之后关闭软键盘
-                        KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+                        com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
                         refresh();
                     }
                     return true;
@@ -133,7 +132,7 @@ public class DeviceSearchActivity extends BaseActivity {
 
     private void initDeviceInfoAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = DensityUtil.Dp2Px(this, 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
@@ -181,7 +180,7 @@ public class DeviceSearchActivity extends BaseActivity {
                 }
                 keyWords = mEtKeyWords.getText().toString();
                 // 当按了搜索之后关闭软键盘
-                KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+                com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
                 refresh();
                 break;
         }
@@ -219,7 +218,7 @@ public class DeviceSearchActivity extends BaseActivity {
         parameter.setPageSize(PAGE_SIZE);
         parameter.setCurrentPage(pageInfo.getPage());
 
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()

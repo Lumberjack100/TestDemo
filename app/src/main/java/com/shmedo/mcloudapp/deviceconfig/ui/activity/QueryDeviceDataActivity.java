@@ -12,12 +12,12 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.GlobalUtil;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.util.DateUtil;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
@@ -113,7 +112,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
             if (!TextUtils.isEmpty(snNubmer)) {
                 mEtSn.setEnabled(false);
                 mEtSn.setText(snNubmer);
-                mEtSn.setTextColor(GlobalUtil.getColor(R.color.sub_title_text_color));
+                mEtSn.setTextColor(ColorUtils.getColor(R.color.sub_title_text_color));
                 startTime = mTvStartTime.getText().toString() + " 00:00:00";
                 endTime = mTvEndTime.getText().toString() + " 23:59:59";
                 queryCloudData();
@@ -208,7 +207,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
             return false;
         }
         // 当按了搜索之后关闭软键盘
-        KeyBordUtils.hideSoftKeyboard(mEtSn);
+        com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtSn);
 
         if (TextUtils.isEmpty(startTime)) {
             ToastUtils.show("请选择开始时间");
@@ -240,7 +239,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
         paramter.setEnd(endTime);
         paramter.setNumber(itemCount);
 
-        String json = GsonFactory.getGson().toJson(paramter);
+        String json = GsonUtils.toJson(paramter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
         MDRetrofit.getInstance().createService(ServiceAddressType.CLOUD_PLATFORM_DATA_ADDRESS)
                 .QueryCloudData(body)

@@ -11,10 +11,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.EncryptUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.GsonFactory;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -23,7 +24,6 @@ import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.user.model.UpdatePasswordParam;
-import com.shmedo.mcloudapp.util.MD5Util;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
@@ -162,19 +162,16 @@ public class UpdatePasswordActivity extends BaseActivity {
             mEtNewPassword.requestFocus();
             return false;
         }
-
         if (TextUtils.isEmpty(confirmNewPassword)) {
             ToastUtils.show("请输入确认密码");
             mEtConfirmPassword.requestFocus();
             return false;
         }
-
-        if (!oldPasswordMD5.equals(MD5Util.MD5(mAccount + oldPassword))) {
+        if (!oldPasswordMD5.equals(EncryptUtils.encryptMD5ToString(mAccount + oldPassword))) {
             ToastUtils.show("当前密码不正确");
             mEtOldPassword.requestFocus();
             return false;
         }
-
         if (!newPassword.equals(confirmNewPassword)) {
             ToastUtils.show("确认密码与新密码不一致");
             return false;
@@ -190,11 +187,11 @@ public class UpdatePasswordActivity extends BaseActivity {
         showLoadingDialog("处理中...");
 
         UpdatePasswordParam parameter = new UpdatePasswordParam();
-        parameter.setCurrentPassword(MD5Util.MD5(mAccount + oldPassword));
-        parameter.setNewPassword(MD5Util.MD5(mAccount + newPassword));
-        parameter.setConfirmNewPassword(MD5Util.MD5(mAccount + confirmNewPassword));
+        parameter.setCurrentPassword(EncryptUtils.encryptMD5ToString(mAccount + oldPassword));
+        parameter.setNewPassword(EncryptUtils.encryptMD5ToString(mAccount + newPassword));
+        parameter.setConfirmNewPassword(EncryptUtils.encryptMD5ToString(mAccount + confirmNewPassword));
 
-        String json = GsonFactory.getGson().toJson(parameter);
+        String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
         MDRetrofit.getInstance()

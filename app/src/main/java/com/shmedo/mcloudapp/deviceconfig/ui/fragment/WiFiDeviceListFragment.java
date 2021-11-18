@@ -26,6 +26,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hacknife.wifimanager.HackWifiManager;
@@ -38,14 +39,12 @@ import com.hacknife.wifimanager.State;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.WiFiAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
@@ -308,9 +307,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                         boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
                         // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
                         if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(getActivity(), GlobalUtil.getString(R.string.message_permission_wifi_location_rational));
+                            XPermissionUtils.showRefusePermissionDialog(getActivity(), StringUtils.getString(R.string.message_permission_wifi_location_rational));
                         } else {
-                            ToastUtils.show(GlobalUtil.getString(R.string.message_permission_location_denied));
+                            ToastUtils.show(StringUtils.getString(R.string.message_permission_location_denied));
                         }
                     }
                 });
@@ -374,7 +373,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             refreshLayout.setVisibility(View.GONE);
             mEtKeyWords.setText("");
         } else if (id == R.id.tv_cancel) {// 当按了搜索之后关闭软键盘
-            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
             searchPlaceholder.setVisibility(View.VISIBLE);
             searchContainer.setVisibility(View.GONE);
             refreshLayout.setVisibility(View.VISIBLE);
@@ -425,7 +424,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         if (!TextUtils.isEmpty(text)) {
             searchProcess(text.toString().trim());
         } else {
-            KeyBordUtils.popSoftKeyboard(mEtKeyWords, true);
+            com.blankj.utilcode.util.KeyboardUtils.showSoftInput(mEtKeyWords);
             wiFiAdapter.setList(tempWiFiList);
         }
     }
@@ -438,7 +437,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             // 当按了搜索之后关闭软键盘
-            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
 
             String text = mEtKeyWords.getText().toString();
             if (TextUtils.isEmpty(text)) {

@@ -46,7 +46,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.util.BleScannerUtils;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerStateLiveData;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import java.util.ArrayList;
@@ -229,7 +228,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             mEtKeyWords.setText("");
 
         } else if (id == R.id.tv_cancel) {// 当按了搜索之后关闭软键盘
-            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
             searchPlaceholder.setVisibility(View.VISIBLE);
             searchContainer.setVisibility(View.GONE);
             refreshLayout.setVisibility(View.VISIBLE);
@@ -347,7 +346,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         if (!TextUtils.isEmpty(text)) {
             searchProcess(text.toString().trim());
         } else {
-            KeyBordUtils.popSoftKeyboard(mEtKeyWords, true);
+            com.blankj.utilcode.util.KeyboardUtils.showSoftInput(mEtKeyWords);
             bleDeviceAdapter.setList(tempDeviceList);
         }
     }
@@ -360,7 +359,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             // 当按了搜索之后关闭软键盘
-            KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
 
             String text = mEtKeyWords.getText().toString();
             if (TextUtils.isEmpty(text)) {

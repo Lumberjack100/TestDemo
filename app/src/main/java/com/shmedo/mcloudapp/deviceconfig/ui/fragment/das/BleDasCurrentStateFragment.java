@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.ConvertUtils;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -35,8 +37,6 @@ import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.DensityUtil;
-import com.shmedo.core.util.GlobalUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
@@ -264,7 +264,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
     private void initDataCenterAdapter() {
         dataCenterRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
+        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
         dataCenterAdapter = new CommonAdapter<DeviceNetStatus>(getActivity(), R.layout.item_das_data_center_status, dataCenterStatusInfoList) {
             @Override
             protected void convert(CommonViewHolder holder, DeviceNetStatus netStatusInfo, int position) {
@@ -301,7 +301,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
      */
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, DensityUtil.Dp2Px(mActivity, 10f), getResources().getColor(R.color.transparent)));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, String string, int position) {
@@ -721,7 +721,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         switch (type) {
             case "1":
                 mTvSwitchStatus.setText("接入");
-                mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
                 rainLayout.setVisibility(View.VISIBLE);
                 wireBreakAlarmLayout.setVisibility(View.GONE);
 
@@ -738,7 +738,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case "3":
                 mTvSwitchStatus.setText("接入");
-                mTvSwitchStatus.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+                mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
                 rainLayout.setVisibility(View.GONE);
                 wireBreakAlarmLayout.setVisibility(View.VISIBLE);
 
@@ -759,7 +759,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
             textView.setTextColor(Color.RED);
         } else if (status.equals("0")) {
             textView.setText("正常");
-            textView.setTextColor(GlobalUtil.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 

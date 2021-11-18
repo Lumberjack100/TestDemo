@@ -30,7 +30,6 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.callback.DataCenterConfigListener;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import java.util.Arrays;
 
@@ -250,7 +249,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             showPlatformTypeDialog();
 
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (dataCenterConfigListener != null) {
                 if (!dataCenterConfigListener.onCheckConnect()) {
                     ToastUtils.show("设备已断开连接，暂无法进行操作");

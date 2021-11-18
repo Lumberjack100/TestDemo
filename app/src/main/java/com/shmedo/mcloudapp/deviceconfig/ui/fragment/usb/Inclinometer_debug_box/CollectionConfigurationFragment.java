@@ -12,17 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
 import com.shmedo.configlibrary.ble.utils.CRC8Utils;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.util.SharedUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BaseUSBSerialCommunicateFragment;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -148,7 +147,7 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
                 ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
                 return;
             }
-            KeyBordUtils.hideSoftKeyboard(v);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(v);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;
@@ -411,7 +410,7 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
                     Timber.e("接收串口数据: %s", cmdStr);
                     if (cmdStr.contains("$$CFG:OK")) {
                         ToastUtils.show("保存成功");
-                        SharedUtil.save(AppContants.Extras.INCLINOMETER_MEASURINGSPACING, measuringSpacing);
+                        SPStaticUtils.put(AppContants.Extras.INCLINOMETER_MEASURINGSPACING, measuringSpacing);
                     } else {
                         ToastUtils.show("保存失败");
                     }

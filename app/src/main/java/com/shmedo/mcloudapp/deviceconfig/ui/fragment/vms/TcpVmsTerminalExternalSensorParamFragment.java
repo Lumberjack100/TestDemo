@@ -37,7 +37,6 @@ import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.LinearParamView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.MagnificationView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.ModulusView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -311,7 +310,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         } else if (id == R.id.sensorNameLayout) {
             showcSensorNameChooseDialog();
         } else if (id == R.id.btn_confirm) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!tcpViewModel.getConnectStatus()) {
                 ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
                 return;

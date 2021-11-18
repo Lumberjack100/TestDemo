@@ -17,12 +17,12 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
-import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.projects.model.ProjectItem;
 import com.shmedo.mcloudapp.projects.model.ProjectSearchKeyWord;
 import com.shmedo.mcloudapp.projects.view.ProjectExpiredGuideDialog;
 import com.shmedo.mcloudapp.util.DaoManager;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
 import java.util.ArrayList;
@@ -111,7 +110,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
                         ToastUtils.show("请输入搜索内容");
                     } else {
                         // 当按了搜索之后关闭软键盘
-                        KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+                        com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
                         doSearchQuery(true);
                     }
                     return true;
@@ -133,7 +132,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
                 mEtKeyWords.setText(searchKeyWord.getKeyWord());
                 mEtKeyWords.setSelection(searchKeyWord.getKeyWord().length());
                 // 当按了搜索之后关闭软键盘
-                KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+                com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
             }
         });
         mRecyclerViewHistory.setAdapter(keyWordsAdapter);
@@ -141,7 +140,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
 
     private void initResultAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(this, R.color.transparent), 0, DensityUtil.Dp2Px(this, 14));
+        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(this, R.color.transparent), 0, ConvertUtils.dp2px(14));
         mRecyclerView.addItemDecoration(mItemDecoration);
         searchResultAdapter = new ProjectSimpleItemAdapter(R.layout.item_project_info_normal, projectItems);
         searchResultAdapter.setAnimationEnable(true);
@@ -182,7 +181,7 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
                     return;
                 }
                 // 当按了搜索之后关闭软键盘
-                KeyBordUtils.hideSoftKeyboard(mEtKeyWords);
+                com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
                 doSearchQuery(true);
                 break;
 

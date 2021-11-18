@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -22,17 +24,16 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.LogOutputStatus;
 import com.shmedo.configlibrary.ble.enums.WorkModel;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.util.DensityUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
-import com.shmedo.mcloudapp.util.KeyBordUtils;
-import com.shmedo.mcloudapp.util.TimeUtil;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -140,7 +141,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     float xStart = -fabActionView.getWidth();
-                    float xEnd = DensityUtil.Dp2Px(getActivity(), 10);
+                    float xEnd = ConvertUtils.dp2px(10);
                     ObjectAnimator heightAnimator = ObjectAnimator
                             .ofFloat(fabActionView, "x", xStart, xEnd)
                             .setDuration(2000);
@@ -186,7 +187,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
                 fabStartPause.setImageResource(R.drawable.sl_start_monitor);
             }
         } else if (id == R.id.btn_send) {
-            KeyBordUtils.hideSoftKeyboard(view);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
@@ -198,7 +199,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
                 return;
             }
             sendCommand(command + "\r\n");
-            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command);
+            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
             logDataList.add(cmdLogInfo);
             cmdAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
@@ -247,7 +248,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         String command = CommandManager.getInstance().getCommand(CommandType.LOG_OUTPUT_STATUS, logOutputEntity);
         sendCommand(command);
 
-        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command.replace("\r\n", ""));
+        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command.replace("\r\n", ""));
         logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
@@ -259,7 +260,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         String command = CommandManager.getInstance().getCommand(CommandType.WORK_MODE, workModeEntity);
         sendCommand(command);
 
-        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), command.replace("\r\n", ""));
+        CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command.replace("\r\n", ""));
         logDataList.add(cmdLogInfo);
         cmdAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
@@ -283,7 +284,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
             Timber.i("=====屏幕打印暂停了");
 
         } else {
-            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtil.getSysTimeStr(), cmdStr);
+            CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), cmdStr);
             logDataList.add(cmdLogInfo);
             cmdAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
