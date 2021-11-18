@@ -86,12 +86,12 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        //解决api 26 全屏横竖屏切换 crash
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && UiUtils.isTranslucentOrFloating(this)) {
             UiUtils.fixOrientation(this);
-            Timber.i("===api 26 全屏横竖屏切换 crash=");
         }
         super.onCreate(savedInstanceState);
-        //TODO #gh# 解决 Android在应用设置里关闭权限，导致APP重启进程造成的无用户数据异常
+        // 解决 Android在应用设置里关闭权限，导致APP重启进程造成的无用户数据异常
         if (null != savedInstanceState) {
             Intent intent = new Intent(this, WelcomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

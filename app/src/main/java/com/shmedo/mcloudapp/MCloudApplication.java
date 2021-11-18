@@ -179,7 +179,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
      */
     private void initUpdate() {
         XUpdate.get()
-                .debug(true)
+                .debug(false)
                 //默认设置只在wifi下检查版本更新
                 .isWifiOnly(false)
                 //默认设置使用get请求检查版本
@@ -228,7 +228,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         }
 
         //设置LOG开关，默认为false
-        UMConfigure.setLogEnabled(true);
+        UMConfigure.setLogEnabled(false);
 
         // SDK预初始化函数不会采集设备信息，也不会向友盟后台上报数据。
         // preInit预初始化函数耗时极少，不会影响App首次冷启动用户体验
