@@ -221,7 +221,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_marginStart">10dp</item>
-        <item name="android:drawableEnd">@drawable/icon_right</item>
+        <item name="android:drawableEnd">@drawable/icon_arrow_right</item>
         <item name="android:drawablePadding">5dp</item>
         <item name="android:gravity">right</item>
         <item name="android:singleLine">true</item>
@@ -245,10 +245,23 @@
 
     </style>
 
+    <!--设备当前运行状态分组标题样式-->
+    <style name="DeviceCurrentState_Group_TitleStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/main_bg_gray</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textColor">@color/sub_title_text_color</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
     <!--设备当前运行状态单条基本信息样式-->
     <style name="DeviceCurrentState_SingleItem_Style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_height">40dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@color/white</item>
         <item name="android:orientation">horizontal</item>
@@ -256,6 +269,15 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
+    <!--设备当前运行状态单条项目标题样式-->
+    <style name="DeviceCurrentState_SingleItem_NameStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <!--设备当前运行状态单条项目值样式-->
     <style name="DeviceCurrentState_SingleItem_ValueStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -266,7 +288,6 @@
         <item name="android:textColor">@color/text_color_666666</item>
         <item name="android:textSize">15sp</item>
     </style>
-
 
     <style name="bg_empty_view">
         <item name="android:layout_width">match_parent</item>

@@ -12,22 +12,14 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/main_bg_gray"
-            android:padding="16dp"
-            android:text="基本信息"
-            android:textColor="@color/sub_title_text_color"
-            android:textSize="15sp" />
+            style="@style/DeviceCurrentState_Group_TitleStyle"
+            android:text="基本信息" />
 
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="设备 SN 号"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="设备SN号"/>
 
             <TextView
                 android:id="@+id/tv_device_sn"
@@ -40,11 +32,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="网络号"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="网络号" />
 
             <TextView
                 android:id="@+id/tv_net_id"
@@ -56,11 +45,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="地址"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="地址" />
 
             <TextView
                 android:id="@+id/tv_address"
@@ -72,11 +58,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="通讯信道"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="通讯信道"/>
 
             <TextView
                 android:id="@+id/tv_channel"
@@ -88,11 +71,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="注册时间"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="注册时间"/>
 
             <TextView
                 android:id="@+id/tv_register_time"
@@ -104,11 +84,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="更新时间"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="更新时间"/>
 
             <TextView
                 android:id="@+id/tv_update_time"
@@ -118,22 +95,14 @@
         </LinearLayout>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/main_bg_gray"
-            android:padding="16dp"
-            android:text="通讯状态"
-            android:textColor="@color/sub_title_text_color"
-            android:textSize="15sp" />
+            style="@style/DeviceCurrentState_Group_TitleStyle"
+            android:text="通讯状态" />
 
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="上行信号强度"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="上行信号强度"/>
 
             <TextView
                 android:id="@+id/tv_uplink_signal_strength"
@@ -145,11 +114,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="下行信号强度"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="下行信号强度"/>
 
             <TextView
                 android:id="@+id/tv_downlink_signal_strength"
@@ -161,11 +127,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="发送数据"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="发送数据" />
 
             <TextView
                 android:id="@+id/tv_send_data"
@@ -177,11 +140,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="接收数据"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="接收数据"/>
 
             <TextView
                 android:id="@+id/tv_receive_data"
@@ -193,11 +153,8 @@
         <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="终端电压"
-                android:textColor="@color/title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="终端电压"/>
 
             <TextView
                 android:id="@+id/tv_power_volt"
@@ -207,13 +164,8 @@
         </LinearLayout>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/main_bg_gray"
-            android:padding="16dp"
-            android:text="传感器状态"
-            android:textColor="@color/sub_title_text_color"
-            android:textSize="15sp" />
+            style="@style/DeviceCurrentState_Group_TitleStyle"
+            android:text="传感器状态"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/sensor_recyclerView"

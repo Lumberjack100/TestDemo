@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/refreshLayout"
     android:layout_width="match_parent"
@@ -21,22 +22,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/main_bg_gray"
-                android:padding="16dp"
-                android:text="基本信息"
-                android:textColor="@color/sub_title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_Group_TitleStyle"
+                android:text="基本信息" />
 
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="设备 SN 号"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="设备 SN 号" />
 
                 <TextView
                     android:id="@+id/tv_device_sn"
@@ -49,11 +42,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="网络号"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="网络号" />
 
                 <TextView
                     android:id="@+id/tv_net_id"
@@ -65,11 +55,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="地址"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="地址" />
 
                 <TextView
                     android:id="@+id/tv_address"
@@ -81,11 +68,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="通讯信道"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="通讯信道" />
 
                 <TextView
                     android:id="@+id/tv_channel"
@@ -97,11 +81,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="安装位置"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="安装位置" />
 
                 <TextView
                     android:id="@+id/tv_install_position"
@@ -113,11 +94,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="注册时间"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="注册时间" />
 
                 <TextView
                     android:id="@+id/tv_register_time"
@@ -129,11 +107,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="更新时间"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="更新时间" />
 
                 <TextView
                     android:id="@+id/tv_update_time"
@@ -142,23 +117,194 @@
 
             </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/ll_internal_module_title"
+                style="@style/Common_ClickableItem_LayoutStyle"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/main_bg_gray">
+
+                <TextView
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="内部模块状态"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/ivExpand"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/icon_arrow_double_down"
+                    app:tint="@color/text_color_222222"
+                    android:scaleType="centerCrop"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_internal_module_state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/main_bg_gray"
-                android:padding="16dp"
-                android:text="通讯状态"
-                android:textColor="@color/sub_title_text_color"
-                android:textSize="15sp" />
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="存储芯片" />
+
+                    <TextView
+                        android:id="@+id/tv_falsh_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="电压采集" />
+
+                    <TextView
+                        android:id="@+id/tv_voltage_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="蓝牙" />
+
+                    <TextView
+                        android:id="@+id/tv_ble_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="Lora模块" />
+
+                    <TextView
+                        android:id="@+id/tv_lora_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="振弦采集模块" />
+
+                    <TextView
+                        android:id="@+id/tv_vibrating_wire_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="加速度模块" />
+
+                    <TextView
+                        android:id="@+id/tv_acceleration_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="方位角模块" />
+
+                    <TextView
+                        android:id="@+id/tv_azimuth_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="倾角模块" />
+
+                    <TextView
+                        android:id="@+id/tv_inclination_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="温湿度模块" />
+
+                    <TextView
+                        android:id="@+id/tv_temperature_and_humidity_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="rtc时钟" />
+
+                    <TextView
+                        android:id="@+id/tv_rtc_clock_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="电流检测模块" />
+
+                    <TextView
+                        android:id="@+id/tv_current_detection_module"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/DeviceCurrentState_Group_TitleStyle"
+                android:text="通讯状态" />
 
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="信号强度"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="信号强度" />
 
                 <TextView
                     android:id="@+id/tv_signal_strength"
@@ -170,11 +316,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="发送数据"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="发送数据" />
 
                 <TextView
                     android:id="@+id/tv_send_data"
@@ -186,11 +329,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="接收数据"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="接收数据" />
 
                 <TextView
                     android:id="@+id/tv_receive_data"
@@ -200,22 +340,14 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/main_bg_gray"
-                android:padding="16dp"
-                android:text="内部温湿度"
-                android:textColor="@color/sub_title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_Group_TitleStyle"
+                android:text="内部温湿度" />
 
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="状态"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="16sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="状态" />
 
                 <TextView
                     android:id="@+id/tv_internal_status"
@@ -227,11 +359,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="温度"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="温度" />
 
                 <TextView
                     android:id="@+id/tv_internal_temperature"
@@ -243,11 +372,8 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="湿度"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="湿度" />
 
                 <TextView
                     android:id="@+id/tv_internal_humidity"
@@ -257,24 +383,16 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/main_bg_gray"
-                android:padding="16dp"
-                android:text="雨量传感器"
-                android:textColor="@color/sub_title_text_color"
-                android:textSize="15sp" />
+                style="@style/DeviceCurrentState_Group_TitleStyle"
+                android:text="雨量传感器" />
 
             <LinearLayout
                 android:id="@+id/ll_rain"
                 style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="当日雨量值"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="15sp" />
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="当日雨量值" />
 
                 <TextView
                     android:id="@+id/tv_rain_value"
@@ -286,6 +404,7 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
     <com.scwang.smart.refresh.footer.ClassicsFooter
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

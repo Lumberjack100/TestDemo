@@ -139,7 +139,7 @@
             android:gravity="right"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="12dp"
-            android:drawableEnd="@drawable/icon_right"
+            android:drawableEnd="@drawable/icon_arrow_right"
             android:drawablePadding="5dp"
             android:text="查看传感器"
             android:textColor="@color/text_color_51B4F8"

@@ -798,8 +798,8 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtPointOffset.setEnabled(isEditable);
 
         if (isEditable) {
-            mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
-            mTvDataResponse.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+            mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
+            mTvDataResponse.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
 
             mEtWaitingIntervalPerRound.setHint("请输入");
             mEtDataReadingInterval.setHint("请输入");

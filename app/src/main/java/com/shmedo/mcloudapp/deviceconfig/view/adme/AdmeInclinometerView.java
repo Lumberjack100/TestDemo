@@ -446,8 +446,8 @@ public class AdmeInclinometerView extends LinearLayout {
         mEtCorrectionValue.setEnabled(isEditable);
 
         if (isEditable) {
-            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
-            mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_right, 0);
+            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
+            mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
             mEtCollectorAddress.setHint("0-32");
             mEtMacAddress.setHint("XXXXXXXXXXXX");
             mEtCollectionInterval.setHint("请输入");

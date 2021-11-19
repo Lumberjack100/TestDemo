@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:drawableEnd="@drawable/icon_right"
+            android:drawableEnd="@drawable/icon_arrow_right"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/sub_title_text_color"
