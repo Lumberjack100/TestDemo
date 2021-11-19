@@ -62,7 +62,9 @@ public class M20CurrentStateInfo {
     private String consume_power;//近12小时消耗功率，单位千瓦时
     private String work_current;//设备工作电流，单位A
     private String volt_percent;
-    private String Z_Angle;//倾角
+    private String X_Angle;//X倾角
+    private String Y_Angle;//Y倾角
+    private String Z_Angle;//Z倾角
     private String SN;//设备SN号
     @SerializedName("eMMC Free")
     private String eMMCFree;//存储状态
@@ -215,6 +217,22 @@ public class M20CurrentStateInfo {
 
     public void setVolt_percent(String volt_percent) {
         this.volt_percent = volt_percent;
+    }
+
+    public String getX_Angle() {
+        return TextUtils.isEmpty(X_Angle) ? "" : X_Angle;
+    }
+
+    public void setX_Angle(String x_Angle) {
+        X_Angle = x_Angle;
+    }
+
+    public String getY_Angle() {
+        return TextUtils.isEmpty(Y_Angle) ? "" : Y_Angle;
+    }
+
+    public void setY_Angle(String y_Angle) {
+        Y_Angle = y_Angle;
     }
 
     public String getZ_Angle() {

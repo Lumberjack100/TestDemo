@@ -58,28 +58,31 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
     TextView mTvFirmwareVersion;
 
     @BindView(R.id.tv_board_type)
-    TextView mTvBoardType;
+    TextView mTvBoardType;//板卡类型
 
     @BindView(R.id.tv_install_location)
     TextView mTvInstallLocation;
 
     @BindView(R.id.tv_storage_state)
-    TextView mTvStorageState;
+    TextView mTvStorageState;//存储状态
 
     @BindView(R.id.tv_continuous_running_time)
-    TextView mTvContinuousRunningTime;
+    TextView mTvContinuousRunningTime;//连续运行时间
 
     /**
      * 通讯状态
      */
     @BindView(R.id.tv_device_star_num)
-    TextView mTvDeviceStarNum;
+    TextView mTvDeviceStarNum;//设备搜星数量
+
+    @BindView(R.id.tv_phone_star_num)
+    TextView mTvPhoneStarNum;//手机搜星数量
 
     @BindView(R.id.tv_ams_connection_status)
-    TextView mTvAmsConnectionStatus;
+    TextView mTvAmsConnectionStatus;//AMS连接状态
 
     @BindView(R.id.tv_4g_signal_strength)
-    TextView mTv4gSignalStrength;
+    TextView mTv4gSignalStrength;//4G信号强度
 
     @BindView(R.id.tv_link_one_status)
     TextView mTvLinkOneStatus;
@@ -97,31 +100,31 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
      * 设备工作信息
      */
     @BindView(R.id.tv_sensor_status)
-    TextView mTvSensorStatus;
+    TextView mTvSensorStatus;//传感器状态
 
     @BindView(R.id.tv_inclination)
-    TextView mTvInclination;
+    TextView mTvInclination;//倾角
 
     @BindView(R.id.tv_internal_voltage)
-    TextView mTvInternalVoltage;
+    TextView mTvInternalVoltage;//内部电压
 
     @BindView(R.id.tv_external_voltage)
-    TextView mTvExternalVoltage;
+    TextView mTvExternalVoltage;//外部电压
 
     @BindView(R.id.tv_solar_panel_voltage)
-    TextView mTvSolarPanelVoltage;
+    TextView mTvSolarPanelVoltage;//太阳能板电压
 
     @BindView(R.id.tv_ambient_temperature)
-    TextView mTvAmbientTemprature;
+    TextView mTvAmbientTemprature;//环境温度
 
     @BindView(R.id.tv_ambient_humidity)
-    TextView mTvAmbientHumidity;
+    TextView mTvAmbientHumidity;//环境湿度
 
     @BindView(R.id.tv_supplementary_power)
-    TextView mTvSupplementaryPower;
+    TextView mTvSupplementaryPower;//近12小时补充功率
 
     @BindView(R.id.tv_power_consumption)
-    TextView mTvPowerConsumption;
+    TextView mTvPowerConsumption;//消耗功率
 
     private M20CurrentStateInfo m20CurrentStateInfo;
 
@@ -136,7 +139,7 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.net_m20_current_state_fragment;
+        return R.layout.m20_current_state_fragment;
     }
 
     @Override
@@ -265,8 +268,9 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 mTvContinuousRunningTime.setText("--");
 
                 mTvDeviceStarNum.setText(m20CurrentStateInfo.getStarNum());
+                mTvPhoneStarNum.setText("--");
                 mTvAmsConnectionStatus.setText("--");
-                mTv4gSignalStrength.setText(m20CurrentStateInfo.get_$4g_signal() + "dBm");
+                mTv4gSignalStrength.setText(String.format("%sdBm", m20CurrentStateInfo.get_$4g_signal()));
                 mTvLinkOneStatus.setText("未开启");
                 mTvLinkOneStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
                 mTvLinkTwoStatus.setText("未开启");
@@ -284,14 +288,15 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 mTvSensorStatus.setText(sensorAbnormal ? "未接入" : "正常");
                 mTvSensorStatus.setTextColor(sensorAbnormal ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
 
-                mTvInclination.setText(m20CurrentStateInfo.getZ_Angle());
-                mTvInternalVoltage.setText(String.format("%s V", m20CurrentStateInfo.getInner_power_volt()));
-                mTvExternalVoltage.setText(String.format("%s V", m20CurrentStateInfo.getExt_power_volt()));
-                mTvSolarPanelVoltage.setText(String.format("%s V", m20CurrentStateInfo.getSolar_volt()));
-                mTvAmbientTemprature.setText(String.format("%s ℃", m20CurrentStateInfo.getTemp()));
-                mTvAmbientHumidity.setText(String.format("%s %%", m20CurrentStateInfo.getHumidity()));
-                mTvSupplementaryPower.setText(String.format("%s V", m20CurrentStateInfo.getSupply_power()));
-                mTvPowerConsumption.setText(String.format("%s V", m20CurrentStateInfo.getConsume_power()));
+                String angel = String.format("X=%s°,Y=%s°,Z=%s°", m20CurrentStateInfo.getX_Angle(), m20CurrentStateInfo.getY_Angle(), m20CurrentStateInfo.getZ_Angle());
+                mTvInclination.setText(angel);
+                mTvInternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getInner_power_volt()));
+                mTvExternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getExt_power_volt()));
+                mTvSolarPanelVoltage.setText(String.format("%sV", m20CurrentStateInfo.getSolar_volt()));
+                mTvAmbientTemprature.setText(String.format("%s℃", m20CurrentStateInfo.getTemp()));
+                mTvAmbientHumidity.setText(String.format("%s%%", m20CurrentStateInfo.getHumidity()));
+                mTvSupplementaryPower.setText(String.format("%sV", m20CurrentStateInfo.getSupply_power()));
+                mTvPowerConsumption.setText(String.format("%sV", m20CurrentStateInfo.getConsume_power()));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

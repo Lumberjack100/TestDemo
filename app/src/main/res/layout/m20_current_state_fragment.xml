@@ -194,6 +194,30 @@
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="手机搜星数量"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_phone_star_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:drawablePadding="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="15sp"
+                    tools:drawableStart="@drawable/signalstrengthfour"
+                    tools:text="5" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="AMS连接状态"
@@ -203,7 +227,6 @@
                 <TextView
                     android:id="@+id/tv_ams_connection_status"
                     style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    android:textColor="@color/text_color_3AD094"
                     tools:text="19F00L" />
 
             </LinearLayout>
@@ -213,7 +236,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4G 信号强度"
+                    android:text="4G信号强度"
                     android:textColor="@color/title_text_color"
                     android:textSize="17sp" />
 
