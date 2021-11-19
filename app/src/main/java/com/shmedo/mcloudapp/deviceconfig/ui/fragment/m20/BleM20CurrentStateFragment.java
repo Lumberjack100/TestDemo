@@ -231,7 +231,7 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 mTvSensorStatus.setText(sensorAbnormal ? "未接入" : "正常");
                 mTvSensorStatus.setTextColor(sensorAbnormal ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
 
-                String angel = String.format("X=%s°,Y=%s°,Z=%s°", m20CurrentStateInfo.getX_Angle(), m20CurrentStateInfo.getY_Angle(), m20CurrentStateInfo.getZ_Angle());
+                String angel = String.format("%s°,%s°,%s°", m20CurrentStateInfo.getX_Angle(), m20CurrentStateInfo.getY_Angle(), m20CurrentStateInfo.getZ_Angle());
                 mTvInclination.setText(angel);
                 mTvInternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getInner_power_volt()));
                 mTvExternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getExt_power_volt()));
