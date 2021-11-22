@@ -3,6 +3,10 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,19 +19,23 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
 import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
+import com.shmedo.configlibrary.iot.model.rn20.Rn20ModuleStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
 import org.jetbrains.annotations.NotNull;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -63,6 +71,48 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     TextView mTvUpdateTime;
 
     /**
+     * 内部模块状态
+     */
+    @BindView(R.id.ivExpand)
+    ImageView ivExpand;
+
+    @BindView(R.id.ll_internal_module_state)
+    ViewGroup internalModuleStateLayout;
+
+    @BindView(R.id.tv_falsh_module)
+    TextView mTvFalshModule;//存储芯片
+
+    @BindView(R.id.tv_voltage_module)
+    TextView mTvVoltageModule;//电压采集
+
+    @BindView(R.id.tv_ble_module)
+    TextView mTvBleModule;//蓝牙
+
+    @BindView(R.id.tv_lora_module)
+    TextView mTvLoraModule;//Lora模块
+
+    @BindView(R.id.tv_vibrating_wire_module)
+    TextView mTvVibratingWireModule;//振弦采集模块
+
+    @BindView(R.id.tv_acceleration_module)
+    TextView mTvAccelerationModule;//加速度模块
+
+    @BindView(R.id.tv_azimuth_module)
+    TextView mTvAzimuthModule;//方位角模块
+
+    @BindView(R.id.tv_inclination_module)
+    TextView mTvInclinationModule;//倾角模块
+
+    @BindView(R.id.tv_temperature_and_humidity_module)
+    TextView mTvTemperatureAndHumidityModule;//温湿度模块
+
+    @BindView(R.id.tv_rtc_clock_module)
+    TextView mTvRtcClockModule;//rtc时钟
+
+    @BindView(R.id.tv_current_detection_module)
+    TextView mTvCurrentDetectionModule;//电流检测模块
+
+    /**
      * 通讯状态
      */
     @BindView(R.id.tv_signal_strength)
@@ -92,6 +142,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     @BindView(R.id.tv_rain_value)
     TextView mTvRain;//雨量值
 
+
     public static BleRN20CurrentStateFragment newInstance() {
         return new BleRN20CurrentStateFragment();
     }
@@ -102,8 +153,8 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);
         //是否在刷新的时候禁止内容的一切手势操作（默认false）
@@ -150,6 +201,29 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         sendCommand(command);
     }
 
+    /**
+     * 获取设备模块状态信息
+     */
+    private void queryModuleStatus() {
+        TerminalSNEntity entity = new TerminalSNEntity(MCloudApp.getCurDeviceToken());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_MODULE_STATUS, entity);
+        sendCommand(command);
+    }
+
+    @OnClick({R.id.ll_internal_module_title})
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.ll_internal_module_title) {
+            if (internalModuleStateLayout.getVisibility() == View.VISIBLE) {
+                internalModuleStateLayout.setVisibility(View.GONE);
+                ivExpand.setRotation(0f);
+            } else {
+                internalModuleStateLayout.setVisibility(View.VISIBLE);
+                ivExpand.setRotation(180f);
+            }
+        }
+    }
+
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
@@ -194,9 +268,11 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             break;
 
             case DAS_MD_GET_SUB_SENSOR_STATUS: {
-                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<DasSubSensorStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询辅传感器状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -204,6 +280,21 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                 }
                 DasSubSensorStatusInfo dasSubSensorStatusInfo = commandResult.getResult();
                 initSubSensorStatus(dasSubSensorStatusInfo);
+                queryModuleStatus();
+            }
+            break;
+
+            case RN20_MD_GET_TERMINAL_MODULE_STATUS: {//获取设备模块状态信息
+                mRefreshLayout.finishRefresh(true);
+                IOTCommandResult<Rn20ModuleStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询设备模块状态信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                Rn20ModuleStatus moduleStatus = commandResult.getResult();
+                initModuleStatus(moduleStatus);
             }
             break;
 
@@ -253,7 +344,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         try {
             if (dasTemperatureAndHumidityStatusinfo.getInth() != null) {
                 //机箱内部温湿度
-                setDeviceStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
+                setSensorStatus(mTvInternalStatus, dasTemperatureAndHumidityStatusinfo.getInth().getErrno());
                 mTvInternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getInth().getTemp() + "°");
                 mTvInternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getInth().getHumi() + "%");
             }
@@ -289,11 +380,44 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         }
     }
 
-    private void setDeviceStatus(TextView textView, int status) {
+    private void initModuleStatus(Rn20ModuleStatus moduleStatus) {
+        if (moduleStatus == null) {
+            Timber.e("Rn20ModuleStatus 为空!");
+            return;
+        }
+        try {
+            setModuleStatus(mTvFalshModule, moduleStatus.getFlash());
+            setModuleStatus(mTvVoltageModule, moduleStatus.getAds());
+            setModuleStatus(mTvBleModule, moduleStatus.getBle());
+            setModuleStatus(mTvLoraModule, moduleStatus.getLora());
+            setModuleStatus(mTvVibratingWireModule, moduleStatus.getVm501());
+            setModuleStatus(mTvAccelerationModule, moduleStatus.getAdxl362());
+            setModuleStatus(mTvAzimuthModule, moduleStatus.getMmc5883());
+            setModuleStatus(mTvInclinationModule, moduleStatus.getScl3300());
+            setModuleStatus(mTvTemperatureAndHumidityModule, moduleStatus.getAht21());
+            setModuleStatus(mTvRtcClockModule, moduleStatus.getRtc());
+            setModuleStatus(mTvCurrentDetectionModule, moduleStatus.getLtc2945());
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void setSensorStatus(TextView textView, int status) {
         if (status == 0) {
             textView.setText("未接入");
             textView.setTextColor(Color.RED);
         } else if (status == 1) {
+            textView.setText("正常");
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+        }
+    }
+
+    private void setModuleStatus(TextView textView, String status) {
+        if (TextUtils.isEmpty(status) || status.equals("0")) {
+            textView.setText("异常");
+            textView.setTextColor(Color.RED);
+        } else {
             textView.setText("正常");
             textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
         }

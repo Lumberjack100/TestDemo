@@ -111,8 +111,8 @@ public class BleScannerViewModel extends AndroidViewModel {
 
         // Scanning settings
         final ScanSettings settings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                .setReportDelay(500)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY )
+                .setReportDelay(1000)
                 .setUseHardwareBatchingIfSupported(false)
                 .build();
 

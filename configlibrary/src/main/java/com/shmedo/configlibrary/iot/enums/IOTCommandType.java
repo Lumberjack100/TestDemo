@@ -265,6 +265,11 @@ public enum IOTCommandType {
     RN20_MD_GET_TERMINAL_BASE("md_getterminalbase"),
 
     /**
+     * 获取设备模块状态信息
+     */
+    RN20_MD_GET_TERMINAL_MODULE_STATUS("md_getterminalmodule"),
+
+    /**
      * 获取终端经纬度参数
      */
     RN20_MD_GET_TERMINAL_LOCAL("md_getterminallocal"),
