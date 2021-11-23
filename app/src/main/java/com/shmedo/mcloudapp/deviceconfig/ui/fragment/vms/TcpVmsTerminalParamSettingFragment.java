@@ -164,7 +164,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
                                     reportingMethod = "1";
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

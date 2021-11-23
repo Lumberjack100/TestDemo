@@ -123,7 +123,7 @@ public class TcpE40SerialPortParamFragment extends BaseTcpIotCommunicateFragment
                                         break;
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -143,7 +143,7 @@ public class TcpE40SerialPortParamFragment extends BaseTcpIotCommunicateFragment
                                 baud = text;
                                 mTvBaud.setText(text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

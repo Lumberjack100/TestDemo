@@ -282,7 +282,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
                             public void onSelect(int position, String text) {
                                 updateViewByTransferProtocol(position, text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -338,7 +338,7 @@ public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommuni
                                         break;
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

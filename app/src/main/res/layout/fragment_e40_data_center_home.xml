@@ -8,7 +8,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="20dp" />
+        android:layout_height="10dp" />
 
     <LinearLayout
         android:id="@+id/dataCenterOneLayout"
@@ -28,7 +28,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="14dp" />
+        android:layout_height="10dp" />
 
     <LinearLayout
         android:id="@+id/dataCenterTwoLayout"
@@ -48,7 +48,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="14dp" />
+        android:layout_height="10dp" />
 
     <LinearLayout
         android:id="@+id/dataCenterThreeLayout"
@@ -68,7 +68,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="14dp" />
+        android:layout_height="10dp" />
 
     <LinearLayout
         android:id="@+id/dataCenterFourLayout"
@@ -88,6 +88,6 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="20dp" />
+        android:layout_height="10dp" />
 
 </LinearLayout>

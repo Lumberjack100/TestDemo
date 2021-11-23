@@ -1,21 +1,29 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.enums.AdmeModuleErrorType;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeCurrentStateInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeModuleErrorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -23,7 +31,12 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotComm
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -87,6 +100,12 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     /**
      * 设备工作信息
      */
+    @BindView(R.id.ll_device_abnormal_diagnosis)
+    ViewGroup deviceAbnormalDiagnosisLayout;
+
+    @BindView(R.id.tv_device_abnormal_diagnosis)
+    TextView mTvDeviceAbnormalDiagnosis;
+
     @BindView(R.id.tv_work_mode)
     TextView mTvWorkMode;
 
@@ -101,9 +120,6 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
 
     @BindView(R.id.tv_device_humidity)
     TextView mTvDeviceHumidity;
-
-    @BindView(R.id.tv_device_abnormal_diagnosis)
-    TextView mTvDeviceAbnormalDiagnosis;
 
     @BindView(R.id.tv_device_drop_number)
     TextView mTvDeviceDropNumber;
@@ -127,6 +143,9 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     TextView mTvInclinometerTemperature;
 
     private AdmeCurrentStateInfo currentStateInfo;
+    private AdmeModuleErrorInfo moduleErrorInfo;
+
+    private DecimalFormat decimalFormat = new DecimalFormat();
 
     public static BleAdmeCurrentStateFragment newInstance() {
         return new BleAdmeCurrentStateFragment();
@@ -157,7 +176,7 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                     return;
                 }
                 queryParamInfo();
-                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_15000_MILLIS);
             }
         });
     }
@@ -170,6 +189,25 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         sendCommand(command);
     }
 
+    /**
+     * 获取模块异常信息
+     */
+    private void queryModuleErrorInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MODULE_ERROR_INFO);
+        sendCommand(command);
+    }
+
+    @OnClick({R.id.ll_device_abnormal_diagnosis})
+    public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
+        int id = view.getId();
+        if (id == R.id.ll_device_abnormal_diagnosis) {
+            showInclinometerTypeDialog();
+        }
+    }
+
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
@@ -179,16 +217,31 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_STATE: {
-                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<AdmeCurrentStateInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
                 currentStateInfo = commandResult.getResult();
-                initParamConfigInfo();
+                initStatusInfo();
+            }
+            break;
+
+            case ADME_MD_GET_MODULE_ERROR_INFO: {
+                mRefreshLayout.finishRefresh(true);
+                IOTCommandResult<AdmeModuleErrorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询设备异常信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                moduleErrorInfo = commandResult.getResult();
             }
             break;
 
@@ -198,31 +251,90 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         }
     }
 
-    private void initParamConfigInfo() {
+    private void initStatusInfo() {
         if (currentStateInfo == null) {
             Timber.e("AdmeCurrentStateInfo is Null!");
             currentStateInfo = new AdmeCurrentStateInfo();
             return;
         }
-        mTvDeviceSn.setText(currentStateInfo.getSn());
-        mTvProductNumber.setText(currentStateInfo.getProductid());
-        mTVSimCardNumber.setText(currentStateInfo.getSimid());
-        mTvImeiNumber.setText(currentStateInfo.getImeid());
-        mTvFirmwareVersion.setText(currentStateInfo.getFirversion());
+        try {
+            mTvDeviceSn.setText(currentStateInfo.getSn());
+            mTvProductNumber.setText(currentStateInfo.getProductid());
+            mTVSimCardNumber.setText(currentStateInfo.getSimid());
+            mTvImeiNumber.setText(currentStateInfo.getImeid());
+            mTvFirmwareVersion.setText(currentStateInfo.getFirversion());
 
-        mTvWorkMode.setText(currentStateInfo.getTestway());
-        mTvCTRInputVoltage.setText(String.format("%s V", currentStateInfo.getCtrinputv()));
-        mTvDriverInputVoltage.setText(String.format("%s V", currentStateInfo.getDriveinputv()));
-        mTvDeviceTemperature.setText(String.format("%s ℃", currentStateInfo.getTemperature()));
-        mTvDeviceHumidity.setText(String.format("%s %%", currentStateInfo.getHumidity()));
-        mTvDeviceAbnormalDiagnosis.setText(currentStateInfo.getAbndiasis());
-        mTvDeviceDropNumber.setText(currentStateInfo.getDownnum());
+            if (currentStateInfo.getTestway().equals("0")) {
+                mTvWorkMode.setText("常规测量模式");
+            } else if (currentStateInfo.getTestway().equals("1")) {
+                mTvWorkMode.setText("特定点位模式");
+            } else if (currentStateInfo.getTestway().equals("2")) {
+                mTvWorkMode.setText("静态测量模式");
+            } else if (currentStateInfo.getTestway().equals("3")) {
+                mTvWorkMode.setText("设备停用模式");
+            }
+            decimalFormat.applyPattern("#.###");
+            mTvCTRInputVoltage.setText(String.format("%sV", decimalFormat.format(Double.parseDouble(currentStateInfo.getCtrinputv()))));
+            mTvDriverInputVoltage.setText(String.format("%sV", decimalFormat.format(Double.parseDouble(currentStateInfo.getDriveinputv()))));
+            mTvDeviceTemperature.setText(String.format("%s℃", decimalFormat.format(Double.parseDouble(currentStateInfo.getTemperature()))));
+            mTvDeviceHumidity.setText(String.format("%s%%", decimalFormat.format(Double.parseDouble(currentStateInfo.getHumidity()))));
+            mTvDeviceDropNumber.setText(currentStateInfo.getDownnum());
 
-        mTvInclinometerType.setText(currentStateInfo.getInctype());
-        mTvInclinometerChannelNumber.setText(currentStateInfo.getIncnum());
-        mTvInclinometerLocationInfo.setText(currentStateInfo.getIncloc());
-        mTvInclinometerVoltage.setText(String.format("%s V", currentStateInfo.getIncvoltage()));
-        mTvInclinometerTemperature.setText(String.format("%s ℃", currentStateInfo.getIntertempe()));
+            mTvInclinometerType.setText(currentStateInfo.getInctype().equals("0") ? "433测斜仪" : "蓝牙测斜仪");
+            mTvInclinometerChannelNumber.setText(currentStateInfo.getIncnum());
+            mTvInclinometerLocationInfo.setText(currentStateInfo.getIncloc());
+            mTvInclinometerVoltage.setText(String.format("%sV", decimalFormat.format(Double.parseDouble(currentStateInfo.getIncvoltage()))));
+            mTvInclinometerTemperature.setText(String.format("%s℃", decimalFormat.format(Double.parseDouble(currentStateInfo.getIntertempe()))));
+
+            if (currentStateInfo.getAbndiasis().equals("0")) {
+                deviceAbnormalDiagnosisLayout.setEnabled(true);
+                mTvDeviceAbnormalDiagnosis.setText("异常");
+                mTvDeviceAbnormalDiagnosis.setTextColor(Color.RED);
+                mTvDeviceAbnormalDiagnosis.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
+                //获取模块异常信息
+                queryModuleErrorInfo();
+
+            } else {
+                mRefreshLayout.finishRefresh(true);
+                deviceAbnormalDiagnosisLayout.setEnabled(true);
+                mTvDeviceAbnormalDiagnosis.setText("正常");
+                mTvDeviceAbnormalDiagnosis.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                mTvDeviceAbnormalDiagnosis.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
+        } catch (Exception ex) {
+            mRefreshLayout.finishRefresh(true);
+            mTvDeviceAbnormalDiagnosis.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 选择测斜仪类型
+     */
+    private void showInclinometerTypeDialog() {
+        if (moduleErrorInfo == null)
+            return;
+
+        String errinfo = moduleErrorInfo.getErrinfo();
+        if (TextUtils.isEmpty(errinfo))
+            return;
+
+        List<String> descList = new ArrayList<>();
+        String[] names = errinfo.split(",");
+        for (String name : names) {
+            AdmeModuleErrorType errorType = AdmeModuleErrorType.valueByName(name);
+            if (errorType != null) {
+                descList.add(errorType.getDescription());
+            }
+        }
+        if (descList.isEmpty())
+            return;
+
+        new XPopup.Builder(getContext())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asCenterList("异常信息", descList.toArray(new String[0]),
+                        null, -1, null, 0, R.layout.custom_xpopup_adapter_text)
+                .show();
     }
 
     @Override

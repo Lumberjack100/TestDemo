@@ -287,7 +287,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                                 mTvBaudRate.setText(text);
                                 baudRate = text;
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

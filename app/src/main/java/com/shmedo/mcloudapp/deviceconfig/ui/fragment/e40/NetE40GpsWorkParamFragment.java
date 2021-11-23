@@ -148,7 +148,7 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
                                     dataFrequency = "1";
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

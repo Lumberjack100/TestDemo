@@ -13,7 +13,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/syncInstallLocationLayout"
@@ -29,7 +29,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/customCommandLogPrintLayout"

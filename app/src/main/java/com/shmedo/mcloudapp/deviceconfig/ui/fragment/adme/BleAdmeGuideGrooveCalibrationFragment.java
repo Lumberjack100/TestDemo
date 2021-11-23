@@ -234,7 +234,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
                                     motionWay = "1";
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

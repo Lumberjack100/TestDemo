@@ -16,7 +16,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout style="@style/Common_EditItem_LayoutStyle">
 
@@ -33,7 +33,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             style="@style/Common_EditItem_LayoutStyle"

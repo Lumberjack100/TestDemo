@@ -254,7 +254,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                                 }
                                 switchSensorType(text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -274,7 +274,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                             public void onSelect(int position, String text) {
                                 mTvSensorAisle.setText(text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

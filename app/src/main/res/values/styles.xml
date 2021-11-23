@@ -175,7 +175,7 @@
 
     <style name="Common_EditItem_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">55dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">16dp</item>
@@ -194,12 +194,12 @@
         <item name="android:hint">请输入</item>
         <item name="android:textColorHint">@color/text_color_cccccc</item>
         <item name="android:textColor">@color/text_color_666666</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="Common_ClickableItem_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">55dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
@@ -213,7 +213,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="Common_ClickableItem_ValueStyle">
@@ -227,7 +227,32 @@
         <item name="android:singleLine">true</item>
         <item name="android:textColorHint">@color/text_color_cccccc</item>
         <item name="android:textColor">@color/text_color_666666</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- SwitchButton 样式-->
+    <style name="SwitchButton_LayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
+    <style name="SwitchButton_TitleStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="SwitchButton_ButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
     </style>
 
     <!-- Button 样式-->

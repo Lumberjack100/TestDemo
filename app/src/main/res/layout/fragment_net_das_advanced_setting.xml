@@ -13,7 +13,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="20dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/firmwareUpgradeLayout"
@@ -29,7 +29,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/rebootLayout"
@@ -43,7 +43,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/resetLayout"
@@ -57,7 +57,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/workModeLayout"
@@ -77,7 +77,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/productRegisterLayout"
@@ -115,7 +115,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/syncInstallLocationLayout"

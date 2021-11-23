@@ -180,7 +180,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
                                         pos = position;
                                         mTvItemCount.setText(text);
                                     }
-                                }, 0, R.layout.custom_xpopup_adapter_text_match)
+                                }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                         .show();
                 break;
 

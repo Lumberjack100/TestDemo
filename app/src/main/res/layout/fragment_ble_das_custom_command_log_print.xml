@@ -27,7 +27,6 @@
             <TextView
                 android:id="@+id/tv_debug_mode"
                 style="@style/Common_ClickableItem_ValueStyle"
-                android:textSize="17sp"
                 tools:text="开启" />
 
         </LinearLayout>
@@ -39,28 +38,15 @@
             android:layout_marginEnd="16dp"
             android:background="@color/divider_line_bg_efefef" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@color/white"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+        <RelativeLayout style="@style/SwitchButton_LayoutStyle">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="日志传输"
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17" />
+                style="@style/SwitchButton_TitleStyle"
+                android:text="日志传输" />
 
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/logPrintEnableSBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
+                style="@style/SwitchButton_ButtonStyle"
                 app:kswAnimationDuration="100"
                 app:kswBackDrawable="@drawable/sl_switchbutton_back"
                 app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
@@ -94,8 +80,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom"
-                android:layout_marginBottom="30dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginBottom="30dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -109,8 +95,8 @@
                     android:id="@+id/fab_start_pause"
                     android:layout_width="71dp"
                     android:layout_height="71dp"
-                    android:scaleType="centerCrop"
                     android:layout_marginTop="5dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/sl_start_monitor" />
 
             </LinearLayout>
@@ -141,7 +127,7 @@
             android:singleLine="true"
             android:textColor="@color/search_input_text_color"
             android:textColorHint="@color/text_color_b3b3b3"
-            android:textSize="@dimen/text_size_17" />
+            android:textSize="@dimen/text_size_15" />
 
         <Button
             android:id="@+id/btn_send"
@@ -152,7 +138,7 @@
             android:gravity="center"
             android:text="发送"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_17" />
+            android:textSize="@dimen/text_size_16" />
 
     </LinearLayout>
 

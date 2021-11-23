@@ -144,7 +144,7 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
                                     onDhcpChanged(true);
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

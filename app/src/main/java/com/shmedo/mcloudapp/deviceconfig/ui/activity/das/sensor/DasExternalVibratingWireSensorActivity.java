@@ -233,7 +233,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                                 sensorAislePos = position;
                                 mTvSensorAisle.setText(text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -279,7 +279,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
                                 String sensorName = selectedSensorType.getDescription();
                                 mToolbarTitle.setText(sensorName);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

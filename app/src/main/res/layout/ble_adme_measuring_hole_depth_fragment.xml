@@ -8,7 +8,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="20dp" />
+        android:layout_height="10dp" />
 
     <LinearLayout
         android:id="@+id/ll_measure_mode"
@@ -27,30 +27,19 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="14dp" />
+        android:layout_height="10dp" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@drawable/layer_common_click_item_with_divider"
-        android:paddingStart="18dp"
-        android:paddingEnd="16dp">
+        style="@style/SwitchButton_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="下放堵转检测"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/SwitchButton_TitleStyle"
+            android:text="下放堵转检测" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/decentralizedEnableSBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            style="@style/SwitchButton_ButtonStyle"
             app:kswAnimationDuration="100"
             app:kswBackDrawable="@drawable/sl_switchbutton_back"
             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"

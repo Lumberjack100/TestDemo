@@ -178,7 +178,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
                                 }
                                 setRTKMode();
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -207,7 +207,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
                                 }
                                 mTvBaseMode.setText(text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

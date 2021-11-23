@@ -137,7 +137,7 @@ public class TcpE40EthernetFragment extends BaseTcpIotCommunicateFragment {
                                     onDhcpChanged(false);
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

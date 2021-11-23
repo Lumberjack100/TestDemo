@@ -287,7 +287,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                                     mqttChildItemsLayout.setVisibility(View.VISIBLE);
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -334,7 +334,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                                         break;
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -373,7 +373,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                                         break;
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

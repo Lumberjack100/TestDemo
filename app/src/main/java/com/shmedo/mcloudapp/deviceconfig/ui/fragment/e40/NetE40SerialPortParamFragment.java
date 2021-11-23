@@ -131,7 +131,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
                                         break;
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -151,7 +151,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
                                 baud = text;
                                 mTvBaud.setText(text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

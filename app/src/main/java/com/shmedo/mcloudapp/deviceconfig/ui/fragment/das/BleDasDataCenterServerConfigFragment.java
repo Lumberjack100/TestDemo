@@ -335,7 +335,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                             public void onSelect(int position, String text) {
                                 updateViewByCommunicationProtocol(position, text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -350,7 +350,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                             public void onSelect(int position, String text) {
                                 updateViewByRegisterPlatform(position, text);
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

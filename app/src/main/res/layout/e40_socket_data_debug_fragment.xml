@@ -25,31 +25,18 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="14dp" />
+        android:layout_height="10dp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/white"
-        android:paddingStart="18dp"
-        android:paddingEnd="16dp">
+    <RelativeLayout style="@style/SwitchButton_LayoutStyle">
 
         <TextView
             android:id="@+id/tv_connect_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:text="连接"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_17" />
+            style="@style/SwitchButton_TitleStyle"
+            android:text="连接" />
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/centerEnableSBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            style="@style/SwitchButton_ButtonStyle"
             app:kswAnimationDuration="100"
             app:kswBackDrawable="@drawable/sl_switchbutton_back"
             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"

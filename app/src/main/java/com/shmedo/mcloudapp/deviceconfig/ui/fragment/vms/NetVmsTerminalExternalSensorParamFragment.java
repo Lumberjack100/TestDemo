@@ -396,7 +396,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                                     mTvMonitorType.setText(sensorName);
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -428,7 +428,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                                     magnificationView.setVisibilityBySensorType(sensorName);
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

@@ -387,7 +387,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                                     mTvSensorName.setText(sensorName);
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
@@ -419,7 +419,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                                     magnificationView.setVisibilityBySensorType(sensorName);
                                 }
                             }
-                        }, 0, R.layout.custom_xpopup_adapter_text_match)
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 

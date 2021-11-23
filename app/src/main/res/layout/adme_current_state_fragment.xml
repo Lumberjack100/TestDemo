@@ -44,7 +44,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="产品型号"/>
+                    android:text="产品型号" />
 
                 <TextView
                     android:id="@+id/tv_product_number"
@@ -83,7 +83,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="固件版本"/>
+                    android:text="固件版本" />
 
                 <TextView
                     android:id="@+id/tv_firmware_version"
@@ -94,13 +94,16 @@
 
             <TextView
                 style="@style/DeviceCurrentState_Group_TitleStyle"
-                android:text="网络状态" />
+                android:text="网络状态"
+                android:visibility="gone" />
 
-            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+            <LinearLayout
+                style="@style/DeviceCurrentState_SingleItem_Style"
+                android:visibility="gone">
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="信号强度"/>
+                    android:text="信号强度" />
 
                 <TextView
                     android:id="@+id/tv_signal_strength"
@@ -119,7 +122,8 @@
                 android:background="@drawable/bg_corner_3dp_gray_f5f6f8"
                 android:orientation="vertical"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:paddingEnd="20dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -251,7 +255,8 @@
                 android:background="@drawable/bg_corner_3dp_gray_f5f6f8"
                 android:orientation="vertical"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:paddingEnd="20dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -379,11 +384,30 @@
                 android:layout_marginTop="20dp"
                 android:text="设备工作信息" />
 
+            <LinearLayout
+                android:id="@+id/ll_device_abnormal_diagnosis"
+                style="@style/Common_ClickableItem_LayoutStyle"
+                android:layout_height="44dp">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="设备状态"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_device_abnormal_diagnosis"
+                    style="@style/Common_ClickableItem_ValueStyle"
+                    android:drawableEnd="@null"
+                    android:textSize="15sp"
+                    tools:text="异常" />
+
+            </LinearLayout>
+
             <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="工作模式"/>
+                    android:text="工作模式" />
 
                 <TextView
                     android:id="@+id/tv_work_mode"
@@ -396,7 +420,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="CTR输入电压"/>
+                    android:text="CTR输入电压" />
 
                 <TextView
                     android:id="@+id/tv_ctr_input_voltage"
@@ -409,7 +433,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="驱动器输入电压"/>
+                    android:text="驱动器输入电压" />
 
                 <TextView
                     android:id="@+id/tv_driver_input_voltage"
@@ -422,7 +446,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="设备温度"/>
+                    android:text="设备温度" />
 
                 <TextView
                     android:id="@+id/tv_device_temperature"
@@ -435,7 +459,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="设备湿度"/>
+                    android:text="设备湿度" />
 
                 <TextView
                     android:id="@+id/tv_device_humidity"
@@ -448,20 +472,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="设备异常诊断"/>
-
-                <TextView
-                    android:id="@+id/tv_device_abnormal_diagnosis"
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    tools:text="67%" />
-
-            </LinearLayout>
-
-            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
-
-                <TextView
-                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="设备下降次数"/>
+                    android:text="设备下降次数" />
 
                 <TextView
                     android:id="@+id/tv_device_drop_number"
@@ -478,7 +489,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="测斜仪类型"/>
+                    android:text="测斜仪类型" />
 
                 <TextView
                     android:id="@+id/tv_inclinometer_type"
@@ -491,7 +502,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="测斜仪信道号"/>
+                    android:text="测斜仪信道号" />
 
                 <TextView
                     android:id="@+id/tv_inclinometer_channel_number"
@@ -504,7 +515,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="测斜仪位置信息"/>
+                    android:text="测斜仪位置信息" />
 
                 <TextView
                     android:id="@+id/tv_inclinometer_location_information"
@@ -530,7 +541,7 @@
 
                 <TextView
                     style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="测斜仪管温度"/>
+                    android:text="测斜仪管温度" />
 
                 <TextView
                     android:id="@+id/tv_inclinometer_temperature"

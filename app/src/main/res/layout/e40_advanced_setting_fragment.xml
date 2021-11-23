@@ -13,7 +13,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="20dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/resetLayout"
@@ -27,7 +27,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/serialPortLayout"
@@ -44,7 +44,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/gpsWorkParamLayout"
@@ -61,7 +61,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/rtkParamLayout"
@@ -78,7 +78,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/dataDebugLayout"
@@ -95,7 +95,7 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="14dp" />
+            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/fileDownloadLayout"

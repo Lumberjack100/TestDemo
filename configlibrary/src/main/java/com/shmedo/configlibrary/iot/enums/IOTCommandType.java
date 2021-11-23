@@ -291,6 +291,11 @@ public enum IOTCommandType {
     ADME_MD_GET_EQUIPMENT_STATE("md_getequipmentstate"),
 
     /**
+     * 获取模块异常信息
+     */
+    ADME_MD_GET_MODULE_ERROR_INFO("md_getmoduleerror"),
+
+    /**
      * 获取ADME的电机运行状态
      */
     ADME_MD_GET_MOTION_STATE("md_getmotionstate"),
