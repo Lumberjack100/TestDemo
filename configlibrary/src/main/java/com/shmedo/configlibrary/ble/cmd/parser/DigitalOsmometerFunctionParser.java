@@ -8,7 +8,7 @@ import com.shmedo.configlibrary.ble.model.DigitalOsmometerFunctionInfo;
 
 /**
  * Created by adu on 2018/1/8.
- * 解析数字式渗压计功能
+ * 解析数字水位计功能
  */
 @Parser
 public class DigitalOsmometerFunctionParser implements ResultParser<DigitalOsmometerFunctionInfo> {

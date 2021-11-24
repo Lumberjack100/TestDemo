@@ -7,7 +7,7 @@ import com.shmedo.configlibrary.ble.enums.OsmometerStatus;
 
 /**
  * Created by adu on 2018/1/19.
- * 查询数字式渗压计参数实体类
+ * 查询数字水位计参数实体类
  */
 public class QueryOsmometerParameterInfo {
     private OsmometerStatus osmometerStatus;
@@ -16,7 +16,7 @@ public class QueryOsmometerParameterInfo {
     private String temperatureTrigger; //温度触发
     private String depthCorrect; //水深度修正
     private String temperatureCorrect; //温度修正
-    private String cordLenght;  //渗压计绳长
+    private String cordLenght;  //绳长
     private String installHeight;  //安装高程
 
     public OsmometerStatus getOsmometerStatus() {

@@ -7,7 +7,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
  * 包名：    com.shmedo.core.cmd.entity <br/>
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/4/23 <br/>
- * 描述：    设置渗压计管口高程
+ * 描述：    设置渗压计安装高程
  */
 public class SetOsmometerNozzelHeightEntity implements Validater {
     private String nozzelHeight;
@@ -19,7 +19,7 @@ public class SetOsmometerNozzelHeightEntity implements Validater {
     @Override
     public void validate() {
 //        if (nozzelHeight > 65535)
-//            throw new DASParameterException("管口高程参数错误");
+//            throw new DASParameterException("安装高程参数错误");
     }
 
     @Override

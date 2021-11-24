@@ -4,7 +4,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
  * Created by adu on 2018/1/8.
- * 设置数字渗压计触发值
+ * 设置数字水位计触发值
  */
 public class SetOsmometerTriggerEntity implements Validater {
     private String depthTrigger; //深度触发值 mm

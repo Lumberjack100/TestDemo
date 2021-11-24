@@ -94,7 +94,7 @@
     <string name="sensor_inclinometer">测斜仪</string>
     <string name="sensor_ultrasonic_level_gauge">超声波物位计</string>
     <string name="sensor_radar_level_gauge">雷达物位计</string>
-    <string name="sensor_uplift_pressure_gauge">数字式渗压计</string>
+    <string name="sensor_uplift_pressure_gauge">数字水位计</string>
     <string name="sensor_kang_percolate">基康渗压计</string>
     <string name="sensor_gudan_percolate">葛南渗压计</string>
     <string name="sensor_gudan_stress">葛南应变计</string>

@@ -13,7 +13,6 @@ import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeLockedRotorDetectionInfo
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeLowEnergyModeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMeasuringHoleDepthInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMeterWheelParamParser;
-import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeModuleErrorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotionStateParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionAngleInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionDistanceInfoParser;
@@ -180,7 +179,6 @@ public class IOTParseManager {
                 AdmeGuideGrooveCalibrationInfoParser.class,
                 AdmeMotorMotionAngleInfoParser.class,
                 AdmeCurrentStateInfoParser.class,
-                AdmeModuleErrorInfoParser.class,
                 AdmeWorkModeParser.class,
                 AdmeLowEnergyModeInfoParser.class,
                 AdmeLockedRotorDetectionInfoParser.class,

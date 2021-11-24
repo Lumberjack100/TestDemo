@@ -2,7 +2,7 @@ package com.shmedo.configlibrary.ble.model;
 
 /**
  * Created by adu on 2018/1/8.
- * 设置数字渗压计深度、温度修正值
+ * 设置数字水位计深度、温度修正值
  */
 public class SetOsmometerCorrectInfo {
     private int depthCorrect; //深度修正

@@ -4,7 +4,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
  * Created by adu on 2018/1/8.
- * 设置数字渗压计深度、温度修正值参数
+ * 设置数字水位计深度、温度修正值参数
  */
 public class SetOsmometerCorrectEntity implements Validater {
     private String depthCorrect; //深度修正值 mm

@@ -23,7 +23,6 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.AdmeModuleErrorType;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeCurrentStateInfo;
-import com.shmedo.configlibrary.iot.model.adme.AdmeModuleErrorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -143,7 +142,6 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     TextView mTvInclinometerTemperature;
 
     private AdmeCurrentStateInfo currentStateInfo;
-    private AdmeModuleErrorInfo moduleErrorInfo;
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -189,14 +187,6 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         sendCommand(command);
     }
 
-    /**
-     * 获取模块异常信息
-     */
-    private void queryModuleErrorInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MODULE_ERROR_INFO);
-        sendCommand(command);
-    }
-
     @OnClick({R.id.ll_device_abnormal_diagnosis})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
@@ -217,11 +207,9 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_STATE: {
+                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<AdmeCurrentStateInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -229,19 +217,6 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                 }
                 currentStateInfo = commandResult.getResult();
                 initStatusInfo();
-            }
-            break;
-
-            case ADME_MD_GET_MODULE_ERROR_INFO: {
-                mRefreshLayout.finishRefresh(true);
-                IOTCommandResult<AdmeModuleErrorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询设备异常信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                moduleErrorInfo = commandResult.getResult();
             }
             break;
 
@@ -286,20 +261,17 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             mTvInclinometerVoltage.setText(String.format("%sV", decimalFormat.format(Double.parseDouble(currentStateInfo.getIncvoltage()))));
             mTvInclinometerTemperature.setText(String.format("%s℃", decimalFormat.format(Double.parseDouble(currentStateInfo.getIntertempe()))));
 
+            //处理设备异常诊断信息
             if (currentStateInfo.getAbndiasis().equals("0")) {
+                deviceAbnormalDiagnosisLayout.setEnabled(false);
+                mTvDeviceAbnormalDiagnosis.setText("正常");
+                mTvDeviceAbnormalDiagnosis.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                mTvDeviceAbnormalDiagnosis.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }else{
                 deviceAbnormalDiagnosisLayout.setEnabled(true);
                 mTvDeviceAbnormalDiagnosis.setText("异常");
                 mTvDeviceAbnormalDiagnosis.setTextColor(Color.RED);
                 mTvDeviceAbnormalDiagnosis.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
-                //获取模块异常信息
-                queryModuleErrorInfo();
-
-            } else {
-                mRefreshLayout.finishRefresh(true);
-                deviceAbnormalDiagnosisLayout.setEnabled(true);
-                mTvDeviceAbnormalDiagnosis.setText("正常");
-                mTvDeviceAbnormalDiagnosis.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
-                mTvDeviceAbnormalDiagnosis.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
         } catch (Exception ex) {
             mRefreshLayout.finishRefresh(true);
@@ -312,17 +284,14 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
      * 选择测斜仪类型
      */
     private void showInclinometerTypeDialog() {
-        if (moduleErrorInfo == null)
-            return;
-
-        String errinfo = moduleErrorInfo.getErrinfo();
-        if (TextUtils.isEmpty(errinfo))
+        if (currentStateInfo == null ||TextUtils.isEmpty(currentStateInfo.getAbndiasis()))
             return;
 
         List<String> descList = new ArrayList<>();
-        String[] names = errinfo.split(",");
-        for (String name : names) {
-            AdmeModuleErrorType errorType = AdmeModuleErrorType.valueByName(name);
+        String errinfo = currentStateInfo.getAbndiasis();
+        String[] codes = errinfo.split("|");
+        for (String code : codes) {
+            AdmeModuleErrorType errorType = AdmeModuleErrorType.valueByCode(code);
             if (errorType != null) {
                 descList.add(errorType.getDescription());
             }

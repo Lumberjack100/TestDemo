@@ -5,7 +5,7 @@ import com.shmedo.configlibrary.ble.enums.OsmometerStatus;
 
 /**
  * Created by adu on 2018/1/8.
- * 开启/关闭 数字式渗压计功能实体类
+ * 开启/关闭 数字水位计功能实体类
  */
 public class DigitalOsmometerFunctionInfo {
     private OsmometerStatus osmometerStatus;

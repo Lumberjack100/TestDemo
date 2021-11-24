@@ -86,10 +86,10 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     SwitchButton mSbDigitalOsmometerEnable;
 
     @BindView(R.id.digitalOsmometerChildsLayout)
-    ViewGroup digitalOsmometerChildsLayout;//渗压计配置项
+    ViewGroup digitalOsmometerChildsLayout;//水位计配置项
 
     @BindView(R.id.osmometerAddressEt)
-    EditText mEtOsmometerAddress;//渗压计地址
+    EditText mEtOsmometerAddress;//水位计地址
 
     @BindView(R.id.waterAlarmValueEt)
     EditText mEtWaterAlarmValue;//深度触发值-水位报警值
@@ -98,10 +98,10 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     EditText mEtWaterRevised;//深度修正值
 
     @BindView(R.id.osmometerCordEt)
-    EditText mEtOsmometerCord;//渗压计绳长
+    EditText mEtOsmometerCord;//水位计绳长
 
     @BindView(R.id.nozzelHeightEt)
-    EditText mEtNozzelHeight;//管口高程
+    EditText mEtNozzelHeight;//安装高程
 
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
@@ -239,10 +239,10 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     };
 
     /**
-     * 数字式渗压计启用开关事件
+     * 数字水位计启用开关事件
      */
     private void setSwitchViewListener() {
-        //数字式渗压计启用开关事件
+        //数字水位计启用开关事件
         mSbDigitalOsmometerEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -288,7 +288,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
-     * 查询渗压计信息
+     * 查询水位计信息
      */
     private void queryDigitalPiezometerInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO);
@@ -296,7 +296,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
-     * 关闭渗压计
+     * 关闭水位计
      */
     private void disableDigitalPiezometer() {
         DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
@@ -309,7 +309,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
-     * 设置渗压计参数
+     * 设置水位计参数
      */
     private void setDigitalOsmometerParam() {
         DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
@@ -370,19 +370,19 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         nozzelHeight = mEtNozzelHeight.getText().toString().trim();
 
         if (TextUtils.isEmpty(osmometerAddress)) {
-            ToastUtils.show("请输入渗压计地址");
+            ToastUtils.show("请输入水位计地址");
             mEtOsmometerAddress.requestFocus();
             return false;
         }
         try {
             int value = Integer.parseInt(osmometerAddress);
             if (value < 0 || value > 255) {
-                ToastUtils.show("请输入正确的渗压计地址!");
+                ToastUtils.show("请输入正确的水位计地址!");
                 mEtOsmometerAddress.requestFocus();
                 return false;
             }
         } catch (Exception ex) {
-            ToastUtils.show("请输入正确的渗压计地址!");
+            ToastUtils.show("请输入正确的水位计地址!");
             mEtOsmometerAddress.requestFocus();
             return false;
         }
@@ -424,14 +424,14 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
 
         if (!decimalFormat.format(Double.parseDouble(digitalPiezometerInfo.getRopelen())).equals(osmometerLength)) {
             if (TextUtils.isEmpty(osmometerLength)) {
-                ToastUtils.show("请输入渗压计绳长");
+                ToastUtils.show("请输入水位计绳长");
                 return false;
             }
             try {
                 double value = Double.parseDouble(osmometerLength);
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的渗压计绳长!");
+                ToastUtils.show("请输入正确的水位计绳长!");
                 mEtOsmometerCord.requestFocus();
                 return false;
             }
@@ -441,14 +441,14 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
 
         if (!decimalFormat.format(Double.parseDouble(digitalPiezometerInfo.getTubealti())).equals(nozzelHeight)) {
             if (TextUtils.isEmpty(nozzelHeight)) {
-                ToastUtils.show("请输入管口高程值");
+                ToastUtils.show("请输入安装高程值");
                 return false;
             }
             try {
                 double value = Double.parseDouble(nozzelHeight);
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的管口高程值!");
+                ToastUtils.show("请输入正确的安装高程值!");
                 mEtNozzelHeight.requestFocus();
                 return false;
             }
@@ -555,11 +555,11 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             }
             break;
 
-            case DAS_MD_GET_DIGITAL_PIEZOMETER_INFO: {//查询数字渗压计参数
+            case DAS_MD_GET_DIGITAL_PIEZOMETER_INFO: {//查询数字水位计参数
                 mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<DasDigitalPiezometerInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询数字渗压计参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "查询数字水位计参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -588,11 +588,11 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             }
             break;
 
-            case DAS_MD_SET_DIGITAL_PIEZOMETER_INFO: {//设置数字渗压计
+            case DAS_MD_SET_DIGITAL_PIEZOMETER_INFO: {//设置数字水位计
                 dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置数字渗压计参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置数字水位计参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;

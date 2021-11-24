@@ -5,7 +5,7 @@ import android.text.TextUtils;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/4/16 <br/>
- * 描述：   DAS 状态页面数字式渗压计状态
+ * 描述：   DAS 状态页面数字水位计状态
  */
 public class VwpBean {
     private int type;

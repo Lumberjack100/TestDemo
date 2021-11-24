@@ -57,7 +57,7 @@ public enum IOTCollectorModel {
     TH08("12","温湿度计"),
 
     /**
-     * 数字式渗压计采集器
+     * 数字水位计采集器
      */
     DVWP("15","扬压力计"),
 

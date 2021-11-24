@@ -9,53 +9,53 @@ import android.text.TextUtils;
  */
 public enum AdmeModuleErrorType {
 
-    VOLT_POWER_UNDER("VOLT_POWER_UNDER", "设备欠压"),
+    VOLT_POWER_UNDER("1", "设备欠压"),
 
-    VOLT_POWER_OVER("VOLT_POWER_OVER", "设备过压"),
+    VOLT_POWER_OVER("2", "设备过压"),
 
-    VOLT_SENSOR_UNDER("VOLT_SENSOR_UNDER", "测斜仪欠压"),
+    VOLT_SENSOR_UNDER("3", "测斜仪欠压"),
 
-    FAIL("FAIL", "测斜仪配对失败"),
+    FAIL("4", "测斜仪配对失败"),
 
-    OVER_C_SF("OVER_C_SF", "伺服电机过流"),
+    OVER_C_SF("5", "伺服电机过流"),
 
-    OVER_T_SF("OVER_T_SF", "伺服电机过力矩"),
+    OVER_T_SF("6", "伺服电机过力矩"),
 
-    DZ_SF("DZ_SF", "伺服电机低力矩"),
+    DZ_SF("7", "伺服电机低力矩"),
 
-    OVER_V_SF("OVER_V_SF", "伺服电机超速"),
+    OVER_V_SF("8", "伺服电机超速"),
 
-    ERROR_WIRING_SF("ERROR_WIRING_SF", "伺服电机接线错误"),
+    ERROR_WIRING_SF("9", "伺服电机接线错误"),
 
-    DZ_JMQ("DZ_JMQ", "计米器堵转"),
+    DZ_JMQ("10", "计米器堵转"),
 
-    FZ_RUN_JMQ("FZ_RUN_JMQ", "计米器反转"),
+    FZ_RUN_JMQ("11", "计米器反转"),
 
-    ERROR_WIRING_JMQ("ERROR_WIRING_JMQ", "计米器接线错误");
+    ERROR_WIRING_JMQ("12", "计米器接线错误");
 
 
-    AdmeModuleErrorType(String name, String description) {
-        this.name = name;
+    AdmeModuleErrorType(String code, String description) {
+        this.code = code;
         this.description = description;
     }
 
-    private String name;
+    private String code;
     private String description;
 
-    public String getName() {
-        return name;
+    public String getCode() {
+        return code;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public static AdmeModuleErrorType valueByName(String name) {
-        if (TextUtils.isEmpty(name))
+    public static AdmeModuleErrorType valueByCode(String code) {
+        if (TextUtils.isEmpty(code))
             return null;
 
         for (AdmeModuleErrorType errorType : AdmeModuleErrorType.values()) {
-            if (errorType.getName().equals(name))
+            if (errorType.getCode().equals(code))
                 return errorType;
         }
 

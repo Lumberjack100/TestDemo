@@ -5,7 +5,7 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
  * Created by adu on 2018/1/8.
- * 数字式渗压计参数
+ * 数字水位计参数
  */
 public class DigitalOsmometerFunctionEntity implements Validater {
     private int osmometerStatus;

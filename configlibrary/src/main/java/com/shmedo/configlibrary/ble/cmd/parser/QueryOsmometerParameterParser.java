@@ -8,7 +8,7 @@ import com.shmedo.configlibrary.ble.model.QueryOsmometerParameterInfo;
 
 /**
  * Created by adu on 2018/1/19.
- * 解析查询数字式渗压计参数
+ * 解析查询数字水位计参数
  */
 @Parser
 public class QueryOsmometerParameterParser implements ResultParser<QueryOsmometerParameterInfo> {

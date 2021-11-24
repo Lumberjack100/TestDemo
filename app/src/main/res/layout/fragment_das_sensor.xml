@@ -168,7 +168,7 @@
 
                 <TextView
                     style="@style/SwitchButton_TitleStyle"
-                    android:text="渗压计配置" />
+                    android:text="数字水位计" />
 
                 <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/digitalOsmometerEnableSBtn"
@@ -197,7 +197,7 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="渗压计地址" />
+                        android:text="水位计地址" />
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/osmometerAddressEt"
@@ -242,7 +242,7 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="渗压计绳长(m)" />
+                        android:text="水位计绳长(m)" />
 
                     <com.shmedo.mcloudapp.common.view.ClearEditText
                         android:id="@+id/osmometerCordEt"

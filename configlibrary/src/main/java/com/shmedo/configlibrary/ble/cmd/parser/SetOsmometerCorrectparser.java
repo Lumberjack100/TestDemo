@@ -8,7 +8,7 @@ import com.shmedo.configlibrary.ble.model.SetOsmometerCorrectInfo;
 
 /**
  * Created by adu on 2018/1/8.
- * 解析数字渗压计深度温度修正值
+ * 解析数字水位计深度温度修正值
  */
 @Parser
 public class SetOsmometerCorrectparser implements ResultParser<SetOsmometerCorrectInfo> {

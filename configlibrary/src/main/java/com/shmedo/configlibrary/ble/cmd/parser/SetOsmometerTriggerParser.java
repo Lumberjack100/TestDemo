@@ -7,7 +7,7 @@ import com.shmedo.configlibrary.ble.model.SetOsmometerTriggerInfo;
 
 /**
  * Created by adu on 2018/1/8.
- * 解析数字渗压计深度、温度触发值
+ * 解析数字水位计深度、温度触发值
  */
 @Parser
 public class SetOsmometerTriggerParser implements ResultParser<SetOsmometerTriggerInfo> {

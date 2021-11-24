@@ -170,7 +170,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     @BindView(R.id.tv_alarm_status)
     TextView mTvAlarmStatus;//断线报警器状态
 
-    //数字式渗压计
+    //数字水位计
     @BindView(R.id.dasPiezometerInfo)
     View dasDigitalPiezometerLayout;
 

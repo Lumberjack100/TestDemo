@@ -153,7 +153,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_das_data_center_home_test;
+        return R.layout.das_data_center_home_fragment;
     }
 
     @Override

@@ -143,11 +143,11 @@ public enum IOTCommandType {
     DAS_MD_SET_IO_SENSOR_INFO("md_setioctrl"),
 
     /**
-     * 获取数字渗压计信息
+     * 获取数字水位计信息
      */
     DAS_MD_GET_DIGITAL_PIEZOMETER_INFO("md_getdigtalosm"),
     /**
-     * 设置数字渗压计信息
+     * 设置数字水位计信息
      */
     DAS_MD_SET_DIGITAL_PIEZOMETER_INFO("md_setdigtalosm"),
 
@@ -289,11 +289,6 @@ public enum IOTCommandType {
      * 获取ADME的当前状态
      */
     ADME_MD_GET_EQUIPMENT_STATE("md_getequipmentstate"),
-
-    /**
-     * 获取模块异常信息
-     */
-    ADME_MD_GET_MODULE_ERROR_INFO("md_getmoduleerror"),
 
     /**
      * 获取ADME的电机运行状态

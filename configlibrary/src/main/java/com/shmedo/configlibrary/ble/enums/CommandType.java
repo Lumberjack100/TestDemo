@@ -218,23 +218,23 @@ public enum CommandType {
      */
     BATCH_BEGIN("335"),
     /**
-     * 查询数字式渗压计参数
+     * 查询数字水位计参数
      */
     QUERY_OSMOMETER_PARAMETER("400"),
     /**
-     * 开启/关闭数字式渗压计功能
+     * 开启/关闭数字水位计功能
      */
     DIGITAL_OSMOMETER_FUNCTION("401"),
     /**
-     * 设置数字渗压计地址
+     * 设置数字水位计地址
      */
     SET_OSMOMETER_ADDRESS("402"),
     /**
-     * 设置数字渗压计深度触发值，温度触发值
+     * 设置数字水位计深度触发值，温度触发值
      */
     SET_OSMOMETER_TRIGGER("403"),
     /**
-     * 设置数字渗压计深度修正值，温度修正值
+     * 设置数字水位计深度修正值，温度修正值
      */
     SET_OSMOMETR_CORRECT("404"),
     /**
@@ -242,7 +242,7 @@ public enum CommandType {
      */
     SET_CORD_LENGTH("405"),
     /**
-     * 设置管口高程
+     * 设置安装高程
      */
     SET_OSMOMETR_NOZZEL_HEIGHT("406"),
 

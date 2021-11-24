@@ -407,7 +407,7 @@
                 <TextView
                     android:id="@+id/tv_piezometer_title"
                     style="@style/DeviceCurrentState_Group_TitleStyle"
-                    android:text="数字式渗压计" />
+                    android:text="数字水位计" />
 
                 <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
 

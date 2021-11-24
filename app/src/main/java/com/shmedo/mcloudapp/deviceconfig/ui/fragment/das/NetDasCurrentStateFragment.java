@@ -177,7 +177,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_alarm_status)
     TextView mTvAlarmStatus;//断线报警器状态
 
-    //数字式渗压计
+    //数字水位计
     @BindView(R.id.dasPiezometerInfo)
     View dasDigitalPiezometerLayout;
 
@@ -358,7 +358,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                             break;
 
-                        case UPLIFT_PRESSURE_GAUGE: {//数字式渗压计
+                        case UPLIFT_PRESSURE_GAUGE: {//数字水位计
                             holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_uplift_pressure_gauge));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, true);
@@ -911,7 +911,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             if (dasSubSensorStatusInfo.getVwp() != null) {
                 dasDigitalPiezometerLayout.setVisibility(View.VISIBLE);
                 if (dasSubSensorStatusInfo.getVwp().getType() == 15) {
-                    mTvPiezometerTitle.setText("数字式渗压计");
+                    mTvPiezometerTitle.setText("数字水位计");
                 }
                 mTvPiezometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
                 setSensorStatusColor(mTvPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());

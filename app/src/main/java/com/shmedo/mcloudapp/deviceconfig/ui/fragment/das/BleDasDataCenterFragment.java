@@ -68,7 +68,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_das_data_center_home;
+        return R.layout.ble_das_data_center_home_fragment;
     }
 
     @Override

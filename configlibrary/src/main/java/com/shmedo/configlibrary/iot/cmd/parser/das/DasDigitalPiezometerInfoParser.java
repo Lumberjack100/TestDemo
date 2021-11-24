@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/4/19 <br/>
- * 描述：      解析DAS 数字式渗压计参数
+ * 描述：      解析DAS 数字水位计参数
  */
 public class DasDigitalPiezometerInfoParser implements IOTResultParser<DasDigitalPiezometerInfo> {
     @Override

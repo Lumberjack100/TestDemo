@@ -94,10 +94,10 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     SwitchButton mSbDigitalOsmometerEnable;
 
     @BindView(R.id.digitalOsmometerChildsLayout)
-    ViewGroup digitalOsmometerChildsLayout;//渗压计配置项
+    ViewGroup digitalOsmometerChildsLayout;//水位计配置项
 
     @BindView(R.id.osmometerAddressEt)
-    EditText mEtOsmometerAddress;//渗压计地址
+    EditText mEtOsmometerAddress;//水位计地址
 
     @BindView(R.id.waterAlarmValueEt)
     EditText mEtWaterAlarmValue;//深度触发值-水位报警值
@@ -106,10 +106,10 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     EditText mEtWaterRevised;//深度修正值
 
     @BindView(R.id.osmometerCordEt)
-    EditText mEtOsmometerCord;//渗压计绳长
+    EditText mEtOsmometerCord;//水位计绳长
 
     @BindView(R.id.nozzelHeightEt)
-    EditText mEtNozzelHeight;//管口高程
+    EditText mEtNozzelHeight;//安装高程
 
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
@@ -119,7 +119,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     private String collectorModel = "";//采集器类型
     private BaseConfigInfo baseConfigInfo;
     private BreakAlarmStatusInfo breakAlarmStatusInfo;
-    private QueryOsmometerParameterInfo queryOsmometerParameterInfo;//数字式渗压计参数
+    private QueryOsmometerParameterInfo queryOsmometerParameterInfo;//数字水位计参数
 
     private String rainPrecision;
     private String osmometerAddress;
@@ -129,11 +129,11 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     private String nozzelHeight;
 
     private String cmdRainPrecision;// 雨量计精度配置指令
-    private String cmdOsmometerAddress;//渗压计地址配置指令
+    private String cmdOsmometerAddress;//水位计地址配置指令
     private String cmdDepthTriggerValue;//水位报警值配置指令
     private String cmdDepthCorrection;//深度修正值配置指令
-    private String cmdOsmometerLength;//渗压计绳长配置指令
-    private String cmdNozzelHeight;//管口高程配置指令
+    private String cmdOsmometerLength;//水位计绳长配置指令
+    private String cmdNozzelHeight;//安装高程配置指令
 
     //参数配置指令集合
     private List<String> cmdList = new LinkedList<>();
@@ -246,10 +246,10 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     };
 
     /**
-     * 数字式渗压计启用开关事件
+     * 数字水位计启用开关事件
      */
     private void setSwitchViewListener() {
-        //数字式渗压计启用开关事件
+        //数字水位计启用开关事件
         mSbDigitalOsmometerEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -266,7 +266,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                     enableOrDisableDigitalOsmometerCmd(OsmometerStatus.OSMOMETER_CLOSE);
                     digitalOsmometerChildsLayout.setVisibility(View.GONE);
 
-                    //恢复刚进入页面时的渗压计原始数据
+                    //恢复刚进入页面时的水位计原始数据
                     mEtOsmometerAddress.setText(osmometerAddress);
                     mEtWaterAlarmValue.setText(depthTriggerValue);
                     mEtWaterRevised.setText(depthCorrection);
@@ -332,22 +332,22 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     }
 
     /**
-     * 查询 数字式渗压计配置信息  ##400
+     * 查询 数字水位计配置信息  ##400
      */
     private void queryDigitalOsmometerCmd() {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_OSMOMETER_PARAMETER, null);
         sendCommand(command);
-        Timber.d("查询数字式渗压计配置信息===%s", command);
+        Timber.d("查询数字水位计配置信息===%s", command);
     }
 
     /**
-     * 设置数字式渗压计启用状态 ##401
+     * 设置数字水位计启用状态 ##401
      */
     private void enableOrDisableDigitalOsmometerCmd(OsmometerStatus status) {
         DigitalOsmometerFunctionEntity entity = new DigitalOsmometerFunctionEntity(status.toInt());
         String command = CommandManager.getInstance().getCommand(CommandType.DIGITAL_OSMOMETER_FUNCTION, entity);
         sendCommand(command);
-        Timber.d("设置数字式渗压计指令==%s", command);
+        Timber.d("设置数字水位计指令==%s", command);
     }
 
     @OnClick({R.id.tvPrecision, R.id.extendSensorLayout, R.id.btn_confirm})
@@ -409,7 +409,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     }
 
     /**
-     * 处理数字式渗压计参数
+     * 处理数字水位计参数
      *
      * @return 校验通过返回 true,否则返回 false
      */
@@ -424,19 +424,19 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
         nozzelHeight = mEtNozzelHeight.getText().toString().trim();
 
         if (TextUtils.isEmpty(osmometerAddress)) {
-            ToastUtils.show("请输入渗压计地址");
+            ToastUtils.show("请输入水位计地址");
             mEtOsmometerAddress.requestFocus();
             return false;
         }
         try {
             int value = Integer.parseInt(osmometerAddress);
             if (value < 0 || value > 255) {
-                ToastUtils.show("请输入正确的渗压计地址!");
+                ToastUtils.show("请输入正确的水位计地址!");
                 mEtOsmometerAddress.requestFocus();
                 return false;
             }
         } catch (Exception ex) {
-            ToastUtils.show("请输入正确的渗压计地址!");
+            ToastUtils.show("请输入正确的水位计地址!");
             mEtOsmometerAddress.requestFocus();
             return false;
         }
@@ -483,14 +483,14 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
         if (!decimalFormat.format(Double.parseDouble(queryOsmometerParameterInfo.getCordLenght())).equals(osmometerLength)) {
             if (TextUtils.isEmpty(osmometerLength)) {
-                ToastUtils.show("请输入渗压计绳长");
+                ToastUtils.show("请输入水位计绳长");
                 return false;
             }
             try {
                 double value = Double.parseDouble(osmometerLength);
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的渗压计绳长!");
+                ToastUtils.show("请输入正确的水位计绳长!");
                 mEtOsmometerCord.requestFocus();
                 return false;
             }
@@ -500,14 +500,14 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
 
         if (!decimalFormat.format(Double.parseDouble(queryOsmometerParameterInfo.getInstallHeight())).equals(nozzelHeight)) {
             if (TextUtils.isEmpty(nozzelHeight)) {
-                ToastUtils.show("请输入管口高程值");
+                ToastUtils.show("请输入安装高程值");
                 return false;
             }
             try {
                 double value = Double.parseDouble(nozzelHeight);
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的管口高程值!");
+                ToastUtils.show("请输入正确的安装高程值!");
                 mEtNozzelHeight.requestFocus();
                 return false;
             }
@@ -548,12 +548,12 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
      */
     private void sendParamConfigCmd() {
         if (cmdList.isEmpty()) {
-            Timber.d("雨量计或渗压计配置参数指令已发送完毕");
+            Timber.d("雨量计或水位计配置参数指令已发送完毕");
             return;
         }
         String command = cmdList.get(0);
         sendCommand(command);
-        Timber.d("设置雨量计或渗压计配置参数指令===%s", command);
+        Timber.d("设置雨量计或水位计配置参数指令===%s", command);
         //移除已发送的指令
         cmdList.remove(0);
     }
@@ -596,7 +596,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 if (breakAlarmStatus == BreakAlarmStatus.QUERY) {
                     breakAlarmStatusInfo = ResultParserUtil.getEntityObject(cmdStr);
                     initBreakAlarmStatus();
-                    //第一次进入页面，查询数字式渗压计
+                    //第一次进入页面，查询数字水位计
                     if (isRefresh) {
                         isRefresh = false;
                         queryDigitalOsmometerCmd();
@@ -604,10 +604,10 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
-            case QUERY_OSMOMETER_PARAMETER://查询数字式渗压计参数 400
+            case QUERY_OSMOMETER_PARAMETER://查询数字水位计参数 400
                 mRefreshLayout.finishRefresh(true);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    Timber.e("查询数字式渗压计参数指令出错!");
+                    Timber.e("查询数字水位计参数指令出错!");
                     return;
                 }
                 queryOsmometerParameterInfo = ResultParserUtil.getEntityObject(cmdStr);
@@ -645,20 +645,20 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
-            case DIGITAL_OSMOMETER_FUNCTION://开启/关闭数字式渗压计功能 401
+            case DIGITAL_OSMOMETER_FUNCTION://开启/关闭数字水位计功能 401
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     if (tempStr.contains("4011")) {
-                        ToastUtils.show("开启数字式渗压计错误!");
+                        ToastUtils.show("开启数字水位计错误!");
                     } else if (tempStr.contains("4012")) {
-                        ToastUtils.show("关闭数字式渗压计错误!");
+                        ToastUtils.show("关闭数字水位计错误!");
                     }
                     return;
                 }
                 break;
 
-            case SET_OSMOMETER_ADDRESS://设置数字渗压计地址 402
+            case SET_OSMOMETER_ADDRESS://设置数字水位计地址 402
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("数字渗压计地址配置错误!");
+                    ToastUtils.show("数字水位计地址配置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
@@ -670,9 +670,9 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
-            case SET_OSMOMETER_TRIGGER://设置数字渗压计水位报警值 403
+            case SET_OSMOMETER_TRIGGER://设置数字水位计水位报警值 403
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("数字渗压计水位报警值配置错误!");
+                    ToastUtils.show("数字水位计水位报警值配置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
@@ -684,9 +684,9 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
-            case SET_OSMOMETR_CORRECT://设置数字渗压计水深修正值 404
+            case SET_OSMOMETR_CORRECT://设置数字水位计水深修正值 404
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("数字渗压计水深修正值配置错误!");
+                    ToastUtils.show("数字水位计水深修正值配置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
@@ -698,9 +698,9 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
-            case SET_CORD_LENGTH://设置数字渗压计绳长 405
+            case SET_CORD_LENGTH://设置数字水位计绳长 405
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("数字渗压计绳长配置错误!");
+                    ToastUtils.show("数字水位计绳长配置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
@@ -712,10 +712,10 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
-            case SET_OSMOMETR_NOZZEL_HEIGHT://设置数字渗压计安装高程 406
+            case SET_OSMOMETR_NOZZEL_HEIGHT://设置数字水位计安装高程 406
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    ToastUtils.show("数字渗压计安装高程配置错误!");
+                    ToastUtils.show("数字水位计安装高程配置错误!");
                     return;
                 }
                 if (!cmdList.isEmpty()) {
@@ -758,7 +758,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbCloseSwitchSensor.setOnCheckedChangeListener(onCheckedChangeListener);
-                //查询数字式渗压计
+                //查询数字水位计
                 queryDigitalOsmometerCmd();
                 break;
 
@@ -779,7 +779,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                //查询数字式渗压计
+                //查询数字水位计
                 queryDigitalOsmometerCmd();
                 break;
 
@@ -820,11 +820,11 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     }
 
     /**
-     * 初始化数字渗压计参数
+     * 初始化数字水位计参数
      */
     private void initDigitalOsmometerInfo() {
         if (queryOsmometerParameterInfo == null) {
-            Timber.e("数字渗压计信息为空!");
+            Timber.e("数字水位计信息为空!");
             queryOsmometerParameterInfo = new QueryOsmometerParameterInfo();
             mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(false);
             digitalOsmometerChildsLayout.setVisibility(View.GONE);
