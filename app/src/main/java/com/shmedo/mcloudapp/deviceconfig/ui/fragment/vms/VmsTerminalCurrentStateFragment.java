@@ -112,7 +112,7 @@ public class VmsTerminalCurrentStateFragment extends BaseFragment {
 
     private void initAdapter() {
         int spanCount = 1;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 16);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(16);//每一个矩形的间距
         sensorRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         sensorRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
@@ -203,7 +203,12 @@ public class VmsTerminalCurrentStateFragment extends BaseFragment {
 
         if (vmsTerminalInfo.getSensor() != null) {
             sensorList.clear();
-            sensorList.addAll(vmsTerminalInfo.getSensor());
+            //雨量计,只展示一个传感器
+            if (vmsTerminalInfo.getSn().toUpperCase().endsWith("Y")) {
+                sensorList.add(vmsTerminalInfo.getSensor().get(0));
+            } else {
+                sensorList.addAll(vmsTerminalInfo.getSensor());
+            }
             sensorAdapter.notifyDataSetChanged();
         }
     }
