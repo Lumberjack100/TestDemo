@@ -348,7 +348,7 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
         List<String> descList = new ArrayList<>();
         String errinfo = currentStateInfo.getAbndiasis();
-        String[] codes = errinfo.split("|");
+        String[] codes = errinfo.split("\\|");
         for (String code : codes) {
             AdmeModuleErrorType errorType = AdmeModuleErrorType.valueByCode(code);
             if (errorType != null) {
