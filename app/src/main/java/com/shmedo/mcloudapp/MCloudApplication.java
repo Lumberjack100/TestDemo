@@ -4,14 +4,13 @@ import static com.xuexiang.xupdate.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION
 
 import android.app.Application;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelStore;
 import androidx.lifecycle.ViewModelStoreOwner;
 
+import com.blankj.utilcode.util.MetaDataUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.hjq.toast.ToastUtils;
@@ -224,21 +223,14 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
      * 正式初始化函数UMConfigure.init可以按需调用(可以在预初始化函数之后紧接着调用，也可以放到后台线程中延迟调用，但还是必须调用，不能遗漏)。
      */
     private void setUmeng() {
-        String um_appkey;
-        try {
-            ApplicationInfo appInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            um_appkey = appInfo.metaData.getString("UMENG_APP_KEY");
-        } catch (PackageManager.NameNotFoundException e) {
-            um_appkey = "618cdd28e014255fcb75af8a";
-            e.printStackTrace();
-        }
+        String appKey = MetaDataUtils.getMetaDataInApp("UMENG_APP_KEY");
 
         //设置LOG开关，默认为false
         UMConfigure.setLogEnabled(false);
 
         // SDK预初始化函数不会采集设备信息，也不会向友盟后台上报数据。
         // preInit预初始化函数耗时极少，不会影响App首次冷启动用户体验
-        UMConfigure.preInit(this, um_appkey, "production");
+        UMConfigure.preInit(this, appKey, "production");
 
         // 页面自动采集选择
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL);
@@ -251,7 +243,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
             //注意: 即使您已经在AndroidManifest.xml中配置过appkey和channel值，
             //也需要在App代码中调用初始化接口（如需要使用AndroidManifest.xml中配置好的appkey和channel值，
             //UMConfigure.init调用中appkey和channel参数请置为null）
-            UMConfigure.init(this, um_appkey, "production", UMConfigure.DEVICE_TYPE_PHONE, "");
+            UMConfigure.init(this, appKey, "production", UMConfigure.DEVICE_TYPE_PHONE, "");
         }
     }
 

@@ -133,6 +133,7 @@ public class MCloudApp {
         account = null;
         currentUserInfo = null;
         SPStaticUtils.remove(AppContants.User.PWD);
+        SPStaticUtils.remove(AppContants.User.MD5_PWD);
         ActivityUtils.finishAllActivities();
     }
 }

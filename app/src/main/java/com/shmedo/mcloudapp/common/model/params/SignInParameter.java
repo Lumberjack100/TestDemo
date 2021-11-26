@@ -6,18 +6,22 @@ package com.shmedo.mcloudapp.common.model.params;
  * 文件名:   SignInParameter
  * 创建者:   dpc
  * 创建时间:  2019/1/10 10:37
- *
  */
-public class SignInParameter implements Cloneable{
+public class SignInParameter implements Cloneable {
     private String account;
     private String password;
 
-    public SignInParameter(){
+    public SignInParameter() {
 
     }
-    public SignInParameter(String account,String password){
-        this.account=account;
-        this.password=password;
+
+    public SignInParameter(String account) {
+        this.account = account;
+    }
+
+    public SignInParameter(String account, String password) {
+        this.account = account;
+        this.password = password;
     }
 
     public String getAccount() {
@@ -37,11 +41,10 @@ public class SignInParameter implements Cloneable{
     }
 
     @Override
-    public SignInParameter clone(){
-        try{
+    public SignInParameter clone() {
+        try {
             return (SignInParameter) super.clone();
-        }   catch (Exception ex)
-        {
+        } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }

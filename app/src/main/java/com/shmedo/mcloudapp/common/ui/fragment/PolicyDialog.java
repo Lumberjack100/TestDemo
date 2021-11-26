@@ -31,9 +31,9 @@ import butterknife.OnClick;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/7/1 <br/>
- * 描述：    隐私权限提示
+ * 描述：    隐私正常提示框
  */
-public class PrivacyTipDialog extends DialogFragment {
+public class PolicyDialog extends DialogFragment {
     @BindView(R.id.tv_privacy_desc)
     TextView mTvPrivacyDesc;
 
@@ -93,33 +93,26 @@ public class PrivacyTipDialog extends DialogFragment {
     @OnClick({R.id.btn_agree, R.id.btn_deny})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_agree:
-                doPositiveClick(view);
-                break;
+            case R.id.btn_agree: {
+                PolicyClickListener listener = (PolicyClickListener) getActivity();
+                listener.onAgreeClick(view);
+                dismiss();
+            }
+            break;
 
-            case R.id.btn_deny:
-                doNegativeClick(view);
-                break;
+            case R.id.btn_deny: {
+                PolicyClickListener listener = (PolicyClickListener) getActivity();
+                listener.onDisagreeClick(view);
+                dismiss();
+            }
+            break;
         }
     }
 
-    private void doPositiveClick(View view) {
-        DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
-        listener.onPositiveClick(view);
-        dismiss();
-    }
+    public interface PolicyClickListener {
+        void onAgreeClick(View view);
 
-    private void doNegativeClick(View view) {
-        DialogFragmentClickListener listener = (DialogFragmentClickListener) getActivity();
-        listener.onNegativeClick(view);
-        dismiss();
-    }
-
-
-    public interface DialogFragmentClickListener {
-        void onPositiveClick(View view);
-
-        void onNegativeClick(View view);
+        void onDisagreeClick(View view);
     }
 
     static class MyClickText extends ClickableSpan {

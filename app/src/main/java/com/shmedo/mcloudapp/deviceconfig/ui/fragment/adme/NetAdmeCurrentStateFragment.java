@@ -196,7 +196,7 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
         }
         int id = view.getId();
         if (id == R.id.ll_device_abnormal_diagnosis) {
-            showInclinometerTypeDialog();
+            showErrorModulesInfoDialog();
         }
     }
 
@@ -340,9 +340,9 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
     }
 
     /**
-     * 选择测斜仪类型
+     * 展示异常模块信息
      */
-    private void showInclinometerTypeDialog() {
+    private void showErrorModulesInfoDialog() {
         if (currentStateInfo == null ||TextUtils.isEmpty(currentStateInfo.getAbndiasis()))
             return;
 

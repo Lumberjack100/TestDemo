@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -138,9 +140,9 @@
                     android:id="@+id/ivExpand"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/icon_arrow_double_down"
-                    app:tint="@color/text_color_222222"
-                    android:scaleType="centerCrop"/>
+                    app:tint="@color/text_color_222222" />
 
             </LinearLayout>
 
@@ -148,10 +150,13 @@
                 android:id="@+id/ll_internal_module_state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_falsh_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -164,11 +169,14 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_voltage_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="电压采集" />
+                        android:text="电压采集模块" />
 
                     <TextView
                         android:id="@+id/tv_voltage_module"
@@ -177,11 +185,14 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_ble_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="蓝牙" />
+                        android:text="蓝牙模块" />
 
                     <TextView
                         android:id="@+id/tv_ble_module"
@@ -190,7 +201,10 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_lora_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -203,7 +217,10 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_vibrating_wire_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -216,7 +233,10 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_acceleration_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -229,7 +249,10 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_azimuth_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -242,7 +265,10 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_inclination_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -255,7 +281,10 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_temperature_and_humidity_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -268,11 +297,14 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_rtc_clock_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="rtc时钟" />
+                        android:text="rtc时钟模块" />
 
                     <TextView
                         android:id="@+id/tv_rtc_clock_module"
@@ -281,7 +313,10 @@
 
                 </LinearLayout>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <LinearLayout
+                    android:id="@+id/ll_current_detection_module"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"

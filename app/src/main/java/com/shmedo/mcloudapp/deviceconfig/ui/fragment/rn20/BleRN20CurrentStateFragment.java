@@ -79,6 +79,39 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     @BindView(R.id.ll_internal_module_state)
     ViewGroup internalModuleStateLayout;
 
+    @BindView(R.id.ll_falsh_module)
+    ViewGroup flashModuleLayout;
+
+    @BindView(R.id.ll_voltage_module)
+    ViewGroup voltageModuleLayout;
+
+    @BindView(R.id.ll_ble_module)
+    ViewGroup bleModuleLayout;
+
+    @BindView(R.id.ll_lora_module)
+    ViewGroup loraModuleLayout;
+
+    @BindView(R.id.ll_vibrating_wire_module)
+    ViewGroup vibratingWireModuleLayout;
+
+    @BindView(R.id.ll_acceleration_module)
+    ViewGroup accelerationModuleLayout;
+
+    @BindView(R.id.ll_azimuth_module)
+    ViewGroup azimuthModuleLayout;
+
+    @BindView(R.id.ll_inclination_module)
+    ViewGroup inclinationModuleLayout;
+
+    @BindView(R.id.ll_temperature_and_humidity_module)
+    ViewGroup tempAndHumiModuleLayout;
+
+    @BindView(R.id.ll_rtc_clock_module)
+    ViewGroup rtcModuleStateLayout;
+
+    @BindView(R.id.ll_current_detection_module)
+    ViewGroup currentDetectionModuleLayout;
+
     @BindView(R.id.tv_falsh_module)
     TextView mTvFalshModule;//存储芯片
 
@@ -141,7 +174,6 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
      */
     @BindView(R.id.tv_rain_value)
     TextView mTvRain;//雨量值
-
 
     public static BleRN20CurrentStateFragment newInstance() {
         return new BleRN20CurrentStateFragment();
@@ -232,7 +264,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case RN20_MD_GET_TERMINAL_BASE: {
+            case RN20_MD_GET_TERMINAL_BASE: {//查询基本信息
                 IOTCommandResult<Rn20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
@@ -250,7 +282,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             }
             break;
 
-            case DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS: {
+            case DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS: {//获取温湿度状态
                 IOTCommandResult<DasTemperatureAndHumidityStatusinfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
@@ -267,7 +299,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             }
             break;
 
-            case DAS_MD_GET_SUB_SENSOR_STATUS: {
+            case DAS_MD_GET_SUB_SENSOR_STATUS: {//查询辅传感器
                 IOTCommandResult<DasSubSensorStatusInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
@@ -348,12 +380,6 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                 mTvInternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getInth().getTemp() + "°");
                 mTvInternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getInth().getHumi() + "%");
             }
-//        if (dasTemperatureAndHumidityStatusinfo.getOutth() != null) {
-//            //机箱外部温湿度
-//            setDeviceStatus(mTvExternalStatus, dasTemperatureAndHumidityStatusinfo.getOutth().getErrno());
-//            mTvExternalTemperature.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getTemp() + "°");
-//            mTvExternalHumidity.setText(dasTemperatureAndHumidityStatusinfo.getOutth().getHumi() + "%");
-//        }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -380,23 +406,28 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         }
     }
 
+    /**
+     * 内部模块状态信息
+     *
+     * @param moduleStatus
+     */
     private void initModuleStatus(Rn20ModuleStatus moduleStatus) {
         if (moduleStatus == null) {
             Timber.e("Rn20ModuleStatus 为空!");
             return;
         }
         try {
-            setModuleStatus(mTvFalshModule, moduleStatus.getFlash());
-            setModuleStatus(mTvVoltageModule, moduleStatus.getAds());
-            setModuleStatus(mTvBleModule, moduleStatus.getBle());
-            setModuleStatus(mTvLoraModule, moduleStatus.getLora());
-            setModuleStatus(mTvVibratingWireModule, moduleStatus.getVm501());
-            setModuleStatus(mTvAccelerationModule, moduleStatus.getAdxl362());
-            setModuleStatus(mTvAzimuthModule, moduleStatus.getMmc5883());
-            setModuleStatus(mTvInclinationModule, moduleStatus.getScl3300());
-            setModuleStatus(mTvTemperatureAndHumidityModule, moduleStatus.getAht21());
-            setModuleStatus(mTvRtcClockModule, moduleStatus.getRtc());
-            setModuleStatus(mTvCurrentDetectionModule, moduleStatus.getLtc2945());
+            setModuleStatus(flashModuleLayout, mTvFalshModule, moduleStatus.getFlash());
+            setModuleStatus(voltageModuleLayout, mTvVoltageModule, moduleStatus.getAds());
+            setModuleStatus(bleModuleLayout, mTvBleModule, moduleStatus.getBle());
+            setModuleStatus(loraModuleLayout, mTvLoraModule, moduleStatus.getLora());
+            setModuleStatus(vibratingWireModuleLayout, mTvVibratingWireModule, moduleStatus.getVm501());
+            setModuleStatus(accelerationModuleLayout, mTvAccelerationModule, moduleStatus.getAdxl362());
+            setModuleStatus(azimuthModuleLayout, mTvAzimuthModule, moduleStatus.getMmc5883());
+            setModuleStatus(inclinationModuleLayout, mTvInclinationModule, moduleStatus.getScl3300());
+            setModuleStatus(tempAndHumiModuleLayout, mTvTemperatureAndHumidityModule, moduleStatus.getAht21());
+            setModuleStatus(rtcModuleStateLayout, mTvRtcClockModule, moduleStatus.getRtc());
+            setModuleStatus(currentDetectionModuleLayout, mTvCurrentDetectionModule, moduleStatus.getLtc2945());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -413,8 +444,13 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         }
     }
 
-    private void setModuleStatus(TextView textView, String status) {
-        if (TextUtils.isEmpty(status) || status.equals("0")) {
+    private void setModuleStatus(ViewGroup itemLayout, TextView textView, String status) {
+        if (TextUtils.isEmpty(status)) {
+            itemLayout.setVisibility(View.GONE);
+            return;
+        }
+        itemLayout.setVisibility(View.VISIBLE);
+        if (status.equals("0")) {
             textView.setText("异常");
             textView.setTextColor(Color.RED);
         } else {

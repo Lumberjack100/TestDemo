@@ -1,8 +1,6 @@
 package com.shmedo.mcloudapp.common.ui.activity;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -12,14 +10,16 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.blankj.utilcode.util.EncryptUtils;
 import com.blankj.utilcode.util.GsonUtils;
+import com.blankj.utilcode.util.MetaDataUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.UserInfoWrapper;
-import com.shmedo.mcloudapp.common.ui.fragment.PrivacyTipDialog;
+import com.shmedo.mcloudapp.common.ui.fragment.PolicyDialog;
 import com.shmedo.mcloudapp.network.NetworkConst;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LoginManager;
@@ -39,17 +39,12 @@ import timber.log.Timber;
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:17
  */
-public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback, PrivacyTipDialog.DialogFragmentClickListener {
-
-    private String mAccount = null;
-    private String mPassword = null;
-
+public class WelcomeActivity extends BaseActivity implements LoginManager.LoginCallback, PolicyDialog.PolicyClickListener {
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_welcome;
     }
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,57 +66,60 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     }
 
     private void initData() {
-        mAccount = SPStaticUtils.getString(AppContants.User.UID, "");
-        mPassword = SPStaticUtils.getString(AppContants.User.PWD, "");
-
         String mPrivacy = SPStaticUtils.getString(AppContants.PRIVACY_AGREEMENT, "");
         if (!TextUtils.isEmpty(mPrivacy) && mPrivacy.equalsIgnoreCase("agree")) {
-            checkLogin();
+            goToLogin();
         } else {
-            DialogFragment privacyTipDialog = new PrivacyTipDialog();
+            DialogFragment privacyTipDialog = new PolicyDialog();
             privacyTipDialog.show(getSupportFragmentManager(), "dialog");
         }
     }
 
+    /**
+     * 同意协议
+     *
+     * @param view
+     */
     @Override
-    public void onPositiveClick(View view) {
-        /*** 友盟sdk正式初始化*/
+    public void onAgreeClick(View view) {
         SPStaticUtils.put(AppContants.PRIVACY_AGREEMENT, "agree");
+        /*** 友盟sdk正式初始化*/
         UMConfigure.submitPolicyGrantResult(getApplicationContext(), true);
-        String um_appkey;
-        try {
-            ApplicationInfo appInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-            um_appkey = appInfo.metaData.getString("UMENG_APP_KEY");
-        } catch (PackageManager.NameNotFoundException e) {
-            um_appkey = "618cdd28e014255fcb75af8a";
-            e.printStackTrace();
-        }
-        UMConfigure.init(this, um_appkey, "production", UMConfigure.DEVICE_TYPE_PHONE, "");
+        String appKey = MetaDataUtils.getMetaDataInApp("UMENG_APP_KEY");
+        UMConfigure.init(this, appKey, "production", UMConfigure.DEVICE_TYPE_PHONE, "");
 
-        checkLogin();
+        goToLogin();
     }
 
+    /**
+     * 不同意协议
+     *
+     * @param view
+     */
     @Override
-    public void onNegativeClick(View view) {
+    public void onDisagreeClick(View view) {
         //不同意隐私协议，退出app
         UMConfigure.submitPolicyGrantResult(getApplicationContext(), false);
-//        WelcomeActivity.this.finish();
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    private void checkLogin() {
+    private void goToLogin() {
+        String mAccount = SPStaticUtils.getString(AppContants.User.UID, "");
+        String mPassword = SPStaticUtils.getString(AppContants.User.PWD, "");
+        String Md5Password = SPStaticUtils.getString(AppContants.User.MD5_PWD, "");
         //自动登录
-        if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
+        if (!TextUtils.isEmpty(mAccount) && (!TextUtils.isEmpty(mPassword) | !TextUtils.isEmpty(Md5Password))) {
             //当用户使用自有账号登录时，可以这样统计：
             MobclickAgent.onProfileSignIn(mAccount);
-            makeAutoLogin(mAccount, mPassword);
+
+            String pwd = !TextUtils.isEmpty(Md5Password) ? Md5Password : EncryptUtils.encryptMD5ToString(mAccount + mPassword);
+            LoginManager.getInstance().login(mAccount, pwd, this);
         } else {
             redirectToLoginActivity(1000);
         }
     }
 
     private void makeAutoLogin(String account, String password) {
-        LoginManager.getInstance().login(account, password, this);
 //        if (MCloudApp.isIsNetworkConnected()) {
 //            LoginManager.getInstance().login(account, password, this);
 //        } else {
@@ -136,19 +134,16 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         String account = SPStaticUtils.getString(AppContants.User.UID);
         String token = SPStaticUtils.getString(NetworkConst.ACCESS_TOKEN);
         String time = SPStaticUtils.getString(AppContants.TOKEN_UPDATE_TIME);
-
         if (TextUtils.isEmpty(token) || TextUtils.isEmpty(token)) {
             Timber.d("token或time为空，不能离线登录");
             return;
         }
-
         long lastTime = Long.parseLong(time);
         long interval = new Date().getTime() - lastTime;
         if (interval / (24 * 3600 * 1000) > 28) {
             Timber.d("token超过28天有效期，不能离线登录");
             return;
         }
-
         DaoManager manager = DaoManager.getInstance();
         List<UserInfoWrapper> userInfoWrapperList = manager.getDaoSession().getUserInfoWrapperDao().queryBuilder().list();
         if (userInfoWrapperList != null) {
@@ -160,7 +155,6 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
                 }
             }
         }
-
         MCloudApp.setAccount(account);
         MCloudApp.setAccessToken(token);
 
@@ -206,9 +200,8 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
         if (requestCode == XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING) {
-            checkLogin();
+            goToLogin();
         }
     }
 
