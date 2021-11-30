@@ -1,118 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    //工作模式
-    <string-array name="das_work_mode">
-        <item>初始化</item>
-        <item>工作</item>
-        <item>DEBUG</item>
-        <item>INFO</item>
-    </string-array>
-
-    <string-array name="das_debug">
-        <item>关闭</item>
-        <item>DEBUG</item>
-        <item>INFO</item>
-    </string-array>
-
-    //开关量
-    <string-array name="das_switch">
-        <item>关闭</item>
-        <item>雨量计</item>
-        <item>断线报警器</item>
-    </string-array>
-
-
-    //断线报警器状态
-    <string-array name="break_alarm_status">
-        <item>常开</item>
-        <item>常闭</item>
-    </string-array>
-
-    //通讯方式
-    <string-array name="communication_method">
-        <item>4G</item>
-        <item>BD</item>
-        <item>SMS</item>
-        <item>BD+4G</item>
-    </string-array>
-
-    //通讯协议
-    <string-array name="communication_protocol">
-        <item>MDM协议</item>
-        <item>MQTT自动注册</item>
-        <item>MQTT手动注册</item>
-    </string-array>
-
-    //注册平台
-    <string-array name="register">
-        <item>地大平台</item>
-        <item>成都理工平台</item>
-        <item>米度平台</item>
-    </string-array>
-
-    //查询设备数据条目总数
-    <string-array name="item_count">
-        <item>10</item>
-        <item>30</item>
-        <item>100</item>
-        <item>500</item>
-    </string-array>
-
     <string-array name="rain_value">
         <item>0.1</item>
         <item>0.2</item>
         <item>0.5</item>
     </string-array>
 
-    <string-array name="collector_channel">
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-    </string-array>
-
-    <string-array name="sensor">
-        <item>MPS-M-2000</item>
-        <item>TR-3000</item>
-        <item>I-P-I</item>
-        <item>HBRD908</item>
-        <item>MH-A15R</item>
-        <item>EP100G</item>
-        <item>CSW18</item>
-        <item>VWP-G</item>
-        <item>BGK-4500</item>
-        <item>VWP-03</item>
-        <item>VWE-0.6</item>
-        <item>VWS-15</item>
-        <item>VWS-15M</item>
-        <item>VWD-100</item>
-    </string-array>
-
-    <!--  渗压计、轴力计类型-->
-    <string-array name="sensor_osmometer">
-        <item>基康渗压计(BGK-4500)</item>
-        <item>葛南渗压计(VWP-03)</item>
-        <item>轴力计(ZLJ-300T)</item>
-    </string-array>
-
-    <!--  ADME 执行结构数据解算方式-->
-    <string-array name="adme_executive_agency_data_settlement">
-        <item>顶固定法</item>
-        <item>底固定法</item>
-    </string-array>
-
     <!--  ADME 执行结构日志输出方式-->
-    <string-array name="adme_executive_agency_log_output">
-        <item>关闭</item>
-        <item>串口</item>
-        <item>网络</item>
-        <item>蓝牙</item>
-    </string-array>
-
-    <string-array name="pull_mode">
-        <item>上拉</item>
-        <item>下降</item>
+    <string-array name="adme_device_mode">
+        <item>设备配置模式</item>
+        <item>自动检测模式</item>
+        <item>异常保护模式</item>
     </string-array>
 
     <string-array name="coordinate_type">

@@ -89,8 +89,10 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private AdmeBaseInfo admeBaseInfo;
-    private int equipModellPos;
     private String equipModel;//设备模式
+
+    private String[] modes;
+
 
     public static NetAdmeHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
         NetAdmeHomeFragment fragment = new NetAdmeHomeFragment();
@@ -109,9 +111,9 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        updateHeadInfo();
+        modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();
-        initConfigModuleData();
+        updateHeadInfo();
         queryEquipmentBaseInfo();
     }
 
@@ -161,25 +163,6 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
-    private void initConfigModuleData() {
-        configModuleList.clear();
-
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
-        configModuleList.add(configModule);
-    }
-
     /**
      * 获取设备的基本信息
      */
@@ -197,34 +180,37 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
     }
 
-
     @OnClick({R.id.ll_switch_config_model})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
         }
-        switch (v.getId()) {
-            case R.id.ll_switch_config_model://切换设备模式
-                showSwitchConfigModelDialog();
-                break;
+        if (v.getId() == R.id.ll_switch_config_model) {//切换设备模式
+            showSwitchConfigModelDialog();
         }
     }
 
     private void showSwitchConfigModelDialog() {
+        final String[] modes = getResources().getStringArray(R.array.adme_device_mode);
+        int pos = Arrays.asList(modes).indexOf(String.valueOf(mTvConfigModel.getText()));
+        pos = pos == -1 ? 0 : pos;
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"设备配置模式", "自动监测模式"},
-                        null, equipModellPos, true,
+                .asBottomList("", modes,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                equipModellPos = position;
+                                //不可以主动切换到异常保护模式
+                                if (text.equals(modes[2])) {
+                                    return;
+                                }
                                 mTvConfigModel.setText(text);
-                                if (text.equals("设备配置模式")) {
+                                if (text.equals(modes[0])) {//设备配置模式
                                     equipModel = "0";
                                     admeViewModel.deviceMode = 0;
-                                } else {
+                                } else if (text.equals(modes[1])) {//自动检测模式
                                     equipModel = "1";
                                     admeViewModel.deviceMode = 1;
                                 }
@@ -271,7 +257,6 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     private void showDispatchFailedDialog(String cmdStr) {
         ToastUtils.show("下发指令失败");
     }
-
 
     /**
      * 查询指令响应结果出错
@@ -394,19 +379,16 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
             }
-
-            if (!TextUtils.isEmpty(admeBaseInfo.getEquimodel())) {
-                equipModel = admeBaseInfo.getEquimodel();
-                if (equipModel.equals("0")) {
-                    admeViewModel.deviceMode = 0;
-                    equipModellPos = 0;
-                    mTvConfigModel.setText("设备配置模式");
-                } else {
-                    admeViewModel.deviceMode = 1;
-                    equipModellPos = 1;
-                    mTvConfigModel.setText("自动监测模式");
-                }
-                updateConfigModuleData();
+            equipModel = admeBaseInfo.getEquimodel();
+            if (equipModel.equals("0")) {
+                admeViewModel.deviceMode = 0;
+                mTvConfigModel.setText(modes[0]);
+            } else if (equipModel.equals("1")) {
+                admeViewModel.deviceMode = 1;
+                mTvConfigModel.setText(modes[1]);
+            } else if (equipModel.equals("2")) {
+                admeViewModel.deviceMode = 2;
+                mTvConfigModel.setText(modes[2]);
             }
         } else {
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken()));
@@ -421,11 +403,11 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
             }
-
+            equipModel = "0";
             admeViewModel.deviceMode = 0;
-            equipModellPos = 0;
-            mTvConfigModel.setText("设备配置模式");
+            mTvConfigModel.setText(modes[0]);
         }
+        updateConfigModuleData();
     }
 
     /**
@@ -494,14 +476,15 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
 
             configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
             configModuleList.add(configModule);
-        } else {
+        } else if (equipModel.equals("1")) {//1：自动监测模式
             configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
             configModuleList.add(configModule);
 
-            configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+        } else if (equipModel.equals("2")) {
+            configModuleList.clear();
+            configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
             configModuleList.add(configModule);
         }
         moduleAdapter.notifyDataSetChanged();
     }
-
 }

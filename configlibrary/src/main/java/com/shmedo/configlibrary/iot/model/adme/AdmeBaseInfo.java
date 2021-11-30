@@ -30,7 +30,7 @@ public class AdmeBaseInfo {
     }
 
     public String getEquimodel() {
-        return TextUtils.isEmpty(equimodel) ? "" : equimodel;
+        return TextUtils.isEmpty(equimodel) ? "0" : equimodel;
     }
 
     public void setEquimodel(String equimodel) {
@@ -38,7 +38,7 @@ public class AdmeBaseInfo {
     }
 
     public String getOnline() {
-        return TextUtils.isEmpty(online) ? "" : online;
+        return TextUtils.isEmpty(online) ? "0" : online;
     }
 
     public void setOnline(String online) {

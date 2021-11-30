@@ -56,6 +56,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotComm
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -105,9 +106,8 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     private DiscoveredBluetoothDevice device;
     private AdmeBaseInfo admeBaseInfo;
-
-    private int equipModellPos;
-    private String equipModel;//设备模式
+    private String equipModel = "0";//设备模式
+    private String[] modes;
 
     private Handler motionStateHander = new Handler();
     private QueryMotorStateRunnable queryMotorStateRunnable;
@@ -164,9 +164,9 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         super.onActivityCreated(savedInstanceState);
         isFirstCreate = true;
         queryMotorStateRunnable = new QueryMotorStateRunnable();
-        setHeadInfo();
+        modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();
-        initConfigModuleData();
+        updateHeadInfo();
         observerApiKey();
         observerConnectionState();
 
@@ -190,19 +190,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         isFirstCreate = false;
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         stopQueryMotorStateRunnable();
-    }
-
-    private void setHeadInfo() {
-        mTvDeviceName.setText("水平自动监测设备");
-        mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
-        mTvProductModel.setText("产品型号：--");
-        mTvMotionState.setText("运行状态：--");
-        mTvPlatformCommunicationState.setText("米度平台连接状态：--");
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-
-        equipModellPos = 0;
-        mTvConfigModel.setText("设备配置模式");
     }
 
     private void initAdapter() {
@@ -366,34 +353,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         WaitDialog.dismiss();
     }
 
-    private void initConfigModuleData() {
-        configModuleList.clear();
-
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
-        configModuleList.add(configModule);
-    }
-
     /**
      * 获取设备的基本信息
      */
@@ -430,20 +389,26 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     private void showSwitchConfigModelDialog() {
+        final String[] modes = getResources().getStringArray(R.array.adme_device_mode);
+        int pos = Arrays.asList(modes).indexOf(String.valueOf(mTvConfigModel.getText()));
+        pos = pos == -1 ? 0 : pos;
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"设备配置模式", "自动监测模式"},
-                        null, equipModellPos, true,
+                .asBottomList("", modes,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                equipModellPos = position;
+                                //不可以主动切换到异常保护模式
+                                if (text.equals(modes[2])) {
+                                    return;
+                                }
                                 mTvConfigModel.setText(text);
-                                if (text.equals("设备配置模式")) {
+                                if (text.equals(modes[0])) {//设备配置模式
                                     equipModel = "0";
                                     admeViewModel.deviceMode = 0;
-                                } else {
+                                } else if (text.equals(modes[1])) {//自动检测模式
                                     equipModel = "1";
                                     admeViewModel.deviceMode = 1;
                                 }
@@ -536,42 +501,41 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo() {
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTvDeviceName.setText("水平自动监测设备");
+
         if (admeBaseInfo != null) {
-            mTvDeviceName.setText("水平自动监测设备");
             mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(admeBaseInfo.getSn()) ? admeBaseInfo.getSn() : device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
             mTvMotionState.setText("运行状态：--");
             if (!TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0")) {
                 mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
-
             } else if (admeBaseInfo.getOnline().equals("0")) {
                 mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
             }
-
-            if (!TextUtils.isEmpty(admeBaseInfo.getEquimodel())) {
-                equipModel = admeBaseInfo.getEquimodel();
-                if (equipModel.equals("0")) {
-                    admeViewModel.deviceMode = 0;
-                    equipModellPos = 0;
-                    mTvConfigModel.setText("设备配置模式");
-                } else {
-                    admeViewModel.deviceMode = 1;
-                    equipModellPos = 1;
-                    mTvConfigModel.setText("自动监测模式");
-                }
-                updateConfigModuleData();
+            equipModel = admeBaseInfo.getEquimodel();
+            if (equipModel.equals("0")) {
+                admeViewModel.deviceMode = 0;
+                mTvConfigModel.setText(modes[0]);
+            } else if (equipModel.equals("1")) {
+                admeViewModel.deviceMode = 1;
+                mTvConfigModel.setText(modes[1]);
+            } else if (equipModel.equals("2")) {
+                admeViewModel.deviceMode = 2;
+                mTvConfigModel.setText(modes[2]);
             }
         } else {
-            mTvDeviceName.setText("水平自动监测设备");
             mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：：%s", "ADME"));
             mTvMotionState.setText("运行状态：--");
             mTvPlatformCommunicationState.setText("米度平台连接状态：--");
 
+            equipModel = "0";
             admeViewModel.deviceMode = 0;
-            equipModellPos = 0;
-            mTvConfigModel.setText("设备配置模式");
+            mTvConfigModel.setText(modes[0]);
         }
+        updateConfigModuleData();
     }
 
     private CharSequence getPlatformAbnormalMessage(String state) {
@@ -581,6 +545,50 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         builder.insert(0, "米度平台连接状态：");
 
         return builder;
+    }
+
+    private void updateConfigModuleData() {
+        if (TextUtils.isEmpty(equipModel))
+            return;
+
+        configModuleList.clear();
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
+        configModuleList.add(configModule);
+
+        if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
+            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
+            configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
+            configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
+            configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
+            configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
+            configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+            configModuleList.add(configModule);
+        } else if (equipModel.equals("1")) {//1：自动监测模式
+            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
+            configModuleList.add(configModule);
+
+            configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+            configModuleList.add(configModule);
+
+        } else if (equipModel.equals("2")) {
+            configModuleList.clear();
+            configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+            configModuleList.add(configModule);
+        }
+        moduleAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -627,46 +635,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             default:
                 break;
         }
-    }
-
-    private void updateConfigModuleData() {
-        if (TextUtils.isEmpty(equipModel))
-            return;
-
-        configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");
-        configModuleList.add(configModule);
-
-        if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
-            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
-            configModuleList.add(configModule);
-        } else {
-            configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
-            configModuleList.add(configModule);
-        }
-
-        moduleAdapter.notifyDataSetChanged();
     }
 
     @Override
