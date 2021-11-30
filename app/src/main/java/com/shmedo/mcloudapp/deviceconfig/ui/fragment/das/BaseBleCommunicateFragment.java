@@ -79,7 +79,6 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
         protected void handleMessage(Message msg, BaseBleCommunicateFragment fragment) {
             if (fragment.isConnected()) {
                 fragment.sendHeartData();
-                fragment.startHeart();
             }
         }
     }
@@ -186,6 +185,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
 
             } else {
                 if (cmdStr.startsWith("$$888")) {
+                    startHeart();
                     return;
                 }
                 parseResponseMessage(cmdStr);

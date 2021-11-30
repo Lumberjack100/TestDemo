@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -41,6 +40,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
@@ -109,33 +109,28 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private String equipModel = "0";//设备模式
     private String[] modes;
 
-    private Handler motionStateHander = new Handler();
-    private QueryMotorStateRunnable queryMotorStateRunnable;
-
+    private final QueryMotorStateHandler queryMotorStateHandler = new QueryMotorStateHandler(this);
     private boolean isFirstCreate = false;
 
+    private static final class QueryMotorStateHandler extends WeakHandler<BleAdmeHomeFragment> {
+        private QueryMotorStateHandler(BleAdmeHomeFragment fragment) {
+            super(fragment);
+        }
 
-    /**
-     * 查询设备运行状态
-     */
-    private class QueryMotorStateRunnable implements Runnable {
         @Override
-        public void run() {
-            if (!isActive)
-                return;
-            queryMotorState();
+        protected void handleMessage(Message msg, BleAdmeHomeFragment fragment) {
+            if (fragment.isActive && fragment.isConnected()) {
+                fragment.queryMotorState();
+            }
         }
     }
 
-    private void startQueryMotorStateRunnable() {
-        if (queryMotorStateRunnable != null && isActive) {
-            motionStateHander.postDelayed(queryMotorStateRunnable, 20000);
-        }
+    protected void startQueryMotorStateProgress(long delayMillis) {
+        queryMotorStateHandler.sendEmptyMessageDelayed(-1, delayMillis);
     }
 
-    private void stopQueryMotorStateRunnable() {
-        motionStateHander.removeCallbacksAndMessages(null);
-        queryMotorStateRunnable = null;
+    protected void stopQueryMotorStateProgress() {
+        queryMotorStateHandler.removeCallbacksAndMessages(null);
     }
 
     public static BleAdmeHomeFragment newInstance(DiscoveredBluetoothDevice device) {
@@ -163,7 +158,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         isFirstCreate = true;
-        queryMotorStateRunnable = new QueryMotorStateRunnable();
         modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();
         updateHeadInfo();
@@ -179,8 +173,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         super.onResume();
         onConnectionStateChanged(isConnected());
         if (!isFirstCreate) {
-            queryMotorStateRunnable = new QueryMotorStateRunnable();
-            startQueryMotorStateRunnable();
+            startQueryMotorStateProgress(0);
         }
     }
 
@@ -189,7 +182,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         super.onStop();
         isFirstCreate = false;
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        stopQueryMotorStateRunnable();
+        stopQueryMotorStateProgress();
     }
 
     private void initAdapter() {
@@ -449,7 +442,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 admeBaseInfo = commandResult.getResult();
                 updateHeadInfo();
                 //获取设备的运行状态
-                queryMotorState();
+                startQueryMotorStateProgress(0);
             }
             break;
 
@@ -463,7 +456,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 }
                 AdmeMotionState admeMotionState = commandResult.getResult();
                 updateMotionState(admeMotionState);
-                startQueryMotorStateRunnable();
+                startQueryMotorStateProgress(20000);
             }
             break;
 
