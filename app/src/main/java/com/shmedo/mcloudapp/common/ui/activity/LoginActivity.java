@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.EncryptUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gyf.immersionbar.ImmersionBar;
@@ -90,7 +91,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
     private boolean isPasswordVisible = false;
 
-    private String accpunt;
+    private String account;
     private String pwd;
 
     private String mobile;
@@ -132,15 +133,9 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
     private void initLastAccount() {
         String uid = SPStaticUtils.getString(AppContants.User.UID);
-        String pwd = SPStaticUtils.getString(AppContants.User.PWD);
         if (!TextUtils.isEmpty(uid)) {
             mEtAccount.setText(uid);
             mEtAccount.setSelection(uid.length());
-        }
-
-        if (!TextUtils.isEmpty(pwd)) {
-            mEtPwd.setText(pwd);
-            mEtPwd.setSelection(pwd.length());
         }
     }
 
@@ -180,12 +175,10 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                     mEtPhone.requestFocus();
                     return;
                 }
-
                 if (!ValidateUtil.checkMobileNumber(mobile)) {
                     ToastUtils.show("手机号格式错误！");
                     return;
                 }
-
                 doCellPhoneExists();
                 break;
 
@@ -195,7 +188,8 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                         return;
                     }
                     showLoadingDialog("正在登录...");
-                    LoginManager.getInstance().login(accpunt, pwd, this);
+                    String Md5Password = EncryptUtils.encryptMD5ToString(account + pwd);
+                    LoginManager.getInstance().login(account, Md5Password, this);
                 } else if (loginWay == LOGIN_PHONE) {
                     if (!prepareForLogin(true)) {
                         return;
@@ -208,7 +202,6 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
             case R.id.iv_login_way://登录方式切换
                 if (loginWay == LOGIN_ACCOUNT) {//切换为手机验证码登录
                     loginWay = LOGIN_PHONE;
-
                     mTvLoginWayTitleZh.setText(StringUtils.getString(R.string.login_way_phone_zh));
                     mTvLoginWayTitleEn.setText(StringUtils.getString(R.string.login_way_phone_en));
                     accountLoginLayout.setVisibility(View.GONE);
@@ -237,16 +230,14 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
             finish();
         } else if (LoginManager.LOGIN_CODE_FAIL_BUSINESS == code) {
             ToastUtils.show("登录失败\n" + data);
-        } else {
-
         }
     }
 
     private boolean prepareForLogin(boolean isQuicklyLogin) {
         if (!isQuicklyLogin) {
-            accpunt = mEtAccount.getText().toString();
+            account = mEtAccount.getText().toString();
             pwd = mEtPwd.getText().toString();
-            if (TextUtils.isEmpty(accpunt)) {
+            if (TextUtils.isEmpty(account)) {
 //                mEtAccount.setError("请输入用户名");
                 ToastUtils.show("请输入用户名");
                 mEtAccount.requestFocus();
@@ -268,12 +259,10 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                 mEtPhone.requestFocus();
                 return false;
             }
-
             if (!ValidateUtil.checkMobileNumber(mobile)) {
                 ToastUtils.show("手机号格式错误！");
                 return false;
             }
-
             if (TextUtils.isEmpty(code)) {
 //                mEtCode.setError("请输入验证码");
                 ToastUtils.show("请输入验证码");
@@ -281,7 +270,6 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                 return false;
             }
         }
-
         return true;
     }
 
@@ -290,7 +278,6 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
      */
     private void doCellPhoneExists() {
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, mobile);
-
         MDRetrofit.getInstance()
                 .createService()
                 .CellPhoneExists(body)
@@ -328,7 +315,6 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
      */
     private void doSendSmsCode() {
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, mobile);
-
         showLoadingDialog("正在获取验证码...");
         MDRetrofit.getInstance()
                 .createService()
