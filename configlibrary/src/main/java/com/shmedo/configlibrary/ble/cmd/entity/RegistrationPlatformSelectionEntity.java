@@ -1,6 +1,5 @@
 package com.shmedo.configlibrary.ble.cmd.entity;
 
-import com.shmedo.configlibrary.ble.exception.DASParameterException;
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -20,11 +19,6 @@ public class RegistrationPlatformSelectionEntity implements Validater {
 
     @Override
     public void validate() {
-        if (number != 1 && number != 2 && number != 3)
-            throw new DASParameterException("服务器(数据中心)编号有误");
-
-        if (registrationPlatform != 0 && registrationPlatform != 1 && registrationPlatform != 2)
-            throw new DASParameterException("平台类型参数错误");
     }
 
     @Override

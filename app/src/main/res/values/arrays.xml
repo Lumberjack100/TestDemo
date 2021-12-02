@@ -6,6 +6,14 @@
         <item>0.5</item>
     </string-array>
 
+    <!--  注册平台-->
+    <string-array name="register_platform">
+        <item>地灾一期</item>
+        <item>成都理工平台</item>
+        <item>MDNET</item>
+        <item>地灾二期</item>
+    </string-array>
+
     <!--  ADME 执行结构日志输出方式-->
     <string-array name="adme_device_mode">
         <item>设备配置模式</item>

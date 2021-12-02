@@ -52,45 +52,6 @@
 
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="10dp"
-            android:visibility="gone"/>
-
-        <LinearLayout
-            android:id="@+id/productRegisterLayout"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="产品注册" />
-
-            <TextView style="@style/Common_ClickableItem_ValueStyle" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="18dp"
-            android:background="@color/divider_line_bg_efefef"
-            android:visibility="gone"/>
-
-        <LinearLayout
-            android:id="@+id/modifyAuthCodeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="修改授权码" />
-
-            <TextView style="@style/Common_ClickableItem_ValueStyle" />
-
-        </LinearLayout>
-
-        <Space
-            android:layout_width="wrap_content"
             android:layout_height="10dp" />
 
         <LinearLayout
@@ -121,6 +82,21 @@
 
         </LinearLayout>
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="10dp" />
+
+        <LinearLayout
+            android:id="@+id/chongQingTestLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text=" 重庆地灾测试" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+        </LinearLayout>
 
         <Space
             android:layout_width="wrap_content"

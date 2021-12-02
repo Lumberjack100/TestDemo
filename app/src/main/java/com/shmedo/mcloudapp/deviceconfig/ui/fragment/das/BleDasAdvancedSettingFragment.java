@@ -11,9 +11,14 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.configlibrary.ble.cmd.entity.DataCenterCommunicateProtoclEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.InstallLocationEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.RegistrationPlatformSelectionEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
@@ -26,6 +31,9 @@ import com.shmedo.mcloudapp.util.LocationUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 import butterknife.OnClick;
 import timber.log.Timber;
 
@@ -36,6 +44,9 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
     private static final int RESET = 0x0001;
 
     private String installLocation;
+
+    private String serverNumber;
+    private LinkedList<String> commandItems = new LinkedList<>();
 
 
     @Override
@@ -50,6 +61,15 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
     }
 
     /**
+     * 恢复出厂设置指令
+     */
+    private void reset() {
+        String command = CommandManager.getInstance().getCommand(CommandType.RESTORE_FACTORY_SETTING);
+        sendCommand(command);
+        Timber.d("发送恢复出厂设置指令===%s", command);
+    }
+
+    /**
      * 查询设备安装位置
      */
     private void queryInstallLocation() {
@@ -59,51 +79,54 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         Timber.i("查询安装位置：%s", command);
     }
 
-    /**
-     * 恢复出厂设置指令
-     */
-    private void reset() {
-        String command = CommandManager.getInstance().getCommand(CommandType.RESTORE_FACTORY_SETTING);
-        sendCommand(command);
-        Timber.d("发送恢复出厂设置指令===%s", command);
+    private void setChongQingRegisterPlatform(int number) {
+        commandItems.clear();
+
+        //网络中心通讯协议
+        DataCenterCommunicateProtoclEntity communicateProtoclEntity = new DataCenterCommunicateProtoclEntity(number, 1);
+        String command = CommandManager.getInstance().getCommand(CommandType.NET_LINK_COMMUN_PROTOCOL, communicateProtoclEntity);
+        commandItems.add(command);
+
+        //选择注册平台
+        RegistrationPlatformSelectionEntity platformSelectionEntity = new RegistrationPlatformSelectionEntity(number, 4);
+        command = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
+        commandItems.add(command);
+
+        //关闭服务器
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(number);
+        command = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);
+        commandItems.add(command);
+
+        command = "##00644" + number;
+        commandItems.add(command);
+
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
+        sendCommand(commandItems.getFirst());
+        Timber.d("设置重庆地灾平台指令===%s", commandItems.getFirst());
     }
 
-    @OnClick({R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.resetLayout:
-                showWarnDialog("温馨提示", "确定恢复出厂设置吗？", RESET);
-                break;
+    @OnClick({R.id.resetLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout, R.id.chongQingTestLayout})
+    public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
+        if (!isConnected()) {
+            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+            return;
+        }
+        int id = view.getId();
+        if (id == R.id.resetLayout) {
+            showWarnDialog("温馨提示", "确定恢复出厂设置吗？", RESET);
+        } else if (id == R.id.syncInstallLocationLayout) {
+            SyncInstallationLocationDialog newFragment = new SyncInstallationLocationDialog(mActivity, installLocation);
+            newFragment.setDialogFragmentClickListener(LocationFragmentClickListener);
+            newFragment.show(getChildFragmentManager(), "dialog");
 
-            case R.id.workModeLayout:
-                ToastUtils.show("正在研发中,敬请期待...");
-                break;
+        } else if (id == R.id.customCommandLogPrintLayout) {
+            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
 
-            case R.id.productRegisterLayout:
-                ToastUtils.show("正在研发中,敬请期待...");
-                break;
-
-            case R.id.modifyAuthCodeLayout:
-                ToastUtils.show("正在研发中,敬请期待...");
-                break;
-
-            case R.id.syncInstallLocationLayout:
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    return;
-                }
-                SyncInstallationLocationDialog newFragment = new SyncInstallationLocationDialog(mActivity, installLocation);
-                newFragment.setDialogFragmentClickListener(LocationFragmentClickListener);
-                newFragment.show(getChildFragmentManager(), "dialog");
-                break;
-
-            case R.id.customCommandLogPrintLayout:
-                if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                    return;
-                }
-                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                break;
+        } else if (id == R.id.chongQingTestLayout) {
+            showRegisterPlatformDialog();
         }
     }
 
@@ -140,13 +163,11 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         public boolean onPositiveClick(View view, String location) {
             if (!TextUtils.isEmpty(location)) {
                 installLocation = location;
-
                 startDefaultProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
                 String command = "##9161" + location + "\r\n";
                 sendCommand(command);
                 Timber.i("同步安装位置指令：%s", command);
             }
-
             return true;
         }
 
@@ -155,6 +176,25 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
 
         }
     };
+
+    private void showRegisterPlatformDialog() {
+        String[] numbers = new String[]{"1", "2", "3"};
+        int pos = Arrays.asList(numbers).indexOf(serverNumber);
+        pos = pos == -1 ? 0 : pos;
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("选择数据中心", numbers,
+                        null, pos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                serverNumber = text;
+                                setChongQingRegisterPlatform(position + 1);
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
+    }
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
@@ -199,10 +239,59 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                 ToastUtils.show("设备开始恢复出厂设置...");
                 break;
 
+            case NET_LINK_COMMUN_PROTOCOL://设置通讯协议应答
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("网络中心通讯协议配置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    return;
+                }
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
+                } else {
+                    doAfterSetting();
+                }
+                break;
+
+            case AUTO_REGISTRATION_PLATFORM:// MQTT 自动注册设置通选择注册平台时应答
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("选择平台配置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    return;
+                }
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
+                } else {
+                    doAfterSetting();
+                }
+                break;
+
+            case SET_SERVER_ADDRESS_PORT://设置数据服务器地址、端口应答
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("数据服务器地址、端口配置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    return;
+                }
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
+                } else {
+                    doAfterSetting();
+                }
+                break;
+
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
         }
+    }
+
+
+    private void doAfterSetting() {
+        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+//        saveConfigInfoNoReboot();
     }
 
     @Override

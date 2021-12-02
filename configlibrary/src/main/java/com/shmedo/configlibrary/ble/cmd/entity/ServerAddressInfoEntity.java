@@ -22,9 +22,6 @@ public class ServerAddressInfoEntity implements Validater {
 
     @Override
     public void validate() {
-        if (number != 1 && number != 2 && number != 3)
-            throw new DASParameterException("服务器编号错误");
-
         if (TextUtils.isEmpty(address))
             throw new DASParameterException("服务器地址不能为空");
 

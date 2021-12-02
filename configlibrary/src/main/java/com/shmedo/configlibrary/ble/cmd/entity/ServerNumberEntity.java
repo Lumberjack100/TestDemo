@@ -1,6 +1,5 @@
 package com.shmedo.configlibrary.ble.cmd.entity;
 
-import com.shmedo.configlibrary.ble.exception.DASParameterException;
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -16,8 +15,6 @@ public class ServerNumberEntity implements Validater {
 
     @Override
     public void validate() {
-        if (number != 1 && number != 2 && number != 3)
-            throw new DASParameterException("服务器编号不存在");
     }
 
     @Override

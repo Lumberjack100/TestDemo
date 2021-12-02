@@ -21,9 +21,6 @@ public class APPKeyEntity implements Validater {
 
     @Override
     public void validate() {
-        if (number != 1 && number != 2 && number != 3)
-            throw new DASParameterException("服务器编号错误");
-
         if (TextUtils.isEmpty(appKey))
             throw new DASParameterException("appKey不能为空");
     }

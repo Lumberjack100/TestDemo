@@ -103,7 +103,7 @@ public class MqttConfigInfo implements Serializable {
     }
 
     public String getRegisterPlatform() {
-        return TextUtils.isEmpty(registerPlatform) ? "" : registerPlatform;
+        return TextUtils.isEmpty(registerPlatform) ? "0" : registerPlatform;
     }
 
     public void setRegisterPlatform(String registerPlatform) {

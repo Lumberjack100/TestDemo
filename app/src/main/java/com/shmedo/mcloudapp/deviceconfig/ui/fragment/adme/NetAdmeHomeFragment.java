@@ -191,7 +191,6 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     }
 
     private void showSwitchConfigModelDialog() {
-        final String[] modes = getResources().getStringArray(R.array.adme_device_mode);
         int pos = Arrays.asList(modes).indexOf(String.valueOf(mTvConfigModel.getText()));
         pos = pos == -1 ? 0 : pos;
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));

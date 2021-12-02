@@ -19,9 +19,6 @@ public class MQTTKeepAliveEntity implements Validater {
 
     @Override
     public void validate() {
-        if (number != 1 && number != 2 && number != 3)
-            throw new DASParameterException("服务器编号错误");
-
         if (keepAlive < 0 || keepAlive > 65535)
             throw new DASParameterException("keepAlive错误");
     }

@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.constant.RegexConstants;
+import com.blankj.utilcode.util.RegexUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -144,7 +146,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String cmdKeepAliveValue;//
     private String cmdPlatformParam;//手动/自动注册平台参数
 
-    private String[] platforms = new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期"};
+    private String[] platforms;
 
     public static BleDasDataCenterServerConfigFragment newInstance(ServerNumber serverNumber) {
         BleDasDataCenterServerConfigFragment fragment = new BleDasDataCenterServerConfigFragment();
@@ -170,6 +172,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        platforms = getResources().getStringArray(R.array.register_platform);
         setView();
         setSwitchViewListener();
         initRefreshLayout();
@@ -743,7 +746,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             mqttConfigInfo = new MqttConfigInfo();
             return;
         }
-
         switch (mqttConfigInfo.getCommunicationProtocol()) {
             case "2":
                 communicationProtocolOld = "2";
@@ -760,27 +762,11 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 updateViewByCommunicationProtocol(2, "MQTT手动注册");
                 break;
         }
-
-        switch (mqttConfigInfo.getRegisterPlatform()) {
-            case "0"://地大平台
-                registerPlatformOld = "0";
-                updateViewByRegisterPlatform(0, platforms[0]);
-                break;
-
-            case "1"://成都理工平台
-                registerPlatformOld = "1";
-                updateViewByRegisterPlatform(1, platforms[1]);
-                break;
-
-            case "2"://米度平台
-                registerPlatformOld = "2";
-                updateViewByRegisterPlatform(2, platforms[2]);
-                break;
-
-            case "3"://地灾二期
-                registerPlatformOld = "3";
-                updateViewByRegisterPlatform(3, platforms[3]);
-                break;
+        if (RegexUtils.isMatch(RegexConstants.REGEX_POSITIVE_INTEGER, mqttConfigInfo.getRegisterPlatform())) {
+            registerPlatformOld = mqttConfigInfo.getRegisterPlatform();
+            int number = Integer.parseInt(mqttConfigInfo.getRegisterPlatform());
+            if (number < platforms.length)
+                updateViewByRegisterPlatform(number, platforms[number]);
         }
 
         dataServerAddress = mqttConfigInfo.getDataPlatformAddress().trim();

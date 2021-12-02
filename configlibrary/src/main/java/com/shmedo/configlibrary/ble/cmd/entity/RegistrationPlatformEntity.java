@@ -1,6 +1,5 @@
 package com.shmedo.configlibrary.ble.cmd.entity;
 
-import com.shmedo.configlibrary.ble.exception.DASParameterException;
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -23,8 +22,8 @@ public class RegistrationPlatformEntity implements Validater {
 
     @Override
     public void validate() {
-        if (number != 1 && number != 2 && number != 3)
-            throw new DASParameterException("服务器编号错误");
+//        if (number != 1 && number != 2 && number != 3)
+//            throw new DASParameterException("服务器编号错误");
 
 //        if (TextUtils.isEmpty(sNOrProductId))
 //            throw new DASParameterException("设备SN号/产品ID不能为空");
