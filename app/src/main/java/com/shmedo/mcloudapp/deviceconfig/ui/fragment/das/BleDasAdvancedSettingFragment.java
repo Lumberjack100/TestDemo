@@ -100,6 +100,9 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         command = "##00644" + number + "\r\n";
         commandItems.add(command);
 
+        command = "##0061" + "\r\n";
+        commandItems.add(command);
+
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         sendCommand(commandItems.getFirst());
         Timber.d("设置重庆地灾平台指令===%s", commandItems.getFirst());
@@ -282,8 +285,23 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
+            case SAVE_CONFIG_INFO://设置数据服务器地址、端口应答
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("保存配置信息错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    return;
+                }
+                break;
+
             default:
-                super.parseResponseMessage(cmdStr);
+                if (commandItems.size() > 0)
+                    commandItems.removeFirst();
+
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
+                } else {
+                    doAfterSetting();
+                }
                 break;
         }
     }
@@ -291,7 +309,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
 
     private void doAfterSetting() {
         stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-//        saveConfigInfoNoReboot();
+        saveConfigInfoNoReboot();
     }
 
     @Override

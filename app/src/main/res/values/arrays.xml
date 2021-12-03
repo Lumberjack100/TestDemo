@@ -6,7 +6,14 @@
         <item>0.5</item>
     </string-array>
 
-    <!--  注册平台-->
+    <!-- 注册协议-->
+    <string-array name="register_protocol">
+        <item>MDM协议</item>
+        <item>MQTT自动注册</item>
+        <item>MQTT手动注册</item>
+    </string-array>
+
+    <!-- 注册平台-->
     <string-array name="register_platform">
         <item>地灾一期</item>
         <item>成都理工平台</item>

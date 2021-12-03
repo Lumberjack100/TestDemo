@@ -45,6 +45,8 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -120,9 +122,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private ServerNumber serverNumber;
     private MqttConfigInfo mqttConfigInfo = new MqttConfigInfo();
 
-    private int communicationProtocolPos;
-    private int registerPlatformPos;
-
     private String communicationProtocolOld;//网络中心通讯协议
     private String registerPlatformOld;//网络中心通讯协议
 
@@ -146,6 +145,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String cmdKeepAliveValue;//
     private String cmdPlatformParam;//手动/自动注册平台参数
 
+    private String[] registProtocols;
     private String[] platforms;
 
     public static BleDasDataCenterServerConfigFragment newInstance(ServerNumber serverNumber) {
@@ -172,6 +172,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        registProtocols = getResources().getStringArray(R.array.register_protocol);
         platforms = getResources().getStringArray(R.array.register_platform);
         setView();
         setSwitchViewListener();
@@ -327,93 +328,84 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         }
     }
 
+    /**
+     * 选择注册协议
+     */
     private void showCommunicationProtocolDialog() {
+        int pos = Arrays.asList(registProtocols).indexOf(String.valueOf(mTvCommunicationProtocol.getText()));
+        pos = pos == -1 ? 0 : pos;
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"MDM协议", "MQTT自动注册", "MQTT手动注册"},
-                        null, communicationProtocolPos, true,
+                .asBottomList("", registProtocols,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                updateViewByCommunicationProtocol(position, text);
+                                updateViewByCommunicationProtocol(text);
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
+    /**
+     * 选择注册平台
+     */
     private void showRegisterPlatformDialog() {
+        int pos = Arrays.asList(platforms).indexOf(String.valueOf(mTvRegisterPlatform.getText()));
+        pos = pos == -1 ? 0 : pos;
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", platforms,
-                        null, registerPlatformPos, true,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                updateViewByRegisterPlatform(position, text);
+                                updateViewByRegisterPlatform(text);
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
-    private void updateViewByCommunicationProtocol(int position, String text) {
-        communicationProtocolPos = position;
+    private void updateViewByCommunicationProtocol(String text) {
         mTvCommunicationProtocol.setText(text);
-
-        switch (text) {
-            case "MDM协议":
-                communicationProtocol = "2";
-                registerPlatformLayout.setVisibility(View.GONE);
-                registerPlatformAddressLayout.setVisibility(View.GONE);
-                keepAliveLayout.setVisibility(View.GONE);
-                autoRegisterSpecialInfoLayout.setVisibility(View.GONE);
-                manualRegisterSpecialInfoLayout.setVisibility(View.GONE);
-                break;
-
-            case "MQTT自动注册":
-                communicationProtocol = "4";
-                registerPlatformLayout.setVisibility(View.VISIBLE);
-                registerPlatformAddressLayout.setVisibility(View.VISIBLE);
-                keepAliveLayout.setVisibility(View.VISIBLE);
-                autoRegisterSpecialInfoLayout.setVisibility(View.VISIBLE);
-                manualRegisterSpecialInfoLayout.setVisibility(View.GONE);
-                break;
-
-            case "MQTT手动注册":
-                communicationProtocol = "5";
-                registerPlatformLayout.setVisibility(View.VISIBLE);
-                registerPlatformAddressLayout.setVisibility(View.GONE);
-                keepAliveLayout.setVisibility(View.VISIBLE);
-                autoRegisterSpecialInfoLayout.setVisibility(View.GONE);
-                manualRegisterSpecialInfoLayout.setVisibility(View.VISIBLE);
-                break;
+        if (text.equals(registProtocols[0])) {//"MDM协议"
+            communicationProtocol = "2";
+            registerPlatformLayout.setVisibility(View.GONE);
+            registerPlatformAddressLayout.setVisibility(View.GONE);
+            keepAliveLayout.setVisibility(View.GONE);
+            autoRegisterSpecialInfoLayout.setVisibility(View.GONE);
+            manualRegisterSpecialInfoLayout.setVisibility(View.GONE);
+        } else if (text.equals(registProtocols[1])) {//"MQTT自动注册"
+            communicationProtocol = "4";
+            registerPlatformLayout.setVisibility(View.VISIBLE);
+            registerPlatformAddressLayout.setVisibility(View.VISIBLE);
+            keepAliveLayout.setVisibility(View.VISIBLE);
+            autoRegisterSpecialInfoLayout.setVisibility(View.VISIBLE);
+            manualRegisterSpecialInfoLayout.setVisibility(View.GONE);
+        } else if (text.equals(registProtocols[2])) {//"MQTT手动注册"
+            communicationProtocol = "5";
+            registerPlatformLayout.setVisibility(View.VISIBLE);
+            registerPlatformAddressLayout.setVisibility(View.GONE);
+            keepAliveLayout.setVisibility(View.VISIBLE);
+            autoRegisterSpecialInfoLayout.setVisibility(View.GONE);
+            manualRegisterSpecialInfoLayout.setVisibility(View.VISIBLE);
         }
     }
 
-    private void updateViewByRegisterPlatform(int position, String text) {
-        registerPlatformPos = position;
+    private void updateViewByRegisterPlatform(String text) {
         mTvRegisterPlatform.setText(text);
-        switch (text) {
-            case "地灾一期":
-                registerPlatform = "0";
-                break;
-
-            case "成都理工平台":
-                registerPlatform = "1";
-                break;
-
-            case "MDNET":
-                registerPlatform = "2";
-                break;
-
-            case "地灾二期":
-                registerPlatform = "3";
-                break;
-
-            case "重庆地灾平台":
-                registerPlatform = "4";
-                break;
+        if (text.equals(platforms[0])) {//"地灾一期"
+            registerPlatform = "0";
+        } else if (text.equals(platforms[1])) {//"成都理工平台"
+            registerPlatform = "1";
+        } else if (text.equals(platforms[2])) {//"MDNET"
+            registerPlatform = "2";
+        } else if (text.equals(platforms[3])) {//"地灾二期"
+            registerPlatform = "3";
+        } else if (text.equals(platforms[4])) {//"重庆地灾测试"
+            registerPlatform = "4";
         }
     }
 
@@ -750,29 +742,21 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             mqttConfigInfo = new MqttConfigInfo();
             return;
         }
-        switch (mqttConfigInfo.getCommunicationProtocol()) {
-            case "2":
-                communicationProtocolOld = "2";
-                updateViewByCommunicationProtocol(0, "MDM协议");
-                break;
-
-            case "4":
-                communicationProtocolOld = "4";
-                updateViewByCommunicationProtocol(1, "MQTT自动注册");
-                break;
-
-            case "5":
-                communicationProtocolOld = "5";
-                updateViewByCommunicationProtocol(2, "MQTT手动注册");
-                break;
+        communicationProtocolOld = mqttConfigInfo.getCommunicationProtocol();
+        if (communicationProtocolOld.equals("2")) {
+            updateViewByCommunicationProtocol(registProtocols[0]);
+        } else if (communicationProtocolOld.equals("4")) {
+            updateViewByCommunicationProtocol(registProtocols[1]);
+        } else if (communicationProtocolOld.equals("5")) {
+            updateViewByCommunicationProtocol(registProtocols[2]);
         }
+
         if (RegexUtils.isMatch(RegexConstants.REGEX_POSITIVE_INTEGER, mqttConfigInfo.getRegisterPlatform())) {
             registerPlatformOld = mqttConfigInfo.getRegisterPlatform();
             int number = Integer.parseInt(mqttConfigInfo.getRegisterPlatform());
             if (number < platforms.length)
-                updateViewByRegisterPlatform(number, platforms[number]);
+                updateViewByRegisterPlatform(platforms[number]);
         }
-
         dataServerAddress = mqttConfigInfo.getDataPlatformAddress().trim();
         String[] strs = dataServerAddress.split(" ");
         if (strs.length == 2) {
@@ -839,7 +823,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         if (!mSbCenterEnable.isChecked()) {
             return false;
         }
-
         if (communicationProtocolOld != null && communicationProtocol != null && !communicationProtocolOld.equals(communicationProtocol)) {
             return true;
         }
@@ -849,7 +832,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
             return true;
         }
-
         if (communicationProtocol != null && communicationProtocol.equals("4")) {//MQTT自动注册
             if (registerPlatformOld != null && registerPlatform != null && !registerPlatformOld.equals(registerPlatform)) {
                 return true;
