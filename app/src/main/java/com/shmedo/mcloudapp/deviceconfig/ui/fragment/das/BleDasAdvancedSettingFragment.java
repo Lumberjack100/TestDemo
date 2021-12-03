@@ -97,7 +97,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         command = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, serverNumberEntity);
         commandItems.add(command);
 
-        command = "##00644" + number;
+        command = "##00644" + number + "\r\n";
         commandItems.add(command);
 
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
@@ -178,7 +178,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
     };
 
     private void showRegisterPlatformDialog() {
-        String[] numbers = new String[]{"1", "2", "3"};
+        String[] numbers = new String[]{"1", "2"};
         int pos = Arrays.asList(numbers).indexOf(serverNumber);
         pos = pos == -1 ? 0 : pos;
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));

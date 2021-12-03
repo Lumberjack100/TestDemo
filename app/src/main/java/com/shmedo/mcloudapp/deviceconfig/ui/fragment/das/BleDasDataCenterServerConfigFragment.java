@@ -410,6 +410,10 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case "地灾二期":
                 registerPlatform = "3";
                 break;
+
+            case "重庆地灾平台":
+                registerPlatform = "4";
+                break;
         }
     }
 
@@ -742,7 +746,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private void initDataCenterData(String cmdStr) {
         mqttConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
         if (mqttConfigInfo == null) {
-            Timber.w(" MqttConfigInfo 为空!");
+            Timber.w("MqttConfigInfo 为空!");
             mqttConfigInfo = new MqttConfigInfo();
             return;
         }

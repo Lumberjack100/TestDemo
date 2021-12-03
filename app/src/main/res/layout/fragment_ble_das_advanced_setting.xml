@@ -92,7 +92,7 @@
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                android:text=" 重庆地灾测试" />
+                android:text="NBIOT测试" />
 
             <TextView style="@style/Common_ClickableItem_ValueStyle" />
 
