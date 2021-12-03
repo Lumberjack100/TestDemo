@@ -271,7 +271,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                 break;
 
             case SET_SERVER_ADDRESS_PORT://设置数据服务器地址、端口应答
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+//                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("数据服务器地址、端口配置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
@@ -291,6 +291,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
+                ToastUtils.show("配置成功");
                 break;
 
             default:
@@ -308,6 +309,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
 
 
     private void doAfterSetting() {
+//        ToastUtils.show("配置成功");
         stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
         saveConfigInfoNoReboot();
     }
