@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,9 +88,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     @BindView(R.id.ll_data_settlement_method)
     ViewGroup dataSettlementMethodLayout;
 
-    private int inclinometerTypePos;
-    private int dataSettlementMethodPos;
-
     private String inclinometerTypeOld;//测斜仪类型
     private String inclinometerType;// 测斜仪类型
     private String address;// 采集器地址/Mac 地址
@@ -98,6 +96,8 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private String decentralizationWaitingTime;//下放等待时间(min)
     private String dataSettlementMethodOld;//数据结算方式
     private String dataSettlementMethod;// 数据结算方式
+    private final String[] inclinometerTypes = new String[]{"433测斜仪", "蓝牙测斜仪"};
+    private final String[] settlementMethods = new String[]{"顶固定法", "底固定法"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -141,15 +141,15 @@ public class AdmeBasicParamConfigView extends LinearLayout {
      * 选择测斜仪类型
      */
     public void showInclinometerTypeDialog(Context context) {
+        int pos = Arrays.asList(inclinometerTypes).indexOf(String.valueOf(mTvInclinometerType.getText()));
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"433测斜仪", "蓝牙测斜仪"},
-                        null, inclinometerTypePos, true,
+                .asBottomList("", inclinometerTypes,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                inclinometerTypePos = position;
                                 mTvInclinometerType.setText(text);
                                 if (position == 0) {
                                     inclinometerType = "0";
@@ -169,15 +169,15 @@ public class AdmeBasicParamConfigView extends LinearLayout {
      * 选择数据结算方式
      */
     public void showDataSettlementMethodDialog(Context context) {
+        int pos = Arrays.asList(settlementMethods).indexOf(String.valueOf(mTvDataSettlementMethod.getText()));
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"顶固定法", "底固定法"},
-                        null, dataSettlementMethodPos, true,
+                .asBottomList("", settlementMethods,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                dataSettlementMethodPos = position;
                                 mTvDataSettlementMethod.setText(text);
                                 if (position == 0) {
                                     dataSettlementMethod = "0";
@@ -349,14 +349,12 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             inclinometerTypeLayout.setVisibility(View.GONE);
         } else {
             if (inclinometerTypeOld.equals("0")) {
-                inclinometerTypePos = 0;
-                mTvInclinometerType.setText("433测斜仪");
+                mTvInclinometerType.setText(inclinometerTypes[0]);
                 mEtCollectorAddress.setText(address);
                 collectorAddressLayout.setVisibility(View.VISIBLE);
                 macAddressLayout.setVisibility(View.GONE);
             } else {
-                inclinometerTypePos = 1;
-                mTvInclinometerType.setText("蓝牙测斜仪");
+                mTvInclinometerType.setText(inclinometerTypes[1]);
                 mEtMacAddress.setText(address);
                 collectorAddressLayout.setVisibility(View.GONE);
                 macAddressLayout.setVisibility(View.VISIBLE);
@@ -388,11 +386,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             dataSettlementMethodLayout.setVisibility(View.GONE);
         } else {
             if (dataSettlementMethodOld.equals("0")) {
-                dataSettlementMethodPos = 0;
-                mTvDataSettlementMethod.setText("顶固定法");
+                mTvDataSettlementMethod.setText(settlementMethods[0]);
             } else {
-                dataSettlementMethodPos = 1;
-                mTvDataSettlementMethod.setText("底固定法");
+                mTvDataSettlementMethod.setText(settlementMethods[1]);
             }
         }
     }

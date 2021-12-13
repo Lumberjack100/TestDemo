@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeLowEnergyModeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeVoltageConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
@@ -122,6 +123,10 @@ public class NetAdmeAdvancedConfigFragment extends BaseFragment {
             case "继电器使能":
                 AdmeLowEnergyModeActivity.startActivity(mActivity, projectDeviceInfo);
                 break;
+
+            case "电压配置":
+                AdmeVoltageConfigActivity.startActivity(mActivity, projectDeviceInfo);
+                break;
         }
     }
 
@@ -144,6 +149,9 @@ public class NetAdmeAdvancedConfigFragment extends BaseFragment {
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "继电器使能", "参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "电压配置", "参数配置");
         configModuleList.add(configModule);
     }
 }

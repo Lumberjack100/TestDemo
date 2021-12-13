@@ -24,6 +24,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -134,8 +135,6 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     @BindView(R.id.ll_point_offset)
     ViewGroup pointOffsetLayout;
 
-    private int dataSettlementMethodPos;
-    private int dataResponsePos;
 
     private String dataSettlementMethodOld;//数据结算方式
     private String dataSettlementMethod;// 数据结算方式
@@ -155,6 +154,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     private String intervalCompensation;// 距离补偿区间h1
     private String intervalFitting;// 数据拟合区间h2
     private String pointOffset;// 测点偏移距离h3
+
+    private final String[] settlementMethods = new String[]{"顶固定法", "底固定法"};
+    private final String[] dataResponseTypes = new String[]{"关闭", "启用"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
     public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo;
@@ -195,11 +197,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
 
-        dataSettlementMethodPos = 0;
         mTvDataSettlementMethod.setText("顶固定法");
         dataSettlementMethodOld = "0";
 
-        dataResponsePos = 0;
         mTvDataResponse.setText("关闭");
         dataResponseOld = "0";
     }
@@ -208,15 +208,15 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
      * 选择数据结算方式
      */
     public void showDataSettlementMethodDialog(Context context) {
+        int pos = Arrays.asList(settlementMethods).indexOf(String.valueOf(mTvDataSettlementMethod.getText()));
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"顶固定法", "底固定法"},
-                        null, dataSettlementMethodPos, true,
+                .asBottomList("", settlementMethods,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                dataSettlementMethodPos = position;
                                 mTvDataSettlementMethod.setText(text);
                                 if (position == 0) {
                                     dataSettlementMethod = "0";
@@ -232,15 +232,15 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
      * 选择数据应答方式
      */
     public void showDataResponseDialog(Context context) {
+        int pos = Arrays.asList(dataResponseTypes).indexOf(String.valueOf(mTvDataResponse.getText()));
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"关闭", "启用"},
-                        null, dataResponsePos, true,
+                .asBottomList("", dataResponseTypes,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                dataResponsePos = position;
                                 mTvDataResponse.setText(text);
                                 if (position == 0) {
                                     dataResponse = "0";
@@ -593,22 +593,18 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             dataSettlementMethodLayout.setVisibility(View.GONE);
         } else {
             if (dataSettlementMethodOld.equals("0")) {
-                dataSettlementMethodPos = 0;
-                mTvDataSettlementMethod.setText("顶固定法");
+                mTvDataSettlementMethod.setText(settlementMethods[0]);
             } else {
-                dataSettlementMethodPos = 1;
-                mTvDataSettlementMethod.setText("底固定法");
+                mTvDataSettlementMethod.setText(settlementMethods[1]);
             }
         }
         if (dataResponseOld.equals("NullKey")) {
             dataResponseLayout.setVisibility(View.GONE);
         } else {
             if (dataResponseOld.equals("0")) {
-                dataResponsePos = 0;
-                mTvDataResponse.setText("关闭");
+                mTvDataResponse.setText(dataResponseTypes[0]);
             } else {
-                dataResponsePos = 1;
-                mTvDataResponse.setText("启用");
+                mTvDataResponse.setText(dataResponseTypes[1]);
             }
         }
         try {

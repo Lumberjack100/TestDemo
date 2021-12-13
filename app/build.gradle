@@ -8,7 +8,7 @@ apply plugin: 'kotlin-android'
  * @return
  */
 def getAppName() {
-    return '米易通'
+    return 'mcloudapp'
 }
 
 /**
@@ -166,6 +166,7 @@ dependencies {
     implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
 
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
     // Glide

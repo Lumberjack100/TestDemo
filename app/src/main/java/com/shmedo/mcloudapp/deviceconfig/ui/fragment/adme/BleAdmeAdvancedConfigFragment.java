@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeLowEnergyModeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeVoltageConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
@@ -112,6 +113,10 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
             case "继电器使能":
                 AdmeLowEnergyModeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
+
+            case "电压配置":
+                AdmeVoltageConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                break;
         }
     }
 
@@ -135,6 +140,9 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "继电器使能", "参数配置");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "电压配置", "参数配置");
         configModuleList.add(configModule);
     }
 

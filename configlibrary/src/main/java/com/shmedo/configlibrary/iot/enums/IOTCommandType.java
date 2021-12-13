@@ -436,6 +436,16 @@ public enum IOTCommandType {
      */
     ADME_MD_SET_LOW_ENERGY_MODE("md_setlowenergy"),
 
+    /**
+     * 获取ADME的电压配置参数
+     */
+    ADME_MD_GET_VOLTAGE("md_getvoltage"),
+
+    /**
+     * 设置ADME的电压配置参数
+     */
+    ADME_MD_SET_VOLTAGE("md_setvoltage"),
+
     /*　 M20 指令  */
     /**
      * 获取M20的基本信息

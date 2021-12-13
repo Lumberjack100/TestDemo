@@ -25,6 +25,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,9 +88,6 @@ public class AdmeInclinometerView extends LinearLayout {
     @BindView(R.id.ll_correction_value)
     ViewGroup correctionValueLayout;
 
-    private int inclinometerTypePos;
-    private int lowPowerModePos;
-
     private String inclinometerTypeOld;//测斜仪类型
     private String inclinometerType;// 测斜仪类型
     private String lowPowerModeOld;//低功耗模式
@@ -99,6 +97,10 @@ public class AdmeInclinometerView extends LinearLayout {
     private String solvingInterval;//采集器解算间隔
     private String sleepTime;//休眠时间
     private String correctionValue;//测斜仪修正值
+
+    private final String[] inclinometerTypes = new String[]{"433测斜仪", "蓝牙测斜仪"};
+    private final String[] powerModes = new String[]{"关闭", "开启"};
+
 
     private DecimalFormat decimalFormat = new DecimalFormat();
     public AdmeInclinometerInfo admeInclinometerInfo;
@@ -136,15 +138,15 @@ public class AdmeInclinometerView extends LinearLayout {
      * 选择测斜仪类型
      */
     public void showInclinometerTypeDialog(Context context) {
+        int pos = Arrays.asList(inclinometerTypes).indexOf(String.valueOf(mTvInclinometerType.getText()));
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"433测斜仪", "蓝牙测斜仪"},
-                        null, inclinometerTypePos, true,
+                .asBottomList("", inclinometerTypes,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                inclinometerTypePos = position;
                                 mTvInclinometerType.setText(text);
                                 if (position == 0) {
                                     inclinometerType = "0";
@@ -164,15 +166,15 @@ public class AdmeInclinometerView extends LinearLayout {
      * 选择低功耗模式
      */
     public void showLowPowerModeDialog(Context context) {
+        int pos = Arrays.asList(powerModes).indexOf(String.valueOf(mTvLowPowerMode.getText()));
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"关闭", "开启"},
-                        null, lowPowerModePos, true,
+                .asBottomList("", powerModes,
+                        null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                lowPowerModePos = position;
                                 mTvLowPowerMode.setText(text);
                                 if (position == 0) {
                                     lowPowerMode = "0";
@@ -332,15 +334,13 @@ public class AdmeInclinometerView extends LinearLayout {
             inclinometerTypeLayout.setVisibility(View.GONE);
         } else {
             if (inclinometerTypeOld.equals("0")) {
-                inclinometerTypePos = 0;
-                mTvInclinometerType.setText("433测斜仪");
+                mTvInclinometerType.setText(inclinometerTypes[0]);
                 mEtCollectorAddress.setText(address);
                 collectorAddressLayout.setVisibility(View.VISIBLE);
                 macAddressLayout.setVisibility(View.GONE);
 
             } else {
-                inclinometerTypePos = 1;
-                mTvInclinometerType.setText("蓝牙测斜仪");
+                mTvInclinometerType.setText(inclinometerTypes[1]);
                 mEtMacAddress.setText(address);
                 collectorAddressLayout.setVisibility(View.GONE);
                 macAddressLayout.setVisibility(View.VISIBLE);
@@ -350,11 +350,9 @@ public class AdmeInclinometerView extends LinearLayout {
             lowPowerModeLayout.setVisibility(View.GONE);
         } else {
             if (lowPowerModeOld.equals("0")) {
-                lowPowerModePos = 0;
-                mTvLowPowerMode.setText("关闭");
+                mTvLowPowerMode.setText(powerModes[0]);
             } else {
-                lowPowerModePos = 1;
-                mTvLowPowerMode.setText("开启");
+                mTvLowPowerMode.setText(powerModes[1]);
             }
         }
 
