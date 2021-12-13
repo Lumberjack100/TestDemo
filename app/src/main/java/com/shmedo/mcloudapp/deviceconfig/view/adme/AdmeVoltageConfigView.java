@@ -214,11 +214,11 @@ public class AdmeVoltageConfigView extends LinearLayout {
         String command = "";
         try {
             AdmeVoltageConfigEntity entity = new AdmeVoltageConfigEntity();
-            entity.setDriveovervolt(voltageConfigInfo.getDriveovervolt().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveOverVoltageThreshold)));
-            entity.setDrivelowvolt(voltageConfigInfo.getDrivelowvolt().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveLowVoltageThreshold)));
-            entity.setDriveundervolt(voltageConfigInfo.getDriveundervolt().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveUnderVoltageThreshold)));
-            entity.setInclowvolt(voltageConfigInfo.getInclowvolt().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerLowVoltageThreshold)));
-            entity.setIncundervolt(voltageConfigInfo.getIncundervolt().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerUnderVoltageThreshold)));
+            entity.setVolt_power_over(voltageConfigInfo.getVolt_power_over().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveOverVoltageThreshold)));
+            entity.setVolt_power_low(voltageConfigInfo.getVolt_power_low().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveLowVoltageThreshold)));
+            entity.setVolt_power_under(voltageConfigInfo.getVolt_power_under().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveUnderVoltageThreshold)));
+            entity.setVolt_sensor_low(voltageConfigInfo.getVolt_sensor_low().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerLowVoltageThreshold)));
+            entity.setVolt_sensor_under(voltageConfigInfo.getVolt_sensor_under().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerUnderVoltageThreshold)));
 
             command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_VOLTAGE, entity);
         } catch (Exception ex) {
@@ -234,11 +234,11 @@ public class AdmeVoltageConfigView extends LinearLayout {
             voltageConfigInfo = new AdmeVoltageConfigInfo();
             return;
         }
-        driveOverVoltageThreshold = voltageConfigInfo.getDriveovervolt().trim();
-        driveLowVoltageThreshold = voltageConfigInfo.getDrivelowvolt().trim();
-        driveUnderVoltageThreshold = voltageConfigInfo.getDriveundervolt().trim();
-        inclinometerLowVoltageThreshold = voltageConfigInfo.getInclowvolt().trim();
-        inclinometerUnderVoltageThreshold = voltageConfigInfo.getIncundervolt().trim();
+        driveOverVoltageThreshold = voltageConfigInfo.getVolt_power_over().trim();
+        driveLowVoltageThreshold = voltageConfigInfo.getVolt_power_low().trim();
+        driveUnderVoltageThreshold = voltageConfigInfo.getVolt_power_under().trim();
+        inclinometerLowVoltageThreshold = voltageConfigInfo.getVolt_sensor_low().trim();
+        inclinometerUnderVoltageThreshold = voltageConfigInfo.getVolt_sensor_under().trim();
         try {
             if (driveOverVoltageThreshold.equals("NullKey")) {
                 driveOverVoltageThresholdLayout.setVisibility(View.GONE);

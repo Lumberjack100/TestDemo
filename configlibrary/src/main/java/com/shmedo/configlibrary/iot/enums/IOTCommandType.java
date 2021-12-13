@@ -439,12 +439,12 @@ public enum IOTCommandType {
     /**
      * 获取ADME的电压配置参数
      */
-    ADME_MD_GET_VOLTAGE("md_getvoltage"),
+    ADME_MD_GET_VOLTAGE("md_getvolt"),
 
     /**
      * 设置ADME的电压配置参数
      */
-    ADME_MD_SET_VOLTAGE("md_setvoltage"),
+    ADME_MD_SET_VOLTAGE("md_setvolt"),
 
     /*　 M20 指令  */
     /**

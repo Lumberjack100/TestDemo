@@ -18,7 +18,6 @@ public class AdmeVoltageConfigParser implements IOTResultParser<AdmeVoltageConfi
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
-
             for (String keyValue : keyValues) {
                 String[] strs = keyValue.split("=");
                 if (strs.length < 2) {
@@ -27,11 +26,11 @@ public class AdmeVoltageConfigParser implements IOTResultParser<AdmeVoltageConfi
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setDriveovervolt(!keyValueMap.containsKey("driveovervolt") ? "NullKey" : keyValueMap.get("driveovervolt"));
-            info.setDrivelowvolt(!keyValueMap.containsKey("drivelowvolt") ? "NullKey" : keyValueMap.get("drivelowvolt"));
-            info.setDriveundervolt(!keyValueMap.containsKey("driveundervolt") ? "NullKey" : keyValueMap.get("driveundervolt"));
-            info.setInclowvolt(!keyValueMap.containsKey("inclowvolt") ? "NullKey" : keyValueMap.get("inclowvolt"));
-            info.setIncundervolt(!keyValueMap.containsKey("incundervolt") ? "NullKey" : keyValueMap.get("incundervolt"));
+            info.setVolt_power_over(!keyValueMap.containsKey("volt_power_over") ? "NullKey" : keyValueMap.get("volt_power_over"));
+            info.setVolt_power_low(!keyValueMap.containsKey("volt_power_low") ? "NullKey" : keyValueMap.get("volt_power_low"));
+            info.setVolt_power_under(!keyValueMap.containsKey("volt_power_under") ? "NullKey" : keyValueMap.get("volt_power_under"));
+            info.setVolt_sensor_low(!keyValueMap.containsKey("volt_sensor_low") ? "NullKey" : keyValueMap.get("volt_sensor_low"));
+            info.setVolt_sensor_under(!keyValueMap.containsKey("volt_sensor_under") ? "NullKey" : keyValueMap.get("volt_sensor_under"));
 
             return info;
         } catch (Exception ex) {
