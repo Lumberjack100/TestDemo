@@ -102,7 +102,7 @@ android {
                                     "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
                                     "frontJSToken": "d8b5d3a412f8493008be2052611789ea",
                                     "buglyAppId"  : "6b0340b2b8",
-                                    "umengAppkey"  : "618cdd28e014255fcb75af8a"]
+                                    "umengAppkey" : "618cdd28e014255fcb75af8a"]
 
             buildConfigField "String", "Dingding_APP_ID", "\"dingoa6lbfnghbtn0xeju0\""
         }
@@ -116,9 +116,9 @@ android {
             }
             def fileName
             if (variant.buildType.name == "release") {
-                fileName = getAppName() + NameSuffix + "_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = getAppName() + NameSuffix + "_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
             } else {
-                fileName = getAppName() + NameSuffix + "_debug_" + android.defaultConfig.versionName + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = getAppName() + NameSuffix + "_debug_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
             }
             output.outputFileName = fileName
         }
