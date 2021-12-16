@@ -32,7 +32,7 @@ public class DasExternalSensorListActivity extends BaseActivity {
 
     private Fragment fragment;
 
-    private String collectorModel = "";//采集器类型
+    private String collectorCode = "";//采集器类型
 
 
     public static void startActivity(Context context, int connectWay, String collectorModel) {
@@ -67,8 +67,8 @@ public class DasExternalSensorListActivity extends BaseActivity {
         }
 
         if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
-            collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
-            if (CollectorModel.value(collectorModel) == CollectorModel.VW08) {//振弦式传感器
+            collectorCode = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
+            if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
                 mToolbarTitle.setText("振弦式传感器");
             } else {
                 mToolbarTitle.setText("数字式传感器");
@@ -78,10 +78,10 @@ public class DasExternalSensorListActivity extends BaseActivity {
 
     private void initFragment() {
         if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            if (CollectorModel.value(collectorModel) == CollectorModel.VW08) {//振弦式传感器
-                fragment = BleDasExternalVibratingWireSensorListListFragment.newInstance(collectorModel);
+            if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
+                fragment = BleDasExternalVibratingWireSensorListListFragment.newInstance(collectorCode);
             } else { //数字式传感器
-                fragment = BleDasExternalDigtalSensorListListFragment.newInstance(collectorModel);
+                fragment = BleDasExternalDigtalSensorListListFragment.newInstance(collectorCode);
             }
         }
         replaceFragment(fragment);

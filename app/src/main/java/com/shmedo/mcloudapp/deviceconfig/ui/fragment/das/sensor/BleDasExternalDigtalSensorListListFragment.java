@@ -36,10 +36,10 @@ import timber.log.Timber;
  */
 public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExternalSensorListFragment {
 
-    public static BaseBleDasExternalSensorListFragment newInstance(String collectorModel) {
+    public static BaseBleDasExternalSensorListFragment newInstance(String collectorCode) {
         BaseBleDasExternalSensorListFragment fragment = new BleDasExternalDigtalSensorListListFragment();
         Bundle args = new Bundle();
-        args.putString(AppContants.Extras.COLLECTOR_MODE, collectorModel);
+        args.putString(AppContants.Extras.COLLECTOR_MODE, collectorCode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,7 +76,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
         commandItems.clear();
         commandItems.add(command);
         //超声波物位计使用多传感器触发阈值配置指令
-        if (CollectorModel.value(collectorModelValue) == CollectorModel.UDS08) {
+        if (CollectorModel.value(collectorCode) == CollectorModel.UDS08) {
             //获取触发值
             command = getMultiTriggerThreshold();
             if (!TextUtils.isEmpty(command)) {
@@ -106,7 +106,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             }
 
             //测斜仪需要设置测段长
-            if (CollectorModel.value(collectorModelValue) == CollectorModel.CX08) {
+            if (CollectorModel.value(collectorCode) == CollectorModel.CX08) {
                 command = getMeasureLongValue();
                 if (!TextUtils.isEmpty(command)) {
                     commandItems.add(command);

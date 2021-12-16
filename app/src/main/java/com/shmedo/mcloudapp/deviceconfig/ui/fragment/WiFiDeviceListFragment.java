@@ -1,8 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
@@ -99,7 +98,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private WiFiAdapter wiFiAdapter;
 
-    private Animator animator;
+    private ObjectAnimator heightAnimator;
 
     private WifiManager manager;
 
@@ -212,8 +211,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     }
 
     private void initRefreshAnimation() {
-        animator = AnimatorInflater.loadAnimator(mActivity, R.animator.rotation);
-        animator.setTarget(mIvRefreshScan);
+        heightAnimator = ObjectAnimator
+                .ofFloat(mIvRefreshScan, "rotation", 0f, 360f)
+                .setDuration(1000);
+        heightAnimator.setRepeatCount(-1);
     }
 
     private void setEditTextListener() {
@@ -276,25 +277,14 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
      * @param isRefresh
      */
     private void updateRefreshView(boolean isRefresh) {
-
-//        ObjectAnimator heightAnimator = ObjectAnimator
-//                .ofFloat(mIvRefreshScan, "x", xStart, xEnd)
-//                .setDuration(2000);
-
-
-        if (animator == null)
+        if (heightAnimator == null || mTvScanState == null)
             return;
 
         if (isRefresh) {
-            animator.start();
+            heightAnimator.start();
             mTvScanState.setText("刷新中...");
         } else {
-            MCloudApp.getMainHandler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    animator.end();
-                }
-            }, 500);
+            heightAnimator.end();
             mTvScanState.setText("重新刷新");
         }
     }
@@ -312,9 +302,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                     if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS"))) {
                         continue;
                     }
-//                    if (iWifi.name() == null ) {
-//                        continue;
-//                    }
                     tempWiFiList.add(iWifi);
                 }
                 wiFiAdapter.setList(tempWiFiList);

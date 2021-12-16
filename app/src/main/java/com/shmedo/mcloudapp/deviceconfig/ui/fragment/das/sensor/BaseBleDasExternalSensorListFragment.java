@@ -72,7 +72,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
     private DASSensorItem curSensorItem;
 
     protected String collectorName;
-    protected String collectorModelValue;//采集器类型
+    protected String collectorCode;//采集器类型
     private int accessSum = 0;              //接入扩展传感器总数
     protected int sensorIndex = 0;//接入的传感器索引号
 
@@ -96,9 +96,9 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            collectorModelValue = getArguments().getString(AppContants.Extras.COLLECTOR_MODE);
-            collectorName = CollectorModel.value(collectorModelValue).getDescription();
-            if (CollectorModel.value(collectorModelValue) == CollectorModel.VW08) {//振弦式传感器
+            collectorCode = getArguments().getString(AppContants.Extras.COLLECTOR_MODE);
+            collectorName = CollectorModel.value(collectorCode).getDescription();
+            if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
                 isVibratingWireSensor = true;
             }
         }
@@ -147,7 +147,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                     return true;
                 }
                 DASSensorItem sensorItem = sensorItemList.get(position);
-                if (sensorItem.isAddButton()) {
+                if (sensorItem == null || sensorItem.isAddButton()) {
                     return true;
                 }
                 if (sensorItemList.size() <= 2) {
@@ -183,7 +183,12 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
             sensorType = curCollectorSensorParamsInfo.getSensorType();
             parcelableData = (Parcelable) curCollectorSensorParamsInfo.getSensorData();
         }
-        if (CollectorModel.value(collectorModelValue) == CollectorModel.VW08) {//振弦式传感器
+        if (sensorType == SensorType.UNKNOWN_TYPE) {
+            ToastUtils.show("暂不支持此类型采集器！");
+            return;
+        }
+
+        if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
             DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
 
         } else { //数字式传感器
@@ -191,7 +196,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         }
     }
 
-    private void warnDeleteSensorItem(int position) {
+    private void warnDeleteSensorItem(final int position) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示")
                 .content("确定移除传感器?")
@@ -239,7 +244,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
      * 查询采集器配置信息
      */
     private void queryCollectorInfo() {
-        CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorModelValue);
+        CollectorConfigEntity collectorConfigEntity = new CollectorConfigEntity(collectorCode);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CONFIG, collectorConfigEntity);
         sendCommand(command);
         Timber.d("查询采集器配置信息===%s", command);
@@ -250,7 +255,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
      */
     private void queryExtendSensorConfigInfo() {
         String address = StringUtil.formatStringTwo(sensorIndex + "");
-        CollectorSensorParamsEntity entity = new CollectorSensorParamsEntity(collectorModelValue, address);
+        CollectorSensorParamsEntity entity = new CollectorSensorParamsEntity(collectorCode, address);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, entity);
         sendCommand(command);
         Timber.d("获取 %s 采集器 %s 通道的传感器参数===%s", collectorName, address, command);
@@ -385,9 +390,9 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
 
     private void initEmptyDefaultCollectorSensorParamsInfo() {
         defaultCollectorSensorParamsInfo = new CollectorSensorParamsInfo();
-        defaultCollectorSensorParamsInfo.setCollectorModel(CollectorModel.value(collectorModelValue));
+        defaultCollectorSensorParamsInfo.setCollectorModel(CollectorModel.value(collectorCode));
         defaultCollectorSensorParamsInfo.setSensorData(null);
-        switch (CollectorModel.value(collectorModelValue)) {
+        switch (CollectorModel.value(collectorCode)) {
             case VW08:
                 defaultCollectorSensorParamsInfo.setSensorType(SensorType.KANG_PERCOLATE);
                 break;
@@ -425,6 +430,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 break;
 
             default:
+                defaultCollectorSensorParamsInfo.setSensorType(SensorType.UNKNOWN_TYPE);
                 break;
         }
     }
@@ -435,10 +441,10 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
     private void processCollectorSensorParamsInfo(String cmdStr) {
         CollectorSensorParamsInfo mCollectorParamsInfoSub = ResultParserUtil.getEntityObject(cmdStr);
         if (mCollectorParamsInfoSub == null) {
-            Timber.e("%s 采集器 %s 通道的传感器参数为空!", collectorModelValue, StringUtil.formatStringTwo(sensorIndex + ""));
+            Timber.e("%s 采集器 %s 通道的传感器参数为空!", collectorCode, StringUtil.formatStringTwo(sensorIndex + ""));
             return;
         }
-        Timber.d("%s 采集器 %s 通道的传感器参数-------%s", collectorModelValue, StringUtil.formatStringTwo(sensorIndex + ""), mCollectorParamsInfoSub.toString());
+        Timber.d("%s 采集器 %s 通道的传感器参数-------%s", collectorCode, StringUtil.formatStringTwo(sensorIndex + ""), mCollectorParamsInfoSub.toString());
         collectorSensorHashMap.put(mCollectorParamsInfoSub.getSensorAddress(), mCollectorParamsInfoSub);
         addSensorItem(mCollectorParamsInfoSub.getSensorAddress());
     }
