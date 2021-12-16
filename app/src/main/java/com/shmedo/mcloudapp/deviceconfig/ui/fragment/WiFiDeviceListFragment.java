@@ -37,6 +37,8 @@ import com.hacknife.wifimanager.OnWifiConnectListener;
 import com.hacknife.wifimanager.OnWifiStateChangeListener;
 import com.hacknife.wifimanager.State;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -97,14 +99,13 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private WiFiAdapter wiFiAdapter;
 
-    private List<IWifi> tempWiFiList = new ArrayList<>();
-
     private Animator animator;
 
     private WifiManager manager;
 
     private IWifiManager hackWiFiManager;
 
+    private List<IWifi> tempWiFiList = new ArrayList<>();
     private IWifi curWiFi;
 
     private DeviceApiKeyViewModel deviceApiKeyViewModel;
@@ -122,6 +123,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
+                //获取到物联网指令的设备 ApiKey 后，处理 WiFi 连接
                 if (WiFiDeviceListFragment.this.isVisible() && curWiFi != null) {
                     processWiFiUseSecondLibrary(curWiFi);
                 }
@@ -135,40 +137,16 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         doConditionsCheckBeforeScan();
     }
 
-    private void initAdapter() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        wiFiAdapter = new WiFiAdapter();
-        mRecyclerView.setAdapter(wiFiAdapter);
-        wiFiAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                curWiFi = wiFiAdapter.getItem(position);
-                String[] strs = curWiFi.name().split("-");
-                showProgressDialog("处理中...");
-                deviceApiKeyViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(strs[strs.length - 1]);
-            }
-        });
-    }
-
     private void processWiFiUseSecondLibrary(IWifi curWiFi) {
         if (curWiFi.isConnected()) {//已连接
-            dismissProgressDialog();
+            hideProgressBar();
             if (curWiFi.name().contains("VMS")) {
-//                VmsHomeActivity.startActivity(getContext(), AppContants.CommunicationWay.TCP_CONNECT);
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.VMS);
-
 
             } else if (curWiFi.name().contains("E40")) {
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.E40);
             }
-
-        } else if (curWiFi.isSaved()) {//已保存
-            WifiUtils.withContext(getContext().getApplicationContext())
-                    .connectWith(curWiFi.name(), "")
-                    .setTimeout(30000)
-                    .onConnectionResult(successListener)
-                    .start();
-        } else if (!curWiFi.isEncrypt()) {//未加密
+        } else if (curWiFi.isSaved() || !curWiFi.isEncrypt()) {//已保存/未加密
             WifiUtils.withContext(getContext().getApplicationContext())
                     .connectWith(curWiFi.name(), "")
                     .setTimeout(30000)
@@ -186,21 +164,52 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     private ConnectionSuccessListener successListener = new ConnectionSuccessListener() {
         @Override
         public void success() {
-            dismissProgressDialog();
+            hideProgressBar();
             if (curWiFi.name().contains("VMS")) {
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.VMS);
 
-            }else if (curWiFi.name().contains("E40")) {
+            } else if (curWiFi.name().contains("E40")) {
                 DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.E40);
             }
         }
 
         @Override
         public void failed(@NonNull ConnectionErrorCode errorCode) {
-            dismissProgressDialog();
+            hideProgressBar();
             ToastUtils.show("连接失败!" + errorCode.toString());
         }
     };
+
+    private void showProgressBar() {
+        WaitDialog.show("处理中...")
+                .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
+                    @Override
+                    public boolean onBackPressed() {
+                        WaitDialog.dismiss();
+                        return false;
+                    }
+                });
+    }
+
+    private void hideProgressBar() {
+        WaitDialog.dismiss();
+    }
+
+    private void initAdapter() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        wiFiAdapter = new WiFiAdapter();
+        mRecyclerView.setAdapter(wiFiAdapter);
+        wiFiAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                curWiFi = wiFiAdapter.getItem(position);
+                String[] strs = curWiFi.name().split("-");
+                showProgressBar();
+                //先查询下发物联网指令时用到的设备的 ApiKey
+                deviceApiKeyViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(strs[strs.length - 1]);
+            }
+        });
+    }
 
     private void initRefreshAnimation() {
         animator = AnimatorInflater.loadAnimator(mActivity, R.animator.rotation);
@@ -211,6 +220,83 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         mTvWiFiCount.setText("(0)");
         mEtKeyWords.addTextChangedListener(this);
         mEtKeyWords.setOnEditorActionListener(this);
+    }
+
+    /**
+     * 执行WiFi扫描前检查需要满足的权限
+     */
+    private void doConditionsCheckBeforeScan() {
+        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        refreshWifi();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
+                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
+                        if (allNeverAskAgain) {
+                            XPermissionUtils.showRefusePermissionDialog(getActivity(), StringUtils.getString(R.string.message_permission_wifi_location_rational));
+                        } else {
+                            ToastUtils.show(StringUtils.getString(R.string.message_permission_location_denied));
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 扫描刷新 WiFi 列表
+     */
+    private void refreshWifi() {
+        updateRefreshView(true);
+        WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
+        if (hackWiFiManager == null) {
+            initThirdWiFiManager();
+        }
+    }
+
+    private final ScanResultsListener scanResultsListener = new ScanResultsListener() {
+        @Override
+        public void onScanResults(@NonNull List<ScanResult> scanResults) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateRefreshView(false);
+                }
+            });
+        }
+    };
+
+    /**
+     * 刷新动画处理
+     *
+     * @param isRefresh
+     */
+    private void updateRefreshView(boolean isRefresh) {
+
+//        ObjectAnimator heightAnimator = ObjectAnimator
+//                .ofFloat(mIvRefreshScan, "x", xStart, xEnd)
+//                .setDuration(2000);
+
+
+        if (animator == null)
+            return;
+
+        if (isRefresh) {
+            animator.start();
+            mTvScanState.setText("刷新中...");
+        } else {
+            MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    animator.end();
+                }
+            }, 500);
+            mTvScanState.setText("重新刷新");
+        }
     }
 
     private void initThirdWiFiManager() {
@@ -226,6 +312,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                     if (iWifi.name() == null || (!iWifi.name().toUpperCase().startsWith("VMS"))) {
                         continue;
                     }
+//                    if (iWifi.name() == null ) {
+//                        continue;
+//                    }
                     tempWiFiList.add(iWifi);
                 }
                 wiFiAdapter.setList(tempWiFiList);
@@ -255,7 +344,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         hackWiFiManager.setOnWifiConnectListener(new OnWifiConnectListener() {
             @Override
             public void onConnectChanged(boolean status) {
-//                dismissProgressDialog();
+
             }
         });
     }
@@ -287,80 +376,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                     }
                 }
             });
-        }
-    }
-
-    /**
-     * 执行WiFi扫描前检查需要满足的权限
-     */
-    private void doConditionsCheckBeforeScan() {
-        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION},
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        refreshWifi();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(getActivity(), StringUtils.getString(R.string.message_permission_wifi_location_rational));
-                        } else {
-                            ToastUtils.show(StringUtils.getString(R.string.message_permission_location_denied));
-                        }
-                    }
-                });
-    }
-
-
-    /**
-     * 扫描刷新 WiFi 列表
-     */
-    private void refreshWifi() {
-        updateRefreshView(true);
-        WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
-        if (hackWiFiManager == null) {
-            initThirdWiFiManager();
-        }
-    }
-
-    private final ScanResultsListener scanResultsListener = new ScanResultsListener() {
-        @Override
-        public void onScanResults(@NonNull List<ScanResult> scanResults) {
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    updateRefreshView(false);
-//                    mTvWiFiCount.setText(String.format(Locale.getDefault(), "(%d)", wiFiAdapter.getItemCount()));
-                }
-            });
-        }
-    };
-
-    /**
-     * 刷新动画处理
-     *
-     * @param isRefresh
-     */
-    private void updateRefreshView(boolean isRefresh) {
-        if (isRefresh) {
-            if (animator != null) {
-                animator.start();
-            }
-            mTvScanState.setText("刷新中...");
-        } else {
-            if (animator != null) {
-                MCloudApp.getMainHandler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        animator.end();
-                    }
-                }, 500);
-            }
-            mTvScanState.setText("重新刷新");
         }
     }
 
@@ -403,7 +418,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     @Override
     public void onStop() {
         super.onStop();
-        dismissProgressDialog();
+        hideProgressBar();
     }
 
     @Override
@@ -438,7 +453,6 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             // 当按了搜索之后关闭软键盘
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
-
             String text = mEtKeyWords.getText().toString();
             if (TextUtils.isEmpty(text)) {
                 mEtKeyWords.clearFocus();
