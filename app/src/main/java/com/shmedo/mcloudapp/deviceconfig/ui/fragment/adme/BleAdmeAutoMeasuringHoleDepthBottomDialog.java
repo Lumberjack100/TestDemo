@@ -15,7 +15,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
-import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeMeasuringHoleDepthEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
@@ -35,16 +34,10 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  1/7/21 <br/>
- * 描述：     ADME 电机测量孔深实时数据展示底部弹窗
+ * 创建时间:  12/17/21 <br/>
+ * 描述：    ADME 电机自动测量孔深模式时，实时数据展示底部弹窗
  */
-public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
-    private static final String MOTION_WAY = "motion_way";
-    private static final String LAST_DISTANCE = "last_distance";
-    private static final String MOTION_DISTANCE = "motion_distance";
-
-    @BindView(R.id.tv_title)
-    TextView mTvTitle;
+public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragment {
 
     @BindView(R.id.iv_close)
     ImageView mIvClose;
@@ -58,34 +51,26 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     @BindView(R.id.btn_stop)
     TextView btnStop;
 
-    @BindView(R.id.btn_pause)
-    TextView btnPause;
-
     @BindView(R.id.btn_exit)
     TextView btnExit;
 
     private USRBleViewModel usrBleViewModel;
 
-    private String motionWay;//运动方式
-    private String lastDistance;//上次停止时运动距离
     private String curDistance;//当前距离
-    private String totalDistanceGoal;//总运动距离目标数
-    private String continueDistanceGoal;//继续运动距离目标数
     private String curPulse;//脉冲数
 
     private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
-    private boolean isStopClick = false;//是否是点击停止按钮操作
     private boolean isExit = false;
 
     private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
 
-    private static final class DefaultHandler extends WeakHandler<BleAdmeMotorMotionDistanceFragment> {
-        private DefaultHandler(BleAdmeMotorMotionDistanceFragment fragment) {
+    private static final class DefaultHandler extends WeakHandler<BleAdmeAutoMeasuringHoleDepthBottomDialog> {
+        private DefaultHandler(BleAdmeAutoMeasuringHoleDepthBottomDialog fragment) {
             super(fragment);
         }
 
         @Override
-        protected void handleMessage(Message msg, BleAdmeMotorMotionDistanceFragment fragment) {
+        protected void handleMessage(Message msg, BleAdmeAutoMeasuringHoleDepthBottomDialog fragment) {
             fragment.getMotorMotionData();
         }
     }
@@ -93,7 +78,6 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     protected void startQueryMotorMotionDataProgress() {
         if (!isResumed())
             return;
-
         mDefaultHandler.sendEmptyMessageDelayed(0, 500);
     }
 
@@ -107,29 +91,14 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         stopAllProgress();
     }
 
-    public static BleAdmeMotorMotionDistanceFragment newInstance(String motionWay, String lastDistance, String totalDistanceGoal) {
-        BleAdmeMotorMotionDistanceFragment fragment = new BleAdmeMotorMotionDistanceFragment();
-        Bundle args = new Bundle();
-        args.putString(MOTION_WAY, motionWay);
-        args.putString(LAST_DISTANCE, lastDistance);
-        args.putString(MOTION_DISTANCE, totalDistanceGoal);
-        fragment.setArguments(args);
+    public static BleAdmeAutoMeasuringHoleDepthBottomDialog newInstance() {
+        BleAdmeAutoMeasuringHoleDepthBottomDialog fragment = new BleAdmeAutoMeasuringHoleDepthBottomDialog();
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            motionWay = getArguments().getString(MOTION_WAY);
-            lastDistance = getArguments().getString(LAST_DISTANCE);
-            totalDistanceGoal = getArguments().getString(MOTION_DISTANCE);
-        }
-    }
-
-    @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_motor_motion_distance_fragment;
+        return R.layout.ble_adme_auto_measuring_hole_depth_bottom_dialog;
     }
 
     @Override
@@ -148,7 +117,6 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
             public void onChanged(String result) {
                 if (!result.startsWith("$cmd=") || !isResumed())
                     return;
-
                 try {
                     parseResponseMessage(result);
                 } catch (Exception ex) {
@@ -167,7 +135,6 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     private void initView() {
         mIvClose.setVisibility(View.VISIBLE);
         btnStop.setVisibility(View.VISIBLE);
-        btnPause.setVisibility(View.VISIBLE);
         btnExit.setVisibility(View.GONE);
 
         mTvMotionPulse.setText("0");
@@ -198,35 +165,7 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         sendCommand(command);
     }
 
-    /**
-     * 继续电机运动
-     */
-    private void continueMotorMotion() {
-        double distanceGoal;
-        try {
-            double distanceTotalGoal = Math.abs(Double.parseDouble(totalDistanceGoal));
-            double distanceDiff = Math.abs(Double.parseDouble(curDistance) - Double.parseDouble(lastDistance));
-            distanceGoal = distanceTotalGoal - distanceDiff;
-            //已达到设定运动目标
-            if (distanceGoal <= 0) {
-                updateStopState();
-                ToastUtils.show("无法继续电机运动操作!");
-                return;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return;
-        }
-        continueDistanceGoal = String.valueOf(distanceGoal);
-        AdmeMeasuringHoleDepthEntity entity = new AdmeMeasuringHoleDepthEntity();
-        entity.setMovementway(motionWay);
-        entity.setMovedistance(continueDistanceGoal);
-
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH, entity);
-        sendCommand(command);
-    }
-
-    @OnClick({R.id.iv_close, R.id.btn_stop, R.id.btn_pause, R.id.btn_exit})
+    @OnClick({R.id.iv_close, R.id.btn_stop, R.id.btn_exit})
     public void onClick(View view) {
         int id = view.getId();
         if (isDoubleClick(view)) {
@@ -243,22 +182,9 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            isStopClick = true;
             stopAllProgress();
             stopMotorMotion();
 
-        } else if (id == R.id.btn_pause) {
-            if (!usrBleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
-                return;
-            }
-            isStopClick = false;
-            if (btnPause.getText().toString().equals("暂停")) {
-//                stopAllProgress();
-                stopMotorMotion();
-            } else {
-                continueMotorMotion();
-            }
         } else if (id == R.id.btn_exit) {
             dismiss();
         }
@@ -280,18 +206,11 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
                 }
                 //关闭页面
                 if (isExit) {
-                    BleAdmeMotorMotionDistanceFragment.this.dismiss();
+                    BleAdmeAutoMeasuringHoleDepthBottomDialog.this.dismiss();
                     return;
                 }
-
-                if (isStopClick) {//停止按钮操作
-                    updateStopState();
-                } else {//暂停按钮操作
-                    if (btnPause.getText().toString().equals("暂停")) {
-                        btnPause.setText("继续");
-                        btnPause.setBackgroundResource(R.drawable.bg_btn_continue_motor_motion);
-                    }
-                }
+                //电机停止,更新运动状态页面
+                updateStopState();
             }
             break;
 
@@ -310,10 +229,9 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         }
         if (!TextUtils.isEmpty(curPulse) && motorMotionDistanceInfo.getPulsenumber().equals(curPulse)) {
             repeatNum++;
-            Timber.d("updateMotionData: lastDistance=%s,curDistance=%s,curPulse=%s,repeatNum=%s", lastDistance, curDistance, curPulse, repeatNum);
+            Timber.d("updateMotionData: curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
             //轮询五次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
             if (repeatNum >= 5) {
-//                startQueryMotorMotionDataProgress();
                 queryMotorMotionConfig();
                 return;
             }
@@ -330,34 +248,20 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
     }
 
     /**
-     * 处理电机运动状态变化
+     * 处理电机运动状态变化<br>
+     * 在轮询五次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
      */
     public void processMotorMotionState(AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo) {
         if (measuringHoleDepthInfo == null) {
             return;
         }
-        //轮询五次电机脉冲数据不变化，但是电机状态表示还在运动，清空计数，继续轮询电机脉冲数据
+        //轮询五次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
         if (measuringHoleDepthInfo.getMorunstate().trim().equals("1")) {
             repeatNum = 0;
             startQueryMotorMotionDataProgress();
-        } else {//电机状态表示停止运动
-            try {
-                double distanceTotalGoal = Math.abs(Double.parseDouble(totalDistanceGoal));
-                double distanceDiff = Math.abs(Double.parseDouble(curDistance) - Double.parseDouble(lastDistance));
-                //设定的运动距离目标值小于等于运动距离变化量时,电机停止
-                if (distanceTotalGoal - distanceDiff <= 0) {
-                    updateStopState();
-                } else {
-                    //暂停状态处理
-                    repeatNum = 0;
-                    btnPause.setText("继续");
-                    btnPause.setBackgroundResource(R.drawable.bg_btn_continue_motor_motion);
-                    stopAllProgress();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                updateStopState();
-            }
+        } else {
+            //电机停止,更新运动状态页面
+            updateStopState();
         }
     }
 
@@ -368,18 +272,8 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
         repeatNum = 0;
         mIvClose.setVisibility(View.VISIBLE);
         btnStop.setVisibility(View.GONE);
-        btnPause.setVisibility(View.GONE);
         btnExit.setVisibility(View.VISIBLE);
         stopAllProgress();
-    }
-
-    public void processContinueMotorMotion() {
-        Timber.d("Continue Motion: lastDistance=%s,curDistance=%s,continueDistanceGoal=%s,curPulse=%s", lastDistance, curDistance, continueDistanceGoal, curPulse);
-        if (btnPause.getText().toString().equals("继续")) {
-            btnPause.setText("暂停");
-            btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
-        }
-        startQueryMotorMotionDataProgress();
     }
 
     private void sendCommand(String cmdStr) {
@@ -415,10 +309,10 @@ public class BleAdmeMotorMotionDistanceFragment extends BaseDialogFragment {
                         if (usrBleViewModel.isConnected()) {
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
-                            BleAdmeMotorMotionDistanceFragment.this.dismiss();
+                            BleAdmeAutoMeasuringHoleDepthBottomDialog.this.dismiss();
                         } else {
                             //直接关闭运行页面
-                            BleAdmeMotorMotionDistanceFragment.this.dismiss();
+                            BleAdmeAutoMeasuringHoleDepthBottomDialog.this.dismiss();
                         }
                     }
                 });

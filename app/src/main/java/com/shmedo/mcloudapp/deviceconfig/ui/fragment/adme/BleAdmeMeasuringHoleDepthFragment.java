@@ -117,7 +117,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
     private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
     private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
-    private BleAdmeMotorMotionDistanceFragment motorMotionDistanceFragment;
+    private BleAdmeManualMeasuringHoleDepthBottomDialog manualMeasuringHoleDepthBottomDialog;
+    private BleAdmeAutoMeasuringHoleDepthBottomDialog autoMeasuringHoleDepthBottomDialog;
+
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -548,13 +550,15 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     return;
                 }
                 measuringHoleDepthInfo = commandResult.getResult();
-                if (motorMotionDistanceFragment != null && motorMotionDistanceFragment.isVisible()) {
-                    motorMotionDistanceFragment.processMotorMotionState(measuringHoleDepthInfo);
-                } else {
+                //初次进入页面，初始化测量孔深配置参数
+                if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null) {
                     initParamConfigInfo();
                     //查询ADME测孔深运动的脉冲数、运动距离
                     getMotorMotionData();
+                    return;
                 }
+                //轮询五次电机脉冲数据不变化时，查询电机运动状态进行后续处理
+                processMotorMotionState();
             }
             break;
 
@@ -634,9 +638,15 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                         ex.printStackTrace();
                     }
                 }
-                if (motorMotionDistanceFragment != null && motorMotionDistanceFragment.isVisible()) {
-                    motorMotionDistanceFragment.updateMotionData(motorMotionDistanceInfo);
+
+                if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null)
                     return;
+                if (isManualMeasureMode) {
+                    if (manualMeasuringHoleDepthBottomDialog.isVisible())
+                        manualMeasuringHoleDepthBottomDialog.updateMotionData(motorMotionDistanceInfo);
+                } else {
+                    if (autoMeasuringHoleDepthBottomDialog.isVisible())
+                        autoMeasuringHoleDepthBottomDialog.updateMotionData(motorMotionDistanceInfo);
                 }
             }
             break;
@@ -676,7 +686,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         } else {
             mTvMotionWay.setText("下放");
         }
-
         try {
             mEtMovementSpeed.setText(movementSpeed);
             decimalFormat.applyPattern("#.###");
@@ -702,16 +711,33 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * 打开数据运行弹框
      */
     private void showMotorMotionDialog() {
-        //数据运行弹框已经显示了
-        if (motorMotionDistanceFragment != null && motorMotionDistanceFragment.isVisible()) {
-            motorMotionDistanceFragment.processContinueMotorMotion();
-            return;
+        if (isManualMeasureMode) {
+            //数据运行弹框已经显示了
+            if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog.isVisible()) {
+                manualMeasuringHoleDepthBottomDialog.processContinueMotorMotion();
+                return;
+            }
+            Timber.d("start Motion: lastDistance=%s,totalDistanceGoal=%s", lastDistance, totalDistanceGoal);
+            manualMeasuringHoleDepthBottomDialog = BleAdmeManualMeasuringHoleDepthBottomDialog.newInstance(motionWay, lastDistance, totalDistanceGoal);
+            manualMeasuringHoleDepthBottomDialog.show(getChildFragmentManager(), "dialog");
+        } else {
+            Timber.d("start Motion: lastDistance=%s,totalDistanceGoal=%s", lastDistance, totalDistanceGoal);
+            autoMeasuringHoleDepthBottomDialog = BleAdmeAutoMeasuringHoleDepthBottomDialog.newInstance();
+            autoMeasuringHoleDepthBottomDialog.show(getChildFragmentManager(), "dialog");
         }
-        Timber.d("start Motion: lastDistance=%s,totalDistanceGoal=%s", lastDistance, totalDistanceGoal);
-        motorMotionDistanceFragment = BleAdmeMotorMotionDistanceFragment.newInstance(motionWay, lastDistance, totalDistanceGoal);
-        motorMotionDistanceFragment.show(getChildFragmentManager(), "dialog");
-
         clearMotionDataLayout.setVisibility(View.VISIBLE);
         motionDataClearCompleteLayout.setVisibility(View.GONE);
+    }
+
+    private void processMotorMotionState() {
+        if (isManualMeasureMode) {
+            if (manualMeasuringHoleDepthBottomDialog.isVisible()) {
+                manualMeasuringHoleDepthBottomDialog.processMotorMotionState(measuringHoleDepthInfo);
+            }
+        } else {
+            if (autoMeasuringHoleDepthBottomDialog.isVisible()) {
+                autoMeasuringHoleDepthBottomDialog.processMotorMotionState(measuringHoleDepthInfo);
+            }
+        }
     }
 }
