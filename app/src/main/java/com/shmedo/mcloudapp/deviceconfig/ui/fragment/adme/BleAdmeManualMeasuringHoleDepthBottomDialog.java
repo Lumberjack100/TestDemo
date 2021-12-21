@@ -94,7 +94,7 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
         if (!isResumed())
             return;
 
-        mDefaultHandler.sendEmptyMessageDelayed(0, 500);
+        mDefaultHandler.sendEmptyMessageDelayed(0, 800);
     }
 
     protected void stopAllProgress() {
@@ -243,8 +243,8 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            isStopClick = true;
             stopAllProgress();
+            isStopClick = true;
             stopMotorMotion();
 
         } else if (id == R.id.btn_pause) {
@@ -307,18 +307,18 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
             Timber.e("AdmeMotorMotionDistanceInfo is Null!");
             return;
         }
-        if (!TextUtils.isEmpty(curPulse) && motorMotionDistanceInfo.getPulsenumber().equals(curPulse)) {
-            repeatNum++;
-            Timber.d("updateMotionData: lastDistance=%s,curDistance=%s,curPulse=%s,repeatNum=%s", lastDistance, curDistance, curPulse, repeatNum);
-            //轮询五次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
-            if (repeatNum >= 5) {
-//                startQueryMotorMotionDataProgress();
-                queryMotorMotionConfig();
-                return;
+        if (!TextUtils.isEmpty(curPulse)){
+            if(motorMotionDistanceInfo.getPulsenumber().equals(curPulse)){
+                repeatNum++;
+                Timber.d("updateMotionData: lastDistance=%s,curDistance=%s,curPulse=%s,repeatNum=%s", lastDistance, curDistance, curPulse, repeatNum);
+                //轮询十次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
+                if (repeatNum >= 10) {
+                    queryMotorMotionConfig();
+                    return;
+                }
+            }else{
+                repeatNum = 0;
             }
-        }
-        if (!TextUtils.isEmpty(curPulse) && !motorMotionDistanceInfo.getPulsenumber().equals(curPulse) && repeatNum != 0) {
-            repeatNum = 0;
         }
         curPulse = motorMotionDistanceInfo.getPulsenumber();
         curDistance = motorMotionDistanceInfo.getRealmovedistance();
@@ -330,13 +330,13 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
 
     /**
      * 处理电机运动状态变化<br>
-     * 在轮询五次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
+     * 在轮询十次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
      */
     public void processMotorMotionState(AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo) {
         if (measuringHoleDepthInfo == null) {
             return;
         }
-        //轮询五次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
+        //轮询十次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
         if (measuringHoleDepthInfo.getMorunstate().trim().equals("1")) {
             repeatNum = 0;
             startQueryMotorMotionDataProgress();
@@ -349,10 +349,10 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
                     updateStopState();
                 } else {
                     //暂停状态处理
+                    stopAllProgress();
                     repeatNum = 0;
                     btnPause.setText("继续");
                     btnPause.setBackgroundResource(R.drawable.bg_btn_continue_motor_motion);
-                    stopAllProgress();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -365,12 +365,12 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
      * 更新电机停止运动状态页面
      */
     private void updateStopState() {
+        stopAllProgress();
         repeatNum = 0;
         mIvClose.setVisibility(View.VISIBLE);
         btnStop.setVisibility(View.GONE);
         btnPause.setVisibility(View.GONE);
         btnExit.setVisibility(View.VISIBLE);
-        stopAllProgress();
     }
 
     public void processContinueMotorMotion() {

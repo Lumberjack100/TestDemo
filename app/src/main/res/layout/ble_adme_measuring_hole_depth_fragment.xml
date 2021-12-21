@@ -30,6 +30,7 @@
         android:layout_height="10dp" />
 
     <RelativeLayout
+        android:id="@+id/ll_decentralized"
         style="@style/SwitchButton_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 

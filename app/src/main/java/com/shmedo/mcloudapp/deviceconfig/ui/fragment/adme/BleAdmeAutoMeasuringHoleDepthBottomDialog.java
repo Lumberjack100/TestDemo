@@ -78,7 +78,7 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
     protected void startQueryMotorMotionDataProgress() {
         if (!isResumed())
             return;
-        mDefaultHandler.sendEmptyMessageDelayed(0, 500);
+        mDefaultHandler.sendEmptyMessageDelayed(0, 800);
     }
 
     protected void stopAllProgress() {
@@ -227,17 +227,18 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
             Timber.e("AdmeMotorMotionDistanceInfo is Null!");
             return;
         }
-        if (!TextUtils.isEmpty(curPulse) && motorMotionDistanceInfo.getPulsenumber().equals(curPulse)) {
-            repeatNum++;
-            Timber.d("updateMotionData: curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
-            //轮询五次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
-            if (repeatNum >= 5) {
-                queryMotorMotionConfig();
-                return;
+        if (!TextUtils.isEmpty(curPulse)){
+            if(motorMotionDistanceInfo.getPulsenumber().equals(curPulse)){
+                repeatNum++;
+                Timber.d("updateMotionData: curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
+                //轮询十次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
+                if (repeatNum >= 10) {
+                    queryMotorMotionConfig();
+                    return;
+                }
+            }else{
+                repeatNum = 0;
             }
-        }
-        if (!TextUtils.isEmpty(curPulse) && !motorMotionDistanceInfo.getPulsenumber().equals(curPulse) && repeatNum != 0) {
-            repeatNum = 0;
         }
         curPulse = motorMotionDistanceInfo.getPulsenumber();
         curDistance = motorMotionDistanceInfo.getRealmovedistance();
@@ -249,13 +250,13 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
 
     /**
      * 处理电机运动状态变化<br>
-     * 在轮询五次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
+     * 在轮询十次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
      */
     public void processMotorMotionState(AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo) {
         if (measuringHoleDepthInfo == null) {
             return;
         }
-        //轮询五次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
+        //轮询十次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
         if (measuringHoleDepthInfo.getMorunstate().trim().equals("1")) {
             repeatNum = 0;
             startQueryMotorMotionDataProgress();

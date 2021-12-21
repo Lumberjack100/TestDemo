@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -59,6 +60,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @BindView(R.id.decentralizedEnableSBtn)
     SwitchButton mSbDecentralizedEnable;
 
+    @BindView(R.id.ll_decentralized)
+    RelativeLayout decentralizedLayout;
+
     /**
      * 手动测孔深模式
      */
@@ -104,9 +108,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @BindView(R.id.btn_run)
     Button mBtnRun;
 
-    private boolean isManualMeasureMode = true;//是否手动测量模式
-
-    private String motionWay;//  运动方式
+    private String motionWay;// 运动方式
     private String movementSpeed;// 电机运动速度(r/min)
     private String totalDistanceGoal;//  运动距离
     private String lastDistance;//当前距离
@@ -120,8 +122,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     private BleAdmeManualMeasuringHoleDepthBottomDialog manualMeasuringHoleDepthBottomDialog;
     private BleAdmeAutoMeasuringHoleDepthBottomDialog autoMeasuringHoleDepthBottomDialog;
 
-
     private DecimalFormat decimalFormat = new DecimalFormat();
+    private final String[] measureModes = new String[]{"手动测孔深模式", "自动测孔深模式"};
 
     public static BleAdmeMeasuringHoleDepthFragment newInstance() {
         return new BleAdmeMeasuringHoleDepthFragment();
@@ -153,6 +155,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         mEtSafeDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtSafeDistance.setHint("0-10");
 
+        mTvMeasureMode.setText(measureModes[0]);
         manualMeasureModeLayout.setVisibility(View.VISIBLE);
         autoMeasureModeLayout.setVisibility(View.GONE);
         clearMotionDataLayout.setVisibility(View.VISIBLE);
@@ -185,6 +188,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     rbAutoControl.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
                     mEtMotionDistance.setEnabled(true);
                     rbManualControl.setChecked(false);
+
                 } else {
                     rbAutoControl.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
                     mEtMotionDistance.setEnabled(false);
@@ -330,7 +334,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 Timber.w("配置参数错误!");
                 return;
             }
-            if (isManualMeasureMode)
+            if (mTvMeasureMode.getText().toString().equals(measureModes[0]))
                 setMeasuringHoledepth();
             else
                 autoMeasuringHoledepth();
@@ -349,22 +353,24 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * 选择测量模式
      */
     private void showMeasureModeDialog() {
-        final String[] values = new String[]{"手动测孔深模式", "自动测孔深模式"};
-        int pos = Arrays.asList(values).indexOf(String.valueOf(mTvMeasureMode.getText()));
-
+        int pos = Arrays.asList(measureModes).indexOf(String.valueOf(mTvMeasureMode.getText()));
         XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", values,
+                .asBottomList("", measureModes,
                         null, pos, true,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
                                 mTvMeasureMode.setText(text);
-                                isManualMeasureMode = (position == 0);
-                                mSbDecentralizedEnable.setEnabled(position == 0);
+                                decentralizedLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
                                 manualMeasureModeLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
                                 autoMeasureModeLayout.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+
+                                //自动测量孔深模式，需要打开堵转检测
+                                if (position == 1)
+                                    setLockRotorInfo(true);
+
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
@@ -397,7 +403,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     }
 
     private boolean checkValueIsValid() {
-        if (isManualMeasureMode) {
+        if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
             movementSpeed = mEtMovementSpeed.getText().toString().trim();
             totalDistanceGoal = mEtMotionDistance.getText().toString().trim();
             if (TextUtils.isEmpty(movementSpeed)) {
@@ -641,7 +647,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
                 if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null)
                     return;
-                if (isManualMeasureMode) {
+                if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
                     if (manualMeasuringHoleDepthBottomDialog.isVisible())
                         manualMeasuringHoleDepthBottomDialog.updateMotionData(motorMotionDistanceInfo);
                 } else {
@@ -711,7 +717,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * 打开数据运行弹框
      */
     private void showMotorMotionDialog() {
-        if (isManualMeasureMode) {
+        if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
             //数据运行弹框已经显示了
             if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog.isVisible()) {
                 manualMeasuringHoleDepthBottomDialog.processContinueMotorMotion();
@@ -721,7 +727,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             manualMeasuringHoleDepthBottomDialog = BleAdmeManualMeasuringHoleDepthBottomDialog.newInstance(motionWay, lastDistance, totalDistanceGoal);
             manualMeasuringHoleDepthBottomDialog.show(getChildFragmentManager(), "dialog");
         } else {
-            Timber.d("start Motion: lastDistance=%s,totalDistanceGoal=%s", lastDistance, totalDistanceGoal);
             autoMeasuringHoleDepthBottomDialog = BleAdmeAutoMeasuringHoleDepthBottomDialog.newInstance();
             autoMeasuringHoleDepthBottomDialog.show(getChildFragmentManager(), "dialog");
         }
@@ -730,7 +735,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     }
 
     private void processMotorMotionState() {
-        if (isManualMeasureMode) {
+        if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
             if (manualMeasuringHoleDepthBottomDialog.isVisible()) {
                 manualMeasuringHoleDepthBottomDialog.processMotorMotionState(measuringHoleDepthInfo);
             }
