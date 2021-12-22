@@ -633,20 +633,22 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 if (motorMotionDistanceInfo != null) {
                     lastDistance = motorMotionDistanceInfo.getRealmovedistance();
                     holeDepth = motorMotionDistanceInfo.getRealholedepth();
-                    try {
-                        double holeValue = Math.abs(Double.parseDouble(holeDepth));
-                        double safeValue = Math.abs(Double.parseDouble(safeDistance));
-                        //测孔深值不等于安全补偿距离表示测孔深值有效
-                        if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safeDistance) && holeValue != safeValue) {
-                            mTvHoleDepth.setText(holeDepth);
+                    if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safeDistance)) {
+                        try {
+                            double holeValue = Math.abs(Double.parseDouble(holeDepth));
+                            double safeValue = Math.abs(Double.parseDouble(safeDistance));
+                            //测孔深值不等于安全补偿距离表示测孔深值有效
+                            if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safeDistance) && holeValue != safeValue) {
+                                mTvHoleDepth.setText(holeDepth);
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
                 }
-
                 if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null)
                     return;
+
                 if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
                     if (manualMeasuringHoleDepthBottomDialog.isVisible())
                         manualMeasuringHoleDepthBottomDialog.updateMotionData(motorMotionDistanceInfo);

@@ -206,7 +206,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
                     + "&msgid=" + UUID.randomUUID().toString().substring(30);
         }
 
-        usrBleViewModel.sendIOTProtocolCommand(cmdStr + "&&");
+        usrBleViewModel.sendIOTProtocolCommand(cmdStr );
     }
 
     protected void showDisconnectDialog(String content) {

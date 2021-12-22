@@ -312,7 +312,7 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
                 repeatNum++;
                 Timber.d("updateMotionData: lastDistance=%s,curDistance=%s,curPulse=%s,repeatNum=%s", lastDistance, curDistance, curPulse, repeatNum);
                 //轮询十次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
-                if (repeatNum >= 10) {
+                if (repeatNum >= 6) {
                     queryMotorMotionConfig();
                     return;
                 }
