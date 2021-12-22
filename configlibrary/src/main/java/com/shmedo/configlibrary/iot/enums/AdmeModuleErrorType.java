@@ -31,7 +31,9 @@ public enum AdmeModuleErrorType {
 
     FZ_RUN_JMQ("11", "计米器反转"),
 
-    ERROR_WIRING_JMQ("12", "计米器接线错误");
+    ERROR_WIRING_JMQ("12", "计米器接线错误"),
+
+    INSUFFICIENT_BASE_PULSE_JMQ("13", "计米器基数脉冲不足");
 
 
     AdmeModuleErrorType(String code, String description) {

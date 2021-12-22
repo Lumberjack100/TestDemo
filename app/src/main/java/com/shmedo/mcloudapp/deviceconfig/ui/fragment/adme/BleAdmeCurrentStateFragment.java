@@ -194,7 +194,7 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         }
         int id = view.getId();
         if (id == R.id.ll_device_abnormal_diagnosis) {
-            showInclinometerTypeDialog();
+            showErrorModulesInfoDialog();
         }
     }
 
@@ -267,7 +267,7 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                 mTvDeviceAbnormalDiagnosis.setText("正常");
                 mTvDeviceAbnormalDiagnosis.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
                 mTvDeviceAbnormalDiagnosis.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            }else{
+            } else {
                 deviceAbnormalDiagnosisLayout.setEnabled(true);
                 mTvDeviceAbnormalDiagnosis.setText("异常");
                 mTvDeviceAbnormalDiagnosis.setTextColor(Color.RED);
@@ -281,10 +281,10 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
     }
 
     /**
-     * 选择测斜仪类型
+     * 展示异常模块信息
      */
-    private void showInclinometerTypeDialog() {
-        if (currentStateInfo == null ||TextUtils.isEmpty(currentStateInfo.getAbndiasis()))
+    private void showErrorModulesInfoDialog() {
+        if (currentStateInfo == null || TextUtils.isEmpty(currentStateInfo.getAbndiasis()))
             return;
 
         List<String> descList = new ArrayList<>();
