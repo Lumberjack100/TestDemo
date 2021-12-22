@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrCode;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -73,7 +74,7 @@ public class LoginManager implements DefaultLifecycleObserver {
         String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
 
-        MDRetrofit.getInstance().createService()
+        MDRetrofit.getInstance().createService(ServiceAddressType.AUTHORITY_SERVICE_ADDRESS)
                 .getSingIn(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

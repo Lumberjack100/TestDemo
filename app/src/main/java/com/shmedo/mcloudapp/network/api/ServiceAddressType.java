@@ -6,21 +6,31 @@ package com.shmedo.mcloudapp.network.api;
  * 描述：   访问的后台地址切换
  */
 public enum ServiceAddressType {
-    /**
-     * https 访问
-     */
-    BUSINESS_SERVICE_ADDRESS(1),
 
+    /**
+     * 物联网权限服务地址
+     */
+    AUTHORITY_SERVICE_ADDRESS(1),
+
+    /**
+     * 物联网设备管理服务地址
+     */
+    IOT_MANAGER_SERVICE_ADDRESS(2),
+
+    /**
+     * 物联网指令交互服务地址
+     */
+    IOT_INTERACTIVE_SERVICE_ADDRESS(3),
 
     /**
      * 云平台原始数据地址
      */
-    CLOUD_PLATFORM_DATA_ADDRESS(2),
+    CLOUD_PLATFORM_DATA_ADDRESS(4),
 
     /**
-     * 日志系统服务地址
+     * https 访问
      */
-    LOGAN_SERVICE_ADDRESS(3);
+    BUSINESS_SERVICE_ADDRESS(5);
 
     private int type;
 

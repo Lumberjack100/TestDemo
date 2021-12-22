@@ -26,7 +26,6 @@ public abstract class BaseRetrofit {
     }
 
     protected <T> T getService(final Class<T> service, final HttpLoggingInterceptor.Level level, ServiceAddressType addressType) {
-
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(level);
         OkHttpClient client = new OkHttpClient.Builder()
@@ -37,19 +36,29 @@ public abstract class BaseRetrofit {
 
         String baseUrl = "";
         switch (addressType) {
-
             case BUSINESS_SERVICE_ADDRESS:
                 baseUrl = MCloudApp.getBusinessServiceAddress();
                 break;
 
-            case CLOUD_PLATFORM_DATA_ADDRESS:
+            case AUTHORITY_SERVICE_ADDRESS://权限服务地址
+                baseUrl = MCloudApp.getAuthorityServiceAddress();
+                break;
+
+            case IOT_MANAGER_SERVICE_ADDRESS://物联网设备管理服务地址
+                baseUrl = MCloudApp.getIotManagerServiceAddress();
+                break;
+
+            case IOT_INTERACTIVE_SERVICE_ADDRESS://物联网指令交互服务地址
+                baseUrl = MCloudApp.getIotInteractiveServiceAddress();
+                break;
+
+            case CLOUD_PLATFORM_DATA_ADDRESS://云平台原始数据地址
                 baseUrl = MCloudApp.getCloudPlatformDataAddress();
                 break;
 
             default:
                 break;
         }
-
         return new Retrofit.Builder()
                 //设置网络请求的Url地址
                 .baseUrl(baseUrl)
@@ -60,5 +69,4 @@ public abstract class BaseRetrofit {
                 .build()
                 .create(service);
     }
-
 }

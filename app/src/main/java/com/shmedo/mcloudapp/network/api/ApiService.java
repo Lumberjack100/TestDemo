@@ -40,24 +40,13 @@ import retrofit2.http.POST;
  * 创建时间:  2019/1/8 09:41
  */
 public interface ApiService {
-
-    //获取api版本信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @GET("ApiVersion")
-    Observable<ResultWrapper<String>> getApiVerson();
-
-    //登录用户
+    /**
+     * 登录模块
+     */
+    //用户名密码登录
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("SignIn")
     Observable<ResultWrapper<String>> getSingIn(@Body RequestBody parameter);
-
-    /**
-     * 我的模块
-     */
-    //获取用户信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @GET("GetMyInfo")
-    Observable<ResultWrapper<UserInfo>> getMyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token);
 
     //发送登录验证码(间隔60秒，有效期15分钟)
     @Headers({NetworkConst.HEADER_ACCESS_TYPE, NetworkConst.HEADER_APP_KEY, NetworkConst.HEADER_APP_SECRET})
@@ -68,6 +57,21 @@ public interface ApiService {
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})
     @POST("SmsLogin")
     Observable<ResultWrapper<String>> SmsLogin(@Body RequestBody parameter);
+
+    /**
+     * 用户信息模块
+     */
+    //通过token获取用户信息
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @GET("GetUserByToken")
+    Observable<ResultWrapper<UserInfo>> getUserByToken(@Header(NetworkConst.ACCESS_TOKEN) String token);
+
+    //查询用户信息
+    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @GET("QueryUserByID")
+    Observable<ResultWrapper<UserInfo>> getMyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token);
+
+
 
     //系统接口V2-5  检测手机号是否存在
     @Headers({NetworkConst.HEADER_ACCESS_TYPE})

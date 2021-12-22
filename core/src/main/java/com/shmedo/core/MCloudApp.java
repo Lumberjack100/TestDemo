@@ -25,20 +25,16 @@ public class MCloudApp {
     private static Handler handler;
 
     private static UserInfo currentUserInfo;
-
     private static String accessToken;
-
     private static String account;
-
     private static int companyID;
-
-    private static String businessServiceAddress = "mdnetservice.shmedo.cn";//业务数据服务接口地址
-
-    private static String cloudPlatformDataAddress = "chaxun.shmedo.cn";//云平台原始数据地址
-
-    private static String logServiceAddress = "172.168.5.235:8088";//日志系统服务地址
-
     private static String curDeviceToken;//设备名称
+
+    private static final String businessServiceAddress = "mdnetservice.shmedo.cn";//业务数据服务接口地址
+    private static final String authorityServiceAddress = "http://172.168.5.200:10082";//物联网权限服务地址
+    private static final String iotManagerServiceAddress = "http://172.168.5.200:10081";//物联网设备管理服务地址
+    private static final String iotInteractiveServiceAddress = "http://172.168.5.200:10083";//物联网指令交互服务地址
+    private static final String cloudPlatformDataAddress = "https://chaxun.shmedo.cn";//云平台原始数据地址
 
 
     /**
@@ -69,17 +65,24 @@ public class MCloudApp {
         return handler;
     }
 
-
     public static String getBusinessServiceAddress() {
         return "https://" + businessServiceAddress + "/api/v1/";
     }
 
-    public static String getCloudPlatformDataAddress() {
-        return "https://" + cloudPlatformDataAddress;
+    public static String getAuthorityServiceAddress() {
+        return authorityServiceAddress + "/auth/api/v1/";
     }
 
-    public static String getLogServiceAddress() {
-        return logServiceAddress;
+    public static String getIotManagerServiceAddress() {
+        return iotManagerServiceAddress + "/iot/manager/api/v1/";
+    }
+
+    public static String getIotInteractiveServiceAddress() {
+        return iotInteractiveServiceAddress + "/iot/interactive/api/v1/";
+    }
+
+    public static String getCloudPlatformDataAddress() {
+        return cloudPlatformDataAddress;
     }
 
     public static UserInfo getCurrentUserInfo() {
