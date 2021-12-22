@@ -14,9 +14,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseBottomSheetDialogFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
@@ -117,19 +117,19 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
             throw new IllegalArgumentException("dispatchRawCmdParam 为null");
         }
         String json = GsonUtils.toJson(dispatchRawCmdParam);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .DispatchRawCmd(MCloudApp.getAccessToken(), body)
+                .batchDispatchRawCmd(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<DispatchCmdItem>>() {
                     @Override
-                    protected void onResponse(List<DispatchCmdItem> data, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(List<DispatchCmdItem> data, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     onDispatchCmdResult(null, dispatchRawCmdParam.getContent());
                                     return;
@@ -137,8 +137,8 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
                                 onDispatchCmdResult(data, dispatchRawCmdParam.getContent());
                             } else {
                                 onDispatchCmdResult(null, dispatchRawCmdParam.getContent());
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }
@@ -162,19 +162,19 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
      */
     private void queryCmdResultByMsgID() {
         String json = GsonUtils.toJson(msgIDList);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryCmdResultByMsgID(MCloudApp.getAccessToken(), body)
+                .queryCmdResultByMsgID(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<QueryCmdResult>>() {
                     @Override
-                    protected void onResponse(List<QueryCmdResult> data, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(List<QueryCmdResult> data, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     onQueryCmdResponseResultError("");
                                     return;
@@ -182,9 +182,9 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
                                 QueryCmdResult queryCmdResult = data.get(0);
                                 processCmdResult(queryCmdResult);
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
-                                    onQueryCmdResponseResultError(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
+                                    onQueryCmdResponseResultError(errorInfo.getMsg());
                                 }
                             }
                         }

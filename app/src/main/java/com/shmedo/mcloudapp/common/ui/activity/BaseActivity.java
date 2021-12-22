@@ -27,6 +27,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.NetworkUtils;
+import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.ForceToLoginEvent;
 import com.shmedo.core.event.NetworkChangeEvent;
@@ -221,6 +223,22 @@ public abstract class BaseActivity extends AppCompatActivity {
             loadingDialog.dismiss();
             loadingDialog = null;
         }
+    }
+
+    protected void showWaitDialog(String message) {
+        WaitDialog.show(message)
+                .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
+                    @Override
+                    public boolean onBackPressed() {
+//                        cancelRequest();
+                        WaitDialog.dismiss();
+                        return false;
+                    }
+                });
+    }
+
+    protected void dismissWaitDialog() {
+        WaitDialog.dismiss();
     }
 
     protected void showTipDialog(String content) {

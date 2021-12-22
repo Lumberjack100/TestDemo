@@ -15,14 +15,14 @@ import com.blankj.utilcode.util.EncryptUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.user.model.UpdatePasswordParam;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
@@ -61,7 +61,6 @@ public class UpdatePasswordActivity extends BaseActivity {
     private boolean isConfirmPasswordVisible = false;
 
     private String mAccount;
-
     private String oldPasswordMD5;
 
     private String oldPassword, newPassword, confirmNewPassword;
@@ -87,11 +86,11 @@ public class UpdatePasswordActivity extends BaseActivity {
     }
 
     private void initDate() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
+        UserWrapperInfo userWrapperInfo = MCloudApp.getCurrentUserInfo();
+        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
+            UserWrapperInfo.UserInfo user = userWrapperInfo.getUser();
             mAccount = user.getAccount();
-            oldPasswordMD5 = user.getPassword();
+//            oldPasswordMD5 = user.getPassword();
         }
     }
 
@@ -192,21 +191,21 @@ public class UpdatePasswordActivity extends BaseActivity {
         parameter.setConfirmNewPassword(EncryptUtils.encryptMD5ToString(mAccount + confirmNewPassword));
 
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
 
         MDRetrofit.getInstance()
                 .createService()
-                .ChangeMyPassword(MCloudApp.getAccessToken(), body)
+                .resetPassword(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String s, ErrCode errCode) {
+                    protected void onResponse(String s, ErrorInfo errorInfo) {
                         dismissLoadingDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 ToastUtils.show("修改完成");
                                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                                     @Override
@@ -216,8 +215,8 @@ public class UpdatePasswordActivity extends BaseActivity {
                                 }, 1500);
 
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }

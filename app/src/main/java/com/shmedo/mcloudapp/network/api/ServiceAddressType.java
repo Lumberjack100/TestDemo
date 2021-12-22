@@ -25,12 +25,7 @@ public enum ServiceAddressType {
     /**
      * 云平台原始数据地址
      */
-    CLOUD_PLATFORM_DATA_ADDRESS(4),
-
-    /**
-     * https 访问
-     */
-    BUSINESS_SERVICE_ADDRESS(5);
+    CLOUD_PLATFORM_DATA_ADDRESS(4);
 
     private int type;
 

@@ -33,14 +33,14 @@ import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.user.model.UpdateMyInfoParam;
 import com.shmedo.mcloudapp.user.model.params.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.util.GlideUtils;
@@ -95,8 +95,8 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
     @BindView(R.id.btn_confirm)
     Button mBtnConfirm;
 
-    private UserInfo userInfo;
-    private UserInfo.UserBean user;
+    private UserWrapperInfo userWrapperInfo;
+    private UserWrapperInfo.UserInfo user;
     private String userName, title, email;
 
     private Uri photoUri;
@@ -122,14 +122,33 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         initData();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateView();
+    }
+
     private void initData() {
-        userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            user = userInfo.getUser();
+        userWrapperInfo = MCloudApp.getCurrentUserInfo();
+        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
+            user = userWrapperInfo.getUser();
             GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
         }
-
         mBtnConfirm.setEnabled(false);
+    }
+
+    private void updateView() {
+        if (user != null) {
+            userName = user.getName() != null ? user.getName() : "";
+            title = user.getPosition() != null ? user.getPosition() : "";
+            email = user.getEmail() != null ? user.getEmail() : "";
+
+            mEtUserName.setText(userName);
+            mEtTitle.setText(title);
+            mEtEmail.setText(email);
+            mTvPhone.setText(user.getCellPhone() != null ? user.getCellPhone() : "");
+        }
+        initListener();
     }
 
     private void initListener() {
@@ -157,74 +176,29 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        updateView();
-    }
-
-    private void updateView() {
-        if (user != null) {
-            userName = user.getName() != null ? user.getName() : "";
-            title = user.getPosition() != null ? user.getPosition() : "";
-            email = user.getEmail() != null ? user.getEmail() : "";
-
-            mEtUserName.setText(userName);
-            mEtTitle.setText(title);
-            mEtEmail.setText(email);
-            mTvPhone.setText(user.getCellPhone() != null ? user.getCellPhone() : "");
-        }
-
-        initListener();
-    }
-
-
     @OnClick({R.id.userLayout, R.id.mobileLayout, R.id.btn_confirm})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.userLayout:
-                showTakePictureDialog();
-                break;
-
-            case R.id.mobileLayout:
-                UpdatePhoneActivity.startActivity(this);
-                break;
-
-            case R.id.btn_confirm:
-                preProcessParam();
-                break;
+        if (isDoubleClick(view)) {
+            return;
+        }
+        int id = view.getId();
+        if (id == R.id.userLayout) {//
+            showTakePictureDialog();
+        } else if (id == R.id.mobileLayout) {//
+            UpdatePhoneActivity.startActivity(this);
+        } else if (id == R.id.btn_confirm) {//
+            preProcessParam();
         }
     }
 
     private void preProcessParam() {
         userName = mEtUserName.getText().toString();
-        title = mEtTitle.getText().toString();
-        email = mEtEmail.getText().toString();
 
         if (TextUtils.isEmpty(userName)) {
             ToastUtils.show("请输入用户名");
             mEtUserName.requestFocus();
             return;
         }
-
-        if (TextUtils.isEmpty(title)) {
-            ToastUtils.show("请输入职位");
-            mEtTitle.requestFocus();
-            return;
-        }
-
-        if (TextUtils.isEmpty(email)) {
-            ToastUtils.show("请输入邮箱");
-            mEtEmail.requestFocus();
-            return;
-        }
-
-//        if (!ValidateUtil.checkMail(email)) {
-//            ToastUtils.show("请输入正确的邮箱地址");
-//            mEtEmail.requestFocus();
-//            return;
-//        }
-
         updateMyInfo();
     }
 
@@ -233,7 +207,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
      */
     private void showTakePictureDialog() {
         CharSequence[] items = new CharSequence[]{getString(R.string.take_photo), getString(R.string.your_album)};
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.select_avatar))
                 .setItems(items, new DialogInterface.OnClickListener() {
@@ -252,7 +225,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         builder.show();
     }
 
-
     /**
      * 打开摄像头拍照。
      */
@@ -261,7 +233,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
             ToastUtils.show(getString(R.string.operation_failed_without_sdcard));
             return;
         }
-
         // 创建 File 对象，用于存储拍照后的图片
         File outputImage = new File(getExternalCacheDir(), TEMP_PHOTO);
         try {
@@ -272,7 +243,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         } catch (IOException ex) {
             Timber.w(ex);
         }
-
         photoUri = UriUtils.file2Uri(outputImage);
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -303,7 +273,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
     private void cropPhoto(Uri uri) {
         int reqWidth = ScreenUtils.getScreenWidth();
         int reqHeight = reqWidth;
-
         CropImage.activity(uri)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setFixAspectRatio(true)
@@ -454,40 +423,38 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         if (TextUtils.isEmpty(filePath)) {
             return;
         }
-
         String fileName = FileUtils.getFileName(filePath);
         String fileContent = getBase64ImageString(filePath);
         if (TextUtils.isEmpty(fileName) || TextUtils.isEmpty(fileContent)) {
             Timber.w("头像图片文件名或图片Base64字符串为空");
             return;
         }
-
         SetUserHeadPhotoParameter parameter = new SetUserHeadPhotoParameter();
         parameter.setPhotoName(fileName);
         parameter.setPhotoContent(fileContent);
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         showLoadingDialog("正在上传...");
         MDRetrofit.getInstance()
                 .createService()
-                .setUserHeadPhoto(MCloudApp.getAccessToken(), body)
+                .uploadUserAvatar(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String data, ErrCode errCode) {
+                    protected void onResponse(String data, ErrorInfo errorInfo) {
                         dismissLoadingDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 ToastUtils.show("头像已上传");
                                 if (!TextUtils.isEmpty(data)) {
                                     user.setHeadPhotoPath(data);
                                 }
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }
@@ -509,28 +476,28 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         parameter.setPosition(title);
         parameter.setEmail(email);
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
 
         MDRetrofit.getInstance()
                 .createService()
-                .UpdateMyInfo(MCloudApp.getAccessToken(), body)
+                .updateUser(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String s, ErrCode errCode) {
+                    protected void onResponse(String s, ErrorInfo errorInfo) {
                         dismissLoadingDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 ToastUtils.show("修改已保存");
                                 mBtnConfirm.setEnabled(false);
                                 updateUserInfoCache();
                                 exitActivcity();
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }
@@ -545,16 +512,15 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
     }
 
     private void updateUserInfoCache() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
+        UserWrapperInfo userWrapperInfo = MCloudApp.getCurrentUserInfo();
+        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
+            UserWrapperInfo.UserInfo user = userWrapperInfo.getUser();
             user.setName(userName);
             user.setPosition(title);
             user.setEmail(email);
         }
-        MCloudApp.setCurrentUserInfo(userInfo);
+        MCloudApp.setCurrentUserInfo(userWrapperInfo);
     }
-
 
     private void exitActivcity() {
         ToastUtils.show("设置完成");

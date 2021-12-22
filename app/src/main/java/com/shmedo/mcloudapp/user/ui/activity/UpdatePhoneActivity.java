@@ -14,14 +14,14 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.user.model.UpdateMobileParam;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
 import com.shmedo.mcloudapp.util.ResponseHandler;
@@ -102,7 +102,7 @@ public class UpdatePhoneActivity extends BaseActivity {
      * 发送验证码
      */
     private void sendSmsCode() {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, newPhone);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, newPhone);
 
         showLoadingDialog("正在获取验证码...");
         MDRetrofit.getInstance()
@@ -114,15 +114,15 @@ public class UpdatePhoneActivity extends BaseActivity {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String s, ErrCode errCode) {
+                    protected void onResponse(String s, ErrorInfo errorInfo) {
                         dismissLoadingDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 MyCountDownTimer timer = new MyCountDownTimer(mBtnGetCode, 60000, 1000);
                                 timer.start();
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }
@@ -175,7 +175,7 @@ public class UpdatePhoneActivity extends BaseActivity {
         parameter.setNewCellPhone(newPhone);
         parameter.setCode(code);
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
 
         MDRetrofit.getInstance()
                 .createService()
@@ -186,10 +186,10 @@ public class UpdatePhoneActivity extends BaseActivity {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String s, ErrCode errCode) {
+                    protected void onResponse(String s, ErrorInfo errorInfo) {
                         dismissLoadingDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 ToastUtils.show("修改已保存");
                                 updateUserInfoCache();
                                 hander.postDelayed(new Runnable() {
@@ -199,8 +199,8 @@ public class UpdatePhoneActivity extends BaseActivity {
                                     }
                                 }, 1500);
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }
@@ -215,11 +215,11 @@ public class UpdatePhoneActivity extends BaseActivity {
     }
 
     private void updateUserInfoCache() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
+        UserWrapperInfo userWrapperInfo = MCloudApp.getCurrentUserInfo();
+        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
+            UserWrapperInfo.UserInfo user = userWrapperInfo.getUser();
             user.setCellPhone(newPhone);
         }
-        MCloudApp.setCurrentUserInfo(userInfo);
+        MCloudApp.setCurrentUserInfo(userWrapperInfo);
     }
 }

@@ -12,241 +12,203 @@ import java.util.List;
  * 创建时间:  2018/11/27 14:48
  */
 
-public class UserInfo {
+public class UserWrapperInfo {
+    private UserInfo user;
+    private List<DepartmentInfo> departments;
 
-    /**
-     * user : {"id":53,"account":"medo_dpc","name":"杜鹏程","password":"6CD02257A28C39909DD058B25EECAF64","position":"职位","email":"12@123.com","cellPhone":"13562536253","phone":"","address":"","allowAccessType":0,"headPhotoPath":"http://172.168.5.48:8089/images/common/ab5019eb-6b40-48d7-8072-b353504cfc90tupian.png","warnLevel":1,"createUserID":92,"createTime":"2018-03-12 00:00:00","updateUserID":101,"updateTime":"2018-06-27 16:37:57","userEnable":true}
-     * departments : [{"id":59,"name":"创新技术中心","companyID":1,"parentID":null,"desc":"创新技术中心","level":0,"readOnly":false,"createUserID":94,"createTime":"2018-04-08 16:25:31","updateUserID":94,"updateTime":"2018-04-08 16:25:31","hasChild":false}]
-     */
-
-    private UserBean user;
-    private List<DepartmentsBean> departments;
-
-
-    public UserBean getUser() {
+    public UserInfo getUser() {
         return user;
     }
 
-
-    public void setUser(UserBean user) {
+    public void setUser(UserInfo user) {
         this.user = user;
     }
 
 
-    public List<DepartmentsBean> getDepartments() {
+    public List<DepartmentInfo> getDepartments() {
         return departments;
     }
 
-
-    public void setDepartments(List<DepartmentsBean> departments) {
+    public void setDepartments(List<DepartmentInfo> departments) {
         this.departments = departments;
     }
 
 
-    public static class UserBean {
+    public static class UserInfo {
         /**
-         * id : 53
-         * account : medo_dpc
-         * name : 杜鹏程
-         * password : 6CD02257A28C39909DD058B25EECAF64
-         * position : 职位
-         * email : 12@123.com
-         * cellPhone : 13562536253
-         * phone :
-         * address :
-         * allowAccessType : 0
-         * headPhotoPath : http://172.168.5.48:8089/images/common/ab5019eb-6b40-48d7-8072-b353504cfc90tupian.png
-         * warnLevel : 1
-         * createUserID : 92
-         * createTime : 2018-03-12 00:00:00
-         * updateUserID : 101
-         * updateTime : 2018-06-27 16:37:57
-         * userEnable : true
+         "userID": 636,
+         "companyID": 138,
+         "companyName": "上海米度测控科技有限公司",
+         "account": "medo_gh",
+         "name": "宫贺",
+         "cellPhone": "13915272257",
+         "position": "",
+         "email": "",
+         "phone": "",
+         "address": "",
+         "allowAccessType": 0,
+         "headPhotoPath": null,
+         "userEnable": true,
+         "createUserID": 1,
+         "createTime": "2021-12-20 17:40:31",
+         "updateUserID": 636,
+         "updateTime": "2021-12-21 17:10:41",
+         "expireTime": null,
+         "ssoUser": false,
+         "ssoToken": null
          */
-
-        private int id;
+        private int userID;
+        private int companyID;
+        private String companyName;
         private String account;
         private String name;
-        private String password;
+        private String cellPhone;
         private String position;
         private String email;
-        private String cellPhone;
         private String phone;
         private String address;
         private int allowAccessType;
         private String headPhotoPath;
-        private int warnLevel;
+        private boolean userEnable;
         private int createUserID;
         private String createTime;
         private int updateUserID;
         private String updateTime;
-        private boolean userEnable;
+        private String expireTime;
+        private boolean ssoUser;
+        private String ssoToken;
 
-
-        public int getId() {
-            return id;
+        public int getUserID() {
+            return userID;
         }
 
-
-        public void setId(int id) {
-            this.id = id;
+        public void setUserID(int userID) {
+            this.userID = userID;
         }
 
+        public int getCompanyID() {
+            return companyID;
+        }
+
+        public void setCompanyID(int companyID) {
+            this.companyID = companyID;
+        }
+
+        public String getCompanyName() {
+            return companyName;
+        }
+
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
+        }
 
         public String getAccount() {
             return TextUtils.isEmpty(account) ? "" : account;
         }
 
-
         public void setAccount(String account) {
             this.account = account;
         }
-
 
         public String getName() {
             return TextUtils.isEmpty(name) ? "" : name;
         }
 
-
         public void setName(String name) {
             this.name = name;
         }
-
-
-        public String getPassword() {
-            return TextUtils.isEmpty(password) ? "" : password;
-        }
-
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
 
         public String getPosition() {
             return TextUtils.isEmpty(position) ? "" : position;
         }
 
-
         public void setPosition(String position) {
             this.position = position;
         }
-
 
         public String getEmail() {
             return TextUtils.isEmpty(email) ? "" : email;
         }
 
-
         public void setEmail(String email) {
             this.email = email;
         }
-
 
         public String getCellPhone() {
             return TextUtils.isEmpty(cellPhone) ? "" : cellPhone;
         }
 
-
         public void setCellPhone(String cellPhone) {
             this.cellPhone = cellPhone;
         }
-
 
         public String getPhone() {
             return TextUtils.isEmpty(phone) ? "" : phone;
         }
 
-
         public void setPhone(String phone) {
             this.phone = phone;
         }
-
 
         public String getAddress() {
             return TextUtils.isEmpty(address) ? "" : address;
         }
 
-
         public void setAddress(String address) {
             this.address = address;
         }
-
 
         public int getAllowAccessType() {
             return allowAccessType;
         }
 
-
         public void setAllowAccessType(int allowAccessType) {
             this.allowAccessType = allowAccessType;
         }
-
 
         public String getHeadPhotoPath() {
             return TextUtils.isEmpty(headPhotoPath) ? "" : headPhotoPath;
         }
 
-
         public void setHeadPhotoPath(String headPhotoPath) {
             this.headPhotoPath = headPhotoPath;
         }
-
-
-        public int getWarnLevel() {
-            return warnLevel;
-        }
-
-
-        public void setWarnLevel(int warnLevel) {
-            this.warnLevel = warnLevel;
-        }
-
 
         public int getCreateUserID() {
             return createUserID;
         }
 
-
         public void setCreateUserID(int createUserID) {
             this.createUserID = createUserID;
         }
-
 
         public String getCreateTime() {
             return TextUtils.isEmpty(createTime) ? "" : createTime;
         }
 
-
         public void setCreateTime(String createTime) {
             this.createTime = createTime;
         }
-
 
         public int getUpdateUserID() {
             return updateUserID;
         }
 
-
         public void setUpdateUserID(int updateUserID) {
             this.updateUserID = updateUserID;
         }
-
 
         public String getUpdateTime() {
             return TextUtils.isEmpty(updateTime) ? "" : updateTime;
         }
 
-
         public void setUpdateTime(String updateTime) {
             this.updateTime = updateTime;
         }
 
-
         public boolean isUserEnable() {
             return userEnable;
         }
-
 
         public void setUserEnable(boolean userEnable) {
             this.userEnable = userEnable;
@@ -254,40 +216,41 @@ public class UserInfo {
     }
 
 
-    public static class DepartmentsBean {
+    public static class DepartmentInfo {
         /**
-         * id : 59
-         * name : 创新技术中心
-         * companyID : 1
-         * parentID : null
-         * desc : 创新技术中心
-         * level : 0
-         * readOnly : false
-         * createUserID : 94
-         * createTime : 2018-04-08 16:25:31
-         * updateUserID : 94
-         * updateTime : 2018-04-08 16:25:31
-         * hasChild : false
+         "id": 326,
+         "name": "产品开发部",
+         "companyID": 138,
+         "parentID": 323,
+         "desc": null,
+         "level": 2,
+         "readOnly": false,
+         "displayOrder": 1,
+         "createUserID": 539,
+         "createTime": "2021-07-22 11:32:08",
+         "updateUserID": 539,
+         "updateTime": "2021-07-22 11:32:08",
+         "hasChild": false,
+         "delete": false
          */
-
         private int id;
         private String name;
         private int companyID;
-        private Object parentID;
+        private int parentID;
         private String desc;
         private int level;
         private boolean readOnly;
+        private int displayOrder;
         private int createUserID;
         private String createTime;
         private int updateUserID;
         private String updateTime;
         private boolean hasChild;
-
+        private boolean delete;
 
         public int getId() {
             return id;
         }
-
 
         public void setId(int id) {
             this.id = id;
@@ -297,7 +260,6 @@ public class UserInfo {
         public String getName() {
             return TextUtils.isEmpty(name) ? "" : name;
         }
-
 
         public void setName(String name) {
             this.name = name;
@@ -308,18 +270,16 @@ public class UserInfo {
             return companyID;
         }
 
-
         public void setCompanyID(int companyID) {
             this.companyID = companyID;
         }
 
 
-        public Object getParentID() {
+        public int getParentID() {
             return parentID;
         }
 
-
-        public void setParentID(Object parentID) {
+        public void setParentID(int parentID) {
             this.parentID = parentID;
         }
 
@@ -327,7 +287,6 @@ public class UserInfo {
         public String getDesc() {
             return TextUtils.isEmpty(desc) ? "" : desc;
         }
-
 
         public void setDesc(String desc) {
             this.desc = desc;
@@ -338,7 +297,6 @@ public class UserInfo {
             return level;
         }
 
-
         public void setLevel(int level) {
             this.level = level;
         }
@@ -347,7 +305,6 @@ public class UserInfo {
         public boolean isReadOnly() {
             return readOnly;
         }
-
 
         public void setReadOnly(boolean readOnly) {
             this.readOnly = readOnly;
@@ -358,7 +315,6 @@ public class UserInfo {
             return createUserID;
         }
 
-
         public void setCreateUserID(int createUserID) {
             this.createUserID = createUserID;
         }
@@ -367,7 +323,6 @@ public class UserInfo {
         public String getCreateTime() {
             return TextUtils.isEmpty(createTime) ? "" : createTime;
         }
-
 
         public void setCreateTime(String createTime) {
             this.createTime = createTime;
@@ -378,7 +333,6 @@ public class UserInfo {
             return updateUserID;
         }
 
-
         public void setUpdateUserID(int updateUserID) {
             this.updateUserID = updateUserID;
         }
@@ -387,7 +341,6 @@ public class UserInfo {
         public String getUpdateTime() {
             return TextUtils.isEmpty(updateTime) ? "" : updateTime;
         }
-
 
         public void setUpdateTime(String updateTime) {
             this.updateTime = updateTime;
@@ -398,9 +351,24 @@ public class UserInfo {
             return hasChild;
         }
 
-
         public void setHasChild(boolean hasChild) {
             this.hasChild = hasChild;
+        }
+
+        public int getDisplayOrder() {
+            return displayOrder;
+        }
+
+        public void setDisplayOrder(int displayOrder) {
+            this.displayOrder = displayOrder;
+        }
+
+        public boolean isDelete() {
+            return delete;
+        }
+
+        public void setDelete(boolean delete) {
+            this.delete = delete;
         }
     }
 }

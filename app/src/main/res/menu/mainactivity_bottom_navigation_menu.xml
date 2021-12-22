@@ -6,11 +6,6 @@
         android:title="@string/device_module_navi" />
 
     <item
-        android:id="@+id/item_project_module"
-        android:icon="@drawable/bottom_navigation_project"
-        android:title="@string/project_module_navi" />
-
-    <item
         android:id="@+id/item_map_module"
         android:icon="@null"
         android:title="" />

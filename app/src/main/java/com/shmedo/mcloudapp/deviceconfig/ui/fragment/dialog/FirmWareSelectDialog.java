@@ -30,9 +30,9 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceFirmWareAdpter;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryFirmwareListParam;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
@@ -212,20 +212,20 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         parameter.setCurrentPage(pageInfo.getPage());
 
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryFirmwareList(MCloudApp.getAccessToken(), body)
+                .getFirmwareList(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<PageResult<FirmWareInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<FirmWareInfo> data, ErrCode errCode) {
+                    protected void onResponse(PageResult<FirmWareInfo> data, ErrorInfo errorInfo) {
                         adpter.getLoadMoreModule().setEnableLoadMore(true);
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null) {
                                     if (firmWareInfoList.size() == 0) {
                                         adpter.setEmptyView(R.layout.empty_view);
@@ -254,8 +254,8 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                                 pageInfo.nextPage();
                             } else {
                                 adpter.getLoadMoreModule().loadMoreFail();
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }

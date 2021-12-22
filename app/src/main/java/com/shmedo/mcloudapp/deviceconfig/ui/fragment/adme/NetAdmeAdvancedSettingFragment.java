@@ -38,9 +38,9 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDial
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
@@ -419,20 +419,20 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
     private void doFirmwareUpgrade(int firmwareID) {
         FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), projectDeviceInfo.getId(), firmwareID);
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .FirmwareUpgrade(MCloudApp.getAccessToken(), body)
+                .firmwareUpgrade(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String msgId, ErrCode errCode) {
+                    protected void onResponse(String msgId, ErrorInfo errorInfo) {
                         dismissWaitDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 msgIDList.clear();
                                 msgIDList.add(msgId);
                                 doDispatchSuccess("$cmd=md_upgrade");

@@ -31,9 +31,9 @@ import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.user.adapter.CompanySimpleInfoAdapter;
 import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
@@ -257,20 +257,20 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         parameter.setIncludeSubCompany(false);
 
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryUserInCompany(MCloudApp.getAccessToken(), body)
+                .queryUserInCompany(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<PageResult<CompanySimpleInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<CompanySimpleInfo> data, ErrCode errCode) {
+                    protected void onResponse(PageResult<CompanySimpleInfo> data, ErrorInfo errorInfo) {
 //                        adpter.getLoadMoreModule().setEnableLoadMore(true);
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null) {
                                     return;
                                 }
@@ -293,8 +293,8 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
 //                                pageInfo.nextPage();
                             } else {
 //                                adpter.getLoadMoreModule().loadMoreFail();
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }

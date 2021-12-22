@@ -26,9 +26,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCloudDataParameter;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.MyDatePicker;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.api.ServiceAddressType;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.ResponseHandler;
@@ -240,7 +240,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
         paramter.setNumber(itemCount);
 
         String json = GsonUtils.toJson(paramter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance().createService(ServiceAddressType.CLOUD_PLATFORM_DATA_ADDRESS)
                 .QueryCloudData(body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
@@ -249,11 +249,11 @@ public class QueryDeviceDataActivity extends BaseActivity {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
                     @Override
-                    protected void onResponse(List<QueryCloudDataInfo> queryCloudDataInfos, ErrCode errCode) {
+                    protected void onResponse(List<QueryCloudDataInfo> queryCloudDataInfos, ErrorInfo errorInfo) {
                         dismissLoadingDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             queryCloudDataInfoList.clear();
-                            if (errCode.getCode() == 0) {
+                            if (errorInfo.getCode() == 0) {
                                 if (queryCloudDataInfos == null || queryCloudDataInfos.size() == 0) {
                                     adapter.setEmptyView(R.layout.empty_view);
                                     adapter.notifyDataSetChanged();
@@ -266,8 +266,8 @@ public class QueryDeviceDataActivity extends BaseActivity {
                                 adapter.setEmptyView(getErrorView());
                                 adapter.notifyDataSetChanged();
 
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }

@@ -29,9 +29,9 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
@@ -219,20 +219,20 @@ public class DeviceSearchActivity extends BaseActivity {
         parameter.setCurrentPage(pageInfo.getPage());
 
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryCompanyDevice(MCloudApp.getAccessToken(), body)
+                .getDeviceList(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {
+                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrorInfo errorInfo) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                                     if (deviceInfoList.size() == 0) {
                                         deviceInfoAdapter.setEmptyView(R.layout.empty_view);
@@ -261,8 +261,8 @@ public class DeviceSearchActivity extends BaseActivity {
                                 pageInfo.nextPage();
                             } else {
                                 deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         } else {

@@ -21,9 +21,9 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.model.CenterPoint;
 import com.shmedo.mcloudapp.projects.model.ProjectInfoEx;
 import com.shmedo.mcloudapp.util.DateUtil;
@@ -214,7 +214,7 @@ public class ProjectIntroductionActivity extends BaseActivity {
     private void QueryProjectInfo() {
         showLoadingDialog("加载数据中...");
 
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(projectID));
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, String.valueOf(projectID));
         MDRetrofit.getInstance()
                 .createService()
                 .GetProjectByIDEx(MCloudApp.getAccessToken(), body)
@@ -224,14 +224,14 @@ public class ProjectIntroductionActivity extends BaseActivity {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<ProjectInfoEx>() {
                     @Override
-                    protected void onResponse(ProjectInfoEx data, ErrCode errCode) {
+                    protected void onResponse(ProjectInfoEx data, ErrorInfo errorInfo) {
                         dismissLoadingDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 updateView(data);
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }

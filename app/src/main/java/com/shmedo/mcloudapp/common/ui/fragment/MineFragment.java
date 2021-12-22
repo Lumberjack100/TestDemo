@@ -2,26 +2,24 @@ package com.shmedo.mcloudapp.common.ui.fragment;
 
 import static autodispose2.AutoDispose.autoDisposable;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.AppUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 import com.shmedo.mcloudapp.user.ui.activity.AboutAppActivity;
 import com.shmedo.mcloudapp.user.ui.activity.CompanyHomePageActivity;
@@ -31,6 +29,9 @@ import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.UpdataManagerUtil;
 import com.umeng.analytics.MobclickAgent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
@@ -60,8 +61,8 @@ public class MineFragment extends BaseTranslucentFragment {
     @BindView(R.id.tv_versionName)
     TextView mTvVersionName;
 
-    private UserInfo userInfo;
-    private UserInfo.UserBean user;
+    private UserWrapperInfo userWrapperInfo;
+    private UserWrapperInfo.UserInfo user;
     private int companyID;
     private CompanyInfo mCompanyInfo;
 
@@ -70,11 +71,6 @@ public class MineFragment extends BaseTranslucentFragment {
         return R.layout.fragment_mine;
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @Override
     public void onStart() {
@@ -87,14 +83,14 @@ public class MineFragment extends BaseTranslucentFragment {
     }
 
     private void updateView() {
-        userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            user = userInfo.getUser();
+        userWrapperInfo = MCloudApp.getCurrentUserInfo();
+        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
+            user = userWrapperInfo.getUser();
             if (user.getHeadPhotoPath() != null) {
                 GlideUtils.loadImage(getActivity(), user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
             }
-            mTvUserName.setText(user.getName() != null ? user.getName() : "");
-            mTvUserTitle.setText(user.getPosition() != null ? user.getPosition() : "");
+            mTvUserName.setText(user.getName());
+            mTvUserTitle.setText(user.getPosition());
             mTvVersionName.setText(AppUtils.getAppVersionName());
         }
     }
@@ -160,7 +156,6 @@ public class MineFragment extends BaseTranslucentFragment {
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //        startActivity(intent);
 //        mActivity.finish();
-
         MCloudApp.logout();
         //登出
         MobclickAgent.onProfileSignOff();
@@ -171,26 +166,33 @@ public class MineFragment extends BaseTranslucentFragment {
      * 查询单个公司信息
      */
     private void getCompanyInfo() {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", companyID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
         MDRetrofit.getInstance()
                 .createService()
-                .GetCompanyInfo(MCloudApp.getAccessToken(), body)
+                .getCompanyInfo(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<CompanyInfo>() {
                     @Override
-                    protected void onResponse(CompanyInfo companyInfo, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(CompanyInfo companyInfo, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 mCompanyInfo = companyInfo;
                                 if (mCompanyInfo != null) {
                                     mTvCompanyName.setText(mCompanyInfo.getFullName() != null ? mCompanyInfo.getFullName() : "");
                                 }
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }

@@ -28,12 +28,15 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.MyCountDownTimer;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 
@@ -154,82 +157,68 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
     @OnClick({R.id.iv_eye_password, R.id.tv_get_code, R.id.btn_confirm, R.id.iv_login_way})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_eye_password://查看密码
-                if (!isPasswordVisible) {
-                    isPasswordVisible = true;
-                    mIvEyePwd.setImageResource(R.drawable.icon_eye_open);
-                    mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT);
-                } else {
-                    isPasswordVisible = false;
-                    mIvEyePwd.setImageResource(R.drawable.icon_eye_close);
-                    mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                }
-                mEtPwd.setSelection(mEtPwd.getText().toString().length());
-                break;
-
-            case R.id.tv_get_code://获取验证码
-                mobile = mEtPhone.getText().toString();
-                if (TextUtils.isEmpty(mobile)) {
-                    ToastUtils.show("请输入手机号");
-                    mEtPhone.requestFocus();
-                    return;
-                }
-                if (!ValidateUtil.checkMobileNumber(mobile)) {
-                    ToastUtils.show("手机号格式错误！");
-                    return;
-                }
-                doCellPhoneExists();
-                break;
-
-            case R.id.btn_confirm:
-                if (loginWay == LOGIN_ACCOUNT) {//账号密码登录
-                    if (!prepareForLogin(false)) {
-                        return;
-                    }
-                    showLoadingDialog("正在登录...");
-                    String Md5Password = EncryptUtils.encryptMD5ToString(account + pwd);
-                    LoginManager.getInstance().login(account, Md5Password, this);
-                } else if (loginWay == LOGIN_PHONE) {
-                    if (!prepareForLogin(true)) {
-                        return;
-                    }
-                    showLoadingDialog("正在登录...");
-                    LoginManager.getInstance().quickLogin(mobile, code, this);
-                }
-                break;
-
-            case R.id.iv_login_way://登录方式切换
-                if (loginWay == LOGIN_ACCOUNT) {//切换为手机验证码登录
-                    loginWay = LOGIN_PHONE;
-                    mTvLoginWayTitleZh.setText(StringUtils.getString(R.string.login_way_phone_zh));
-                    mTvLoginWayTitleEn.setText(StringUtils.getString(R.string.login_way_phone_en));
-                    accountLoginLayout.setVisibility(View.GONE);
-                    phoneLoginLayout.setVisibility(View.VISIBLE);
-                    mIvLoginWay.setImageResource(R.drawable.icon_account_login);
-                    mTvLoginWayDesc.setText(StringUtils.getString(R.string.login_way_account_zh));
-                } else if (loginWay == LOGIN_PHONE) {//切换为账号密码登录
-                    loginWay = LOGIN_ACCOUNT;
-                    mTvLoginWayTitleZh.setText(StringUtils.getString(R.string.login_way_account_zh));
-                    mTvLoginWayTitleEn.setText(StringUtils.getString(R.string.login_way_account_en));
-                    accountLoginLayout.setVisibility(View.VISIBLE);
-                    phoneLoginLayout.setVisibility(View.GONE);
-                    mIvLoginWay.setImageResource(R.drawable.icon_phone_login);
-                    mTvLoginWayDesc.setText(StringUtils.getString(R.string.login_way_phone_zh));
-                }
-                break;
+        if (isDoubleClick(view)) {
+            return;
         }
-    }
+        int id = view.getId();
+        if (id == R.id.iv_eye_password) {//查看密码
+            if (!isPasswordVisible) {
+                isPasswordVisible = true;
+                mIvEyePwd.setImageResource(R.drawable.icon_eye_open);
+                mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT);
+            } else {
+                isPasswordVisible = false;
+                mIvEyePwd.setImageResource(R.drawable.icon_eye_close);
+                mEtPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            }
+            mEtPwd.setSelection(mEtPwd.getText().toString().length());
+        } else if (id == R.id.tv_get_code) {//获取验证码
+            mobile = mEtPhone.getText().toString();
+            if (TextUtils.isEmpty(mobile)) {
+                ToastUtils.show("请输入手机号");
+                mEtPhone.requestFocus();
+                return;
+            }
+            if (!ValidateUtil.checkMobileNumber(mobile)) {
+                ToastUtils.show("手机号格式错误！");
+                return;
+            }
+//            doCellPhoneExists();
+            sendSmsCode();
 
-    @Override
-    public void callback(int code, Object data) {
-        dismissLoadingDialog();
-
-        if (LoginManager.LOGIN_CODE_SUCCESS == code) {
-            MainActivity.start(LoginActivity.this);
-            finish();
-        } else if (LoginManager.LOGIN_CODE_FAIL_BUSINESS == code) {
-            ToastUtils.show("登录失败\n" + data);
+        } else if (id == R.id.btn_confirm) {
+            if (loginWay == LOGIN_ACCOUNT) {//账号密码登录
+                if (!prepareForLogin(false)) {
+                    return;
+                }
+                showLoadingDialog("正在登录...");
+                String Md5Password = EncryptUtils.encryptMD5ToString(account + pwd);
+                LoginManager.getInstance().login(account, pwd, this);
+            } else if (loginWay == LOGIN_PHONE) {
+                if (!prepareForLogin(true)) {
+                    return;
+                }
+                showLoadingDialog("正在登录...");
+                LoginManager.getInstance().quickLogin(mobile, code, this);
+            }
+        } else if (id == R.id.iv_login_way) {//登录方式切换
+            if (loginWay == LOGIN_ACCOUNT) {//切换为手机验证码登录
+                loginWay = LOGIN_PHONE;
+                mTvLoginWayTitleZh.setText(StringUtils.getString(R.string.login_way_phone_zh));
+                mTvLoginWayTitleEn.setText(StringUtils.getString(R.string.login_way_phone_en));
+                accountLoginLayout.setVisibility(View.GONE);
+                phoneLoginLayout.setVisibility(View.VISIBLE);
+                mIvLoginWay.setImageResource(R.drawable.icon_account_login);
+                mTvLoginWayDesc.setText(StringUtils.getString(R.string.login_way_account_zh));
+            } else if (loginWay == LOGIN_PHONE) {//切换为账号密码登录
+                loginWay = LOGIN_ACCOUNT;
+                mTvLoginWayTitleZh.setText(StringUtils.getString(R.string.login_way_account_zh));
+                mTvLoginWayTitleEn.setText(StringUtils.getString(R.string.login_way_account_en));
+                accountLoginLayout.setVisibility(View.VISIBLE);
+                phoneLoginLayout.setVisibility(View.GONE);
+                mIvLoginWay.setImageResource(R.drawable.icon_phone_login);
+                mTvLoginWayDesc.setText(StringUtils.getString(R.string.login_way_phone_zh));
+            }
         }
     }
 
@@ -273,49 +262,31 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         return true;
     }
 
-    /**
-     * 检测手机号是否存在
-     */
-    private void doCellPhoneExists() {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, mobile);
-        MDRetrofit.getInstance()
-                .createService()
-                .CellPhoneExists(body)
-                .doOnDispose(() -> Timber.i("Disposing subscription"))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(new BaseObserver<Boolean>() {
-                    @Override
-                    protected void onResponse(Boolean data, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
-                                if (data) {
-                                    doSendSmsCode();
-                                } else {
-                                    ToastUtils.show("此手机号未在系统中注册！");
-                                }
-                            } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
-                                }
-                            }
-                        }
-                    }
+    @Override
+    public void callback(int code, String msg) {
+        dismissLoadingDialog();
 
-                    @Override
-                    public void onError(Throwable e) {
-                        ResponseHandler.getInstance().handleFailure((Exception) e);
-                    }
-                });
+        if (LoginManager.LOGIN_CODE_SUCCESS == code) {
+            MainActivity.start(LoginActivity.this);
+            finish();
+        } else if (LoginManager.LOGIN_CODE_FAIL_BUSINESS == code) {
+            ToastUtils.show("登录失败\n" + msg);
+        }
     }
 
     /**
      * 发送验证码
      */
-    private void doSendSmsCode() {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, mobile);
-        showLoadingDialog("正在获取验证码...");
+    private void sendSmsCode() {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("phone", mobile);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
+        showWaitDialog("正在获取验证码...");
         MDRetrofit.getInstance()
                 .createService()
                 .sendSmsCode(body)
@@ -325,21 +296,19 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String data, ErrCode errCode) {
-                        dismissLoadingDialog();
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
-                                if (data.contains("已发送")) {
+                    protected void onResponse(String data, ErrorInfo errorInfo) {
+                        dismissWaitDialog();
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
+                                if (!TextUtils.isEmpty(data) && data.contains("已发送")) {
                                     ToastUtils.show(data);
                                     MyCountDownTimer timer = new MyCountDownTimer(mTvGetCode, 60000, 1000);
                                     timer.setTextColor(R.color.title_text_color, R.color.text_color_b3b3b3);
                                     timer.start();
-                                } else {
-                                    ToastUtils.show(data);
                                 }
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }
@@ -347,12 +316,11 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
-
 
     static class MyClickText extends ClickableSpan {
         private Context context;

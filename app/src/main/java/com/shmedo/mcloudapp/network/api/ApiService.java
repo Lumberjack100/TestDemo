@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.network.api;
 
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.BasicUserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.common.model.PageResult;
-import com.shmedo.mcloudapp.deviceconfig.model.DevcieHistoryState;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -10,8 +10,8 @@ import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
-import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.network.ResultWrapper;
+import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ResponseWrapper;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
 import com.shmedo.mcloudapp.projects.model.IndustryTypeProjectInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
@@ -44,172 +44,154 @@ public interface ApiService {
      * 登录模块
      */
     //用户名密码登录
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("SignIn")
-    Observable<ResultWrapper<String>> getSingIn(@Body RequestBody parameter);
+    Observable<ResponseWrapper<String>> getSingIn(@Body RequestBody parameter);
 
     //发送登录验证码(间隔60秒，有效期15分钟)
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE, NetworkConst.HEADER_APP_KEY, NetworkConst.HEADER_APP_SECRET})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("SendSmsCode")
-    Observable<ResultWrapper<String>> sendSmsCode(@Body RequestBody parameter);
+    Observable<ResponseWrapper<String>> sendSmsCode(@Body RequestBody parameter);
 
     //使用手机号和验证码登录
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("SmsLogin")
-    Observable<ResultWrapper<String>> SmsLogin(@Body RequestBody parameter);
+    Observable<ResponseWrapper<String>> smsLogin(@Body RequestBody parameter);
 
     /**
      * 用户信息模块
      */
     //通过token获取用户信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @GET("GetUserByToken")
-    Observable<ResultWrapper<UserInfo>> getUserByToken(@Header(NetworkConst.ACCESS_TOKEN) String token);
+    Observable<ResponseWrapper<BasicUserInfo>> getUserByToken(@Header(RequestHeader.ACCESS_TOKEN) String token);
 
     //查询用户信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @GET("QueryUserByID")
-    Observable<ResultWrapper<UserInfo>> getMyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token);
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("QueryUserByID")
+    Observable<ResponseWrapper<UserWrapperInfo>> queryUserByID(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
+    //重置用户密码
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("ResetPassword")
+    Observable<ResponseWrapper<String>> resetPassword(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-
-    //系统接口V2-5  检测手机号是否存在
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("CellPhoneExists")
-    Observable<ResultWrapper<Boolean>> CellPhoneExists(@Body RequestBody parameter);
-
-    //系统接口v2  修改当前登录用户的密码
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("ChangeMyPassword")
-    Observable<ResultWrapper<String>> ChangeMyPassword(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //系统接口v2  修改我的手机号码
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("UpdateMyCellPhone")
-    Observable<ResultWrapper<String>> UpdateMyCellPhone(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //系统接口v2  修改我的信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("UpdateMyInfo")
-    Observable<ResultWrapper<String>> UpdateMyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    //修改用户信息
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("UpdateUser")
+    Observable<ResponseWrapper<String>> updateUser(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //用户上传头像
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("SetUserHeadPhoto")
-    Observable<ResultWrapper<String>> setUserHeadPhoto(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("UploadUserAvatar")
+    Observable<ResponseWrapper<String>> uploadUserAvatar(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2  公司模块 4.查询单个公司信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("GetCompanyInfo")
-    Observable<ResultWrapper<CompanyInfo>> GetCompanyInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //系统接口v2  查询用户在其中具有权限的公司，包括该公司的子公司(用于设备分配)
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    //分页查询用户所在的所有公司
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryUserInCompany")
-    Observable<ResultWrapper<PageResult<CompanySimpleInfo>>> QueryUserInCompany(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<PageResult<CompanySimpleInfo>>> queryUserInCompany(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //获取公司信息
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("GetCompanyInfo")
+    Observable<ResponseWrapper<CompanyInfo>> getCompanyInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+
+    //系统接口v2  修改我的手机号码
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("UpdateMyCellPhone")
+    Observable<ResponseWrapper<String>> UpdateMyCellPhone(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     /**
      * 项目模块
      */
     //项目接口V2  查询当前用户的项目列表(列表方式、不分页)
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryUserListProjectEx")
-    Observable<ResultWrapper<List<ProjectBaseInfo>>> QueryUserListProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<List<ProjectBaseInfo>>> QueryUserListProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //项目接口V2  查询当前用户的项目列表(项目类型方式)
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryUserTypeProject")
-    Observable<ResultWrapper<List<IndustryTypeProjectInfo>>> QueryUserTypeProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<List<IndustryTypeProjectInfo>>> QueryUserTypeProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //项目接口V2  查询当前用户的项目列表(行政区域列表方式)
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryUserRegionListProject")
-    Observable<ResultWrapper<List<RegionProjectInfo>>> QueryUserRegionListProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<List<RegionProjectInfo>>> QueryUserRegionListProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //项目接口V2  查询当前用户的项目列表（自定义分级方式，不包含空节点）
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("GetLevelProjList")
-    Observable<ResultWrapper<List<CustomLevelProjectInfo>>> GetLevelProjList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<List<CustomLevelProjectInfo>>> GetLevelProjList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //项目接口V2-4  查询警报阈值列表
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryProjectListInfo")
-    Observable<ResultWrapper<List<ProjectDetailInfo>>> QueryProjectListInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<List<ProjectDetailInfo>>> QueryProjectListInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //系统接口V2-5  用户项目置顶
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("TopUserProject")
-    Observable<ResultWrapper<String>> TopUserProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<String>> TopUserProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //系统接口V2-5  用户项目取消置顶
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("UnTopUserProject")
-    Observable<ResultWrapper<String>> UnTopUserProject(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //系统接口v2-2  查询公司设备列表
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("QueryCompanyDevice")
-    Observable<ResultWrapper<PageResult<ProjectDeviceInfo>>> QueryCompanyDevice(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<String>> UnTopUserProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //项目接口V2-4  获取单个项目的详细信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("GetProjectByIDEx")
-    Observable<ResultWrapper<ProjectInfoEx>> GetProjectByIDEx(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //系统接口V2  查询公司设备类型在线统计信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("QueryCompanyDeviceOnlineTypeStatistics")
-    Observable<ResultWrapper<List<DeviceOnlineTypeStatistic>>> QueryCompanyDeviceOnlineTypeStatistics(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<ProjectInfoEx>> GetProjectByIDEx(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     /**
      * 设备模块
      */
-    //系统接口V2-4  查询设备状态历史
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("QueryCmdState")
-    Observable<ResultWrapper<PageResult<DevcieHistoryState>>> QueryCmdState(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    //统计公司下的设备
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("GetDeviceStatByCompanyID")
+    Observable<ResponseWrapper<List<DeviceOnlineTypeStatistic>>> getDeviceStatByCompanyID(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口V2-4  查询公司固件列表
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("QueryFirmwareList")
-    Observable<ResultWrapper<PageResult<FirmWareInfo>>> QueryFirmwareList(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    //分页查询产品列表
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("QueryProduct")
+    Observable<ResponseWrapper<PageResult<DeviceTypeInfo>>> queryProduct(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口V2-4  固件升级
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("FirmwareUpgrade")
-    Observable<ResultWrapper<String>> FirmwareUpgrade(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    //查询设备列表
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("GetDeviceList")
+    Observable<ResponseWrapper<PageResult<ProjectDeviceInfo>>> getDeviceList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
+    //获取设备概要信息
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("DescribeDeviceSimpleInfo")
+    Observable<ResponseWrapper<DeviceDetailInfo>> getDescribeDeviceSimpleInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口V2  查询设备类型列表
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("QueryDeviceType")
-    Observable<ResultWrapper<PageResult<DeviceTypeInfo>>> QueryDeviceType(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
+    //查询固件列表
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("GetFirmwareList")
+    Observable<ResponseWrapper<PageResult<FirmWareInfo>>> getFirmwareList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     /**
      * 指令交互
      */
-    //系统接口V2-4  指令下发
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("DispatchCmd")
-    Observable<ResultWrapper<List<DispatchCmdItem>>> DispatchCmd(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    //批量透明指令下发(限定同一产品)
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("BatchDispatchRawCmd")
+    Observable<ResponseWrapper<List<DispatchCmdItem>>> batchDispatchRawCmd(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口V2-4  指令透传
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("DispatchRawCmd")
-    Observable<ResultWrapper<List<DispatchCmdItem>>> DispatchRawCmd(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //系统接口V2-4  查询指令响应结果
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
+    //查询指令响应结果
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryCmdResultByMsgID")
-    Observable<ResultWrapper<List<QueryCmdResult>>> QueryCmdResultByMsgID(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<List<QueryCmdResult>>> queryCmdResultByMsgID(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //系统接口v2  7.10 查询设备的详情信息
-    @Headers({NetworkConst.HEADER_ACCESS_TYPE})
-    @POST("GetDeviceDetailInfo")
-    Observable<ResultWrapper<DeviceDetailInfo>> GetDeviceDetailInfo(@Header(NetworkConst.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    //对单个设备进行固件升级
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("FirmwareUpgrade")
+    Observable<ResponseWrapper<String>> firmwareUpgrade(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //查询数据
     @POST("queryCloudData")
-    Observable<ResultWrapper<List<QueryCloudDataInfo>>> QueryCloudData(@Body RequestBody parameter);
+    Observable<ResponseWrapper<List<QueryCloudDataInfo>>> QueryCloudData(@Body RequestBody parameter);
 }

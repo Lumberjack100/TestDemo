@@ -28,14 +28,14 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.MainActivity;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.adapter.ProjectMultipleItemAdapter;
 import com.shmedo.mcloudapp.projects.helper.ProjectImageHelper;
 import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
@@ -181,11 +181,11 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     }
 
     private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null) {
-            if (userInfo.getUser() != null) {
-                UserInfo.UserBean user = userInfo.getUser();
-                userId = user.getId();
+        UserWrapperInfo userWrapperInfo = MCloudApp.getCurrentUserInfo();
+        if (userWrapperInfo != null) {
+            if (userWrapperInfo.getUser() != null) {
+                UserWrapperInfo.UserInfo user = userWrapperInfo.getUser();
+                userId = user.getUserID();
             }
         }
     }
@@ -442,7 +442,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     private void queryUserListProject() {
         ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .QueryUserListProject(MCloudApp.getAccessToken(), body)
@@ -452,9 +452,9 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<ProjectBaseInfo>>() {
                     @Override
-                    protected void onResponse(List<ProjectBaseInfo> data, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(List<ProjectBaseInfo> data, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     swipeRefresh.setRefreshing(false);
                                     showNoContentView(StringUtils.getString(R.string.empty_no_data));
@@ -470,13 +470,13 @@ public class ProjectListFragment extends BaseTranslucentFragment {
 
                             } else {
                                 swipeRefresh.setRefreshing(false);
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
-                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errorInfo.getCode());
                             }
                         } else {
-                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errorInfo.getCode());
                         }
                     }
 
@@ -495,7 +495,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     private void getLevelProjList() {
         ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .GetLevelProjList(MCloudApp.getAccessToken(), body)
@@ -505,10 +505,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<CustomLevelProjectInfo>>() {
                     @Override
-                    protected void onResponse(List<CustomLevelProjectInfo> data, ErrCode errCode) {
+                    protected void onResponse(List<CustomLevelProjectInfo> data, ErrorInfo errorInfo) {
                         swipeRefresh.setRefreshing(false);
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
@@ -516,13 +516,13 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 setCustomLevelModeAdapterData(data);
                                 loadFinished();
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
-                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errorInfo.getCode());
                             }
                         } else {
-                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errorInfo.getCode());
                         }
                     }
 
@@ -541,7 +541,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     private void queryUserRegionProject() {
         ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .QueryUserRegionListProject(MCloudApp.getAccessToken(), body)
@@ -551,10 +551,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<RegionProjectInfo>>() {
                     @Override
-                    protected void onResponse(List<RegionProjectInfo> data, ErrCode errCode) {
+                    protected void onResponse(List<RegionProjectInfo> data, ErrorInfo errorInfo) {
                         swipeRefresh.setRefreshing(false);
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
@@ -562,13 +562,13 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 setRegionModeAdapterData(data);
                                 loadFinished();
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
-                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errorInfo.getCode());
                             }
                         } else {
-                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errorInfo.getCode());
                         }
                     }
 
@@ -588,7 +588,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
     private void queryUserTypeProject() {
         ProjectBaseInfoParam parameter = new ProjectBaseInfoParam(String.valueOf(companyID), "");
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .QueryUserTypeProject(MCloudApp.getAccessToken(), body)
@@ -598,10 +598,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<IndustryTypeProjectInfo>>() {
                     @Override
-                    protected void onResponse(List<IndustryTypeProjectInfo> data, ErrCode errCode) {
+                    protected void onResponse(List<IndustryTypeProjectInfo> data, ErrorInfo errorInfo) {
                         swipeRefresh.setRefreshing(false);
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
@@ -609,13 +609,13 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 setTypeModeAdapterData(data);
                                 loadFinished();
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
-                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errorInfo.getCode());
                             }
                         } else {
-                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errorInfo.getCode());
                         }
                     }
 
@@ -635,7 +635,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      */
     private void QueryProjectListInfo(List<Integer> projectIDs) {
         String json = GsonUtils.toJson(projectIDs);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .QueryProjectListInfo(MCloudApp.getAccessToken(), body)
@@ -645,10 +645,10 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<ProjectDetailInfo>>() {
                     @Override
-                    protected void onResponse(List<ProjectDetailInfo> data, ErrCode errCode) {
+                    protected void onResponse(List<ProjectDetailInfo> data, ErrorInfo errorInfo) {
                         swipeRefresh.setRefreshing(false);
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
@@ -685,13 +685,13 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                                 loadFinished();
 
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
-                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errorInfo.getCode());
                             }
                         } else {
-                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errorInfo.getCode());
                         }
                     }
 
@@ -891,7 +891,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      */
     private void processTopUserProject(List<Integer> projectIDs) {
         String json = GsonUtils.toJson(projectIDs);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .TopUserProject(MCloudApp.getAccessToken(), body)
@@ -901,14 +901,14 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String s, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(String s, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 swipeRefresh.setRefreshing(true);
                                 refreshProjects();
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }
@@ -928,7 +928,7 @@ public class ProjectListFragment extends BaseTranslucentFragment {
      */
     private void processUnTopUserProject(List<Integer> projectIDs) {
         String json = GsonUtils.toJson(projectIDs);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .UnTopUserProject(MCloudApp.getAccessToken(), body)
@@ -938,14 +938,14 @@ public class ProjectListFragment extends BaseTranslucentFragment {
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String s, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(String s, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 swipeRefresh.setRefreshing(true);
                                 refreshProjects();
                             } else {
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }

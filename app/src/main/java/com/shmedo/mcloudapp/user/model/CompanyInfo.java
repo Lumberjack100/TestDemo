@@ -8,8 +8,6 @@ import java.io.Serializable;
  * 描述：     公司信息
  */
 public class CompanyInfo implements Serializable {
-
-
     /**
      * id : 1
      * shortName : 上海米度
@@ -30,12 +28,18 @@ public class CompanyInfo implements Serializable {
      * updateTime : 2020-05-04 09:59:39
      * hasChild : true
      */
-
     private int id;
     private String shortName;
     private String fullName;
-    private Object parentID;
+    private int parentID;
     private String desc;
+    private int level;
+    private int createUserID;
+    private String createTime;
+    private int updateUserID;
+    private String updateTime;
+    private boolean hasChild;
+    private boolean delete;
     private String address;
     private String phone;
     private String legalPerson;
@@ -43,12 +47,6 @@ public class CompanyInfo implements Serializable {
     private String industry;
     private String nature;
     private String webSite;
-    private int level;
-    private int createUserID;
-    private String createTime;
-    private int updateUserID;
-    private String updateTime;
-    private boolean hasChild;
 
     public int getId() {
         return id;
@@ -74,11 +72,11 @@ public class CompanyInfo implements Serializable {
         this.fullName = fullName;
     }
 
-    public Object getParentID() {
+    public int getParentID() {
         return parentID;
     }
 
-    public void setParentID(Object parentID) {
+    public void setParentID(int parentID) {
         this.parentID = parentID;
     }
 

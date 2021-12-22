@@ -23,7 +23,7 @@ import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.entity.ProjectDetailInfoDao;
@@ -83,10 +83,10 @@ public class ViewProjectsInMapActivity extends BaseActivity implements ClusterRe
     }
 
     private void initData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
-            userId = user.getId();
+        UserWrapperInfo userWrapperInfo = MCloudApp.getCurrentUserInfo();
+        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
+            UserWrapperInfo.UserInfo user = userWrapperInfo.getUser();
+            userId = user.getUserID();
         }
     }
 

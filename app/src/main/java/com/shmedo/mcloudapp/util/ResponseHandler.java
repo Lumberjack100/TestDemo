@@ -8,7 +8,7 @@ import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.event.ForceToLoginEvent;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 
 import java.net.ConnectException;
 import java.net.NoRouteToHostException;
@@ -42,19 +42,19 @@ public class ResponseHandler {
     /**
      * 当网络请求正常响应的时候，根据状态码处理通用部分的逻辑。
      *
-     * @param errCode
+     * @param errorInfo
      * @return 如果已经将该响应处理掉了，返回true，否则返回false。
      */
-    public boolean handleResponse(ErrCode errCode) {
-        switch (errCode.getCode()) {
+    public boolean handleResponse(ErrorInfo errorInfo) {
+        switch (errorInfo.getCode()) {
             case 8:
                 Timber.w("handleResponse: errCode code is 8");
-                ToastUtils.show(TextUtils.isEmpty(errCode.getErrMessage()) ? StringUtils.getString(R.string.server_internal_error) : errCode.getErrMessage());
+                ToastUtils.show(TextUtils.isEmpty(errorInfo.getMsg()) ? StringUtils.getString(R.string.server_internal_error) : errorInfo.getMsg());
                 return true;
 
             case 10:
             case 11:
-                Timber.w("handleResponse: errCode code is %s", errCode.getCode());
+                Timber.w("handleResponse: errCode code is %s", errorInfo.getCode());
                 ToastUtils.show(StringUtils.getString(R.string.login_status_expired));
                 forceToLoginEventLiveData.postValue(new ForceToLoginEvent());
                 return true;

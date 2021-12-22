@@ -6,9 +6,9 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
 import com.shmedo.mcloudapp.util.ResponseHandler;
@@ -58,17 +58,17 @@ public class DeviceRepository {
         parameter.setSn(sn);
 
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryCompanyDevice(MCloudApp.getAccessToken(), body)
+                .getDeviceList(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                                     deviceApiKey.postValue(null);
                                     return;
@@ -92,18 +92,18 @@ public class DeviceRepository {
     }
 
     private void GetDeviceDetailInfo(int deviceId, UnPeekLiveData<String> deviceApiKey) {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(deviceId));
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, String.valueOf(deviceId));
 
         MDRetrofit.getInstance()
                 .createService()
-                .GetDeviceDetailInfo(MCloudApp.getAccessToken(), body)
+                .getDescribeDeviceSimpleInfo(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<DeviceDetailInfo>() {
                     @Override
-                    protected void onResponse(DeviceDetailInfo deviceDetailInfo, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(DeviceDetailInfo deviceDetailInfo, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (deviceDetailInfo == null || deviceDetailInfo.getBasicInfo() == null) {
                                     deviceApiKey.postValue(null);
                                     return;

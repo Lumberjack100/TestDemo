@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:35
  */
-public abstract class BaseObserver<T> implements Observer<ResultWrapper<T>> {
+public abstract class BaseObserver<T> implements Observer<ResponseWrapper<T>> {
 
     @Override
     public void onSubscribe(Disposable d) {
@@ -19,25 +19,11 @@ public abstract class BaseObserver<T> implements Observer<ResultWrapper<T>> {
     }
 
     @Override
-    public void onNext(ResultWrapper<T> baseResponse) {
-//        if (baseResponse.isSuccess()) {
-//            String msg = baseResponse.getErrCode().getErrMessage() != null ? baseResponse.getErrCode().getErrMessage() : "";
-//            if (baseResponse.getData() != null) {
-//                onSuccess(baseResponse.getData(), msg);
-//            }
-//        } else {
-//            String msg = baseResponse.getErrCode().getErrMessage() != null ? baseResponse.getErrCode().getErrMessage() : "请求失败";
-//            Failure(msg);
-//        }
-
-        onResponse(baseResponse.getData(), baseResponse.getErrCode());
+    public void onNext(ResponseWrapper<T> baseResponse) {
+        ErrorInfo errorInfo = new ErrorInfo(baseResponse.getCode(), baseResponse.getMsg());
+        onResponse(baseResponse.getData(), errorInfo);
     }
 
-    /**
-     * 请求发生错误
-     *
-     * @param e
-     */
     @Override
     public void onError(Throwable e) {
 
@@ -48,8 +34,5 @@ public abstract class BaseObserver<T> implements Observer<ResultWrapper<T>> {
 
     }
 
-
-    protected abstract void onResponse(T t, ErrCode errCode);
-
-
+    protected abstract void onResponse(T t, ErrorInfo errorInfo);
 }

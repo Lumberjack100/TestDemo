@@ -1,23 +1,24 @@
 package com.shmedo.mcloudapp.util;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.hjq.toast.ToastUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.BasicUserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
+import com.shmedo.mcloudapp.common.model.params.MobileSignInParameter;
 import com.shmedo.mcloudapp.common.model.params.SignInParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.network.api.ServiceAddressType;
+import com.shmedo.mcloudapp.network.RequestHeader;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -30,20 +31,13 @@ import okhttp3.RequestBody;
  * 创建时间:  2019-10-17
  */
 public class LoginManager implements DefaultLifecycleObserver {
-
     public static final int LOGIN_CODE_SUCCESS = 0;
-
     public static final int LOGIN_CODE_FAIL_BUSINESS = 0x0040;
-
     public static final int LOGIN_CODE_FAIL_EXCEPTION = 0x0041;
 
     private static LoginManager instance = new LoginManager();
 
     private LoginCallback loginCallback = null;
-
-    private String Code = null;
-
-    private String Mobile = null;
 
 
     public static LoginManager getInstance() {
@@ -54,38 +48,42 @@ public class LoginManager implements DefaultLifecycleObserver {
 
     }
 
-    public void login(String account, String password, final LoginCallback callback) {
+    public void login(final String account, final String password, final LoginCallback callback) {
         this.loginCallback = callback;
         makeLoginByAccount(account, password);
     }
 
-    public void quickLogin(String mobile, String code, final LoginCallback callback) {
+    public void quickLogin(final String mobile, final String code, final LoginCallback callback) {
         this.loginCallback = callback;
-        this.Mobile = mobile;
-        this.Code = code;
-        makeQuickLogin();
+        makeQuickLogin(mobile, code);
     }
 
     /**
      * 账户密码登录
      */
-    private void makeLoginByAccount(String account, String password) {
+    private void makeLoginByAccount(final String account, final String password) {
         SignInParameter parameter = new SignInParameter(account, password);
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
 
-        MDRetrofit.getInstance().createService(ServiceAddressType.AUTHORITY_SERVICE_ADDRESS)
+        MDRetrofit.getInstance()
+                .createService()
                 .getSingIn(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String token, ErrCode errCode) {
-                        if (errCode.getCode() == 0) {
-                            getUserInfo(token);
+                    protected void onResponse(String token, ErrorInfo errorInfo) {
+                        if (errorInfo.getCode() == 0) {
+                            //在内存中保存用户数据为全局变量
+                            MCloudApp.setAccessToken(token);
+                            //持久化保存用户数据到SharedPreferences文件中
+                            SPStaticUtils.put(AppContants.User.UID, account);
+                            SPStaticUtils.put(AppContants.User.MD5_PWD, password);
+                            getUserByToken();
                         } else {
                             if (loginCallback != null) {
-                                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errCode.getErrMessage());
+                                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errorInfo.getMsg());
                             }
                         }
                     }
@@ -103,30 +101,26 @@ public class LoginManager implements DefaultLifecycleObserver {
     /**
      * 手机验证码登录
      */
-    private void makeQuickLogin() {
-        SignInParameter parameter = new SignInParameter(Mobile, Code);
+    private void makeQuickLogin(final String mobile, final String code) {
+        MobileSignInParameter parameter = new MobileSignInParameter(mobile, code);
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+
         MDRetrofit.getInstance()
                 .createService()
-                .SmsLogin(body)
+                .smsLogin(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<String>() {
                     @Override
-                    protected void onResponse(String token, ErrCode errCode) {
-                        if (errCode.getCode() == 0) {
-                            if (token.contains("手机号对应的用户不存在")) {
-                                ToastUtils.show("手机号对应的用户不存在");
-                                if (loginCallback != null) {
-                                    loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, null);
-                                }
-                            } else {
-                                getUserInfo(token);
-                            }
+                    protected void onResponse(String token, ErrorInfo errorInfo) {
+                        if (errorInfo.getCode() == 0) {
+                            //在内存中保存用户数据为全局变量
+                            MCloudApp.setAccessToken(token);
+                            getUserByToken();
                         } else {
                             if (loginCallback != null) {
-                                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errCode.getErrMessage());
+                                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errorInfo.getMsg());
                             }
                         }
                     }
@@ -141,43 +135,70 @@ public class LoginManager implements DefaultLifecycleObserver {
                 });
     }
 
-
     /**
-     * 获取用户信息
-     *
-     * @param token
+     * 通过token获取用户信息
      */
-    private void getUserInfo(final String token) {
-        MDRetrofit.getInstance().createService().getMyInfo(token)
+    private void getUserByToken() {
+        MDRetrofit.getInstance()
+                .createService()
+                .getUserByToken(MCloudApp.getAccessToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<UserInfo>() {
+                .subscribe(new BaseObserver<BasicUserInfo>() {
                     @Override
-                    protected void onResponse(UserInfo userInfo, ErrCode errCode) {
-                        if (errCode.getCode() == 0) {
+                    protected void onResponse(BasicUserInfo basicUserInfo, ErrorInfo errorInfo) {
+                        if (errorInfo.getCode() == 0) {
+                            MCloudApp.setCompanyID(basicUserInfo.getCompanyID());
+                            queryUserByID(basicUserInfo.getCompanyID(), basicUserInfo.getSubjectID());
+                        } else {
+                            if (loginCallback != null) {
+                                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errorInfo.getMsg());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                        if (loginCallback != null) {
+                            loginCallback.callback(LOGIN_CODE_FAIL_EXCEPTION, e.getMessage());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 查询用户信息
+     */
+    private void queryUserByID(final int companyID, final int userID) {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", companyID);
+            jsonObjectRequest.put("userID", userID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
+        MDRetrofit.getInstance()
+                .createService()
+                .queryUserByID(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<UserWrapperInfo>() {
+                    @Override
+                    protected void onResponse(UserWrapperInfo userWrapperInfo, ErrorInfo errorInfo) {
+                        if (errorInfo.getCode() == 0) {
                             //在内存中保存用户数据为全局变量
-                            MCloudApp.setAccessToken(token);
-                            if (userInfo.getUser() != null) {
-                                MCloudApp.setAccount(userInfo.getUser().getAccount());
-                                MCloudApp.setCurrentUserInfo(userInfo);
-                                if (userInfo.getDepartments() != null && userInfo.getDepartments().size() > 0) {
-                                    int companyID = userInfo.getDepartments().get(0).getCompanyID();
-                                    MCloudApp.setCompanyID(companyID);
-                                }
-                                //持久化保存用户数据到SharedPreferences文件中
-                                if (!TextUtils.isEmpty(userInfo.getUser().getPassword())) {
-                                    SPStaticUtils.put(AppContants.User.UID, userInfo.getUser().getAccount());
-                                    SPStaticUtils.put(AppContants.User.MD5_PWD, userInfo.getUser().getPassword());
-                                    SPStaticUtils.remove(AppContants.User.PWD);
-                                }
-//                                SPStaticUtils.put(NetworkConst.ACCESS_TOKEN, token);
+                            if (userWrapperInfo.getUser() != null) {
+                                MCloudApp.setCurrentUserInfo(userWrapperInfo);
                             }
                             if (loginCallback != null) {
                                 loginCallback.callback(LOGIN_CODE_SUCCESS, "登录成功");
                             }
                         } else {
                             if (loginCallback != null) {
-                                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errCode.getErrMessage());
+                                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errorInfo.getMsg());
                             }
                         }
                     }
@@ -193,7 +214,7 @@ public class LoginManager implements DefaultLifecycleObserver {
     }
 
     public interface LoginCallback {
-        void callback(int code, Object data);
+        void callback(int code, String msg);
     }
 
     @Override

@@ -34,9 +34,9 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.network.BaseObserver;
-import com.shmedo.mcloudapp.network.ErrCode;
+import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
-import com.shmedo.mcloudapp.network.NetworkConst;
+import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
 import com.shmedo.mcloudapp.projects.adapter.DeviceTypeAdapter;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
@@ -282,19 +282,19 @@ public class DevicesInProjectFragment extends BaseFragment {
      * 查询公司设备类型在线统计信息
      */
     private void queryCompanyDeviceOnlineTypeStatistics() {
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, String.valueOf(companyID));
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, String.valueOf(companyID));
         MDRetrofit.getInstance()
                 .createService()
-                .QueryCompanyDeviceOnlineTypeStatistics(MCloudApp.getAccessToken(), body)
+                .getDeviceStatByCompanyID(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<List<DeviceOnlineTypeStatistic>>() {
                     @Override
-                    protected void onResponse(List<DeviceOnlineTypeStatistic> data, ErrCode errCode) {
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                    protected void onResponse(List<DeviceOnlineTypeStatistic> data, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
                                     swipeRefresh.setRefreshing(false);
                                     showNoContentView(StringUtils.getString(R.string.empty_no_data));
@@ -303,13 +303,13 @@ public class DevicesInProjectFragment extends BaseFragment {
                                 setDeviceTypeData(data);
                             } else {
                                 swipeRefresh.setRefreshing(false);
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
-                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errCode.getCode());
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errorInfo.getCode());
                             }
                         } else {
-                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errCode.getCode());
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errorInfo.getCode());
                         }
                     }
 
@@ -369,21 +369,21 @@ public class DevicesInProjectFragment extends BaseFragment {
         parameter.setCurrentPage(pageInfo.getPage());
 
         String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(NetworkConst.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
-                .QueryCompanyDevice(MCloudApp.getAccessToken(), body)
+                .getDeviceList(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
                 .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrCode errCode) {
+                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrorInfo errorInfo) {
                         swipeRefresh.setRefreshing(false);
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
-                        if (!ResponseHandler.getInstance().handleResponse(errCode)) {
-                            if (errCode.getCode() == 0) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                                     if (deviceInfoList.size() == 0) {
                                         deviceInfoAdapter.setEmptyView(R.layout.empty_view);
@@ -416,8 +416,8 @@ public class DevicesInProjectFragment extends BaseFragment {
                                 pageInfo.nextPage();
                             } else {
                                 deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
-                                if (!TextUtils.isEmpty(errCode.getErrMessage())) {
-                                    ToastUtils.show(errCode.getErrMessage());
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }

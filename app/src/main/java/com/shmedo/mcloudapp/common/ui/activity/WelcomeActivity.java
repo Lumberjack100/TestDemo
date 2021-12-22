@@ -8,29 +8,17 @@ import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 
 import com.blankj.utilcode.util.EncryptUtils;
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.MetaDataUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.model.UserInfoWrapper;
 import com.shmedo.mcloudapp.common.ui.fragment.PolicyDialog;
-import com.shmedo.mcloudapp.network.NetworkConst;
-import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
-
-import java.util.Date;
-import java.util.List;
-
-import timber.log.Timber;
 
 /**
  * 项目名：  mCloudapp
@@ -70,7 +58,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         if (!TextUtils.isEmpty(mPrivacy) && mPrivacy.equalsIgnoreCase("agree")) {
             goToLogin();
         } else {
-            DialogFragment privacyTipDialog = new PolicyDialog();
+            PolicyDialog privacyTipDialog = new PolicyDialog();
             privacyTipDialog.show(getSupportFragmentManager(), "dialog");
         }
     }
@@ -130,9 +118,9 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     /**
      * 离线登录
      */
-    private void loginForOffline() {
+   /* private void loginForOffline() {
         String account = SPStaticUtils.getString(AppContants.User.UID);
-        String token = SPStaticUtils.getString(NetworkConst.ACCESS_TOKEN);
+        String token = SPStaticUtils.getString(RequestHeader.ACCESS_TOKEN);
         String time = SPStaticUtils.getString(AppContants.TOKEN_UPDATE_TIME);
         if (TextUtils.isEmpty(token) || TextUtils.isEmpty(token)) {
             Timber.d("token或time为空，不能离线登录");
@@ -148,21 +136,19 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         List<UserInfoWrapper> userInfoWrapperList = manager.getDaoSession().getUserInfoWrapperDao().queryBuilder().list();
         if (userInfoWrapperList != null) {
             for (UserInfoWrapper userInfoWrapper : userInfoWrapperList) {
-                UserInfo userInfo = GsonUtils.fromJson(userInfoWrapper.getUserInfo(), UserInfo.class);
-                if (userInfo != null && account.equals(userInfo.getUser().getAccount())) {
-                    MCloudApp.setCurrentUserInfo(userInfo);
+                UserWrapperInfo userWrapperInfo = GsonUtils.fromJson(userInfoWrapper.getUserInfo(), UserWrapperInfo.class);
+                if (userWrapperInfo != null && account.equals(userWrapperInfo.getUser().getAccount())) {
+                    MCloudApp.setCurrentUserInfo(userWrapperInfo);
                     break;
                 }
             }
         }
-        MCloudApp.setAccount(account);
         MCloudApp.setAccessToken(token);
-
         redirectToMainActivity(1500);
-    }
+    }*/
 
     @Override
-    public void callback(int code, Object data) {
+    public void callback(int code, String data) {
         if (LoginManager.LOGIN_CODE_SUCCESS == code) {
             redirectToMainActivity(1500);
 
@@ -204,5 +190,4 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
             goToLogin();
         }
     }
-
 }

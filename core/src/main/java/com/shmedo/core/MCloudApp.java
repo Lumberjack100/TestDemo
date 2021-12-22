@@ -7,7 +7,7 @@ import android.os.Looper;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 
 
 /**
@@ -24,13 +24,11 @@ public class MCloudApp {
 
     private static Handler handler;
 
-    private static UserInfo currentUserInfo;
+    private static UserWrapperInfo currentUserWrapperInfo;
     private static String accessToken;
-    private static String account;
     private static int companyID;
     private static String curDeviceToken;//设备名称
 
-    private static final String businessServiceAddress = "mdnetservice.shmedo.cn";//业务数据服务接口地址
     private static final String authorityServiceAddress = "http://172.168.5.200:10082";//物联网权限服务地址
     private static final String iotManagerServiceAddress = "http://172.168.5.200:10081";//物联网设备管理服务地址
     private static final String iotInteractiveServiceAddress = "http://172.168.5.200:10083";//物联网指令交互服务地址
@@ -65,10 +63,6 @@ public class MCloudApp {
         return handler;
     }
 
-    public static String getBusinessServiceAddress() {
-        return "https://" + businessServiceAddress + "/api/v1/";
-    }
-
     public static String getAuthorityServiceAddress() {
         return authorityServiceAddress + "/auth/api/v1/";
     }
@@ -85,12 +79,12 @@ public class MCloudApp {
         return cloudPlatformDataAddress;
     }
 
-    public static UserInfo getCurrentUserInfo() {
-        return currentUserInfo;
+    public static UserWrapperInfo getCurrentUserInfo() {
+        return currentUserWrapperInfo;
     }
 
-    public static void setCurrentUserInfo(UserInfo currentUserInfo) {
-        MCloudApp.currentUserInfo = currentUserInfo;
+    public static void setCurrentUserInfo(UserWrapperInfo currentUserWrapperInfo) {
+        MCloudApp.currentUserWrapperInfo = currentUserWrapperInfo;
     }
 
     public static String getAccessToken() {
@@ -101,16 +95,6 @@ public class MCloudApp {
         MCloudApp.accessToken = accessToken;
     }
 
-
-    public static String getAccount() {
-        return account;
-    }
-
-    public static void setAccount(String account) {
-        MCloudApp.account = account;
-    }
-
-
     public static int getCompanyID() {
         return companyID;
     }
@@ -118,7 +102,6 @@ public class MCloudApp {
     public static void setCompanyID(int companyID) {
         MCloudApp.companyID = companyID;
     }
-
 
     public static String getCurDeviceToken() {
         return curDeviceToken;
@@ -133,8 +116,7 @@ public class MCloudApp {
      */
     public static void logout() {
         accessToken = null;
-        account = null;
-        currentUserInfo = null;
+        currentUserWrapperInfo = null;
         SPStaticUtils.remove(AppContants.User.PWD);
         SPStaticUtils.remove(AppContants.User.MD5_PWD);
         ActivityUtils.finishAllActivities();

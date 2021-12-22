@@ -22,7 +22,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserInfo;
+import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -90,10 +90,10 @@ public class ProjectSearchActivity extends BaseActivity implements TextWatcher {
     }
 
     private void initUserData() {
-        UserInfo userInfo = MCloudApp.getCurrentUserInfo();
-        if (userInfo != null && userInfo.getUser() != null) {
-            UserInfo.UserBean user = userInfo.getUser();
-            userId = user.getId();
+        UserWrapperInfo userWrapperInfo = MCloudApp.getCurrentUserInfo();
+        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
+            UserWrapperInfo.UserInfo user = userWrapperInfo.getUser();
+            userId = user.getUserID();
         }
         companyID = MCloudApp.getCompanyID();
     }

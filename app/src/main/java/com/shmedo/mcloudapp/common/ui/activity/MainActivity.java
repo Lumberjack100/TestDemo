@@ -20,7 +20,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.MineFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceModuleMainFragment;
 import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
-import com.shmedo.mcloudapp.projects.ui.fragment.ProjectListFragment;
 import com.shmedo.mcloudapp.util.UpdataManagerUtil;
 
 import java.util.List;
@@ -33,7 +32,6 @@ public class MainActivity extends BaseActivity {
     BottomNavigationView bottomNavigationView;
 
     private DeviceModuleMainFragment deviceModuleMainFragment;
-    private ProjectListFragment projectListFragment;
     private MineFragment mineFragment;
     private Fragment currentFragment;
 
@@ -45,19 +43,16 @@ public class MainActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("CurrentFragment", currentFragment.getClass().getName());
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +67,10 @@ public class MainActivity extends BaseActivity {
             String curTag = savedInstanceState.getString("CurrentFragment");
             currentFragment = getSupportFragmentManager().findFragmentByTag(curTag);
             deviceModuleMainFragment = (DeviceModuleMainFragment) getSupportFragmentManager().findFragmentByTag(DeviceModuleMainFragment.class.getName());
-            projectListFragment = (ProjectListFragment) getSupportFragmentManager().findFragmentByTag(ProjectListFragment.class.getName());
             mineFragment = (MineFragment) getSupportFragmentManager().findFragmentByTag(MineFragment.class.getName());
 
             if (deviceModuleMainFragment == null)
                 deviceModuleMainFragment = new DeviceModuleMainFragment();
-
-            if (projectListFragment == null)
-                projectListFragment = new ProjectListFragment();
 
             if (mineFragment == null)
                 mineFragment = new MineFragment();
@@ -87,17 +78,14 @@ public class MainActivity extends BaseActivity {
             // 解决重叠问题
             getSupportFragmentManager().beginTransaction()
                     .hide(deviceModuleMainFragment)
-                    .hide(projectListFragment)
                     .hide(mineFragment)
                     .show(currentFragment)
                     .commit();
         } else {
             deviceModuleMainFragment = new DeviceModuleMainFragment();
-            projectListFragment = new ProjectListFragment();
             mineFragment = new MineFragment();
             switchFrgment(0);
         }
-
         initBottomNavigationItemSelectedListener();
     }
 
@@ -111,15 +99,10 @@ public class MainActivity extends BaseActivity {
                         switchFrgment(0);
                         break;
 
-                    case R.id.item_project_module:
+                    case R.id.item_me_module:
                         switchFrgment(1);
                         break;
-
-                    case R.id.item_me_module:
-                        switchFrgment(2);
-                        break;
                 }
-
                 return true;
                 //这里返回true，表示事件已经被处理。如果返回false，为了达到条目选中效果，还需要下面的代码
                 // item.setChecked(true);  不论点击了哪一个，都手动设置为选中状态true（该控件并没有默认实现)
@@ -150,15 +133,8 @@ public class MainActivity extends BaseActivity {
                         .navigationBarColor(R.color.white)
                         .init();
                 break;
+
             case 1:
-                showFragment(projectListFragment);
-//                ImmersionBar.with(this)
-//                        .statusBarDarkFont(false)
-//                        .navigationBarDarkIcon(true)
-//                        .navigationBarColor(R.color.white)
-//                        .init();
-                break;
-            case 2:
                 showFragment(mineFragment);
                 //设置系统栏(状态栏、导航栏)的背景色、字体等
                 ImmersionBar.with(this)
@@ -182,12 +158,10 @@ public class MainActivity extends BaseActivity {
             } else {
                 transaction.hide(currentFragment).show(fragment);
             }
-
             currentFragment = fragment;  //  然后将传入的fragment赋值给currentFragment
             transaction.commit();
         }
     }
-
 
     /**
      * 解决Fragment中的onActivityResult()方法无响应问题。
@@ -209,7 +183,6 @@ public class MainActivity extends BaseActivity {
 
     //声明一个long类型变量：用于存放上一点击“返回键”的时刻
     private long mExitTime = 0;
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //判断用户是否点击了“返回键”
@@ -230,5 +203,4 @@ public class MainActivity extends BaseActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
 }
