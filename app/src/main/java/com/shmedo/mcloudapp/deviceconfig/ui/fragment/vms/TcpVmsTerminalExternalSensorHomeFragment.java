@@ -27,7 +27,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorConfigActivity;
-import com.shmedo.mcloudapp.projects.model.VmsTerminalSensorItem;
+import com.shmedo.mcloudapp.deviceconfig.model.VmsTerminalSensorItem;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;

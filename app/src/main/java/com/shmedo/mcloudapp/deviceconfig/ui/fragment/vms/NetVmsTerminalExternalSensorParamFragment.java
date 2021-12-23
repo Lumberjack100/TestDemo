@@ -41,7 +41,7 @@ import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.MagnificationView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.ModulusView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;

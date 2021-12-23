@@ -41,13 +41,13 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.projects.adapter.DeviceInfoAdapter;
-import com.shmedo.mcloudapp.projects.adapter.DeviceTypeAdapter;
-import com.shmedo.mcloudapp.projects.model.PageInfo;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.projects.model.param.QueryProjectDevice;
-import com.shmedo.mcloudapp.projects.ui.activity.DeviceSearchActivity;
-import com.shmedo.mcloudapp.projects.view.SlidingConflictRecyclerView;
+import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceInfoAdapter;
+import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceTypeAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.params.QueryProjectDevice;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceSearchActivity;
+import com.shmedo.mcloudapp.deviceconfig.view.SlidingConflictRecyclerView;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
@@ -99,7 +99,7 @@ public class NetDeviceListFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_net_work_device_list;
+        return R.layout.fragment_net_device_list;
     }
 
     @Override
@@ -108,36 +108,26 @@ public class NetDeviceListFragment extends BaseFragment {
         pageInfo = new PageInfo(1);
         initDeviceTypeAdapter();
         initDeviceInfoAdapter();
-        initRefreshLayout();
         initLoadMore();
-
+        initRefreshLayout();
         // 进入页面，刷新数据
-//        queryDeviceType();
+        queryDeviceType();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-//        if (companyID != MCloudApp.getCompanyID()) {
-//            companyID = MCloudApp.getCompanyID();
-//            deviceTypeID = -1;
-//            clearData();
-//            startLoading();
-//            mRefreshLayout.setEnableLoadMore(false);
-//            //是否在刷新的时候禁止内容的一切手势操作（默认false）
-//            mRefreshLayout.setDisableContentWhenRefresh(true);
-//            mRefreshLayout.autoRefresh();
-//            queryCompanyDeviceOnlineTypeStatistics();
-//        }
-    }
-
-    private void initRefreshLayout() {
-        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                refreshDevices();
-            }
-        });
+        if (companyID != MCloudApp.getCompanyID()) {
+            companyID = MCloudApp.getCompanyID();
+            deviceTypeID = -1;
+            clearData();
+            startLoading();
+            mRefreshLayout.setEnableLoadMore(false);
+            //是否在刷新的时候禁止内容的一切手势操作（默认false）
+            mRefreshLayout.setDisableContentWhenRefresh(true);
+            mRefreshLayout.autoRefresh();
+            queryCompanyDeviceOnlineTypeStatistics();
+        }
     }
 
     private void initDeviceTypeAdapter() {
@@ -209,6 +199,15 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
         // 当数据不满一页时，是否继续自动加载（默认为true）
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
+    }
+
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                refreshDevices();
+            }
+        });
     }
 
     @OnClick({R.id.search_placeholder})

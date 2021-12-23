@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40CurrentStateFragm
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20CurrentStateFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>

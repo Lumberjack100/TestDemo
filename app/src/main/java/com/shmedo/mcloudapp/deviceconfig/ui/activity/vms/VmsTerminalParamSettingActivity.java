@@ -12,7 +12,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainer
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20ParamSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalParamSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalParamSettingFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>

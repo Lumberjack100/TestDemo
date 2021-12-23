@@ -40,8 +40,8 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalDigitalSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalVibratingWireSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
-import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
-import com.shmedo.mcloudapp.projects.model.DASSensorItem;
+import com.shmedo.mcloudapp.deviceconfig.adapter.DASSensorAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DASSensorItem;
 
 import org.jetbrains.annotations.NotNull;
 

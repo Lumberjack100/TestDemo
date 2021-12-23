@@ -15,7 +15,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
-import com.shmedo.mcloudapp.profile.USBSerialViewModel;
+import com.shmedo.mcloudapp.profile.UsbSerialViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     protected static final int WRITE_TIME_OUT_500_MILLIS = 500;//发送指令超时时间
     protected static final int WRITE_TIME_OUT_1000_MILLIS = 1000;//发送指令超时时间
 
-    protected USBSerialViewModel usbSerialViewModel;
+    protected UsbSerialViewModel usbSerialViewModel;
 
     protected boolean isExitMode = false;//是否退出页面标志
 
@@ -82,7 +82,7 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usbSerialViewModel = getApplicationScopeViewModel(USBSerialViewModel.class);
+        usbSerialViewModel = getApplicationScopeViewModel(UsbSerialViewModel.class);
         usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<byte[]>() {
             @Override
             public void onChanged(byte[] data) {

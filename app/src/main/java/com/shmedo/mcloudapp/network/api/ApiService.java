@@ -12,15 +12,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ResponseWrapper;
-import com.shmedo.mcloudapp.projects.model.CustomLevelProjectInfo;
-import com.shmedo.mcloudapp.projects.model.IndustryTypeProjectInfo;
-import com.shmedo.mcloudapp.projects.model.ProjectBaseInfo;
-import com.shmedo.mcloudapp.projects.model.ProjectDetailInfo;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.projects.model.ProjectInfoEx;
-import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
-import com.shmedo.mcloudapp.user.model.CompanyInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.user.model.BasicCompanyInfo;
+import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
 import java.util.List;
 
@@ -95,49 +89,6 @@ public interface ApiService {
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("GetCompanyInfo")
     Observable<ResponseWrapper<CompanyInfo>> getCompanyInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    /**
-     * 项目模块
-     */
-    //项目接口V2  查询当前用户的项目列表(列表方式、不分页)
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("QueryUserListProjectEx")
-    Observable<ResponseWrapper<List<ProjectBaseInfo>>> QueryUserListProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //项目接口V2  查询当前用户的项目列表(项目类型方式)
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("QueryUserTypeProject")
-    Observable<ResponseWrapper<List<IndustryTypeProjectInfo>>> QueryUserTypeProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //项目接口V2  查询当前用户的项目列表(行政区域列表方式)
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("QueryUserRegionListProject")
-    Observable<ResponseWrapper<List<RegionProjectInfo>>> QueryUserRegionListProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //项目接口V2  查询当前用户的项目列表（自定义分级方式，不包含空节点）
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("GetLevelProjList")
-    Observable<ResponseWrapper<List<CustomLevelProjectInfo>>> GetLevelProjList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //项目接口V2-4  查询警报阈值列表
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("QueryProjectListInfo")
-    Observable<ResponseWrapper<List<ProjectDetailInfo>>> QueryProjectListInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //系统接口V2-5  用户项目置顶
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("TopUserProject")
-    Observable<ResponseWrapper<String>> TopUserProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //系统接口V2-5  用户项目取消置顶
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("UnTopUserProject")
-    Observable<ResponseWrapper<String>> UnTopUserProject(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //项目接口V2-4  获取单个项目的详细信息
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("GetProjectByIDEx")
-    Observable<ResponseWrapper<ProjectInfoEx>> GetProjectByIDEx(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     /**
      * 设备模块

@@ -47,8 +47,8 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalSearchActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -143,7 +143,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         List<Fragment> mFragments = new ArrayList<>();
         mFragments.add(vmsAisleListFragment);
         mFragments.add(vmsTerminalListFragment);
-        pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
+        pagerAdapter = new PageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(1);
         tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {

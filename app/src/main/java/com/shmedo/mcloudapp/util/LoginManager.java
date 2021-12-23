@@ -4,14 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.BasicUserInfo;
 import com.shmedo.core.model.UserWrapperInfo;
-import com.shmedo.mcloudapp.common.model.params.MobileSignInParameter;
-import com.shmedo.mcloudapp.common.model.params.SignInParameter;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -62,9 +59,14 @@ public class LoginManager implements DefaultLifecycleObserver {
      * 账户密码登录
      */
     private void makeLoginByAccount(final String account, final String password) {
-        SignInParameter parameter = new SignInParameter(account, password);
-        String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("account", account);
+            jsonObjectRequest.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
                 .createService()
@@ -101,9 +103,14 @@ public class LoginManager implements DefaultLifecycleObserver {
      * 手机验证码登录
      */
     private void makeQuickLogin(final String mobile, final String code) {
-        MobileSignInParameter parameter = new MobileSignInParameter(mobile, code);
-        String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("phone", mobile);
+            jsonObjectRequest.put("code", code);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
                 .createService()

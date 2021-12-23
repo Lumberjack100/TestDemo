@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.deviceconfig.callback.DataCenterConfigListener;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.view.DataCenterAdvancedConfigView;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 

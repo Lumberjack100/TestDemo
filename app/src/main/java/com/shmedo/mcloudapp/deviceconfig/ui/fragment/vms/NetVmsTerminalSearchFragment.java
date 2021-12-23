@@ -42,7 +42,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSens
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;

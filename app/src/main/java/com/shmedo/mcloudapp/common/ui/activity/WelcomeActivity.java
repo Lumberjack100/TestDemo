@@ -13,7 +13,7 @@ import com.blankj.utilcode.util.MetaDataUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.ui.fragment.PolicyDialog;
+import com.shmedo.mcloudapp.common.ui.fragment.dialog.PolicyDialog;
 import com.shmedo.mcloudapp.util.LoginManager;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.umeng.analytics.MobclickAgent;

@@ -10,7 +10,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.BleDasSensorConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasSensorConfigFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 /**
  * DAS 传感器配置页面

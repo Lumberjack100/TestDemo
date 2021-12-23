@@ -13,7 +13,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalSearchFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalSearchFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>

@@ -29,7 +29,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.network.api.ServiceAddressType;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.DateUtil;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 

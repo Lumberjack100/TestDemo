@@ -13,7 +13,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40DataCenterHomeFra
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40DataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20DataCenterHomeFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>

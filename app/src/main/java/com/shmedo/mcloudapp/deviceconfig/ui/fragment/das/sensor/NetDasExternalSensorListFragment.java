@@ -46,9 +46,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasExternalSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.projects.adapter.DASSensorAdapter;
-import com.shmedo.mcloudapp.projects.model.DASSensorItem;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.adapter.DASSensorAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DASSensorItem;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 

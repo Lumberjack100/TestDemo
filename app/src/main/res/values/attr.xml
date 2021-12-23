@@ -1,36 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="app_primary_color" format="color"/> <!-- topbar -->
-    <attr name="app_content_bg_color" format="color"/> <!-- content-->
-
-    <!--EditSpinner控件-->
-    <declare-styleable name="EditSpinner">
-        <attr name="hint" format="string"/>
-        <attr name="rightImage" format="reference"/>
-        <attr name="Background" format="reference"/>
-        <attr name="maxLine" format="integer"/>
-    </declare-styleable>
-
-
-    <declare-styleable name="PlayPauseView">
-        <attr name="bg_color" format="color"/>
-        <attr name="btn_color" format="color"/>
-        <attr name="gap_width" format="dimension|reference"/>
-        <attr name="space_padding" format="dimension|reference"/>
-        <attr name="anim_duration" format="integer"/>
-        <attr name="anim_direction">
-            <enum name="positive" value="1"/>
-            <enum name="negative" value="2"/>
-        </attr>
-    </declare-styleable>
-
     <declare-styleable name="BaseIconView">
         <!--IconView最外面背景图片，可以是单个图片或者selector-->
         <attr name="biv_background" format="reference|color" />
         <!--IconView最背里面景图片，可以是单个图片或者selector-->
         <attr name="biv_icon" format="reference|color" />
     </declare-styleable>
-
 
     <!--自定义圆圈扩散View-->
     <declare-styleable name="DiffuseView">

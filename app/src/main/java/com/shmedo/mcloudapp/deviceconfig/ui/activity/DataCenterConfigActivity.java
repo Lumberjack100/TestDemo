@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterBasicConfigFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>

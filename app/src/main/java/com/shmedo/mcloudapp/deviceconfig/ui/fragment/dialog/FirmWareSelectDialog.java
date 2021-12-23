@@ -33,7 +33,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.projects.model.PageInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;

@@ -43,7 +43,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
 import com.shmedo.mcloudapp.deviceconfig.util.BleScannerUtils;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerStateLiveData;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
-import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
+import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -88,7 +88,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         mFragments.add(new WiFiDeviceListFragment());
         mFragments.add(USBDeviceListFragment.newInstance());
 
-        pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
+        pagerAdapter = new PageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override

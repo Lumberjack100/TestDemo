@@ -18,7 +18,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20AdvancedSettingFr
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsAdvancedSettingsFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsAdvancedSettingsFragment;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>

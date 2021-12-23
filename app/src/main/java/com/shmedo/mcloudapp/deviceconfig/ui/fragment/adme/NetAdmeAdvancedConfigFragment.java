@@ -23,7 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeVoltageConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
-import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 
 import java.util.ArrayList;
 import java.util.List;

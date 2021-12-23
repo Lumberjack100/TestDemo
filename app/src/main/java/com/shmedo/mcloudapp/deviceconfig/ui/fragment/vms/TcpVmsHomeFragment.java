@@ -51,7 +51,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalSearchActivity;
-import com.shmedo.mcloudapp.projects.adapter.ProjectPageAdapter;
+import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
@@ -134,7 +134,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
         List<Fragment> mFragments = new ArrayList<>();
         mFragments.add(vmsAisleListFragment);
         mFragments.add(vmsTerminalListFragment);
-        pagerAdapter = new ProjectPageAdapter((FragmentActivity) mActivity, mFragments);
+        pagerAdapter = new PageAdapter((FragmentActivity) mActivity, mFragments);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(1);
         tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {

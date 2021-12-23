@@ -18,7 +18,7 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
-import com.shmedo.mcloudapp.profile.USBSerialViewModel;
+import com.shmedo.mcloudapp.profile.UsbSerialViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
     protected static final int WRITE_TIME_OUT_2000_MILLIS = 2000;//发送指令超时时间
     protected static final int SCAN_TIME_OUT_MILLIS = 10000;//扫描指令超时时间
 
-    protected USBSerialViewModel usbSerialViewModel;
+    protected UsbSerialViewModel usbSerialViewModel;
 
     protected LinkedList<ATCommandItem> atCommandItems = new LinkedList<>();
 
@@ -84,7 +84,7 @@ public abstract class BaseDebugBoxDialogFragment extends BaseDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usbSerialViewModel = getApplicationScopeViewModel(USBSerialViewModel.class);
+        usbSerialViewModel = getApplicationScopeViewModel(UsbSerialViewModel.class);
         usbSerialViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<byte[]>() {
             @Override
             public void onChanged(byte[] data) {

@@ -185,34 +185,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/CropImageActivity" />
         <activity
-            android:name=".projects.ui.activity.ViewProjectsInMapActivity"
+            android:name=".deviceconfig.ui.activity.DeviceSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".projects.ui.activity.ProjectSearchActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".projects.ui.activity.DevicesInProjectActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".projects.ui.activity.DeviceSearchActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".projects.ui.activity.ProjectIntroductionActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".deviceconfig.ui.activity.DeviceConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

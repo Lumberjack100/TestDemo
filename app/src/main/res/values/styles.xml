@@ -39,7 +39,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-
     <style name="CropImageActivity" parent="Base.Theme.AppCompat" />
 
     <!--Activity进入和退出动画-->
@@ -72,15 +71,6 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>
-    </style>
-
-
-    <!--EditSpinner控件样式-->
-    <style name="edit_main_bg">
-        <item name="android:background">@null</item>
-        <item name="android:textColor">@color/gray_807B7B</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:padding">5dp</item>
     </style>
 
     <!--地图工具控件样式-->
@@ -117,7 +107,6 @@
         <item name="android:layout_marginRight">10dp</item>
     </style>
 
-
     <style name="TextView_SearchInputBox">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">35dp</item>
@@ -144,7 +133,6 @@
     <style name="SmallTextTheme.BaseTextTheme" parent="BaseTextTheme">
         <item name="android:textSize" tools:ignore="SpUsage">14sp</item>
     </style>
-
 
     <!--ToolView 下ConstraintLayoutStyl的样式-->
     <style name="NaviToolView_ConstraintLayoutStyle">
@@ -325,6 +313,5 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-
 
 </resources>
