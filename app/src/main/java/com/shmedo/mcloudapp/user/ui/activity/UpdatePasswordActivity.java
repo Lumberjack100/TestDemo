@@ -11,20 +11,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.EncryptUtils;
-import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
+import com.shmedo.mcloudapp.common.ui.activity.LoginActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.user.model.UpdatePasswordParam;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+import com.umeng.analytics.MobclickAgent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
@@ -38,17 +39,11 @@ public class UpdatePasswordActivity extends BaseActivity {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
 
-    @BindView(R.id.oldPasswordET)
-    ClearEditText mEtOldPassword;
-
     @BindView(R.id.newPasswordET)
     ClearEditText mEtNewPassword;
 
     @BindView(R.id.confirmNewPasswordET)
     ClearEditText mEtConfirmPassword;
-
-    @BindView(R.id.iv_eye_old_password)
-    ImageView mIvEyeOldPwd;
 
     @BindView(R.id.iv_eye_new_password)
     ImageView mIvEyeNewPwd;
@@ -56,14 +51,9 @@ public class UpdatePasswordActivity extends BaseActivity {
     @BindView(R.id.iv_eye_confirm_password)
     ImageView mIvEyeConfirmPwd;
 
-    private boolean isOldPasswordVisible = false;
     private boolean isNewPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
-
-    private String mAccount;
-    private String oldPasswordMD5;
-
-    private String oldPassword, newPassword, confirmNewPassword;
+    private String newPassword, confirmNewPassword;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, UpdatePasswordActivity.class);
@@ -82,80 +72,46 @@ public class UpdatePasswordActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("修改密码");
-        initDate();
     }
 
-    private void initDate() {
-        UserWrapperInfo userWrapperInfo = MCloudApp.getCurrentUserInfo();
-        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
-            UserWrapperInfo.UserInfo user = userWrapperInfo.getUser();
-            mAccount = user.getAccount();
-//            oldPasswordMD5 = user.getPassword();
-        }
-    }
-
-
-    @OnClick({R.id.iv_eye_old_password, R.id.iv_eye_new_password, R.id.iv_eye_confirm_password, R.id.btn_confirm})
+    @OnClick({R.id.iv_eye_new_password, R.id.iv_eye_confirm_password, R.id.btn_confirm})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_eye_old_password:
-                if (!isOldPasswordVisible) {
-                    isOldPasswordVisible = true;
-                    mIvEyeOldPwd.setImageResource(R.drawable.icon_eye_open);
-                    mEtOldPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                } else {
-                    isOldPasswordVisible = false;
-                    mIvEyeOldPwd.setImageResource(R.drawable.icon_eye_close);
-                    mEtOldPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                }
-                mEtOldPassword.setSelection(mEtOldPassword.getText().toString().length());
-                break;
-
-            case R.id.iv_eye_new_password:
-                if (!isNewPasswordVisible) {
-                    isNewPasswordVisible = true;
-                    mIvEyeNewPwd.setImageResource(R.drawable.icon_eye_open);
-                    mEtNewPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                } else {
-                    isNewPasswordVisible = false;
-                    mIvEyeNewPwd.setImageResource(R.drawable.icon_eye_close);
-                    mEtNewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                }
-                mEtNewPassword.setSelection(mEtNewPassword.getText().toString().length());
-                break;
-
-            case R.id.iv_eye_confirm_password:
-                if (!isConfirmPasswordVisible) {
-                    isConfirmPasswordVisible = true;
-                    mIvEyeConfirmPwd.setImageResource(R.drawable.icon_eye_open);
-                    mEtConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                } else {
-                    isConfirmPasswordVisible = false;
-                    mIvEyeConfirmPwd.setImageResource(R.drawable.icon_eye_close);
-                    mEtConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                }
-                mEtConfirmPassword.setSelection(mEtConfirmPassword.getText().toString().length());
-                break;
-
-            case R.id.btn_confirm:
-                if (checkValue()) {
-                    updatePassword();
-                }
-                break;
+        if (isDoubleClick(view)) {
+            return;
+        }
+        int id = view.getId();
+        if (id == R.id.iv_eye_new_password) {//
+            if (!isNewPasswordVisible) {
+                isNewPasswordVisible = true;
+                mIvEyeNewPwd.setImageResource(R.drawable.icon_eye_open);
+                mEtNewPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            } else {
+                isNewPasswordVisible = false;
+                mIvEyeNewPwd.setImageResource(R.drawable.icon_eye_close);
+                mEtNewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            }
+            mEtNewPassword.setSelection(mEtNewPassword.getText().toString().length());
+        } else if (id == R.id.iv_eye_confirm_password) {//
+            if (!isConfirmPasswordVisible) {
+                isConfirmPasswordVisible = true;
+                mIvEyeConfirmPwd.setImageResource(R.drawable.icon_eye_open);
+                mEtConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            } else {
+                isConfirmPasswordVisible = false;
+                mIvEyeConfirmPwd.setImageResource(R.drawable.icon_eye_close);
+                mEtConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            }
+            mEtConfirmPassword.setSelection(mEtConfirmPassword.getText().toString().length());
+        } else if (id == R.id.btn_confirm) {//
+            if (checkValue()) {
+                updatePassword();
+            }
         }
     }
 
     private boolean checkValue() {
-        oldPassword = mEtOldPassword.getText().toString();
         newPassword = mEtNewPassword.getText().toString();
         confirmNewPassword = mEtConfirmPassword.getText().toString();
-
-        if (TextUtils.isEmpty(oldPassword)) {
-            ToastUtils.show("请输入当前密码");
-            mEtOldPassword.requestFocus();
-            return false;
-        }
-
         if (TextUtils.isEmpty(newPassword)) {
             ToastUtils.show("请输入新密码");
             mEtNewPassword.requestFocus();
@@ -166,16 +122,10 @@ public class UpdatePasswordActivity extends BaseActivity {
             mEtConfirmPassword.requestFocus();
             return false;
         }
-        if (!oldPasswordMD5.equals(EncryptUtils.encryptMD5ToString(mAccount + oldPassword))) {
-            ToastUtils.show("当前密码不正确");
-            mEtOldPassword.requestFocus();
-            return false;
-        }
         if (!newPassword.equals(confirmNewPassword)) {
             ToastUtils.show("确认密码与新密码不一致");
             return false;
         }
-
         return true;
     }
 
@@ -183,15 +133,18 @@ public class UpdatePasswordActivity extends BaseActivity {
      * 修改当前登录用户的密码
      */
     private void updatePassword() {
-        showLoadingDialog("处理中...");
-
-        UpdatePasswordParam parameter = new UpdatePasswordParam();
-        parameter.setCurrentPassword(EncryptUtils.encryptMD5ToString(mAccount + oldPassword));
-        parameter.setNewPassword(EncryptUtils.encryptMD5ToString(mAccount + newPassword));
-        parameter.setConfirmNewPassword(EncryptUtils.encryptMD5ToString(mAccount + confirmNewPassword));
-
-        String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        showWaitDialog("处理中...");
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+            jsonObjectRequest.put("userID", MCloudApp.getUserID());
+            jsonObjectRequest.put("newPassword", newPassword);
+            jsonObjectRequest.put("confirmPassword", confirmNewPassword);
+        } catch (JSONException e) {
+            dismissWaitDialog();
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
                 .createService()
@@ -203,17 +156,19 @@ public class UpdatePasswordActivity extends BaseActivity {
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String s, ErrorInfo errorInfo) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
-                                ToastUtils.show("修改完成");
+                                ToastUtils.show("已修改");
                                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        finish();
+                                        MCloudApp.logout();
+                                        //登出
+                                        MobclickAgent.onProfileSignOff();
+                                        LoginActivity.startActivity(UpdatePasswordActivity.this);
                                     }
-                                }, 1500);
-
+                                }, 1000);
                             } else {
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());
@@ -221,10 +176,9 @@ public class UpdatePasswordActivity extends BaseActivity {
                             }
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });

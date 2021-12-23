@@ -19,10 +19,13 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.user.model.BasicCompanyInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
-import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
 import com.shmedo.mcloudapp.user.ui.fragment.CompanySwitchDialogFragment;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
@@ -98,13 +101,13 @@ public class CompanyHomePageActivity extends BaseActivity {
         if (companyInfo == null)
             return;
 
-        mTvCompanyName.setText(companyInfo.getFullName() != null ? companyInfo.getFullName() : "");
-        mTvCompanyType.setText("");
-        mTvIndustryName.setText(companyInfo.getIndustry() != null ? companyInfo.getIndustry() : "");
-        mTvPhone.setText(companyInfo.getPhone() != null ? companyInfo.getPhone() : "");
-        mTvAddress.setText(companyInfo.getAddress() != null ? companyInfo.getAddress() : "");
-        mTvWebsite.setText(companyInfo.getWebSite() != null ? companyInfo.getWebSite() : "");
-        mTvCompanyIntro.setText(companyInfo.getDesc() != null ? companyInfo.getDesc() : "");
+        mTvCompanyName.setText(!TextUtils.isEmpty(companyInfo.getFullName()) ? companyInfo.getFullName() : "");
+        mTvCompanyType.setText(!TextUtils.isEmpty(companyInfo.getNature()) ? companyInfo.getNature() : "");
+        mTvIndustryName.setText(!TextUtils.isEmpty(companyInfo.getIndustry()) ? companyInfo.getIndustry() : "");
+        mTvPhone.setText(!TextUtils.isEmpty(companyInfo.getPhone()) ? companyInfo.getPhone() : "");
+        mTvAddress.setText(!TextUtils.isEmpty(companyInfo.getAddress()) ? companyInfo.getAddress() : "");
+        mTvWebsite.setText(!TextUtils.isEmpty(companyInfo.getWebSite()) ? companyInfo.getWebSite() : "");
+        mTvCompanyIntro.setText(!TextUtils.isEmpty(companyInfo.getDesc()) ? companyInfo.getDesc() : "");
     }
 
     @OnClick({R.id.tv_action, R.id.websiteLayout})
@@ -124,21 +127,18 @@ public class CompanyHomePageActivity extends BaseActivity {
                     startActivity(intent);
                 }
                 break;
-
         }
     }
 
-    private BaseDialogFragment.DialogFragmentClickListener companySwitchListener = new BaseDialogFragment.DialogFragmentClickListener<CompanySimpleInfo>() {
+    private BaseDialogFragment.DialogFragmentClickListener companySwitchListener = new BaseDialogFragment.DialogFragmentClickListener<BasicCompanyInfo>() {
         @Override
-        public boolean onPositiveClick(View view, CompanySimpleInfo companySimpleInfo) {
-            if (companySimpleInfo != null) {
-                MCloudApp.setCompanyID(companySimpleInfo.getCompanyID());
-                getCompanyInfo(companySimpleInfo.getCompanyID());
+        public boolean onPositiveClick(View view, BasicCompanyInfo basicCompanyInfo) {
+            if (basicCompanyInfo != null) {
+                MCloudApp.setCompanyID(basicCompanyInfo.getCompanyID());
+                getCompanyInfo(basicCompanyInfo.getCompanyID());
             }
             return true;
         }
-
-
         @Override
         public void onNegativeClick(View view) {
 
@@ -149,9 +149,15 @@ public class CompanyHomePageActivity extends BaseActivity {
      * 查询单个公司信息
      */
     private void getCompanyInfo(int companyID) {
-        showLoadingDialog("加载中...");
+        showWaitDialog("加载中...");
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", companyID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, String.valueOf(companyID));
         MDRetrofit.getInstance()
                 .createService()
                 .getCompanyInfo(MCloudApp.getAccessToken(), body)
@@ -162,8 +168,7 @@ public class CompanyHomePageActivity extends BaseActivity {
                 .subscribe(new BaseObserver<CompanyInfo>() {
                     @Override
                     protected void onResponse(CompanyInfo companyInfo, ErrorInfo errorInfo) {
-                        dismissLoadingDialog();
-
+                        dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
                                 updateView(companyInfo);
@@ -174,10 +179,9 @@ public class CompanyHomePageActivity extends BaseActivity {
                             }
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });

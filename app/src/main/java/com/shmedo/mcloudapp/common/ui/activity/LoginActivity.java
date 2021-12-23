@@ -191,14 +191,14 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
                 if (!prepareForLogin(false)) {
                     return;
                 }
-                showLoadingDialog("正在登录...");
+                showWaitDialog("正在登录...");
                 String Md5Password = EncryptUtils.encryptMD5ToString(account + pwd);
                 LoginManager.getInstance().login(account, pwd, this);
             } else if (loginWay == LOGIN_PHONE) {
                 if (!prepareForLogin(true)) {
                     return;
                 }
-                showLoadingDialog("正在登录...");
+                showWaitDialog("正在登录...");
                 LoginManager.getInstance().quickLogin(mobile, code, this);
             }
         } else if (id == R.id.iv_login_way) {//登录方式切换
@@ -264,7 +264,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
     @Override
     public void callback(int code, String msg) {
-        dismissLoadingDialog();
+        dismissWaitDialog();
 
         if (LoginManager.LOGIN_CODE_SUCCESS == code) {
             MainActivity.start(LoginActivity.this);

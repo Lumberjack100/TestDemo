@@ -27,6 +27,7 @@ public class MCloudApp {
     private static UserWrapperInfo currentUserWrapperInfo;
     private static String accessToken;
     private static int companyID;
+    private static int userID;
     private static String curDeviceToken;//设备名称
 
     private static final String authorityServiceAddress = "http://172.168.5.200:10082";//物联网权限服务地址
@@ -103,6 +104,14 @@ public class MCloudApp {
         MCloudApp.companyID = companyID;
     }
 
+    public static int getUserID() {
+        return userID;
+    }
+
+    public static void setUserID(int userID) {
+        MCloudApp.userID = userID;
+    }
+
     public static String getCurDeviceToken() {
         return curDeviceToken;
     }
@@ -118,7 +127,6 @@ public class MCloudApp {
         accessToken = null;
         currentUserWrapperInfo = null;
         SPStaticUtils.remove(AppContants.User.PWD);
-        SPStaticUtils.remove(AppContants.User.MD5_PWD);
         ActivityUtils.finishAllActivities();
     }
 }

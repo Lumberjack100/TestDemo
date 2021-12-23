@@ -152,10 +152,6 @@ public class MineFragment extends BaseTranslucentFragment {
      * 跳转到登录页面
      */
     private void exitLogin() {
-//        Intent intent = new Intent(getActivity(), LoginActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(intent);
-//        mActivity.finish();
         MCloudApp.logout();
         //登出
         MobclickAgent.onProfileSignOff();

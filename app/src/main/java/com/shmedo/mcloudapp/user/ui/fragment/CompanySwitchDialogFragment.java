@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -36,9 +35,11 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.projects.model.PageInfo;
 import com.shmedo.mcloudapp.user.adapter.CompanySimpleInfoAdapter;
-import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
-import com.shmedo.mcloudapp.user.model.params.QueryCompanySimpleInfoListParam;
+import com.shmedo.mcloudapp.user.model.BasicCompanyInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,9 +73,9 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
 
     private CompanySimpleInfoAdapter simpleInfoAdapter;
 
-    private List<CompanySimpleInfo> tempList = new ArrayList<>();
+    private List<BasicCompanyInfo> tempList = new ArrayList<>();
 
-    private CompanySimpleInfo companySimpleInfo = null;
+    private BasicCompanyInfo basicCompanyInfo = null;
 
     private static final int PAGE_SIZE = 300;
     private PageInfo pageInfo;
@@ -115,14 +116,14 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         simpleInfoAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                companySimpleInfo = simpleInfoAdapter.getItem(position);
-                if (companySimpleInfo.isChecked()) {
+                basicCompanyInfo = simpleInfoAdapter.getItem(position);
+                if (basicCompanyInfo.isChecked()) {
                     return;
                 }
-                for (CompanySimpleInfo info : simpleInfoAdapter.getData()) {
+                for (BasicCompanyInfo info : simpleInfoAdapter.getData()) {
                     info.setChecked(false);
                 }
-                companySimpleInfo.setChecked(true);
+                basicCompanyInfo.setChecked(true);
                 simpleInfoAdapter.notifyDataSetChanged();
             }
         });
@@ -184,7 +185,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
     }
 
     private void resetCompanyInfo() {
-        for (CompanySimpleInfo simpleInfo : tempList) {
+        for (BasicCompanyInfo simpleInfo : tempList) {
             if (simpleInfo.isChecked()) {
                 simpleInfo.setChecked(false);
             }
@@ -193,15 +194,6 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
 
     @Override
     public void afterTextChanged(Editable s) {
-    }
-
-    private void searchProcess() {
-        simpleInfoAdapter.setList(new ArrayList<>());
-        for (CompanySimpleInfo simpleInfo : tempList) {
-            if (!TextUtils.isEmpty(simpleInfo.getCompanyName()) && simpleInfo.getCompanyName().contains(keyWords)) {
-                simpleInfoAdapter.addData(simpleInfo);
-            }
-        }
     }
 
     @OnClick({R.id.search_placeholder, R.id.tv_cancel_search, R.id.tv_cancel, R.id.tv_confirm})
@@ -226,15 +218,24 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         }
     }
 
+    private void searchProcess() {
+        simpleInfoAdapter.setList(new ArrayList<>());
+        for (BasicCompanyInfo simpleInfo : tempList) {
+            if (!TextUtils.isEmpty(simpleInfo.getCompanyName()) && simpleInfo.getCompanyName().contains(keyWords)) {
+                simpleInfoAdapter.addData(simpleInfo);
+            }
+        }
+    }
+
     private void doPositiveClick(View view) {
-        if (companySimpleInfo == null) {
+        if (basicCompanyInfo == null) {
             ToastUtils.show("您还没选中企业!");
             return;
         }
         if (mListener == null) {
             return;
         }
-        if (mListener.onPositiveClick(view, companySimpleInfo)) {
+        if (mListener.onPositiveClick(view, basicCompanyInfo)) {
             dismiss();
         }
     }
@@ -250,14 +251,17 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
      * 查询用户在其中具有权限的公司，包括该公司的子公司(用于设备分配)
      */
     private void processQueryUserInCompany() {
-        QueryCompanySimpleInfoListParam parameter = new QueryCompanySimpleInfoListParam();
-        parameter.setCompanyName(null);
-        parameter.setPageSize(PAGE_SIZE);
-        parameter.setCurrentPage(pageInfo.getPage());
-        parameter.setIncludeSubCompany(false);
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("pageSize",PAGE_SIZE);
+            jsonObjectRequest.put("currentPage", pageInfo.getPage());
+            jsonObjectRequest.put("companyName", null);
+            jsonObjectRequest.put("includeChild", false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
-        String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
                 .createService()
                 .queryUserInCompany(MCloudApp.getAccessToken(), body)
@@ -265,16 +269,15 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
-                .subscribe(new BaseObserver<PageResult<CompanySimpleInfo>>() {
+                .subscribe(new BaseObserver<PageResult<BasicCompanyInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<CompanySimpleInfo> data, ErrorInfo errorInfo) {
+                    protected void onResponse(PageResult<BasicCompanyInfo> data, ErrorInfo errorInfo) {
 //                        adpter.getLoadMoreModule().setEnableLoadMore(true);
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null) {
                                     return;
                                 }
-
                                 if (pageInfo.isFirstPage()) {
                                     //如果是加载的第一页数据，用setNew
                                     tempList.clear();
@@ -285,7 +288,6 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
 //                                if (data.getCurrentPageData().size() < PAGE_SIZE) {
 //                                    //如果不够一页,显示没有更多数据布局
 //                                    adpter.getLoadMoreModule().loadMoreEnd();
-//
 //                                } else {
 //                                    adpter.getLoadMoreModule().loadMoreComplete();
 //                                }
@@ -299,7 +301,6 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
                             }
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
 //                        adpter.getLoadMoreModule().setEnableLoadMore(true);

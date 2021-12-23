@@ -5,14 +5,11 @@ package com.shmedo.mcloudapp.user.model;
  * 创建时间:  2020/9/19 <br/>
  * 描述：    公司简单信息实体
  */
-public class CompanySimpleInfo {
-
-
+public class BasicCompanyInfo {
     /**
-     * companyID : 66
-     * companyName :  新疆神华矿业有限责任公司
+     * "companyID": 138,
+     * "companyName": "上海米度测控科技有限公司"
      */
-
     private int companyID;
     private String companyName;
     private boolean isChecked = false;

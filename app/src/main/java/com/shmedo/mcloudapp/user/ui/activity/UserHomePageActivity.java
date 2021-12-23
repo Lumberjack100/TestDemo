@@ -27,7 +27,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.UriUtils;
@@ -41,8 +40,6 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.user.model.UpdateMyInfoParam;
-import com.shmedo.mcloudapp.user.model.params.SetUserHeadPhotoParameter;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -51,6 +48,9 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -108,7 +108,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         context.startActivity(intent);
     }
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_user_home_page;
@@ -119,13 +118,8 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbarTitle.setText("我的信息");
+        mBtnConfirm.setEnabled(false);
         initData();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        updateView();
     }
 
     private void initData() {
@@ -134,7 +128,12 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
             user = userWrapperInfo.getUser();
             GlideUtils.loadImage(this, user.getHeadPhotoPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
         }
-        mBtnConfirm.setEnabled(false);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateView();
     }
 
     private void updateView() {
@@ -142,7 +141,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
             userName = user.getName() != null ? user.getName() : "";
             title = user.getPosition() != null ? user.getPosition() : "";
             email = user.getEmail() != null ? user.getEmail() : "";
-
             mEtUserName.setText(userName);
             mEtTitle.setText(title);
             mEtEmail.setText(email);
@@ -159,24 +157,24 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (!mEtUserName.getText().toString().equals(userName) || !mEtTitle.getText().toString().equals(title) || !mEtEmail.getText().toString().equals(email)) {
+        if (!mEtUserName.getText().toString().equals(userName)
+                || !mEtTitle.getText().toString().equals(title)
+                || !mEtEmail.getText().toString().equals(email)) {
             mBtnConfirm.setEnabled(true);
         } else {
             mBtnConfirm.setEnabled(false);
         }
     }
 
-    @OnClick({R.id.userLayout, R.id.mobileLayout, R.id.btn_confirm})
+    @OnClick({R.id.userLayout, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -184,8 +182,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         int id = view.getId();
         if (id == R.id.userLayout) {//
             showTakePictureDialog();
-        } else if (id == R.id.mobileLayout) {//
-            UpdatePhoneActivity.startActivity(this);
         } else if (id == R.id.btn_confirm) {//
             preProcessParam();
         }
@@ -193,6 +189,8 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
 
     private void preProcessParam() {
         userName = mEtUserName.getText().toString();
+        title = mEtTitle.getText().toString();
+        email = mEtEmail.getText().toString();
 
         if (TextUtils.isEmpty(userName)) {
             ToastUtils.show("请输入用户名");
@@ -223,78 +221,6 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                     }
                 });
         builder.show();
-    }
-
-    /**
-     * 打开摄像头拍照。
-     */
-    private void takePhoto() {
-        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            ToastUtils.show(getString(R.string.operation_failed_without_sdcard));
-            return;
-        }
-        // 创建 File 对象，用于存储拍照后的图片
-        File outputImage = new File(getExternalCacheDir(), TEMP_PHOTO);
-        try {
-            if (outputImage.exists()) {
-                outputImage.delete();
-            }
-            outputImage.createNewFile();
-        } catch (IOException ex) {
-            Timber.w(ex);
-        }
-        photoUri = UriUtils.file2Uri(outputImage);
-        Intent intent = new Intent();
-        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-        startActivityForResult(intent, TAKE_PHOTO);
-    }
-
-    /**
-     * 从相册中选择图片。
-     */
-    private void chooseFromAlbum() {
-        Matisse.from(this)
-                .choose(MimeType.ofAll())
-                .countable(false)
-                .maxSelectable(1)
-                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                .thumbnailScale(0.85f)
-                .imageEngine(new GlideEngine())
-                .showPreview(false) // Default is `true`
-                .forResult(CHOOSE_FROM_ALBUM);
-    }
-
-    /**
-     * 对指定图片进行裁剪。
-     *
-     * @param uri 图片的uri地址。
-     */
-    private void cropPhoto(Uri uri) {
-        int reqWidth = ScreenUtils.getScreenWidth();
-        int reqHeight = reqWidth;
-        CropImage.activity(uri)
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setFixAspectRatio(true)
-                .setAspectRatio(reqWidth, reqHeight)
-                .setActivityTitle(StringUtils.getString(R.string.crop))
-                .setRequestedSize(reqWidth, reqHeight)
-                .setCropMenuCropButtonIcon(R.drawable.ic_crop)
-                .start(this);
-    }
-
-    /**
-     * 显示剪裁后的头像，并上传至服务器
-     *
-     * @param imageUri
-     */
-    private void showCroppedPhoto(Uri imageUri) {
-        if (imageUri == null)
-            return;
-
-        userAvatarUri = imageUri;
-        GlideUtils.loadImage(this, imageUri.getPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
-        SetUserHeadPhotoTask();
     }
 
     private void checkTakePhotoPermission() {
@@ -341,6 +267,46 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                 });
     }
 
+    /**
+     * 打开摄像头拍照。
+     */
+    private void takePhoto() {
+        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            ToastUtils.show(getString(R.string.operation_failed_without_sdcard));
+            return;
+        }
+        // 创建 File 对象，用于存储拍照后的图片
+        File outputImage = new File(getExternalCacheDir(), TEMP_PHOTO);
+        try {
+            if (outputImage.exists()) {
+                outputImage.delete();
+            }
+            outputImage.createNewFile();
+        } catch (IOException ex) {
+            Timber.w(ex);
+        }
+        photoUri = UriUtils.file2Uri(outputImage);
+        Intent intent = new Intent();
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+        startActivityForResult(intent, TAKE_PHOTO);
+    }
+
+    /**
+     * 从相册中选择图片。
+     */
+    private void chooseFromAlbum() {
+        Matisse.from(this)
+                .choose(MimeType.ofAll())
+                .countable(false)
+                .maxSelectable(1)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(new GlideEngine())
+                .showPreview(false) // Default is `true`
+                .forResult(CHOOSE_FROM_ALBUM);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -370,6 +336,47 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         }
     }
 
+    /**
+     * 对指定图片进行裁剪。
+     *
+     * @param uri 图片的uri地址。
+     */
+    private void cropPhoto(Uri uri) {
+        int reqWidth = ScreenUtils.getScreenWidth();
+        int reqHeight = reqWidth;
+        CropImage.activity(uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setFixAspectRatio(true)
+                .setAspectRatio(reqWidth, reqHeight)
+                .setActivityTitle(StringUtils.getString(R.string.crop))
+                .setRequestedSize(reqWidth, reqHeight)
+                .setCropMenuCropButtonIcon(R.drawable.ic_crop)
+                .start(this);
+    }
+
+    /**
+     * 显示剪裁后的头像，并上传至服务器
+     *
+     * @param imageUri
+     */
+    private void showCroppedPhoto(Uri imageUri) {
+        if (imageUri == null)
+            return;
+
+        userAvatarUri = imageUri;
+        GlideUtils.loadImage(this, imageUri.getPath(), mIvUserAvatar, R.drawable.ic_avatar_default);
+        SetUserHeadPhotoTask();
+    }
+
+    private String getBase64ImageString(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return null;
+        }
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+        String imgString = bitmapToBase64(bitmap);
+
+        return imgString;
+    }
 
     /**
      * bitmap转为base64
@@ -408,33 +415,28 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
         return result;
     }
 
-    private String getBase64ImageString(String filePath) {
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-        String imgString = bitmapToBase64(bitmap);
-
-        return imgString;
-    }
-
     /**
      * 上传用户头像
      */
     private void SetUserHeadPhotoTask() {
-        String filePath = userAvatarUri.getPath();
-        if (TextUtils.isEmpty(filePath)) {
-            return;
-        }
-        String fileName = FileUtils.getFileName(filePath);
-        String fileContent = getBase64ImageString(filePath);
+        String fileName = FileUtils.getFileName(userAvatarUri.getPath());
+        String fileContent = getBase64ImageString(userAvatarUri.getPath());
         if (TextUtils.isEmpty(fileName) || TextUtils.isEmpty(fileContent)) {
-            Timber.w("头像图片文件名或图片Base64字符串为空");
+            ToastUtils.show("头像图片文件名或图片Base64字符串为空");
             return;
         }
-        SetUserHeadPhotoParameter parameter = new SetUserHeadPhotoParameter();
-        parameter.setPhotoName(fileName);
-        parameter.setPhotoContent(fileContent);
-        String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
-        showLoadingDialog("正在上传...");
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+            jsonObjectRequest.put("userID", MCloudApp.getUserID());
+            jsonObjectRequest.put("content", fileContent);
+            jsonObjectRequest.put("extension", "png");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+        showWaitDialog("正在上传...");
+
         MDRetrofit.getInstance()
                 .createService()
                 .uploadUserAvatar(MCloudApp.getAccessToken(), body)
@@ -445,12 +447,12 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String data, ErrorInfo errorInfo) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
                                 ToastUtils.show("头像已上传");
-                                if (!TextUtils.isEmpty(data)) {
-                                    user.setHeadPhotoPath(data);
+                                if (user != null && userAvatarUri != null && !TextUtils.isEmpty(userAvatarUri.getPath())) {
+                                    user.setHeadPhotoPath(userAvatarUri.getPath());
                                 }
                             } else {
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
@@ -462,21 +464,28 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
 
     private void updateMyInfo() {
-        showLoadingDialog("处理中...");
-
-        UpdateMyInfoParam parameter = new UpdateMyInfoParam();
-        parameter.setName(userName);
-        parameter.setPosition(title);
-        parameter.setEmail(email);
-        String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        showWaitDialog("处理中...");
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+            jsonObjectRequest.put("userID", MCloudApp.getUserID());
+            jsonObjectRequest.put("name", userName);
+            if (!TextUtils.isEmpty(title))
+                jsonObjectRequest.put("position", title);
+            if (!TextUtils.isEmpty(email))
+                jsonObjectRequest.put("email", email);
+        } catch (JSONException e) {
+            dismissWaitDialog();
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
                 .createService()
@@ -488,10 +497,9 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
                 .subscribe(new BaseObserver<String>() {
                     @Override
                     protected void onResponse(String s, ErrorInfo errorInfo) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
-                                ToastUtils.show("修改已保存");
                                 mBtnConfirm.setEnabled(false);
                                 updateUserInfoCache();
                                 exitActivcity();
@@ -505,25 +513,22 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
     }
 
     private void updateUserInfoCache() {
-        UserWrapperInfo userWrapperInfo = MCloudApp.getCurrentUserInfo();
-        if (userWrapperInfo != null && userWrapperInfo.getUser() != null) {
-            UserWrapperInfo.UserInfo user = userWrapperInfo.getUser();
+        if (user != null) {
             user.setName(userName);
             user.setPosition(title);
             user.setEmail(email);
         }
-        MCloudApp.setCurrentUserInfo(userWrapperInfo);
     }
 
     private void exitActivcity() {
-        ToastUtils.show("设置完成");
+        ToastUtils.show("已修改");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

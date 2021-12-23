@@ -79,7 +79,7 @@ public class LoginManager implements DefaultLifecycleObserver {
                             MCloudApp.setAccessToken(token);
                             //持久化保存用户数据到SharedPreferences文件中
                             SPStaticUtils.put(AppContants.User.UID, account);
-                            SPStaticUtils.put(AppContants.User.MD5_PWD, password);
+                            SPStaticUtils.put(AppContants.User.PWD, password);
                             getUserByToken();
                         } else {
                             if (loginCallback != null) {
@@ -87,7 +87,6 @@ public class LoginManager implements DefaultLifecycleObserver {
                             }
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
@@ -124,7 +123,6 @@ public class LoginManager implements DefaultLifecycleObserver {
                             }
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
@@ -149,6 +147,7 @@ public class LoginManager implements DefaultLifecycleObserver {
                     protected void onResponse(BasicUserInfo basicUserInfo, ErrorInfo errorInfo) {
                         if (errorInfo.getCode() == 0) {
                             MCloudApp.setCompanyID(basicUserInfo.getCompanyID());
+                            MCloudApp.setUserID(basicUserInfo.getSubjectID());
                             queryUserByID(basicUserInfo.getCompanyID(), basicUserInfo.getSubjectID());
                         } else {
                             if (loginCallback != null) {
@@ -156,7 +155,6 @@ public class LoginManager implements DefaultLifecycleObserver {
                             }
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);

@@ -20,7 +20,7 @@ import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.projects.model.ProjectInfoEx;
 import com.shmedo.mcloudapp.projects.model.RegionProjectInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
-import com.shmedo.mcloudapp.user.model.CompanySimpleInfo;
+import com.shmedo.mcloudapp.user.model.BasicCompanyInfo;
 
 import java.util.List;
 
@@ -89,18 +89,12 @@ public interface ApiService {
     //分页查询用户所在的所有公司
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryUserInCompany")
-    Observable<ResponseWrapper<PageResult<CompanySimpleInfo>>> queryUserInCompany(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<PageResult<BasicCompanyInfo>>> queryUserInCompany(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //获取公司信息
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("GetCompanyInfo")
     Observable<ResponseWrapper<CompanyInfo>> getCompanyInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-
-    //系统接口v2  修改我的手机号码
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("UpdateMyCellPhone")
-    Observable<ResponseWrapper<String>> UpdateMyCellPhone(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     /**
      * 项目模块

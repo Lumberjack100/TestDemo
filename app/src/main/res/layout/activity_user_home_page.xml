@@ -13,14 +13,14 @@
         android:id="@+id/userLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/layer_common_click_item_with_divider"
         android:clickable="true"
         android:focusable="true"
-        android:background="@color/white"
         android:foreground="?attr/selectableItemBackground"
-        android:paddingStart="@dimen/dimen_size_20"
+        android:paddingStart="@dimen/dimen_size_16"
         android:paddingTop="@dimen/dimen_size_10"
-        android:paddingEnd="@dimen/dimen_size_20"
+        android:paddingEnd="@dimen/dimen_size_16"
         android:paddingBottom="@dimen/dimen_size_10">
 
         <TextView
@@ -55,99 +55,54 @@
 
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/dimen_size_20"
-        android:background="@color/gray_f2f2f2" />
-
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户名"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_16" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="用户名" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/userNameET"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:ellipsize="end"
-            android:gravity="center_vertical|right"
+            style="@style/Common_EditItem_EditText_Style"
             android:hint="请输入用户名"
             android:maxLength="10"
-            android:maxLines="1"
-            android:textColor="@color/title_text_color"
-            android:textColorHint="@color/gray_818182"
-            android:textSize="@dimen/text_size_15" />
+            android:maxLines="1" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/dimen_size_20"
-        android:background="@color/gray_f2f2f2" />
-
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="职位"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_16" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="职位" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/titleET"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:ellipsize="end"
-            android:gravity="center_vertical|right"
+            style="@style/Common_EditItem_EditText_Style"
             android:hint="请输入职位"
-            android:maxLength="12"
-            android:maxLines="1"
-            android:textColor="@color/title_text_color"
-            android:textColorHint="@color/gray_818182"
-            android:textSize="@dimen/text_size_15" />
+            android:maxLength="20"
+            android:maxLines="1" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/dimen_size_20"
-        android:background="@color/gray_f2f2f2" />
 
     <LinearLayout
         android:id="@+id/mobileLayout"
         style="@style/Common_EditItem_LayoutStyle"
-        android:foreground="?attr/selectableItemBackground">
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="手机号"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_16" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="手机号" />
 
         <TextView
             android:id="@+id/tv_phone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableEnd="@drawable/icon_arrow_right"
-            android:drawablePadding="@dimen/dimen_size_5"
             android:ellipsize="end"
             android:gravity="right"
             android:maxLines="1"
@@ -157,49 +112,26 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/dimen_size_20"
-        android:background="@color/gray_f2f2f2" />
-
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="邮箱"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_16" />
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="邮箱" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/emailET"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dimen_size_25"
-            android:layout_weight="1"
-            android:background="@null"
-            android:drawablePadding="@dimen/dimen_size_15"
-            android:ellipsize="end"
-            android:gravity="center_vertical|right"
+            style="@style/Common_EditItem_EditText_Style"
             android:hint="请输入邮箱"
             android:maxLength="30"
-            android:maxLines="1"
-            android:textColor="@color/title_text_color"
-            android:textColorHint="@color/gray_818182"
-            android:textSize="@dimen/text_size_15" />
+            android:maxLines="1" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/dimen_size_20"
-        android:background="@color/gray_f2f2f2" />
 
     <Button
         android:id="@+id/btn_confirm"
         style="@style/SubmitBordelessButtonStyle"
-        android:text="确认" />
+        android:text="完成" />
 
 </LinearLayout>

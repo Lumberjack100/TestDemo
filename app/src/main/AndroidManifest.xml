@@ -178,11 +178,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".user.ui.activity.UpdatePhoneActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:maxAspectRatio="2.4"
-            android:screenOrientation="portrait" />
         <activity android:name=".common.ui.activity.WebViewActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

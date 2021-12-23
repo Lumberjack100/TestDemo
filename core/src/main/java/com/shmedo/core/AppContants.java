@@ -18,7 +18,6 @@ public interface AppContants {
     interface User {
         String UID = "uid";
         String PWD = "pwd";
-        String MD5_PWD = "md5_pwd";
     }
 
     /**

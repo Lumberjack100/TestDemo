@@ -9,7 +9,6 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.EncryptUtils;
 import com.blankj.utilcode.util.MetaDataUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.shmedo.core.AppContants;
@@ -94,14 +93,12 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
     private void goToLogin() {
         String mAccount = SPStaticUtils.getString(AppContants.User.UID, "");
         String mPassword = SPStaticUtils.getString(AppContants.User.PWD, "");
-        String Md5Password = SPStaticUtils.getString(AppContants.User.MD5_PWD, "");
         //自动登录
-        if (!TextUtils.isEmpty(mAccount) && (!TextUtils.isEmpty(mPassword) | !TextUtils.isEmpty(Md5Password))) {
+        if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
             //当用户使用自有账号登录时，可以这样统计：
             MobclickAgent.onProfileSignIn(mAccount);
-
-            String pwd = !TextUtils.isEmpty(Md5Password) ? Md5Password : EncryptUtils.encryptMD5ToString(mAccount + mPassword);
-            LoginManager.getInstance().login(mAccount, pwd, this);
+//            String pwd = !TextUtils.isEmpty(Md5Password) ? Md5Password : EncryptUtils.encryptMD5ToString(mAccount + mPassword);
+            LoginManager.getInstance().login(mAccount, mPassword, this);
         } else {
             redirectToLoginActivity(1000);
         }
