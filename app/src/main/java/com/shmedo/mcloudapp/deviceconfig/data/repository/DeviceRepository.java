@@ -4,13 +4,14 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.common.model.PageResult;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.params.QueryProjectDevice;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.params.QueryProjectDevice;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -60,13 +61,13 @@ public class DeviceRepository {
         String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
                 .getDeviceList(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
+                .subscribe(new BaseObserver<PageResult<DeviceInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrorInfo errorInfo) {
+                    protected void onResponse(PageResult<DeviceInfo> data, ErrorInfo errorInfo) {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
@@ -95,7 +96,7 @@ public class DeviceRepository {
         RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, String.valueOf(deviceId));
 
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
                 .getDescribeDeviceSimpleInfo(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

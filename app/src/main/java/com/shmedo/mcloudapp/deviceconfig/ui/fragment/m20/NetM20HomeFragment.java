@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryCurrentStateDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,10 +37,10 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
     private NetM20SetupWizardDialogFragment setupWizardDialogFragment;
 
 
-    public static NetM20HomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, int deviceType) {
+    public static NetM20HomeFragment newInstance(DeviceInfo deviceInfo, int deviceType) {
         NetM20HomeFragment fragment = new NetM20HomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, projectDeviceInfo);
+        args.putParcelable(EXTRA_DEVICE, deviceInfo);
         args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
         fragment.setArguments(args);
         return fragment;
@@ -76,15 +76,15 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
 //                showWaitDialog("处理中...");
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
 //                doCommonDispatchRawCmd(command);
-                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.M20);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.M20);
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.M20);
+                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.M20);
                 break;
         }
     }
@@ -94,7 +94,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
      */
     private void queryBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_GET_BASE_INFO);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -102,7 +102,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
      */
     public void setLevelInitial() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -163,7 +163,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.M20);
+                        DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.M20);
                     }
                 });
                 break;

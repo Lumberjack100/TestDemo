@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,10 +61,10 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
 
     private E40GpsWorkInfo gpsWorkInfo;
 
-    public static NetE40GpsWorkParamFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetE40GpsWorkParamFragment newInstance(DeviceInfo deviceInfo) {
         NetE40GpsWorkParamFragment fragment = new NetE40GpsWorkParamFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -94,7 +94,7 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_GPS_PARAM);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_data_frequency, R.id.btn_confirm})
@@ -202,7 +202,7 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_GPS_PARAM, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

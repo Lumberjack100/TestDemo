@@ -22,7 +22,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.vms.VmsAisleSettingView;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,10 +46,10 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
     private static final String VMS_AISLE_NUMBER = "vms_aisle_number";
     private VmsAisleNumber vmsAisleNumber;
 
-    public static NetVmsAisleSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsAisleNumber vmsAisleNumber) {
+    public static NetVmsAisleSettingFragment newInstance(DeviceInfo deviceInfo, VmsAisleNumber vmsAisleNumber) {
         NetVmsAisleSettingFragment fragment = new NetVmsAisleSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         args.putSerializable(VMS_AISLE_NUMBER, vmsAisleNumber);
         fragment.setArguments(args);
         return fragment;
@@ -82,7 +82,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleSettingView.vmsAisleNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -100,7 +100,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
             String command = vmsAisleSettingView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             }
         }
     }

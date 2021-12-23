@@ -24,7 +24,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.List;
 
@@ -41,17 +41,17 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
     private DiscoveredBluetoothDevice device;
 
 
-    public static void startActivity(Context context, ProjectDeviceInfo deviceInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo) {
         int deviceType = AppContants.DeviceType.UnKnown;
-        if (deviceInfo.getDeviceTypeName().contains("DAS")) {
+        if (deviceInfo.getProductName().contains("DAS")) {
             deviceType = AppContants.DeviceType.DAS;
-        } else if (deviceInfo.getDeviceTypeName().contains("ADME") || deviceInfo.getToken().endsWith("T")) {
+        } else if (deviceInfo.getProductName().contains("ADME") || deviceInfo.getDeviceToken().endsWith("T")) {
             deviceType = AppContants.DeviceType.ADME;
-        } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
+        } else if (deviceInfo.getProductName().contains("M20")) {
             deviceType = AppContants.DeviceType.M20;
-        } else if (deviceInfo.getDeviceTypeName().contains("E40") || deviceInfo.getDeviceTypeName().contains("E60")) {
+        } else if (deviceInfo.getProductName().contains("E40") || deviceInfo.getProductName().contains("E60")) {
             deviceType = AppContants.DeviceType.E40;
-        } else if (deviceInfo.getDeviceTypeName().contains("VMS") || deviceInfo.getDeviceTypeName().contains("GW300")) {
+        } else if (deviceInfo.getProductName().contains("VMS") || deviceInfo.getProductName().contains("GW300")) {
             deviceType = AppContants.DeviceType.VMS;
         }
         if (deviceType == AppContants.DeviceType.UnKnown) {
@@ -104,7 +104,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             return;
 
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            projectDeviceInfo = intent.getParcelableExtra(EXTRA_DEVICE);
+            deviceInfo = intent.getParcelableExtra(EXTRA_DEVICE);
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             device = intent.getParcelableExtra(EXTRA_DEVICE);
         }
@@ -119,23 +119,23 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                    fragment = NetDasHomeFragment.newInstance(projectDeviceInfo, deviceType);
+                    fragment = NetDasHomeFragment.newInstance(deviceInfo, deviceType);
                     break;
 
                 case AppContants.DeviceType.ADME:
-                    fragment = NetAdmeHomeFragment.newInstance(projectDeviceInfo);
+                    fragment = NetAdmeHomeFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.M20:
-                    fragment = NetM20HomeFragment.newInstance(projectDeviceInfo, deviceType);
+                    fragment = NetM20HomeFragment.newInstance(deviceInfo, deviceType);
                     break;
 
                 case AppContants.DeviceType.E40:
-                    fragment = NetE40HomeFragment.newInstance(projectDeviceInfo, deviceType);
+                    fragment = NetE40HomeFragment.newInstance(deviceInfo, deviceType);
                     break;
 
                 case AppContants.DeviceType.VMS:
-                    fragment = NetVmsHomeFragment.newInstance(projectDeviceInfo);
+                    fragment = NetVmsHomeFragment.newInstance(deviceInfo);
                     break;
 
                 default:
@@ -181,9 +181,9 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             }
         } else if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             if (deviceType == AppContants.DeviceType.VMS) {
-                AdvancedSettingActivity.startActivity(this, projectDeviceInfo, AppContants.DeviceType.VMS);
+                AdvancedSettingActivity.startActivity(this, deviceInfo, AppContants.DeviceType.VMS);
             } else {
-                QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, projectDeviceInfo.getToken());
+                QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, deviceInfo.getDeviceToken());
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, MCloudApp.getCurDeviceToken());

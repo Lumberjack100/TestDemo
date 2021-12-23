@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,10 +42,10 @@ public class NetAdmeLowEnergyModeFragment extends BaseNetIotCommunicateFragment 
     ViewGroup maskLayerLayout;
 
 
-    public static NetAdmeLowEnergyModeFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeLowEnergyModeFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeLowEnergyModeFragment fragment = new NetAdmeLowEnergyModeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,7 +82,7 @@ public class NetAdmeLowEnergyModeFragment extends BaseNetIotCommunicateFragment 
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
         showWaitDialog("加载中...");
     }
 
@@ -94,7 +94,7 @@ public class NetAdmeLowEnergyModeFragment extends BaseNetIotCommunicateFragment 
         entity.setMode(isOpen ? "1" : "0");
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOW_ENERGY_MODE, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
         showWaitDialog("处理中...");
     }
 

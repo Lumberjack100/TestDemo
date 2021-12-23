@@ -41,7 +41,7 @@ import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.MagnificationView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.ModulusView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.vms.PolynomialParamView;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,10 +121,10 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
 
     private VmsViewModel vmsViewModel;
 
-    public static NetVmsTerminalExternalSensorParamFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsTerminalSensorInfo sensorInfo) {
+    public static NetVmsTerminalExternalSensorParamFragment newInstance(DeviceInfo deviceInfo, VmsTerminalSensorInfo sensorInfo) {
         NetVmsTerminalExternalSensorParamFragment fragment = new NetVmsTerminalExternalSensorParamFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         args.putParcelable(AppContants.Extras.SENSOR_PARAM, sensorInfo);
         fragment.setArguments(args);
         return fragment;
@@ -309,7 +309,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.calculationLayout, R.id.sensorNameLayout, R.id.btn_confirm})
@@ -502,7 +502,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         isSaveParamOperation = true;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_CHL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -115,10 +115,10 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
-    public static NetAdmeLockedRotorDetectionFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeLockedRotorDetectionFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeLockedRotorDetectionFragment fragment = new NetAdmeLockedRotorDetectionFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -270,7 +270,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -459,7 +459,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             mBtnSave.setEnabled(false);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
             showWaitDialog("处理中...");
-            doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+            doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

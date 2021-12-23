@@ -27,12 +27,13 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceInfoAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.json.JSONException;
@@ -50,7 +51,6 @@ import okhttp3.RequestBody;
 import timber.log.Timber;
 
 public class DeviceSearchActivity extends BaseActivity {
-    private static final String PROJECT_NAME = "project_name";
 
     @BindView(R.id.et_keywords)
     ClearEditText mEtKeyWords;
@@ -59,20 +59,17 @@ public class DeviceSearchActivity extends BaseActivity {
     RecyclerView mRecyclerView;
 
     private DeviceInfoAdapter deviceInfoAdapter;
-    private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
+    private List<DeviceInfo> deviceInfoList = new ArrayList<>();
 
     private static final int PAGE_SIZE = 10;
     private PageInfo pageInfo;
-    private int companyID = 1;
     private String keyWords;// 要输入的搜索关键字
-    private String projectName;
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, DeviceSearchActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
-
 
     @Override
     protected int getLayoutId() {
@@ -82,7 +79,6 @@ public class DeviceSearchActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        companyID = MCloudApp.getCompanyID();
         initView();
         initDeviceInfoAdapter();
         initLoadMore();
@@ -123,7 +119,7 @@ public class DeviceSearchActivity extends BaseActivity {
         deviceInfoAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                ProjectDeviceInfo deviceInfo = deviceInfoList.get(position);
+                DeviceInfo deviceInfo = deviceInfoList.get(position);
                 DeviceConfigActivity.startActivity(DeviceSearchActivity.this, deviceInfo);
             }
         });
@@ -182,21 +178,10 @@ public class DeviceSearchActivity extends BaseActivity {
         queryDeviceList();
     }
 
-    /**
-     * 开始查询接口
-     */
+
     private void queryDeviceList() {
         // 方式一：直接传入 layout id
         deviceInfoAdapter.setEmptyView(R.layout.loading_view);
-
-//        QueryProjectDevice parameter = new QueryProjectDevice();
-//        parameter.setCompanyID(companyID);
-//        parameter.setProjectName(TextUtils.isEmpty(projectName) ? "" : projectName);
-//        parameter.setDeviceType(-1);
-//        parameter.setSn(keyWords);
-////        parameter.setDeviceStatus("启用");
-//        parameter.setPageSize(PAGE_SIZE);
-//        parameter.setCurrentPage(pageInfo.getPage());
 
         JSONObject jsonObjectRequest = new JSONObject();
         try {
@@ -211,15 +196,15 @@ public class DeviceSearchActivity extends BaseActivity {
         RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
                 .getDeviceList(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(new BaseObserver<PageResult<ProjectDeviceInfo>>() {
+                .subscribe(new BaseObserver<PageResult<DeviceInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<ProjectDeviceInfo> data, ErrorInfo errorInfo) {
+                    protected void onResponse(PageResult<DeviceInfo> data, ErrorInfo errorInfo) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
@@ -232,18 +217,15 @@ public class DeviceSearchActivity extends BaseActivity {
                                     }
                                     return;
                                 }
-
                                 //如果是加载的第一页数据，清空列表
                                 if (pageInfo.isFirstPage()) {
                                     deviceInfoList.clear();
                                 }
                                 deviceInfoList.addAll(data.getCurrentPageData());
                                 deviceInfoAdapter.notifyDataSetChanged();
-
                                 if (data.getCurrentPageData().size() < PAGE_SIZE) {
                                     //如果不够一页,显示没有更多数据布局
                                     deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
-
                                 } else {
                                     deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
                                 }
@@ -259,7 +241,6 @@ public class DeviceSearchActivity extends BaseActivity {
                             deviceInfoAdapter.setEmptyView(getErrorView());
                         }
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);

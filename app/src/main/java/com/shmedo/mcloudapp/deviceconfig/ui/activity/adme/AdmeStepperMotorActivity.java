@@ -10,7 +10,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeStepperMotorFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeStepperMotorFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -19,9 +19,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
  */
 public class AdmeStepperMotorActivity extends BaseConfigFragmentContainerActivity {
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, AdmeStepperMotorActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -43,7 +43,7 @@ public class AdmeStepperMotorActivity extends BaseConfigFragmentContainerActivit
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAdmeStepperMotorFragment.newInstance(projectDeviceInfo);
+            fragment = NetAdmeStepperMotorFragment.newInstance(deviceInfo);
 
         } else {
             fragment = BleAdmeStepperMotorFragment.newInstance();

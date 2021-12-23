@@ -45,7 +45,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -108,10 +108,10 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public static NetDasDataCenterHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetDasDataCenterHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetDasDataCenterHomeFragment fragment = new NetDasDataCenterHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -208,7 +208,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      */
     private void getReportingTimeInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DATA_REPORT_TIME);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -216,7 +216,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      */
     private void getBdTerminalInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_BD_TERMINAL);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -229,7 +229,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -238,7 +238,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_baudRate, R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.btn_confirm})
@@ -252,15 +252,15 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
         } else if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
@@ -336,7 +336,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         entity.setReport_intv(reportingInterval);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DATA_REPORT_TIME, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
 
@@ -498,7 +498,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
                     isSaveParamOperation = true;
                     String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
-                    doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                    doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                 } else {
                     dismissWaitDialog();
                     ToastUtils.show("保存成功");

@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40CurrentStateFragm
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20CurrentStateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -34,9 +34,9 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, int deviceType) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo, int deviceType) {
         Intent intent = new Intent(context, DeviceCurrentStateActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -65,19 +65,19 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                    fragment = NetDasCurrentStateFragment.newInstance(projectDeviceInfo);
+                    fragment = NetDasCurrentStateFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.ADME:
-                    fragment = NetAdmeCurrentStateFragment.newInstance(projectDeviceInfo);
+                    fragment = NetAdmeCurrentStateFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.M20:
-                    fragment = NetM20CurrentStateFragment.newInstance(projectDeviceInfo);
+                    fragment = NetM20CurrentStateFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.E40:
-                    fragment = NetE40CurrentStateFragment.newInstance(projectDeviceInfo);
+                    fragment = NetE40CurrentStateFragment.newInstance(deviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {

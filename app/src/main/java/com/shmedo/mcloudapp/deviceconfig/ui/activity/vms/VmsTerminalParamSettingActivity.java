@@ -12,7 +12,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainer
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20ParamSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalParamSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalParamSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -24,9 +24,9 @@ public class VmsTerminalParamSettingActivity extends BaseConfigFragmentContainer
 
     private VmsTerminalInfo vmsTerminalInfo;
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, VmsTerminalInfo vmsTerminalInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo, VmsTerminalInfo vmsTerminalInfo) {
         Intent intent = new Intent(context, VmsTerminalParamSettingActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(TERMINAL_INFO, vmsTerminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -61,7 +61,7 @@ public class VmsTerminalParamSettingActivity extends BaseConfigFragmentContainer
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetVmsTerminalParamSettingFragment.newInstance(projectDeviceInfo, vmsTerminalInfo);
+            fragment = NetVmsTerminalParamSettingFragment.newInstance(deviceInfo, vmsTerminalInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpVmsTerminalParamSettingFragment.newInstance(vmsTerminalInfo);

@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.deviceconfig.callback.DataCenterConfigListener;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.view.DataCenterAdvancedConfigView;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,13 +53,13 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     private String serverStatus;
 
 
-    public static UniversalNetDataCenterAdvancedConfigFragment newInstance(int deviceType, ServerNumber serverNumber, String status, ProjectDeviceInfo projectDeviceInfo) {
+    public static UniversalNetDataCenterAdvancedConfigFragment newInstance(int deviceType, ServerNumber serverNumber, String status, DeviceInfo deviceInfo) {
         UniversalNetDataCenterAdvancedConfigFragment fragment = new UniversalNetDataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
         args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -106,19 +106,19 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     private void queryDataCenterInfo() {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @Override
     public void onCloseDataServer(String command) {
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @Override
     public void onSaveConfig(String command) {
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @Override

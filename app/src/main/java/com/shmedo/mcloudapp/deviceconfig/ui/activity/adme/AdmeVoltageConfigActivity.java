@@ -10,7 +10,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeVoltageConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeVoltageConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -19,9 +19,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
  */
 public class AdmeVoltageConfigActivity extends BaseConfigFragmentContainerActivity {
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, AdmeVoltageConfigActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -43,7 +43,7 @@ public class AdmeVoltageConfigActivity extends BaseConfigFragmentContainerActivi
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAdmeVoltageConfigFragment.newInstance(projectDeviceInfo);
+            fragment = NetAdmeVoltageConfigFragment.newInstance(deviceInfo);
 
         } else {
             fragment = BleAdmeVoltageConfigFragment.newInstance();

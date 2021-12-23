@@ -20,7 +20,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.adme.AdmeInclinometerView;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,10 +42,10 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
     ViewGroup maskLayerLayout;
 
 
-    public static NetAdmeInclinometerFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeInclinometerFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeInclinometerFragment fragment = new NetAdmeInclinometerFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,7 +73,7 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
     private void queryParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_INCLINOMETER);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_inclinometer_type, R.id.ll_low_power_mode, R.id.btn_confirm})
@@ -97,7 +97,7 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
             String command = admeInclinometerView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             }
         }
     }

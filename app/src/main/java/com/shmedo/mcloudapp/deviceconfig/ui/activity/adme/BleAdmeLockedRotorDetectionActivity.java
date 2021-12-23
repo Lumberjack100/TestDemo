@@ -10,7 +10,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeLockedRotorDetectionFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeLockedRotorDetectionFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -18,9 +18,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
  * 描述：    ADME 堵转缓停停参数配置页面
  */
 public class BleAdmeLockedRotorDetectionActivity extends BaseConfigFragmentContainerActivity {
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, BleAdmeLockedRotorDetectionActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -41,7 +41,7 @@ public class BleAdmeLockedRotorDetectionActivity extends BaseConfigFragmentConta
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAdmeLockedRotorDetectionFragment.newInstance(projectDeviceInfo);
+            fragment = NetAdmeLockedRotorDetectionFragment.newInstance(deviceInfo);
 
         } else {
             fragment = BleAdmeLockedRotorDetectionFragment.newInstance();

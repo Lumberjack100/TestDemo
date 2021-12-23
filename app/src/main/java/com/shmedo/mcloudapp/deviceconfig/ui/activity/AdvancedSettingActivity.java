@@ -18,7 +18,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20AdvancedSettingFr
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsAdvancedSettingsFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsAdvancedSettingsFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -29,9 +29,9 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
     private int deviceType = AppContants.DeviceType.DAS;
 
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, int deviceType) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo, int deviceType) {
         Intent intent = new Intent(context, AdvancedSettingActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -67,23 +67,23 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                    fragment = NetDasAdvancedSettingFragment.newInstance(projectDeviceInfo);
+                    fragment = NetDasAdvancedSettingFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.ADME:
-                    fragment = NetAdmeAdvancedSettingFragment.newInstance(projectDeviceInfo);
+                    fragment = NetAdmeAdvancedSettingFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.M20:
-                    fragment = NetM20AdvancedSettingFragment.newInstance(projectDeviceInfo);
+                    fragment = NetM20AdvancedSettingFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.E40:
-                    fragment = NetE40AdvancedSettingFragment.newInstance(projectDeviceInfo);
+                    fragment = NetE40AdvancedSettingFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.VMS:
-                    fragment = NetVmsAdvancedSettingsFragment.newInstance(projectDeviceInfo);
+                    fragment = NetVmsAdvancedSettingsFragment.newInstance(deviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {

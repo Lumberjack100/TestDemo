@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterAdvancedConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterBasicConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -30,10 +30,10 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
     private ServerNumber serverNumber;
     private String serverStatus;
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, int deviceType, ProjectDeviceInfo projectDeviceInfo, int configMethod, ServerNumber serverNumber, String status) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, int deviceType, DeviceInfo deviceInfo, int configMethod, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, DataCenterConfigActivity.class);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
@@ -110,9 +110,9 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                 case AppContants.DeviceType.E40:
                 case AppContants.DeviceType.VMS:
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                        fragment = UniversalNetDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus, projectDeviceInfo);
+                        fragment = UniversalNetDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus, deviceInfo);
                     } else {
-                        fragment = UniversalNetDataCenterAdvancedConfigFragment.newInstance(deviceType, serverNumber, serverStatus, projectDeviceInfo);
+                        fragment = UniversalNetDataCenterAdvancedConfigFragment.newInstance(deviceType, serverNumber, serverStatus, deviceInfo);
                     }
                     break;
             }

@@ -12,7 +12,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalExternalSensorParamFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalExternalSensorParamFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -22,9 +22,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 public class VmsTerminalExternalSensorConfigActivity extends BaseConfigFragmentContainerActivity {
     private VmsTerminalSensorInfo sensorInfo;
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProjectDeviceInfo projectDeviceInfo, VmsTerminalSensorInfo sensorInfo) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, DeviceInfo deviceInfo, VmsTerminalSensorInfo sensorInfo) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorConfigActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         launcher.launch(intent);
@@ -59,7 +59,7 @@ public class VmsTerminalExternalSensorConfigActivity extends BaseConfigFragmentC
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetVmsTerminalExternalSensorParamFragment.newInstance(projectDeviceInfo, sensorInfo);
+            fragment = NetVmsTerminalExternalSensorParamFragment.newInstance(deviceInfo, sensorInfo);
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpVmsTerminalExternalSensorParamFragment.newInstance(sensorInfo);
         }

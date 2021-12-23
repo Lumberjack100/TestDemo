@@ -44,7 +44,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.umeng.analytics.MobclickAgent;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
@@ -230,10 +230,10 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
-    public static NetDasCurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetDasCurrentStateFragment newInstance(DeviceInfo deviceInfo) {
         NetDasCurrentStateFragment fragment = new NetDasCurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -534,7 +534,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryDeviceBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DEVICE_BASE);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -543,7 +543,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void queryNetStatus(int index) {
         IndexEntity entity = new IndexEntity(index);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_NET_STATUS, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -551,7 +551,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void querySolarStatus() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SOLAR_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -559,7 +559,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryTemperatureAndHumidityStatus() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -568,7 +568,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void querySensorStatus(int index) {
         IndexEntity entity = new IndexEntity(index);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SENSOR_STATUS, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -576,7 +576,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void querySubSensorStatus() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

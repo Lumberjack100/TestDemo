@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.Arrays;
@@ -53,10 +53,10 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private static final int REBOOT = 0x1002;
     private static final int RESET = 0x1003;
 
-    public static NetM20AdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetM20AdvancedSettingFragment newInstance(DeviceInfo deviceInfo) {
         NetM20AdvancedSettingFragment fragment = new NetM20AdvancedSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,10 +75,10 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
 
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
 
         } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
-            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
+            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceInfo.getProductID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);
             newFragment.show(getChildFragmentManager(), "dialog");
 
@@ -127,21 +127,21 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                             case LEVEL_INITIAL: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
                                 showWaitDialog("处理中...");
-                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                             }
                             break;
 
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
                                 showWaitDialog("处理中...");
-                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                             }
                             break;
 
                             case RESET: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
                                 showWaitDialog("处理中...");
-                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                             }
                             break;
                         }
@@ -236,7 +236,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
      * 固件升级
      */
     private void doFirmwareUpgrade(int firmwareID) {
-        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), projectDeviceInfo.getId(), firmwareID);
+        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), deviceInfo.getId(), firmwareID);
         String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()

@@ -3,16 +3,16 @@ package com.shmedo.mcloudapp.network.api;
 import com.shmedo.core.model.BasicUserInfo;
 import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.common.model.PageResult;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceOnlineTypeStatistic;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceStatisticInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProductInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ResponseWrapper;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
 import com.shmedo.mcloudapp.user.model.BasicCompanyInfo;
 import com.shmedo.mcloudapp.user.model.CompanyInfo;
 
@@ -96,17 +96,17 @@ public interface ApiService {
     //统计公司下的设备
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("GetDeviceStatByCompanyID")
-    Observable<ResponseWrapper<List<DeviceOnlineTypeStatistic>>> getDeviceStatByCompanyID(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<DeviceStatisticInfo>> getDeviceStatByCompanyID(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //分页查询产品列表
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryProduct")
-    Observable<ResponseWrapper<PageResult<DeviceTypeInfo>>> queryProduct(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<PageResult<ProductInfo>>> queryProduct(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //查询设备列表
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("GetDeviceList")
-    Observable<ResponseWrapper<PageResult<ProjectDeviceInfo>>> getDeviceList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<PageResult<DeviceInfo>>> getDeviceList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //获取设备概要信息
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})

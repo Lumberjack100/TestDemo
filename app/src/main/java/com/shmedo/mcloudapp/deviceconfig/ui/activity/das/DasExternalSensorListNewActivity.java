@@ -10,7 +10,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasExternalSensorListFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -21,9 +21,9 @@ public class DasExternalSensorListNewActivity extends BaseConfigFragmentContaine
 
     private String collectorModel = "";//采集器类型
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, DasExternalSensorListNewActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -61,7 +61,7 @@ public class DasExternalSensorListNewActivity extends BaseConfigFragmentContaine
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetDasExternalSensorListFragment.newInstance(projectDeviceInfo);
+            fragment = NetDasExternalSensorListFragment.newInstance(deviceInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
 

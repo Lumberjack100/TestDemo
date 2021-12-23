@@ -13,7 +13,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40DataCenterHomeFra
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40DataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20DataCenterHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -28,10 +28,10 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
     private boolean isLevelInit = false;
 
 
-    public static void startActivity(Context context, int deviceType, ProjectDeviceInfo projectDeviceInfo, int configMethod) {
+    public static void startActivity(Context context, int deviceType, DeviceInfo deviceInfo, int configMethod) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -46,10 +46,10 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int deviceType, ProjectDeviceInfo projectDeviceInfo, int configMethod, boolean isLevelInit) {
+    public static void startActivity(Context context, int deviceType, DeviceInfo deviceInfo, int configMethod, boolean isLevelInit) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.putExtra(LEVEL_INITIAL, isLevelInit);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -95,19 +95,19 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                    fragment = NetDasDataCenterHomeFragment.newInstance(projectDeviceInfo);
+                    fragment = NetDasDataCenterHomeFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.ADME:
-                    fragment = NetAdmeDataCenterHomeFragment.newInstance(configMethod, projectDeviceInfo);
+                    fragment = NetAdmeDataCenterHomeFragment.newInstance(configMethod, deviceInfo);
                     break;
 
                 case AppContants.DeviceType.M20:
-                    fragment = NetM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit, projectDeviceInfo);
+                    fragment = NetM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit, deviceInfo);
                     break;
 
                 case AppContants.DeviceType.E40:
-                    fragment = NetE40DataCenterHomeFragment.newInstance(configMethod, projectDeviceInfo);
+                    fragment = NetE40DataCenterHomeFragment.newInstance(configMethod, deviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {

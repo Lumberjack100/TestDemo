@@ -31,7 +31,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryCurrentS
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,10 +46,10 @@ import timber.log.Timber;
 public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
     private static final int REBOOT = 0x0002;
 
-    public static NetDasHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, int deviceType) {
+    public static NetDasHomeFragment newInstance(DeviceInfo deviceInfo, int deviceType) {
         NetDasHomeFragment fragment = new NetDasHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, projectDeviceInfo);
+        args.putParcelable(EXTRA_DEVICE, deviceInfo);
         args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
         fragment.setArguments(args);
         return fragment;
@@ -96,7 +96,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
 //                showWaitDialog("处理中...");
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
 //                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.DAS);
             }
             break;
 
@@ -105,20 +105,20 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 entity.setMode("1");
                 showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_ACTIVE, entity);
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             }
 
             case "时间": {
                 showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             }
             break;
 
             case "遥测": {
                 showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_SAMPLE);
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             }
             break;
 
@@ -127,19 +127,19 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "采集器配置":
-                DasCollectorSettingActivity.startActivity(mActivity, projectDeviceInfo);
+                DasCollectorSettingActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "传感器配置":
-                DasSensorConfigActivity.startActivity(mActivity, projectDeviceInfo);
+                DasSensorConfigActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.DAS, projectDeviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
+                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.DAS);
                 break;
         }
     }
@@ -165,7 +165,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
                                 showWaitDialog("处理中...");
-                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                             }
                             break;
                         }
@@ -246,7 +246,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.DAS);
+                        DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.DAS);
                     }
                 });
                 break;

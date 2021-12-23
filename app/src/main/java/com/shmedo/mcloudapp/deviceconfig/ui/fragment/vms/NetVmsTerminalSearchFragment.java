@@ -42,7 +42,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSens
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,10 +74,10 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
     private VmsViewModel vmsViewModel;
 
 
-    public static NetVmsTerminalSearchFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetVmsTerminalSearchFragment newInstance(DeviceInfo deviceInfo) {
         NetVmsTerminalSearchFragment fragment = new NetVmsTerminalSearchFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -133,7 +133,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
                     return;
                 }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
-                VmsTerminalHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
+                VmsTerminalHomeActivity.startActivity(mActivity, deviceInfo, vmsTerminalInfo);
             }
         });
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -148,7 +148,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
-                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
+                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, deviceInfo, vmsTerminalInfo);
             }
         });
         mRecyclerView.setAdapter(adapter);
@@ -260,7 +260,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

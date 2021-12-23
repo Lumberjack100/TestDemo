@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -66,10 +66,10 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
 
     private DasCollectorInfo collectorInfo;
 
-    public static NetDasCollectorSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetDasCollectorSettingFragment newInstance(DeviceInfo deviceInfo) {
         NetDasCollectorSettingFragment fragment = new NetDasCollectorSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,7 +108,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
 
     private void queryCollectorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -214,7 +214,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.adme.AdmeVoltageConfigView;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,10 +42,10 @@ public class NetAdmeVoltageConfigFragment extends BaseNetIotCommunicateFragment 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
-    public static NetAdmeVoltageConfigFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeVoltageConfigFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeVoltageConfigFragment fragment = new NetAdmeVoltageConfigFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,7 +73,7 @@ public class NetAdmeVoltageConfigFragment extends BaseNetIotCommunicateFragment 
     private void queryParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_VOLTAGE);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -91,7 +91,7 @@ public class NetAdmeVoltageConfigFragment extends BaseNetIotCommunicateFragment 
             String command = admeVoltageConfigView.getConfigCommand();
             if (!TextUtils.isEmpty(command)) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             }
         }
     }

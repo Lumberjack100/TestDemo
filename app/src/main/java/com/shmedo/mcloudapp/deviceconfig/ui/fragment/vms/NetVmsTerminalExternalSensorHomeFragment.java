@@ -29,7 +29,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.VmsTerminalSensorItem;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -67,10 +67,10 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
     private int curSensorIndex = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public static NetVmsTerminalExternalSensorHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsTerminalInfo vmsTerminalInfo) {
+    public static NetVmsTerminalExternalSensorHomeFragment newInstance(DeviceInfo deviceInfo, VmsTerminalInfo vmsTerminalInfo) {
         NetVmsTerminalExternalSensorHomeFragment fragment = new NetVmsTerminalExternalSensorHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
@@ -136,7 +136,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
                 curSensorIndex = position;
                 VmsTerminalSensorItem sensorItem = sensorItemList.get(position);
                 VmsTerminalSensorInfo sensorInfo = sensorHashMap.get(sensorItem.getChannel());
-                VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, projectDeviceInfo, sensorInfo);
+                VmsTerminalExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, deviceInfo, sensorInfo);
             }
 
             @Override
@@ -153,7 +153,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
     private void queryTerminalAisleParamInfo() {
         GetVmsTerminalSensorParamsEntity entity = new GetVmsTerminalSensorParamsEntity(vmsTerminalInfo.getSn(), sensorIndex);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_CHL, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

@@ -3,7 +3,7 @@ ext {
             applicationId    : 'com.shmedo.mcloudapp',
             compileSdkVersion: 29,
             buildToolsVersion: '29.0.3',
-            minSdkVersion    : 21,
+            minSdkVersion    : 24,
             targetSdkVersion : 29,
             versionName      : '2.4.2'
     ]

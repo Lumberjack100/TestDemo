@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,10 +38,10 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     private static final int RESET = 0x1003;
 
 
-    public static NetE40AdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetE40AdvancedSettingFragment newInstance(DeviceInfo deviceInfo) {
         NetE40AdvancedSettingFragment fragment = new NetE40AdvancedSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,18 +67,18 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
         } else if (id == R.id.serialPortLayout) {//串口参数
-            E40SerialPortParamActivity.startActivity(mActivity, projectDeviceInfo);
+            E40SerialPortParamActivity.startActivity(mActivity, deviceInfo);
 
         } else if (id == R.id.gpsWorkParamLayout) {//GPS工作参数
-            E40GpsWorkParamActivity.startActivity(mActivity, projectDeviceInfo);
+            E40GpsWorkParamActivity.startActivity(mActivity, deviceInfo);
 
         } else if (id == R.id.rtkParamLayout) {//RTK参数
-            E40RtkParamActivity.startActivity(mActivity, projectDeviceInfo);
+            E40RtkParamActivity.startActivity(mActivity, deviceInfo);
 
         } else if (id == R.id.fileDownloadLayout) {//下载文件
 
         } else if (id == R.id.dataDebugLayout) {//下载文件
-            E40SocketDataDebugActivity.startActivity(mActivity, projectDeviceInfo);
+            E40SocketDataDebugActivity.startActivity(mActivity, deviceInfo);
         }
     }
 
@@ -103,14 +103,14 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
                                 showWaitDialog("处理中...");
-                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                             }
                             break;
 
                             case RESET: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
                                 showWaitDialog("处理中...");
-                                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                             }
                             break;
                         }

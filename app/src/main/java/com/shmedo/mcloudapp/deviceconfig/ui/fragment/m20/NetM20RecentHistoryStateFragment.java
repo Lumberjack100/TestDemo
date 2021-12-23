@@ -9,7 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import butterknife.BindView;
 
@@ -105,14 +105,14 @@ public class NetM20RecentHistoryStateFragment extends BaseFragment {
     @BindView(R.id.tv_power_consumption)
     TextView mTvPowerConsumption;
 
-    private ProjectDeviceInfo projectDeviceInfo;
+    private DeviceInfo deviceInfo;
 
     private M20CurrentStateInfo m20CurrentStateInfo;
 
-    public static NetM20RecentHistoryStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetM20RecentHistoryStateFragment newInstance(DeviceInfo deviceInfo) {
         NetM20RecentHistoryStateFragment fragment = new NetM20RecentHistoryStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -121,7 +121,7 @@ public class NetM20RecentHistoryStateFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
+            deviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 

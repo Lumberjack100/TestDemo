@@ -20,7 +20,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.adme.AdmeExecutiveAgencyView;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,10 +41,10 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
-    public static NetAdmeExecutiveAgencyFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeExecutiveAgencyFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeExecutiveAgencyFragment fragment = new NetAdmeExecutiveAgencyFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,7 +74,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_data_settlement_method, R.id.ll_data_response, R.id.btn_confirm})
@@ -96,7 +96,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
             String command = admeExecutiveAgencyView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             }
         }
     }

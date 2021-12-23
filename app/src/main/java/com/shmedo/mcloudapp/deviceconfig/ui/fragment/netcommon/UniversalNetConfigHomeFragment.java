@@ -71,7 +71,7 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             if (getArguments().containsKey(EXTRA_DEVICE)) {
-                projectDeviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
+                deviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
             }
             if (getArguments().containsKey(AppContants.Extras.DEVICE_TYPE)) {
                 deviceType = getArguments().getInt(AppContants.Extras.DEVICE_TYPE);
@@ -109,11 +109,11 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
                 mTvDeviceName.setText("测地形GNSS一体机");
                 break;
         }
-        if (projectDeviceInfo != null) {
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken()));
-            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "M20" : projectDeviceInfo.getDeviceTypeName()));
-            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(projectDeviceInfo.getFirmwareVersion()) ? "" : projectDeviceInfo.getFirmwareVersion()));
-            if (projectDeviceInfo.isOnline()) {
+        if (deviceInfo != null) {
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
+            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "M20" : deviceInfo.getProductName()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "" : deviceInfo.getFirmwareVersion()));
+            if (deviceInfo.isOnlineStatus()) {
                 mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);

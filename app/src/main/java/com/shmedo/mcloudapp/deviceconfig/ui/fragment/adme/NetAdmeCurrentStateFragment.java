@@ -27,7 +27,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -149,10 +149,10 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
     private DecimalFormat decimalFormat = new DecimalFormat();
 
 
-    public static NetAdmeCurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeCurrentStateFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeCurrentStateFragment fragment = new NetAdmeCurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -186,7 +186,7 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_STATE);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_device_abnormal_diagnosis})

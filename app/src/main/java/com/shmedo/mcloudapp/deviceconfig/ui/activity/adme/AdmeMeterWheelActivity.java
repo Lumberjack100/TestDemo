@@ -10,7 +10,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeMeterWheelFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeMeterWheelFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -19,9 +19,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
  */
 public class AdmeMeterWheelActivity extends BaseConfigFragmentContainerActivity {
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, AdmeMeterWheelActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -42,7 +42,7 @@ public class AdmeMeterWheelActivity extends BaseConfigFragmentContainerActivity 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAdmeMeterWheelFragment.newInstance(projectDeviceInfo);
+            fragment = NetAdmeMeterWheelFragment.newInstance(deviceInfo);
 
         } else {
             fragment = BleAdmeMeterWheelFragment.newInstance();

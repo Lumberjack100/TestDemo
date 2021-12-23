@@ -22,7 +22,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,10 +56,10 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
     private E40SerialPortInfo e40SerialPortInfo;
 
 
-    public static NetE40SerialPortParamFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetE40SerialPortParamFragment newInstance(DeviceInfo deviceInfo) {
         NetE40SerialPortParamFragment fragment = new NetE40SerialPortParamFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,7 +81,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_DB_GUART);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_type, R.id.ll_baud, R.id.btn_confirm})
@@ -162,7 +162,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_DB_GUART, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

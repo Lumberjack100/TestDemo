@@ -36,7 +36,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasExternalSensorListNewActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -121,10 +121,10 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     private boolean isDigitalPiezometerChange = false;
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭北斗数传终端操作
 
-    public static NetDasSensorConfigFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetDasSensorConfigFragment newInstance(DeviceInfo deviceInfo) {
         NetDasSensorConfigFragment fragment = new NetDasSensorConfigFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -275,7 +275,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
      */
     private void querySwitchSensorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -284,7 +284,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     private void setSwitchSensorInfo(DasIOSensorEntity entity) {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -292,7 +292,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryDigitalPiezometerInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -305,7 +305,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -322,7 +322,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
 
         isSaveParamOperation = true;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.tvPrecision, R.id.extendSensorLayout, R.id.btn_confirm})
@@ -343,7 +343,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             });
             builder.create().show();
         } else if (id == R.id.extendSensorLayout) {
-            DasExternalSensorListNewActivity.startActivity(mActivity, projectDeviceInfo);
+            DasExternalSensorListNewActivity.startActivity(mActivity, deviceInfo);
 
         } else if (id == R.id.btn_confirm) {
             try {

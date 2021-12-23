@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAisleSettingActivity
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -82,10 +82,10 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
 
     private String logLevel;
 
-    public static NetVmsAdvancedSettingsFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetVmsAdvancedSettingsFragment newInstance(DeviceInfo deviceInfo) {
         NetVmsAdvancedSettingsFragment fragment = new NetVmsAdvancedSettingsFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -150,28 +150,28 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             serverNumber = SERVER_NUMBER_FOUR;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.vmsAisleOneLayout) {
-            VmsAisleSettingActivity.startActivity(mActivity, projectDeviceInfo, VmsAisleNumber.NUMBER_ONE);
+            VmsAisleSettingActivity.startActivity(mActivity, deviceInfo, VmsAisleNumber.NUMBER_ONE);
 
         } else if (id == R.id.vmsAisleTwoLayout) {
-            VmsAisleSettingActivity.startActivity(mActivity, projectDeviceInfo, VmsAisleNumber.NUMBER_TWO);
+            VmsAisleSettingActivity.startActivity(mActivity, deviceInfo, VmsAisleNumber.NUMBER_TWO);
 
         } else if (id == R.id.vmsAisleThreeLayout) {
-            VmsAisleSettingActivity.startActivity(mActivity, projectDeviceInfo, VmsAisleNumber.NUMBER_THREE);
+            VmsAisleSettingActivity.startActivity(mActivity, deviceInfo, VmsAisleNumber.NUMBER_THREE);
 
         } else if (id == R.id.vmsRebootLayout) {
             showWarnDialog("确定重启网关吗？", VMS_REBOOT);
@@ -188,7 +188,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -197,7 +197,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void rebootGateWay() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -206,7 +206,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void resetGateWay() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -214,7 +214,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
      */
     private void queryLogOutput() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.GET_LOG_OUTPUT_MODE_LEVEL);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -223,7 +223,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void setLogOutput(IotLogOutputEntity entity) {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

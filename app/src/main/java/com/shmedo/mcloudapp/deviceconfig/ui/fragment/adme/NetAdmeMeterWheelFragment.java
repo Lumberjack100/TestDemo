@@ -20,7 +20,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.adme.AdmeMeterWheelView;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,10 +41,10 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
-    public static NetAdmeMeterWheelFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeMeterWheelFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeMeterWheelFragment fragment = new NetAdmeMeterWheelFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +72,7 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_METER_WHEEL);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
         showWaitDialog("加载中...");
     }
 
@@ -90,7 +90,7 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
             }
             String command = admeMeterWheelView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                 showWaitDialog("处理中...");
             }
         }

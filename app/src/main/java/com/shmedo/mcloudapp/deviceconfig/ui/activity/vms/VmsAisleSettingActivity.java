@@ -11,7 +11,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsAisleSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsAisleSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -23,9 +23,9 @@ public class VmsAisleSettingActivity extends BaseConfigFragmentContainerActivity
 
     private VmsAisleNumber vmsAisleNumber;
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, VmsAisleNumber vmsAisleNumber) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo, VmsAisleNumber vmsAisleNumber) {
         Intent intent = new Intent(context, VmsAisleSettingActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(VMS_AISLE_NUMBER, vmsAisleNumber);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -66,7 +66,7 @@ public class VmsAisleSettingActivity extends BaseConfigFragmentContainerActivity
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetVmsAisleSettingFragment.newInstance(projectDeviceInfo, vmsAisleNumber);
+            fragment = NetVmsAisleSettingFragment.newInstance(deviceInfo, vmsAisleNumber);
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpVmsAisleSettingFragment.newInstance(vmsAisleNumber);
         }

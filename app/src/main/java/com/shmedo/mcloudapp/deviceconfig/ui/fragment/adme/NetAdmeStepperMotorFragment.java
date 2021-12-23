@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -78,10 +78,10 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
     private DecimalFormat decimalFormat = new DecimalFormat();
 
 
-    public static NetAdmeStepperMotorFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeStepperMotorFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeStepperMotorFragment fragment = new NetAdmeStepperMotorFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -163,7 +163,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
         showWaitDialog("加载中...");
     }
 
@@ -176,7 +176,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
         showWaitDialog("处理中...");
     }
 
@@ -270,7 +270,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
             isSaveParamOperation = true;
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
-            doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+            doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             showWaitDialog("处理中...");
         } catch (Exception ex) {
             ex.printStackTrace();

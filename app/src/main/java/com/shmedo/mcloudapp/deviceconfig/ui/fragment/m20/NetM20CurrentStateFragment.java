@@ -23,7 +23,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -128,10 +128,10 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private M20CurrentStateInfo m20CurrentStateInfo;
 
-    public static NetM20CurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetM20CurrentStateFragment newInstance(DeviceInfo deviceInfo) {
         NetM20CurrentStateFragment fragment = new NetM20CurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -166,7 +166,7 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

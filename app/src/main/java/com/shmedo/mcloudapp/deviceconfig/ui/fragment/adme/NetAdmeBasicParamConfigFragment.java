@@ -23,7 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.adme.AdmeBasicParamConfigView;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,10 +44,10 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
-    public static NetAdmeBasicParamConfigFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeBasicParamConfigFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeBasicParamConfigFragment fragment = new NetAdmeBasicParamConfigFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,7 +76,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
     private void queryBasicParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -84,7 +84,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
      */
     private void queryLockRotorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     private void setSwitchViewListener() {
@@ -97,7 +97,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                 }
                 String command = admeBasicParamConfigView.getLockRotorCommand(isChecked);
                 if (!TextUtils.isEmpty(command)) {
-                    doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                    doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
                 }
             }
         });
@@ -122,7 +122,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
             String command = admeBasicParamConfigView.getBasicCommand();
             if (!TextUtils.isEmpty(command)) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
             }
         }
     }

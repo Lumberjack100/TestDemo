@@ -23,7 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeVoltageConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +45,13 @@ public class NetAdmeAdvancedConfigFragment extends BaseFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    public ProjectDeviceInfo projectDeviceInfo;
+    public DeviceInfo deviceInfo;
 
 
-    public static NetAdmeAdvancedConfigFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeAdvancedConfigFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeAdvancedConfigFragment fragment = new NetAdmeAdvancedConfigFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,7 +60,7 @@ public class NetAdmeAdvancedConfigFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
+            deviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
@@ -101,31 +101,31 @@ public class NetAdmeAdvancedConfigFragment extends BaseFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "计米轮":
-                AdmeMeterWheelActivity.startActivity(mActivity, projectDeviceInfo);
+                AdmeMeterWheelActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "测斜仪":
-                AdmeInclinometerActivity.startActivity(mActivity, projectDeviceInfo);
+                AdmeInclinometerActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "执行机构":
-                AdmeExecutiveAgencyActivity.startActivity(mActivity, projectDeviceInfo);
+                AdmeExecutiveAgencyActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "步进电机":
-                AdmeStepperMotorActivity.startActivity(mActivity, projectDeviceInfo);
+                AdmeStepperMotorActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "堵转缓停":
-                BleAdmeLockedRotorDetectionActivity.startActivity(mActivity, projectDeviceInfo);
+                BleAdmeLockedRotorDetectionActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "继电器使能":
-                AdmeLowEnergyModeActivity.startActivity(mActivity, projectDeviceInfo);
+                AdmeLowEnergyModeActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "电压配置":
-                AdmeVoltageConfigActivity.startActivity(mActivity, projectDeviceInfo);
+                AdmeVoltageConfigActivity.startActivity(mActivity, deviceInfo);
                 break;
         }
     }

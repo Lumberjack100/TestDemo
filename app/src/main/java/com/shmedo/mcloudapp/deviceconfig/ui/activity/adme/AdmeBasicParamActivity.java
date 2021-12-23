@@ -10,7 +10,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeBasicParamConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeBasicParamConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -19,9 +19,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
  */
 public class AdmeBasicParamActivity extends BaseConfigFragmentContainerActivity {
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, AdmeBasicParamActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -44,7 +44,7 @@ public class AdmeBasicParamActivity extends BaseConfigFragmentContainerActivity 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAdmeBasicParamConfigFragment.newInstance(projectDeviceInfo);
+            fragment = NetAdmeBasicParamConfigFragment.newInstance(deviceInfo);
 
         } else {
             fragment = BleAdmeBasicParamConfigFragment.newInstance();

@@ -14,7 +14,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -44,7 +44,7 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
 
     protected ConfigPageViewModel configPageViewModel;
 
-    protected ProjectDeviceInfo projectDeviceInfo;
+    protected DeviceInfo deviceInfo;
 
 
     @Override
@@ -71,7 +71,7 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         }
 
         if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
+            deviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
         }
     }
 

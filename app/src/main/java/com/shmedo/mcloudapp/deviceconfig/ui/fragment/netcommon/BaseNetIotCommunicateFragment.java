@@ -36,7 +36,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.umeng.analytics.MobclickAgent;
 
@@ -65,7 +65,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     protected static final int DELAY_20000_MILLIS = 20000;
     protected static final int DELAY_60000_MILLIS = 60000;//超时时间
 
-    public ProjectDeviceInfo projectDeviceInfo;
+    public DeviceInfo deviceInfo;
 
     protected ConfigPageViewModel configPageViewModel;
 
@@ -129,7 +129,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
+            deviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 
@@ -154,7 +154,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      */
     protected void saveConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -174,7 +174,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             String command_type = content.contains("&") ? content.substring(content.indexOf(IOTCommand.COMMAND_HEADER) + 1, content.indexOf("&")) : content.substring(content.indexOf(IOTCommand.COMMAND_HEADER) + 1);
             Map<String, Object> valueMap = new HashMap<String, Object>();
             valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
-            valueMap.put("device_sn", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken());
+            valueMap.put("device_sn", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken());
             valueMap.put("command_type", command_type);
             valueMap.put("command_content", content);
             MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
@@ -286,7 +286,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                 String content = queryCmdResult.getResponseContent();
                 Map<String, Object> valueMap = new HashMap<String, Object>();
                 valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
-                valueMap.put("device_sn", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken());
+                valueMap.put("device_sn", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken());
                 valueMap.put("command_type", type.toString());
                 valueMap.put("command_content", content);
                 MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);

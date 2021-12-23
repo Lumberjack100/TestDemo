@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.Arrays;
@@ -57,10 +57,10 @@ import timber.log.Timber;
 public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     private static final int REBOOT = 0x1002;
 
-    public static NetE40HomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, int deviceType) {
+    public static NetE40HomeFragment newInstance(DeviceInfo deviceInfo, int deviceType) {
         NetE40HomeFragment fragment = new NetE40HomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, projectDeviceInfo);
+        args.putParcelable(EXTRA_DEVICE, deviceInfo);
         args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
         fragment.setArguments(args);
         return fragment;
@@ -96,11 +96,11 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
 //                showWaitDialog("处理中...");
 //                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.E40);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.E40);
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.E40, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.E40, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
                 break;
 
             case "重启":
@@ -108,17 +108,17 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "固件升级":
-                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
+                FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceInfo.getProductID());
                 newFragment.setDialogFragmentClickListener(firmWareSelectListener);
                 newFragment.show(getChildFragmentManager(), "dialog");
                 break;
 
             case "有线网络设置":
-                E40EthernetActivity.startActivity(mActivity, projectDeviceInfo);
+                E40EthernetActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.E40);
+                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.E40);
                 break;
         }
     }
@@ -129,7 +129,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     private void rebootDevice() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -178,7 +178,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
      * 固件升级
      */
     private void doFirmwareUpgrade(int firmwareID) {
-        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), projectDeviceInfo.getId(), firmwareID);
+        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), deviceInfo.getId(), firmwareID);
         String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
@@ -274,7 +274,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.E40);
+                        DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.E40);
                     }
                 });
                 break;

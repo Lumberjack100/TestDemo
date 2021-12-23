@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,11 +60,11 @@ public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragmen
     private ActivityResultLauncher<Intent> resultLauncher;
 
 
-    public static NetAdmeDataCenterHomeFragment newInstance(int configMethod, ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeDataCenterHomeFragment newInstance(int configMethod, DeviceInfo deviceInfo) {
         NetAdmeDataCenterHomeFragment fragment = new NetAdmeDataCenterHomeFragment();
         Bundle args = new Bundle();
         args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -129,7 +129,7 @@ public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragmen
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout})
@@ -140,11 +140,11 @@ public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragmen
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.ADME, projectDeviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.ADME, deviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.E40, projectDeviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.E40, deviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
         }
     }
 

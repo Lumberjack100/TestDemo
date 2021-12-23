@@ -41,7 +41,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.Arrays;
@@ -71,10 +71,10 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
     private String workMode;// 工作模式(0:常规测量模式，1:特定点位模式，2:静态测量模式，3:设备停用模式)
     private AdmeWorkModeInfo workModeInfo;
 
-    public static NetAdmeAdvancedSettingFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeAdvancedSettingFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeAdvancedSettingFragment fragment = new NetAdmeAdvancedSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -96,7 +96,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
     private void getWorkMode() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_WORK_MODE);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -107,7 +107,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
         entity.setWorkmode(workMode);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_WORK_MODE, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -116,7 +116,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
     private void rebootDevice() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -125,7 +125,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
     private void resetDevice() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.dataCenterConfigLayout, R.id.rebootLayout, R.id.resetLayout, R.id.firmwareUpgradeLayout, R.id.workModeLayout})
@@ -135,7 +135,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
         }
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, projectDeviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
 
         } else if (id == R.id.rebootLayout) {//重启
             showWarnDialog("确定重启设备吗？", REBOOT);
@@ -144,7 +144,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
         } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
-            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), projectDeviceInfo.getDeviceTypeID());
+            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceInfo.getProductID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);
             newFragment.show(getChildFragmentManager(), "dialog");
 
@@ -417,7 +417,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
      * 固件升级
      */
     private void doFirmwareUpgrade(int firmwareID) {
-        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), projectDeviceInfo.getId(), firmwareID);
+        FirmwareUpgrade parameter = new FirmwareUpgrade(MCloudApp.getCompanyID(), deviceInfo.getId(), firmwareID);
         String json = GsonUtils.toJson(parameter);
         RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()

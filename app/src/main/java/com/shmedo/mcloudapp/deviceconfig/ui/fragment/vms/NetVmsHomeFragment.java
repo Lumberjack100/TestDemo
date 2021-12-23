@@ -48,7 +48,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalSearchActivi
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
 import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -106,7 +106,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
     private VmsAisleListFragment vmsAisleListFragment;
     private NetVmsTerminalListFragment vmsTerminalListFragment;
-    public ProjectDeviceInfo projectDeviceInfo;
+    public DeviceInfo deviceInfo;
     private VmsViewModel vmsViewModel;
     private VmsBasicInfo vmsBasicInfo;
     private VmsAisleInfo vmsAisleInfo1, vmsAisleInfo2;
@@ -114,10 +114,10 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private int terminalIndex2 = 0;//通道二终端索引号
 
 
-    public static NetVmsHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetVmsHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetVmsHomeFragment fragment = new NetVmsHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, projectDeviceInfo);
+        args.putParcelable(EXTRA_DEVICE, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -126,7 +126,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
+            deviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
         }
     }
 
@@ -138,7 +138,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     protected void initView() {
         vmsAisleListFragment = new VmsAisleListFragment();
-        vmsTerminalListFragment = NetVmsTerminalListFragment.newInstance(projectDeviceInfo);
+        vmsTerminalListFragment = NetVmsTerminalListFragment.newInstance(deviceInfo);
 
         List<Fragment> mFragments = new ArrayList<>();
         mFragments.add(vmsAisleListFragment);
@@ -214,10 +214,10 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 }
             } else {
                 mTvDeviceName.setText("VMS网关");
-                mTvDeviceSn.setText(String.format("设备SN号：%s", projectDeviceInfo.getToken()));
-                mTvProductModel.setText(String.format("版本信息：%s", projectDeviceInfo.getFirmwareVersion()));
+                mTvDeviceSn.setText(String.format("设备SN号：%s", deviceInfo.getDeviceToken()));
+                mTvProductModel.setText(String.format("版本信息：%s", deviceInfo.getFirmwareVersion()));
                 mTvSubModel.setText("网关电压：--");
-                if (projectDeviceInfo.isOnline()) {
+                if (deviceInfo.isOnlineStatus()) {
                     mTvDeviceState.setText("在线");
                     mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                     mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
@@ -257,7 +257,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         //断开/重新连接
         int id = v.getId();
         if (id == R.id.search_placeholder) {
-            VmsTerminalSearchActivity.startActivity(mActivity, projectDeviceInfo);
+            VmsTerminalSearchActivity.startActivity(mActivity, deviceInfo);
         } else if (id == R.id.ll_scan_add_device) {
             PermissionHelper.requestScanPermissions(NetVmsHomeFragment.this);
         }
@@ -268,7 +268,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
      */
     private void getGatewayBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_BASE);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -277,7 +277,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private void getGatewayAisleInfo(VmsAisleNumber vmsAisleNumber) {
         VmsAisleNumberEntity vmsAisleNumberEntity = new VmsAisleNumberEntity(vmsAisleNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_GATEWAY_PARAM, vmsAisleNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -286,7 +286,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private void getTerminalStatus(int channel, int index) {
         VmsTerminalStatusEntity entity = new VmsTerminalStatusEntity(channel, index);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_STATUS, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -296,7 +296,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         TerminalSNEntity entity = new TerminalSNEntity(sn);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SCAN_ADD_TERMINAL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -304,7 +304,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
      */
     private void getTerminalSN() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_SN) + "&type=2";
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -314,7 +314,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         TerminalSNEntity entity = new TerminalSNEntity(sn);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_DELETE_TERMINAL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

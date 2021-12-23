@@ -35,7 +35,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -94,10 +94,10 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     private String ip;
     private int port = 0;
 
-    public static NetE40SocketDataDebugFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetE40SocketDataDebugFragment newInstance(DeviceInfo deviceInfo) {
         NetE40SocketDataDebugFragment fragment = new NetE40SocketDataDebugFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -110,7 +110,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        deviceSn = projectDeviceInfo.getToken();
+        deviceSn = deviceInfo.getDeviceToken();
         dataCenterPos = 0;
         mTvDataCenter.setText(dataCenterNameList.get(0));
         initAdapter();
@@ -356,7 +356,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(number);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -365,13 +365,13 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     private void queryNmeaTimeInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_NMEA_TIME);
 //        showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     private void setNmeaTimeInfo(boolean isOpen) {
         String command = isOpen ? "$cmd=md_setnmeatime&gga=1" : "$cmd=md_setnmeatime&gga=0";
 //        showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

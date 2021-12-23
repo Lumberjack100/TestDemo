@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.VmsTerminalInfoAdapter;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,15 +42,15 @@ public class NetVmsTerminalListFragment extends BaseFragment {
     private VmsTerminalInfoAdapter adapter;
     private List<VmsTerminalInfo> vmsTerminalInfoList = new ArrayList<>();
     private VmsTerminalInfo vmsTerminalInfo;
-    public ProjectDeviceInfo projectDeviceInfo;
+    public DeviceInfo deviceInfo;
 
     private NetVmsHomeFragment vmsHomeFragment;
     private VmsViewModel vmsViewModel;
 
-    public static NetVmsTerminalListFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetVmsTerminalListFragment newInstance(DeviceInfo deviceInfo) {
         NetVmsTerminalListFragment fragment = new NetVmsTerminalListFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, projectDeviceInfo);
+        args.putParcelable(EXTRA_DEVICE, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +59,7 @@ public class NetVmsTerminalListFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            projectDeviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
+            deviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
         }
     }
 
@@ -95,7 +95,7 @@ public class NetVmsTerminalListFragment extends BaseFragment {
                 if (vmsTerminalInfo.getItemType() == VmsTerminalInfo.SCAN_ADD_DEVICE) {
                     return;
                 }
-                VmsTerminalHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
+                VmsTerminalHomeActivity.startActivity(mActivity, deviceInfo, vmsTerminalInfo);
             }
         });
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -110,7 +110,7 @@ public class NetVmsTerminalListFragment extends BaseFragment {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
-                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
+                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, deviceInfo, vmsTerminalInfo);
             }
         });
         mRecyclerView.setAdapter(adapter);

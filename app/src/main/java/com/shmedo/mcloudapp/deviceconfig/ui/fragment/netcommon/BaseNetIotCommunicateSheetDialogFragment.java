@@ -17,7 +17,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import timber.log.Timber;
 @Deprecated
 public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBottomSheetDialogFragment {
     protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-    public ProjectDeviceInfo projectDeviceInfo;
+    public DeviceInfo deviceInfo;
 
     protected List<String> msgIDList = new ArrayList<>();
 
@@ -85,7 +85,7 @@ public abstract class BaseNetIotCommunicateSheetDialogFragment extends BaseBotto
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
+            deviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
         }
     }
 

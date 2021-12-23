@@ -11,7 +11,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalExternalSensorHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalExternalSensorHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -23,9 +23,9 @@ public class VmsTerminalExternalSensorHomeActivity extends BaseConfigFragmentCon
 
     private VmsTerminalInfo vmsTerminalInfo;
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo, VmsTerminalInfo vmsTerminalInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo, VmsTerminalInfo vmsTerminalInfo) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorHomeActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(TERMINAL_INFO, vmsTerminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -60,7 +60,7 @@ public class VmsTerminalExternalSensorHomeActivity extends BaseConfigFragmentCon
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetVmsTerminalExternalSensorHomeFragment.newInstance(projectDeviceInfo, vmsTerminalInfo);
+            fragment = NetVmsTerminalExternalSensorHomeFragment.newInstance(deviceInfo, vmsTerminalInfo);
 
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpVmsTerminalExternalSensorHomeFragment.newInstance(vmsTerminalInfo);

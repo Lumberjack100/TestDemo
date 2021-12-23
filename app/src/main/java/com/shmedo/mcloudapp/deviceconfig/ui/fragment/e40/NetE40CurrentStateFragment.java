@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
 import com.shmedo.mcloudapp.deviceconfig.view.RingProgressView;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -209,10 +209,10 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     private CurrentExtendStateInfo extendStateInfo;
     private SatelitteBean satelitteBean;
 
-    public static NetE40CurrentStateFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetE40CurrentStateFragment newInstance(DeviceInfo deviceInfo) {
         NetE40CurrentStateFragment fragment = new NetE40CurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -272,7 +272,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_EX_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -281,7 +281,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void querySatelitteInfo(String type) {
         SatelitteTypeEntity entity = new SatelitteTypeEntity(type);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_SATELITTE, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

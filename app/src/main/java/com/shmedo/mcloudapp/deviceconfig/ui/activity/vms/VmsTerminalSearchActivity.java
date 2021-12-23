@@ -13,7 +13,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsTerminalSearchFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsTerminalSearchFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -27,12 +27,12 @@ public class VmsTerminalSearchActivity extends BaseActivity {
 
     private Fragment fragment;
 
-    private ProjectDeviceInfo projectDeviceInfo;
+    private DeviceInfo deviceInfo;
 
 
-    public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, VmsTerminalSearchActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -66,13 +66,13 @@ public class VmsTerminalSearchActivity extends BaseActivity {
         }
 
         if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
+            deviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
         }
     }
 
     private Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetVmsTerminalSearchFragment.newInstance(projectDeviceInfo);
+            fragment = NetVmsTerminalSearchFragment.newInstance(deviceInfo);
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             fragment = TcpVmsTerminalSearchFragment.newInstance();
         }

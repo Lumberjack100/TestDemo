@@ -40,7 +40,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,10 +94,10 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     private String[] modes;
 
 
-    public static NetAdmeHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetAdmeHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeHomeFragment fragment = new NetAdmeHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -142,23 +142,23 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.ADME);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.ADME);
                 break;
 
             case "基础配置":
-                AdmeBasicParamActivity.startActivity(mActivity, projectDeviceInfo);
+                AdmeBasicParamActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, projectDeviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "高级配置":
-                AdmeAdvancedConfigActivity.startActivity(mActivity, projectDeviceInfo);
+                AdmeAdvancedConfigActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, projectDeviceInfo, AppContants.DeviceType.ADME);
+                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.ADME);
                 break;
         }
     }
@@ -169,7 +169,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     private void queryEquipmentBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -177,7 +177,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryMotorState() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MOTION_STATE);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_switch_config_model})
@@ -226,7 +226,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         AdmeEquipModelEntity entity = new AdmeEquipModelEntity(equipModel);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EQUIPMENT_MODEL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -390,10 +390,10 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
                 mTvConfigModel.setText(modes[2]);
             }
         } else {
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(projectDeviceInfo.getToken()) ? "" : projectDeviceInfo.getToken()));
-            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(projectDeviceInfo.getDeviceTypeName()) ? "ADME" : projectDeviceInfo.getDeviceTypeName()));
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
+            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "ADME" : deviceInfo.getProductName()));
             mTvMotionState.setText("运行状态：--");
-            if (projectDeviceInfo.isOnline()) {
+            if (deviceInfo.isOnlineStatus()) {
                 mTvDeviceState.setText("在线");
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);

@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfigHomeFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.DateUtil;
 
 import java.util.Arrays;
@@ -45,10 +45,10 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     private VmsTerminalInfo vmsTerminalInfo;
 
 
-    public static NetVmsTerminalHomeFragment newInstance(ProjectDeviceInfo projectDeviceInfo, VmsTerminalInfo vmsTerminalInfo) {
+    public static NetVmsTerminalHomeFragment newInstance(DeviceInfo deviceInfo, VmsTerminalInfo vmsTerminalInfo) {
         NetVmsTerminalHomeFragment fragment = new NetVmsTerminalHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, projectDeviceInfo);
+        args.putParcelable(EXTRA_DEVICE, deviceInfo);
         args.putParcelable(TERMINAL_INFO, vmsTerminalInfo);
         fragment.setArguments(args);
         return fragment;
@@ -142,11 +142,11 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "传感器配置":
-                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
+                VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, deviceInfo, vmsTerminalInfo);
                 break;
 
             case "终端配置":
-                VmsTerminalParamSettingActivity.startActivity(mActivity, projectDeviceInfo, vmsTerminalInfo);
+                VmsTerminalParamSettingActivity.startActivity(mActivity, deviceInfo, vmsTerminalInfo);
                 break;
         }
     }
@@ -158,7 +158,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_TERMINAL_QUERY_SAMPLE, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -168,7 +168,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**

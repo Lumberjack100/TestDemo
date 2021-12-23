@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.ProjectDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -83,10 +83,10 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
     private DecimalFormat decimalFormat = new DecimalFormat();
 
 
-    public static NetE40RtkParamFragment newInstance(ProjectDeviceInfo projectDeviceInfo) {
+    public static NetE40RtkParamFragment newInstance(DeviceInfo deviceInfo) {
         NetE40RtkParamFragment fragment = new NetE40RtkParamFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, projectDeviceInfo);
+        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -123,7 +123,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
     private void queryRtkMode() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_RTK);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
@@ -131,7 +131,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryBasePositionInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_BASE_POSITION);
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     @OnClick({R.id.ll_rtk_mode, R.id.ll_base_mode, R.id.btn_confirm})
@@ -242,7 +242,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_RTK, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     private void setBasePositionInfo() {
@@ -254,7 +254,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_BASE_POSITION, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
     }
 
     /**
