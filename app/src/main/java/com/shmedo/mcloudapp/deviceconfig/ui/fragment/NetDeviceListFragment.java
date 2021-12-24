@@ -143,8 +143,6 @@ public class NetDeviceListFragment extends BaseFragment {
     private void initDeviceTypeAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerViewDeviceType.setLayoutManager(linearLayoutManager);
-//        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.transparent), ConvertUtils.dp2px(1), 0);
-//        mRecyclerViewDeviceType.addItemDecoration(mItemDecoration);
         deviceTypeAdapter = new DeviceTypeAdapter(deviceTypeStatisticList);
         deviceTypeAdapter.setAnimationEnable(true);
         deviceTypeAdapter.setAnimationFirstOnly(false);
@@ -168,8 +166,6 @@ public class NetDeviceListFragment extends BaseFragment {
 
                 deviceTypeID = deviceOnlineTypeStatistic.getDeviceTypeID();
                 mRefreshLayout.autoRefresh();
-//                updateTopView(deviceOnlineTypeStatistic);
-                refreshDevices();
             }
         });
         mRecyclerViewDeviceType.setAdapter(deviceTypeAdapter);

@@ -97,7 +97,7 @@ android {
         production {//正式发布版本
             dimension "version"
             applicationId rootProject.android.applicationId
-            resValue "string", "app_name", getAppName()   // 设置默认的app_name
+            resValue "string", "app_name", "米易通"   // 设置默认的app_name
             manifestPlaceholders = ["mapApikey"   : "31d7ee436c402270e11183ce1b5d01dc",
                                     "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
                                     "frontJSToken": "d8b5d3a412f8493008be2052611789ea",
