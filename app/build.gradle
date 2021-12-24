@@ -8,7 +8,7 @@ apply plugin: 'kotlin-android'
  * @return
  */
 def getAppName() {
-    return 'mcloudapp'
+    return 'mcloudapp_v3'
 }
 
 /**
@@ -97,7 +97,7 @@ android {
         production {//正式发布版本
             dimension "version"
             applicationId rootProject.android.applicationId
-            resValue "string", "app_name", getAppName()   // 设置默认的app_name
+            resValue "string", "app_name", "米易通3.0"   // 设置默认的app_name
             manifestPlaceholders = ["mapApikey"   : "31d7ee436c402270e11183ce1b5d01dc",
                                     "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
                                     "frontJSToken": "d8b5d3a412f8493008be2052611789ea",
@@ -109,16 +109,11 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
-            def NameSuffix = ""
-            // To check for a certain build type, use variant.buildType.name == "<buildType>"
-            if (variant.name.contains("dev_gz")) {
-                NameSuffix = "贵州"
-            }
             def fileName
             if (variant.buildType.name == "release") {
-                fileName = getAppName() + NameSuffix + "_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = getAppName() + "_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
             } else {
-                fileName = getAppName() + NameSuffix + "_debug_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = getAppName() + "_debug_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
             }
             output.outputFileName = fileName
         }
