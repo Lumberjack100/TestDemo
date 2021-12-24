@@ -94,7 +94,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
      */
     private void queryBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_GET_BASE_INFO);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -102,7 +102,7 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
      */
     public void setLevelInitial() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

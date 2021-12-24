@@ -106,19 +106,19 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
     private void queryDataCenterInfo() {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @Override
     public void onCloseDataServer(String command) {
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @Override
     public void onSaveConfig(String command) {
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @Override

@@ -186,7 +186,7 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_STATE);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.ll_device_abnormal_diagnosis})

@@ -112,17 +112,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-            <com.shmedo.mcloudapp.deviceconfig.view.SlidingConflictRecyclerView
-                android:id="@+id/recyclerview_device_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingStart="16dp"
-                android:paddingTop="24dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="15dp" />
+            android:orientation="vertical">
 
             <com.scwang.smart.refresh.layout.SmartRefreshLayout
                 android:id="@+id/refreshLayout"
@@ -138,9 +129,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:paddingStart="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingBottom="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingStart="@dimen/dimen_size_10"
+                    android:paddingRight="@dimen/dimen_size_10"
+                    android:paddingBottom="@dimen/dimen_size_10"
                     android:splitMotionEvents="false"
                     tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     tools:listitem="@layout/item_device_info"
@@ -156,7 +148,6 @@
         <include layout="@layout/view_stub_holder" />
 
     </FrameLayout>
-
 
 </LinearLayout>
 

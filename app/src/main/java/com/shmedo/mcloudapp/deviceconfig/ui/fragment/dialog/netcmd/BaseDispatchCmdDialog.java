@@ -29,10 +29,12 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
+import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdResultParam;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import java.lang.ref.WeakReference;
@@ -224,10 +226,13 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
     }
 
     private void queryCmdResultByMsgID() {
-        String json = GsonUtils.toJson(msgIDList);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        QueryCmdResultParam parameter = new QueryCmdResultParam();
+        parameter.setMsgIDList(msgIDList);
+        String json = GsonUtils.toJson(parameter);
+        RequestBody body = RequestBody.create(json, RequestHeader.JSON_TYPE);
+
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
                 .queryCmdResultByMsgID(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())

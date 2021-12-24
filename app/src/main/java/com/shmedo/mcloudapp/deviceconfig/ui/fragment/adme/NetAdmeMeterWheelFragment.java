@@ -72,7 +72,7 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_METER_WHEEL);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
         showWaitDialog("加载中...");
     }
 
@@ -90,7 +90,7 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
             }
             String command = admeMeterWheelView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
-                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
                 showWaitDialog("处理中...");
             }
         }

@@ -208,7 +208,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      */
     private void getReportingTimeInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DATA_REPORT_TIME);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -216,7 +216,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      */
     private void getBdTerminalInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_BD_TERMINAL);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -229,7 +229,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -238,7 +238,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.ll_baudRate, R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.btn_confirm})
@@ -336,7 +336,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         entity.setReport_intv(reportingInterval);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DATA_REPORT_TIME, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
 
@@ -498,7 +498,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
                     isSaveParamOperation = true;
                     String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
-                    doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                    doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
                 } else {
                     dismissWaitDialog();
                     ToastUtils.show("保存成功");

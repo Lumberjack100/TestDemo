@@ -124,7 +124,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_COLLECTOR, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -133,7 +133,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
     private void queryTerminalCommunicationInfo() {
         TerminalSNEntity entity = new TerminalSNEntity(vmsTerminalInfo.getSn());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_GET_TERMINAL_COMMUNICATE, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.ll_reporting_method, R.id.btn_confirm})
@@ -260,7 +260,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_COLLECTOR, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -274,7 +274,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
         entity.setAirbaud(airBaudRate);
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_SET_TERMINAL_COMMUNICATE, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

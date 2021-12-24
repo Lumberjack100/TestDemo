@@ -188,7 +188,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void getDataCenterStatus(ServerNumber serverNumber) {
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -197,7 +197,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void rebootGateWay() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -206,7 +206,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void resetGateWay() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -214,7 +214,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
      */
     private void queryLogOutput() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.GET_LOG_OUTPUT_MODE_LEVEL);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -223,7 +223,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     private void setLogOutput(IotLogOutputEntity entity) {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

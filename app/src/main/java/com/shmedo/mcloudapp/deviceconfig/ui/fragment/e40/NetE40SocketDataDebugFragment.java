@@ -356,7 +356,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         ServerNumberEntity serverNumberEntity = new ServerNumberEntity(number);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER, serverNumberEntity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -365,13 +365,13 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
     private void queryNmeaTimeInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_NMEA_TIME);
 //        showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     private void setNmeaTimeInfo(boolean isOpen) {
         String command = isOpen ? "$cmd=md_setnmeatime&gga=1" : "$cmd=md_setnmeatime&gga=0";
 //        showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

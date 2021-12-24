@@ -94,7 +94,7 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_GPS_PARAM);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.ll_data_frequency, R.id.btn_confirm})
@@ -202,7 +202,7 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_GPS_PARAM, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

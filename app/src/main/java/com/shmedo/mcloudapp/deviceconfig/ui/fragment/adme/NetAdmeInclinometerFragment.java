@@ -73,7 +73,7 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
     private void queryParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_INCLINOMETER);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.ll_inclinometer_type, R.id.ll_low_power_mode, R.id.btn_confirm})
@@ -97,7 +97,7 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
             String command = admeInclinometerView.getSetCommand();
             if (!TextUtils.isEmpty(command)) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
             }
         }
     }

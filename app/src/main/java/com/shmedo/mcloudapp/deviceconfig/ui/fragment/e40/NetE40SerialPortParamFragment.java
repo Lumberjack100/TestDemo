@@ -81,7 +81,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_DB_GUART);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.ll_type, R.id.ll_baud, R.id.btn_confirm})
@@ -162,7 +162,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_DB_GUART, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

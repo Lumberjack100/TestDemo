@@ -262,7 +262,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
      */
     private void queryCollectorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -271,7 +271,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     private void queryExtendSensorConfigInfo() {
         IndexEntity entity = new IndexEntity(sensorIndex);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -281,7 +281,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         IndexEntity entity = new IndexEntity(curItemPosition);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -294,7 +294,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     private void setCollector() {
@@ -304,7 +304,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -361,7 +361,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             entity.setInitvaly(externalSensorInfo.getInitvaly());
         }
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.btn_confirm})

@@ -82,7 +82,7 @@ public class NetAdmeLowEnergyModeFragment extends BaseNetIotCommunicateFragment 
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
         showWaitDialog("加载中...");
     }
 
@@ -94,7 +94,7 @@ public class NetAdmeLowEnergyModeFragment extends BaseNetIotCommunicateFragment 
         entity.setMode(isOpen ? "1" : "0");
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOW_ENERGY_MODE, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
         showWaitDialog("处理中...");
     }
 

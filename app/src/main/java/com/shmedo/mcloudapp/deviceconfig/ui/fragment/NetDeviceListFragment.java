@@ -14,7 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
@@ -32,14 +31,11 @@ import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceInfoAdapter;
-import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceProductAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.BasicProductInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceStatisticInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceSearchActivity;
-import com.shmedo.mcloudapp.deviceconfig.view.SlidingConflictRecyclerView;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -54,8 +50,6 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
@@ -78,18 +72,13 @@ public class NetDeviceListFragment extends BaseFragment {
     @BindView(R.id.tv_online_rate)
     TextView tvOnlineRate;
 
-    @BindView(R.id.recyclerview_device_type)
-    SlidingConflictRecyclerView mRecyclerViewProduct;
-
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.recyclerview_device)
     RecyclerView mRecyclerViewDevice;
 
-    private DeviceProductAdapter deviceProductAdapter;
     private DeviceInfoAdapter deviceInfoAdapter;
-    private List<BasicProductInfo> basicProductInfoList = new ArrayList<>();
     private List<DeviceInfo> deviceInfoList = new ArrayList<>();
 
     private static final int PAGE_SIZE = 30;
@@ -106,7 +95,6 @@ public class NetDeviceListFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         pageInfo = new PageInfo(1);
-        initProductAdapter();
         initDeviceInfoAdapter();
         initLoadMore();
         initRefreshLayout();
@@ -128,38 +116,9 @@ public class NetDeviceListFragment extends BaseFragment {
         }
     }
 
-    private void initProductAdapter() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerViewProduct.setLayoutManager(linearLayoutManager);
-        deviceProductAdapter = new DeviceProductAdapter(basicProductInfoList);
-        deviceProductAdapter.setAnimationEnable(true);
-        deviceProductAdapter.setAnimationFirstOnly(false);
-        deviceProductAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                BasicProductInfo basicProductInfo = basicProductInfoList.get(position);
-                if (basicProductInfo.isChecked()) {
-                    return;
-                }
-                for (BasicProductInfo info : basicProductInfoList) {
-                    info.setChecked(false);
-                }
-                basicProductInfo.setChecked(true);
-                deviceProductAdapter.notifyDataSetChanged();
-                //点击选中最后一个 Item 时,使RecyclerView滚动到底
-                if (position == basicProductInfoList.size() - 1) {
-                    mRecyclerViewProduct.scrollToPosition(adapter.getItemCount() - 1);
-                }
-                productID = basicProductInfo.getProductID();
-                mRefreshLayout.autoRefresh();
-            }
-        });
-        mRecyclerViewProduct.setAdapter(deviceProductAdapter);
-    }
-
     private void initDeviceInfoAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(10);//每一个矩形的间距
         mRecyclerViewDevice.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewDevice.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -188,7 +147,7 @@ public class NetDeviceListFragment extends BaseFragment {
         });
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
         // 是否自定加载下一页（默认为true）
-        deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(false);
+        deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
         // 当数据不满一页时，是否继续自动加载（默认为true）
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
@@ -341,30 +300,6 @@ public class NetDeviceListFragment extends BaseFragment {
      * 安装在线、离线排序加载
      */
     private void filterDevices(List<DeviceInfo> tempList) {
-        //查询所在公司所有设备
-        if (productID == -1) {
-            basicProductInfoList.clear();
-            //根据scoreYear字段进行分组
-            Map<String, List<DeviceInfo>> productMap = tempList.stream().collect(Collectors.groupingBy(info -> info.getProductID() + "_" + info.getProductName()));
-            BasicProductInfo basicProductInfo = new BasicProductInfo();
-            basicProductInfo.setProductID(-1);
-            basicProductInfo.setProductName("全部");
-            basicProductInfo.setChecked(true);
-            basicProductInfoList.add(basicProductInfo);
-            for (Map.Entry<String, List<DeviceInfo>> entry : productMap.entrySet()) {
-                String key = entry.getKey();
-                String[] values = key.split("_");
-                try {
-                    basicProductInfo = new BasicProductInfo();
-                    basicProductInfo.setProductID(Integer.parseInt(values[0]));
-                    basicProductInfo.setProductName(values[1]);
-                    basicProductInfoList.add(basicProductInfo);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-            deviceProductAdapter.notifyDataSetChanged();
-        }
         deviceInfoList.addAll(tempList);
         deviceInfoAdapter.notifyDataSetChanged();
         if (tempList.size() < PAGE_SIZE) {
@@ -385,7 +320,6 @@ public class NetDeviceListFragment extends BaseFragment {
     @Override
     protected void loadFinished() {
         super.loadFinished();
-        mRecyclerViewProduct.setVisibility(View.VISIBLE);
         mRefreshLayout.setVisibility(View.VISIBLE);
         mRecyclerViewDevice.setVisibility(View.VISIBLE);
     }
@@ -401,7 +335,6 @@ public class NetDeviceListFragment extends BaseFragment {
                 deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
             }
             mRefreshLayout.setVisibility(View.GONE);
-            mRecyclerViewProduct.setVisibility(View.GONE);
             mRecyclerViewDevice.setVisibility(View.GONE);
             showBadNetworkView(new View.OnClickListener() {
                 @Override
@@ -418,9 +351,7 @@ public class NetDeviceListFragment extends BaseFragment {
     private void clearData() {
         updateTopView(0, 0, "0%");
         productID = -1;
-        basicProductInfoList.clear();
         deviceInfoList.clear();
-        deviceProductAdapter.notifyDataSetChanged();
         deviceInfoAdapter.notifyDataSetChanged();
     }
 

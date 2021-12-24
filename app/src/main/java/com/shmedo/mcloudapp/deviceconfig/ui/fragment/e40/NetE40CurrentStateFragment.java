@@ -272,7 +272,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryStateInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_EX_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -281,7 +281,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void querySatelitteInfo(String type) {
         SatelitteTypeEntity entity = new SatelitteTypeEntity(type);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_SATELITTE, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

@@ -163,7 +163,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
         showWaitDialog("加载中...");
     }
 
@@ -176,7 +176,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
 
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
         showWaitDialog("处理中...");
     }
 
@@ -270,7 +270,7 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
             isSaveParamOperation = true;
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
-            doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+            doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
             showWaitDialog("处理中...");
         } catch (Exception ex) {
             ex.printStackTrace();

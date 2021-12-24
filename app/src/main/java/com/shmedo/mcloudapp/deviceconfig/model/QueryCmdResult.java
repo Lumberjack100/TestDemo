@@ -7,33 +7,31 @@ package com.shmedo.mcloudapp.deviceconfig.model;
  */
 public class QueryCmdResult {
 
-    /**
-     * deviceID : 1262
-     * deviceSN : 110007L
-     * cmdEngName : sample
-     * cmdChnName : 传感器遥测
-     * cmdContent : $cmd=sample
-     * dispatchTime : 2020-08-30 11:11:37
-     * cmdStatus : 1
-     * cmdStatusString : 已下发等待响应
-     * responseTime : null
-     * responseContent : null
-     * dispatchUserID : 507
-     * dispatchUserName : 宫加贝
-     */
 
-    private int deviceID;//设备ID
-    private String deviceSN;//设备SN
-    private String cmdEngName;//指令英文名称
-    private String cmdChnName;//指令中文名称
-    private String cmdContent;//指令内容
-    private String dispatchTime;//下发时间
-    private int cmdStatus;//响应状态
-    private String cmdStatusString;//响应状态文字
-    private String responseTime;//响应时间
-    private String responseContent;//响应内容
-    private int dispatchUserID;//下发用户ID
-    private String dispatchUserName;//下发用户名称
+    private String msgID;
+    private int deviceID;
+    private String deviceSN;
+    private String cmdEngName;
+    private String cmdChnName;
+    private String cmdContent;
+    private String dispatchTime;
+    private int cmdStatus;
+    private String cmdStatusString;
+    private String responseTime;
+    private String responseContent;
+    private int responseStatus;
+    private String responseStatusString;
+    private int dispatchUserID;
+    private String dispatchUserName;
+    private String cmdID;
+
+    public String getMsgID() {
+        return msgID;
+    }
+
+    public void setMsgID(String msgID) {
+        this.msgID = msgID;
+    }
 
     public int getDeviceID() {
         return deviceID;
@@ -115,6 +113,22 @@ public class QueryCmdResult {
         this.responseContent = responseContent;
     }
 
+    public int getResponseStatus() {
+        return responseStatus;
+    }
+
+    public void setResponseStatus(int responseStatus) {
+        this.responseStatus = responseStatus;
+    }
+
+    public String getResponseStatusString() {
+        return responseStatusString;
+    }
+
+    public void setResponseStatusString(String responseStatusString) {
+        this.responseStatusString = responseStatusString;
+    }
+
     public int getDispatchUserID() {
         return dispatchUserID;
     }
@@ -129,5 +143,13 @@ public class QueryCmdResult {
 
     public void setDispatchUserName(String dispatchUserName) {
         this.dispatchUserName = dispatchUserName;
+    }
+
+    public String getCmdID() {
+        return cmdID;
+    }
+
+    public void setCmdID(String cmdID) {
+        this.cmdID = cmdID;
     }
 }

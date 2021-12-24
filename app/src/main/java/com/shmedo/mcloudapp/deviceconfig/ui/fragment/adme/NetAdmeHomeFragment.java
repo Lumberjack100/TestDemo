@@ -169,7 +169,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     private void queryEquipmentBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -177,7 +177,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryMotorState() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_MOTION_STATE);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.ll_switch_config_model})
@@ -226,7 +226,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         AdmeEquipModelEntity entity = new AdmeEquipModelEntity(equipModel);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EQUIPMENT_MODEL, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

@@ -534,7 +534,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryDeviceBaseInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DEVICE_BASE);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -543,7 +543,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void queryNetStatus(int index) {
         IndexEntity entity = new IndexEntity(index);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_NET_STATUS, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -551,7 +551,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void querySolarStatus() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SOLAR_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -559,7 +559,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void queryTemperatureAndHumidityStatus() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -568,7 +568,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void querySensorStatus(int index) {
         IndexEntity entity = new IndexEntity(index);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SENSOR_STATUS, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -576,7 +576,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void querySubSensorStatus() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

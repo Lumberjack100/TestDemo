@@ -7,20 +7,15 @@ package com.shmedo.mcloudapp.deviceconfig.model;
  */
 public class DispatchCmdItem {
 
-    /**
-     * deviceID : 1262
-     * msgID : 1a7ea836-b53c-4ea4-b508-455de9904135
-     */
-
-    private int deviceID;//设备ID
+    private String deviceToken;//设备SN号
     private String msgID;//消息ID,凭借该ID查询该指令的响应结果
 
-    public int getDeviceID() {
-        return deviceID;
+    public String getDeviceToken() {
+        return deviceToken;
     }
 
-    public void setDeviceID(int deviceID) {
-        this.deviceID = deviceID;
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 
     public String getMsgID() {

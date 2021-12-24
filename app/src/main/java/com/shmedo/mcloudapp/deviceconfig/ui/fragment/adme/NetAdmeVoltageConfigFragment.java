@@ -73,7 +73,7 @@ public class NetAdmeVoltageConfigFragment extends BaseNetIotCommunicateFragment 
     private void queryParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_VOLTAGE);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -91,7 +91,7 @@ public class NetAdmeVoltageConfigFragment extends BaseNetIotCommunicateFragment 
             String command = admeVoltageConfigView.getConfigCommand();
             if (!TextUtils.isEmpty(command)) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
             }
         }
     }

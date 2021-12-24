@@ -100,7 +100,7 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_GET_ETHERNET);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.ll_dhcp, R.id.btn_confirm})
@@ -179,7 +179,7 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.E40_MD_SET_ETHERNET, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**

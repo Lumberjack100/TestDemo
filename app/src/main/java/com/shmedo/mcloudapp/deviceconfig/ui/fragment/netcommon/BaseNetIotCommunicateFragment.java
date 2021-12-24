@@ -27,6 +27,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
@@ -36,9 +37,12 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.umeng.analytics.MobclickAgent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -154,7 +158,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      */
     protected void saveConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -162,13 +166,11 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      *
      * @param content
      */
-    protected void doCommonDispatchRawCmd(String content, List<Integer> deviceIDList) {
+    protected void doCommonDispatchRawCmd(String content, List<String> deviceTokenList) {
         try {
             DispatchRawCmdParam rawCmdParam = new DispatchRawCmdParam();
-            rawCmdParam.setContent(content);
-            rawCmdParam.setCompanyID(MCloudApp.getCompanyID());
-            rawCmdParam.setDeviceIDList(deviceIDList);
-
+            rawCmdParam.setCmdContent(content);
+            rawCmdParam.setDeviceTokenList(deviceTokenList);
             processDispatchRawCmd(rawCmdParam);
 
             String command_type = content.contains("&") ? content.substring(content.indexOf(IOTCommand.COMMAND_HEADER) + 1, content.indexOf("&")) : content.substring(content.indexOf(IOTCommand.COMMAND_HEADER) + 1);
@@ -191,9 +193,9 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             throw new IllegalArgumentException("dispatchRawCmdParam 为null");
         }
         String json = GsonUtils.toJson(dispatchRawCmdParam);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(json, RequestHeader.JSON_TYPE);
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ServiceAddressType.IOT_INTERACTIVE_SERVICE_ADDRESS)
                 .batchDispatchRawCmd(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
@@ -205,12 +207,12 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
                                 if (data == null || data.size() == 0) {
-                                    onDispatchCmdResult(null, dispatchRawCmdParam.getContent());
+                                    onDispatchCmdResult(null, dispatchRawCmdParam.getCmdContent());
                                     return;
                                 }
-                                onDispatchCmdResult(data, dispatchRawCmdParam.getContent());
+                                onDispatchCmdResult(data, dispatchRawCmdParam.getCmdContent());
                             } else {
-                                onDispatchCmdResult(null, dispatchRawCmdParam.getContent());
+                                onDispatchCmdResult(null, dispatchRawCmdParam.getCmdContent());
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());
                                 }
@@ -220,7 +222,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        onDispatchCmdResult(null, dispatchRawCmdParam.getContent());
+                        onDispatchCmdResult(null, dispatchRawCmdParam.getCmdContent());
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
@@ -236,9 +238,16 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      */
     private void queryCmdResultByMsgID() {
         String json = GsonUtils.toJson(msgIDList);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("msgIDList",json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
                 .queryCmdResultByMsgID(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())

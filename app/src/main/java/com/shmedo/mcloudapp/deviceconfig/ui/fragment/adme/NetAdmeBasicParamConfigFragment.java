@@ -76,7 +76,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
     private void queryBasicParamConfigInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -84,7 +84,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
      */
     private void queryLockRotorInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     private void setSwitchViewListener() {
@@ -97,7 +97,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                 }
                 String command = admeBasicParamConfigView.getLockRotorCommand(isChecked);
                 if (!TextUtils.isEmpty(command)) {
-                    doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                    doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
                 }
             }
         });
@@ -122,7 +122,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
             String command = admeBasicParamConfigView.getBasicCommand();
             if (!TextUtils.isEmpty(command)) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
             }
         }
     }

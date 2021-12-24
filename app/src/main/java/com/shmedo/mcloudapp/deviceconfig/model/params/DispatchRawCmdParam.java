@@ -8,31 +8,22 @@ import java.util.List;
  * 描述：    指令透传接口入参
  */
 public class DispatchRawCmdParam {
-    private int companyID;//当前公司ID
-    private String content;//透传内容，须以$cmd=开头
-    private List<Integer> deviceIDList;//设备ID列表
+    private String cmdContent;//透传内容，须以$cmd=开头
+    private List<String> deviceTokenList;//设备SN号列表
 
-    public int getCompanyID() {
-        return companyID;
+    public String getCmdContent() {
+        return cmdContent;
     }
 
-    public void setCompanyID(int companyID) {
-        this.companyID = companyID;
+    public void setCmdContent(String cmdContent) {
+        this.cmdContent = cmdContent;
     }
 
-    public String getContent() {
-        return content;
+    public List<String> getDeviceTokenList() {
+        return deviceTokenList;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public List<Integer> getDeviceIDList() {
-        return deviceIDList;
-    }
-
-    public void setDeviceIDList(List<Integer> deviceIDList) {
-        this.deviceIDList = deviceIDList;
+    public void setDeviceTokenList(List<String> deviceTokenList) {
+        this.deviceTokenList = deviceTokenList;
     }
 }

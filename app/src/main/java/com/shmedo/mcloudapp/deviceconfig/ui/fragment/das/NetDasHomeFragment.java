@@ -105,20 +105,20 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 entity.setMode("1");
                 showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_ACTIVE, entity);
-                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
             }
 
             case "时间": {
                 showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
-                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
             }
             break;
 
             case "遥测": {
                 showWaitDialog("处理中...");
                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_SAMPLE);
-                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
             }
             break;
 
@@ -165,7 +165,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                             case REBOOT: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
                                 showWaitDialog("处理中...");
-                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
                             }
                             break;
                         }

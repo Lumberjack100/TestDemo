@@ -270,7 +270,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     private void queryParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     @OnClick({R.id.btn_confirm})
@@ -459,7 +459,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             mBtnSave.setEnabled(false);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
             showWaitDialog("处理中...");
-            doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getId()));
+            doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
