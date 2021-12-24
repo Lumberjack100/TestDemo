@@ -54,7 +54,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminal
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
-import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
@@ -355,12 +355,12 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
      */
     private void observerLocation() {
         locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
-        locationViewModel.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionBean>() {
+        locationViewModel.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionInfo>() {
             @Override
-            public void onChanged(SyncPositionBean syncPositionBean) {
+            public void onChanged(SyncPositionInfo syncPositionInfo) {
                 try {
                     //将高德坐标(即GCJ-02火星坐标)转换为WGS-84世界标准地理坐标
-                    JZLocationConverter.LatLng latLng = new JZLocationConverter.LatLng(syncPositionBean.getLatitude(), syncPositionBean.getLongitude());
+                    JZLocationConverter.LatLng latLng = new JZLocationConverter.LatLng(syncPositionInfo.getLatitude(), syncPositionInfo.getLongitude());
                     latLng = JZLocationConverter.gcj02ToWgs84(latLng);
 
                     String position = String.format(Locale.getDefault(), "%.8f", latLng.longitude) + "," + String.format(Locale.getDefault(), "%.8f", latLng.latitude);
@@ -681,6 +681,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     @Override
     public void onDestroy() {
         MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setProductID(-1);
         super.onDestroy();
     }
 

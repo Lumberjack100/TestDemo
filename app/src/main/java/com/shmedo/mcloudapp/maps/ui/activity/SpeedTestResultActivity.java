@@ -17,7 +17,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
-import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.maps.model.NetWorkQuality;
 import com.shmedo.mcloudapp.maps.util.ScreenShotAction;
 import com.shmedo.mcloudapp.util.LocationUtils;
@@ -76,10 +76,10 @@ public class SpeedTestResultActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         locationViewModel=getApplicationScopeViewModel(LocationViewModel.class);
-        locationViewModel.getSyncPositionBean().observe(this, new Observer<SyncPositionBean>() {
+        locationViewModel.getSyncPositionBean().observe(this, new Observer<SyncPositionInfo>() {
             @Override
-            public void onChanged(SyncPositionBean syncPositionBean) {
-                String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionBean.getLatitude());
+            public void onChanged(SyncPositionInfo syncPositionInfo) {
+                String latLong = String.format(Locale.getDefault(), "%.6f", syncPositionInfo.getLongitude()) + "," + String.format(Locale.getDefault(), "%.6f", syncPositionInfo.getLatitude());
                 mTvLocation.setText(latLong);
             }
         });

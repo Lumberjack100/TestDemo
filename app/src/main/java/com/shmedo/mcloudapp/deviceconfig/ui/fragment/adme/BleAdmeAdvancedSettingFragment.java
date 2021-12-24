@@ -23,14 +23,11 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
-import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
-import com.shmedo.mcloudapp.util.DaoManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +51,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     private String workMode;// 工作模式(0:常规测量模式，1:特定点位模式，2:静态测量模式，3:设备停用模式)
     private AdmeWorkModeInfo workModeInfo;
 
-    private int deviceTypeID;
 
     public static BleAdmeAdvancedSettingFragment newInstance() {
         return new BleAdmeAdvancedSettingFragment();
@@ -69,19 +65,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getWorkMode();
-        searchDeviceTypeInfo("ADME");
-    }
-
-    private void searchDeviceTypeInfo(String typeName) {
-        DeviceTypeInfo deviceTypeInfo = DaoManager.getInstance().getDaoSession().getDeviceTypeInfoDao().queryBuilder()
-                .where(DeviceTypeInfoDao.Properties.DeviceTypeName.like("%" + typeName + "%"))
-                .unique();
-
-        if (deviceTypeInfo != null) {
-            deviceTypeID = deviceTypeInfo.getId();
-        } else {
-            deviceTypeID = -1;
-        }
     }
 
     /**
@@ -127,11 +110,9 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return;
         }
-
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
             DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
-
         } else if (id == R.id.rebootLayout) {//重启
             showWarnDialog("确定重启设备吗？", REBOOT);
 
@@ -139,10 +120,9 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
         } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
-            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceTypeID);
+            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getProductID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);
             newFragment.show(getChildFragmentManager(), "dialog");
-
         } else if (id == R.id.workModeLayout) {//工作模式
             showWorkModeDialog();
         }
@@ -151,10 +131,8 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
         @Override
         public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-
             return true;
         }
-
         @Override
         public void onNegativeClick(View view) {
 
@@ -307,7 +285,6 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             workModeInfo = new AdmeWorkModeInfo();
             return;
         }
-
         workMode = workModeInfo.getWorkmode().trim();
         if (workMode.equals("0")) {
             mTvWorkMode.setText("常规测量模式");

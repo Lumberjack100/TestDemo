@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 import static autodispose2.AutoDispose.autoDisposable;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
@@ -19,6 +21,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -29,10 +32,8 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -77,7 +78,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         }
         int id = v.getId();
         if (id == R.id.firmwareUpgradeLayout) {//固件升级
-            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceInfo.getProductID());
+            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(deviceInfo.getProductID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);
             newFragment.show(getChildFragmentManager(), "dialog");
 
@@ -232,18 +233,15 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
      * 固件升级
      */
     private void doFirmwareUpgrade(int firmwareID) {
-        JSONObject jsonObjectRequest = new JSONObject();
-        try {
-            jsonObjectRequest.put("deviceToken", deviceInfo.getDeviceToken());
-            jsonObjectRequest.put("firmwareID", firmwareID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+        FirmwareCmdParam parameter = new FirmwareCmdParam();
+        parameter.setDeviceTokenList(Arrays.asList(deviceInfo.getDeviceToken()));
+        parameter.setFirmwareID(firmwareID);
+        String json = GsonUtils.toJson(parameter);
+        RequestBody body = RequestBody.create(json, RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
-                .createService()
-                .firmwareUpgrade(MCloudApp.getAccessToken(), body)
+                .createService(ServiceAddressType.IOT_INTERACTIVE_SERVICE_ADDRESS)
+                .batchFirmwareUpgrade(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -259,6 +257,9 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
                                 doDispatchSuccess("$cmd=md_upgrade");
                             } else {
                                 doDispatchFailed("$cmd=md_upgrade");
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
+                                }
                             }
                         }
                     }

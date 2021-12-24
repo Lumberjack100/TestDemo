@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
-import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
 /**
@@ -20,7 +20,7 @@ public class LocationViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public ProtectedUnPeekLiveData<SyncPositionBean> getSyncPositionBean() {
+    public ProtectedUnPeekLiveData<SyncPositionInfo> getSyncPositionBean() {
         return LocationUtils.getInstance().getSyncPositionBean();
     }
 

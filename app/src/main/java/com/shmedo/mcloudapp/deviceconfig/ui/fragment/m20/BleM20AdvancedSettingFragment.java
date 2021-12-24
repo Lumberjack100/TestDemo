@@ -1,10 +1,8 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
-import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -17,15 +15,12 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
-import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
-import com.shmedo.mcloudapp.util.DaoManager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,9 +37,6 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
     private static final int RESET = 0x1001;
     private static final int LEVEL_INITIAL = 0x1002;
 
-    private int deviceTypeID;
-
-
     public static BleM20AdvancedSettingFragment newInstance() {
         return new BleM20AdvancedSettingFragment();
     }
@@ -52,24 +44,6 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
     @Override
     protected int getLayoutId() {
         return R.layout.ble_m20_advanced_setting_fragment;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        searchDeviceTypeInfo("M20");
-    }
-
-    private void searchDeviceTypeInfo(String typeName) {
-        DeviceTypeInfo deviceTypeInfo = DaoManager.getInstance().getDaoSession().getDeviceTypeInfoDao().queryBuilder()
-                .where(DeviceTypeInfoDao.Properties.DeviceTypeName.like("%" + typeName + "%"))
-                .unique();
-
-        if (deviceTypeInfo != null) {
-            deviceTypeID = deviceTypeInfo.getId();
-        } else {
-            deviceTypeID = -1;
-        }
     }
 
     /**
@@ -114,7 +88,7 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
             CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.M20);
 
         } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
-            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getCompanyID(), deviceTypeID);
+            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getProductID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);
             newFragment.show(getChildFragmentManager(), "dialog");
 

@@ -29,6 +29,7 @@ public class MCloudApp {
     private static int companyID;
     private static int userID;
     private static String curDeviceToken;//设备名称
+    private static int productID;
 
     private static final String authorityServiceAddress = "http://172.168.5.200:10082";//物联网权限服务地址
     private static final String iotManagerServiceAddress = "http://172.168.5.200:10081";//物联网设备管理服务地址
@@ -118,6 +119,14 @@ public class MCloudApp {
 
     public static void setCurDeviceToken(String curDeviceToken) {
         MCloudApp.curDeviceToken = curDeviceToken;
+    }
+
+    public static int getProductID() {
+        return productID;
+    }
+
+    public static void setProductID(int productID) {
+        MCloudApp.productID = productID;
     }
 
     /**

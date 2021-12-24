@@ -16,7 +16,7 @@ import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.List;
@@ -47,13 +47,13 @@ public class LocationUtils {
         private static final LocationUtils INSTANCE = new LocationUtils();
     }
 
-    private final UnPeekLiveData<SyncPositionBean> syncPositionBeanLiveData = new UnPeekLiveData<>();
+    private final UnPeekLiveData<SyncPositionInfo> syncPositionBeanLiveData = new UnPeekLiveData<>();
 
     public static LocationUtils getInstance() {
         return LocationHolder.INSTANCE;
     }
 
-    public ProtectedUnPeekLiveData<SyncPositionBean> getSyncPositionBean() {
+    public ProtectedUnPeekLiveData<SyncPositionInfo> getSyncPositionBean() {
         return syncPositionBeanLiveData;
     }
 
@@ -110,7 +110,7 @@ public class LocationUtils {
                     Timber.i("定位成功 星数: %s", location.getSatellites());
                     //卫星信号强
                     if (location.getGpsAccuracyStatus() == AMapLocation.GPS_ACCURACY_GOOD) {
-                        SyncPositionBean bean = new SyncPositionBean();
+                        SyncPositionInfo bean = new SyncPositionInfo();
                         bean.setLatitude(location.getLatitude());
                         bean.setLongitude(location.getLongitude());
                         bean.setAddress(location.getAddress());

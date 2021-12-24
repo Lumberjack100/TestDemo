@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.network.api;
 import com.shmedo.core.model.BasicUserInfo;
 import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.common.model.PageResult;
+import com.shmedo.mcloudapp.deviceconfig.model.BasicDeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceStatisticInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -10,7 +11,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.ProductInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
-import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ResponseWrapper;
 import com.shmedo.mcloudapp.user.model.BasicCompanyInfo;
@@ -111,12 +111,17 @@ public interface ApiService {
     //获取设备概要信息
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("DescribeDeviceSimpleInfo")
-    Observable<ResponseWrapper<DeviceDetailInfo>> getDescribeDeviceSimpleInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<BasicDeviceInfo>> getDescribeDeviceSimpleInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //查询固件列表
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("GetFirmwareList")
     Observable<ResponseWrapper<PageResult<FirmWareInfo>>> getFirmwareList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //对单个设备进行固件升级
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("BatchFirmwareUpgrade")
+    Observable<ResponseWrapper<String>> batchFirmwareUpgrade(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     /**
      * 指令交互
@@ -130,11 +135,6 @@ public interface ApiService {
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryCmdResultByMsgID")
     Observable<ResponseWrapper<List<QueryCmdResult>>> queryCmdResultByMsgID(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
-
-    //对单个设备进行固件升级
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("FirmwareUpgrade")
-    Observable<ResponseWrapper<String>> firmwareUpgrade(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //查询数据
     @POST("queryCloudData")

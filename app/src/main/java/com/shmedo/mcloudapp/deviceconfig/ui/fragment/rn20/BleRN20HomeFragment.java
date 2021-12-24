@@ -621,6 +621,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     @Override
     public void onDestroy() {
         MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setProductID(-1);
         super.onDestroy();
     }
 }

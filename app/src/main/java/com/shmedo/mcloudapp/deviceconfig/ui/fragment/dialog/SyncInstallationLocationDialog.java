@@ -26,7 +26,7 @@ import com.shmedo.core.util.JZLocationConverter;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
-import com.shmedo.mcloudapp.entity.SyncPositionBean;
+import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
@@ -90,14 +90,14 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
-        locationViewModel.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionBean>() {
+        locationViewModel.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionInfo>() {
             @Override
-            public void onChanged(SyncPositionBean syncPositionBean) {
-                String address = syncPositionBean.getAddress();
+            public void onChanged(SyncPositionInfo syncPositionInfo) {
+                String address = syncPositionInfo.getAddress();
                 mTvAddress.setText(address);
                 try {
                     //将高德坐标(即GCJ-02火星坐标)转换为WGS-84世界标准地理坐标
-                    JZLocationConverter.LatLng latLng = new JZLocationConverter.LatLng(syncPositionBean.getLatitude(), syncPositionBean.getLongitude());
+                    JZLocationConverter.LatLng latLng = new JZLocationConverter.LatLng(syncPositionInfo.getLatitude(), syncPositionInfo.getLongitude());
                     latLng = JZLocationConverter.gcj02ToWgs84(latLng);
 
                     String position = String.format(Locale.getDefault(), "%.8f", latLng.longitude) + "," + String.format(Locale.getDefault(), "%.8f", latLng.latitude);

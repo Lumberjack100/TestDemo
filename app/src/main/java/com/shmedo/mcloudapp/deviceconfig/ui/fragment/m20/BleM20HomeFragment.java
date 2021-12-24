@@ -430,6 +430,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     @Override
     public void onDestroy() {
         MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setProductID(-1);
         super.onDestroy();
     }
 }

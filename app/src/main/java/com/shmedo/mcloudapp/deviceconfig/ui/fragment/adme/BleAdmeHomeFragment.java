@@ -661,6 +661,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onDestroy() {
         admeViewModel.deviceMode = -1;
         MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setProductID(-1);
         super.onDestroy();
     }
 }

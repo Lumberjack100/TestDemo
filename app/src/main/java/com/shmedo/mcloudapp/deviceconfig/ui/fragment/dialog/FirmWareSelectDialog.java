@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -28,13 +27,16 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceFirmWareAdpter;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.params.QueryFirmwareListParam;
+import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
-import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,17 +66,16 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
 
     private static final int PAGE_SIZE = 10;
     private PageInfo pageInfo;
-    private int companyID = 1;
-    private int deviceTypeID = -1;
+    private int productID = -1;
 
     private DialogFragmentClickListener mListener;
 
-
-    public FirmWareSelectDialog(int companyID, int deviceTypeID) {
-        this.companyID = companyID;
-        this.deviceTypeID = deviceTypeID;
+    public FirmWareSelectDialog() {
     }
 
+    public FirmWareSelectDialog(int productID) {
+        this.productID = productID;
+    }
 
     @Override
     protected int getLayoutId() {
@@ -93,8 +94,8 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("固件升级");
         pageInfo = new PageInfo(1);
         initAdapter();
@@ -105,8 +106,6 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
     private void initAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-//        DefaultItemDecoration mItemDecoration = new DefaultItemDecoration(ContextCompat.getColor(getActivity(), R.color.divider_line_bg_efefef), 0, ConvertUtils.dp2px(0.5f));
-//        mRecyclerView.addItemDecoration(mItemDecoration);
         adpter = new DeviceFirmWareAdpter(firmWareInfoList);
         adpter.setAnimationEnable(true);
         adpter.setAnimationFirstOnly(false);
@@ -184,11 +183,9 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
             ToastUtils.show("您还没选中固件!");
             return;
         }
-
         if (mListener == null) {
             return;
         }
-
         if (mListener.onPositiveClick(view, firmWareInfo)) {
             dismiss();
         }
@@ -205,16 +202,21 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
      * 查询公司固件列表
      */
     private void processQueryFirmwareList() {
-        QueryFirmwareListParam parameter = new QueryFirmwareListParam();
-        parameter.setCompanyID(companyID);
-        parameter.setDeviceTypeID(deviceTypeID);//deviceTypeID
-        parameter.setPageSize(PAGE_SIZE);
-        parameter.setCurrentPage(pageInfo.getPage());
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+            if (productID != -1)
+                jsonObjectRequest.put("productID", productID);//198
+            jsonObjectRequest.put("nameAndVersion", false);
+            jsonObjectRequest.put("pageSize", PAGE_SIZE);
+            jsonObjectRequest.put("currentPage", pageInfo.getPage());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
-        String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
         MDRetrofit.getInstance()
-                .createService()
+                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
                 .getFirmwareList(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
@@ -231,22 +233,21 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                                         adpter.setEmptyView(R.layout.empty_view);
                                     } else {
                                         //显示没有更多数据布局
-                                        adpter.getLoadMoreModule().loadMoreEnd();
+                                        if (isFullScreen())
+                                            adpter.getLoadMoreModule().loadMoreEnd();
                                     }
                                     return;
                                 }
-
                                 if (pageInfo.isFirstPage()) {
                                     //如果是加载的第一页数据，用setNew
                                     firmWareInfoList.clear();
                                 }
                                 firmWareInfoList.addAll(data.getCurrentPageData());
                                 adpter.notifyDataSetChanged();
-
                                 if (data.getCurrentPageData().size() < PAGE_SIZE) {
                                     //如果不够一页,显示没有更多数据布局
-                                    adpter.getLoadMoreModule().loadMoreEnd();
-
+                                    if (isFullScreen())
+                                        adpter.getLoadMoreModule().loadMoreEnd();
                                 } else {
                                     adpter.getLoadMoreModule().loadMoreComplete();
                                 }
@@ -272,5 +273,15 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
 
     public void setDialogFragmentClickListener(DialogFragmentClickListener listener) {
         mListener = listener;
+    }
+
+    private boolean isFullScreen() {
+        LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        if (llm == null)
+            return false;
+
+        int lastCompletelyVisibleItemPosition = llm.findLastCompletelyVisibleItemPosition();
+
+        return lastCompletelyVisibleItemPosition < firmWareInfoList.size() - 1;
     }
 }

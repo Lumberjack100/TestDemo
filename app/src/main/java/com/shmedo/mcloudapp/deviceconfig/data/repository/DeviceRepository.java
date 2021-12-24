@@ -1,18 +1,19 @@
 package com.shmedo.mcloudapp.deviceconfig.data.repository;
 
-import com.blankj.utilcode.util.GsonUtils;
+import android.text.TextUtils;
+
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.mcloudapp.common.model.PageResult;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
-import com.shmedo.mcloudapp.deviceconfig.model.params.QueryProjectDevice;
-import com.shmedo.mcloudapp.entity.DeviceDetailInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.BasicDeviceInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -36,7 +37,7 @@ public class DeviceRepository {
      * @param sn
      */
     public void queryDeviceApiKeyBySn(String sn, UnPeekLiveData<String> deviceApiKey) {
-        queryCompanyDevice(sn, deviceApiKey);
+        GetDeviceSimpleInfo(sn, deviceApiKey);
 //        String apiKey = DeviceDao.getInstance().getCachedDeviceApiKeyBySn(sn);
 //        if (apiKey == null) {
 //            queryCompanyDevice(sn);
@@ -45,77 +46,34 @@ public class DeviceRepository {
 //        }
     }
 
-
     /**
-     * 查询公司设备列表
+     * 获取设备概要信息
      */
-    private void queryCompanyDevice(String sn, UnPeekLiveData<String> deviceApiKey) {
-        QueryProjectDevice parameter = new QueryProjectDevice();
-        parameter.setCompanyID(MCloudApp.getCompanyID());
-        parameter.setDeviceType(-1);
-//        parameter.setDeviceStatus("启用");
-        parameter.setPageSize(10);
-        parameter.setCurrentPage(1);
-        parameter.setSn(sn);
-
-        String json = GsonUtils.toJson(parameter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
-        MDRetrofit.getInstance()
-                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
-                .getDeviceList(MCloudApp.getAccessToken(), body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<PageResult<DeviceInfo>>() {
-                    @Override
-                    protected void onResponse(PageResult<DeviceInfo> data, ErrorInfo errorInfo) {
-                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
-                            if (errorInfo.getCode() == 0) {
-                                if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                                    deviceApiKey.postValue(null);
-                                    return;
-                                }
-                                GetDeviceDetailInfo(data.getCurrentPageData().get(0).getId(), deviceApiKey);
-
-                            } else {
-                                deviceApiKey.postValue(null);
-                            }
-                        } else {
-                            deviceApiKey.postValue(null);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-//                        ResponseHandler.getInstance().handleFailure((Exception) e);
-                        deviceApiKey.postValue(null);
-                    }
-                });
-    }
-
-    private void GetDeviceDetailInfo(int deviceId, UnPeekLiveData<String> deviceApiKey) {
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, String.valueOf(deviceId));
+    private void GetDeviceSimpleInfo(String deviceToken, UnPeekLiveData<String> deviceApiKey) {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("deviceToken", deviceToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
                 .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
                 .getDescribeDeviceSimpleInfo(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<DeviceDetailInfo>() {
+                .subscribe(new BaseObserver<BasicDeviceInfo>() {
                     @Override
-                    protected void onResponse(DeviceDetailInfo deviceDetailInfo, ErrorInfo errorInfo) {
+                    protected void onResponse(BasicDeviceInfo basicDeviceInfo, ErrorInfo errorInfo) {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
-                                if (deviceDetailInfo == null || deviceDetailInfo.getBasicInfo() == null) {
+                                if (basicDeviceInfo == null || TextUtils.isEmpty(basicDeviceInfo.getApiKey())) {
                                     deviceApiKey.postValue(null);
                                     return;
                                 }
-                                deviceApiKey.postValue(deviceDetailInfo.getBasicInfo().getApiKey());
-
-//                                DeviceApiKey apiKey = new DeviceApiKey();
-//                                apiKey.setApiKey(deviceDetailInfo.getBasicInfo().getApiKey());
-//                                apiKey.setDeviceID(deviceDetailInfo.getBasicInfo().getDeviceID());
-//                                apiKey.setDeviceToken(deviceDetailInfo.getBasicInfo().getDeviceToken());
-//                                DeviceDao.getInstance().cacheDeviceApiKey(apiKey);
+                                MCloudApp.setProductID(basicDeviceInfo.getProductID());
+                                deviceApiKey.postValue(basicDeviceInfo.getApiKey());
                             } else {
                                 deviceApiKey.postValue(null);
                             }

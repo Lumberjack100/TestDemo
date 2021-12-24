@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.entity;
+package com.shmedo.mcloudapp.deviceconfig.model;
 
 /**
  * 项目名：  mCloudapp
@@ -7,7 +7,7 @@ package com.shmedo.mcloudapp.entity;
  * 创建时间:  2019-12-25
  * 描述：    同步位置实体类
  */
-public class SyncPositionBean {
+public class SyncPositionInfo {
     private double latitude;//纬度
     private double longitude;//经度
     private String address;
