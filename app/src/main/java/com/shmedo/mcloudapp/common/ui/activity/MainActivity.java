@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,13 +18,11 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.MineFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceModuleMainFragment;
-import com.shmedo.mcloudapp.maps.ui.activity.MapActivity;
 import com.shmedo.mcloudapp.util.UpdataManagerUtil;
 
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
     @BindView(R.id.bottom_navigation)
@@ -109,13 +106,6 @@ public class MainActivity extends BaseActivity {
                 // 。如果不设置，只有第一个menu展示的时候是选中状态，其他的即便被点击选中了，图标和文字也不会做任何更改
             }
         });
-    }
-
-    @OnClick({R.id.map_module_view})
-    public void onClick(View v) {
-        if (v.getId() == R.id.map_module_view) {
-            MapActivity.startActivity(MainActivity.this);
-        }
     }
 
     /**
