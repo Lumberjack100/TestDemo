@@ -161,9 +161,9 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
         tabLayout.addOnTabSelectedListener(this);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mTvDeviceState.setVisibility(View.INVISIBLE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);

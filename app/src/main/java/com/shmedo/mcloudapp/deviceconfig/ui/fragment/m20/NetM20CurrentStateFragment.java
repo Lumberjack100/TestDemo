@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -142,9 +143,9 @@ public class NetM20CurrentStateFragment extends BaseNetIotCommunicateFragment {
         return R.layout.m20_current_state_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);
         //是否在刷新的时候禁止内容的一切手势操作（默认false）

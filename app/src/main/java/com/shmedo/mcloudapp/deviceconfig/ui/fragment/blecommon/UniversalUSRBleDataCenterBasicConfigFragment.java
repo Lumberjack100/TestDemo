@@ -94,9 +94,9 @@ public class UniversalUSRBleDataCenterBasicConfigFragment extends BaseUSRBleIotC
     }
 
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setView();
         setSwitchViewListener();
         queryDataCenterInfo();

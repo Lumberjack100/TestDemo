@@ -1,6 +1,6 @@
 ext {
     android = [
-            applicationId    : 'com.shmedo.mcloudapp_v3',
+            applicationId    : 'com.shmedo.mcloudapp',
             compileSdkVersion: 29,
             buildToolsVersion: '29.0.3',
             minSdkVersion    : 24,

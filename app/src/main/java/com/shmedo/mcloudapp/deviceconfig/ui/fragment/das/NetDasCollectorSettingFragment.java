@@ -79,9 +79,9 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         return R.layout.fragment_das_collector_setting;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setFilter();
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);

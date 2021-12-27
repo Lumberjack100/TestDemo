@@ -87,8 +87,8 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getWorkMode();
     }
 

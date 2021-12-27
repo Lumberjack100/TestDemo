@@ -155,8 +155,8 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         isFirstCreate = true;
         modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();

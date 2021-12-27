@@ -47,9 +47,9 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         return R.layout.fragment_rn20_advanced_setting;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         queryInstallLocation();
     }
 

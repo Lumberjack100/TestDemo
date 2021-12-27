@@ -170,9 +170,9 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         tabLayout.addOnTabSelectedListener(this);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         observerRefreshTerminal();
         updateHeadInfo();

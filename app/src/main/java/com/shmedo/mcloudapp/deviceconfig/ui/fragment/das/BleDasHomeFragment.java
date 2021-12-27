@@ -145,9 +145,9 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         return R.layout.ble_das_home_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setHeadInfo();
         initSwitchViewListener();
         initAdapter();

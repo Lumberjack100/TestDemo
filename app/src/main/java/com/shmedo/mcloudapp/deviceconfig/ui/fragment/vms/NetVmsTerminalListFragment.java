@@ -68,9 +68,9 @@ public class NetVmsTerminalListFragment extends BaseFragment {
         return R.layout.vms_terminal_list_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         initAdapter();
         vmsHomeFragment = (NetVmsHomeFragment) mActivity.getSupportFragmentManager().findFragmentById(R.id.fragment_container_view);

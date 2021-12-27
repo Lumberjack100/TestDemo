@@ -52,9 +52,9 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
         return R.layout.e40_advanced_setting_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @OnClick({R.id.resetLayout, R.id.serialPortLayout, R.id.gpsWorkParamLayout, R.id.rtkParamLayout, R.id.fileDownloadLayout, R.id.dataDebugLayout})

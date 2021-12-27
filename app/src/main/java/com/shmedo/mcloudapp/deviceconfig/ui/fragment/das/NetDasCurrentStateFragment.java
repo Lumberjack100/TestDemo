@@ -243,9 +243,9 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         return R.layout.net_das_current_state_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initDataCenterAdapter();
         initSensorAdapter();
         initRefreshLayout();

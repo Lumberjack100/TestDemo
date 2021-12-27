@@ -134,9 +134,9 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         return R.layout.fragment_das_sensor;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setFilter();
         setRadioButtonListener();
         setSwitchViewListener();

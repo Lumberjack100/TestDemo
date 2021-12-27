@@ -128,9 +128,9 @@ public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragme
         return R.layout.m20_data_center_home_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         if (isLevelInit) {
             mBtnComplete.setVisibility(View.VISIBLE);
         } else {

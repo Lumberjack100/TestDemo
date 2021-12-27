@@ -115,9 +115,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         return R.layout.fragment_wi_fi_device_list;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
         deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

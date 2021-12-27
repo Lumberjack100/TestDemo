@@ -82,9 +82,9 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
         return R.layout.vms_terminal_param_setting_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setView();
         queryTerminalCollecotrInfo();
     }

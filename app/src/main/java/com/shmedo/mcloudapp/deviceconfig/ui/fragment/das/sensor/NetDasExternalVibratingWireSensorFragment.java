@@ -111,9 +111,9 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
         return R.layout.das_external_vibrating_wire_sensor_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initValue();
     }
 

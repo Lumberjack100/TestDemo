@@ -233,11 +233,11 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                                         adpter.setEmptyView(R.layout.empty_view);
                                     } else {
                                         //显示没有更多数据布局
-                                        if (isFullScreen())
-                                            adpter.getLoadMoreModule().loadMoreEnd();
+                                        adpter.getLoadMoreModule().loadMoreEnd();
                                     }
                                     return;
                                 }
+
                                 if (pageInfo.isFirstPage()) {
                                     //如果是加载的第一页数据，用setNew
                                     firmWareInfoList.clear();
@@ -246,13 +246,13 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                                 adpter.notifyDataSetChanged();
                                 if (data.getCurrentPageData().size() < PAGE_SIZE) {
                                     //如果不够一页,显示没有更多数据布局
-                                    if (isFullScreen())
-                                        adpter.getLoadMoreModule().loadMoreEnd();
+                                    adpter.getLoadMoreModule().loadMoreEnd();
                                 } else {
                                     adpter.getLoadMoreModule().loadMoreComplete();
                                 }
                                 // page加一
                                 pageInfo.nextPage();
+
                             } else {
                                 adpter.getLoadMoreModule().loadMoreFail();
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
@@ -273,15 +273,5 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
 
     public void setDialogFragmentClickListener(DialogFragmentClickListener listener) {
         mListener = listener;
-    }
-
-    private boolean isFullScreen() {
-        LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-        if (llm == null)
-            return false;
-
-        int lastCompletelyVisibleItemPosition = llm.findLastCompletelyVisibleItemPosition();
-
-        return lastCompletelyVisibleItemPosition < firmWareInfoList.size() - 1;
     }
 }

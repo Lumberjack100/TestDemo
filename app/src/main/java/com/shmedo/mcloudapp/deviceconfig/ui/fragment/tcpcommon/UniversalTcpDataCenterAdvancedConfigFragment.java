@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,9 +73,9 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
         return R.layout.universal_data_center_advanced_config_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         dataCenterAdvancedConfigView.initData(deviceType, serverNumber, serverStatus);
         dataCenterAdvancedConfigView.setDataCenterConfigListener(this);
         initRefreshLayout();

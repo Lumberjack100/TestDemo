@@ -91,9 +91,9 @@ public class NetDeviceListFragment extends BaseFragment {
         return R.layout.fragment_net_device_list;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         pageInfo = new PageInfo(1);
         initDeviceInfoAdapter();
         initLoadMore();
@@ -266,6 +266,7 @@ public class NetDeviceListFragment extends BaseFragment {
                                     }
                                     return;
                                 }
+
                                 //如果是加载的第一页数据，清空列表
                                 if (pageInfo.isFirstPage()) {
                                     deviceInfoList.clear();

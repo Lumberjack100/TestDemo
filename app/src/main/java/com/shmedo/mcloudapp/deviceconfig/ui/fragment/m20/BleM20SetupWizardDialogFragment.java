@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.ScreenUtils;
@@ -97,9 +98,9 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
         window.setAttributes(wlp);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         baseGOCBleIotCommunicateFragment = (BaseGOCBleIotCommunicateFragment) getParentFragment();
         initView();
     }

@@ -235,9 +235,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         return new BleDasCurrentStateFragment();
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initDataCenterAdapter();
         initSensorAdapter();
         initRefreshLayout();

@@ -143,9 +143,9 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         return R.layout.vms_terminal_external_sensor_param_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         setView();
         initData();

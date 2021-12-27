@@ -66,9 +66,9 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         return R.layout.fragment_net_das_advanced_setting;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @OnClick({R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})

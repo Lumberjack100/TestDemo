@@ -169,9 +169,9 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         return R.layout.fragment_ble_das_data_center_server_config;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         registProtocols = getResources().getStringArray(R.array.register_protocol);
         platforms = getResources().getStringArray(R.array.register_platform);
         setView();

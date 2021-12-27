@@ -109,8 +109,8 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();
         updateHeadInfo();

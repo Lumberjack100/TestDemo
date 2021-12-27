@@ -156,9 +156,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         return R.layout.das_data_center_home_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setFilter();
         setSwitchViewListener();
         initRefreshLayout();

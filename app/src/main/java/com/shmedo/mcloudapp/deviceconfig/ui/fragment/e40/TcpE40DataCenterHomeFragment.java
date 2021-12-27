@@ -118,9 +118,9 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
         return R.layout.fragment_e40_data_center_home;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }

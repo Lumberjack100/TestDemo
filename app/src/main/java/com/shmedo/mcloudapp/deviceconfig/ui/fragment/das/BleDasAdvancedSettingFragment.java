@@ -54,9 +54,9 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         return R.layout.fragment_ble_das_advanced_setting;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         queryInstallLocation();
     }
 

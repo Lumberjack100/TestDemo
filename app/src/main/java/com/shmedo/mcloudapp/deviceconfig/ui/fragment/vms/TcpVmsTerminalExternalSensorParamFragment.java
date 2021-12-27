@@ -131,9 +131,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         return R.layout.vms_terminal_external_sensor_param_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setView();
         initData();
         setSwitchViewListener();

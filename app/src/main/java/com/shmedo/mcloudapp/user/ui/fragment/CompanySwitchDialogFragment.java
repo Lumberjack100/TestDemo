@@ -98,9 +98,9 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         window.setAttributes(wlp);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("选择企业");
         pageInfo = new PageInfo(1);
         initAdapter();
