@@ -115,9 +115,9 @@ public class DevicesInProjectFragment extends BaseFragment {
         return R.layout.fragment_devices_in_project;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         companyID = MCloudApp.getCompanyID();
         pageInfo = new PageInfo(1);
         initRefreshLayout();

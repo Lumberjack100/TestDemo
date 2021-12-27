@@ -71,9 +71,9 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
         return R.layout.ble_das_data_center_home_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setFilter();
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);

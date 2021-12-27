@@ -102,9 +102,9 @@ public class NetDeviceListFragment extends BaseFragment {
         return R.layout.fragment_net_work_device_list;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         pageInfo = new PageInfo(1);
         initDeviceTypeAdapter();
         initDeviceInfoAdapter();

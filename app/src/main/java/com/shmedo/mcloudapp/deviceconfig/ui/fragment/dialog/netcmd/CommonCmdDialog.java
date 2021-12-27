@@ -5,10 +5,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 
@@ -73,9 +74,9 @@ public class CommonCmdDialog extends BaseDispatchCmdDialog {
     }
 
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initView();
         if (msgIDList != null && msgIDList.size() > 0) {
             startQueryCmdResponse();

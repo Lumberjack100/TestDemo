@@ -66,8 +66,8 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getWorkMode();
         searchDeviceTypeInfo("ADME");
     }

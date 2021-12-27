@@ -73,9 +73,9 @@ public class SearchPoiFragment extends BaseFragment implements TextWatcher, PoiS
         return R.layout.fragment_search_poi;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         activity = (SearchPoiActivity)getActivity();
         initAdapter();
         initListener();

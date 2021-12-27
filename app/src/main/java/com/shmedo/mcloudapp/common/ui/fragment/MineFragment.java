@@ -2,13 +2,11 @@ package com.shmedo.mcloudapp.common.ui.fragment;
 
 import static autodispose2.AutoDispose.autoDisposable;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -70,11 +68,6 @@ public class MineFragment extends BaseTranslucentFragment {
         return R.layout.fragment_mine;
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @Override
     public void onStart() {

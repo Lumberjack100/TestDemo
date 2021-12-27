@@ -163,8 +163,8 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);
         //是否在刷新的时候禁止内容的一切手势操作（默认false）

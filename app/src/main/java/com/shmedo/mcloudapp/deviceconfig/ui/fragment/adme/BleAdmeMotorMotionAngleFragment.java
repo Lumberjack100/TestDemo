@@ -138,8 +138,8 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initView();
         usrBleViewModel = getApplicationScopeViewModel(USRBleViewModel.class);
         usrBleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {

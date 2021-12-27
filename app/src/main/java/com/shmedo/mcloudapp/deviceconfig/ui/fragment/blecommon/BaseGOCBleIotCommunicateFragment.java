@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,8 +90,8 @@ public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         bleViewModel = getApplicationScopeViewModel(GOCBleViewModel.class);
         bleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

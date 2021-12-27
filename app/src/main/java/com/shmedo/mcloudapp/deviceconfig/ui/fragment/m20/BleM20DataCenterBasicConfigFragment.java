@@ -94,9 +94,9 @@ public class BleM20DataCenterBasicConfigFragment extends BaseGOCBleIotCommunicat
         return R.layout.universal_data_center_basic_config_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setView();
         setSwitchViewListener();
         queryDataCenterInfo();

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,9 +91,9 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
         stopAllProgress();
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
         tcpViewModel.getTcpConnectionState().observe(getViewLifecycleOwner(), new Observer<TcpConnectionState>() {
             @Override

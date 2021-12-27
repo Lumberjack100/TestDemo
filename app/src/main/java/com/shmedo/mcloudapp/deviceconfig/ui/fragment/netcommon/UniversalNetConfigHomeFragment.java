@@ -84,9 +84,9 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
         return R.layout.universal_config_home_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setHeadInfo();
         initAdapter();
         initConfigModuleData();

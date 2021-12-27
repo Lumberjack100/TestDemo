@@ -92,9 +92,9 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         window.setAttributes(wlp);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("固件升级");
         pageInfo = new PageInfo(1);
         initAdapter();

@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.ColorUtils;
@@ -130,9 +131,9 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         return R.layout.m20_data_center_home_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         if (isLevelInit) {
             mBtnComplete.setVisibility(View.VISIBLE);
         } else {

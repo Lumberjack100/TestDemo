@@ -154,9 +154,9 @@ public class ProjectListFragment extends BaseTranslucentFragment {
         topBgImageTranslucentScrollDistance = bannerParams.height - titleBarParams.height - ImmersionBar.getStatusBarHeight(mActivity) - ConvertUtils.dp2px(30);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         updateSystemBarColor();
         activity = (MainActivity) getActivity();
         initUserData();

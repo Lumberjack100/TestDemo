@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -107,9 +108,9 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         return R.layout.e40_socket_data_debug_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         deviceSn = projectDeviceInfo.getToken();
         dataCenterPos = 0;
         mTvDataCenter.setText(dataCenterNameList.get(0));

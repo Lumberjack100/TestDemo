@@ -1,7 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.BaseTcpIotCommunicateFragment;
@@ -16,9 +18,9 @@ public abstract class BaseVmsTcpCommunicateFragment extends BaseTcpIotCommunicat
     protected VmsViewModel vmsViewModel;
 
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
     }
 }

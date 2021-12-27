@@ -134,9 +134,9 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         serverNumber = -1;
         showWaitDialog("加载中...");
         getDataCenterStatus(ServerNumber.NUMBER_ONE);

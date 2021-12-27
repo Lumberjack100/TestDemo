@@ -153,9 +153,9 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
 
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 //        EventBus.getDefault().register(this);
         scannerViewModel = getFragmentScopeViewModel(BleScannerViewModel.class);
         scannerViewModel.getBleScannerState().observe(getViewLifecycleOwner(), this::startScan);

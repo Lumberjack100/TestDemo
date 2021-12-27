@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
@@ -60,9 +61,9 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
         return R.layout.net_m20_setup_wizard_dialog_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         netM20HomeFragment = (NetM20HomeFragment) getParentFragment();
         initView();
     }

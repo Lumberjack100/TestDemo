@@ -54,9 +54,9 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
         return R.layout.ble_m20_advanced_setting_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         searchDeviceTypeInfo("M20");
     }
 

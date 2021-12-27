@@ -142,9 +142,9 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         return R.layout.net_das_external_sensor_list_fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+   @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initExtendSensorAdapter();
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);
