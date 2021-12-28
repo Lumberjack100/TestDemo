@@ -70,11 +70,6 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
-    }
     buildTypes {
         release {
             minifyEnabled false
@@ -133,12 +128,12 @@ greendao {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(path: ':configlibrary')
     implementation project(path: ':core')
     // 可视化埋点库调试依赖
     // tracker-release是必须导入的包
-    implementation(name: 'tracker-release-1.1.1', ext: 'aar')
+//    implementation(name: 'tracker-release-1.1.1', ext: 'aar')
     // tracker-config包仅在埋点配置模式导入，线上模式请切勿导入此包！
 //    implementation(name: 'tracker-config-1.1.1', ext: 'aar')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

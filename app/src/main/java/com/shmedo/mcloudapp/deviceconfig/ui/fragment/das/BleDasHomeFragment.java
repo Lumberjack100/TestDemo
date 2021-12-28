@@ -32,7 +32,6 @@ import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.model.LoaclTimeInfo;
-import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
@@ -117,8 +116,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private DiscoveredBluetoothDevice device;
     private String collectorModel = "";//采集器类型
-    private int deviceTypeID;
-    private String deviceTypeName;
     private BaseConfigInfo baseConfigInfo;
     private boolean isInitialSensorOpera = false;//是否初始化传感器操作
 
@@ -184,12 +181,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
         if (deviceTypeInfo != null) {
             mTvDeviceName.setText(TextUtils.isEmpty(deviceTypeInfo.getDesc()) ? "" : deviceTypeInfo.getDesc());
-            deviceTypeID = deviceTypeInfo.getId();
-            deviceTypeName = deviceTypeInfo.getDeviceTypeName();
         } else {
             mTvDeviceName.setText("物联网数据采集器");
-            deviceTypeID = -1;
-            deviceTypeName = typeName;
         }
     }
 
@@ -462,18 +455,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 }
                 baseConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
                 initBaseConfigInfo();
-                queryDeviceVersionInfo();
-                break;
-
-            case VERSION_MESSAGE:
-                startHeart();
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    Timber.e("查询版本信息指令出错!");
-                    return;
-                }
-                VersionMessageInfo versionMessageInfo = ResultParserUtil.getEntityObject(cmdStr);
-                initVersionInfo(versionMessageInfo);
                 LocationUtils.getInstance().getPositionPermission(mActivity);
+                startHeart();
                 break;
 
             case LOW_ENERGY:
@@ -592,22 +575,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 mTvActiveState.setText("已激活");
                 break;
         }
-    }
-
-    private void initVersionInfo(VersionMessageInfo versionInfo) {
-        if (versionInfo == null) {
-            return;
-        }
-        String firmwareVersion = TextUtils.isEmpty(versionInfo.getFirmwareVersion()) ? "--" : versionInfo.getFirmwareVersion();
-        firmwareVersion = firmwareVersion.replace(deviceTypeName + "-", "").replace(deviceTypeName, "");
-
-        for (ConfigModule configModule : configModuleList) {
-            if (configModule.getName().equals("固件升级")) {
-                configModule.setDesc("版本:" + firmwareVersion);
-                break;
-            }
-        }
-        moduleAdapter.notifyDataSetChanged();
     }
 
     private void initConfigModuleData() {
