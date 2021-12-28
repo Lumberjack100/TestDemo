@@ -206,7 +206,6 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        WaitDialog.show("初始化中...");
                         //查询设备 ApiKey
                         bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;

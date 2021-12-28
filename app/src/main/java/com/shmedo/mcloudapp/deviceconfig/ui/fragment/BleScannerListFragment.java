@@ -121,7 +121,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         return R.layout.fragment_ble_scanner_list;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mHandler = new Handler(Looper.getMainLooper());

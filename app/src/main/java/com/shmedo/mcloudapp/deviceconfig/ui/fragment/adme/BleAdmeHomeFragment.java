@@ -266,7 +266,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        WaitDialog.show("初始化中...");
                         usrBleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 

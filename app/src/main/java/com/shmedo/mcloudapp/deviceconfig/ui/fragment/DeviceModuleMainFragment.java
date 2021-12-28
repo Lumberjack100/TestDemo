@@ -153,7 +153,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
 
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 //        EventBus.getDefault().register(this);

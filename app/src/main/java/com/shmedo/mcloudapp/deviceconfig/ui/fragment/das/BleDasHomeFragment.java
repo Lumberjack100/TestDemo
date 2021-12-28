@@ -299,7 +299,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
                     case READY:
                         onConnectionStateChanged(true);
-                        WaitDialog.show("认证中...");
                         setAuthenticateWay();
                         break;
 
