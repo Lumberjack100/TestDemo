@@ -32,7 +32,6 @@ import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.model.LoaclTimeInfo;
-import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
@@ -42,8 +41,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceTypeInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
+import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
@@ -53,9 +52,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
-import com.shmedo.mcloudapp.entity.DeviceTypeInfoDao;
-import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
-import com.shmedo.mcloudapp.util.DaoManager;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -117,8 +113,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private DiscoveredBluetoothDevice device;
     private String collectorModel = "";//采集器类型
-    private int deviceTypeID;
-    private String deviceTypeName;
     private BaseConfigInfo baseConfigInfo;
     private boolean isInitialSensorOpera = false;//是否初始化传感器操作
 
@@ -167,7 +161,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void setHeadInfo() {
         if (device != null) {
-            searchDeviceTypeInfo("DAS");
+            mTvDeviceName.setText("物联网数据采集器");
             mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
             mTvProductModel.setText(String.format("产品型号：%s", "DAS"));
         }
@@ -175,22 +169,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-    }
-
-    private void searchDeviceTypeInfo(String typeName) {
-        DeviceTypeInfo deviceTypeInfo = DaoManager.getInstance().getDaoSession().getDeviceTypeInfoDao().queryBuilder()
-                .where(DeviceTypeInfoDao.Properties.DeviceTypeName.like("%" + typeName + "%"))
-                .unique();
-
-        if (deviceTypeInfo != null) {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceTypeInfo.getDesc()) ? "" : deviceTypeInfo.getDesc());
-            deviceTypeID = deviceTypeInfo.getId();
-            deviceTypeName = deviceTypeInfo.getDeviceTypeName();
-        } else {
-            mTvDeviceName.setText("物联网数据采集器");
-            deviceTypeID = -1;
-            deviceTypeName = typeName;
-        }
     }
 
     /**
@@ -206,7 +184,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     mSbActiveState.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
-
                 if (isChecked) {
                     //发送激活DAS命令
                     setLowEnergyModel(true);
@@ -462,18 +439,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 }
                 baseConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
                 initBaseConfigInfo();
-                queryDeviceVersionInfo();
-                break;
-
-            case VERSION_MESSAGE:
-                startHeart();
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    Timber.e("查询版本信息指令出错!");
-                    return;
-                }
-                VersionMessageInfo versionMessageInfo = ResultParserUtil.getEntityObject(cmdStr);
-                initVersionInfo(versionMessageInfo);
                 LocationUtils.getInstance().getPositionPermission(mActivity);
+                startHeart();
                 break;
 
             case LOW_ENERGY:
@@ -592,22 +559,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 mTvActiveState.setText("已激活");
                 break;
         }
-    }
-
-    private void initVersionInfo(VersionMessageInfo versionInfo) {
-        if (versionInfo == null) {
-            return;
-        }
-        String firmwareVersion = TextUtils.isEmpty(versionInfo.getFirmwareVersion()) ? "--" : versionInfo.getFirmwareVersion();
-        firmwareVersion = firmwareVersion.replace(deviceTypeName + "-", "").replace(deviceTypeName, "");
-
-        for (ConfigModule configModule : configModuleList) {
-            if (configModule.getName().equals("固件升级")) {
-                configModule.setDesc("版本:" + firmwareVersion);
-                break;
-            }
-        }
-        moduleAdapter.notifyDataSetChanged();
     }
 
     private void initConfigModuleData() {

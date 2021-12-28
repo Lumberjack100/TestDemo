@@ -104,7 +104,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private IWifiManager hackWiFiManager;
 
-    private List<IWifi> tempWiFiList = new ArrayList<>();
+    private final List<IWifi> tempWiFiList = new ArrayList<>();
     private IWifi curWiFi;
 
     private DeviceApiKeyViewModel deviceApiKeyViewModel;
@@ -160,7 +160,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         }
     }
 
-    private ConnectionSuccessListener successListener = new ConnectionSuccessListener() {
+    private final ConnectionSuccessListener successListener = new ConnectionSuccessListener() {
         @Override
         public void success() {
             hideProgressBar();
