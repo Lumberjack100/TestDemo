@@ -10,6 +10,7 @@ public class BasicDeviceInfo {
     private int id;
     private int companyID;
     private int productID;
+    private String productToken;
     private String productType;
     private String deviceToken;
     private String deviceName;
@@ -46,6 +47,14 @@ public class BasicDeviceInfo {
 
     public void setProductID(int productID) {
         this.productID = productID;
+    }
+
+    public String getProductToken() {
+        return productToken;
+    }
+
+    public void setProductToken(String productToken) {
+        this.productToken = productToken;
     }
 
     public String getProductType() {

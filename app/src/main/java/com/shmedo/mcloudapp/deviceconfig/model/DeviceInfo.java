@@ -11,7 +11,6 @@ import java.util.List;
  * 描述：     项目设备信息
  */
 public class DeviceInfo implements Parcelable {
-
     private int id;
     private int companyID;
     private String companyName;
@@ -26,6 +25,7 @@ public class DeviceInfo implements Parcelable {
     private String exValues;
     private String apiKey;
     private int productID;
+    private String productToken;
     private String productName;
     private String productType;
     private String firmwareVersion;
@@ -48,10 +48,12 @@ public class DeviceInfo implements Parcelable {
         exValues = in.readString();
         apiKey = in.readString();
         productID = in.readInt();
+        productToken = in.readString();
         productName = in.readString();
         productType = in.readString();
         firmwareVersion = in.readString();
         lastActiveTime = in.readString();
+        simList = in.createTypedArrayList(SimListInfo.CREATOR);
     }
 
     @Override
@@ -70,10 +72,12 @@ public class DeviceInfo implements Parcelable {
         dest.writeString(exValues);
         dest.writeString(apiKey);
         dest.writeInt(productID);
+        dest.writeString(productToken);
         dest.writeString(productName);
         dest.writeString(productType);
         dest.writeString(firmwareVersion);
         dest.writeString(lastActiveTime);
+        dest.writeTypedList(simList);
     }
 
     @Override
@@ -203,6 +207,14 @@ public class DeviceInfo implements Parcelable {
 
     public void setProductID(int productID) {
         this.productID = productID;
+    }
+
+    public String getProductToken() {
+        return productToken;
+    }
+
+    public void setProductToken(String productToken) {
+        this.productToken = productToken;
     }
 
     public String getProductName() {
