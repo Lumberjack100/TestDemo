@@ -153,7 +153,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
 
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 //        EventBus.getDefault().register(this);
@@ -168,17 +168,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
                     for (DiscoveredBluetoothDevice device : tempDeviceList) {
                         if (!TextUtils.isEmpty(MCloudApp.getCurDeviceToken()) && device.getName().contains(MCloudApp.getCurDeviceToken())) {
                             processStopScan();
-
-                            int deviceType = AppContants.DeviceType.DAS;
-                            if (device.getName().endsWith("L")) {
-                                deviceType = AppContants.DeviceType.DAS;
-                            } else if (device.getName().endsWith("T")) {
-                                if (device.getName().startsWith("M20"))
-                                    deviceType = AppContants.DeviceType.M20;
-                                else
-                                    deviceType = AppContants.DeviceType.ADME;
-                            }
-                            DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, device, deviceType);
+                            DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, device);
                             break;
                         }
                     }
@@ -192,20 +182,6 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         super.onStop();
         processStopScan();
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//        EventBus.getDefault().unregister(this);
-    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMessageEvent(MessageEvent messageEvent) {
-//        if (messageEvent instanceof DeviceModuleSwitchTabEvent) {
-//            DeviceModuleSwitchTabEvent switchTabEvent = (DeviceModuleSwitchTabEvent) messageEvent;
-//            viewPager.setCurrentItem(switchTabEvent.getTabPosition());
-//        }
-//    }
 
     @OnClick({R.id.iv_query_data, R.id.iv_scan_device_code})
     public void onClick(View v) {
@@ -241,7 +217,6 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
             showTipDialog("请扫描正确的设备二维码");
             return;
         }
-
         if (result.contains("MEDO")) {
             if (result.contains("=")) {
                 result = result.substring(result.indexOf("=") + 1);
@@ -273,14 +248,10 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
             showTipDialog("设备标识有误,请扫描正确的设备二维码");
             return;
         }
-//        if (!DeviceTypeEnum.value(localData[2])) {
+//        if (!(localData[1].endsWith("L") || localData[1].endsWith("T") || localData[1].endsWith("V"))) {
 //            showTipDialog("此设备类型暂时不支持");
 //            return;
 //        }
-        if (!(localData[1].endsWith("L") || localData[1].endsWith("T") || localData[1].endsWith("V"))) {
-            showTipDialog("此设备类型暂时不支持");
-            return;
-        }
         MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""));
         processStartScan();
     }
@@ -306,10 +277,10 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
             showTipDialog("设备标识有误,请扫描正确的设备二维码");
             return;
         }
-        if (!(localData[1].endsWith("L") || localData[1].endsWith("T") || localData[1].endsWith("V"))) {
-            showTipDialog("此设备类型暂时不支持");
-            return;
-        }
+//        if (!(localData[1].endsWith("L") || localData[1].endsWith("T") || localData[1].endsWith("V"))) {
+//            showTipDialog("此设备类型暂时不支持");
+//            return;
+//        }
         MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""));
         processStartScan();
     }

@@ -115,7 +115,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         return R.layout.fragment_wi_fi_device_list;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
@@ -140,10 +140,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         if (curWiFi.isConnected()) {//已连接
             hideProgressBar();
             if (curWiFi.name().contains("VMS")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.VMS);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.VMS);
 
             } else if (curWiFi.name().contains("E40")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.E40);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.E40);
             }
         } else if (curWiFi.isSaved() || !curWiFi.isEncrypt()) {//已保存/未加密
             WifiUtils.withContext(getContext().getApplicationContext())
@@ -165,10 +165,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         public void success() {
             hideProgressBar();
             if (curWiFi.name().contains("VMS")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.VMS);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.VMS);
 
             } else if (curWiFi.name().contains("E40")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, null, AppContants.DeviceType.E40);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.E40);
             }
         }
 

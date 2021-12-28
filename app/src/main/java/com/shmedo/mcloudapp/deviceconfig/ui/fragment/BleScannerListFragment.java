@@ -121,7 +121,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         return R.layout.fragment_ble_scanner_list;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mHandler = new Handler(Looper.getMainLooper());
@@ -171,24 +171,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
                 String deviceName = bluetoothDevice.getDevice().getName();
                 MCloudApp.setCurDeviceToken(deviceName.replace("MD-", ""));
-                int deviceType = AppContants.DeviceType.UnKnown;
-                if (deviceName.endsWith("L")) {
-                    deviceType = AppContants.DeviceType.DAS;
-                } else if (deviceName.endsWith("T")) {
-                    if (deviceName.startsWith("M20"))
-                        deviceType = AppContants.DeviceType.M20;
-                    else
-                        deviceType = AppContants.DeviceType.ADME;
-                } else if (deviceName.endsWith("V")) {
-                    deviceType = AppContants.DeviceType.M20;
-                } else if (deviceName.endsWith("Y")) {
-                    deviceType = AppContants.DeviceType.RN20;
-                }
-                if(deviceType == AppContants.DeviceType.UnKnown){
-                    ToastUtils.show("不支持此设备类型");
-                    return;
-                }
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice, deviceType);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
             }
         });
     }

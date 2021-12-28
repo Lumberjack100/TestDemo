@@ -43,22 +43,22 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, ProjectDeviceInfo deviceInfo) {
         int deviceType = AppContants.DeviceType.UnKnown;
-        if (deviceInfo.getDeviceTypeName().contains("DAS")) {
+        String deviceTypeName = deviceInfo.getDeviceTypeName();
+        if (deviceTypeName.contains("DAS")) {
             deviceType = AppContants.DeviceType.DAS;
-        } else if (deviceInfo.getDeviceTypeName().contains("ADME") || deviceInfo.getToken().endsWith("T")) {
+        } else if (deviceTypeName.contains("ADME") || deviceInfo.getToken().endsWith("T")) {
             deviceType = AppContants.DeviceType.ADME;
-        } else if (deviceInfo.getDeviceTypeName().contains("M20")) {
+        } else if (deviceTypeName.contains("M20")) {
             deviceType = AppContants.DeviceType.M20;
-        } else if (deviceInfo.getDeviceTypeName().contains("E40") || deviceInfo.getDeviceTypeName().contains("E60")) {
+        } else if (deviceTypeName.contains("E40") || deviceTypeName.contains("E60")) {
             deviceType = AppContants.DeviceType.E40;
-        } else if (deviceInfo.getDeviceTypeName().contains("VMS") || deviceInfo.getDeviceTypeName().contains("GW300")) {
+        } else if (deviceTypeName.contains("VMS") || deviceTypeName.contains("GW300")) {
             deviceType = AppContants.DeviceType.VMS;
         }
         if (deviceType == AppContants.DeviceType.UnKnown) {
             ToastUtils.show("此设备暂不支持!");
             return;
         }
-
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(EXTRA_DEVICE, deviceInfo);
         intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
@@ -66,7 +66,25 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, DiscoveredBluetoothDevice device, int deviceType) {
+    public static void startActivity(Context context, int connectWay, DiscoveredBluetoothDevice device) {
+        int deviceType = AppContants.DeviceType.UnKnown;
+        String deviceName = device.getDevice().getName();
+        if (deviceName.endsWith("L")) {
+            deviceType = AppContants.DeviceType.DAS;
+        } else if (deviceName.endsWith("T")) {
+            if (deviceName.startsWith("M20"))
+                deviceType = AppContants.DeviceType.M20;
+            else
+                deviceType = AppContants.DeviceType.ADME;
+        } else if (deviceName.endsWith("V")) {
+            deviceType = AppContants.DeviceType.M20;
+        } else if (deviceName.endsWith("Y")) {
+            deviceType = AppContants.DeviceType.RN20;
+        }
+        if (deviceType == AppContants.DeviceType.UnKnown) {
+            ToastUtils.show("暂不支持此设备类型");
+            return;
+        }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(EXTRA_DEVICE, device);
@@ -75,6 +93,13 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         context.startActivity(intent);
     }
 
+    public static void startActivity(Context context, int connectWay, int deviceType) {
+        Intent intent = new Intent(context, DeviceConfigActivity.class);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
