@@ -93,6 +93,14 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         context.startActivity(intent);
     }
 
+    public static void startActivity(Context context, int connectWay, int deviceType) {
+        Intent intent = new Intent(context, DeviceConfigActivity.class);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
