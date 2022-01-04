@@ -29,8 +29,9 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*. jar'])
     api "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "androidx.recyclerview:recyclerview:$rootProject.thirdLib.recyclerview"
-    api "com.google.code.gson:gson:$rootProject.thirdLib.gsonVersion"
+//    api "com.google.code.gson:gson:$rootProject.thirdLib.gsonVersion"
 
+    //LiveData 数据倒灌解决方案
     api "com.kunminx.arch:unpeek-livedata:$rootProject.thirdLib.unpeekLivedataVersion"
 
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
@@ -42,8 +43,10 @@ dependencies {
     api 'com.zhihu.android:matisse:0.5.3-beta3'
     api 'com.thanosfisherman.elvis:elvis:3.0'
 
-    api "io.netty:netty-all:$rootProject.thirdLib.nettyVersion"
+    //A library that makes working with Bluetooth LE on Android a pleasure.
     api "no.nordicsemi.android:ble:$rootProject.thirdLib.nordicsemiBle"
+
+    api "io.netty:netty-all:$rootProject.thirdLib.nettyVersion"
 
     //AndroidUtilCode 是一个强大易用的安卓工具类库
     api "com.blankj:utilcodex:$rootProject.thirdLib.utilcodexVersion"

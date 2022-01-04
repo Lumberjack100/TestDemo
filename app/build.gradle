@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'kotlin-android'
 
@@ -115,19 +114,13 @@ android {
     }
 }
 
-//greendao配置
-greendao {
-    //数据库版本号，升级时修改
-    schemaVersion 19
-    daoPackage "com.shmedo.mcloudapp.entity" // set package of generated classes
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(path: ':configlibrary')
     implementation project(path: ':core')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
     implementation "androidx.legacy:legacy-support-v4:$rootProject.thirdLib.legacyVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
@@ -142,13 +135,11 @@ dependencies {
 
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.thirdLib.rxjava"
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.thirdLib.rxandroid"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:$rootProject.thirdLib.adapterRxjava3"
     implementation "com.squareup.retrofit2:retrofit:$rootProject.thirdLib.retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$rootProject.thirdLib.adapterRxjava3"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.thirdLib.retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.okHttpVersion"
     implementation 'com.uber.autodispose2:autodispose-androidx-lifecycle:2.1.1'
-
-    implementation "org.greenrobot:greendao:$rootProject.thirdLib.greendao"
 
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
@@ -215,6 +206,7 @@ dependencies {
     // Log Bluetooth LE events in nRF Logger APP
     implementation "no.nordicsemi.android:log:$rootProject.thirdLib.nordicsemiLog"
 
+    //Android USB host serial driver library for CDC, FTDI, Arduino and other devices.
     implementation "com.github.mik3y:usb-serial-for-android:$rootProject.thirdLib.usbSerialVersion"
 
     //华为扫码服务
@@ -231,14 +223,8 @@ dependencies {
 //    debugImplementation because LeakCanary should only run in debug builds .
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 //
-//    日志调试框架 ： https://github.com/getActivity/Logcat
+//    日志调试框架： https://github.com/getActivity/Logcat
 //    debugImplementation "com.github.getActivity:Logcat:$rootProject.thirdLib.Logcat"
-//
-//    可视化埋点库调试依赖
-//    tracker - release是必须导入的包
-//    implementation(name: 'tracker-release-1.1.1', ext: 'aar')
-//    tracker - config包仅在埋点配置模式导入 ， 线上模式请切勿导入此包 ！
-//    implementation(name: 'tracker-config-1.1.1', ext: 'aar')
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"

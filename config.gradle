@@ -15,11 +15,9 @@ ext {
 
             rxjava                       : '3.1.1',
             rxandroid                    : '3.0.0',
-            adapterRxjava3               : '2.9.0',
             retrofitVersion              : '2.9.0',
+            adapterRxjava3               : '2.9.0',
             okHttpVersion                : '5.0.0-alpha.2',
-
-            greendao                     : '3.3.0',
 
             butterknife                  : '10.2.1',
             butterknifeCompiler          : '10.2.1',

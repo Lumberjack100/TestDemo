@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.DispatchRawCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.model.params.QueryCmdResultParam;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.AdmeViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
 import com.shmedo.mcloudapp.network.BaseObserver;
@@ -40,9 +41,6 @@ import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.umeng.analytics.MobclickAgent;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,7 +92,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                 case AppContants.MsgWhat.MSG_DEFAULT:
                     try {
                         //轮询指令响应结果接口达到10次，判断超时
-                        if (fragment.queryNum > 30) {
+                        if (fragment.queryNum > 15) {
                             fragment.onQueryCmdResponseResultTimeOut(null);
                             return;
                         }
@@ -237,14 +235,10 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
      * 查询设备对下发/透传的指令响应结果
      */
     private void queryCmdResultByMsgID() {
-        String json = GsonUtils.toJson(msgIDList);
-        JSONObject jsonObjectRequest = new JSONObject();
-        try {
-            jsonObjectRequest.put("msgIDList",json);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+        QueryCmdResultParam parameter = new QueryCmdResultParam();
+        parameter.setMsgIDList(msgIDList);
+        String json = GsonUtils.toJson(parameter);
+        RequestBody body = RequestBody.create(json, RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
                 .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
@@ -307,7 +301,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             if (queryNum == 0)
                 return;
             //延迟1秒后再次查询响应结果
-            startQueryCmdResponseDelayed(500);
+            startQueryCmdResponseDelayed(1000);
         }
     }
 

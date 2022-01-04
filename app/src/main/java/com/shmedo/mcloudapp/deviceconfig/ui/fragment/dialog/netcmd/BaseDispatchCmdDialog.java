@@ -89,7 +89,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
             if (fragment != null) {
                 if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
                     //轮询指令响应结果接口达到10次，判断超时
-                    if (fragment.queryNum > 30) {
+                    if (fragment.queryNum > 15) {
                         fragment.onQueryCmdResponseResultTimeOut(null);
                         return;
                     }
@@ -275,7 +275,7 @@ public abstract class BaseDispatchCmdDialog extends DialogFragment {
 
         } else {
             //延迟2秒后再次查询响应结果
-            startQueryCmdResponseDelayed(500);
+            startQueryCmdResponseDelayed(1000);
         }
     }
 
