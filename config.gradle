@@ -30,7 +30,7 @@ ext {
 
             materialDialogsCore          : '0.9.6.0',
             xpopupVersion                : '2.6.7',
-            dialogxVersion               : '0.0.43.beta19',
+            dialogxVersion               : '0.0.43',
             ToastUtils                   : '9.6',
 
             switchbutton                 : '2.0.0',
