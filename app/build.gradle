@@ -121,7 +121,6 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    implementation "androidx.legacy:legacy-support-v4:$rootProject.thirdLib.legacyVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
