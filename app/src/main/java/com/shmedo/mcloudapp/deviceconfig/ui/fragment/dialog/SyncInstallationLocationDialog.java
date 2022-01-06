@@ -26,9 +26,8 @@ import com.hjq.toast.ToastUtils;
 import com.shmedo.core.util.JZLocationConverter;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
-import com.shmedo.mcloudapp.maps.util.MapErrorUtil;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
 import java.util.Locale;
@@ -139,7 +138,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
             @Override
             public void onRegeocodeSearched(RegeocodeResult result, int errorCode) {
                 if (errorCode != AMapException.CODE_AMAP_SUCCESS) {
-                    ToastUtils.show(MapErrorUtil.getErrorMsg(errorCode));
+//                    ToastUtils.show(MapErrorUtil.getErrorMsg(errorCode));
                     return;
                 }
                 if (result != null && result.getRegeocodeAddress() != null && result.getRegeocodeAddress().getFormatAddress() != null) {

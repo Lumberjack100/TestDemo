@@ -39,7 +39,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi", "armeabi-v7a"//"x86", "armeabi", "armeabi-v7a"
+            abiFilters "x86", "armeabi-v7a"//"x86", "armeabi", "armeabi-v7a"
         }
     }
     signingConfigs {
@@ -141,6 +141,7 @@ dependencies {
     implementation 'com.uber.autodispose2:autodispose-androidx-lifecycle:2.1.1'
 
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
     // Glide
