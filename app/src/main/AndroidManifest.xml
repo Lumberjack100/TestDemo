@@ -124,31 +124,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
-        <activity
-            android:name=".maps.ui.activity.MapActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/MCloud.MapActivity" />
-        <activity
-            android:name=".maps.ui.activity.PoiSearchActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".maps.ui.activity.SearchPoiActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".maps.ui.activity.SpeedTestActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".maps.ui.activity.SpeedTestResultActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/MCloud.SpeedTestResultActivity" /> <!-- Activity在高德 SDK内部实现 -->
+        <!-- Activity在高德 SDK内部实现 -->
         <activity
             android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

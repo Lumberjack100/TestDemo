@@ -18,18 +18,7 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="MCloud.MapActivity" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/white</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
-    </style>
 
-    <style name="MCloud.SpeedTestResultActivity" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowNoTitle">true</item>
-        <!-- actionbar颜色-->
-        <item name="colorPrimary">#61a9fc</item>
-        <!-- 状态栏颜色-->
-        <item name="colorPrimaryDark">#61a9fc</item>
-    </style>
 
     <style name="LightStatusBarActivity" parent="Theme.MaterialComponents.Light.Bridge">
         <item name="colorPrimaryDark">@color/white</item>
@@ -73,51 +62,6 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-    <!--地图工具控件样式-->
-    <style name="MapToolIconView">
-        <item name="android:layout_width">35dp</item>
-        <item name="android:layout_height">45dp</item>
-    </style>
-
-    <style name="DividerLineView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1px</item>
-        <item name="android:background">@color/gray_f2f2f2</item>
-    </style>
-
-    <!--地图顶部定位坐标、海拔等 TextView 样式-->
-    <style name="LocationTitle_TextViewStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:textColor">@color/gray_807B7B</item>
-        <item name="android:textSize">11.5sp</item>
-    </style>
-
-    <!--固定在底部的布局样式-->
-    <style name="PoiDetailFixedStyle">
-        <item name="android:layout_height">36dp</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:textColor">@color/poi_detail_loc</item>
-        <item name="android:textSize">@dimen/text_size_16</item>
-        <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:layout_marginRight">10dp</item>
-    </style>
-
-    <style name="TextView_SearchInputBox">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">35dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:drawableLeft">@drawable/ic_search_24dp</item>
-        <item name="android:drawablePadding">10dp</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingStart">15dp</item>
-        <item name="android:paddingEnd">15dp</item>
-        <item name="android:singleLine">true</item>
-    </style>
 
     <!--TextView相关样式-->
     <style name="BaseTextTheme">
@@ -134,18 +78,6 @@
         <item name="android:textSize" tools:ignore="SpUsage">14sp</item>
     </style>
 
-    <!--ToolView 下ConstraintLayoutStyl的样式-->
-    <style name="NaviToolView_ConstraintLayoutStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:paddingLeft">@dimen/dimen_size_10</item>
-        <item name="android:paddingRight">@dimen/dimen_size_10</item>
-        <item name="android:paddingTop">@dimen/dimen_size_15</item>
-        <item name="android:paddingBottom">@dimen/dimen_size_15</item>
-    </style>
 
     <style name="UserInfo_LinearLayoutStyle">
         <item name="android:layout_width">match_parent</item>

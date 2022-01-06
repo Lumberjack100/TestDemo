@@ -90,7 +90,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/mobileLayout"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 

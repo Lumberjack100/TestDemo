@@ -2,10 +2,7 @@
     <!-- 全局 -->
     <!--  <string name="app_name"> 米易通</string>-->
     <string name="device_module_navi">设备</string>
-    <string name="map_module_navi">地图</string>
-    <string name="project_module_navi">项目</string>
     <string name="mine_module_navi">我的</string>
-    <string name="knowledge_module">知识库</string>
     <string name="privacy_agreement_title">温馨提示</string>
     <string name="privacy_agreement_desc">欢迎您使用米易通！\n\n我们高度重视并保护您的个人隐私，我们将严格在国家法律允许范围内，且只以为您提供服务为目的，收集必要的相关信息。为了便于您详细了解您的权利和义务，请您仔细阅读米易通《用户协议和免责条款》，并做出是否同意授权的决定。</string>
     <string name="login_protocol_desc">登录即代表已阅读并同意《用户协议与免责条款》</string>
@@ -57,8 +54,6 @@
     <string name="gallery">相册</string>
 
     <!-- 地图模块-->
-    <string name="search_poi_hint">搜索地点</string>
-    <string name="no_result">对不起，没有搜索到相关数据！</string>
 
     <!-- 我的模块-->
     <string name="company_intro">上海米度测控科技有限公司成立于2012年2月3日，是一家集GNSS产品研发、生产、销售、服务于一体的综合性高新技术企业。</string>
