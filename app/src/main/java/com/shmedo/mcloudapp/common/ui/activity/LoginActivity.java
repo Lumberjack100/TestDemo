@@ -250,11 +250,17 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
             }
             if (!ValidateUtil.checkMobileNumber(mobile)) {
                 ToastUtils.show("手机号格式错误！");
+                mEtPhone.requestFocus();
                 return false;
             }
             if (TextUtils.isEmpty(code)) {
 //                mEtCode.setError("请输入验证码");
                 ToastUtils.show("请输入验证码");
+                mEtCode.requestFocus();
+                return false;
+            }
+            if (code.length() != 6) {
+                ToastUtils.show("请输入6位数验证码");
                 mEtCode.requestFocus();
                 return false;
             }

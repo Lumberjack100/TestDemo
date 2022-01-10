@@ -2,13 +2,14 @@ package com.shmedo.mcloudapp.deviceconfig.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.List;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/8/18 <br/>
- * 描述：     项目设备信息
+ * 描述：     设备信息
  */
 public class DeviceInfo implements Parcelable {
     private int id;
@@ -114,7 +115,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getCompanyName() {
-        return companyName;
+        return TextUtils.isEmpty(companyName) ? "" : companyName;
     }
 
     public void setCompanyName(String companyName) {
@@ -122,7 +123,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getDeviceToken() {
-        return deviceToken;
+        return TextUtils.isEmpty(deviceToken) ? "" : deviceToken;
     }
 
     public void setDeviceToken(String deviceToken) {
@@ -130,7 +131,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getDeviceName() {
-        return deviceName;
+        return TextUtils.isEmpty(deviceName) ? "" : deviceName;
     }
 
     public void setDeviceName(String deviceName) {
@@ -138,7 +139,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getDeviceDesc() {
-        return deviceDesc;
+        return TextUtils.isEmpty(deviceDesc) ? "" : deviceDesc;
     }
 
     public void setDeviceDesc(String deviceDesc) {
@@ -146,7 +147,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getInstallLocation() {
-        return installLocation;
+        return TextUtils.isEmpty(installLocation) ? "" : installLocation;
     }
 
     public void setInstallLocation(String installLocation) {
@@ -170,7 +171,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getDeviceStatus() {
-        return deviceStatus;
+        return TextUtils.isEmpty(deviceStatus) ? "" : deviceStatus;
     }
 
     public void setDeviceStatus(String deviceStatus) {
@@ -194,7 +195,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getApiKey() {
-        return apiKey;
+        return TextUtils.isEmpty(apiKey) ? "" : apiKey;
     }
 
     public void setApiKey(String apiKey) {
@@ -210,7 +211,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getProductToken() {
-        return productToken;
+        return TextUtils.isEmpty(productToken) ? "" : productToken;
     }
 
     public void setProductToken(String productToken) {
@@ -218,7 +219,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getProductName() {
-        return productName;
+        return TextUtils.isEmpty(productName) ? "" : productName;
     }
 
     public void setProductName(String productName) {
@@ -234,7 +235,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getFirmwareVersion() {
-        return firmwareVersion;
+        return TextUtils.isEmpty(firmwareVersion) ? "" : firmwareVersion;
     }
 
     public void setFirmwareVersion(String firmwareVersion) {
@@ -242,7 +243,7 @@ public class DeviceInfo implements Parcelable {
     }
 
     public String getLastActiveTime() {
-        return lastActiveTime;
+        return TextUtils.isEmpty(lastActiveTime) ? "" : lastActiveTime;
     }
 
     public void setLastActiveTime(String lastActiveTime) {

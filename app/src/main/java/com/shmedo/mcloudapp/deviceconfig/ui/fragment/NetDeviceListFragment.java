@@ -91,15 +91,13 @@ public class NetDeviceListFragment extends BaseFragment {
         return R.layout.fragment_net_device_list;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pageInfo = new PageInfo(1);
         initDeviceInfoAdapter();
         initLoadMore();
         initRefreshLayout();
-
-        getDeviceStatByCompanyID();
     }
 
     @Override
@@ -142,7 +140,7 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceInfoAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                loadMore();
+                queryDeviceList();
             }
         });
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
@@ -172,17 +170,12 @@ public class NetDeviceListFragment extends BaseFragment {
      * 下拉刷新
      */
     private void refreshDevices() {
+        getDeviceStatByCompanyID();
+
         // 这里的作用是防止下拉刷新的时候还可以上拉加载
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
         // 下拉刷新，需要重置页数
         pageInfo.reset();
-        queryDeviceList();
-    }
-
-    /**
-     * 上拉加载更多
-     */
-    private void loadMore() {
         queryDeviceList();
     }
 
@@ -209,8 +202,8 @@ public class NetDeviceListFragment extends BaseFragment {
                     protected void onResponse(DeviceStatisticInfo data, ErrorInfo errorInfo) {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
-                                DecimalFormat df = new DecimalFormat("#.#");//格式化小数
-                                String rate = df.format(data.getOfflineCount()) + "%";
+                                DecimalFormat df = new DecimalFormat("#.##");//格式化小数
+                                String rate = df.format(data.getOnlinePercent()) + "%";
                                 updateTopView(data.getOnlineCount(), data.getOfflineCount(), rate);
                             } else {
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
@@ -256,7 +249,8 @@ public class NetDeviceListFragment extends BaseFragment {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
-                                mRefreshLayout.finishRefresh();
+                                if (mRefreshLayout.isRefreshing())
+                                    mRefreshLayout.finishRefresh();
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                                     if (deviceInfoList.size() == 0) {
                                         showNoContentView(StringUtils.getString(R.string.empty_no_data));
@@ -274,12 +268,9 @@ public class NetDeviceListFragment extends BaseFragment {
                                 filterDevices(data.getCurrentPageData());
 
                             } else { //Code!=0
-                                if (mRefreshLayout.isRefreshing()) {
+                                if (mRefreshLayout.isRefreshing())
                                     mRefreshLayout.finishRefresh(false);
-                                }
-                                if (deviceInfoAdapter.getLoadMoreModule().isLoading()) {
-                                    deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
-                                }
+                                deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());
                                 }
@@ -305,11 +296,9 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceInfoAdapter.notifyDataSetChanged();
         if (tempList.size() < PAGE_SIZE) {
             //如果不够一页,显示没有更多数据布局
-            if (deviceInfoAdapter.getLoadMoreModule().isLoading())
-                deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+            deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
         } else {
-            if (deviceInfoAdapter.getLoadMoreModule().isLoading())
-                deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
+            deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
         }
         // page加一
         pageInfo.nextPage();
@@ -329,12 +318,8 @@ public class NetDeviceListFragment extends BaseFragment {
     protected void loadFailed(String msg) {
         super.loadFailed(msg);
         if (msg == null) {
-            if (mRefreshLayout.isRefreshing()) {
+            if (mRefreshLayout.isRefreshing())
                 mRefreshLayout.finishRefresh(false);
-            }
-            if (deviceInfoAdapter.getLoadMoreModule().isLoading()) {
-                deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
-            }
             mRefreshLayout.setVisibility(View.GONE);
             mRecyclerViewDevice.setVisibility(View.GONE);
             showBadNetworkView(new View.OnClickListener() {

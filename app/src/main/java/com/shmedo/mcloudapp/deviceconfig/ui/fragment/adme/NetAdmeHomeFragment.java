@@ -360,53 +360,58 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo() {
-        mTvPlatformCommunicationState.setVisibility(View.GONE);
-        mTvDeviceConnectOperate.setVisibility(View.GONE);
-        mTvDeviceName.setText("水平自动监测设备");
+        try {
+            if (admeBaseInfo != null) {
+                mTvDeviceName.setText("水平自动监测设备");
+                mTvDeviceSn.setText(String.format("设备编号：%s", admeBaseInfo.getSn()));
+                mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
+                mTvMotionState.setText("运行状态：--");
+                if (!TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0")) {
+                    mTvDeviceState.setText("在线");
+                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
 
-        if (admeBaseInfo != null) {
-            mTvDeviceSn.setText(String.format("设备编号：%s", admeBaseInfo.getSn()));
-            mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
-            mTvMotionState.setText("运行状态：--");
-            if (!TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0")) {
-                mTvDeviceState.setText("在线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-
-            } else if (admeBaseInfo.getOnline().equals("0")) {
-                mTvDeviceState.setText("离线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-            }
-            equipModel = admeBaseInfo.getEquimodel();
-            if (equipModel.equals("0")) {
+                } else if (admeBaseInfo.getOnline().equals("0")) {
+                    mTvDeviceState.setText("离线");
+                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+                }
+                equipModel = admeBaseInfo.getEquimodel();
+                if (equipModel.equals("0")) {
+                    admeViewModel.deviceMode = 0;
+                    mTvConfigModel.setText(modes[0]);
+                } else if (equipModel.equals("1")) {
+                    admeViewModel.deviceMode = 1;
+                    mTvConfigModel.setText(modes[1]);
+                } else if (equipModel.equals("2")) {
+                    admeViewModel.deviceMode = 2;
+                    mTvConfigModel.setText(modes[2]);
+                }
+            } else {
+                mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "" : deviceInfo.getDeviceName());
+                mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
+                mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "ADME" : deviceInfo.getProductName()));
+                mTvMotionState.setText("运行状态：--");
+                if (deviceInfo.isOnlineStatus()) {
+                    mTvDeviceState.setText("在线");
+                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+                } else {
+                    mTvDeviceState.setText("离线");
+                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+                }
+                equipModel = "0";
                 admeViewModel.deviceMode = 0;
                 mTvConfigModel.setText(modes[0]);
-            } else if (equipModel.equals("1")) {
-                admeViewModel.deviceMode = 1;
-                mTvConfigModel.setText(modes[1]);
-            } else if (equipModel.equals("2")) {
-                admeViewModel.deviceMode = 2;
-                mTvConfigModel.setText(modes[2]);
             }
-        } else {
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
-            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "ADME" : deviceInfo.getProductName()));
-            mTvMotionState.setText("运行状态：--");
-            if (deviceInfo.isOnlineStatus()) {
-                mTvDeviceState.setText("在线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-            } else {
-                mTvDeviceState.setText("离线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-            }
-            equipModel = "0";
-            admeViewModel.deviceMode = 0;
-            mTvConfigModel.setText(modes[0]);
+            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            mTvDeviceConnectOperate.setVisibility(View.GONE);
+
+            updateConfigModuleData();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        updateConfigModuleData();
     }
 
     /**

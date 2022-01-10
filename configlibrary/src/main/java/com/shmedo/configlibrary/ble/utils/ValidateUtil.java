@@ -28,6 +28,11 @@ public class ValidateUtil {
     private static final String REGEX_MAIL = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
 
     /**
+     * 正则表达式：验证密码,以字母开头，长度在8~16之间，只能包含字母、数字和下划线
+     */
+    private static final String REGEX_PWD = "^[a-zA-Z]\\w{7,15}$";
+
+    /**
      * 正则表达式：验证数字
      */
     private static final String REGEX_NUMERIC = "^[0-9]*$";
@@ -136,6 +141,20 @@ public class ValidateUtil {
     }
 
     /**
+     * 验证密码是否正确
+     *
+     * @param pwd
+     * @return
+     */
+    public static boolean checkPassword(String pwd) {
+        if (TextUtils.isEmpty(pwd)) {
+            return false;
+        }
+
+        return Pattern.matches(REGEX_PWD, pwd);
+    }
+
+    /**
      * 检查采集器地址是否合法；地址可以为空
      *
      * @param address
@@ -166,6 +185,7 @@ public class ValidateUtil {
 
     /**
      * 没有冒号的 MAC 地址校验
+     *
      * @param macStr
      * @return
      */

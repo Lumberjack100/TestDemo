@@ -123,6 +123,7 @@
             android:id="@+id/emailET"
             style="@style/Common_EditItem_EditText_Style"
             android:hint="请输入邮箱"
+            android:inputType="textEmailSubject"
             android:maxLength="30"
             android:maxLines="1" />
 

@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -117,13 +118,18 @@ public class UpdatePasswordActivity extends BaseActivity {
             mEtNewPassword.requestFocus();
             return false;
         }
+        if (!ValidateUtil.checkPassword(newPassword)) {
+            ToastUtils.show("密码格式错误！");
+            mEtNewPassword.requestFocus();
+            return false;
+        }
         if (TextUtils.isEmpty(confirmNewPassword)) {
             ToastUtils.show("请输入确认密码");
             mEtConfirmPassword.requestFocus();
             return false;
         }
         if (!newPassword.equals(confirmNewPassword)) {
-            ToastUtils.show("确认密码与新密码不一致");
+            ToastUtils.show("两次密码不一致");
             return false;
         }
         return true;
@@ -176,6 +182,7 @@ public class UpdatePasswordActivity extends BaseActivity {
                             }
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         dismissWaitDialog();

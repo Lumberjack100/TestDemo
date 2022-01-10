@@ -46,11 +46,10 @@ import timber.log.Timber;
 public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
     private static final int REBOOT = 0x0002;
 
-    public static NetDasHomeFragment newInstance(DeviceInfo deviceInfo, int deviceType) {
+    public static NetDasHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetDasHomeFragment fragment = new NetDasHomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_DEVICE, deviceInfo);
-        args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
         fragment.setArguments(args);
         return fragment;
     }

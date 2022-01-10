@@ -213,7 +213,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                     mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
                 }
             } else {
-                mTvDeviceName.setText("VMS网关");
+                mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "" : deviceInfo.getDeviceName());
                 mTvDeviceSn.setText(String.format("设备SN号：%s", deviceInfo.getDeviceToken()));
                 mTvProductModel.setText(String.format("版本信息：%s", deviceInfo.getFirmwareVersion()));
                 mTvSubModel.setText("网关电压：--");

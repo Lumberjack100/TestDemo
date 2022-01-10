@@ -60,11 +60,10 @@ import timber.log.Timber;
 public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     private static final int REBOOT = 0x1002;
 
-    public static NetE40HomeFragment newInstance(DeviceInfo deviceInfo, int deviceType) {
+    public static NetE40HomeFragment newInstance(DeviceInfo deviceInfo) {
         NetE40HomeFragment fragment = new NetE40HomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_DEVICE, deviceInfo);
-        args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
         fragment.setArguments(args);
         return fragment;
     }

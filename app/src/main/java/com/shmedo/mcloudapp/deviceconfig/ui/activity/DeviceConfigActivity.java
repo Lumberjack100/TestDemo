@@ -43,16 +43,16 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, DeviceInfo deviceInfo) {
         int deviceType = AppContants.DeviceType.UnKnown;
-        String sn = deviceInfo.getProductToken().toUpperCase();
-        if (sn.contains("DAS")) {
+        String productType = deviceInfo.getProductToken().toUpperCase();
+        if (productType.contains("DAS")) {
             deviceType = AppContants.DeviceType.DAS;
-        } else if (sn.contains("ADME")) {
+        } else if (productType.contains("ADME")) {
             deviceType = AppContants.DeviceType.ADME;
-        } else if (sn.contains("M20")) {
+        } else if (productType.contains("M20")) {
             deviceType = AppContants.DeviceType.M20;
-        } else if (sn.contains("E40") || sn.contains("E60")) {
+        } else if (productType.contains("E40") || productType.contains("E60")) {
             deviceType = AppContants.DeviceType.E40;
-        } else if (sn.contains("VMS") || sn.contains("GW300")) {
+        } else if (productType.contains("VMS") || productType.contains("GW300")) {
             deviceType = AppContants.DeviceType.VMS;
         }
         if (deviceType == AppContants.DeviceType.UnKnown) {
@@ -143,7 +143,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
-                    fragment = NetDasHomeFragment.newInstance(deviceInfo, deviceType);
+                    fragment = NetDasHomeFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.ADME:
@@ -151,11 +151,11 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                     break;
 
                 case AppContants.DeviceType.M20:
-                    fragment = NetM20HomeFragment.newInstance(deviceInfo, deviceType);
+                    fragment = NetM20HomeFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.E40:
-                    fragment = NetE40HomeFragment.newInstance(deviceInfo, deviceType);
+                    fragment = NetE40HomeFragment.newInstance(deviceInfo);
                     break;
 
                 case AppContants.DeviceType.VMS:

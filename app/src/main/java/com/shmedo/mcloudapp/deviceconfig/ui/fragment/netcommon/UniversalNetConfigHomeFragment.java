@@ -15,7 +15,6 @@ import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
@@ -63,8 +62,6 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     protected List<ConfigModule> configModuleList = new ArrayList<>();
     protected ConfigModule selectedConfigModule;
 
-    private int deviceType = AppContants.DeviceType.DAS;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,9 +69,6 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
         if (getArguments() != null) {
             if (getArguments().containsKey(EXTRA_DEVICE)) {
                 deviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
-            }
-            if (getArguments().containsKey(AppContants.Extras.DEVICE_TYPE)) {
-                deviceType = getArguments().getInt(AppContants.Extras.DEVICE_TYPE);
             }
         }
     }
@@ -93,25 +87,10 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     }
 
     protected void setHeadInfo() {
-        switch (deviceType) {
-            case AppContants.DeviceType.DAS:
-                mTvDeviceName.setText("物联网数据采集器");
-                break;
-
-            case AppContants.DeviceType.ADME:
-                break;
-
-            case AppContants.DeviceType.M20:
-                mTvDeviceName.setText("普适型GNSS一体机");
-                break;
-
-            case AppContants.DeviceType.E40:
-                mTvDeviceName.setText("测地形GNSS一体机");
-                break;
-        }
         if (deviceInfo != null) {
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "" : deviceInfo.getDeviceName());
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
-            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "M20" : deviceInfo.getProductName()));
+            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "" : deviceInfo.getProductName()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "" : deviceInfo.getFirmwareVersion()));
             if (deviceInfo.isOnlineStatus()) {
                 mTvDeviceState.setText("在线");

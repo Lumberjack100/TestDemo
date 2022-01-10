@@ -84,6 +84,6 @@ public class ResponseHandler {
             return;
         }
         Timber.w(ex, "handleFailure exception ");
-        ToastUtils.show(ex.getMessage());
+        ToastUtils.show("请求出错了：" + ex.getMessage());
     }
 }

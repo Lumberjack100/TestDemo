@@ -37,15 +37,13 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
     private NetM20SetupWizardDialogFragment setupWizardDialogFragment;
 
 
-    public static NetM20HomeFragment newInstance(DeviceInfo deviceInfo, int deviceType) {
+    public static NetM20HomeFragment newInstance(DeviceInfo deviceInfo) {
         NetM20HomeFragment fragment = new NetM20HomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_DEVICE, deviceInfo);
-        args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     protected void initConfigModuleData() {
