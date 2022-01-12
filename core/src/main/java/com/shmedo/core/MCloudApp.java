@@ -7,7 +7,11 @@ import android.os.Looper;
 
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.shmedo.core.model.UserPermissionInfo;
 import com.shmedo.core.model.UserWrapperInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,10 +30,11 @@ public class MCloudApp {
 
     private static UserWrapperInfo currentUserWrapperInfo;
     private static String accessToken;
-    private static int companyID;
     private static int userID;
-    private static String curDeviceToken;//设备名称
+    private static int companyID;
     private static int productID;
+    private static String curDeviceToken;//设备名称
+    private static List<UserPermissionInfo> userPermissionInfoList = new ArrayList<>();//用户在某公司某服务中的所有权限
 
     private static final String authorityServiceAddress = "http://172.168.5.200:10082";//物联网权限服务地址
     private static final String iotManagerServiceAddress = "http://172.168.5.200:10081";//物联网设备管理服务地址
@@ -127,6 +132,17 @@ public class MCloudApp {
 
     public static void setProductID(int productID) {
         MCloudApp.productID = productID;
+    }
+
+    public static List<UserPermissionInfo> getUserPermissionInfoList() {
+        return userPermissionInfoList;
+    }
+
+    public static void setUserPermissionInfoList(List<UserPermissionInfo> userPermissionInfoList) {
+        if (userPermissionInfoList != null) {
+            MCloudApp.userPermissionInfoList.clear();
+            MCloudApp.userPermissionInfoList.addAll(userPermissionInfoList);
+        }
     }
 
     /**

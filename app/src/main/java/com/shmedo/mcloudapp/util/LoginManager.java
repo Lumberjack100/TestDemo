@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.BasicUserInfo;
+import com.shmedo.core.model.UserPermissionInfo;
 import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
@@ -16,6 +17,9 @@ import com.shmedo.mcloudapp.network.RequestHeader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -89,6 +93,7 @@ public class LoginManager implements DefaultLifecycleObserver {
                             }
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
@@ -130,6 +135,7 @@ public class LoginManager implements DefaultLifecycleObserver {
                             }
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
@@ -155,13 +161,14 @@ public class LoginManager implements DefaultLifecycleObserver {
                         if (errorInfo.getCode() == 0) {
                             MCloudApp.setCompanyID(basicUserInfo.getCompanyID());
                             MCloudApp.setUserID(basicUserInfo.getSubjectID());
-                            queryUserByID(basicUserInfo.getCompanyID(), basicUserInfo.getSubjectID());
+                            queryAllPermissionInService(basicUserInfo.getCompanyID(), basicUserInfo.getSubjectID());
                         } else {
                             if (loginCallback != null) {
                                 loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errorInfo.getMsg());
                             }
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
@@ -170,6 +177,96 @@ public class LoginManager implements DefaultLifecycleObserver {
                         }
                     }
                 });
+    }
+
+    /**
+     * 查询用户在某公司某服务中的所有权限
+     */
+    private void queryAllPermissionInService(final int companyID, final int userID) {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", companyID);
+            jsonObjectRequest.put("userID", userID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
+        MDRetrofit.getInstance()
+                .createService()
+                .queryAllPermissionInService(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<List<UserPermissionInfo>>() {
+                    @Override
+                    protected void onResponse(List<UserPermissionInfo> permissionInfoList, ErrorInfo errorInfo) {
+                        if (errorInfo.getCode() == 0) {
+                            if (!checkPermission(permissionInfoList))
+                                return;
+
+                            //用户在某公司某服务中的所有权限
+                            MCloudApp.setUserPermissionInfoList(permissionInfoList);
+                            queryUserByID(companyID, userID);
+                        } else {
+                            if (loginCallback != null) {
+                                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errorInfo.getMsg());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                        if (loginCallback != null) {
+                            loginCallback.callback(LOGIN_CODE_FAIL_EXCEPTION, e.getMessage());
+                        }
+                    }
+                });
+    }
+
+    private boolean checkPermission(List<UserPermissionInfo> permissionInfoList) {
+        if (permissionInfoList == null || permissionInfoList.isEmpty()) {
+            if (loginCallback != null) {
+                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, "缺少权限");
+            }
+            return false;
+        }
+
+        List<String> tempList = new ArrayList<>();
+        for (UserPermissionInfo permissionInfo : permissionInfoList) {
+            tempList.add(permissionInfo.getPermissionToken());
+        }
+        if (!tempList.contains("DescribeUser")) {
+            if (loginCallback != null) {
+                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, "缺少查询用户(DescribeUser)权限");
+            }
+            return false;
+        }
+        if (!tempList.contains("DescribeCompany")) {
+            if (loginCallback != null) {
+                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, "缺少查询公司(DescribeCompany)权限");
+            }
+            return false;
+        }
+        if (!tempList.contains("DescribeIotDashboard")) {
+            if (loginCallback != null) {
+                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, "缺少统计公司下的设备(DescribeIotDashboard)权限");
+            }
+            return false;
+        }
+        if (!tempList.contains("ListDevice")) {
+            if (loginCallback != null) {
+                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, "缺少查询设备分页列表(ListDevice)权限");
+            }
+            return false;
+        }
+        if (!tempList.contains("DescribeDevice")) {
+            if (loginCallback != null) {
+                loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, "缺少描述设备(DescribeDevice)权限");
+            }
+            return false;
+        }
+        return true;
     }
 
     /**

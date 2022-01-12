@@ -276,7 +276,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
             MainActivity.start(LoginActivity.this);
             finish();
         } else if (LoginManager.LOGIN_CODE_FAIL_BUSINESS == code) {
-            ToastUtils.show("登录失败\n" + msg);
+            ToastUtils.show("登录失败: " + msg);
         }
     }
 

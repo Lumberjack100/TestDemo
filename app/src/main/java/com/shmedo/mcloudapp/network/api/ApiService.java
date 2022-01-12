@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.network.api;
 
 import com.shmedo.core.model.BasicUserInfo;
+import com.shmedo.core.model.UserPermissionInfo;
 import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.deviceconfig.model.BasicDeviceInfo;
@@ -34,6 +35,14 @@ import retrofit2.http.POST;
  * 创建时间:  2019/1/8 09:41
  */
 public interface ApiService {
+    /**
+     * 权限
+     */
+    //查询用户在某公司某服务中的所有权限
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("QueryAllPermissionInService")
+    Observable<ResponseWrapper<List<UserPermissionInfo>>> queryAllPermissionInService(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
     /**
      * 登录模块
      */
