@@ -33,8 +33,8 @@ ext {
             switchbutton                 : '2.0.0',
 
             pgyerSdk                     : '4.2.5',
-            buglyCrashReport             : '3.3.3',
-            buglyNativeCrashReport       : '3.7.7',
+            buglyCrashReport             : '3.4.4',
+            buglyNativeCrashReport       : '3.9.2',
 
             timberVersion                : '5.0.1',
             Log4a                        : '1.5.0',

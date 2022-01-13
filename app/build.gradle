@@ -119,8 +119,6 @@ dependencies {
     implementation project(path: ':configlibrary')
     implementation project(path: ':core')
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
     implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
