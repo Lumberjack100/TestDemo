@@ -3,30 +3,29 @@ package com.shmedo.configlibrary.ble.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.shmedo.configlibrary.ble.enums.SensorType;
-import com.shmedo.configlibrary.ble.interfaces.SensorParameter;
-
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2021/10/11 <br/>
- * 描述：     气象站 25
+ * 创建时间:  2022/1/13 <br/>
+ * 描述：     通用数字式传感器信息
  */
-public class SensorWeatherStation implements SensorParameter, Parcelable {
-    private String triggerThreshold;   //触发阈值
-    private String correctionValue;     //修正值
+public class CommonDigitalSensorInfo implements Parcelable {
+    private String triggerThreshold;       //触发阈值
+    private String measureLength;          //测段长
+    private String correctionValue;        //修正值
 
-    public SensorWeatherStation() {
+    public CommonDigitalSensorInfo() {
     }
 
-
-    protected SensorWeatherStation(Parcel in) {
+    protected CommonDigitalSensorInfo(Parcel in) {
         triggerThreshold = in.readString();
+        measureLength = in.readString();
         correctionValue = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(triggerThreshold);
+        dest.writeString(measureLength);
         dest.writeString(correctionValue);
     }
 
@@ -35,15 +34,15 @@ public class SensorWeatherStation implements SensorParameter, Parcelable {
         return 0;
     }
 
-    public static final Creator<SensorWeatherStation> CREATOR = new Creator<SensorWeatherStation>() {
+    public static final Creator<CommonDigitalSensorInfo> CREATOR = new Creator<CommonDigitalSensorInfo>() {
         @Override
-        public SensorWeatherStation createFromParcel(Parcel in) {
-            return new SensorWeatherStation(in);
+        public CommonDigitalSensorInfo createFromParcel(Parcel in) {
+            return new CommonDigitalSensorInfo(in);
         }
 
         @Override
-        public SensorWeatherStation[] newArray(int size) {
-            return new SensorWeatherStation[size];
+        public CommonDigitalSensorInfo[] newArray(int size) {
+            return new CommonDigitalSensorInfo[size];
         }
     };
 
@@ -55,6 +54,14 @@ public class SensorWeatherStation implements SensorParameter, Parcelable {
         this.triggerThreshold = triggerThreshold;
     }
 
+    public String getMeasureLength() {
+        return measureLength;
+    }
+
+    public void setMeasureLength(String measureLength) {
+        this.measureLength = measureLength;
+    }
+
     public String getCorrectionValue() {
         return correctionValue;
     }
@@ -64,14 +71,10 @@ public class SensorWeatherStation implements SensorParameter, Parcelable {
     }
 
     @Override
-    public SensorType getSensorType() {
-        return SensorType.WEATHER_STATION;
-    }
-
-    @Override
     public String toString() {
-        return "SensorWeatherStation{" +
+        return "CommonDigitalSensorInfo{" +
                 "triggerThreshold='" + triggerThreshold + '\'' +
+                ", measureLength='" + measureLength + '\'' +
                 ", correctionValue='" + correctionValue + '\'' +
                 '}';
     }

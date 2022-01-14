@@ -14,14 +14,9 @@ import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.enums.SensorType;
+import com.shmedo.configlibrary.ble.model.CommonDigitalSensorInfo;
 import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
-import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
-import com.shmedo.configlibrary.ble.model.SensorPiezoelectricRainGauge;
-import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
-import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
-import com.shmedo.configlibrary.ble.model.SensorWeatherStation;
-import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -186,9 +181,9 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     if (parcelableData != null) {
-                        SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = (SensorPiezoelectricRainGauge) parcelableData;
-                        triggerThreshold = sensorPiezoelectricRainGauge.getTriggerThreshold();
-                        correctValue = sensorPiezoelectricRainGauge.getCorrectionValue();
+                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
+                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
+                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
                     }
                     break;
 
@@ -196,9 +191,9 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     if (parcelableData != null) {
-                        SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) parcelableData;
-                        triggerThreshold = sensorWireShiftInfo.getTriggerThreshold();
-                        correctValue = sensorWireShiftInfo.getCorrectionValue();
+                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
+                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
+                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
                     }
                     break;
 
@@ -206,9 +201,9 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     mTvAlarmValue.setText("报警值(单位:%rh)");
                     mTvCorrectValue.setText("修正值(单位:%rh)");
                     if (parcelableData != null) {
-                        SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) parcelableData;
-                        triggerThreshold = sensorSoilMoistureInfo.getTriggerThreshold();
-                        correctValue = sensorSoilMoistureInfo.getCorrectionValue();
+                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
+                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
+                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
                     }
                     break;
 
@@ -242,9 +237,9 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
                     if (parcelableData != null) {
-                        SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) parcelableData;
-                        triggerThreshold = sensorRadarLevelInfo.getTriggerThreshold();
-                        correctValue = sensorRadarLevelInfo.getCorrectionValue();
+                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
+                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
+                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
                     }
                     break;
 
@@ -252,9 +247,9 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     mTvAlarmValue.setText("报警值(单位:Hz)");
                     mTvCorrectValue.setText("修正值(单位:Hz)");
                     if (parcelableData != null) {
-                        SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) parcelableData;
-                        triggerThreshold = sensorInfrasoundInfo.getTriggerThreshold();
-                        correctValue = sensorInfrasoundInfo.getCorrectionValue();
+                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
+                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
+                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
                     }
                     break;
 
@@ -262,9 +257,19 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     mTvAlarmValue.setText("报警值(单位:m/s)");
                     mTvCorrectValue.setText("修正值(单位:m/s)");
                     if (parcelableData != null) {
-                        SensorWeatherStation sensorWeatherStation = (SensorWeatherStation) parcelableData;
-                        triggerThreshold = sensorWeatherStation.getTriggerThreshold();
-                        correctValue = sensorWeatherStation.getCorrectionValue();
+                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
+                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
+                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
+                    }
+                    break;
+
+                case STATIC_LEVEL://静力水准
+                    mTvAlarmValue.setText("报警值(单位:m/s)");
+                    mTvCorrectValue.setText("修正值(单位:m/s)");
+                    if (parcelableData != null) {
+                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
+                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
+                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
                     }
                     break;
             }
@@ -295,32 +300,22 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             Timber.w("传感器参数存在错误!");
             return;
         }
-
         Intent intent = getIntent();
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         switch (sensorType) {
-            case RAIN_GAUGE: {//压电式雨量计
-                SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = new SensorPiezoelectricRainGauge();
-                sensorPiezoelectricRainGauge.setTriggerThreshold(triggerThreshold);
-                sensorPiezoelectricRainGauge.setCorrectionValue(correctValue);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorPiezoelectricRainGauge);
-            }
-            break;
-
-            case WIRE_SHIFT: {//拉线位移计
-                SensorWireShiftInfo sensorWireShiftInfo = new SensorWireShiftInfo();
-                sensorWireShiftInfo.setTriggerThreshold(triggerThreshold);
-                sensorWireShiftInfo.setCorrectionValue(correctValue);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorWireShiftInfo);
-            }
-            break;
-
-            case SOIL_MOISTURE: {//土壤含水率
-                SensorSoilMoistureInfo sensorSoilMoistureInfo = new SensorSoilMoistureInfo();
-                sensorSoilMoistureInfo.setTriggerThreshold(triggerThreshold);
-                sensorSoilMoistureInfo.setCorrectionValue(correctValue);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorSoilMoistureInfo);
+            case RAIN_GAUGE://压电式雨量计
+            case WIRE_SHIFT://裂缝计
+            case SOIL_MOISTURE://管式含水率计
+            case RADAR_LEVEL_GAUGE://雷达物位计
+            case INFRASOUND://次声仪
+            case STATIC_LEVEL://静力水准
+            case WEATHER_STATION://气象计
+            {
+                CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
+                commonDigitalSensorInfo.setTriggerThreshold(triggerThreshold);
+                commonDigitalSensorInfo.setCorrectionValue(correctValue);
+                intent.putExtra(AppContants.Extras.SENSOR_PARAM, commonDigitalSensorInfo);
             }
             break;
 
@@ -340,32 +335,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorUltrasonicLevelInfo);
             }
             break;
-
-            case RADAR_LEVEL_GAUGE: {//雷达物位计
-                SensorRadarLevelInfo sensorRadarLevelInfo = new SensorRadarLevelInfo();
-                sensorRadarLevelInfo.setTriggerThreshold(triggerThreshold);
-                sensorRadarLevelInfo.setCorrectionValue(correctValue);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorRadarLevelInfo);
-            }
-            break;
-
-            case INFRASOUND: {//次声
-                SensorInfrasoundInfo sensorInfrasoundInfo = new SensorInfrasoundInfo();
-                sensorInfrasoundInfo.setTriggerThreshold(triggerThreshold);
-                sensorInfrasoundInfo.setCorrectionValue(correctValue);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInfrasoundInfo);
-            }
-            break;
-
-            case WEATHER_STATION: {//气象站
-                SensorWeatherStation sensorWeatherStation = new SensorWeatherStation();
-                sensorWeatherStation.setTriggerThreshold(triggerThreshold);
-                sensorWeatherStation.setCorrectionValue(correctValue);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorWeatherStation);
-            }
-            break;
         }
-
         setResult(RESULT_OK, intent);
         finish();
     }

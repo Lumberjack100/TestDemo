@@ -12,14 +12,9 @@ import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
+import com.shmedo.configlibrary.ble.model.CommonDigitalSensorInfo;
 import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
-import com.shmedo.configlibrary.ble.model.SensorInfrasoundInfo;
-import com.shmedo.configlibrary.ble.model.SensorPiezoelectricRainGauge;
-import com.shmedo.configlibrary.ble.model.SensorRadarLevelInfo;
-import com.shmedo.configlibrary.ble.model.SensorSoilMoistureInfo;
 import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
-import com.shmedo.configlibrary.ble.model.SensorWeatherStation;
-import com.shmedo.configlibrary.ble.model.SensorWireShiftInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 
@@ -149,57 +144,23 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             return "";
         }
         String command = "";
-        CollectorModel collectorModel = paramsInfoSub.getCollectorModel();
-        switch (collectorModel) {
-            case RAIN08://雨量采集器
-                SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = (SensorPiezoelectricRainGauge) paramsInfoSub.getSensorData();
+        SensorType sensorType = paramsInfoSub.getSensorType();
+        switch (sensorType) {
+            case RAIN_GAUGE://雨量计
+            case WIRE_SHIFT://裂缝计
+            case SOIL_MOISTURE://管式含水率计
+            case RADAR_LEVEL_GAUGE://雷达物位计
+            case INFRASOUND://次声仪
+            case STATIC_LEVEL://静力水准
+            case WEATHER_STATION://气象计
+                CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorPiezoelectricRainGauge.getTriggerThreshold() + "\r\n";
+                        commonDigitalSensorInfo.getTriggerThreshold() + "\r\n";
                 break;
 
-            case DS08://裂缝计采集器
-                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorWireShiftInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case CS08://次声采集器
-                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInfrasoundInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case HD08://土壤湿度采集器
-                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorSoilMoistureInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case UDS08://超声波采集器
-                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorUltrasonicLevelInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case RD08://雷达采集器
-                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorRadarLevelInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case CX08://测斜仪采集器
+            case INCLINOMETER: //测斜仪
                 SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
@@ -207,17 +168,16 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                         sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
                 break;
 
-            case QXZ://气象站
-                SensorWeatherStation sensorWeatherStation = (SensorWeatherStation) paramsInfoSub.getSensorData();
+            case ULTRASONIC_LEVEL_GAUGE: //超声波物位计
+                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorWeatherStation.getTriggerThreshold() + "\r\n";
+                        sensorUltrasonicLevelInfo.getTriggerThreshold() + "\r\n";
                 break;
         }
         return command;
     }
-
 
     /**
      * 设置采集器接入传感器修正值（只有墒情计用到3个修正值，其他传感器只用到一个修正值）
@@ -227,57 +187,23 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             return "";
         }
         String command = "";
-        CollectorModel collectorModel = paramsInfoSub.getCollectorModel();
-        switch (collectorModel) {
-            case RAIN08://雨量采集器
-                SensorPiezoelectricRainGauge sensorPiezoelectricRainGauge = (SensorPiezoelectricRainGauge) paramsInfoSub.getSensorData();
+        SensorType sensorType = paramsInfoSub.getSensorType();
+        switch (sensorType) {
+            case RAIN_GAUGE://雨量计
+            case WIRE_SHIFT://裂缝计
+            case SOIL_MOISTURE://管式含水率计
+            case RADAR_LEVEL_GAUGE://雷达物位计
+            case INFRASOUND://次声仪
+            case STATIC_LEVEL://静力水准
+            case WEATHER_STATION://气象计
+                CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorPiezoelectricRainGauge.getCorrectionValue() + "\r\n";
+                        commonDigitalSensorInfo.getCorrectionValue() + "\r\n";
                 break;
 
-            case DS08://裂缝计采集器
-                SensorWireShiftInfo sensorWireShiftInfo = (SensorWireShiftInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorWireShiftInfo.getCorrectionValue() + "\r\n";
-                break;
-
-            case CS08://次声采集器
-                SensorInfrasoundInfo sensorInfrasoundInfo = (SensorInfrasoundInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInfrasoundInfo.getCorrectionValue() + "\r\n";
-                break;
-
-            case HD08://土壤湿度采集器
-                SensorSoilMoistureInfo sensorSoilMoistureInfo = (SensorSoilMoistureInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorSoilMoistureInfo.getCorrectionValue() + "\r\n";
-                break;
-
-            case UDS08://超声波采集器
-                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorUltrasonicLevelInfo.getCorrectionValue() + "\r\n";
-                break;
-
-            case RD08://雷达采集器
-                SensorRadarLevelInfo sensorRadarLevelInfo = (SensorRadarLevelInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorRadarLevelInfo.getCorrectionValue() + "\r\n";
-                break;
-
-            case CX08://测斜仪采集器
+            case INCLINOMETER: //测斜仪
                 SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
@@ -285,12 +211,12 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                         sensorInclinometerInfo.getCorrectionValue() + "\r\n";
                 break;
 
-            case QXZ://气象站
-                SensorWeatherStation sensorWeatherStation = (SensorWeatherStation) paramsInfoSub.getSensorData();
+            case ULTRASONIC_LEVEL_GAUGE: //超声波物位计
+                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorWeatherStation.getCorrectionValue() + "\r\n";
+                        sensorUltrasonicLevelInfo.getCorrectionValue() + "\r\n";
                 break;
         }
         return command;
