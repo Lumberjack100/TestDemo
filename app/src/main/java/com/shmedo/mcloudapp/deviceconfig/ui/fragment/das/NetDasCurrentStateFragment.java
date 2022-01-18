@@ -243,7 +243,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         return R.layout.net_das_current_state_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initDataCenterAdapter();
@@ -266,7 +266,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initDataCenterAdapter() {
         dataCenterRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
+        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), getResources().getColor(R.color.transparent)));
         dataCenterAdapter = new CommonAdapter<DasNetStatusInfo>(getActivity(), R.layout.item_das_data_center_status, netStatusInfoList) {
             @Override
             protected void convert(CommonViewHolder holder, DasNetStatusInfo netStatusInfo, int position) {
@@ -298,7 +298,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), getResources().getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<DasSensorStatusInfo>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, DasSensorStatusInfo sensorStatusInfo, int position) {
@@ -376,6 +376,80 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         }
                         break;
 
+                        case LUYAN_INCLINOMETER: {//倾角仪
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_qingjiao));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "X轴角度(°)");
+                            holder.setText(R.id.tv_title2, "Y轴角度(°)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case WEIR: {//量水堰
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_weir));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "液位值(mm)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case STATIC_LEVEL: {//静力水准
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_weir));
+                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "沉降值(mm)");
+                            decimalFormat.applyPattern("#.##");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                        }
+                        break;
+
+                        case WEATHER_STATION: {//气象站
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_weather_station));
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, true);
+                            holder.setVisibleOrGone(R.id.value4Layout, true);
+                            holder.setVisibleOrGone(R.id.value5Layout, true);
+
+                            holder.setText(R.id.tv_title1, "风速(m/s)");
+                            holder.setText(R.id.tv_title2, "风向(°)");
+                            holder.setText(R.id.tv_title3, "湿度(%RH)");
+                            holder.setText(R.id.tv_title4, "温度(℃)");
+                            holder.setText(R.id.tv_title5, "气压(KPa)");
+
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 5) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                                holder.setText(R.id.tv_value4, decimalFormat.format(Double.parseDouble(values[3])));
+                                holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[4])));
+                            }
+                        }
+                        break;
+
+                        case TURBIDITY_METER://浊度仪传感器
+                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_turbidity_meter));
+                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "浊度(NTU)");
+                            decimalFormat.applyPattern("#.##");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                            break;
+
                         case KANG_PERCOLATE: {//基康渗压计
                             holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_kang_percolate));
                             holder.setVisibleOrGone(R.id.value2Layout, true);
@@ -441,70 +515,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             }
                         }
                         break;
-
-                        case WEATHER_STATION: {//气象站
-                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_weather_station));
-                            holder.setVisibleOrGone(R.id.value2Layout, true);
-                            holder.setVisibleOrGone(R.id.value3Layout, true);
-                            holder.setVisibleOrGone(R.id.value4Layout, true);
-                            holder.setVisibleOrGone(R.id.value5Layout, true);
-
-                            holder.setText(R.id.tv_title1, "风速(m/s)");
-                            holder.setText(R.id.tv_title2, "风向(°)");
-                            holder.setText(R.id.tv_title3, "湿度(%RH)");
-                            holder.setText(R.id.tv_title4, "温度(℃)");
-                            holder.setText(R.id.tv_title5, "气压(KPa)");
-
-                            String[] values = sensorStatusInfo.getVal().split(",");
-                            if (values.length >= 5) {
-                                decimalFormat.applyPattern("#.#");
-                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
-                                holder.setText(R.id.tv_value4, decimalFormat.format(Double.parseDouble(values[3])));
-                                holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[4])));
-                            }
-                        }
-                        break;
-
-                        case WEIR: {//量水堰
-                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_weir));
-                            holder.setVisibleOrGone(R.id.value2Layout, true);
-                            holder.setVisibleOrGone(R.id.value3Layout, false);
-                            holder.setText(R.id.tv_title1, "液位值(mm)");
-                            holder.setText(R.id.tv_title2, "渗流量(m³/s)");
-                            String[] values = sensorStatusInfo.getVal().split(",");
-                            if (values.length >= 2) {
-                                decimalFormat.applyPattern("#");
-                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                                decimalFormat.applyPattern("#.###");
-                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                            }
-                        }
-                        break;
-
-                        case TURBIDITY_METER://浊度仪传感器
-                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_turbidity_meter));
-                            holder.setVisibleOrGone(R.id.value2Layout, false);
-                            holder.setVisibleOrGone(R.id.value3Layout, false);
-                            holder.setText(R.id.tv_title1, "浊度(NTU)");
-                            decimalFormat.applyPattern("#.##");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
-                            break;
-
-                        case LUYAN_INCLINOMETER://倾角仪
-                            holder.setText(R.id.tv_sensor_name, StringUtils.getString(R.string.sensor_qingjiao));
-                            holder.setVisibleOrGone(R.id.value2Layout, true);
-                            holder.setVisibleOrGone(R.id.value3Layout, false);
-                            holder.setText(R.id.tv_title1, "X轴角度(°)");
-                            holder.setText(R.id.tv_title2, "Y轴角度(°)");
-                            String[] values = sensorStatusInfo.getVal().split(",");
-                            if (values.length >= 2) {
-                                decimalFormat.applyPattern("#.#");
-                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                            }
-                            break;
 
                         default:
                             holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");

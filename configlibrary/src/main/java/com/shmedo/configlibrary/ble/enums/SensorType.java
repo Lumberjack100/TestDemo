@@ -71,6 +71,8 @@ public enum SensorType {
      */
     WEIR("22", "量水堰计"),
 
+    STATIC_LEVEL("24", "静力水准"),
+
     /**
      * 气象站
      */
@@ -144,7 +146,7 @@ public enum SensorType {
             return UNKNOWN_TYPE;
 
         for (SensorType sensorType : SensorType.values()) {
-            if(sensorType.getCode().equals(code))
+            if (sensorType.getCode().equals(code))
                 return sensorType;
         }
 

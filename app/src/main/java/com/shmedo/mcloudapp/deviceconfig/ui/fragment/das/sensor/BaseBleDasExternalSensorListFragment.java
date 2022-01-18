@@ -109,7 +109,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         return R.layout.net_das_external_sensor_list_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initExtendSensorAdapter();
@@ -298,7 +298,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case COLLECTOR_CONFIG://采集器配置信息 100
+            case COLLECTOR_CONFIG://采集器配置信息 ##100
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询采集器配置信息指令出错!");
                     if (mRefreshLayout.isRefreshing()) {
@@ -334,7 +334,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 queryExtendSensorConfigInfo();
                 break;
 
-            case COLLECTOR_CHANNEL_SENSOR_PARAMETER://获取XX采集器YY通道的传感器参数 101
+            case COLLECTOR_CHANNEL_SENSOR_PARAMETER://获取XX采集器YY通道的传感器参数 ##101
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     if (mRefreshLayout.isRefreshing()) {
                         mRefreshLayout.finishRefresh(false);
@@ -392,46 +392,10 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         defaultCollectorSensorParamsInfo = new CollectorSensorParamsInfo();
         defaultCollectorSensorParamsInfo.setCollectorModel(CollectorModel.value(collectorCode));
         defaultCollectorSensorParamsInfo.setSensorData(null);
-        switch (CollectorModel.value(collectorCode)) {
-            case VW08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.KANG_PERCOLATE);
-                break;
-
-            case RAIN08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.RAIN_GAUGE);
-                break;
-
-            case DS08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.WIRE_SHIFT);
-                break;
-
-            case HD08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.SOIL_MOISTURE);
-                break;
-
-            case CX08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.INCLINOMETER);
-                break;
-
-            case UDS08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.ULTRASONIC_LEVEL_GAUGE);
-                break;
-
-            case RD08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.RADAR_LEVEL_GAUGE);
-                break;
-
-            case CS08:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.INFRASOUND);
-                break;
-
-            case QXZ:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.WEATHER_STATION);
-                break;
-
-            default:
-                defaultCollectorSensorParamsInfo.setSensorType(SensorType.UNKNOWN_TYPE);
-                break;
+        if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {
+            defaultCollectorSensorParamsInfo.setSensorType(SensorType.KANG_PERCOLATE);
+        } else {
+            defaultCollectorSensorParamsInfo.setSensorType(SensorType.value(collectorCode));
         }
     }
 

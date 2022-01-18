@@ -3,6 +3,8 @@ package com.shmedo.configlibrary.iot.enums;
 
 import android.text.TextUtils;
 
+import com.shmedo.configlibrary.ble.enums.CollectorModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +72,8 @@ public enum IOTSensorType {
      * 量水堰传感器
      */
     WEIR("22", "量水堰计"),
+
+    STATIC_LEVEL("24", "静力水准"),
 
     /**
      * 气象站
@@ -163,48 +167,10 @@ public enum IOTSensorType {
     }
 
     public static IOTSensorType getSensorTypeByCollectorCode(String code) {
-        switch (IOTCollectorModel.value(code)) {
-            case VW08:
-                return IOTSensorType.KANG_PERCOLATE;
-
-            case RAIN08:
-                return IOTSensorType.RAIN_GAUGE;
-
-            case DS08:
-                return IOTSensorType.WIRE_SHIFT;
-
-            case HD08:
-                return IOTSensorType.SOIL_MOISTURE;
-
-            case CX08:
-                return IOTSensorType.INCLINOMETER;
-
-            case UDS08:
-                return IOTSensorType.ULTRASONIC_LEVEL_GAUGE;
-
-            case RD08:
-                return IOTSensorType.RADAR_LEVEL_GAUGE;
-
-            case SMC08:
-                return IOTSensorType.MOISTURE_METER;
-
-            case TH08:
-                return IOTSensorType.TEMPERATURE_HUMIDITY_METER;
-
-            case CS08:
-                return IOTSensorType.INFRASOUND;
-
-            case QXZ:
-                return IOTSensorType.WEATHER_STATION;
-
-            case LSY:
-                return IOTSensorType.WEIR;
-
-            case QJY08:
-                return IOTSensorType.LUYAN_INCLINOMETER;
-
-            default:
-                return null;
+        if (CollectorModel.value(code) == CollectorModel.VW08) {
+            return IOTSensorType.KANG_PERCOLATE;
+        } else {
+            return IOTSensorType.value(code);
         }
     }
 }

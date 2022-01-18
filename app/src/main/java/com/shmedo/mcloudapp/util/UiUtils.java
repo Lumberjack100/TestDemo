@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
  * 包名：    com.shmedo.mcloudapp.util
  * 创建者:   dpc
  * 创建时间:  2019-12-27
- * 描述：    TODO #gh#
+ * 描述：
  */
 public class UiUtils {
     /**

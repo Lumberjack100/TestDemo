@@ -82,6 +82,11 @@ public enum IOTCollectorModel {
     LSY("22","量水堰计"),
 
     /**
+     * 静力水准
+     */
+    JLSZ("24", "静力水准"),
+
+    /**
      * 气象站
      */
     QXZ("25","气象计"),

@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.model;
 
 import android.text.TextUtils;
 
-import com.google.gson.internal.LinkedTreeMap;
+import java.util.LinkedHashMap;
 
 /**
  * 创建者:   gonghe <br/>
@@ -14,7 +14,7 @@ public class SensorScanResult {
     private String productor;
     private String sensortype;
     private String serealNum;
-    private LinkedTreeMap<String, String> param;
+    private LinkedHashMap<String, String> param;
 //    private LinearSensorParam param;
 
     public String getProductor() {
@@ -41,11 +41,11 @@ public class SensorScanResult {
         this.serealNum = serealNum;
     }
 
-    public LinkedTreeMap<String, String> getParam() {
+    public LinkedHashMap<String, String> getParam() {
         return param;
     }
 
-    public void setParam(LinkedTreeMap<String, String> param) {
+    public void setParam(LinkedHashMap<String, String> param) {
         this.param = param;
     }
 

@@ -12,7 +12,7 @@ import no.nordicsemi.android.ble.observer.ConnectionObserver;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/8/3 <br/>
- * 描述：     TODO
+ * 描述：
  */
 class ConnectionStateLiveData extends LiveData<ConnectionState> implements ConnectionObserver {
 

@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.GsonUtils;
-import com.google.gson.internal.LinkedTreeMap;
 import com.hjq.toast.ToastUtils;
 import com.huawei.hms.hmsscankit.ScanUtil;
 import com.huawei.hms.ml.scan.HmsScan;
@@ -34,6 +33,7 @@ import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -358,7 +358,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        LinkedTreeMap<String, String> paramMap = sensorScanResult.getParam();
+                        LinkedHashMap<String, String> paramMap = sensorScanResult.getParam();
                         if (paramMap == null) {
                             return;
                         }

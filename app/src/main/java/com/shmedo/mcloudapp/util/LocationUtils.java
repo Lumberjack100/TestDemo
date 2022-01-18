@@ -28,7 +28,7 @@ import timber.log.Timber;
  * 包名：    com.shmedo.mcloudapp.util
  * 创建者:   dpc
  * 创建时间:  2019-12-25
- * 描述：    TODO #gh#
+ * 描述：
  */
 public class LocationUtils {
     @SuppressLint("StaticFieldLeak")
