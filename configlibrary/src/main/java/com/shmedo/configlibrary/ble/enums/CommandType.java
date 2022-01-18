@@ -4,8 +4,7 @@ package com.shmedo.configlibrary.ble.enums;
  * Created by adu on 2017/12/11.
  */
 public enum CommandType {
-
-    /**1.系统参数配置与查询**/
+    //1.系统参数配置与查询
     /**
      * 获取基础配置信息
      */
@@ -169,6 +168,10 @@ public enum CommandType {
      * 设置测斜仪测段长（单位MM）（测斜采集器特有参数）
      */
     SET_INCLINOMETER_LONG("166"),
+    /**
+     * 设置静力水准高程(单位MM,静力水准采集器特有参数)
+     */
+    STATIC_LEVEL_ELEVATION("159"),
     /**
      * 设置振弦式传感器修正参数 (模拟量采集器特有参数)
      */

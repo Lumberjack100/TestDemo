@@ -11,7 +11,7 @@ import no.nordicsemi.android.ble.observer.BondingObserver;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/8/3 <br/>
- * 描述：     TODO
+ * 描述：
  */
 class BondingStateLiveData extends LiveData<BondState> implements BondingObserver {
 

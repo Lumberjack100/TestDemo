@@ -8,13 +8,10 @@ import androidx.annotation.NonNull;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
-import com.shmedo.configlibrary.ble.enums.CollectorModel;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.CollectorSensorParamsInfo;
 import com.shmedo.configlibrary.ble.model.CommonDigitalSensorInfo;
-import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
-import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 
@@ -57,7 +54,6 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             sendCloseCollectorCmd();
             return;
         }
-
         //##150zzxxXXXX\r\n：设置采集器接入的传感器
         StringBuilder builderFirst = new StringBuilder();
         builderFirst.append("##150");
@@ -70,14 +66,14 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
 
         commandItems.clear();
         commandItems.add(command);
+
         //超声波物位计使用多传感器触发阈值配置指令
-        if (CollectorModel.value(collectorCode) == CollectorModel.UDS08) {
+        if (SensorType.value(collectorCode) == SensorType.ULTRASONIC_LEVEL_GAUGE) {
             //获取触发值
             command = getMultiTriggerThreshold();
             if (!TextUtils.isEmpty(command)) {
                 commandItems.add(command);
             }
-
             for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
                 //获取修正值
                 command = getCorrectionValue(paramsInfoSub);
@@ -92,30 +88,34 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                 if (!TextUtils.isEmpty(command)) {
                     commandItems.add(command);
                 }
-
                 //获取修正值
                 command = getCorrectionValue(paramsInfoSub);
                 if (!TextUtils.isEmpty(command)) {
                     commandItems.add(command);
                 }
+                //静力水准需要额外设置高程
+                if (SensorType.value(collectorCode) == SensorType.STATIC_LEVEL) {
+                    command = getElevationValue(paramsInfoSub);
+                    if (!TextUtils.isEmpty(command)) {
+                        commandItems.add(command);
+                    }
+                }
             }
-
-            //测斜仪需要设置测段长
-            if (CollectorModel.value(collectorCode) == CollectorModel.CX08) {
+            //测斜仪需要额外设置测段长
+            if (SensorType.value(collectorCode) == SensorType.INCLINOMETER) {
                 command = getMeasureLongValue();
                 if (!TextUtils.isEmpty(command)) {
                     commandItems.add(command);
                 }
             }
         }
-
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
         sendCommand(commandItems.getFirst());
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, commandItems.getFirst());
     }
 
     /**
-     * 设置 超声波物位计 接入传感器触发阈值<br/>
+     * 获取 超声波物位计 接入传感器触发阈值指令<br/>
      * 指令格式: ##162xxX…X\r\n<br/>
      * xx表示采集器类型，X…X表示阀值，X…X由接入传感器数量N决定（4*N）<br/>
      * 例如：裂缝采集器接入两只拉线位移计，报警值分别30mm、40mm<br/>
@@ -127,7 +127,9 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
         stringBuilder.append("##162");
         stringBuilder.append(defaultCollectorSensorParamsInfo.getCollectorModel());
         for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
-            stringBuilder.append(getTriggerThresholdBySensorType(paramsInfoSub));
+            CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
+            String value = StringUtil.formatStringFour((int) Double.parseDouble(commonDigitalSensorInfo.getTriggerThreshold()) + "");
+            stringBuilder.append(value);
         }
         stringBuilder.append("\r\n");
         String command = String.valueOf(stringBuilder);
@@ -137,7 +139,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
     }
 
     /**
-     * 设置采集器接入传感器触发阈值(通用)
+     * 获取采集器接入传感器触发阈值(通用)指令
      */
     private String getSingleTriggerThreshold(CollectorSensorParamsInfo paramsInfoSub) {
         if (paramsInfoSub == null) {
@@ -149,6 +151,8 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case RAIN_GAUGE://雨量计
             case WIRE_SHIFT://裂缝计
             case SOIL_MOISTURE://管式含水率计
+            case INCLINOMETER: //测斜仪
+            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
             case RADAR_LEVEL_GAUGE://雷达物位计
             case INFRASOUND://次声仪
             case STATIC_LEVEL://静力水准
@@ -159,28 +163,12 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         commonDigitalSensorInfo.getTriggerThreshold() + "\r\n";
                 break;
-
-            case INCLINOMETER: //测斜仪
-                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInclinometerInfo.getTriggerThreshold() + "\r\n";
-                break;
-
-            case ULTRASONIC_LEVEL_GAUGE: //超声波物位计
-                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) paramsInfoSub.getSensorData();
-                command = "##168" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorUltrasonicLevelInfo.getTriggerThreshold() + "\r\n";
-                break;
         }
         return command;
     }
 
     /**
-     * 设置采集器接入传感器修正值（只有墒情计用到3个修正值，其他传感器只用到一个修正值）
+     * 获取采集器接入传感器修正值(只有墒情计用到3个修正值，其他传感器只用到一个修正值)指令
      */
     private String getCorrectionValue(CollectorSensorParamsInfo paramsInfoSub) {
         if (paramsInfoSub == null) {
@@ -192,6 +180,8 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case RAIN_GAUGE://雨量计
             case WIRE_SHIFT://裂缝计
             case SOIL_MOISTURE://管式含水率计
+            case INCLINOMETER: //测斜仪
+            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
             case RADAR_LEVEL_GAUGE://雷达物位计
             case INFRASOUND://次声仪
             case STATIC_LEVEL://静力水准
@@ -202,53 +192,38 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                         StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
                         commonDigitalSensorInfo.getCorrectionValue() + "\r\n";
                 break;
-
-            case INCLINOMETER: //测斜仪
-                SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorInclinometerInfo.getCorrectionValue() + "\r\n";
-                break;
-
-            case ULTRASONIC_LEVEL_GAUGE: //超声波物位计
-                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) paramsInfoSub.getSensorData();
-                command = "##165" +
-                        StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
-                        StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
-                        sensorUltrasonicLevelInfo.getCorrectionValue() + "\r\n";
-                break;
         }
         return command;
     }
 
     /**
-     * 设置测斜仪的测段长
+     * 获取测斜仪的测段长指令
      */
     private String getMeasureLongValue() {
         StringBuilder builderFirst = new StringBuilder();
         builderFirst.append("##166");
         builderFirst.append(defaultCollectorSensorParamsInfo.getSensorType());
         for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
-            SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) paramsInfoSub.getSensorData();
-            builderFirst.append(StringUtil.formatStringFive(sensorInclinometerInfo.getMeasureLength()));
+            CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
+            builderFirst.append(StringUtil.formatStringFive(commonDigitalSensorInfo.getExValue1()));
         }
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
         return command;
     }
 
-    private String getTriggerThresholdBySensorType(CollectorSensorParamsInfo infoSub) {
-        String value = "";
-        SensorType sensorType = infoSub.getSensorType();
-        switch (sensorType) {
-            case ULTRASONIC_LEVEL_GAUGE: {//超声波采集器
-                SensorUltrasonicLevelInfo sensorInfo = (SensorUltrasonicLevelInfo) infoSub.getSensorData();
-                value = StringUtil.formatStringFour((int) Double.parseDouble(sensorInfo.getTriggerThreshold()) + "");
-            }
-            break;
-        }
-        return value;
+    /**
+     * 获取静力水准高程指令
+     */
+    private String getElevationValue(CollectorSensorParamsInfo paramsInfoSub) {
+        String command = "";
+        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
+        command = "##159" +
+                StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                commonDigitalSensorInfo.getExValue1() + "\r\n";
+
+        return command;
     }
 
     @Override
@@ -271,7 +246,6 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                 break;
 
             case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值(单传感器设置) 168
-
             case COLLECTOR_SENSOR_THRESHOLD://传感器触发阈值(多传感器设置) 162
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("传感器触发阈值设置错误!");
@@ -303,6 +277,20 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case SET_INCLINOMETER_LONG: //设置测斜仪测段长 166
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("测段长设置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    return;
+                }
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
+                } else {
+                    doAfterSetting();
+                }
+                break;
+
+            case STATIC_LEVEL_ELEVATION: //设置静力水准高程
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("静力水准设置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }

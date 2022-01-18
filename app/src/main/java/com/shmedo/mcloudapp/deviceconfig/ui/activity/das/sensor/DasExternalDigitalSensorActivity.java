@@ -15,8 +15,6 @@ import androidx.fragment.app.Fragment;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.enums.SensorType;
 import com.shmedo.configlibrary.ble.model.CommonDigitalSensorInfo;
-import com.shmedo.configlibrary.ble.model.SensorInclinometerInfo;
-import com.shmedo.configlibrary.ble.model.SensorUltrasonicLevelInfo;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -97,7 +95,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
     private Parcelable parcelableData;
     private ArrayList<String> addressList = new ArrayList<>();
     private String sensorAddress, triggerThreshold, correctValue;
-    private String extension1, extension2, extension3;
+    private String exValue1, exValue2, exValue3;
 
 
     public static void startActivityForResultByFragment(Fragment context, int requestCode, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
@@ -129,7 +127,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent.getExtras() == null)
             return;
-
         if (intent.getExtras().containsKey(SENSOR_ITEM_LIST)) {
             addressList = intent.getStringArrayListExtra(SENSOR_ITEM_LIST);
         }
@@ -145,7 +142,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         if (!TextUtils.isEmpty(sensorAddress)) {
             addressList.remove(sensorAddress);
         }
-
         String sensorName = sensorType.getDescription();
         mToolbarTitle.setText(sensorName);
     }
@@ -155,16 +151,20 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         if (sensorType != null && sensorType == SensorType.INCLINOMETER) {
             extensionLayout1.setVisibility(View.VISIBLE);
         }
-        //量水堰计
-        if (sensorType != null && sensorType == SensorType.WEIR) {
-            extensionLayout1.setVisibility(View.VISIBLE);
-            extensionLayout2.setVisibility(View.VISIBLE);
-        }
         //倾角仪
         if (sensorType != null && sensorType == SensorType.LUYAN_INCLINOMETER) {
             correctionLayout.setVisibility(View.GONE);
             extensionLayout1.setVisibility(View.VISIBLE);
             extensionLayout2.setVisibility(View.VISIBLE);
+        }
+        //量水堰计
+        if (sensorType != null && sensorType == SensorType.WEIR) {
+            extensionLayout1.setVisibility(View.VISIBLE);
+            extensionLayout2.setVisibility(View.VISIBLE);
+        }
+        //静力水准
+        if (sensorType != null && sensorType == SensorType.STATIC_LEVEL) {
+            extensionLayout1.setVisibility(View.VISIBLE);
         }
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
@@ -176,105 +176,71 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
 
     private void initValue() {
         try {
+            if (parcelableData != null) {
+                CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
+                triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
+                correctValue = commonDigitalSensorInfo.getCorrectionValue();
+                exValue1 = commonDigitalSensorInfo.getExValue1();
+                exValue2 = commonDigitalSensorInfo.getExValue2();
+                exValue3 = commonDigitalSensorInfo.getExValue3();
+            }
             switch (sensorType) {
-                case RAIN_GAUGE://压电式雨量计
+                case RAIN_GAUGE://雨量计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
-                    if (parcelableData != null) {
-                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
-                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
-                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
-                    }
                     break;
 
-                case WIRE_SHIFT://拉线位移计
+                case WIRE_SHIFT://裂缝计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
-                    if (parcelableData != null) {
-                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
-                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
-                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
-                    }
                     break;
 
-                case SOIL_MOISTURE://土壤含水率
+                case SOIL_MOISTURE://管式含水率计
                     mTvAlarmValue.setText("报警值(单位:%rh)");
                     mTvCorrectValue.setText("修正值(单位:%rh)");
-                    if (parcelableData != null) {
-                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
-                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
-                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
-                    }
                     break;
 
                 case INCLINOMETER://测斜仪
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     mTvExtension1.setText("测段长(单位:mm)");
-                    if (parcelableData != null) {
-                        SensorInclinometerInfo sensorInclinometerInfo = (SensorInclinometerInfo) parcelableData;
-                        triggerThreshold = sensorInclinometerInfo.getTriggerThreshold();
-                        correctValue = sensorInclinometerInfo.getCorrectionValue();
-                        extension1 = sensorInclinometerInfo.getMeasureLength();
-                        if (!TextUtils.isEmpty(extension1)) {
-                            extension1 = decimalFormat.format(Double.parseDouble(extension1));
-                            mEtExtension1.setText(extension1);
-                        }
+                    if (!TextUtils.isEmpty(exValue1)) {
+                        exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
+                        mEtExtension1.setText(exValue1);
                     }
                     break;
 
                 case ULTRASONIC_LEVEL_GAUGE://超声波物位计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
-                    if (parcelableData != null) {
-                        SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = (SensorUltrasonicLevelInfo) parcelableData;
-                        triggerThreshold = sensorUltrasonicLevelInfo.getTriggerThreshold();
-                        correctValue = sensorUltrasonicLevelInfo.getCorrectionValue();
-                    }
                     break;
 
                 case RADAR_LEVEL_GAUGE://雷达物位计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
-                    if (parcelableData != null) {
-                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
-                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
-                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
-                    }
                     break;
 
-                case INFRASOUND://次声
+                case INFRASOUND://次声仪
                     mTvAlarmValue.setText("报警值(单位:Hz)");
                     mTvCorrectValue.setText("修正值(单位:Hz)");
-                    if (parcelableData != null) {
-                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
-                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
-                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
-                    }
-                    break;
-
-                case WEATHER_STATION://气象站
-                    mTvAlarmValue.setText("报警值(单位:m/s)");
-                    mTvCorrectValue.setText("修正值(单位:m/s)");
-                    if (parcelableData != null) {
-                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
-                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
-                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
-                    }
                     break;
 
                 case STATIC_LEVEL://静力水准
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("修正值(单位:mm)");
+                    mTvExtension1.setText("高程(单位:mm)");
+                    if (!TextUtils.isEmpty(exValue1)) {
+                        exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
+                        mEtExtension1.setText(exValue1);
+                    }
+                    break;
+
+                case WEATHER_STATION://气象计
                     mTvAlarmValue.setText("报警值(单位:m/s)");
                     mTvCorrectValue.setText("修正值(单位:m/s)");
-                    if (parcelableData != null) {
-                        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) parcelableData;
-                        triggerThreshold = commonDigitalSensorInfo.getTriggerThreshold();
-                        correctValue = commonDigitalSensorInfo.getCorrectionValue();
-                    }
                     break;
             }
             mEtModbusAddress.setText(sensorAddress);
-
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
                 mEtAlarmValue.setText(triggerThreshold);
@@ -304,9 +270,11 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         switch (sensorType) {
-            case RAIN_GAUGE://压电式雨量计
+            case RAIN_GAUGE://雨量计
             case WIRE_SHIFT://裂缝计
             case SOIL_MOISTURE://管式含水率计
+            case INCLINOMETER://测斜仪
+            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
             case RADAR_LEVEL_GAUGE://雷达物位计
             case INFRASOUND://次声仪
             case STATIC_LEVEL://静力水准
@@ -315,24 +283,13 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
                 commonDigitalSensorInfo.setTriggerThreshold(triggerThreshold);
                 commonDigitalSensorInfo.setCorrectionValue(correctValue);
+                if (!TextUtils.isEmpty(exValue1))
+                    commonDigitalSensorInfo.setExValue1(exValue1);
+                if (!TextUtils.isEmpty(exValue2))
+                    commonDigitalSensorInfo.setExValue2(exValue2);
+                if (!TextUtils.isEmpty(exValue3))
+                    commonDigitalSensorInfo.setExValue3(exValue3);
                 intent.putExtra(AppContants.Extras.SENSOR_PARAM, commonDigitalSensorInfo);
-            }
-            break;
-
-            case INCLINOMETER: {//测斜仪
-                SensorInclinometerInfo sensorInclinometerInfo = new SensorInclinometerInfo();
-                sensorInclinometerInfo.setTriggerThreshold(triggerThreshold);
-                sensorInclinometerInfo.setCorrectionValue(correctValue);
-                sensorInclinometerInfo.setMeasureLength(extension1);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInclinometerInfo);
-            }
-            break;
-
-            case ULTRASONIC_LEVEL_GAUGE: {//超声波物位计
-                SensorUltrasonicLevelInfo sensorUltrasonicLevelInfo = new SensorUltrasonicLevelInfo();
-                sensorUltrasonicLevelInfo.setTriggerThreshold(triggerThreshold);
-                sensorUltrasonicLevelInfo.setCorrectionValue(correctValue);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorUltrasonicLevelInfo);
             }
             break;
         }
@@ -344,10 +301,8 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         sensorAddress = mEtModbusAddress.getText().toString().trim();
         triggerThreshold = mEtAlarmValue.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
-
-        extension1 = mEtExtension1.getText().toString().trim();
-        extension2 = mEtExtension2.getText().toString().trim();
-
+        exValue1 = mEtExtension1.getText().toString().trim();
+        exValue2 = mEtExtension2.getText().toString().trim();
         if (TextUtils.isEmpty(sensorAddress)) {
             ToastUtils.show("传感器地址不能为空!");
             mEtModbusAddress.requestFocus();
@@ -358,6 +313,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             mEtModbusAddress.requestFocus();
             return false;
         }
+
         int num = 0;
         for (String ss : addressList) {
             if (ss.equals(sensorAddress)) {
@@ -398,17 +354,33 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             return false;
         }
 
-        if (sensorType.toString().equals("04")) {
-            if (TextUtils.isEmpty(extension1)) {
+        if (sensorType == SensorType.INCLINOMETER) {
+            if (TextUtils.isEmpty(exValue1)) {
                 ToastUtils.show("测段长值不能为空!");
                 mEtExtension1.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(extension1);
+                double value = Double.parseDouble(exValue1);
 
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的测段长值!");
+                mEtExtension1.requestFocus();
+                return false;
+            }
+        }
+
+        if (sensorType == SensorType.STATIC_LEVEL) {
+            if (TextUtils.isEmpty(exValue1)) {
+                ToastUtils.show("高程值不能为空!");
+                mEtExtension1.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(exValue1);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的高程值!");
                 mEtExtension1.requestFocus();
                 return false;
             }

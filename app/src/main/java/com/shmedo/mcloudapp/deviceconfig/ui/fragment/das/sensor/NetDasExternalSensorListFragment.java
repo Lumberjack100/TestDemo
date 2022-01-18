@@ -142,7 +142,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         return R.layout.net_das_external_sensor_list_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initExtendSensorAdapter();
@@ -352,13 +352,14 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             entity.setSpacing(externalSensorInfo.getSpacing());
             entity.setHolenum(externalSensorInfo.getHolenum());
 
-        } else if (externalSensorInfo.getType().equals("22")) {//量水堰计
-            entity.setLsycsds(externalSensorInfo.getLsycsds());
-            entity.setLsyysst(externalSensorInfo.getLsyysst());
-
         } else if (externalSensorInfo.getType().equals("16")) {//倾角仪
             entity.setInitvalx(externalSensorInfo.getInitvalx());
             entity.setInitvaly(externalSensorInfo.getInitvaly());
+        } else if (externalSensorInfo.getType().equals("22")) {//量水堰计
+            entity.setLsycsds(externalSensorInfo.getLsycsds());
+            entity.setLsyysst(externalSensorInfo.getLsyysst());
+        } else if (externalSensorInfo.getType().equals("24")) {//静力水准
+            entity.setSpacing(externalSensorInfo.getTubealti());
         }
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
@@ -390,7 +391,8 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
      * @param dispatchCmdItemList
      */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String
+            cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
