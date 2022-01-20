@@ -383,7 +383,11 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 break;
 
             default:
-                super.parseResponseMessage(cmdStr);
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("指令出错!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    return;
+                }
                 break;
         }
     }

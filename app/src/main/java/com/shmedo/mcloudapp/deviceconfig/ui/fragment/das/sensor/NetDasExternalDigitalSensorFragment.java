@@ -207,7 +207,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 case STATIC_LEVEL://静力水准
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
-                    mTvExtension1.setText("高程(单位:mm)");
+                    mTvExtension1.setText("高程(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
                     if (!TextUtils.isEmpty(exValue1)) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
