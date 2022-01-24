@@ -33,7 +33,9 @@ public enum AdmeModuleErrorType {
 
     ERROR_WIRING_JMQ("12", "计米器接线错误"),
 
-    INSUFFICIENT_BASE_PULSE_JMQ("13", "计米器基数脉冲不足");
+    INSUFFICIENT_BASE_PULSE_JMQ("13", "计米器基数脉冲不足"),
+
+    XF_TIME_OUT("14", "下放超时");
 
 
     AdmeModuleErrorType(String code, String description) {
@@ -60,7 +62,6 @@ public enum AdmeModuleErrorType {
             if (errorType.getCode().equals(code))
                 return errorType;
         }
-
         return null;
     }
 
@@ -72,7 +73,6 @@ public enum AdmeModuleErrorType {
             if (sensorType.getDescription().equals(desc))
                 return sensorType;
         }
-
         return null;
     }
 }
