@@ -49,7 +49,9 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
-
+        <activity
+            android:name=".deviceconfig.ui.activity.adme.AnthropomorphicMovementActivity"
+            android:exported="true" />
         <!-- 声明最小宽高比 -->
         <meta-data
             android:name="android.min_aspect"
@@ -66,20 +68,16 @@
         <meta-data
             android:name="PGYER_API_KEY"
             android:value="${pgyerKey}" />
-
         <meta-data
             android:name="PGYER_FRONTJS_KEY"
-            android:value="${frontJSToken}"/>
-
+            android:value="${frontJSToken}" />
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${buglyAppId}" /> <!-- 配置APP版本号 -->
-
         <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
             android:value="false" />
-
         <meta-data
             android:name="UMENG_APP_KEY"
             android:value="${umengAppkey}" />
@@ -106,12 +104,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-       <!--     <intent-filter>
+            <!--
+                <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="um.618cdd28e014255fcb75af8a" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name=".common.ui.activity.LoginActivity"
@@ -122,8 +122,7 @@
             android:name=".common.ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".maps.ui.activity.MapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -404,7 +403,6 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.adme.AdmeLowEnergyModeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -417,7 +415,6 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.adme.AdmeVoltageConfigActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -425,6 +422,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
 
+        <activity
+            android:name=".deviceconfig.ui.activity.adme.AnthropomorphicMovementActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".deviceconfig.ui.activity.e40.E40EthernetActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
