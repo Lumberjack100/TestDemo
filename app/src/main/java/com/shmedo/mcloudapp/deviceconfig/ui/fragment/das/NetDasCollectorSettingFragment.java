@@ -311,6 +311,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             break;
 
             default:
+                mRefreshLayout.finishRefresh(true);
                 break;
         }
     }

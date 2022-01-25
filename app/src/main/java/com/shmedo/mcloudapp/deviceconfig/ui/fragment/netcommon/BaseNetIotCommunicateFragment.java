@@ -282,9 +282,15 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
 
     private void processCmdResult(QueryCmdResult queryCmdResult) {
         if (queryCmdResult.getCmdStatus() == 2) {//已下发得到响应
-            stopQueryCmdResponse();
-            onQueryCmdResponseResultSuccess(queryCmdResult);
             try {
+                stopQueryCmdResponse();
+                if (TextUtils.isEmpty(queryCmdResult.getCmdEngName())) {
+                    String cmdContent = queryCmdResult.getCmdContent();
+                    String cmdEngName = cmdContent.substring(0, cmdContent.indexOf("&"));
+                    queryCmdResult.setCmdEngName(cmdEngName);
+                }
+                onQueryCmdResponseResultSuccess(queryCmdResult);
+
                 IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
                 String content = queryCmdResult.getResponseContent();
                 Map<String, Object> valueMap = new HashMap<String, Object>();

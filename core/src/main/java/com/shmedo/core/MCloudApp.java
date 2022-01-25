@@ -36,9 +36,9 @@ public class MCloudApp {
     private static String curDeviceToken;//设备名称
     private static List<UserPermissionInfo> userPermissionInfoList = new ArrayList<>();//用户在某公司某服务中的所有权限
 
-    private static final String authorityServiceAddress = "http://172.168.5.200:10082";//物联网权限服务地址
-    private static final String iotManagerServiceAddress = "http://172.168.5.200:10081";//物联网设备管理服务地址
-    private static final String iotInteractiveServiceAddress = "http://172.168.5.200:10083";//物联网指令交互服务地址
+    private static final String authorityServiceAddress = "https://mdiotbff.shmedo.cn";//物联网权限服务地址
+    private static final String iotManagerServiceAddress = "https://mdiotbff.shmedo.cn";//物联网设备管理服务地址
+    private static final String iotInteractiveServiceAddress = "https://mdiotbff.shmedo.cn";//物联网指令交互服务地址
     private static final String cloudPlatformDataAddress = "https://chaxun.shmedo.cn";//云平台原始数据地址
 
 
@@ -71,15 +71,15 @@ public class MCloudApp {
     }
 
     public static String getAuthorityServiceAddress() {
-        return authorityServiceAddress + "/auth/api/v1/";
+        return authorityServiceAddress + "/api/v1/auth/";
     }
 
     public static String getIotManagerServiceAddress() {
-        return iotManagerServiceAddress + "/iot/manager/api/v1/";
+        return iotManagerServiceAddress + "/api/v1/iot/";
     }
 
     public static String getIotInteractiveServiceAddress() {
-        return iotInteractiveServiceAddress + "/iot/interactive/api/v1/";
+        return iotInteractiveServiceAddress + "/api/v1/interactive/";
     }
 
     public static String getCloudPlatformDataAddress() {
