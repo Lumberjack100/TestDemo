@@ -7,35 +7,24 @@
     android:background="@color/main_bg_gray"
     tools:context=".deviceconfig.ui.fragment.adme.NetAdmeLowEnergyModeFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <RelativeLayout style="@style/SwitchButton_LayoutStyle"
+        android:layout_marginTop="10dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="10dp" />
+        <TextView
+            style="@style/SwitchButton_TitleStyle"
+            android:text="低功耗使能" />
 
-        <RelativeLayout style="@style/SwitchButton_LayoutStyle">
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/lowEnableSBtn"
+            style="@style/SwitchButton_ButtonStyle"
+            app:kswAnimationDuration="100"
+            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+            app:kswThumbHeight="28dp"
+            app:kswThumbRangeRatio="2"
+            app:kswThumbWidth="28dp" />
 
-            <TextView
-                style="@style/SwitchButton_TitleStyle"
-                android:text="低功耗使能" />
-
-
-            <com.kyleduo.switchbutton.SwitchButton
-                android:id="@+id/lowEnableSBtn"
-                style="@style/SwitchButton_ButtonStyle"
-                app:kswAnimationDuration="100"
-                app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                app:kswThumbHeight="28dp"
-                app:kswThumbRangeRatio="2"
-                app:kswThumbWidth="28dp" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/maskLayerLayout"

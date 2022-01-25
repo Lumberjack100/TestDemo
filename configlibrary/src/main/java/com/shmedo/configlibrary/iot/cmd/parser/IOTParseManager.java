@@ -3,6 +3,7 @@ package com.shmedo.configlibrary.iot.cmd.parser;
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeAnthropomorphicMovementInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeCurrentStateInfoParser;
@@ -184,6 +185,7 @@ public class IOTParseManager {
                 AdmeLowEnergyModeInfoParser.class,
                 AdmeLockedRotorDetectionInfoParser.class,
                 AdmeVoltageConfigParser.class,
+                AdmeAnthropomorphicMovementInfoParser.class,
                 M20BaseInfoParser.class,
                 E40SatelitteInfoParser.class,
                 E40RTKModeInfoParser.class,

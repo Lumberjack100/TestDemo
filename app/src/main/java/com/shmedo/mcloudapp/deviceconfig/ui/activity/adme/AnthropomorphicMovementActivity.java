@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeVoltageConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeVoltageConfigFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAnthropomorphicMovementFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAnthropomorphicMovementFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
 public class AnthropomorphicMovementActivity extends BaseConfigFragmentContainerActivity {
@@ -38,10 +38,10 @@ public class AnthropomorphicMovementActivity extends BaseConfigFragmentContainer
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAdmeVoltageConfigFragment.newInstance(projectDeviceInfo);
+            fragment = NetAnthropomorphicMovementFragment.newInstance(projectDeviceInfo);
 
         } else {
-            fragment = BleAdmeVoltageConfigFragment.newInstance();
+            fragment = BleAnthropomorphicMovementFragment.newInstance();
         }
         return fragment;
     }

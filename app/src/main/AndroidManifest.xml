@@ -49,9 +49,7 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AnthropomorphicMovementActivity"
-            android:exported="true" />
+
         <!-- 声明最小宽高比 -->
         <meta-data
             android:name="android.min_aspect"
@@ -122,7 +120,7 @@
             android:name=".common.ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".maps.ui.activity.MapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
