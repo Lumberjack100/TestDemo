@@ -260,7 +260,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
      * 处理新设备条码规则，例如：https://cloud.shmedo.cn/mcloudapp/device?sn=189150L
      */
     private void parseNewDeviceCode(String barCode) {
-        if (!barCode.startsWith("https://cloud.shmedo.cn/mcloudapp/device?sn=")) {
+        if (!barCode.startsWith("https://cloud.shmedo.cn/mcloudapp/device")) {
             showTipDialog("请扫描正确的设备二维码");
             return;
         }
