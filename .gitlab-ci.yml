@@ -24,18 +24,12 @@ before_script:
 stages:
   - build
 
-Debug:
-  stage: build
-  script:
-    - ./gradlew assembleDebug
-  artifacts:
-    paths:
-      - app/build/outputs/apk/debug/*.apk
 
 Release:
   stage: build
   script:
     - ./gradlew assembleRelease
+    - curl "https://oapi.dingtalk.com/robot/send?access_token=44d67f896e57515b7c86dc22d46e958d6b6125805259b15cc43ebf468fc8fc27" -XPOST -H 'content-type:application/json' -d '{"msgtype":"text","text":{"content":"@13915272257【米易通2.0】打包完成，下载地址：https://www.pgyer.com/miyitong"},"at":{"atMobiles":["13915272257"],"isAtAll":false}}'
   artifacts:
     paths:
-      - app/build/outputs/apk/release/*.apk
+      - app/build/outputs/apk/release/mcloudapp_v2.apk
