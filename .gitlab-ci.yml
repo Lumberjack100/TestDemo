@@ -1,35 +1,34 @@
-image: openjdk:8-jdk
+image: jangrewe/gitlab-ci-android
 
-variables:
-  ANDROID_COMPILE_SDK: "30"
-  ANDROID_BUILD_TOOLS: "30.0.2"
-  ANDROID_SDK_TOOLS:   "4333796"
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+    - .gradle/
 
 before_script:
-  - apt-get --quiet update --yes
-  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
-  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip
-  - unzip -d android-sdk-linux android-sdk.zip
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
-  - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
   - chmod +x ./gradlew
-  # temporarily disable checking for EPIPE error and use yes to accept all licenses
-  - set +o pipefail
-  - yes | android-sdk-linux/tools/bin/sdkmanager --licenses
-  - set -o pipefail
 
 stages:
   - build
 
-
-Release:
+Debug:
   stage: build
+  only:
+    - develop_v2.0
+    - tags
   script:
-    - ./gradlew assembleRelease
+    - ./gradlew assembleDebug
     - curl "https://oapi.dingtalk.com/robot/send?access_token=44d67f896e57515b7c86dc22d46e958d6b6125805259b15cc43ebf468fc8fc27" -XPOST -H 'content-type:application/json' -d '{"msgtype":"text","text":{"content":"@13915272257【米易通2.0】打包完成，下载地址：https://www.pgyer.com/miyitong"},"at":{"atMobiles":["13915272257"],"isAtAll":false}}'
   artifacts:
     paths:
-      - app/build/outputs/apk/release/mcloudapp_v2.apk
+      - app/build/outputs/apk/mcloudapp_v2_debug.apk
+
+#Release:
+#  stage: build
+#  script:
+#    - ./gradlew assembleRelease
+#    - curl "https://oapi.dingtalk.com/robot/send?access_token=44d67f896e57515b7c86dc22d46e958d6b6125805259b15cc43ebf468fc8fc27" -XPOST -H 'content-type:application/json' -d '{"msgtype":"text","text":{"content":"@13915272257【米易通2.0】打包完成，下载地址：https://www.pgyer.com/miyitong"},"at":{"atMobiles":["13915272257"],"isAtAll":false}}'
+#  artifacts:
+#    paths:
+#      - app/build/outputs/apk/mcloudapp_v2.apk
