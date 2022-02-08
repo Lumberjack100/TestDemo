@@ -17,7 +17,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeAnthropomorphicMovementE
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.adme.AdmeLowEnergyModeInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeAnthropomorphicMovementInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -107,16 +107,16 @@ public class BleAnthropomorphicMovementFragment extends BaseUSRBleIotCommunicate
         switch (type) {
             case ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE: {
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                IOTCommandResult<AdmeLowEnergyModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<AdmeAnthropomorphicMovementInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询拟人运动使能状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                AdmeLowEnergyModeInfo admeLowEnergyModeInfo = commandResult.getResult();
-                if (admeLowEnergyModeInfo != null) {
-                    if (admeLowEnergyModeInfo.getMode().trim().equals("0")) {
+                AdmeAnthropomorphicMovementInfo anthropomorphicMovementInfo = commandResult.getResult();
+                if (anthropomorphicMovementInfo != null) {
+                    if (anthropomorphicMovementInfo.getMode().trim().equals("0")) {
                         mSbEnable.setCheckedImmediatelyNoEvent(false);
                     } else {
                         mSbEnable.setCheckedImmediatelyNoEvent(true);
