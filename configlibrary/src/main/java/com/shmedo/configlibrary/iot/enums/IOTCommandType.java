@@ -375,7 +375,6 @@ public enum IOTCommandType {
      */
     ADME_MD_SET_AUTO_MEASURING_HOLEDEPTH("md_setautomhdmeasth"),
 
-
     /**
      * 查询ADME测孔深运动的脉冲数、运动距离
      */
@@ -445,6 +444,16 @@ public enum IOTCommandType {
      * 设置ADME的电压配置参数
      */
     ADME_MD_SET_VOLTAGE("md_setvolt"),
+
+    /**
+     * 获取ADME的拟人运动使能参数
+     */
+    ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE("md_getanthrmove"),
+
+    /**
+     * 设置ADME的拟人运动使能参数
+     */
+    ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE("md_setanthrmove"),
 
     /*　 M20 指令  */
     /**

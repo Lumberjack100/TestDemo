@@ -130,43 +130,6 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 }
             }
         }
-//        switch (iotSensorType) {
-//            case KANG_PERCOLATE://基康渗压计(BGK-4500)
-//                mTvSensorType.setText(sensorTypeList.get(0));
-//                sensorBGK4500View.setVisibility(View.VISIBLE);
-//                sensorVWP03View.setVisibility(View.GONE);
-//                sensorZLJ300tView.setVisibility(View.GONE);
-//                sensorYLJView.setVisibility(View.GONE);
-//                sensorBGK4500View.initData(externalSensorInfo);
-//                break;
-//
-//            case GUDAN_PERCOLATE://葛南渗压计(VWP-03)
-//                mTvSensorType.setText(sensorTypeList.get(1));
-//                sensorBGK4500View.setVisibility(View.GONE);
-//                sensorVWP03View.setVisibility(View.VISIBLE);
-//                sensorZLJ300tView.setVisibility(View.GONE);
-//                sensorYLJView.setVisibility(View.GONE);
-//                sensorVWP03View.initData(externalSensorInfo);
-//                break;
-//
-//            case JUNXING_ZLJ_300T://轴力计(ZLJ-300T)
-//                mTvSensorType.setText(sensorTypeList.get(2));
-//                sensorBGK4500View.setVisibility(View.GONE);
-//                sensorVWP03View.setVisibility(View.GONE);
-//                sensorZLJ300tView.setVisibility(View.VISIBLE);
-//                sensorYLJView.setVisibility(View.GONE);
-//                sensorZLJ300tView.initData(externalSensorInfo);
-//                break;
-//
-//            case GUDAN_STRESS://应力计
-//                mTvSensorType.setText(sensorTypeList.get(3));
-//                sensorBGK4500View.setVisibility(View.GONE);
-//                sensorVWP03View.setVisibility(View.GONE);
-//                sensorZLJ300tView.setVisibility(View.GONE);
-//                sensorYLJView.setVisibility(View.VISIBLE);
-//                sensorYLJView.initData(externalSensorInfo);
-//        }
-
         if (iotSensorType == IOTSensorType.KANG_PERCOLATE) {
             switchSensorType(sensorTypeList.get(0));
 

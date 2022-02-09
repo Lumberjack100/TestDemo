@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_bg_gray"
-    tools:context=".deviceconfig.ui.fragment.adme.NetAdmeLowEnergyModeFragment">
+    tools:context=".deviceconfig.ui.fragment.adme.NetAnthropomorphicMovementFragment">
 
     <RelativeLayout style="@style/SwitchButton_LayoutStyle"
         android:layout_marginTop="10dp">
 
         <TextView
             style="@style/SwitchButton_TitleStyle"
-            android:text="低功耗使能" />
+            android:text="拟人运动使能" />
 
         <com.kyleduo.switchbutton.SwitchButton
-            android:id="@+id/lowEnableSBtn"
+            android:id="@+id/paramEnableSBtn"
             style="@style/SwitchButton_ButtonStyle"
             app:kswAnimationDuration="100"
             app:kswBackDrawable="@drawable/sl_switchbutton_back"

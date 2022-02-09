@@ -1,0 +1,18 @@
+package com.shmedo.configlibrary.iot.model.adme;
+
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2022/1/25 <br/>
+ * 描述：     ADME 拟人运动控制
+ */
+public class AdmeAnthropomorphicMovementInfo {
+    private String mode;//工作模式(0:关闭拟人运动，1:开启拟人运动)
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+}

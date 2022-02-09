@@ -94,7 +94,6 @@ public class SensorZLJ300tView extends FrameLayout {
         if (sensorInfo != null) {
             try {
                 mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%.0f", Double.parseDouble(sensorInfo.getTriggerThreshold())));
-
                 decimalFormat.applyPattern("#.###");
                 mEtCorrectValue.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getManualCorrection())));
                 mEtSensitivityK.setText(sensorInfo.getSensitivityK());
@@ -114,13 +113,11 @@ public class SensorZLJ300tView extends FrameLayout {
         }
         try {
             sensorInfo.setTriggerThreshold(triggerThreshold);
-
             decimalFormat.applyPattern("#.###");
             sensorInfo.setManualCorrection(TextUtils.isEmpty(correctValue) ? "0" : decimalFormat.format(Double.parseDouble(correctValue)));
             sensorInfo.setSensitivityK(coefficientK);
             sensorInfo.setTemperatureCoefficientB(TextUtils.isEmpty(coefficientB) ? "0" : coefficientB);
             sensorInfo.setReferenceValue(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
-
             decimalFormat.applyPattern("#.##");
             sensorInfo.setCreateTemperature(TextUtils.isEmpty(initialTemperature) ? "0" : decimalFormat.format(Double.parseDouble(initialTemperature)));
         } catch (Exception ex) {
@@ -134,13 +131,11 @@ public class SensorZLJ300tView extends FrameLayout {
         if (sensorInfo != null) {
             try {
                 mEtTriggerThreshold.setText(String.format(Locale.getDefault(), "%d", (int) Double.parseDouble(sensorInfo.getThreshold())));
-
                 decimalFormat.applyPattern("#.###");
                 mEtCorrectValue.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getCorrval())));
                 mEtSensitivityK.setText(sensorInfo.getSens_k());
                 mEtTemperatureCoefficient.setText(sensorInfo.getTemp_b());
                 mEtReferenceValue.setText(sensorInfo.getReferval_f());
-
                 decimalFormat.applyPattern("#.##");
                 mEtInitialTemperature.setText(decimalFormat.format(Double.parseDouble(sensorInfo.getTemp_t0())));
             } catch (Exception ex) {
@@ -157,11 +152,9 @@ public class SensorZLJ300tView extends FrameLayout {
             sensorInfo.setThreshold(triggerThreshold);
             decimalFormat.applyPattern("#.###");
             sensorInfo.setCorrval(TextUtils.isEmpty(correctValue) ? "0" : decimalFormat.format(Double.parseDouble(correctValue)));
-
             sensorInfo.setSens_k(coefficientK);
             sensorInfo.setTemp_b(coefficientB);
             sensorInfo.setReferval_f(TextUtils.isEmpty(referenceValue) ? "0" : referenceValue);
-
             decimalFormat.applyPattern("#.##");
             sensorInfo.setTemp_t0(TextUtils.isEmpty(initialTemperature) ? "0" : decimalFormat.format(Double.parseDouble(initialTemperature)));
         } catch (Exception ex) {

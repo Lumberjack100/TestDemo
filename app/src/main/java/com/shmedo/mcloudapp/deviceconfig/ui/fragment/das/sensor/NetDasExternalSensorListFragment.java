@@ -348,6 +348,12 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             entity.setReferval_f(externalSensorInfo.getReferval_f());
             entity.setElastic_mod(externalSensorInfo.getElastic_mod());
 
+        } else if (externalSensorInfo.getType().equals("58")) {//轴力计
+            entity.setSens_k(externalSensorInfo.getSens_k());
+            entity.setTemp_b(externalSensorInfo.getTemp_b());
+            entity.setReferval_f(externalSensorInfo.getReferval_f());
+            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+
         } else if (externalSensorInfo.getType().equals("4")) {//测斜仪
             entity.setSpacing(externalSensorInfo.getSpacing());
             entity.setHolenum(externalSensorInfo.getHolenum());
