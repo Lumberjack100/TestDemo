@@ -9,6 +9,7 @@ package com.shmedo.core;
  */
 public interface AppContants {
     String TOKEN_UPDATE_TIME = "token_update_time";
+
     //是否显示隐私协议
     String PRIVACY_AGREEMENT = "privacy_agreement";
 
@@ -31,7 +32,9 @@ public interface AppContants {
         int E40 = 0x004;
         int M20 = 0x005;
         int RN20 = 0x006;
-        int INCLINOMETER_DEBUG_BOX = 0x007;
+        int BHY = 0x007;
+
+        int INCLINOMETER_DEBUG_BOX = 0x101;
     }
 
     /**
@@ -65,15 +68,6 @@ public interface AppContants {
 
         String SENSOR_PARAM = "sensor_param";
 
-        //地图 Poi 点信息
-        String POIITEM_INFO = "poiitem_info";
-
-        //地图 Poi 点坐标
-        String POI_LATLNG = "poi_latlng";
-
-        //地图 Poi 点名称
-        String POI_TITLE = "poi_title";
-
         //与设备通讯方式
         String COMMUNICATION_WAY = "communication_way";
 
@@ -90,7 +84,9 @@ public interface AppContants {
         String DEVICE_TYPE = "device_type";
 
         String DEVICE_ID = "device_id";
+
         String USB_PORT_NUM = "usb_port_num";
+
         String USB_BAUD_RATE = "usb_baud_rate";
 
         //蓝牙测斜仪测量间距
@@ -104,7 +100,7 @@ public interface AppContants {
         int MSG_SMART_REFRESH = 0x007;//
     }
 
-    enum UsbSerialMsgWhat implements INumberEnum{
+    enum UsbSerialMsgWhat implements INumberEnum {
         USB_SERIAL_DEVICE_INITIAL(1),
         USB_SERIAL_AT_SCAN(2),
         USB_SERIAL_AT_CONNECT(3),

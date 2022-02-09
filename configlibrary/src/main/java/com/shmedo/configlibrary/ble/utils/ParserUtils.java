@@ -8,12 +8,10 @@ import com.shmedo.configlibrary.ble.enums.EquipmentStatus;
 import com.shmedo.configlibrary.ble.enums.RainStation;
 import com.shmedo.configlibrary.ble.enums.SIMChoose;
 import com.shmedo.configlibrary.ble.enums.SensorInterfaceType;
-import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.configlibrary.ble.enums.WorkModel;
 import com.shmedo.configlibrary.ble.exception.DASParameterException;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
-import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 
 /**
  * Created by adu on 2017/12/22.
@@ -106,15 +104,4 @@ public class ParserUtils {
 
         return bean;
     }
-
-
-    public static ServerAddressInfo startParserServerAddress(String[] strs) {
-        ServerAddressInfo info = new ServerAddressInfo();
-        info.setNumber(ServerNumber.value(Integer.parseInt(strs[0].substring(5))));
-        info.setAddress(strs[1]);
-        info.setPort(Integer.parseInt(strs[2]));
-        return info;
-    }
-
-
 }

@@ -27,7 +27,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.usb_serial.ATCommandItem;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DebugCommandLoggerActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.usb.CollectionConfigurationActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.BaseUSBSerialCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.dialog.CommunicationTimeDialogFragment;
@@ -202,7 +202,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                 break;
 
             case "指令调试":
-                DebugCommandLoggerActivity.startActivity(mActivity, AppContants.CommunicationWay.USB_SERIAL, AppContants.DeviceType.INCLINOMETER_DEBUG_BOX);
+                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.USB_SERIAL, AppContants.DeviceType.INCLINOMETER_DEBUG_BOX);
                 break;
         }
     }

@@ -1,7 +1,7 @@
 package com.shmedo.configlibrary.ble.model;
 
 
-import com.shmedo.configlibrary.ble.enums.ServerNumber;
+import com.shmedo.configlibrary.iot.enums.ServerNumber;
 
 /**
  * Created by adu on 2017/12/19.

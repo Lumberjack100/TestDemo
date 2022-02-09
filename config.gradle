@@ -73,6 +73,8 @@ ext {
 
             nettyVersion                 : '4.1.70.Final',
 
+            gsonVersion                  : '2.8.9',
+
             unpeekLivedataVersion        : '7.2.0-beta1',
 
             exifinterfaceVersion         : '1.3.3',

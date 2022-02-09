@@ -78,7 +78,7 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
         return R.layout.universal_config_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHeadInfo();
@@ -108,7 +108,7 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
 
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -175,5 +175,7 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
         setResultData(queryCmdResult);
     }
 
-    protected abstract void setResultData(QueryCmdResult queryCmdResult);
+    protected void setResultData(QueryCmdResult queryCmdResult) {
+    }
+
 }

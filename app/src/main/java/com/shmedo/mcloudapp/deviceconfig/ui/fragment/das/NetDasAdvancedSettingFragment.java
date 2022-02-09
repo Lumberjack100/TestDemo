@@ -49,9 +49,7 @@ import timber.log.Timber;
  * 网络模式高级设置
  */
 public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment {
-    private static final int REBOOT = 0x1002;
     private static final int RESET = 0x1003;
-
 
     public static NetDasAdvancedSettingFragment newInstance(DeviceInfo deviceInfo) {
         NetDasAdvancedSettingFragment fragment = new NetDasAdvancedSettingFragment();
@@ -66,12 +64,12 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         return R.layout.fragment_net_das_advanced_setting;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @OnClick({R.id.firmwareUpgradeLayout, R.id.rebootLayout, R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})
+    @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -81,9 +79,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
             FirmWareSelectDialog newFragment = new FirmWareSelectDialog(deviceInfo.getProductID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);
             newFragment.show(getChildFragmentManager(), "dialog");
-
-        } else if (id == R.id.rebootLayout) {//重启
-            showWarnDialog("确定重启设备吗？", REBOOT);
 
         } else if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
@@ -133,13 +128,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         switch (operateType) {
-                            case REBOOT: {
-                                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-                                showWaitDialog("处理中...");
-                                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-                            }
-                            break;
-
                             case RESET: {
                                 String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
                                 showWaitDialog("处理中...");
@@ -184,10 +172,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 title = "固件升级";
                 break;
 
-            case REBOOT:
-                title = "重新启动";
-                break;
-
             case RESET:
                 title = "恢复出厂设置";
                 break;
@@ -210,11 +194,6 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
             case MD_UPGRADE:
                 dismissWaitDialog();
                 newFragment = new CommonCmdDialog("固件升级", "固件升级中...", "此过程耗时较长,请耐心等待", msgIDList);
-                break;
-
-            case REBOOT:
-                dismissWaitDialog();
-                newFragment = new CommonCmdDialog("重新启动", "正在重启中...", "预计耗时三分钟,请耐心等待", msgIDList);
                 break;
 
             case RESET:

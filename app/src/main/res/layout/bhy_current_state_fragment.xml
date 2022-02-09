@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.scwang.smart.refresh.header.ClassicsHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/DeviceCurrentState_Group_TitleStyle"
+                android:text="基本信息" />
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="SN号" />
+
+                <TextView
+                    android:id="@+id/tv_device_sn"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19F00L" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="SIM卡号(ICCID)" />
+
+                <TextView
+                    android:id="@+id/tv_sim_card_number"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="IMEI号" />
+
+                <TextView
+                    android:id="@+id/tv_imei_number"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="设备启动代码" />
+
+                <TextView
+                    android:id="@+id/tv_device_start_code"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="固件版本" />
+
+                <TextView
+                    android:id="@+id/tv_firmware_version"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="安装位置" />
+
+                <TextView
+                    android:id="@+id/tv_install_position"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="内部电量" />
+
+                <TextView
+                    android:id="@+id/tv_device_internal_power"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19F00L" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="外部电压" />
+
+                <TextView
+                    android:id="@+id/tv_device_external_voltage"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/DeviceCurrentState_Group_TitleStyle"
+                android:text="网络状态" />
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="信号强度" />
+
+                <TextView
+                    android:id="@+id/tv_signal_strength"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    android:drawablePadding="10dp"
+                    tools:drawableRight="@drawable/signalstrengthfour"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/data_center_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:splitMotionEvents="false"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_das_data_center_status" />
+
+            <LinearLayout
+                android:id="@+id/solarInfoLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    style="@style/DeviceCurrentState_Group_TitleStyle"
+                    android:layout_marginTop="20dp"
+                    android:text="太阳能控制器" />
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="状态" />
+
+                    <TextView
+                        android:id="@+id/tv_solar_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19F00L" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="太阳能板电压" />
+
+                    <TextView
+                        android:id="@+id/tv_solar_voltage"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="电池电压" />
+
+                    <TextView
+                        android:id="@+id/tv_battery_voltage"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="太阳能板功率" />
+
+                    <TextView
+                        android:id="@+id/tv_supply_power"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="负载功率" />
+
+                    <TextView
+                        android:id="@+id/tv_consume_power"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/internalTempHumidityLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    style="@style/DeviceCurrentState_Group_TitleStyle"
+                    android:text="机箱内部温湿度" />
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="状态" />
+
+                    <TextView
+                        android:id="@+id/tv_internal_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19F00L" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="温度" />
+
+                    <TextView
+                        android:id="@+id/tv_internal_temperature"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="湿度" />
+
+                    <TextView
+                        android:id="@+id/tv_internal_humidity"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/externalTempHumidityLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    style="@style/DeviceCurrentState_Group_TitleStyle"
+                    android:text="机箱外部温湿度" />
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="状态" />
+
+                    <TextView
+                        android:id="@+id/tv_external_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19F00L" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="温度" />
+
+                    <TextView
+                        android:id="@+id/tv_external_temperature"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="湿度" />
+
+                    <TextView
+                        android:id="@+id/tv_external_humidity"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mainSensorInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_mainSensor"
+                    style="@style/DeviceCurrentState_Group_TitleStyle"
+                    android:layout_marginBottom="10dp"
+                    android:text="扩展传感器" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sensor_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:splitMotionEvents="false"
+                    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_sensor_status" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.scwang.smart.refresh.footer.ClassicsFooter
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>

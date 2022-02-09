@@ -34,11 +34,11 @@ import com.shmedo.configlibrary.ble.cmd.entity.RegistrationPlatformSelectionEnti
 import com.shmedo.configlibrary.ble.cmd.entity.ServerAddressInfoEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
-import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.configlibrary.ble.model.MqttConfigInfo;
 import com.shmedo.configlibrary.ble.model.ServerAddressInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;

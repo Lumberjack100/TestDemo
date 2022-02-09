@@ -17,10 +17,10 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.USRBleIotCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CustomCommandLogPrintFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.InclinometerDebugBoxLoggerFragment;
 
 import java.io.File;
 
-import butterknife.OnClick;
 import gdut.bsx.share2.Share2;
 import gdut.bsx.share2.ShareContentType;
 
@@ -30,13 +30,6 @@ import gdut.bsx.share2.ShareContentType;
 public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerActivity {
     private int deviceType = AppContants.DeviceType.DAS;
 
-
-    public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, CustomCommandLogPrintActivity.class);
-        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
 
     public static void startActivity(Context context, int connectWay, int deviceType) {
         Intent intent = new Intent(context, CustomCommandLogPrintActivity.class);
@@ -49,7 +42,7 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("指令下发");
+        mToolbarTitle.setText("指令调试");
         mIvAction.setVisibility(View.VISIBLE);
         mIvAction.setImageResource(R.drawable.icon_share_command_log);
     }
@@ -62,15 +55,15 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
 
         if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
             deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
+            if (deviceType == AppContants.DeviceType.INCLINOMETER_DEBUG_BOX) {
+                mIvAction.setVisibility(View.GONE);
+            }
         }
     }
 
     @Override
     protected Fragment initFragment() {
-        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-
-        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-
+        if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             switch (deviceType) {
                 case AppContants.DeviceType.DAS:
                     fragment = new BleDasCustomCommandLogPrintFragment();
@@ -85,6 +78,12 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
                     fragment = BleM20CustomCommandLogPrintFragment.newInstance();
                     break;
             }
+        } else if (connectWay == AppContants.CommunicationWay.USB_SERIAL) {
+            switch (deviceType) {
+                case AppContants.DeviceType.INCLINOMETER_DEBUG_BOX:
+                    fragment = new InclinometerDebugBoxLoggerFragment();
+                    break;
+            }
         }
         return fragment;
     }
@@ -94,11 +93,9 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
         return false;
     }
 
-    @OnClick({R.id.iv_action})
-    public void onClick(View v) {
-        if (v.getId() == R.id.iv_action) {
-            shareFile();
-        }
+    @Override
+    protected void onIconActionClick() {
+        shareFile();
     }
 
     private void shareFile() {

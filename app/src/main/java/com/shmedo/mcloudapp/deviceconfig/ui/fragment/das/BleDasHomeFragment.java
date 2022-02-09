@@ -44,10 +44,10 @@ import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasSensorConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
@@ -139,7 +139,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         return R.layout.ble_das_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHeadInfo();
@@ -198,7 +198,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
@@ -256,7 +256,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
                 break;
 
             case "设置":

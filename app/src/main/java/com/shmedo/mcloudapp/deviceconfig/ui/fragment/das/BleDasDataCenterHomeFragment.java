@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.InputFilter;
@@ -8,6 +10,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -24,13 +30,13 @@ import com.shmedo.configlibrary.ble.cmd.entity.DataReportIntervalEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.SixTargerBDNumberEntity;
 import com.shmedo.configlibrary.ble.cmd.parser.ParseManager;
 import com.shmedo.configlibrary.ble.enums.CommandType;
-import com.shmedo.configlibrary.ble.enums.ServerNumber;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
+import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DataCenterServerConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +47,7 @@ import timber.log.Timber;
 /**
  * 蓝牙配置数据中心
  */
-public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
+public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 
@@ -66,12 +72,30 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
     private String cmdDataReport;//数据上报间隔
     private String cmdBDCardNumber;//北斗卡号
 
+    private ActivityResultLauncher<Intent> resultLauncher;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+
+                        }
+                    }
+                });
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.ble_das_data_center_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setFilter();
@@ -154,7 +178,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterServerConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_ONE);
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, "");
                 break;
 
             case R.id.dataCenterTwoLayout:
@@ -162,7 +186,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterServerConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_TWO);
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, "");
                 break;
 
             case R.id.dataCenterThreeLayout:
@@ -170,7 +194,7 @@ public class BleDasDataCenterFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterServerConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_THREE);
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, "");
                 break;
 
             case R.id.btn_confirm:

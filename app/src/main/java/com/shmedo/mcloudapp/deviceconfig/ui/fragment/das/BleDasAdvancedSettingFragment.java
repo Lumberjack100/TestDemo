@@ -54,7 +54,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         return R.layout.fragment_ble_das_advanced_setting;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         queryInstallLocation();
@@ -126,7 +126,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             newFragment.show(getChildFragmentManager(), "dialog");
 
         } else if (id == R.id.customCommandLogPrintLayout) {
-            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.DAS);
 
         } else if (id == R.id.chongQingTestLayout) {
             showRegisterPlatformDialog();

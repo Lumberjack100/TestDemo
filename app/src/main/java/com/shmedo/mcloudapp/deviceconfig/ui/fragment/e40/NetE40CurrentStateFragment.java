@@ -223,7 +223,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
         return R.layout.e40_current_state_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initSensorAdapter();
@@ -239,7 +239,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
      */
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), getResources().getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<SensorBean>(getActivity(), R.layout.item_e40_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, SensorBean sensorBean, int position) {
@@ -293,8 +293,8 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
     protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                mRefreshLayout.finishRefresh(false);
+            }
             ToastUtils.show("下发指令失败");
             return;
         }
@@ -354,8 +354,8 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -371,8 +371,8 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 IOTCommandResult<String> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询卫星数据出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
@@ -381,8 +381,8 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
                 String content = commandResult.getResult();
                 if (TextUtils.isEmpty(content)) {
                     if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.finishRefresh(false);
-        }
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     return;
                 }
                 initSatelittleInfo(content);

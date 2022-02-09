@@ -7,8 +7,10 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeCurrentStateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.bhy.NetBhyCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40CurrentStateFragment;
@@ -16,7 +18,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40CurrentStateFragm
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20CurrentStateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -79,6 +80,10 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                 case AppContants.DeviceType.E40:
                     fragment = NetE40CurrentStateFragment.newInstance(deviceInfo);
                     break;
+
+                case AppContants.DeviceType.BHY:
+                    fragment = NetBhyCurrentStateFragment.newInstance(deviceInfo);
+                    break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             switch (deviceType) {
@@ -105,8 +110,6 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                     break;
             }
         }
-
         return fragment;
     }
-
 }
