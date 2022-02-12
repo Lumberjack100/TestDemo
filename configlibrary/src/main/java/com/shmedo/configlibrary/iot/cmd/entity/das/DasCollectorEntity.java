@@ -16,6 +16,8 @@ public class DasCollectorEntity implements Validater {
     private String calcgap;//解算间隔
     private String standbygap;//待机时长
     private String sensornum;//接入传感器个数
+    private String sensitivity;//灵敏度
+
 
     public void setType(String type) {
         this.type = type;
@@ -39,6 +41,10 @@ public class DasCollectorEntity implements Validater {
 
     public void setSensornum(String sensornum) {
         this.sensornum = sensornum;
+    }
+
+    public void setSensitivity(String sensitivity) {
+        this.sensitivity = sensitivity;
     }
 
     @Override
@@ -70,6 +76,10 @@ public class DasCollectorEntity implements Validater {
         }
         if (!TextUtils.isEmpty(sensornum)) {
             stringBuilder.append("sensornum=" + sensornum);
+            stringBuilder.append("&");
+        }
+        if (!TextUtils.isEmpty(sensitivity) && !sensitivity.equals("NullKey")) {
+            stringBuilder.append("sensitivity=" + sensitivity);
             stringBuilder.append("&");
         }
 

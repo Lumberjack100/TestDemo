@@ -14,6 +14,8 @@ public class DasCollectorInfo {
     private String calcgap;//解算间隔
     private String standbygap;//待机时长
     private String sensornum;//接入传感器个数
+    private String sensitivity;//灵敏度
+
 
     public String getType() {
         return TextUtils.isEmpty(type) ? "" : type;
@@ -61,5 +63,13 @@ public class DasCollectorInfo {
 
     public void setSensornum(String sensornum) {
         this.sensornum = sensornum;
+    }
+
+    public String getSensitivity() {
+        return TextUtils.isEmpty(sensitivity) ? "" : sensitivity;
+    }
+
+    public void setSensitivity(String sensitivity) {
+        this.sensitivity = sensitivity;
     }
 }

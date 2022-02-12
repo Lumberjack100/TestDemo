@@ -80,6 +80,23 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_sensitivity"
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="灵敏度" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_sensitivity"
+                style="@style/Common_EditItem_EditText_Style"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/btn_confirm"
             style="@style/SubmitBordelessButtonStyle"

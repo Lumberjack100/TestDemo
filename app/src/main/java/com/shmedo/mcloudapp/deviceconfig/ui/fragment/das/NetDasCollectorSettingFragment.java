@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -23,13 +24,14 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.das.DasCollectorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,13 +58,22 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
     @BindView(R.id.collectTimeET)
     EditText mEtCollectTime;
 
+    @BindView(R.id.et_sensitivity)
+    EditText mEtSensitivity;
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
+
+    @BindView(R.id.ll_sensitivity)
+    ViewGroup sensitivityLayout;
 
     private String collectorAddress;//采集器地址
     private String calculatTime;//解算时间频度
     private String standbyTime;//待机时间
     private String collectTime;//采集时间频度
+    private String sensitivity;//灵敏度
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     private DasCollectorInfo collectorInfo;
 
@@ -79,7 +90,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         return R.layout.fragment_das_collector_setting;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setFilter();
@@ -95,6 +106,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         mEtCalculatingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtStandbyTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtCollectTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtSensitivity.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     private void initRefreshLayout() {
@@ -201,6 +213,27 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         } else {
             collectTime = "";
         }
+
+        if (!sensitivity.equals("NullKey")) {
+            sensitivity = mEtSensitivity.getText().toString().trim();
+//            if (TextUtils.isEmpty(sensitivity)) {
+//                ToastUtils.show("请输入灵敏度!");
+//                mEtSensitivity.requestFocus();
+//                return false;
+//            }
+            try {
+                double value = Double.parseDouble(sensitivity);
+                if (value < 1) {
+                    ToastUtils.show("请输入正确的灵敏度!");
+                    mEtSensitivity.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的灵敏度!");
+                mEtSensitivity.requestFocus();
+                return false;
+            }
+        }
         return true;
     }
 
@@ -211,6 +244,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         entity.setCalcgap(calculatTime);
         entity.setStandbygap(standbyTime);
         entity.setCollgap(collectTime);
+        entity.setSensitivity(collectorInfo.getSensitivity().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(sensitivity)));
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
         showWaitDialog("处理中...");
@@ -326,11 +360,24 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         calculatTime = collectorInfo.getCalcgap();
         standbyTime = collectorInfo.getStandbygap();
         collectTime = collectorInfo.getCollgap();
+        sensitivity = collectorInfo.getSensitivity();
 
         mEtCollectorAddress.setText(collectorAddress);
         mEtCalculatingTime.setText(calculatTime);
         mEtStandbyTime.setText(standbyTime);
         mEtCollectTime.setText(collectTime);
+
+        try {
+            if (sensitivity.equals("NullKey")) {
+                sensitivityLayout.setVisibility(View.GONE);
+            } else {
+                sensitivityLayout.setVisibility(View.VISIBLE);
+                sensitivity = decimalFormat.format(Double.parseDouble(sensitivity));
+                mEtSensitivity.setText(sensitivity);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void doAfterSetting() {
@@ -338,6 +385,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         calculatTime = mEtCalculatingTime.getText().toString().trim();
         standbyTime = mEtStandbyTime.getText().toString().trim();
         collectTime = mEtCollectTime.getText().toString().trim();
+        sensitivity = mEtSensitivity.getText().toString().trim();
 
         ToastUtils.show("保存成功");
     }
@@ -363,6 +411,9 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             return true;
         }
         if (collectTime != null && !collectTime.equals(mEtCollectTime.getText().toString().trim())) {
+            return true;
+        }
+        if (sensitivity != null && !sensitivity.equals("NullKey") && !sensitivity.equals(mEtSensitivity.getText().toString().trim())) {
             return true;
         }
         return false;

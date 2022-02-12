@@ -35,6 +35,7 @@ public class DasCollectorInfoParser implements IOTResultParser<DasCollectorInfo>
             info.setCalcgap(TextUtils.isEmpty(keyValueMap.get("calcgap")) ? "" : keyValueMap.get("calcgap"));
             info.setStandbygap(TextUtils.isEmpty(keyValueMap.get("standbygap")) ? "" : keyValueMap.get("standbygap"));
             info.setSensornum(TextUtils.isEmpty(keyValueMap.get("sensornum")) ? "" : keyValueMap.get("sensornum"));
+            info.setSensitivity(keyValueMap.getOrDefault("sensitivity", "NullKey"));
 
             return info;
         } catch (Exception ex) {
