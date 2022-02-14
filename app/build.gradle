@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android'
  * @return
  */
 def getAppName() {
-    return 'mcloudapp_v3'
+    return 'mcloudapp_iot'
 }
 
 /**
@@ -91,12 +91,12 @@ android {
         production {//正式发布版本
             dimension "version"
             applicationId rootProject.android.applicationId
-            resValue "string", "app_name", "米易通3.0"   // 设置默认的app_name
+            resValue "string", "app_name", "米易通物联网"   // 设置默认的app_name
             manifestPlaceholders = ["mapApikey"   : "31d7ee436c402270e11183ce1b5d01dc",
                                     "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
-                                    "frontJSToken": "d8b5d3a412f8493008be2052611789ea",
-                                    "buglyAppId"  : "6b0340b2b8",
-                                    "umengAppkey" : "618cdd28e014255fcb75af8a"]
+                                    "frontJSToken": "b90c635e2cc7113d03ee6a213a8e013d",
+                                    "buglyAppId"  : "09b15cd6a7",
+                                    "umengAppkey" : "6209cd80226836222738b72b"]
 
             buildConfigField "String", "Dingding_APP_ID", "\"dingoa6lbfnghbtn0xeju0\""
         }

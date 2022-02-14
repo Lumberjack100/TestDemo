@@ -1,6 +1,6 @@
 ext {
     android = [
-            applicationId    : 'com.shmedo.mcloudapp',
+            applicationId    : 'com.shmedo.mcloudapp.iot',
             compileSdkVersion: 30,
             buildToolsVersion: '30.0.2',
             minSdkVersion    : 24,
