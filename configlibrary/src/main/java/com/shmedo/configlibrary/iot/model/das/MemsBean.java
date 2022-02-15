@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.iot.model.das;
 
+import android.text.TextUtils;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/4/16 <br/>
@@ -19,7 +21,7 @@ public class MemsBean {
     }
 
     public String getVaule() {
-        return vaule;
+        return TextUtils.isEmpty(vaule) ? "" : vaule;
     }
 
     public void setVaule(String vaule) {

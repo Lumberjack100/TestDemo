@@ -27,6 +27,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.SensorErrorType;
 import com.shmedo.configlibrary.iot.model.das.DasBaseInfo;
 import com.shmedo.configlibrary.iot.model.das.DasNetStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSensorStatusInfo;
@@ -34,6 +35,7 @@ import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
@@ -41,15 +43,19 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
+import com.umeng.analytics.MobclickAgent;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -150,18 +156,86 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_external_humidity)
     TextView mTvExternalHumidity;
 
-
     /**
-     * 传感器
+     * 辅传感器
      */
-    @BindView(R.id.mainSensorInfo)
-    View mainSensorInfoLayout;
+    // 开关量
+    @BindView(R.id.dasIOSensorInfo)
+    View ioSensorLayout;
 
-    @BindView(R.id.tv_mainSensor)
-    TextView mTvMainSensor;
+    @BindView(R.id.tv_switch_status)
+    TextView mTvSwitchStatus;
 
-    @BindView(R.id.sensor_recyclerView)
-    RecyclerView sensorRecyclerView;
+    @BindView(R.id.ll_rain)
+    View rainLayout;
+
+    @BindView(R.id.tv_rain_value)
+    TextView mTvRain;//雨量值
+
+    @BindView(R.id.ll_wire_break_alarm)
+    View wireBreakAlarmLayout;
+
+    @BindView(R.id.tv_alarm_status)
+    TextView mTvAlarmStatus;//断线报警器状态
+
+    //数字水位计
+    @BindView(R.id.dasPiezometerInfo)
+    View dasDigitalPiezometerLayout;
+
+    @BindView(R.id.emptyPipeDistanceLayout)
+    View emptyPipeDistanceLayout;
+
+    @BindView(R.id.waterTemperatureLayout)
+    View waterTemperatureLayout;
+
+    @BindView(R.id.tv_piezometer_title)
+    TextView mTvPiezometerTitle;
+
+    @BindView(R.id.tv_piezometer_status)
+    TextView mTvPiezometerStatus;
+
+    @BindView(R.id.tv_piezometer_value)
+    TextView mTvPiezometerValue;
+
+    @BindView(R.id.tv_emptyPipeDistance)
+    TextView mTvEmptyPipeDistance;
+
+    @BindView(R.id.tv_waterTemperature)
+    TextView mTvWaterTemperature;
+
+    //Das倾角计
+    @BindView(R.id.dasInclinometerInfo)
+    View inclinometerLayout;
+
+    @BindView(R.id.tv_mems_title)
+    TextView mTvMemsTitle;
+
+    @BindView(R.id.tv_inclinometer_status)
+    TextView mTvInclinometerStatus;
+
+    @BindView(R.id.ll_inclinometer_axis)
+    View inclinometerAxisLayout;
+
+    @BindView(R.id.tv_axis_x)
+    TextView mTvAxisX;//角度
+
+    @BindView(R.id.tv_axis_y)
+    TextView mTvAxisY;//角度
+
+    @BindView(R.id.tv_axis_z)
+    TextView mTvAxisZ;//角度
+
+    @BindView(R.id.ll_inclinometer_acceleration)
+    View inclinometerAccelerationLayout;
+
+    @BindView(R.id.tv_acceleration_x)
+    TextView mTvAccelerationX;//
+
+    @BindView(R.id.tv_acceleration_y)
+    TextView mTvAccelerationY;//
+
+    @BindView(R.id.tv_acceleration_z)
+    TextView mTvAccelerationZ;//
 
     private List<DasNetStatusInfo> netStatusInfoList = new ArrayList<>();
     private List<DasSensorStatusInfo> sensorList = new ArrayList<>();
@@ -267,16 +341,15 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
-
     /**
-     * 获取传感器信息
+     * 获取辅传感器状态
      */
-    private void querySensorInfo() {
+    private void querySubSensorStatus() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS);
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
-     /**
+    /**
      * 调用指令下发/透传接口结果返回
      *
      * @param dispatchCmdItemList
@@ -411,7 +484,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 DasTemperatureAndHumidityStatusinfo dasTemperatureAndHumidityStatusinfo = commandResult.getResult();
                 initTemperatureAndHumidityStatus(dasTemperatureAndHumidityStatusinfo);
-                querySensorInfo();
+                querySubSensorStatus();
             }
             break;
 
@@ -425,7 +498,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     return;
                 }
                 DasSubSensorStatusInfo dasSubSensorStatusInfo = commandResult.getResult();
-//                initSubSensorStatus(dasSubSensorStatusInfo);
+                initSubSensorStatus(dasSubSensorStatusInfo);
             }
             break;
 
@@ -533,6 +606,105 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
+    /**
+     * 辅传感器状态
+     *
+     * @param dasSubSensorStatusInfo
+     */
+    private void initSubSensorStatus(DasSubSensorStatusInfo dasSubSensorStatusInfo) {
+        if (dasSubSensorStatusInfo == null) {
+            Timber.e("DasSubSensorStatusInfo 为空!");
+            return;
+        }
+        try {
+            if (dasSubSensorStatusInfo.getIo() != null) {
+                ioSensorLayout.setVisibility(View.VISIBLE);
+                if (dasSubSensorStatusInfo.getIo().getType() == 1) {
+                    mTvSwitchStatus.setText("接入");
+                    mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                    rainLayout.setVisibility(View.VISIBLE);
+                    wireBreakAlarmLayout.setVisibility(View.GONE);
+                    decimalFormat.applyPattern("#.#");
+                    mTvRain.setText(decimalFormat.format(dasSubSensorStatusInfo.getIo().getVaule()) + "mm");
+
+                } else if (dasSubSensorStatusInfo.getIo().getType() == 2) {
+                    mTvSwitchStatus.setText("未接入");
+                    mTvSwitchStatus.setTextColor(Color.RED);
+                    rainLayout.setVisibility(View.GONE);
+                    wireBreakAlarmLayout.setVisibility(View.GONE);
+
+                } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
+                    mTvSwitchStatus.setText("接入");
+                    mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                    rainLayout.setVisibility(View.GONE);
+                    wireBreakAlarmLayout.setVisibility(View.VISIBLE);
+                    if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
+                        mTvAlarmStatus.setText("断线");
+                        mTvAlarmStatus.setTextColor(Color.RED);
+                    } else if (dasSubSensorStatusInfo.getIo().getVaule() == 0) {
+                        mTvAlarmStatus.setText("未断线");
+                        mTvAlarmStatus.setTextColor(getResources().getColor(R.color.text_color_3AD094));
+                    }
+                }
+            }
+
+            if (dasSubSensorStatusInfo.getVwp() != null) {
+                dasDigitalPiezometerLayout.setVisibility(View.VISIBLE);
+                if (dasSubSensorStatusInfo.getVwp().getType() == 15) {
+                    mTvPiezometerTitle.setText("数字水位计");
+                }
+                mTvPiezometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getVwp().getErrno())));
+                setSensorStatusColor(mTvPiezometerStatus, dasSubSensorStatusInfo.getVwp().getErrno());
+                if (dasSubSensorStatusInfo.getVwp().getValue().contains(",")) {
+                    String[] values = dasSubSensorStatusInfo.getVwp().getValue().split(",");
+                    if (values.length >= 3) {
+                        emptyPipeDistanceLayout.setVisibility(View.VISIBLE);
+                        waterTemperatureLayout.setVisibility(View.VISIBLE);
+
+                        decimalFormat.applyPattern("#.###");
+                        mTvPiezometerValue.setText(decimalFormat.format(Double.parseDouble(values[0])) + "m");
+                        mTvEmptyPipeDistance.setText(decimalFormat.format(Double.parseDouble(values[1])) + "m");
+
+                        decimalFormat.applyPattern("#.#");
+                        mTvWaterTemperature.setText(decimalFormat.format(Double.parseDouble(values[2])) + "℃");
+                    }
+                } else {
+                    mTvPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue());
+                }
+            }
+
+            if (dasSubSensorStatusInfo.getMems() != null) {
+                inclinometerLayout.setVisibility(View.VISIBLE);
+                if (dasSubSensorStatusInfo.getMems().getType() == 1) {
+                    mTvMemsTitle.setText("倾角计");
+                }
+                mTvInclinometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
+                setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
+
+                String values[] = dasSubSensorStatusInfo.getMems().getVaule().split(",");
+                if (values.length > 0) {
+                    if (values.length >= 3) {
+                        inclinometerAxisLayout.setVisibility(View.VISIBLE);
+                        mTvAxisX.setText(MessageFormat.format("{0}", values[0]));
+                        mTvAxisY.setText(MessageFormat.format("{0}", values[1]));
+                        mTvAxisZ.setText(MessageFormat.format("{0}", values[2]));
+                    }
+                    if (values.length >= 6) {
+                        inclinometerAccelerationLayout.setVisibility(View.VISIBLE);
+                        mTvAccelerationX.setText(MessageFormat.format("{0}", values[3]));
+                        mTvAccelerationY.setText(MessageFormat.format("{0}", values[4]));
+                        mTvAccelerationZ.setText(MessageFormat.format("{0}", values[5]));
+                    }
+                }
+                Map<String, Object> valueMap = new HashMap<String, Object>();
+                valueMap.put("axis_value", dasSubSensorStatusInfo.getMems().getVaule());//自定义参数：音乐类型，值：流行
+                MobclickAgent.onEventObject(MCloudApp.getContext(), "qingjiao_axis", valueMap);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private void setDeviceStatus(TextView textView, int status) {
         if (status == 0) {
             textView.setText("未接入");
@@ -543,4 +715,11 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
+    private void setSensorStatusColor(TextView textView, int status) {
+        if (status == 0) {
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+        } else {
+            textView.setTextColor(Color.RED);
+        }
+    }
 }

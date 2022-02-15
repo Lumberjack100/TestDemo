@@ -152,8 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:splitMotionEvents="false"
-                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_das_data_center_status" />
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <LinearLayout
                 android:id="@+id/solarInfoLayout"
@@ -339,7 +338,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/mainSensorInfo"
+                android:id="@+id/dasIOSensorInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -347,18 +346,385 @@
                 tools:visibility="visible">
 
                 <TextView
-                    android:id="@+id/tv_mainSensor"
                     style="@style/DeviceCurrentState_Group_TitleStyle"
-                    android:layout_marginBottom="10dp"
-                    android:text="扩展传感器" />
+                    android:text="开关量传感器" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/sensor_recyclerView"
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="状态" />
+
+                    <TextView
+                        android:id="@+id/tv_switch_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_rain"
+                    style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="雨量值" />
+
+                    <TextView
+                        android:id="@+id/tv_rain_value"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="100" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_wire_break_alarm"
+                    style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="断线报警器" />
+
+                    <TextView
+                        android:id="@+id/tv_alarm_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="19902102313" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/dasPiezometerInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_piezometer_title"
+                    style="@style/DeviceCurrentState_Group_TitleStyle"
+                    android:text="数字水位计" />
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="状态" />
+
+                    <TextView
+                        android:id="@+id/tv_piezometer_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="水深" />
+
+                    <TextView
+                        android:id="@+id/tv_piezometer_value"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="3m" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/emptyPipeDistanceLayout"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="空管距离" />
+
+                    <TextView
+                        android:id="@+id/tv_emptyPipeDistance"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="3m" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/waterTemperatureLayout"
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="水温" />
+
+                    <TextView
+                        android:id="@+id/tv_waterTemperature"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="3 ℃" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/dasInclinometerInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_mems_title"
+                    style="@style/DeviceCurrentState_Group_TitleStyle"
+                    android:text="倾角计" />
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="状态" />
+
+                    <TextView
+                        android:id="@+id/tv_inclinometer_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_inclinometer_axis"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:splitMotionEvents="false"
-                    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_sensor_status" />
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/bg_corner_3dp_gray_f5f6f8"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp">
+
+                        <TextView
+                            android:id="@+id/tv_inclinometer_axis"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="角度"
+                            android:textColor="@color/sub_title_text_color"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#E5E5E5" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="66dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_axis_x"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="878" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="X轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_axis_y"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="21" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Y轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_axis_z"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="-89.567" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Z轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_inclinometer_acceleration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/bg_corner_3dp_gray_f5f6f8"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp">
+
+                        <TextView
+                            android:id="@+id/tv_acceleration"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="加速度"
+                            android:textColor="@color/sub_title_text_color"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#E5E5E5" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="66dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_acceleration_x"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="878" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="X轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_acceleration_y"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="21" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Y轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_acceleration_z"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="-89.567" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Z轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
