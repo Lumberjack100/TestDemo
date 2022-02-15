@@ -35,7 +35,7 @@ android {
         minSdkVersion rootProject.android.minSdkVersion
         targetSdkVersion rootProject.android.targetSdkVersion
         versionCode gitVersionCode()
-        versionName rootProject.android.versionName
+        versionName rootProject.android.appVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
@@ -105,9 +105,10 @@ android {
         variant.outputs.each { output ->
             def fileName
             if (variant.buildType.name == "release") {
-                fileName = getAppName() + "_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
+//                fileName = getAppName() + "_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = getAppName() + android.defaultConfig.versionName + "_" + gitShortCommitId() + ".apk"
             } else {
-                fileName = getAppName() + "_debug_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
+                fileName = getAppName() + "_debug_" + android.defaultConfig.versionName + "_" + gitShortCommitId() + ".apk"
             }
             output.outputFileName = fileName
         }
