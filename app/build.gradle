@@ -106,7 +106,7 @@ android {
             def fileName
             if (variant.buildType.name == "release") {
 //                fileName = getAppName() + "_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
-                fileName = getAppName() + android.defaultConfig.versionName + "_" + gitShortCommitId() + ".apk"
+                fileName = getAppName() + "_" + android.defaultConfig.versionName + "_" + gitShortCommitId() + ".apk"
             } else {
                 fileName = getAppName() + "_debug_" + android.defaultConfig.versionName + "_" + gitShortCommitId() + ".apk"
             }
