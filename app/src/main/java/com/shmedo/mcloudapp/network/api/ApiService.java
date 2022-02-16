@@ -47,7 +47,7 @@ public interface ApiService {
      * 登录模块
      */
     //用户名密码登录
-    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE, RequestHeader.ACCESS_SERVICE})
     @POST("SignIn")
     Observable<ResponseWrapper<String>> getSingIn(@Body RequestBody parameter);
 

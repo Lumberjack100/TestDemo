@@ -13,4 +13,6 @@ public interface RequestHeader {
     MediaType JSON_TYPE = MediaType.parse("application/json; charset=UTF-8");
     String HEADER_ACCESS_TYPE = "access_type:android";
     String ACCESS_TOKEN = "Authorization";
+    String ACCESS_SERVICE = "access_service:mcloud";
+
 }
