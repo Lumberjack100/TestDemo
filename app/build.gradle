@@ -92,7 +92,7 @@ android {
             dimension "version"
             applicationId rootProject.android.applicationId
             resValue "string", "app_name", "米易通物联网"   // 设置默认的app_name
-            manifestPlaceholders = ["mapApikey"   : "31d7ee436c402270e11183ce1b5d01dc",
+            manifestPlaceholders = ["mapApikey"   : "61b252e0afae07eebf71fd8b519b511c",
                                     "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
                                     "frontJSToken": "b90c635e2cc7113d03ee6a213a8e013d",
                                     "buglyAppId"  : "09b15cd6a7",
