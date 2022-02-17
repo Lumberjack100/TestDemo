@@ -45,7 +45,7 @@ beta:
   only:
     - develop_v2.5
   script:
-    - ./gradlew assembleRelease
+    - ./gradlew assembleRelease --stacktrace
     - curl "https://oapi.dingtalk.com/robot/send?access_token=4946a9d8a018e6442963ed388ff3b6c1459850cd8f316d5f1796528f38405758" \-H 'Content-Type:application/json' \-d '{"msgtype":"text","text":{"content":"android 米易通物联网 release version build success"},"at":{"atMobiles":["13915272257"]}}'
   artifacts:
     paths:
@@ -62,7 +62,7 @@ release:
   #  except:
   #    - branches
   script:
-    - ./gradlew assembleRelease
+    - ./gradlew assembleRelease --stacktrace
     - curl "https://oapi.dingtalk.com/robot/send?access_token=4946a9d8a018e6442963ed388ff3b6c1459850cd8f316d5f1796528f38405758" \-H 'Content-Type:application/json' \-d '{"msgtype":"text","text":{"content":"android 米易通物联网 release version build success"},"at":{"atMobiles":["13915272257"]}}'
   artifacts:
     paths:
