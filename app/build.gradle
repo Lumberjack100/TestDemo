@@ -105,18 +105,11 @@ android {
         variant.outputs.each { output ->
             def fileName
             //输出文件夹
-            def outDirectory = output.outputFile.getParent()
             if ('debug'.equals(variant.buildType.name)) {
-                fileName = getAppName() + "_v${android.defaultConfig.versionName}_debug.apk"
+                fileName = getAppName() + "_v${android.defaultConfig.versionName}_${gitVersionCode()}_debug.apk"
             } else {
                 fileName = getAppName() + "_v" + android.defaultConfig.versionName + "_" + gitShortCommitId() + "_" + variant.productFlavors[0].name + ".apk"
             }
-//            if (variant.buildType.name == "release") {
-////                fileName = getAppName() + "_" + android.defaultConfig.versionName + "_" + gitVersionCode() + "(" + gitShortCommitId() + ")" + ".apk"
-//                fileName = getAppName() + "_" + android.defaultConfig.versionName + "_" + gitShortCommitId() + ".apk"
-//            } else {
-//                fileName = getAppName() + "_debug_" + android.defaultConfig.versionName + "_" + gitShortCommitId() + ".apk"
-//            }
             output.outputFileName = fileName
         }
     }
