@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.FirmwareCmdInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
@@ -193,14 +194,14 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
-                .subscribe(new BaseObserver<String>() {
+                .subscribe(new BaseObserver<List<FirmwareCmdInfo>>() {
                     @Override
-                    protected void onResponse(String msgId, ErrorInfo errorInfo) {
+                    protected void onResponse(List<FirmwareCmdInfo> firmwareCmdInfoList, ErrorInfo errorInfo) {
                         dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
                                 msgIDList.clear();
-                                msgIDList.add(msgId);
+                                msgIDList.add(firmwareCmdInfoList.get(0).getMsgID());
                                 doDispatchSuccess("$cmd=md_upgrade");
                             } else {
                                 doDispatchFailed("$cmd=md_upgrade");

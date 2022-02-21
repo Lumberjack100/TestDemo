@@ -22,13 +22,14 @@
 
         <TextView
             android:id="@+id/tv_versionName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:singleLine="true"
+            android:layout_weight="4"
+            android:maxLines="3"
             android:textColor="@color/text_color_666666"
             android:textSize="17sp"
-            tools:text="DAS_CX08(01.00.02.01)" />
+            tools:text="DASV22_BHY-LF-V4.1.1_Q2(01.00.02.01)" />
 
         <TextView
             android:id="@+id/tv_latest_flag"

@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.FirmwareCmdInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -253,13 +254,13 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
-                .subscribe(new BaseObserver<String>() {
+                .subscribe(new BaseObserver<List<FirmwareCmdInfo>>() {
                     @Override
-                    protected void onResponse(String msgId, ErrorInfo errorInfo) {
+                    protected void onResponse(List<FirmwareCmdInfo> firmwareCmdInfoList, ErrorInfo errorInfo) {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
                                 msgIDList.clear();
-                                msgIDList.add(msgId);
+                                msgIDList.add(firmwareCmdInfoList.get(0).getMsgID());
                                 doDispatchSuccess("$cmd=md_upgrade");
                             } else {
                                 doDispatchFailed("$cmd=md_upgrade");

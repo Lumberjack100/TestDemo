@@ -9,6 +9,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceStatisticInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.FirmwareCmdInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.ProductInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
@@ -130,7 +131,7 @@ public interface ApiService {
     //对单个设备进行固件升级
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("BatchFirmwareUpgrade")
-    Observable<ResponseWrapper<String>> batchFirmwareUpgrade(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    Observable<ResponseWrapper<List<FirmwareCmdInfo>>> batchFirmwareUpgrade(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     /**
      * 指令交互
