@@ -47,7 +47,6 @@ public enum SensorErrorType {
 
     /**
      * 根据传感器错误码返回对应的错误信息
-     *
      * @param errorCode
      * @return
      */
