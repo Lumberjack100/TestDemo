@@ -221,7 +221,7 @@ dependencies {
 
 //    debugImplementation because LeakCanary should only run in debug builds
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
-//
+
 //    日志调试框架： https://github.com/getActivity/Logcat
 //    debugImplementation "com.github.getActivity:Logcat:$rootProject.thirdLib.Logcat"
 
