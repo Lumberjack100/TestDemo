@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.LogFileUtil;
 import com.shmedo.mcloudapp.R;
@@ -28,13 +29,13 @@ import gdut.bsx.share2.ShareContentType;
  * 指令日志调试页面
  */
 public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerActivity {
-    private int deviceType = AppContants.DeviceType.DAS;
+    private ProductType productType = ProductType.DAS;
 
 
-    public static void startActivity(Context context, int connectWay, int deviceType) {
+    public static void startActivity(Context context, int connectWay, ProductType productType) {
         Intent intent = new Intent(context, CustomCommandLogPrintActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -53,9 +54,9 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
-            deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
-            if (deviceType == AppContants.DeviceType.INCLINOMETER_DEBUG_BOX) {
+        if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
+            productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
+            if (productType == ProductType.INCLINOMETER_DEBUG_BOX) {
                 mIvAction.setVisibility(View.GONE);
             }
         }
@@ -64,23 +65,23 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.DAS:
+            switch (productType) {
+                case DAS:
                     fragment = new BleDasCustomCommandLogPrintFragment();
                     break;
 
-                case AppContants.DeviceType.ADME:
-                case AppContants.DeviceType.RN20:
+                case ADME:
+                case RN20:
                     fragment = USRBleIotCustomCommandLogPrintFragment.newInstance();
                     break;
 
-                case AppContants.DeviceType.M20:
+                case M20:
                     fragment = BleM20CustomCommandLogPrintFragment.newInstance();
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.USB_SERIAL) {
-            switch (deviceType) {
-                case AppContants.DeviceType.INCLINOMETER_DEBUG_BOX:
+            switch (productType) {
+                case INCLINOMETER_DEBUG_BOX:
                     fragment = new InclinometerDebugBoxLoggerFragment();
                     break;
             }

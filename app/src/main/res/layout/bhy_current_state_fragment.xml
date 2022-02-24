@@ -515,7 +515,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:text="角度"
+                            android:text="角度(°)"
                             android:textColor="@color/sub_title_text_color"
                             android:textSize="15sp" />
 
@@ -632,7 +632,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:text="加速度"
+                            android:text="加速度(mg)"
                             android:textColor="@color/sub_title_text_color"
                             android:textSize="15sp" />
 

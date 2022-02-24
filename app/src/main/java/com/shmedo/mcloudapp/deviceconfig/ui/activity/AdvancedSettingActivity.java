@@ -6,7 +6,9 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeAdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeAdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasAdvancedSettingFragment;
@@ -18,7 +20,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20AdvancedSettingFr
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsAdvancedSettingsFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsAdvancedSettingsFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -26,21 +27,21 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
  * 描述：     设备设置页面
  */
 public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity {
-    private int deviceType = AppContants.DeviceType.DAS;
+    private ProductType productType = ProductType.UnKnown;
 
 
-    public static void startActivity(Context context, DeviceInfo deviceInfo, int deviceType) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo, ProductType productType ) {
         Intent intent = new Intent(context, AdvancedSettingActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, int deviceType) {
+    public static void startActivity(Context context, int connectWay, ProductType productType ) {
         Intent intent = new Intent(context, AdvancedSettingActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -57,60 +58,60 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
-            deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
+        if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
+            productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
         }
     }
 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.DAS:
+            switch (productType) {
+                case DAS:
                     fragment = NetDasAdvancedSettingFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.ADME:
+                case ADME:
                     fragment = NetAdmeAdvancedSettingFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.M20:
+                case M20:
                     fragment = NetM20AdvancedSettingFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.E40:
+                case E40:
                     fragment = NetE40AdvancedSettingFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.VMS:
+                case VMS:
                     fragment = NetVmsAdvancedSettingsFragment.newInstance(deviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.DAS:
+            switch (productType) {
+                case DAS:
                     fragment = new BleDasAdvancedSettingFragment();
                     break;
 
-                case AppContants.DeviceType.ADME:
+                case ADME:
                     fragment = BleAdmeAdvancedSettingFragment.newInstance();
                     break;
 
-                case AppContants.DeviceType.M20:
+                case M20:
                     fragment = BleM20AdvancedSettingFragment.newInstance();
                     break;
 
-                case AppContants.DeviceType.RN20:
+                case RN20:
                     fragment = BleRN20AdvancedSettingFragment.newInstance();
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.E40:
+            switch (productType) {
+                case E40:
                     fragment = TcpE40AdvancedSettingFragment.newInstance();
                     break;
 
-                case AppContants.DeviceType.VMS:
+                case VMS:
                     fragment = TcpVmsAdvancedSettingsFragment.newInstance();
                     break;
             }

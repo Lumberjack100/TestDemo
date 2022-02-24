@@ -24,9 +24,9 @@ import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.DataCenterEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.callback.DataCenterConfigListener;
@@ -95,7 +95,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     @BindView(R.id.ll_mqtt_child_items)
     ViewGroup mqttChildItemsLayout;
 
-    private int deviceType = AppContants.DeviceType.DAS;
+    private ProductType productType = ProductType.DAS;
     private ServerNumber serverNumber;
     public DataCenterInfo dataCenterInfo;
 
@@ -148,8 +148,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         mEtDeviceRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
     }
 
-    public void initData(int deviceType, ServerNumber serverNumber, String serverStatus) {
-        this.deviceType = deviceType;
+    public void initData(ProductType productType, ServerNumber serverNumber, String serverStatus) {
+        this.productType = productType;
         this.serverNumber = serverNumber;
         //数据中心地址为空表示数据中心未启用
         if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
@@ -162,7 +162,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             contentLayout.setVisibility(View.VISIBLE);
         }
 
-        if (deviceType == AppContants.DeviceType.DAS || deviceType == AppContants.DeviceType.ADME || deviceType == AppContants.DeviceType.VMS) {
+        if (productType == ProductType.DAS || productType == ProductType.ADME || productType == ProductType.VMS) {
             dataProtocolLayout.setVisibility(View.GONE);
         }
     }
@@ -265,7 +265,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     }
 
     private void showTransferProtocolDialog() {
-        final String[] protocols = (deviceType == AppContants.DeviceType.DAS || deviceType == AppContants.DeviceType.ADME) ?
+        final String[] protocols = (productType == ProductType.DAS || productType == ProductType.ADME) ?
                 new String[]{"TCP-C", "MQTT"} : new String[]{"TCP-C", "TCP-S", "MQTT"};
         int pos = Arrays.asList(protocols).indexOf(String.valueOf(transferProtocol));
         pos = (pos == -1) ? 0 : pos;

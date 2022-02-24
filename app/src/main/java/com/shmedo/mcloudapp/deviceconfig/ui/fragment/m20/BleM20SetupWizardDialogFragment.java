@@ -18,6 +18,7 @@ import com.blankj.utilcode.util.ScreenUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
@@ -126,7 +127,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
 
         } else if (id == R.id.tv_left) {
             dismiss();
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+            DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
 
         } else if (id == R.id.tv_right) {
             if (!baseGOCBleIotCommunicateFragment.isConnected()) {
@@ -173,7 +174,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
                 @Override
                 public void run() {
                     dismiss();
-                    DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+                    DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
                 }
             }, 1500);
         } else {

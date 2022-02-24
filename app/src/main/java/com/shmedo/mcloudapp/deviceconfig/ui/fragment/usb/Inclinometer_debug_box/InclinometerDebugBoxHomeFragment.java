@@ -20,6 +20,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.usbserial.livedata.state.USBConnectionState;
 import com.shmedo.mcloudapp.R;
@@ -202,7 +203,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                 break;
 
             case "指令调试":
-                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.USB_SERIAL, AppContants.DeviceType.INCLINOMETER_DEBUG_BOX);
+                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.USB_SERIAL, ProductType.INCLINOMETER_DEBUG_BOX);
                 break;
         }
     }

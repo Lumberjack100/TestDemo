@@ -14,6 +14,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.rn20.Rn20PositionEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.rn20.Rn20PositionInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -76,7 +77,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             newFragment.setDialogFragmentClickListener(LocationFragmentClickListener);
             newFragment.show(getChildFragmentManager(), "dialog");
         } else if (id == R.id.customCommandLogPrintLayout) {
-            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.RN20);
+            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.RN20);
         }
     }
 

@@ -29,6 +29,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -236,11 +237,11 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.E40);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ProductType.E40);
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.E40, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
                 break;
 
             case "重启":
@@ -252,7 +253,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.E40);
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, ProductType.E40);
                 break;
         }
     }
