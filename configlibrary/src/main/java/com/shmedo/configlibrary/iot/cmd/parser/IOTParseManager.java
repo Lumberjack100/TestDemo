@@ -41,6 +41,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.e40.E40NmeaTimeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40RTKModeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40SatelitteInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40SerialPortInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.lr200.LR200PositionInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.m20.M20BaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.rn20.Rn20BaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.rn20.Rn20ModuleStatusParser;
@@ -211,7 +212,8 @@ public class IOTParseManager {
                 Rn20BaseInfoParser.class,
                 Rn20ModuleStatusParser.class,
                 Rn20PositionInfoParser.class,
-                LogOutputInfoParser.class
+                LogOutputInfoParser.class,
+                LR200PositionInfoParser.class
         });
 
         registerWithClass(clazzes);

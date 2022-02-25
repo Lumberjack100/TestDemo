@@ -76,14 +76,13 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
                     break;
 
                 case M20:
+                case LR200:
                     fragment = BleM20CustomCommandLogPrintFragment.newInstance();
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.USB_SERIAL) {
-            switch (productType) {
-                case INCLINOMETER_DEBUG_BOX:
-                    fragment = new InclinometerDebugBoxLoggerFragment();
-                    break;
+            if (productType == ProductType.INCLINOMETER_DEBUG_BOX) {
+                fragment = new InclinometerDebugBoxLoggerFragment();
             }
         }
         return fragment;

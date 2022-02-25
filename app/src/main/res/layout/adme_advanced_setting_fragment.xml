@@ -15,6 +15,26 @@
             android:layout_height="10dp" />
 
         <LinearLayout
+            android:id="@+id/workModeLayout"
+            style="@style/Common_ClickableItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="工作模式" />
+
+            <TextView
+                android:id="@+id/tv_work_mode"
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp"
+                tools:text="常规测量模式" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="10dp" />
+
+        <LinearLayout
             android:id="@+id/dataCenterConfigLayout"
             style="@style/Common_ClickableItem_LayoutStyle">
 
@@ -71,26 +91,6 @@
                 android:text="恢复出厂设置" />
 
             <TextView style="@style/Common_ClickableItem_ValueStyle" />
-
-        </LinearLayout>
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="10dp" />
-
-        <LinearLayout
-            android:id="@+id/workModeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="工作模式" />
-
-            <TextView
-                android:id="@+id/tv_work_mode"
-                style="@style/Common_ClickableItem_ValueStyle"
-                android:textSize="17sp"
-                tools:text="常规测量模式" />
 
         </LinearLayout>
 

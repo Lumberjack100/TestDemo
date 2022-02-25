@@ -1,22 +1,22 @@
-package com.shmedo.configlibrary.iot.cmd.parser.das;
+package com.shmedo.configlibrary.iot.cmd.parser.lr200;
 
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.das.DasDataReportInfo;
+import com.shmedo.configlibrary.iot.model.lr200.LR200PositionInfo;
 
 import java.util.HashMap;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2021/4/20 <br/>
- * 描述：       解析DAS  数据上报时间参数
+ * 创建时间:  2022/2/25 <br/>
+ * 描述：     解析一体式裂缝计经纬度信息
  */
-public class DasDataReportInfoParser implements IOTResultParser<DasDataReportInfo> {
+public class LR200PositionInfoParser implements IOTResultParser<LR200PositionInfo> {
     @Override
-    public DasDataReportInfo parse(String result) {
-        DasDataReportInfo info = new DasDataReportInfo();
+    public LR200PositionInfo parse(String result) {
+        LR200PositionInfo info = new LR200PositionInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -29,9 +29,8 @@ public class DasDataReportInfoParser implements IOTResultParser<DasDataReportInf
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setReport_intv(TextUtils.isEmpty(keyValueMap.get("report_intv")) ? "" : keyValueMap.get("report_intv"));
-            info.setPlus_intv(TextUtils.isEmpty(keyValueMap.get("plus_intv")) ? "" : keyValueMap.get("plus_intv"));
-            info.setPlus_count(TextUtils.isEmpty(keyValueMap.get("plus_count")) ? "" : keyValueMap.get("plus_count"));
+            info.setLng(TextUtils.isEmpty(keyValueMap.get("lng")) ? "" : keyValueMap.get("lng"));
+            info.setLat(TextUtils.isEmpty(keyValueMap.get("lat")) ? "" : keyValueMap.get("lat"));
 
             return info;
         } catch (Exception ex) {
@@ -47,6 +46,6 @@ public class DasDataReportInfoParser implements IOTResultParser<DasDataReportInf
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.MD_GET_DATA_REPORT_TIME;
+        return IOTCommandType.MD_GET_LOCATION;
     }
 }

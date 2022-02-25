@@ -1,30 +1,31 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200;
 
 import android.os.Bundle;
-import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.rn20.Rn20PositionEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.lr200.LR200PositionEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.rn20.Rn20PositionInfo;
+import com.shmedo.configlibrary.iot.model.lr200.LR200PositionInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
-import com.shmedo.mcloudapp.util.LocationUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,19 +34,22 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2021/8/4 <br/>
- * 描述：     TODO
+ * 创建时间:  2022/2/24 <br/>
+ * 描述：     LR200 蓝牙设置页面
  */
-public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFragment {
+public class BleLR200AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragment {
+    private static final int RESET = 0x0001;
+
     private String installLocation;
 
-    public static BleRN20AdvancedSettingFragment newInstance() {
-        return new BleRN20AdvancedSettingFragment();
+
+    public static BleLR200AdvancedSettingFragment newInstance() {
+        return new BleLR200AdvancedSettingFragment();
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_rn20_advanced_setting;
+        return R.layout.ble_lr200_advanced_setting_fragment;
     }
 
     @Override
@@ -58,7 +62,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
      * 查询设备安装位置
      */
     private void queryInstallLocation() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_LOCAL);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_LOCATION);
         sendCommand(command);
     }
 
@@ -68,10 +72,10 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     private void setInstallLocation() {
         String[] strs = installLocation.split(",");
         try {
-            Rn20PositionEntity entity = new Rn20PositionEntity();
-            entity.setLongitude(strs[0]);
-            entity.setLatitude(strs[1]);
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
+            LR200PositionEntity entity = new LR200PositionEntity();
+            entity.setLng(strs[0]);
+            entity.setLat(strs[1]);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_LOCATION, entity);
             startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
             sendCommand(command);
         } catch (NumberFormatException ex) {
@@ -79,7 +83,15 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         }
     }
 
-    @OnClick({R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout})
+    /**
+     * 恢复出厂设置指令
+     */
+    private void resetDevice() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RESET);
+        sendCommand(command);
+    }
+
+    @OnClick({R.id.syncInstallLocationLayout, R.id.firmwareUpgradeLayout, R.id.customCommandLogPrintLayout, R.id.resetLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -93,8 +105,15 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             SyncInstallationLocationDialog newFragment = new SyncInstallationLocationDialog(mActivity, installLocation);
             newFragment.setDialogFragmentClickListener(LocationFragmentClickListener);
             newFragment.show(getChildFragmentManager(), "dialog");
+
+        } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
+
+
         } else if (id == R.id.customCommandLogPrintLayout) {
-            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.RN20);
+            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.LR200);
+
+        } else if (id == R.id.resetLayout) {//恢复出厂设置
+            showWarnDialog("确定恢复出厂设置吗？", RESET);
         }
     }
 
@@ -114,6 +133,34 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         }
     };
 
+    /**
+     * 危险操作前弹框提醒
+     */
+    private void showWarnDialog(String content, int operateType) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示")
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        switch (operateType) {
+                            case RESET:
+                                resetDevice();
+                                break;
+                        }
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
         setResultData(cmdStr);
@@ -122,20 +169,20 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case RN20_MD_GET_TERMINAL_LOCAL: {
-                IOTCommandResult<Rn20PositionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+            case MD_GET_LOCATION: {
+                IOTCommandResult<LR200PositionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询经纬度出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                Rn20PositionInfo rn20PositionInfo = commandResult.getResult();
-                installLocation = rn20PositionInfo.getLongitude() + "," + rn20PositionInfo.getLatitude();
+                LR200PositionInfo positionInfo = commandResult.getResult();
+                installLocation = positionInfo.getLng() + "," + positionInfo.getLat();
             }
             break;
 
-            case RN20_MD_SET_TERMINAL_LOCAL: {
+            case MD_SET_LOCATION: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "设置经纬度出错!", cmdResult.getReason());
@@ -147,24 +194,27 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             }
             break;
 
+            case RESET: {//恢复出厂设置
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    String errMsg = String.format("%s %s", "恢复出厂设置出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                ToastUtils.show("设备稍后将重启,请等待后重新连接");
+                MCloudApp.getMainHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        disconnectDevice();
+                    }
+                }, 3000);
+            }
+            break;
+
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
         }
-    }
-
-    @Override
-    protected void customHandleMessage(@NonNull @NotNull Message msg) {
-        switch (msg.what) {
-            case AppContants.MsgWhat.MSG_DEFAULT:
-                ToastUtils.show("响应超时,请稍后尝试");
-                break;
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LocationUtils.getInstance().stopLocalService();
     }
 }

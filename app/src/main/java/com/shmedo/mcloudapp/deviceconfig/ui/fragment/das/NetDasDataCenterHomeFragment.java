@@ -208,7 +208,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      * 获取上报时间信息
      */
     private void getReportingTimeInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DATA_REPORT_TIME);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME);
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
@@ -335,7 +335,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private void processSave() {
         DasDataReportEntity entity = new DasDataReportEntity();
         entity.setReport_intv(reportingInterval);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DATA_REPORT_TIME, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_REPORT_TIME, entity);
         showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
@@ -407,7 +407,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
-            case DAS_MD_GET_DATA_REPORT_TIME: {//
+            case MD_GET_DATA_REPORT_TIME: {//
                 IOTCommandResult<DasDataReportInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
@@ -481,7 +481,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             }
             break;
 
-            case DAS_MD_SET_DATA_REPORT_TIME: {//
+            case MD_SET_DATA_REPORT_TIME: {//
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     dismissWaitDialog();

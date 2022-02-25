@@ -15,6 +15,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasAdvancedSettingFr
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasAdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40AdvancedSettingFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200.BleLR200AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20AdvancedSettingFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20AdvancedSettingFragment;
@@ -30,7 +31,7 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
     private ProductType productType = ProductType.UnKnown;
 
 
-    public static void startActivity(Context context, DeviceInfo deviceInfo, ProductType productType ) {
+    public static void startActivity(Context context, DeviceInfo deviceInfo, ProductType productType) {
         Intent intent = new Intent(context, AdvancedSettingActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
@@ -38,7 +39,7 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay, ProductType productType ) {
+    public static void startActivity(Context context, int connectWay, ProductType productType) {
         Intent intent = new Intent(context, AdvancedSettingActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
@@ -104,6 +105,9 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
                 case RN20:
                     fragment = BleRN20AdvancedSettingFragment.newInstance();
                     break;
+
+                case LR200:
+                    fragment = BleLR200AdvancedSettingFragment.newInstance();
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             switch (productType) {

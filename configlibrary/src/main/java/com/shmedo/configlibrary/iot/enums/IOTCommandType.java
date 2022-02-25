@@ -6,8 +6,7 @@ package com.shmedo.configlibrary.iot.enums;
  * 描述：    米度物联网设备指令
  */
 public enum IOTCommandType {
-
-    /**　米度物联网设备通用指令  **/
+    /** 设备通用指令  **/
     /**
      * 获取设备终端时间
      */
@@ -29,6 +28,40 @@ public enum IOTCommandType {
     QUERY_DEVICE_EX_STATUS("md_getExstatus"),
 
     /**
+     * 重启设备
+     */
+    REBOOT("reboot"),
+
+    /**
+     * 获取接入传感器类型
+     */
+    QUERY_SENSOR_TYPE("getsensorID"),
+
+    /**
+     * 传感器遥测
+     */
+    QUERY_SAMPLE("sample"),
+
+    /**
+     * 获取工作模式
+     */
+    GET_WORK_MODE("getworkmode"),
+
+    /**
+     * 设置工作模式
+     */
+    SET_WORK_MODE("setworkmode"),
+
+    /**
+     * 获取上报数据的间隔
+     */
+    MD_GET_DATA_REPORT_TIME("md_getreportdatatime"),
+    /**
+     * 设置上报数据的间隔
+     */
+    MD_SET_DATA_REPORT_TIME("md_setreportdatatime"),
+
+    /**
      * 获取数据中心状态
      */
     MD_GET_DATA_CENTER_STATUS("md_getdatacenterstatus"),
@@ -44,36 +77,6 @@ public enum IOTCommandType {
     MD_SET_DATA_CENTER("md_setdatacenter"),
 
     /**
-     * 重启设备
-     */
-    REBOOT("reboot"),
-
-    /**
-     * 恢复出厂设置
-     */
-    RESET("md_reset"),
-
-    /**
-     * 固件升级
-     */
-    MD_UPGRADE("md_upgrade"),
-
-    /**
-     * 获取接入传感器类型
-     */
-    QUERY_SENSOR_TYPE("getsensorID"),
-
-    /**
-     * 传感器遥测
-     */
-    QUERY_SAMPLE("sample"),
-
-    /**
-     * 设置工作模式
-     */
-    SET_WORK_MODE("setworkmode"),
-
-    /**
      * 获取日志输出等级和输出方式
      */
     GET_LOG_OUTPUT_MODE_LEVEL("md_getlogoutput"),
@@ -82,6 +85,16 @@ public enum IOTCommandType {
      * 日志输出等级和输出方式
      */
     SET_LOG_OUTPUT_MODE_LEVEL("md_setlogoutput"),
+
+    /**
+     * 固件升级
+     */
+    MD_UPGRADE("md_upgrade"),
+
+    /**
+     * 恢复出厂设置
+     */
+    RESET("md_reset"),
 
     /**
      * 保存配置参数
@@ -150,15 +163,6 @@ public enum IOTCommandType {
      * 设置数字水位计信息
      */
     DAS_MD_SET_DIGITAL_PIEZOMETER_INFO("md_setdigtalosm"),
-
-    /**
-     * 获取上报数据的间隔
-     */
-    DAS_MD_GET_DATA_REPORT_TIME("md_getreportdatatime"),
-    /**
-     * 设置上报数据的间隔
-     */
-    DAS_MD_SET_DATA_REPORT_TIME("md_setreportdatatime"),
 
     /**
      * 查询北斗数传终端
@@ -551,6 +555,20 @@ public enum IOTCommandType {
      * 设置E40 NMEA输出内容及输出频率
      */
     E40_MD_SET_NMEA_TIME("md_setnmeatime"),
+
+    /*　 LR200(一体式裂缝计) 指令  */
+    /**
+     * 获取设备位置
+     */
+    MD_GET_LOCATION("md_getloc"),
+
+    /**
+     * 设置设备位置
+     */
+    MD_SET_LOCATION("md_getloc"),
+
+
+
 
     /**
      * 自定义心跳包
