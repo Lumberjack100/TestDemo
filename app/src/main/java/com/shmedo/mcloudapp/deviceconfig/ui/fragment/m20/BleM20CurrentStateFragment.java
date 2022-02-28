@@ -215,11 +215,8 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 mTvPhoneStarNum.setText("--");
                 mTvAmsConnectionStatus.setText("--");
                 mTv4gSignalStrength.setText(String.format("%sdBm", m20CurrentStateInfo.get_$4g_signal()));
-                mTvLinkOneStatus.setText("未开启");
-                mTvLinkOneStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
-                mTvLinkTwoStatus.setText("未开启");
-                mTvLinkTwoStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
-
+                initLinkStatus(mTvLinkOneStatus, m20CurrentStateInfo.getDataCenter1());
+                initLinkStatus(mTvLinkTwoStatus, m20CurrentStateInfo.getDataCenter2());
                 initLinkStatus(mTvLinkThreeStatus, m20CurrentStateInfo.getDataCenter3());
                 initLinkStatus(mTvLinkFourStatus, m20CurrentStateInfo.getDataCenter4());
 
@@ -254,11 +251,14 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
      * @param linkStatus
      */
     private void initLinkStatus(TextView tvLinkStatus, String linkStatus) {
-        if (linkStatus.equals("1")) {
-            tvLinkStatus.setText("已连接");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.title_text_color));
-        } else if (linkStatus.equals("0")) {
-            tvLinkStatus.setText("未连接");
+        if (linkStatus.equals("0")) {
+            tvLinkStatus.setText("未开启");
+            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
+        } else if (linkStatus.equals("1")) {
+            tvLinkStatus.setText("已上线");
+            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+        } else if (linkStatus.equals("2")) {
+            tvLinkStatus.setText("未上线");
             tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_not_connected_platform));
         }
     }

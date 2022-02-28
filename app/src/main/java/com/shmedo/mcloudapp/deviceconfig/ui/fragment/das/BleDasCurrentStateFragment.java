@@ -284,7 +284,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
                 } else {
                     if (netStatusInfo.getLinkStatus().equals("0")) {
-                        holder.setText(R.id.tv_link_status, "离线");
+                        holder.setText(R.id.tv_link_status, "未上线");
                         holder.setTextColor(R.id.tv_link_status, Color.RED);
                     } else if (netStatusInfo.getLinkStatus().equals("1")) {
                         holder.setText(R.id.tv_link_status, "已上线");
