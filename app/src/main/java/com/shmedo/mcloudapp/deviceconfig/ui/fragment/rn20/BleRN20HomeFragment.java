@@ -129,10 +129,10 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         return R.layout.universal_config_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeadInfo();
+        updateHeadInfo(null);
         initAdapter();
         initConfigModuleData();
         observerApiKey();
@@ -148,19 +148,9 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         onConnectionStateChanged(isConnected());
     }
 
-    private void setHeadInfo() {
-        mTvDeviceName.setText("雨量采集器");
-        mTvDeviceSn.setText(String.format("设备编号：%s", sn));
-        mTvProductModel.setText("固件版本：--");
-        mTvFirmwareVersion.setText("电压：--");
-        mTvPlatformCommunicationState.setVisibility(View.GONE);
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-    }
-
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -561,11 +551,22 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo(Rn20BaseInfo rn20BaseInfo) {
-        if (rn20BaseInfo != null) {
-            mTvDeviceName.setText("雨量采集器");
-            mTvDeviceSn.setText(String.format("设备编号：%s", sn));
-            mTvProductModel.setText(String.format("固件版本：%s", !TextUtils.isEmpty(rn20BaseInfo.getVer()) ? rn20BaseInfo.getVer() : "--"));
-            mTvFirmwareVersion.setText(String.format("电压：%s", !TextUtils.isEmpty(rn20BaseInfo.getInvolt()) ? rn20BaseInfo.getInvolt() : "--"));
+        mTvPlatformCommunicationState.setVisibility(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTvDeviceName.setText("雨量采集器");
+        try {
+            if (rn20BaseInfo != null) {
+                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
+                mTvProductModel.setText(String.format("固件版本：%s", !TextUtils.isEmpty(rn20BaseInfo.getVer()) ? rn20BaseInfo.getVer() : "--"));
+                mTvFirmwareVersion.setText(String.format("电压：%s", !TextUtils.isEmpty(rn20BaseInfo.getInvolt()) ? rn20BaseInfo.getInvolt() : "--"));
+            } else {
+                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
+                mTvProductModel.setText("固件版本：--");
+                mTvFirmwareVersion.setText("电压：--");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

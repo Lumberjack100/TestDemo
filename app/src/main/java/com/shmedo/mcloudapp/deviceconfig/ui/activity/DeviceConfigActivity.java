@@ -173,6 +173,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
             switch (productType) {
                 case DAS:
+                case BHY:
                     fragment = BleDasHomeFragment.newInstance(device);
                     break;
 

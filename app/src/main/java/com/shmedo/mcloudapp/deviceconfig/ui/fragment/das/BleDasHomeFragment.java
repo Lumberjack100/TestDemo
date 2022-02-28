@@ -113,11 +113,16 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
+    private String sn;
+
     private String collectorModel = "";//采集器类型
     private BaseConfigInfo baseConfigInfo;
     private boolean isInitialSensorOpera = false;//是否初始化传感器操作
 
     private LocationViewModel locationViewModel;
+
+    private ProductType type;
+
 
     public static BleDasHomeFragment newInstance(DiscoveredBluetoothDevice device) {
         BleDasHomeFragment fragment = new BleDasHomeFragment();
@@ -132,6 +137,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             device = getArguments().getParcelable(EXTRA_DEVICE);
+            type = ProductType.valueBySuffix(device.getDevice().getName());
         }
     }
 
@@ -161,15 +167,13 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void setHeadInfo() {
-        if (device != null) {
-            mTvDeviceName.setText("物联网数据采集器");
-            mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
-            mTvProductModel.setText(String.format("产品型号：%s", "DAS"));
-        }
-        mTvSubModel.setText("采集器型号：--");
         mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTvDeviceName.setText(type == ProductType.DAS ? "智能采集器" : "BHY");
+        mTvDeviceSn.setText(String.format("设备编号：%s", MCloudApp.getCurDeviceToken()));
+        mTvProductModel.setText(String.format("产品型号：%s", type == ProductType.DAS ? "DAS" : "BHY"));
+        mTvSubModel.setText("采集器型号：--");
     }
 
     /**
@@ -563,32 +567,32 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void initConfigModuleData() {
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, 5, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
         configModuleList.add(configModule);
 
 //        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");
 //        configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_current_time, 1, "时间", "获取当前设备时间");
+        configModule = new ConfigModule(R.drawable.ic_device_current_time, "时间", "获取当前设备时间");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_telemetry, 6, "遥测", "远距离测量");
+        configModule = new ConfigModule(R.drawable.ic_device_telemetry, "遥测", "远距离测量");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_reboot, 7, "重启", "重新启动当前设备");
+        configModule = new ConfigModule(R.drawable.ic_device_reboot, "重启", "重新启动当前设备");
+        configModuleList.add(configModule);
+
+        configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
         configModuleList.add(configModule);
 
         //DAS具有采集器配置项
-        if (mTvProductModel.getText().toString().contains("DAS")) {
-            configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
-            configModuleList.add(configModule);
-
+        if (type == ProductType.DAS) {
             configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "传感器配置", "传感器参数配置");
             configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "MQTT协议配置");
-            configModuleList.add(configModule);
         }
+
+        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "MQTT协议配置");
+        configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);

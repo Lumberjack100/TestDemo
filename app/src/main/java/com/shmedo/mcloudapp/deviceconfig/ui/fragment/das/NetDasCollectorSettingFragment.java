@@ -107,6 +107,8 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         mEtStandbyTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtCollectTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtSensitivity.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+        mEtCollectorAddress.setHint("0-255");
     }
 
     private void initRefreshLayout() {
@@ -216,11 +218,6 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
 
         if (!sensitivity.equals("NullKey")) {
             sensitivity = mEtSensitivity.getText().toString().trim();
-//            if (TextUtils.isEmpty(sensitivity)) {
-//                ToastUtils.show("请输入灵敏度!");
-//                mEtSensitivity.requestFocus();
-//                return false;
-//            }
             try {
                 double value = Double.parseDouble(sensitivity);
                 if (value < 1) {

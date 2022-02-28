@@ -9,7 +9,7 @@ import android.text.TextUtils;
  */
 public enum ProductType {
 
-    DAS("DAS", "L", "自动化测斜机器人"),
+    DAS("DAS", "L", "智能采集器"),
 
     ADME("ADME", "T", "自动化测斜机器人"),
 
@@ -21,7 +21,7 @@ public enum ProductType {
 
     RN20("RN20", "Y", "轴力计"),
 
-    BHY("BHY", "H", "轴力计"),
+    BHY("BHY", "H", "崩滑仪"),
 
     LR200("LR200", "Z", "一体式裂缝计"),
 

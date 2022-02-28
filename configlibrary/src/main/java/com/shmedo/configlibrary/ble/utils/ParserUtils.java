@@ -101,7 +101,7 @@ public class ParserUtils {
         bean.setWorkTime(strs[3]);
         bean.setCollectorInterval(strs[4]);
         bean.setAccessSum(Integer.parseInt(strs[5]));
-
+        bean.setSensitivity(strs.length >= 7 ? strs[6] : "NullKey");
         return bean;
     }
 }
