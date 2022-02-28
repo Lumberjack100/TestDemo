@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -17,6 +18,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeWorkModeEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeWorkModeInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -112,7 +114,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         }
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+            DataCenterHomeActivity.startActivity(mActivity, ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
         } else if (id == R.id.rebootLayout) {//重启
             showWarnDialog("确定重启设备吗？", REBOOT);
 
@@ -228,12 +230,12 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             case REBOOT: {//重启
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reboot_failed), cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("发送指令成功,设备稍后将重启,请等待后重新连接");
+                ToastUtils.show(StringUtils.getString(R.string.device_reboot_tip));
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -246,12 +248,12 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             case RESET: {//恢复出厂设置
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送恢复出厂设置指令失败!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reset_failed), cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("发送指令成功,设备稍后将重启,请等待后重新连接");
+                ToastUtils.show(StringUtils.getString(R.string.device_reset_tip));
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

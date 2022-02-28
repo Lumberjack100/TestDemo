@@ -31,6 +31,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeEquipModelEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBaseInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotionState;
@@ -214,7 +215,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.ADME);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME);
                 break;
 
             case "基础配置":
@@ -230,11 +231,11 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.ADME, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "指令下发":
-                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.ADME);
+                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME);
                 break;
 
             case "高级配置":
@@ -242,7 +243,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.ADME);
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME);
                 break;
         }
     }
@@ -543,7 +544,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             return;
 
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state,"状态", "获取当前设备状态");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");

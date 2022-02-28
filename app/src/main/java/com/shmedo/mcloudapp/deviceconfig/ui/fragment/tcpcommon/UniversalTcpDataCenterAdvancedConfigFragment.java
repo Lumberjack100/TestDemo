@@ -18,6 +18,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
@@ -44,14 +45,14 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
     @BindView(R.id.dataCenterAdvancedConfigView)
     DataCenterAdvancedConfigView dataCenterAdvancedConfigView;
 
-    private int deviceType = AppContants.DeviceType.DAS;
+    private ProductType productType = ProductType.DAS;
     private ServerNumber serverNumber;
     private String serverStatus;
 
-    public static UniversalTcpDataCenterAdvancedConfigFragment newInstance(int deviceType, ServerNumber serverNumber, String status) {
+    public static UniversalTcpDataCenterAdvancedConfigFragment newInstance(ProductType productType, ServerNumber serverNumber, String status) {
         UniversalTcpDataCenterAdvancedConfigFragment fragment = new UniversalTcpDataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DEVICE_TYPE, deviceType);
+        args.putSerializable(AppContants.Extras.PRODUCT_TYPE, productType);
         args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
         fragment.setArguments(args);
@@ -62,7 +63,7 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            deviceType = getArguments().getInt(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
+            productType = (ProductType) getArguments().getSerializable(AppContants.Extras.PRODUCT_TYPE);
             serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_SERVER_NUMBER);
             serverStatus = getArguments().getString(AppContants.Extras.DATA_SERVER_STATUS);
         }
@@ -73,10 +74,10 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
         return R.layout.universal_data_center_advanced_config_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        dataCenterAdvancedConfigView.initData(deviceType, serverNumber, serverStatus);
+        dataCenterAdvancedConfigView.initData(productType, serverNumber, serverStatus);
         dataCenterAdvancedConfigView.setDataCenterConfigListener(this);
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);

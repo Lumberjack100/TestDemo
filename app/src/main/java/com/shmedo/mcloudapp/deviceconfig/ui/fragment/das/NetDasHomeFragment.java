@@ -11,6 +11,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasActiveEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
@@ -95,7 +96,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
 //                showWaitDialog("处理中...");
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
 //                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.DAS);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.DAS);
             }
             break;
 
@@ -134,11 +135,11 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.DAS);
+                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, ProductType.DAS);
                 break;
         }
     }
@@ -245,7 +246,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.DAS);
+                        DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.DAS);
                     }
                 });
                 break;

@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -26,6 +27,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.IotLogOutputEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
@@ -148,19 +150,19 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             serverNumber = SERVER_NUMBER_FOUR;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.vmsAisleOneLayout) {
             VmsAisleSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, VmsAisleNumber.NUMBER_ONE);
@@ -346,12 +348,12 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
             case REBOOT: {//重启网关
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送重启指令失败!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reboot_failed), cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("发送重启指令成功,网关稍后将重启,请稍候重新连接");
+                ToastUtils.show(StringUtils.getString(R.string.device_reboot_tip));
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -364,12 +366,12 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
             case RESET: {//恢复出厂设置
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送恢复出厂设置指令失败!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reset_failed), cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("发送指令成功,网关5秒后将重启,请稍候重新连接");
+                ToastUtils.show(StringUtils.getString(R.string.device_reset_tip));
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

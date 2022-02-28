@@ -5,7 +5,7 @@ import android.text.TextUtils;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/11/4 <br/>
- * 描述：     TODO
+ * 描述：    传感器异常信息
  */
 public enum SensorErrorType {
     NORMAL("0", "正常"),
@@ -47,7 +47,6 @@ public enum SensorErrorType {
 
     /**
      * 根据传感器错误码返回对应的错误信息
-     *
      * @param errorCode
      * @return
      */

@@ -14,6 +14,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -99,11 +100,11 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
 //                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
 //                showWaitDialog("处理中...");
 //                doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));
-                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.E40);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.E40);
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.E40, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.E40, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
                 break;
 
             case "重启":
@@ -121,7 +122,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.E40);
+                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, ProductType.E40);
                 break;
         }
     }
@@ -283,7 +284,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
                 ((QueryCurrentStateDialog) newFragment).setOnSeeDetailClickListener(new QueryCurrentStateDialog.OnSeeDetailClickListener() {
                     @Override
                     public void onSeeDetailClick(DevcieCurrentState devcieCurrentState) {
-                        DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.E40);
+                        DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.E40);
                     }
                 });
                 break;

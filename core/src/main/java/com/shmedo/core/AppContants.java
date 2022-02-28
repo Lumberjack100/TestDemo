@@ -22,22 +22,6 @@ public interface AppContants {
     }
 
     /**
-     * 设备类型
-     */
-    interface DeviceType {
-        int UnKnown = 0x000;
-        int DAS = 0x001;
-        int ADME = 0x002;
-        int VMS = 0x003;
-        int E40 = 0x004;
-        int M20 = 0x005;
-        int RN20 = 0x006;
-        int BHY = 0x007;
-
-        int INCLINOMETER_DEBUG_BOX = 0x101;
-    }
-
-    /**
      * 通讯方式
      */
     interface CommunicationWay {
@@ -81,7 +65,7 @@ public interface AppContants {
         String DATA_SERVER_STATUS = "data_server_status";
 
         // 设备类型
-        String DEVICE_TYPE = "device_type";
+        String PRODUCT_TYPE = "product_type";
 
         String DEVICE_ID = "device_id";
 

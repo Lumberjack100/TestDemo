@@ -14,6 +14,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -79,7 +80,7 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
 
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+            DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
 
         } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
             FirmWareSelectDialog newFragment = new FirmWareSelectDialog(deviceInfo.getProductID());

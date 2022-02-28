@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -21,6 +22,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40HomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200.BleLR200HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.NetDeviceHomeFragment;
@@ -38,111 +40,63 @@ import java.util.List;
 public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
-    private int deviceType = AppContants.DeviceType.DAS;
+    private ProductType productType = ProductType.UnKnown;
 
     private DiscoveredBluetoothDevice device;
 
     /**
      * 4G 通讯方式
+     *
      * @param context
      * @param deviceInfo
      */
     public static void startActivity(Context context, DeviceInfo deviceInfo) {
-        int type = AppContants.DeviceType.UnKnown;
-        String productType = deviceInfo.getProductToken().toUpperCase();
-        if (productType.contains("DAS")) {
-            type = AppContants.DeviceType.DAS;
-        } else if (productType.contains("ADME")) {
-            type = AppContants.DeviceType.ADME;
-        } else if (productType.contains("M20")) {
-            type = AppContants.DeviceType.M20;
-        } else if (productType.contains("E40") || productType.contains("E60")) {
-            type = AppContants.DeviceType.E40;
-        } else if (productType.contains("VMS") || productType.contains("GW300")) {
-            type = AppContants.DeviceType.VMS;
-        }else if (productType.contains("BHY")) {
-            type = AppContants.DeviceType.BHY;
+        ProductType type = ProductType.valueByPrefix(deviceInfo.getProductToken().toUpperCase());
+        if (type == ProductType.UnKnown) {
+            ToastUtils.show("暂不支持此设备类型!");
+            return;
         }
-
-//        if (type == AppContants.DeviceType.UnKnown) {
-//            ToastUtils.show("暂不支持此设备类型!");
-//            return;
-//        }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(EXTRA_DEVICE, deviceInfo);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, type);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, type);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
     /**
      * Ble 通讯方式
+     *
      * @param context
      * @param connectWay
      * @param device
      */
     public static void startActivity(Context context, int connectWay, DiscoveredBluetoothDevice device) {
-        int type = AppContants.DeviceType.UnKnown;
-        String deviceName = device.getDevice().getName();
-        if (deviceName.endsWith("L")) {
-            type = AppContants.DeviceType.DAS;
-        } else if (deviceName.endsWith("T")) {
-            if (deviceName.startsWith("M20"))
-                type = AppContants.DeviceType.M20;
-            else
-                type = AppContants.DeviceType.ADME;
-        } else if (deviceName.endsWith("V")) {
-            type = AppContants.DeviceType.M20;
-        } else if (deviceName.endsWith("Y")) {
-            type = AppContants.DeviceType.RN20;
-        }
-
-        if (type == AppContants.DeviceType.UnKnown) {
-            ToastUtils.show("暂不支持此设备类型");
+        ProductType type = ProductType.valueBySuffix(device.getDevice().getName());
+        if (type == ProductType.UnKnown) {
+            ToastUtils.show("暂不支持此设备类型!");
             return;
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(EXTRA_DEVICE, device);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, type);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, type);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
     /**
      * Wi-Fi 通讯方式
+     *
      * @param context
      * @param connectWay
-     * @param deviceType
+     * @param productType
      */
-    public static void startActivity(Context context, int connectWay, int deviceType) {
+    public static void startActivity(Context context, int connectWay, ProductType productType) {
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("设备配置");
-
-        if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            if (deviceType == AppContants.DeviceType.VMS) {
-                mIvAction.setVisibility(View.VISIBLE);
-                mIvAction.setImageResource(R.drawable.ic_vms_advanced_settings);
-            } else {
-                mIvAction.setVisibility(View.GONE);
-            }
-        } else {
-            mIvAction.setVisibility(View.VISIBLE);
-            if (deviceType == AppContants.DeviceType.VMS) {
-                mIvAction.setImageResource(R.drawable.ic_vms_advanced_settings);
-            } else {
-                mIvAction.setImageResource(R.drawable.ic_query_device_data);
-            }
-        }
     }
 
     @Override
@@ -157,36 +111,58 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             device = intent.getParcelableExtra(EXTRA_DEVICE);
         }
 
-        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
-            deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.UnKnown);
+        if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
+            productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mToolbarTitle.setText("设备配置");
+
+        if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+            if (productType == ProductType.VMS) {
+                mIvAction.setVisibility(View.VISIBLE);
+                mIvAction.setImageResource(R.drawable.ic_vms_advanced_settings);
+            } else {
+                mIvAction.setVisibility(View.GONE);
+            }
+        } else {
+            mIvAction.setVisibility(View.VISIBLE);
+            if (productType == ProductType.VMS) {
+                mIvAction.setImageResource(R.drawable.ic_vms_advanced_settings);
+            } else {
+                mIvAction.setImageResource(R.drawable.ic_query_device_data);
+            }
         }
     }
 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.DAS:
+            switch (productType) {
+                case DAS:
                     fragment = NetDasHomeFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.ADME:
+                case ADME:
                     fragment = NetAdmeHomeFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.M20:
+                case M20:
                     fragment = NetM20HomeFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.E40:
+                case E40:
                     fragment = NetE40HomeFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.VMS:
+                case VMS:
                     fragment = NetVmsHomeFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.BHY:
+                case BHY:
                     fragment = NetBhyHomeFragment.newInstance(deviceInfo);
                     break;
 
@@ -195,30 +171,34 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.DAS:
+            switch (productType) {
+                case DAS:
                     fragment = BleDasHomeFragment.newInstance(device);
                     break;
 
-                case AppContants.DeviceType.ADME:
+                case ADME:
                     fragment = BleAdmeHomeFragment.newInstance(device);
                     break;
 
-                case AppContants.DeviceType.M20:
+                case M20:
                     fragment = BleM20HomeFragment.newInstance(device);
                     break;
 
-                case AppContants.DeviceType.RN20:
+                case RN20:
                     fragment = BleRN20HomeFragment.newInstance(device);
+                    break;
+
+                case LR200:
+                    fragment = BleLR200HomeFragment.newInstance(device);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.E40:
+            switch (productType) {
+                case E40:
                     fragment = TcpE40HomeFragment.newInstance();
                     break;
 
-                case AppContants.DeviceType.VMS:
+                case VMS:
                     fragment = TcpVmsHomeFragment.newInstance();
                     break;
             }
@@ -229,12 +209,12 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
     @Override
     protected void onIconActionClick() {
         if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            if (deviceType == AppContants.DeviceType.VMS) {
-                AdvancedSettingActivity.startActivity(this, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.VMS);
+            if (productType == ProductType.VMS) {
+                AdvancedSettingActivity.startActivity(this, AppContants.CommunicationWay.TCP_CONNECT, ProductType.VMS);
             }
         } else if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            if (deviceType == AppContants.DeviceType.VMS) {
-                AdvancedSettingActivity.startActivity(this, deviceInfo, AppContants.DeviceType.VMS);
+            if (productType == ProductType.VMS) {
+                AdvancedSettingActivity.startActivity(this, deviceInfo, ProductType.VMS);
             } else {
                 QueryDeviceDataActivity.startActivity(DeviceConfigActivity.this, deviceInfo.getDeviceToken());
             }

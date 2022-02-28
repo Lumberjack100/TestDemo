@@ -82,42 +82,27 @@ public class DataCenterEntity implements Validater {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("centerid=" + serverNumber.toInt());
         stringBuilder.append("&");
-        if (!TextUtils.isEmpty(protocol)) {
-            stringBuilder.append("protocol=" + protocol);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(datatype)) {
-            stringBuilder.append("datatype=" + datatype);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(plattype)) {
-            stringBuilder.append("plattype=" + plattype);
-            stringBuilder.append("&");
-        }
-        stringBuilder.append("addr=" + addr);
+        stringBuilder.append("protocol=" + (TextUtils.isEmpty(protocol) ? "" : protocol));
         stringBuilder.append("&");
-        stringBuilder.append("port=" + port);
+        stringBuilder.append("datatype=" + (TextUtils.isEmpty(datatype) ? "" : datatype));
         stringBuilder.append("&");
-        stringBuilder.append("deviceid=" + deviceid);
+        stringBuilder.append("plattype=" + (TextUtils.isEmpty(plattype) ? "" : plattype));
         stringBuilder.append("&");
-        stringBuilder.append("devicekey=" + devicekey);
+        stringBuilder.append("addr=" + (TextUtils.isEmpty(addr) ? "" : addr));
         stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(httpaddr)) {
-            stringBuilder.append("httpaddr=" + httpaddr);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(httpport)) {
-            stringBuilder.append("httpport=" + httpport);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(projid)) {
-            stringBuilder.append("projid=" + projid);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(regcode)) {
-            stringBuilder.append("regcode=" + regcode);
-        }
+        stringBuilder.append("port=" + (TextUtils.isEmpty(port) ? "" : port));
+        stringBuilder.append("&");
+        stringBuilder.append("deviceid=" + (TextUtils.isEmpty(deviceid) ? "" : deviceid));
+        stringBuilder.append("&");
+        stringBuilder.append("devicekey=" + (TextUtils.isEmpty(devicekey) ? "" : devicekey));
+        stringBuilder.append("&");
+        stringBuilder.append("httpaddr=" + (TextUtils.isEmpty(httpaddr) ? "" : httpaddr));
+        stringBuilder.append("&");
+        stringBuilder.append("httpport=" + (TextUtils.isEmpty(httpport) ? "" : httpport));
+        stringBuilder.append("&");
+        stringBuilder.append("projid=" + (TextUtils.isEmpty(projid) ? "" : projid));
+        stringBuilder.append("&");
+        stringBuilder.append("regcode=" + (TextUtils.isEmpty(regcode) ? "" : regcode));
 
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());

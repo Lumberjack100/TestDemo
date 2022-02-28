@@ -30,7 +30,6 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.SensorErrorType;
 import com.shmedo.configlibrary.iot.model.das.DasBaseInfo;
 import com.shmedo.configlibrary.iot.model.das.DasNetStatusInfo;
-import com.shmedo.configlibrary.iot.model.das.DasSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
@@ -238,8 +237,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
     TextView mTvAccelerationZ;//
 
     private List<DasNetStatusInfo> netStatusInfoList = new ArrayList<>();
-    private List<DasSensorStatusInfo> sensorList = new ArrayList<>();
-    private CommonAdapter dataCenterAdapter, sensorAdapter;
+    private CommonAdapter dataCenterAdapter;
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -290,7 +288,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 //未开启
                 if (netStatusInfo.getErrno() == 0) {
                     holder.setText(R.id.tv_link_status, "未开启");
-                    holder.setTextColor(R.id.tv_link_status, Color.GRAY);
+                    holder.setTextColor(R.id.tv_link_status, R.color.device_unopened_platform);
                     holder.setText(R.id.tv_link_send_data, "0");
                     holder.setText(R.id.tv_link_unsend_data, "0");
                     holder.setText(R.id.tv_link_online_rate, "0");
@@ -300,8 +298,8 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     holder.setTextColorRes(R.id.tv_link_status, R.color.text_color_3AD094);
 
                 } else if (netStatusInfo.getErrno() == 2) {//离线
-                    holder.setText(R.id.tv_link_status, "离线");
-                    holder.setTextColor(R.id.tv_link_status, Color.RED);
+                    holder.setText(R.id.tv_link_status, "未上线");
+                    holder.setTextColor(R.id.tv_link_status, R.color.device_not_connected_platform);
                 }
             }
         };

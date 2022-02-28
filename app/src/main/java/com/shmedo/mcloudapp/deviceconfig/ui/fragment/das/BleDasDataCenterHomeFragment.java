@@ -33,6 +33,7 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -178,7 +179,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, "");
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, "");
                 break;
 
             case R.id.dataCenterTwoLayout:
@@ -186,7 +187,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, "");
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, "");
                 break;
 
             case R.id.dataCenterThreeLayout:
@@ -194,7 +195,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, "");
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, "");
                 break;
 
             case R.id.btn_confirm:

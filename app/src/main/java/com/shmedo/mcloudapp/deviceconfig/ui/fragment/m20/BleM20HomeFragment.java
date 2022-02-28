@@ -24,6 +24,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.m20.M20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -87,7 +88,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
-    private M20BaseInfo m20BaseInfo;
+    private String sn;
 
     private BleM20SetupWizardDialogFragment setupWizardDialogFragment;
 
@@ -104,6 +105,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             device = getArguments().getParcelable(EXTRA_DEVICE);
+            sn = device.getName().substring(3);
         }
     }
 
@@ -112,10 +114,10 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         return R.layout.universal_config_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeadInfo();
+        updateHeadInfo(null);
         initAdapter();
         initConfigModuleData();
         observerApiKey();
@@ -131,19 +133,9 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         onConnectionStateChanged(isConnected());
     }
 
-    private void setHeadInfo() {
-        mTvDeviceName.setText("普适型GNSS一体机");
-        mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
-        mTvProductModel.setText("产品型号：--");
-        mTvFirmwareVersion.setText("固件版本：--");
-        mTvPlatformCommunicationState.setText("米度平台连接状态：--");
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-    }
-
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -175,15 +167,15 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                 break;
 
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.M20);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.M20);
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.M20);
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.M20);
                 break;
         }
     }
@@ -345,8 +337,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                m20BaseInfo = commandResult.getResult();
-                updateHeadInfo();
+                updateHeadInfo(commandResult.getResult());
             }
             break;
 
@@ -374,19 +365,21 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo() {
+    private void updateHeadInfo(M20BaseInfo m20BaseInfo) {
+        mTvPlatformCommunicationState.setVisibility(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTvDeviceName.setText("普适型GNSS一体机");
         try {
-            mTvDeviceName.setText("普适型GNSS一体机");
             if (m20BaseInfo != null) {
                 mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(m20BaseInfo.getSn()) ? m20BaseInfo.getSn() : device.getName().substring(3)));
                 mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(m20BaseInfo.getProductid()) ? m20BaseInfo.getProductid() : "M20"));
                 mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
             } else {
-                mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
+                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
                 mTvProductModel.setText(String.format("产品型号：：%s", "M20"));
                 mTvFirmwareVersion.setText("固件版本：--");
             }
-            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -411,6 +404,12 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     @Override
+    public void onStop() {
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        super.onStop();
+    }
+
+    @Override
     public boolean onBackPressed() {
         if (isConnected()) {
             isExitMode = true;
@@ -418,12 +417,6 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onStop() {
-        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        super.onStop();
     }
 
     @Override

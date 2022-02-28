@@ -1,7 +1,9 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,8 +20,9 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.MonitoringType;
+import com.shmedo.configlibrary.iot.enums.SensorErrorType;
 import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
-import com.shmedo.configlibrary.iot.model.m20.SensorErrnoBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -27,15 +30,17 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotComm
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.MessageFormat;
+
 import butterknife.BindView;
 import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  1/18/21 <br/>
- * 描述：    M20蓝牙模式 设备运行状态页面
+ * 创建时间:  2022/2/25 <br/>
+ * 描述：      LR200蓝牙模式 设备运行状态页面
  */
-public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment {
+public class BleLR200CurrentStateFragment extends BaseGOCBleIotCommunicateFragment {
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 
@@ -54,30 +59,30 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
     @BindView(R.id.tv_firmware_version)
     TextView mTvFirmwareVersion;
 
-    @BindView(R.id.tv_board_type)
-    TextView mTvBoardType;//板卡类型
-
     @BindView(R.id.tv_install_location)
     TextView mTvInstallLocation;
 
-    @BindView(R.id.tv_storage_state)
-    TextView mTvStorageState;//存储状态
+    @BindView(R.id.tv_internal_voltage)
+    TextView mTvInternalVoltage;//内部电压
 
-    @BindView(R.id.tv_continuous_running_time)
-    TextView mTvContinuousRunningTime;//连续运行时间
+    @BindView(R.id.tv_external_voltage)
+    TextView mTvExternalVoltage;//外部电压
+
+    @BindView(R.id.tv_internal_temperature)
+    TextView mTvInternalTemperature;
+
+    @BindView(R.id.tv_internal_humidity)
+    TextView mTvInternalHumidity;
+
+    @BindView(R.id.tv_external_temperature)
+    TextView mTvExternalTemperature;
+
+    @BindView(R.id.tv_external_humidity)
+    TextView mTvExternalHumidity;
 
     /**
      * 通讯状态
      */
-    @BindView(R.id.tv_device_star_num)
-    TextView mTvDeviceStarNum;//设备搜星数量
-
-    @BindView(R.id.tv_phone_star_num)
-    TextView mTvPhoneStarNum;//手机搜星数量
-
-    @BindView(R.id.tv_ams_connection_status)
-    TextView mTvAmsConnectionStatus;//AMS连接状态
-
     @BindView(R.id.tv_4g_signal_strength)
     TextView mTv4gSignalStrength;//4G信号强度
 
@@ -94,47 +99,42 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
     TextView mTvLinkFourStatus;
 
     /**
-     * 设备工作信息
+     * 裂缝计
      */
-    @BindView(R.id.tv_sensor_status)
-    TextView mTvSensorStatus;//传感器状态
+    @BindView(R.id.dasInclinometerInfo)
+    View inclinometerLayout;
 
-    @BindView(R.id.tv_inclination)
-    TextView mTvInclination;//倾角
+    @BindView(R.id.tv_mems_title)
+    TextView mTvMemsTitle;
 
-    @BindView(R.id.tv_internal_voltage)
-    TextView mTvInternalVoltage;//内部电压
+    @BindView(R.id.tv_inclinometer_status)
+    TextView mTvInclinometerStatus;
 
-    @BindView(R.id.tv_external_voltage)
-    TextView mTvExternalVoltage;//外部电压
+    @BindView(R.id.ll_inclinometer_axis)
+    View inclinometerAxisLayout;
 
-    @BindView(R.id.tv_solar_panel_voltage)
-    TextView mTvSolarPanelVoltage;//太阳能板电压
+    @BindView(R.id.tv_axis_x)
+    TextView mTvAxisX;//角度
 
-    @BindView(R.id.tv_ambient_temperature)
-    TextView mTvAmbientTemprature;//环境温度
+    @BindView(R.id.tv_axis_y)
+    TextView mTvAxisY;//角度
 
-    @BindView(R.id.tv_ambient_humidity)
-    TextView mTvAmbientHumidity;//环境湿度
+    @BindView(R.id.tv_axis_z)
+    TextView mTvAxisZ;//角度
 
-    @BindView(R.id.tv_supplementary_power)
-    TextView mTvSupplementaryPower;//近12小时补充功率
-
-    @BindView(R.id.tv_power_consumption)
-    TextView mTvPowerConsumption;//消耗功率
 
     private M20CurrentStateInfo m20CurrentStateInfo;
 
-    public static BleM20CurrentStateFragment newInstance() {
-        return new BleM20CurrentStateFragment();
+    public static BleLR200CurrentStateFragment newInstance() {
+        return new BleLR200CurrentStateFragment();
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.m20_current_state_fragment;
+        return R.layout.lr200_current_state_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRefreshLayout();
@@ -206,38 +206,36 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 mTVSimCardNumber.setText(m20CurrentStateInfo.getCCID());
                 mTvImeiNumber.setText(m20CurrentStateInfo.getIMEI());
                 mTvFirmwareVersion.setText(m20CurrentStateInfo.getSw_version());
-                mTvBoardType.setText(m20CurrentStateInfo.getGpsCard());
                 mTvInstallLocation.setText(m20CurrentStateInfo.getLocation());
-                mTvStorageState.setText(m20CurrentStateInfo.getEMMCFree());
-                mTvContinuousRunningTime.setText("--");
+                mTvInternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getInner_power_volt()));
+                mTvExternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getExt_power_volt()));
+                mTvInternalTemperature.setText(String.format("%sV", m20CurrentStateInfo.getTemp()));
+                mTvInternalHumidity.setText(String.format("%s℃", m20CurrentStateInfo.getHumidity()));
+                mTvExternalTemperature.setText(String.format("%s%%", m20CurrentStateInfo.getTemp_out()));
+                mTvExternalHumidity.setText(String.format("%sV", m20CurrentStateInfo.getHumidity_out()));
 
-                mTvDeviceStarNum.setText(m20CurrentStateInfo.getStarNum());
-                mTvPhoneStarNum.setText("--");
-                mTvAmsConnectionStatus.setText("--");
                 mTv4gSignalStrength.setText(String.format("%sdBm", m20CurrentStateInfo.get_$4g_signal()));
                 initLinkStatus(mTvLinkOneStatus, m20CurrentStateInfo.getDataCenter1());
                 initLinkStatus(mTvLinkTwoStatus, m20CurrentStateInfo.getDataCenter2());
                 initLinkStatus(mTvLinkThreeStatus, m20CurrentStateInfo.getDataCenter3());
                 initLinkStatus(mTvLinkFourStatus, m20CurrentStateInfo.getDataCenter4());
 
-                boolean sensorAbnormal = false;
-                for (SensorErrnoBean errnoBean : m20CurrentStateInfo.getSensor_errno()) {
-                    if (errnoBean.getErrno() != 0) {
-                        sensorAbnormal = true;
+                if (!m20CurrentStateInfo.getSensor_errno().isEmpty()) {
+                    inclinometerLayout.setVisibility(View.VISIBLE);
+                    int errno = m20CurrentStateInfo.getSensor_errno().get(0).getErrno();
+                    String sensor_id = m20CurrentStateInfo.getSensor_errno().get(0).getSensor_id();
+                    MonitoringType monitoringType = MonitoringType.valueByCode(sensor_id);
+                    mTvMemsTitle.setText(monitoringType.getDescription());
+                    mTvInclinometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(errno)));
+                    setSensorStatusColor(mTvInclinometerStatus, errno);
+
+                    if (!TextUtils.isEmpty(m20CurrentStateInfo.getX_Angle()) && !TextUtils.isEmpty(m20CurrentStateInfo.getY_Angle()) && !TextUtils.isEmpty(m20CurrentStateInfo.getZ_Angle())) {
+                        inclinometerAxisLayout.setVisibility(View.VISIBLE);
+                        mTvAxisX.setText(MessageFormat.format("{0}", m20CurrentStateInfo.getX_Angle()));
+                        mTvAxisY.setText(MessageFormat.format("{0}", m20CurrentStateInfo.getY_Angle()));
+                        mTvAxisZ.setText(MessageFormat.format("{0}", m20CurrentStateInfo.getZ_Angle()));
                     }
                 }
-                mTvSensorStatus.setText(sensorAbnormal ? "未接入" : "正常");
-                mTvSensorStatus.setTextColor(sensorAbnormal ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
-
-                String angel = String.format("%s°,%s°,%s°", m20CurrentStateInfo.getX_Angle(), m20CurrentStateInfo.getY_Angle(), m20CurrentStateInfo.getZ_Angle());
-                mTvInclination.setText(angel);
-                mTvInternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getInner_power_volt()));
-                mTvExternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getExt_power_volt()));
-                mTvSolarPanelVoltage.setText(String.format("%sV", m20CurrentStateInfo.getSolar_volt()));
-                mTvAmbientTemprature.setText(String.format("%s℃", m20CurrentStateInfo.getTemp()));
-                mTvAmbientHumidity.setText(String.format("%s%%", m20CurrentStateInfo.getHumidity()));
-                mTvSupplementaryPower.setText(String.format("%sV", m20CurrentStateInfo.getSupply_power()));
-                mTvPowerConsumption.setText(String.format("%sV", m20CurrentStateInfo.getConsume_power()));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -263,6 +261,14 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
         }
     }
 
+    private void setSensorStatusColor(TextView textView, int status) {
+        if (status == 0) {
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+        } else {
+            textView.setTextColor(Color.RED);
+        }
+    }
+
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         switch (msg.what) {
@@ -274,5 +280,4 @@ public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment
                 break;
         }
     }
-
 }

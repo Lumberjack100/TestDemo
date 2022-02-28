@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 
@@ -32,24 +33,8 @@ public class BleDeviceAdapter extends BaseQuickAdapter<DiscoveredBluetoothDevice
         } else {
             holder.setGone(R.id.tv_device_type, false);
 
-            if (bluetoothDevice.getDevice().getName().endsWith("L")) {
-                holder.setText(R.id.tv_device_type, "DAS");
-
-            } else if (bluetoothDevice.getDevice().getName().endsWith("T")) {
-                if (bluetoothDevice.getDevice().getName().startsWith("M20"))
-                    holder.setText(R.id.tv_device_type, "M20");
-                else
-                    holder.setText(R.id.tv_device_type, "ADME");
-
-            } else if (bluetoothDevice.getDevice().getName().endsWith("V")) {
-                holder.setText(R.id.tv_device_type, "M20");
-            } else if (bluetoothDevice.getDevice().getName().endsWith("Y")) {
-                holder.setText(R.id.tv_device_type, "RN20");
-            } else if (bluetoothDevice.getDevice().getName().endsWith("H")) {
-                holder.setText(R.id.tv_device_type, "BHY");
-            } else {
-                holder.setText(R.id.tv_device_type, "UnKnown");
-            }
+            ProductType productType = ProductType.valueBySuffix(bluetoothDevice.getDevice().getName());
+            holder.setText(R.id.tv_device_type, productType.getPrefix());
         }
     }
 }

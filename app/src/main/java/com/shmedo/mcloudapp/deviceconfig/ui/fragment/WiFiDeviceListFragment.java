@@ -38,6 +38,7 @@ import com.hacknife.wifimanager.State;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -140,10 +141,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         if (curWiFi.isConnected()) {//已连接
             hideProgressBar();
             if (curWiFi.name().contains("VMS")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.VMS);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, ProductType.VMS);
 
             } else if (curWiFi.name().contains("E40")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.E40);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, ProductType.E40);
             }
         } else if (curWiFi.isSaved() || !curWiFi.isEncrypt()) {//已保存/未加密
             WifiUtils.withContext(getContext().getApplicationContext())
@@ -165,10 +166,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         public void success() {
             hideProgressBar();
             if (curWiFi.name().contains("VMS")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.VMS);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, ProductType.VMS);
 
             } else if (curWiFi.name().contains("E40")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, AppContants.DeviceType.E40);
+                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, ProductType.E40);
             }
         }
 

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -86,7 +87,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
 
         } else if (id == R.id.tv_left) {
             dismiss();
-            DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, netM20HomeFragment.deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+            DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, netM20HomeFragment.deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
 
         } else if (id == R.id.tv_right) {
             mTvContent.setText("下发水平初始化指令...");
@@ -140,7 +141,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
                 @Override
                 public void run() {
                     dismiss();
-                    DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.M20, netM20HomeFragment.deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+                    DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, netM20HomeFragment.deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
                 }
             },1500);
         } else {

@@ -14,6 +14,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.rn20.Rn20PositionEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.rn20.Rn20PositionInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -47,7 +48,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         return R.layout.fragment_rn20_advanced_setting;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         queryInstallLocation();
@@ -59,6 +60,23 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
     private void queryInstallLocation() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_LOCAL);
         sendCommand(command);
+    }
+
+    /**
+     * 设置设备安装位置
+     */
+    private void setInstallLocation() {
+        String[] strs = installLocation.split(",");
+        try {
+            Rn20PositionEntity entity = new Rn20PositionEntity();
+            entity.setLongitude(strs[0]);
+            entity.setLatitude(strs[1]);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
+            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+            sendCommand(command);
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @OnClick({R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout})
@@ -76,7 +94,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             newFragment.setDialogFragmentClickListener(LocationFragmentClickListener);
             newFragment.show(getChildFragmentManager(), "dialog");
         } else if (id == R.id.customCommandLogPrintLayout) {
-            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.RN20);
+            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.RN20);
         }
     }
 
@@ -85,17 +103,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         public boolean onPositiveClick(View view, String location) {
             if (!TextUtils.isEmpty(location)) {
                 installLocation = location;
-                String[] strs = installLocation.split(",");
-                try {
-                    Rn20PositionEntity entity = new Rn20PositionEntity();
-                    entity.setLongitude(strs[0]);
-                    entity.setLatitude(strs[1]);
-                    String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
-                    startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
-                    sendCommand(command);
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace();
-                }
+                setInstallLocation();
             }
             return true;
         }
@@ -159,5 +167,4 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         super.onDestroy();
         LocationUtils.getInstance().stopLocalService();
     }
-
 }

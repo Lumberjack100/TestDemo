@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200;
 
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -24,15 +25,12 @@ import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.entity.TerminalSNEntity;
-import com.shmedo.configlibrary.iot.cmd.entity.das.DasIOSensorEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DeviceTimeInfo;
-import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo;
-import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
+import com.shmedo.configlibrary.iot.model.m20.M20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -42,17 +40,16 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalParamSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -63,12 +60,14 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2021/8/3 <br/>
- * 描述：     雨量采集器配置主页面
+ * 创建时间:  2022/2/24 <br/>
+ * 描述：     一体式裂缝计蓝牙配置主页面
  */
-public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
+public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
+
     private static final int REBOOT = 0x0002;
+
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -101,14 +100,9 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private DiscoveredBluetoothDevice device;
     private String sn;
 
-    private List<String> rainPrecisionList = Arrays.asList("0.1mm", "0.2mm", "0.5mm", "1mm");
-    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
-    private int rainPrecisionIndex = 0;
-    private String rainPrecision;
 
-
-    public static BleRN20HomeFragment newInstance(DiscoveredBluetoothDevice device) {
-        BleRN20HomeFragment fragment = new BleRN20HomeFragment();
+    public static BleLR200HomeFragment newInstance(DiscoveredBluetoothDevice device) {
+        BleLR200HomeFragment fragment = new BleLR200HomeFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_DEVICE, device);
         fragment.setArguments(args);
@@ -129,10 +123,10 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         return R.layout.universal_config_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeadInfo();
+        updateHeadInfo(null);
         initAdapter();
         initConfigModuleData();
         observerApiKey();
@@ -148,19 +142,9 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         onConnectionStateChanged(isConnected());
     }
 
-    private void setHeadInfo() {
-        mTvDeviceName.setText("雨量采集器");
-        mTvDeviceSn.setText(String.format("设备编号：%s", sn));
-        mTvProductModel.setText("固件版本：--");
-        mTvFirmwareVersion.setText("电压：--");
-        mTvPlatformCommunicationState.setVisibility(View.GONE);
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-    }
-
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -187,32 +171,29 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.RN20);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.LR200);
                 break;
 
             case "时间":
-                queryTerminalTime();
+                doQueryTimeCmd();
                 break;
 
             case "遥测":
-                sampleTerminal();
+                doTelemetryCmd();
                 break;
 
             case "重启":
-                showWarnDialog("温馨提示", "确定重启终端设备吗？", REBOOT);
+                showWarnDialog("温馨提示", "确定重启设备吗？", REBOOT);
                 break;
 
-            case "雨量精度":
-                showSelectPrecision();
-                break;
-
-            case "终端配置":
-                VmsTerminalParamSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, null);
+            case "数据中心":
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.LR200, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.RN20);
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.LR200);
                 break;
+
         }
     }
 
@@ -220,7 +201,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察连接状态变化
      */
     private void observerConnectionState() {
-        usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
+        bleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
             @Override
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
@@ -230,12 +211,12 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                         break;
 
                     case INITIALIZING://The device has connected and begun service discovery and initialization.
-//                        mTvConnectState.setText(R.string.ble_state_initializing);
                         break;
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        usrBleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        //查询设备 ApiKey
+                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -265,7 +246,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String apiKey) {
                 hideProgressBar();
@@ -328,10 +309,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         configModule = new ConfigModule(R.drawable.ic_device_reboot, "重启", "重新启动当前设备");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "雨量精度", "雨量精度配置");
-        configModuleList.add(configModule);
-
-        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "终端配置", "终端参数配置");
+        configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "MQTT协议配置");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
@@ -342,53 +320,31 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 获取设备的基本信息
      */
     private void queryBaseInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_GET_BASE_INFO);
         sendCommand(command);
     }
 
     /**
-     * 获取终端时间
+     * 获取时间
      */
-    private void queryTerminalTime() {
+    private void doQueryTimeCmd() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
     /**
-     * 遥测终端
+     * 遥测
      */
-    private void sampleTerminal() {
-        TerminalSNEntity entity = new TerminalSNEntity(sn);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_TERMINAL_QUERY_SAMPLE, entity);
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+    private void doTelemetryCmd() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_SAMPLE);
         sendCommand(command);
     }
 
     /**
-     * 重启终端指令
+     * 重启
      */
-    private void rebootTerminal() {
-        TerminalSNEntity entity = new TerminalSNEntity(sn);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.VMS_MD_REBOOT_TERMINAL, entity);
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
-        sendCommand(command);
-    }
-
-    /**
-     * 查询开关量传感器信息
-     */
-    private void querySwitchSensorInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO);
-        sendCommand(command);
-    }
-
-    /**
-     * 设置开关量传感器信息
-     */
-    private void setSwitchSensorInfo(DasIOSensorEntity entity) {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO, entity);
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+    private void doReboot() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
         sendCommand(command);
     }
 
@@ -411,35 +367,9 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                         dialog.dismiss();
                         switch (operateType) {
                             case REBOOT:
-                                rebootTerminal();
+                                doReboot();
                                 break;
                         }
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-    }
-
-    private void showSelectPrecision() {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
-                .title("选择精度")
-                .contentColorRes(R.color.title_text_color)
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .positiveColorRes(R.color.blue_52B4F8)
-                .negativeColorRes(R.color.sub_title_text_color)
-                .items(rainPrecisionList)
-                .itemsCallbackSingleChoice(rainPrecisionIndex, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                        rainPrecisionIndex = which;
-                        rainPrecision = text.toString().replace("mm", "");
-                        DasIOSensorEntity entity = new DasIOSensorEntity();
-                        entity.setType("1");
-                        entity.setValue(rainPrecision);
-                        setSwitchSensorInfo(entity);
-                        return true;
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -473,36 +403,19 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case RN20_MD_GET_TERMINAL_BASE: {
-                IOTCommandResult<Rn20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
+                IOTCommandResult<M20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-//                    ToastUtils.show(errMsg);
-                    return;
-                }
-                Rn20BaseInfo rn20BaseInfo = commandResult.getResult();
-                updateHeadInfo(rn20BaseInfo);
-                //查询雨量精度
-                querySwitchSensorInfo();
-            }
-            break;
-
-            case DAS_MD_GET_IO_SENSOR_INFO: {//查询开关量传感器参数
-                IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询雨量精度参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                DasIOSensorInfo ioSensorInfo = commandResult.getResult();
-                initSwitchSensor(ioSensorInfo);
+                updateHeadInfo(commandResult.getResult());
             }
             break;
 
             case QUERY_TERMINAL_TIME: {//获取终端时间
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<DeviceTimeInfo> cmdResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!cmdResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取终端时间出错!", cmdResult.getMessage());
@@ -516,71 +429,58 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             }
             break;
 
-            case VMS_TERMINAL_QUERY_SAMPLE: {//终端遥测
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "遥测出错!", cmdResult.getReason());
+            case QUERY_SAMPLE: {//终端遥测
+//                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                IOTCommandResult<String> cmdResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!cmdResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "获取终端时间出错!", cmdResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("遥测成功");
+                BaseDispatchCmdDialog newFragment = new TelemetryDialog("遥测", cmdResult.getResult());
+                newFragment.show(getChildFragmentManager(), "dialog");
             }
             break;
 
-            case VMS_MD_REBOOT_TERMINAL: {//重启终端
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+            case REBOOT: {//重启终端
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "重启出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reboot_failed), cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("设备即将重启");
+                ToastUtils.show(StringUtils.getString(R.string.device_reboot_tip));
             }
             break;
 
-            case DAS_MD_SET_IO_SENSOR_INFO: {//设置开关量传感器
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "设置雨量精度出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                ToastUtils.show("设置成功");
-            }
-            break;
+            default:
+                super.parseResponseMessage(cmdStr);
+                break;
         }
     }
 
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo(Rn20BaseInfo rn20BaseInfo) {
-        if (rn20BaseInfo != null) {
-            mTvDeviceName.setText("雨量采集器");
-            mTvDeviceSn.setText(String.format("设备编号：%s", sn));
-            mTvProductModel.setText(String.format("固件版本：%s", !TextUtils.isEmpty(rn20BaseInfo.getVer()) ? rn20BaseInfo.getVer() : "--"));
-            mTvFirmwareVersion.setText(String.format("电压：%s", !TextUtils.isEmpty(rn20BaseInfo.getInvolt()) ? rn20BaseInfo.getInvolt() : "--"));
-        }
-    }
-
-    private void initSwitchSensor(DasIOSensorInfo ioSensorInfo) {
-        if (ioSensorInfo == null) {
-            Timber.e("DasIOSensorInfo 为空!");
-            return;
-        }
-        if (ioSensorInfo.getType().equals("1")) {
-            try {
-                rainPrecision = decimalFormat.format(Double.parseDouble(ioSensorInfo.getValue()));
-                rainPrecisionIndex = rainPrecisionList.contains(rainPrecision + "mm") ? rainPrecisionList.indexOf(rainPrecision + "mm") : 0;
-            } catch (Exception ex) {
-                ex.printStackTrace();
+    private void updateHeadInfo(M20BaseInfo m20BaseInfo) {
+        mTvPlatformCommunicationState.setVisibility(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTvDeviceName.setText("一体式裂缝计");
+        try {
+            if (m20BaseInfo != null) {
+                mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(m20BaseInfo.getSn()) ? m20BaseInfo.getSn() : device.getName().substring(3)));
+                mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(m20BaseInfo.getProductid()) ? m20BaseInfo.getProductid() : "M20"));
+                mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
+            } else {
+                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
+                mTvProductModel.setText(String.format("产品型号：：%s", "LR200"));
+                mTvFirmwareVersion.setText("固件版本：--");
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

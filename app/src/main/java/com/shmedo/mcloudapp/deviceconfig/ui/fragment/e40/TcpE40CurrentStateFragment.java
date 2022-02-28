@@ -576,10 +576,10 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
             tvLinkStatus.setText("未开启");
             tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
         } else if (linkStatus == 1) {
-            tvLinkStatus.setText("已连接");
+            tvLinkStatus.setText("已上线");
             tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
         } else if (linkStatus == 2) {
-            tvLinkStatus.setText("未连接");
+            tvLinkStatus.setText("未上线");
             tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_not_connected_platform));
         }
     }

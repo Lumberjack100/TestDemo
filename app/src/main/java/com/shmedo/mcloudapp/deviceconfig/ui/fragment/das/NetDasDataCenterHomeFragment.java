@@ -33,6 +33,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.das.DasBdTerminalEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasDataReportEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
@@ -41,11 +42,11 @@ import com.shmedo.configlibrary.iot.model.das.DasDataReportInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -207,7 +208,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      * 获取上报时间信息
      */
     private void getReportingTimeInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DATA_REPORT_TIME);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME);
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
@@ -252,15 +253,15 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
         } else if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
@@ -334,7 +335,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private void processSave() {
         DasDataReportEntity entity = new DasDataReportEntity();
         entity.setReport_intv(reportingInterval);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DATA_REPORT_TIME, entity);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_REPORT_TIME, entity);
         showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
@@ -406,7 +407,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
-            case DAS_MD_GET_DATA_REPORT_TIME: {//
+            case MD_GET_DATA_REPORT_TIME: {//
                 IOTCommandResult<DasDataReportInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     if (mRefreshLayout.isRefreshing()) {
@@ -480,7 +481,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             }
             break;
 
-            case DAS_MD_SET_DATA_REPORT_TIME: {//
+            case MD_SET_DATA_REPORT_TIME: {//
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     dismissWaitDialog();

@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
 
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeDataCenterHomeFragment;
@@ -25,31 +26,31 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
     private static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
 
     private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
-    private int deviceType = AppContants.DeviceType.DAS;
+    private ProductType productType = ProductType.DAS;
     private boolean isLevelInit = false;
 
 
-    public static void startActivity(Context context, int deviceType, DeviceInfo deviceInfo, int configMethod) {
+    public static void startActivity(Context context, ProductType productType, DeviceInfo deviceInfo, int configMethod) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int deviceType, int connectWay, int configMethod) {
+    public static void startActivity(Context context, ProductType productType, int connectWay, int configMethod) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int deviceType, DeviceInfo deviceInfo, int configMethod, boolean isLevelInit) {
+    public static void startActivity(Context context, ProductType productType, DeviceInfo deviceInfo, int configMethod, boolean isLevelInit) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.putExtra(LEVEL_INITIAL, isLevelInit);
@@ -57,9 +58,9 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int deviceType, int connectWay, int configMethod, boolean isLevelInit) {
+    public static void startActivity(Context context, ProductType productType, int connectWay, int configMethod, boolean isLevelInit) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
-        intent.putExtra(AppContants.Extras.DEVICE_TYPE, deviceType);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.putExtra(LEVEL_INITIAL, isLevelInit);
@@ -75,8 +76,8 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_TYPE)) {
-            deviceType = intent.getIntExtra(AppContants.Extras.DEVICE_TYPE, AppContants.DeviceType.DAS);
+        if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
+            productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
         }
         if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_CONFIG_METHOD)) {
             configMethod = intent.getIntExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
@@ -89,40 +90,41 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.DAS:
+            switch (productType) {
+                case DAS:
                     fragment = NetDasDataCenterHomeFragment.newInstance(deviceInfo);
                     break;
 
-                case AppContants.DeviceType.ADME:
+                case ADME:
                     fragment = NetAdmeDataCenterHomeFragment.newInstance(configMethod, deviceInfo);
                     break;
 
-                case AppContants.DeviceType.M20:
+                case M20:
                     fragment = NetM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit, deviceInfo);
                     break;
 
-                case AppContants.DeviceType.E40:
+                case E40:
                     fragment = NetE40DataCenterHomeFragment.newInstance(configMethod, deviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.DAS:
+            switch (productType) {
+                case DAS:
                     fragment = new BleDasDataCenterHomeFragment();
                     break;
 
-                case AppContants.DeviceType.ADME:
+                case ADME:
                     fragment = BleAdmeDataCenterHomeFragment.newInstance(configMethod);
                     break;
 
-                case AppContants.DeviceType.M20:
+                case M20:
+                case LR200:
                     fragment = BleM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
-            switch (deviceType) {
-                case AppContants.DeviceType.E40:
+            switch (productType) {
+                case E40:
                     fragment = TcpE40DataCenterHomeFragment.newInstance(configMethod);
                     break;
             }

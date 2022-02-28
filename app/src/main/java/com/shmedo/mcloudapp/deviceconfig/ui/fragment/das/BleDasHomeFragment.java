@@ -34,6 +34,7 @@ import com.shmedo.configlibrary.ble.model.BaseConfigInfo;
 import com.shmedo.configlibrary.ble.model.LoaclTimeInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.JZLocationConverter;
@@ -225,7 +226,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.DAS);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.DAS);
                 break;
 
             case "传感器初始化":
@@ -256,11 +257,11 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.DAS);
+                AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.DAS);
                 break;
         }
     }
@@ -680,5 +681,4 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
-
 }

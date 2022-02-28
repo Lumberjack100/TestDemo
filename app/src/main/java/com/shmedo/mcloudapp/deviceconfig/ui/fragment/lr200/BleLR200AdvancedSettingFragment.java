@@ -1,28 +1,32 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200;
 
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.entity.lr200.LR200PositionEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
+import com.shmedo.configlibrary.iot.model.lr200.LR200PositionInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,37 +35,53 @@ import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  1/18/21 <br/>
- * 描述：    M20 设置页面
+ * 创建时间:  2022/2/24 <br/>
+ * 描述：     LR200 蓝牙设置页面
  */
-public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragment {
-    private static final int REBOOT = 0x1000;
-    private static final int RESET = 0x1001;
-    private static final int LEVEL_INITIAL = 0x1002;
+public class BleLR200AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragment {
+    private static final int RESET = 0x0001;
 
-    public static BleM20AdvancedSettingFragment newInstance() {
-        return new BleM20AdvancedSettingFragment();
+    private String installLocation;
+
+
+    public static BleLR200AdvancedSettingFragment newInstance() {
+        return new BleLR200AdvancedSettingFragment();
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_m20_advanced_setting_fragment;
+        return R.layout.ble_lr200_advanced_setting_fragment;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        queryInstallLocation();
     }
 
     /**
-     * 水平初始化
+     * 查询设备安装位置
      */
-    private void setLevelInitial() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
+    private void queryInstallLocation() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_LOCATION);
         sendCommand(command);
     }
 
     /**
-     * 重启指令
+     * 设置设备安装位置
      */
-    private void rebootDevice() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-        sendCommand(command);
+    private void setInstallLocation() {
+        String[] strs = installLocation.split(",");
+        try {
+            LR200PositionEntity entity = new LR200PositionEntity();
+            entity.setLng(strs[0]);
+            entity.setLat(strs[1]);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_LOCATION, entity);
+            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+            sendCommand(command);
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -72,7 +92,7 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
         sendCommand(command);
     }
 
-    @OnClick({R.id.dataCenterConfigLayout, R.id.cmdDebugLogLayout, R.id.firmwareUpgradeLayout, R.id.horizontalInitializationLayout, R.id.rebootLayout, R.id.resetLayout})
+    @OnClick({R.id.syncInstallLocationLayout, R.id.firmwareUpgradeLayout, R.id.cmdDebugLogLayout, R.id.resetLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -81,34 +101,30 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
             ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return;
         }
-
         int id = v.getId();
-        if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
-
-        } else if (id == R.id.cmdDebugLogLayout) {
-            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.M20);
-
-        } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
-            FirmWareSelectDialog newFragment = new FirmWareSelectDialog(MCloudApp.getProductID());
-            newFragment.setDialogFragmentClickListener(firmWareSelectListener);
+        if (id == R.id.syncInstallLocationLayout) {
+            SyncInstallationLocationDialog newFragment = new SyncInstallationLocationDialog(mActivity, installLocation);
+            newFragment.setDialogFragmentClickListener(LocationFragmentClickListener);
             newFragment.show(getChildFragmentManager(), "dialog");
 
-        } else if (id == R.id.horizontalInitializationLayout) {
-            showWarnDialog("确定进行水平初始化吗？", LEVEL_INITIAL);
+        } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
 
-        } else if (id == R.id.rebootLayout) {//重启
-            showWarnDialog("确定重启设备吗？", REBOOT);
+
+        } else if (id == R.id.cmdDebugLogLayout) {
+            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.LR200);
 
         } else if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
         }
     }
 
-    private BaseDialogFragment.DialogFragmentClickListener firmWareSelectListener = new BaseDialogFragment.DialogFragmentClickListener<FirmWareInfo>() {
+    private BaseDialogFragment.DialogFragmentClickListener LocationFragmentClickListener = new BaseDialogFragment.DialogFragmentClickListener<String>() {
         @Override
-        public boolean onPositiveClick(View view, FirmWareInfo firmWareInfo) {
-
+        public boolean onPositiveClick(View view, String location) {
+            if (!TextUtils.isEmpty(location)) {
+                installLocation = location;
+                setInstallLocation();
+            }
             return true;
         }
 
@@ -136,14 +152,6 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         switch (operateType) {
-                            case LEVEL_INITIAL:
-                                setLevelInitial();
-                                break;
-
-                            case REBOOT:
-                                rebootDevice();
-                                break;
-
                             case RESET:
                                 resetDevice();
                                 break;
@@ -162,33 +170,28 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case M20_MD_LEVEL_INITIAL: {//M20水平初始化设置
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "水平初始化设置出错!", cmdResult.getReason());
+            case MD_GET_LOCATION: {
+                IOTCommandResult<LR200PositionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "查询经纬度出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("操作完成");
+                LR200PositionInfo positionInfo = commandResult.getResult();
+                installLocation = positionInfo.getLng() + "," + positionInfo.getLat();
             }
             break;
 
-            case REBOOT: {//重启
+            case MD_SET_LOCATION: {
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reboot_failed), cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置经纬度出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show(StringUtils.getString(R.string.device_reboot_tip));
-                MCloudApp.getMainHandler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        disconnectDevice();
-                    }
-                }, 3000);
+                ToastUtils.show("设置完成");
             }
             break;
 
@@ -215,5 +218,4 @@ public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragm
                 break;
         }
     }
-
 }

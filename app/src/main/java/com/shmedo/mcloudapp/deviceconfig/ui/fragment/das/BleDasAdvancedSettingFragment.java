@@ -22,6 +22,7 @@ import com.shmedo.configlibrary.ble.cmd.entity.ServerNumberEntity;
 import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
@@ -126,7 +127,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             newFragment.show(getChildFragmentManager(), "dialog");
 
         } else if (id == R.id.customCommandLogPrintLayout) {
-            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DeviceType.DAS);
+            CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.DAS);
 
         } else if (id == R.id.chongQingTestLayout) {
             showRegisterPlatformDialog();

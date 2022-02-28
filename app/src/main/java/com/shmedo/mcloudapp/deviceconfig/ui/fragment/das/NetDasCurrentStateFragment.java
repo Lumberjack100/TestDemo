@@ -288,7 +288,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     holder.setTextColorRes(R.id.tv_link_status, R.color.text_color_3AD094);
 
                 } else if (netStatusInfo.getErrno() == 2) {//离线
-                    holder.setText(R.id.tv_link_status, "离线");
+                    holder.setText(R.id.tv_link_status, "未上线");
                     holder.setTextColor(R.id.tv_link_status, Color.RED);
                 }
             }

@@ -8,6 +8,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -74,7 +75,7 @@ public class NetBhyHomeFragment extends UniversalNetConfigHomeFragment {
     protected void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态": {
-                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.BHY);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.BHY);
             }
             break;
 
@@ -101,11 +102,11 @@ public class NetBhyHomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, AppContants.DeviceType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.DAS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
                 break;
 
             case "设置":
-                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, AppContants.DeviceType.DAS);
+                AdvancedSettingActivity.startActivity(mActivity, deviceInfo, ProductType.DAS);
                 break;
         }
     }
