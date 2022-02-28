@@ -24,6 +24,7 @@ import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
@@ -44,11 +46,15 @@ import timber.log.Timber;
 public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
     private static final int RESET = 0x0001;
 
+    @BindView(R.id.chongQingTestLayout)
+    View chongQingTestLayout;
+
     private String installLocation;
 
     private String serverNumber;
     private LinkedList<String> commandItems = new LinkedList<>();
 
+    private ProductType type;
 
     @Override
     protected int getLayoutId() {
@@ -58,6 +64,10 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        type = ProductType.valueBySuffix(MCloudApp.getCurDeviceToken());
+        if (type == ProductType.BHY) {
+            chongQingTestLayout.setVisibility(View.GONE);
+        }
         queryInstallLocation();
     }
 

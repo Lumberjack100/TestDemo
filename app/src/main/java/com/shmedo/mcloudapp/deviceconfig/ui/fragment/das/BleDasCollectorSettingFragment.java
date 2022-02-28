@@ -5,6 +5,7 @@ import android.os.Message;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -19,6 +20,7 @@ import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorConfigEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorFrequencyEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.CollectorSensitivityEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorSolutionFrequencyEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorStandbyTimeEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.SetCollectorAddressEntity;
@@ -26,10 +28,14 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.model.CollectorConfigInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -56,16 +62,28 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
     @BindView(R.id.collectTimeET)
     EditText mEtCollectTime;
 
+    @BindView(R.id.et_sensitivity)
+    EditText mEtSensitivity;
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private CollectorConfigInfo collectorConfigInfo = new CollectorConfigInfo();
+    @BindView(R.id.ll_sensitivity)
+    ViewGroup sensitivityLayout;
+
     private String collectorModel;//采集器类型
 
     private String collectorAddress;//采集器地址
     private String calculatTime;//解算时间频度
     private String standbyTime;//待机时间
     private String collectTime;//采集时间频度
+    private String sensitivity;//灵敏度
+
+    private CollectorConfigInfo collectorConfigInfo = new CollectorConfigInfo();
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+    private ProductType type;
 
 
     public static BleDasCollectorSettingFragment newInstance(String model) {
@@ -81,6 +99,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             collectorModel = getArguments().getString(COLLECTOR_MODEL);
+            type = ProductType.valueBySuffix(MCloudApp.getCurDeviceToken());
         }
     }
 
@@ -89,7 +108,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         return R.layout.fragment_das_collector_setting;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setFilter();
@@ -105,7 +124,10 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         mEtCalculatingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtStandbyTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtCollectTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtSensitivity.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
         mEtCollectorAddress.setHint("0-255");
+        mEtSensitivity.setHint("30-150");
     }
 
     private void initRefreshLayout() {
@@ -227,6 +249,22 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         } else {
             collectTime = "";
         }
+
+        if (!sensitivity.equals("NullKey")) {
+            sensitivity = mEtSensitivity.getText().toString().trim();
+            try {
+                double value = Double.parseDouble(sensitivity);
+                if (value < 1) {
+                    ToastUtils.show("请输入正确的灵敏度!");
+                    mEtSensitivity.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的灵敏度!");
+                mEtSensitivity.requestFocus();
+                return false;
+            }
+        }
         return true;
     }
 
@@ -252,7 +290,12 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_FREQUENCY, collectorFrequencyEntity);
             commandItems.add(command);
         }
-
+        //BHY 采集器需要额外设置灵敏度
+        if (type == ProductType.BHY && !TextUtils.isEmpty(sensitivity)) {
+            CollectorSensitivityEntity collectorSensitivityEntity = new CollectorSensitivityEntity(sensitivity);
+            command = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_SENSITIVITY, collectorSensitivityEntity);
+            commandItems.add(command);
+        }
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         sendCommand(commandItems.getFirst());
     }
@@ -276,7 +319,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
-                initValue();
+                initCollectorInfo();
                 break;
 
             case SET_COLLECTOR_ADDRESS:
@@ -335,6 +378,20 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
+            case SET_COLLECTOR_SENSITIVITY:
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("采集器灵敏度配置错误!");
+                    return;
+                }
+                commandItems.removeFirst();
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.getFirst());
+                } else {
+                    doAfterSetting();
+                }
+                break;
+
             case SAVE_CONFIG_INFO:
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("保存参数指令错误!");
@@ -344,6 +401,8 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                 calculatTime = mEtCalculatingTime.getText().toString().trim();
                 standbyTime = mEtStandbyTime.getText().toString().trim();
                 collectTime = mEtCollectTime.getText().toString().trim();
+                sensitivity = mEtSensitivity.getText().toString().trim();
+
                 ToastUtils.show("保存成功");
                 break;
 
@@ -353,8 +412,9 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         }
     }
 
-    private void initValue() {
+    private void initCollectorInfo() {
         if (collectorConfigInfo == null) {
+            Timber.e("CollectorConfigInfo 为空!");
             collectorConfigInfo = new CollectorConfigInfo();
             return;
         }
@@ -362,11 +422,23 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         calculatTime = collectorConfigInfo.getWorkTime();
         standbyTime = collectorConfigInfo.getStandbyTime();
         collectTime = collectorConfigInfo.getCollectorInterval();
+        sensitivity = collectorConfigInfo.getSensitivity();
 
         mEtCollectorAddress.setText(collectorAddress);
         mEtCalculatingTime.setText(calculatTime);
         mEtStandbyTime.setText(standbyTime);
         mEtCollectTime.setText(collectTime);
+        try {
+            if (sensitivity.equals("NullKey")) {
+                sensitivityLayout.setVisibility(View.GONE);
+            } else {
+                sensitivityLayout.setVisibility(View.VISIBLE);
+                sensitivity = decimalFormat.format(Double.parseDouble(sensitivity));
+                mEtSensitivity.setText(sensitivity);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void doAfterSetting() {
@@ -384,9 +456,9 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                 }
                 break;
 
-                case AppContants.MsgWhat.MSG_HEART:
-                    ToastUtils.show("响应超时,请稍后尝试");
-                    break;
+            case AppContants.MsgWhat.MSG_HEART:
+                ToastUtils.show("响应超时,请稍后尝试");
+                break;
         }
     }
 
@@ -414,6 +486,9 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             return true;
         }
         if (collectTime != null && !collectTime.equals(mEtCollectTime.getText().toString().trim())) {
+            return true;
+        }
+        if (sensitivity != null && !sensitivity.equals("NullKey") && !sensitivity.equals(mEtSensitivity.getText().toString().trim())) {
             return true;
         }
         return false;

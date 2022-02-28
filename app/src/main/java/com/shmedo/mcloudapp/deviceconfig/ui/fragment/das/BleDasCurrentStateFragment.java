@@ -46,6 +46,7 @@ import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -205,9 +206,31 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     @BindView(R.id.tv_inclinometer_status)
     TextView mTvInclinometerStatus;
 
-    @BindView(R.id.tv_inclinometer_axis)
-    TextView mTvInclinometerAxis;
+    @BindView(R.id.ll_inclinometer_axis)
+    View inclinometerAxisLayout;
 
+    @BindView(R.id.tv_axis_x)
+    TextView mTvAxisX;//角度
+
+    @BindView(R.id.tv_axis_y)
+    TextView mTvAxisY;//角度
+
+    @BindView(R.id.tv_axis_z)
+    TextView mTvAxisZ;//角度
+
+    @BindView(R.id.ll_inclinometer_acceleration)
+    View inclinometerAccelerationLayout;
+
+    @BindView(R.id.tv_acceleration_x)
+    TextView mTvAccelerationX;//
+
+    @BindView(R.id.tv_acceleration_y)
+    TextView mTvAccelerationY;//
+
+    @BindView(R.id.tv_acceleration_z)
+    TextView mTvAccelerationZ;//
+
+    //扩展传感器信息
     @BindView(R.id.mainSensorInfo)
     View mainSensorInfoLayout;
 
@@ -228,14 +251,14 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.net_das_current_state_fragment;
+        return R.layout.das_current_state_fragment;
     }
 
     public static BleDasCurrentStateFragment newInstance() {
         return new BleDasCurrentStateFragment();
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initDataCenterAdapter();
@@ -264,7 +287,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
     private void initDataCenterAdapter() {
         dataCenterRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
+        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), getResources().getColor(R.color.transparent)));
         dataCenterAdapter = new CommonAdapter<DeviceNetStatus>(getActivity(), R.layout.item_das_data_center_status, dataCenterStatusInfoList) {
             @Override
             protected void convert(CommonViewHolder holder, DeviceNetStatus netStatusInfo, int position) {
@@ -301,7 +324,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
      */
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), getResources().getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, String string, int position) {
@@ -753,16 +776,6 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         }
     }
 
-    private void setDeviceStatus(TextView textView, String status) {
-        if (status.equals("1")) {
-            textView.setText("未接入");
-            textView.setTextColor(Color.RED);
-        } else if (status.equals("0")) {
-            textView.setText("正常");
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
-        }
-    }
-
     /**
      * 获取主传感器状态
      *
@@ -772,16 +785,14 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         if (statusThree == null)
             return;
 
-        if (statusThree.getCollectorAddress().equals("0")) {
-            sensorRecyclerView.setVisibility(View.GONE);
-        } else {
-            sensorRecyclerView.setVisibility(View.VISIBLE);
-            List<String> list = statusThree.getSensorStatus();
-            sensorList.clear();
-            sensorList.addAll(list);
-            mainSensorInfoLayout.setVisibility(sensorList.size() > 0 ? View.VISIBLE : View.GONE);
-            sensorAdapter.notifyDataSetChanged();
+        if (statusThree.getCollectorAddress().equals("0") || statusThree.getSensorStatus().isEmpty()) {
+            mainSensorInfoLayout.setVisibility(View.GONE);
+            return;
         }
+        mainSensorInfoLayout.setVisibility(View.VISIBLE);
+        sensorList.clear();
+        sensorList.addAll(statusThree.getSensorStatus());
+        sensorAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -794,7 +805,22 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         }
         inclinometerLayout.setVisibility(View.VISIBLE);
         setDeviceStatus(mTvInclinometerStatus, inclinometerInfo.getStatus());
-        mTvInclinometerAxis.setText(inclinometerInfo.getxAxis() + "," + inclinometerInfo.getyAxis() + "," + inclinometerInfo.getzAxis());
+        if (!TextUtils.isEmpty(inclinometerInfo.getxAxis()) && !TextUtils.isEmpty(inclinometerInfo.getyAxis()) && !TextUtils.isEmpty(inclinometerInfo.getzAxis())) {
+            inclinometerAxisLayout.setVisibility(View.VISIBLE);
+            mTvAxisX.setText(MessageFormat.format("{0}", inclinometerInfo.getxAxis()));
+            mTvAxisY.setText(MessageFormat.format("{0}", inclinometerInfo.getyAxis()));
+            mTvAxisZ.setText(MessageFormat.format("{0}", inclinometerInfo.getzAxis()));
+        }
+    }
+
+    private void setDeviceStatus(TextView textView, String status) {
+        if (status.equals("1")) {
+            textView.setText("未接入");
+            textView.setTextColor(Color.RED);
+        } else if (status.equals("0")) {
+            textView.setText("正常");
+            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+        }
     }
 
     @Override

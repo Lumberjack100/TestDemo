@@ -17,7 +17,7 @@ public class CollectorConfigParser implements ResultParser<CollectorConfigInfo> 
     @Override
     public CollectorConfigInfo parse(String result) throws DASParameterException {
         String[] strs = result.split(",");
-        if (strs.length == 6) {
+        if (strs.length >= 6) {
             return ParserUtils.startParserCollectorConfig(strs);
         }
         return null;

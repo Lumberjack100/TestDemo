@@ -52,6 +52,7 @@ import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -212,9 +213,19 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_inclinometer_status)
     TextView mTvInclinometerStatus;
 
-    @BindView(R.id.tv_inclinometer_axis)
-    TextView mTvInclinometerAxis;
+    @BindView(R.id.ll_inclinometer_axis)
+    View inclinometerAxisLayout;
 
+    @BindView(R.id.tv_axis_x)
+    TextView mTvAxisX;//角度
+
+    @BindView(R.id.tv_axis_y)
+    TextView mTvAxisY;//角度
+
+    @BindView(R.id.tv_axis_z)
+    TextView mTvAxisZ;//角度
+
+    //扩展传感器信息
     @BindView(R.id.mainSensorInfo)
     View mainSensorInfoLayout;
 
@@ -240,7 +251,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.net_das_current_state_fragment;
+        return R.layout.das_current_state_fragment;
     }
 
     @Override
@@ -936,7 +947,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         mTvEmptyPipeDistance.setText(decimalFormat.format(Double.parseDouble(values[1])) + "m");
 
                         decimalFormat.applyPattern("#.#");
-                        mTvWaterTemperature.setText(decimalFormat.format(Double.parseDouble(values[2])) + "℃");
+                        mTvWaterTemperature.setText(String.format("%s℃", decimalFormat.format(Double.parseDouble(values[2]))));
                     }
                 } else {
                     mTvPiezometerValue.setText(dasSubSensorStatusInfo.getVwp().getValue());
@@ -950,7 +961,14 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 mTvInclinometerStatus.setText(SensorErrorType.getErrorMessageByCode(String.valueOf(dasSubSensorStatusInfo.getMems().getErrno())));
                 setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
-                mTvInclinometerAxis.setText(dasSubSensorStatusInfo.getMems().getVaule());
+
+                String values[] = dasSubSensorStatusInfo.getMems().getVaule().split(",");
+                if (values.length >= 3) {
+                    inclinometerAxisLayout.setVisibility(View.VISIBLE);
+                    mTvAxisX.setText(MessageFormat.format("{0}", values[0]));
+                    mTvAxisY.setText(MessageFormat.format("{0}", values[1]));
+                    mTvAxisZ.setText(MessageFormat.format("{0}", values[2]));
+                }
 
                 Map<String, Object> valueMap = new HashMap<String, Object>();
                 valueMap.put("axis_value", dasSubSensorStatusInfo.getMems().getVaule());//自定义参数：音乐类型，值：流行

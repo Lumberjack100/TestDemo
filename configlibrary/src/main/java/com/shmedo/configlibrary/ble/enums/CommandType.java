@@ -317,6 +317,11 @@ public enum CommandType {
     QUERY_DATA_CENTER_PARAM("889"),
 
     /**
+     * 设置BHY采集器 灵敏度
+     */
+    SET_COLLECTOR_SENSITIVITY("923"),
+
+    /**
      * 自定义心跳包指令
      */
     HEARTBEAT("888"),

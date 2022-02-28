@@ -13,17 +13,10 @@ public class CollectorConfigInfo implements Serializable {
     private String standbyTime;         //待机时长
     private String workTime;            //工作时长
     private String collectorInterval;   //采集间隔
+    private String sensitivity;//灵敏度
     private int accessSum;              //接入总数
 
     public CollectorConfigInfo() {
-    }
-
-    public CollectorConfigInfo(String collectorAddress, String standbyTime, String workTime, String collectorInterval, int accessSum) {
-        this.collectorAddress = collectorAddress;
-        this.standbyTime = standbyTime;
-        this.workTime = workTime;
-        this.collectorInterval = collectorInterval;
-        this.accessSum = accessSum;
     }
 
     public String getCollectorAddress() {
@@ -58,6 +51,14 @@ public class CollectorConfigInfo implements Serializable {
         this.collectorInterval = collectorInterval;
     }
 
+    public String getSensitivity() {
+        return TextUtils.isEmpty(sensitivity) ? "" : sensitivity;
+    }
+
+    public void setSensitivity(String sensitivity) {
+        this.sensitivity = sensitivity;
+    }
+
     public int getAccessSum() {
         return accessSum;
     }
@@ -73,6 +74,7 @@ public class CollectorConfigInfo implements Serializable {
                 ", standbyTime='" + standbyTime + '\'' +
                 ", workTime='" + workTime + '\'' +
                 ", collectorInterval='" + collectorInterval + '\'' +
+                ", sensitivity='" + sensitivity + '\'' +
                 ", accessSum=" + accessSum +
                 '}';
     }
