@@ -20,6 +20,7 @@ import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorConfigEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorFrequencyEntity;
+import com.shmedo.configlibrary.ble.cmd.entity.CollectorSensitivityEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorSolutionFrequencyEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.CollectorStandbyTimeEntity;
 import com.shmedo.configlibrary.ble.cmd.entity.SetCollectorAddressEntity;
@@ -126,6 +127,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         mEtSensitivity.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
         mEtCollectorAddress.setHint("0-255");
+        mEtSensitivity.setHint("30-150");
     }
 
     private void initRefreshLayout() {
@@ -290,10 +292,10 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         }
         //BHY 采集器需要额外设置灵敏度
         if (type == ProductType.BHY && !TextUtils.isEmpty(sensitivity)) {
-            command = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_SENSITIVITY) + sensitivity;
+            CollectorSensitivityEntity collectorSensitivityEntity = new CollectorSensitivityEntity(sensitivity);
+            command = CommandManager.getInstance().getCommand(CommandType.SET_COLLECTOR_SENSITIVITY, collectorSensitivityEntity);
             commandItems.add(command);
         }
-
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
         sendCommand(commandItems.getFirst());
     }

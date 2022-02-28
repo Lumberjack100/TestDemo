@@ -109,6 +109,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         mEtSensitivity.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
         mEtCollectorAddress.setHint("0-255");
+        mEtSensitivity.setHint("30-150");
     }
 
     private void initRefreshLayout() {
