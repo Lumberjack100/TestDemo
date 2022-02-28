@@ -306,6 +306,9 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                 break;
 
             default:
+                if (!tempStr.startsWith("$$006"))
+                    return;
+
                 if (commandItems.size() > 0)
                     commandItems.removeFirst();
 
