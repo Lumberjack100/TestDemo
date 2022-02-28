@@ -16,6 +16,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCurrentStateFragm
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40CurrentStateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200.BleLR200CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20CurrentStateFragment;
@@ -105,7 +106,7 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
                     break;
 
                 case LR200:
-                    fragment = BleM20CurrentStateFragment.newInstance();
+                    fragment = BleLR200CurrentStateFragment.newInstance();
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {

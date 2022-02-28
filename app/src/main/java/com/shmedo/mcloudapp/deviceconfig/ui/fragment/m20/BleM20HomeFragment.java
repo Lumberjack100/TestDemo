@@ -88,7 +88,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
-    private M20BaseInfo m20BaseInfo;
+    private String sn;
 
     private BleM20SetupWizardDialogFragment setupWizardDialogFragment;
 
@@ -105,6 +105,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             device = getArguments().getParcelable(EXTRA_DEVICE);
+            sn = device.getName().substring(3);
         }
     }
 
@@ -116,7 +117,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeadInfo();
+        updateHeadInfo(null);
         initAdapter();
         initConfigModuleData();
         observerApiKey();
@@ -130,16 +131,6 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     public void onResume() {
         super.onResume();
         onConnectionStateChanged(isConnected());
-    }
-
-    private void setHeadInfo() {
-        mTvDeviceName.setText("普适型GNSS一体机");
-        mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
-        mTvProductModel.setText("产品型号：--");
-        mTvFirmwareVersion.setText("固件版本：--");
-        mTvPlatformCommunicationState.setText("米度平台连接状态：--");
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
 
     private void initAdapter() {
@@ -346,8 +337,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                m20BaseInfo = commandResult.getResult();
-                updateHeadInfo();
+                updateHeadInfo(commandResult.getResult());
             }
             break;
 
@@ -375,19 +365,21 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo() {
+    private void updateHeadInfo(M20BaseInfo m20BaseInfo) {
+        mTvPlatformCommunicationState.setVisibility(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mTvDeviceName.setText("普适型GNSS一体机");
         try {
-            mTvDeviceName.setText("普适型GNSS一体机");
             if (m20BaseInfo != null) {
                 mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(m20BaseInfo.getSn()) ? m20BaseInfo.getSn() : device.getName().substring(3)));
                 mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(m20BaseInfo.getProductid()) ? m20BaseInfo.getProductid() : "M20"));
                 mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
             } else {
-                mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
+                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
                 mTvProductModel.setText(String.format("产品型号：：%s", "M20"));
                 mTvFirmwareVersion.setText("固件版本：--");
             }
-            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

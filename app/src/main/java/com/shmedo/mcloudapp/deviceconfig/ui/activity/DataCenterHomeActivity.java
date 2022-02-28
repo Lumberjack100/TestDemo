@@ -118,6 +118,7 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
                     break;
 
                 case M20:
+                case LR200:
                     fragment = BleM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit);
                     break;
             }

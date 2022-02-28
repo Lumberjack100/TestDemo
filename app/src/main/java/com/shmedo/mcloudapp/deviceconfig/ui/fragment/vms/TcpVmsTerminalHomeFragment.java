@@ -301,7 +301,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("发送重启指令成功,终端设备稍后将重启");
+                ToastUtils.show("终端设备稍后将重启");
             }
             break;
 

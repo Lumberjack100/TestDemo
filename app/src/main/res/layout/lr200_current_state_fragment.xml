@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.scwang.smart.refresh.header.ClassicsHeader
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/DeviceCurrentState_Group_TitleStyle"
+                android:text="基本信息" />
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="设备SN号" />
+
+                <TextView
+                    android:id="@+id/tv_device_sn"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19F00L" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="SIM卡号(ICCID)" />
+
+                <TextView
+                    android:id="@+id/tv_sim_card_number"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="3323888131414390" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="IMEI号" />
+
+                <TextView
+                    android:id="@+id/tv_imei_number"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="87342999205720X" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="固件版本" />
+
+                <TextView
+                    android:id="@+id/tv_firmware_version"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="V01.213.01" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="安装位置" />
+
+                <TextView
+                    android:id="@+id/tv_install_location"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="127.3255，45.2342" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="内部电压" />
+
+                <TextView
+                    android:id="@+id/tv_internal_voltage"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="22.6v" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="外部电压" />
+
+                <TextView
+                    android:id="@+id/tv_external_voltage"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="22.6v" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="内部温度" />
+
+                <TextView
+                    android:id="@+id/tv_internal_temperature"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="内部湿度" />
+
+                <TextView
+                    android:id="@+id/tv_internal_humidity"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="外部温度" />
+
+                <TextView
+                    android:id="@+id/tv_external_temperature"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="外部湿度" />
+
+                <TextView
+                    android:id="@+id/tv_external_humidity"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    tools:text="19902102313" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/DeviceCurrentState_Group_TitleStyle"
+                android:text="通讯状态" />
+
+            <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                <TextView
+                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                    android:text="4G信号强度" />
+
+                <TextView
+                    android:id="@+id/tv_4g_signal_strength"
+                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                    android:drawablePadding="10dp"
+                    tools:text="-63dbm" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_corner_3dp_gray_f5f6f8"
+                android:orientation="horizontal"
+                android:paddingTop="16dp"
+                android:paddingBottom="14dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="中心1"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tv_link_one_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="未开启"
+                        tools:textColor="#BCC0CC" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="中心2"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tv_link_two_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="已连接" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="中心3"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tv_link_three_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="已连接" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="中心4"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tv_link_four_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/device_not_connected_platform"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="未连接" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/dasInclinometerInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_mems_title"
+                    style="@style/DeviceCurrentState_Group_TitleStyle"
+                    android:text="裂缝计" />
+
+                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="状态" />
+
+                    <TextView
+                        android:id="@+id/tv_inclinometer_status"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        tools:text="正常" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_inclinometer_axis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/bg_corner_3dp_gray_f5f6f8"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp">
+
+                        <TextView
+                            android:id="@+id/tv_inclinometer_axis"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="角度(°)"
+                            android:textColor="@color/sub_title_text_color"
+                            android:textSize="15sp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#E5E5E5" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="66dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_axis_x"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="878" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="X轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_axis_y"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="21" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Y轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_axis_z"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/title_text_color"
+                                android:textSize="17sp"
+                                tools:text="-89.567" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:text="Z轴"
+                                android:textColor="@color/sub_title_text_color"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.scwang.smart.refresh.footer.ClassicsFooter
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -43,6 +45,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -317,7 +320,7 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
      * 获取设备的基本信息
      */
     private void queryBaseInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_GET_BASE_INFO);
         sendCommand(command);
     }
 
@@ -326,7 +329,6 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
      */
     private void doQueryTimeCmd() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_TERMINAL_TIME);
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -335,7 +337,6 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
      */
     private void doTelemetryCmd() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_SAMPLE);
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -344,7 +345,6 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
      */
     private void doReboot() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.REBOOT);
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -403,8 +403,19 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
+                IOTCommandResult<M20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                updateHeadInfo(commandResult.getResult());
+            }
+            break;
+
             case QUERY_TERMINAL_TIME: {//获取终端时间
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<DeviceTimeInfo> cmdResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!cmdResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取终端时间出错!", cmdResult.getMessage());
@@ -418,29 +429,29 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
             }
             break;
 
-            case VMS_TERMINAL_QUERY_SAMPLE: {//终端遥测
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "遥测出错!", cmdResult.getReason());
+            case QUERY_SAMPLE: {//终端遥测
+//                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                IOTCommandResult<String> cmdResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!cmdResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "获取终端时间出错!", cmdResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("遥测成功");
+                BaseDispatchCmdDialog newFragment = new TelemetryDialog("遥测", cmdResult.getResult());
+                newFragment.show(getChildFragmentManager(), "dialog");
             }
             break;
 
-            case VMS_MD_REBOOT_TERMINAL: {//重启终端
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+            case REBOOT: {//重启终端
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "重启出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reboot_failed), cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("设备即将重启");
+                ToastUtils.show(StringUtils.getString(R.string.device_reboot_tip));
             }
             break;
 
@@ -458,16 +469,16 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         mTvDeviceName.setText("一体式裂缝计");
-        mTvDeviceSn.setText(String.format("设备编号：%s", sn));
         try {
             if (m20BaseInfo != null) {
-                mTvProductModel.setText(String.format("产品型号：：%s", "LR200"));
+                mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(m20BaseInfo.getSn()) ? m20BaseInfo.getSn() : device.getName().substring(3)));
+                mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(m20BaseInfo.getProductid()) ? m20BaseInfo.getProductid() : "M20"));
                 mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
             } else {
+                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
                 mTvProductModel.setText(String.format("产品型号：：%s", "LR200"));
                 mTvFirmwareVersion.setText("固件版本：--");
             }
-            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

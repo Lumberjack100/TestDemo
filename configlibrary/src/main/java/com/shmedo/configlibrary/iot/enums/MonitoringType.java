@@ -14,9 +14,9 @@ public enum MonitoringType {
 
     DEVICE_STATUS("000", "设备状态"),
 
-//    CRACK_GAUGE("101", "地表裂缝计"),
+    SURFACE_CRACK_METER("101", "地表裂缝计"),
 
-    CRACK_METER("102", "裂缝计"),
+    WALL_CRACK_METER("102", "墙裂缝计"),
 
     ACCELEROMETER("103", "加速度计"),
 
@@ -27,6 +27,8 @@ public enum MonitoringType {
     RAIN_METER("201", "雨量计"),
 
     SOIL_MOISTURE_METER("202", "土壤含水率"),
+
+    eeCRACK_METER("203", "裂缝计"),
 
     GNSS_RESULT_DATA("204", "GNSS结果数据"),
 
@@ -48,7 +50,7 @@ public enum MonitoringType {
 
     QING_XIE_METER("213", "倾斜仪"),
 
-    WATER_LEVEL_METER("214", "水位计"),
+    WATER_LEVEL_METER("214", "地下水水位计"),
 
     MULTI_POINT_DISPLACEMENT_METER("215", "多点位移计"),
 
@@ -70,9 +72,9 @@ public enum MonitoringType {
 
     PICTURE("10001", "图片"),
 
-    DRY_BEACH("10002", "干滩"),
+    DRY_BEACH("10002", "干滩计"),
 
-    TURBIDITY_METER("10003", "浊度仪"),
+    TURBIDITY_METER("10003", "浊度计"),
 
     HUMIDITY_METER("10004", "湿度计"),
 

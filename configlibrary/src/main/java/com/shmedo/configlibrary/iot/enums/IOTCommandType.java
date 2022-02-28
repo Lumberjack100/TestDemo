@@ -565,10 +565,7 @@ public enum IOTCommandType {
     /**
      * 设置设备位置
      */
-    MD_SET_LOCATION("md_getloc"),
-
-
-
+    MD_SET_LOCATION("md_setloc"),
 
     /**
      * 自定义心跳包

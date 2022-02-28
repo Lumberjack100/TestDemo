@@ -51,11 +51,11 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
     }
 
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView();
-        //msgIDList不为空时，表示当前是网络指令模式
+        //msgIDList不为空时，表示当前是 4G 下发指令模式
         if (msgIDList != null && msgIDList.size() > 0) {
             startQueryCmdResponse();
         }
@@ -66,7 +66,10 @@ public class TelemetryDialog extends BaseDispatchCmdDialog {
         contentView.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(result)) {
             contentView.setVisibility(View.VISIBLE);
-            mTvResponseContent.setText(result);
+            if (result.contains("datastreams=")) {
+                result = result.replace("datastreams=", "");
+                mTvResponseContent.setText(result);
+            }
         }
     }
 

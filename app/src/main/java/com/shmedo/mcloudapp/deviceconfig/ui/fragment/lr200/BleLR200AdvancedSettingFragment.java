@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -91,7 +92,7 @@ public class BleLR200AdvancedSettingFragment extends BaseGOCBleIotCommunicateFra
         sendCommand(command);
     }
 
-    @OnClick({R.id.syncInstallLocationLayout, R.id.firmwareUpgradeLayout, R.id.customCommandLogPrintLayout, R.id.resetLayout})
+    @OnClick({R.id.syncInstallLocationLayout, R.id.firmwareUpgradeLayout, R.id.cmdDebugLogLayout, R.id.resetLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -109,7 +110,7 @@ public class BleLR200AdvancedSettingFragment extends BaseGOCBleIotCommunicateFra
         } else if (id == R.id.firmwareUpgradeLayout) {//固件升级
 
 
-        } else if (id == R.id.customCommandLogPrintLayout) {
+        } else if (id == R.id.cmdDebugLogLayout) {
             CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.LR200);
 
         } else if (id == R.id.resetLayout) {//恢复出厂设置
@@ -197,12 +198,12 @@ public class BleLR200AdvancedSettingFragment extends BaseGOCBleIotCommunicateFra
             case RESET: {//恢复出厂设置
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "恢复出厂设置出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reset_failed), cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                ToastUtils.show("设备稍后将重启,请等待后重新连接");
+                ToastUtils.show(StringUtils.getString(R.string.device_reset_tip));
                 MCloudApp.getMainHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

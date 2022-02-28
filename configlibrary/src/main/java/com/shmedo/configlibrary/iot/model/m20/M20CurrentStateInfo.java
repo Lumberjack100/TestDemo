@@ -68,6 +68,8 @@ public class M20CurrentStateInfo {
     private String SN;//设备SN号
     @SerializedName("eMMC Free")
     private String eMMCFree;//存储状态
+    private String dataCenter1;//数据中心1
+    private String dataCenter2;//数据中心2
     private String dataCenter3;//数据中心3
     private String dataCenter4;//数据中心4
     private String starNum;//星数
@@ -257,6 +259,22 @@ public class M20CurrentStateInfo {
 
     public void setEMMCFree(String eMMCFree) {
         this.eMMCFree = eMMCFree;
+    }
+
+    public String getDataCenter1() {
+        return TextUtils.isEmpty(dataCenter1) ? "" : dataCenter1;
+    }
+
+    public void setDataCenter1(String dataCenter1) {
+        this.dataCenter1 = dataCenter1;
+    }
+
+    public String getDataCenter2() {
+        return TextUtils.isEmpty(dataCenter2) ? "" : dataCenter2;
+    }
+
+    public void setDataCenter2(String dataCenter2) {
+        this.dataCenter2 = dataCenter2;
     }
 
     public String getDataCenter3() {
