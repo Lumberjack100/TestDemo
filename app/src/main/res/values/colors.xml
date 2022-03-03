@@ -12,7 +12,6 @@
     <color name="bg_main_light_white">#ebebeb</color>
     <color name="transparent">#00000000</color>
     <color name="main_blue">#ff3072f6</color>
-
     <color name="app_color_blue">#00A8E1</color>
     <color name="app_color_blue_2">#31BDF3</color>
     <color name="app_color_blue_disabled">#8000A8E1</color>
@@ -23,9 +22,7 @@
     <color name="app_color_theme_7">#5A9AEF</color> <!-- Blue Jeans -->
     <color name="app_color_theme_10">#E1EFDA</color> <!-- Pink Rose -->
     <color name="orange_FF7502">#ff7502</color>
-
     <color name="update_theme_color">#FFFFAC5D</color>
-
     <color name="black_505050">#505050</color>
     <color name="gray_80666666">#80666666</color>
     <color name="gray_E0E0E0">#E0E0E0</color>
@@ -42,7 +39,6 @@
     <color name="gray_BABABA">#BABABA</color>
     <color name="gray_D4D6D8">#D4D6D8</color>
     <color name="gray_DADADA">#DADADA</color>
-
 
     <!-- 公共 -->
     <color name="main_bg_gray">#f8f8f8</color>
@@ -98,5 +94,8 @@
     <color name="storage_ring_progress_normal">#5289e8</color>
     <color name="storage_ring_progress_warn">#e69331</color>
     <color name="storage_ring_progress_abnormal">#cc4d4d</color>
+
+    <!-- 语音播报 -->
+    <color name="speech_orange">#ff7502</color>
 
 </resources>

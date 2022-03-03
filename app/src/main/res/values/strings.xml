@@ -21,7 +21,6 @@
     <string name="fetch_data_failed">获取数据失败</string>
     <string name="button_save">保存</string>
 
-
     <!-- 网络 -->
     <string name="network_connect_error">网络连接异常</string>
     <string name="network_connect_timeout">网络连接超时</string>
@@ -85,7 +84,6 @@
     <string name="usb_serial_exit_command">AT+ENTM</string>
     <string name="usb_serial_query_voltage">电压</string>
 
-
     <!-- 传感器类型名称 -->
     <string name="sensor_wire_shift">拉绳式裂缝计</string>
     <string name="sensor_soil_moisture">土壤含水率</string>
@@ -102,5 +100,9 @@
     <string name="sensor_turbidity_meter">浊度仪</string>
     <string name="sensor_qingjiao">倾角仪</string>
 
+    <!-- 语音播报 -->
+    <string name="listen_to_speech">请说，我在聆听…</string>
+    <string name="speech_network_error">网络连接失败</string>
+    <string name="no_speech_detected">未检测到语音，请点击麦克风重试</string>
 
 </resources>

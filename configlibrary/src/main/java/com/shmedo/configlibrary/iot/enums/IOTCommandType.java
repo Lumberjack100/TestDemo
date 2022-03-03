@@ -567,6 +567,12 @@ public enum IOTCommandType {
      */
     MD_SET_LOCATION("md_setloc"),
 
+
+    /**
+     * 语音播报
+     */
+    MD_BROADCAST("broadcast"),
+
     /**
      * 自定义心跳包
      */
