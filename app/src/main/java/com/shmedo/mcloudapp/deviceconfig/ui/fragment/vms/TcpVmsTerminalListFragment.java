@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -129,7 +130,7 @@ public class TcpVmsTerminalListFragment extends BaseFragment {
 
     private CharSequence getWarnMessage() {
         SpannableStringBuilder builder = new SpannableStringBuilder(vmsTerminalInfo.getSn());
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources().getColor(R.color.blue_52B4F8));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(ColorUtils.getColor(R.color.blue_52B4F8));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "确认移除 ");
         builder.append(" 设备?");

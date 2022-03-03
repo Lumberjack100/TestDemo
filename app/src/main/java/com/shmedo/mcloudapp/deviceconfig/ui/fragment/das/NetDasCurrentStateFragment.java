@@ -809,17 +809,17 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(dasBaseInfo.getCsq())), 0);
             mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType(dasBaseInfo.getIsp()));
 
-            String powerStr = dasBaseInfo.getInvolt();
-            double power = Double.parseDouble(powerStr.replace("%", ""));
-            SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+            String internalVoltageStr = dasBaseInfo.getInvolt();
+            double internalVoltage = Double.parseDouble(internalVoltageStr.replace("%", ""));
+            SpannableStringBuilder builder = new SpannableStringBuilder(internalVoltageStr);
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(internalVoltage <= 10 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
             builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvDeviceInternalPower.setText(builder);
 
-            String voltageStr = dasBaseInfo.getOutvolt();
-            double voltage = Double.parseDouble(voltageStr);
-            builder = new SpannableStringBuilder(voltageStr + "V");
-            colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+            String externalVoltageStr = dasBaseInfo.getOutvolt();
+            double externalVoltage = Double.parseDouble(externalVoltageStr);
+            builder = new SpannableStringBuilder(externalVoltageStr + "V");
+            colorSpan = new ForegroundColorSpan(externalVoltage <= 5 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
             builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvDeviceExternalVoltage.setText(builder);
         } catch (Exception ex) {

@@ -392,7 +392,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
 //            mEtDataServerAddress.requestFocus();
 //            return false;
 //        }
-
         if (!TextUtils.isEmpty(dataServerPort)) {
             try {
                 int port = Integer.parseInt(dataServerPort);
@@ -464,13 +463,21 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         dataCenterEntity.setPlattype(platformType);
         dataCenterEntity.setAddr(dataServerAddress);
         dataCenterEntity.setPort(dataServerPort);
-        dataCenterEntity.setDeviceid(deviceId);
-        dataCenterEntity.setDevicekey(deviceKey);
-        dataCenterEntity.setHttpaddr(registerAddress);
-        dataCenterEntity.setHttpport(registerPort);
-        dataCenterEntity.setProjid(productId);
-        dataCenterEntity.setRegcode(registerCode);
-
+        if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
+            dataCenterEntity.setDeviceid(deviceId);
+            dataCenterEntity.setDevicekey(deviceKey);
+            dataCenterEntity.setHttpaddr(registerAddress);
+            dataCenterEntity.setHttpport(registerPort);
+            dataCenterEntity.setProjid(productId);
+            dataCenterEntity.setRegcode(registerCode);
+        } else {
+            dataCenterEntity.setDeviceid(null);
+            dataCenterEntity.setDevicekey(null);
+            dataCenterEntity.setHttpaddr(null);
+            dataCenterEntity.setHttpport(null);
+            dataCenterEntity.setProjid(null);
+            dataCenterEntity.setRegcode(null);
+        }
         enableButtonOriginalState = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
 

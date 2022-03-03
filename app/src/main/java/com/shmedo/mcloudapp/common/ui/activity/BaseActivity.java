@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -36,7 +35,6 @@ import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.viewmodels.ShareViewModel;
 import com.shmedo.mcloudapp.util.HandleBackUtil;
-import com.shmedo.mcloudapp.util.UiUtils;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.umeng.analytics.MobclickAgent;
 
@@ -84,10 +82,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        //解决api 26 全屏横竖屏切换 crash
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && UiUtils.isTranslucentOrFloating(this)) {
-            UiUtils.fixOrientation(this);
-        }
         super.onCreate(savedInstanceState);
         // 解决 Android在应用设置里关闭权限，导致APP重启进程造成的无用户数据异常
         if (null != savedInstanceState) {
@@ -124,10 +118,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && UiUtils.isTranslucentOrFloating(this)) {
-            Timber.i("===api 26 全屏横竖屏切换 crash");
-            return;
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && UiUtils.isTranslucentOrFloating(this)) {
+//            Timber.i("===api 26 全屏横竖屏切换 crash");
+//            return;
+//        }
         super.setRequestedOrientation(requestedOrientation);
     }
 
