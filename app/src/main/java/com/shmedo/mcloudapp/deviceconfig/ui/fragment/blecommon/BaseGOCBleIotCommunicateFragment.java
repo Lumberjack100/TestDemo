@@ -39,7 +39,6 @@ import timber.log.Timber;
  * 描述：    与深圳市顾凯信息技术有限公司GOC-MD-400蓝牙模块通讯的页面基类
  */
 public abstract class BaseGOCBleIotCommunicateFragment extends BaseFragment {
-    public static final int DELAY_5000_MILLIS = 5000;//发送指令超时时间
     public static final int DELAY_10000_MILLIS = 10000;//发送指令超时时间
     public static final int DELAY_15000_MILLIS = 15000;//蓝牙连接超时时间
     public static final int DELAY_20000_MILLIS = 20000;//蓝牙连接超时时间
