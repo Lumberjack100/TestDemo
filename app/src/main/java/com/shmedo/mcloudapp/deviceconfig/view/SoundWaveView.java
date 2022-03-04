@@ -51,7 +51,9 @@ public class SoundWaveView extends View {
 
     public void setSoundVolume(int volume) {
         long now = System.currentTimeMillis();
-        if (now - mLastChangeTime < 20) return;
+        if (now - mLastChangeTime < 20)
+            return;
+
         final int maxHeight = getHeight() >> 1;
         final Random ran = new Random();
         int index = 0;
@@ -63,14 +65,19 @@ public class SoundWaveView extends View {
             float curMaxHeight = maxHeight * (volume + 0.2f) / 15;
             float random = ran.nextFloat();
             float value;
-            if (keyIndex % 8 == 0) value = random * curMaxHeight / 4;
-            else if (keyIndex % 5 == 0) value = curMaxHeight / 2 + random * curMaxHeight / 2;
-            else value = random * curMaxHeight;
+            if (keyIndex % 8 == 0)
+                value = random * curMaxHeight / 4;
+            else if (keyIndex % 5 == 0)
+                value = curMaxHeight / 2 + random * curMaxHeight / 2;
+            else
+                value = random * curMaxHeight;
+
             float gap = (value - curValue) / step;
             for (int i = 0; i < step; i++) {
 //                Log.d("Test","step = " + step + " index = " + index + "  i =" + i);
                 final int curIndex = index + i;
-                if (curIndex >= COUNT_LINE) break;
+                if (curIndex >= COUNT_LINE)
+                    break;
                 mNextLineHeights[curIndex] = curValue + gap * i;
             }
             curValue = value;
@@ -94,14 +101,17 @@ public class SoundWaveView extends View {
         final int centerY = getHeight() >> 1;
         final int unitWidth = LINE_WIDTH + LINE_SPACE;
         final int startX = (getWidth() - unitWidth * COUNT_LINE - LINE_SPACE) >> 1;
-        if (mLastDrawTime == 0) mLastDrawTime = System.currentTimeMillis();
+        if (mLastDrawTime == 0)
+            mLastDrawTime = System.currentTimeMillis();
         final long elapse = System.currentTimeMillis() - mLastDrawTime;
 //        Log.d("Test", "elapse = " + elapse);
         for (int i = 0; i < COUNT_LINE; i++) {
             final int lineX = startX + unitWidth * i;
-            if (mLineHeights == null) break;
+            if (mLineHeights == null)
+                break;
             float height = mLineHeights[i];
-            if (height < 0) height = 0;
+            if (height < 0)
+                height = 0;
             canvas.drawLine(lineX, centerY - height, lineX, centerY + height, mPaint);
 //            Log.d("Test", " i = "+ i +"   height = " + height + "   mDetalYs[i] = " + mDetalYs[i]);
             height += mDetalYs[i] * elapse;
