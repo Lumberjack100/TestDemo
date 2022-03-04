@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_gray"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_broadcast_num"
+        style="@style/Common_ClickableItem_LayoutStyle">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="播报遍数" />
+
+        <TextView
+            android:id="@+id/tv_broadcast_num"
+            style="@style/Common_ClickableItem_ValueStyle"
+            android:text="1"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+    <com.shmedo.mcloudapp.common.view.ClearEditText
+        android:id="@+id/broadcast_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:drawablePadding="10dp"
+        android:gravity="top|start"
+        android:hint="听写结果显示"
+        android:padding="15dp"
+        android:textColor="@color/text_color_666666"
+        android:textColorHint="@color/text_color_cccccc"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_speech"
+            style="@style/SubmitBordelessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="说话" />
+
+        <Button
+            android:id="@+id/btn_send"
+            style="@style/SubmitBordelessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="发送" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
+
+</LinearLayout>

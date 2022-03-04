@@ -132,6 +132,7 @@ dependencies {
     implementation 'com.uber.autodispose2:autodispose-androidx-lifecycle:2.1.1'
 
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
     // Glide

@@ -136,7 +136,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                     if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
                         fragment = BleM20DataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
                     } else {
-                        fragment = BleM20DataCenterAdvancedConfigFragment.newInstance(serverNumber, serverStatus);
+                        fragment = BleM20DataCenterAdvancedConfigFragment.newInstance(productType, serverNumber, serverStatus);
                     }
                     break;
             }

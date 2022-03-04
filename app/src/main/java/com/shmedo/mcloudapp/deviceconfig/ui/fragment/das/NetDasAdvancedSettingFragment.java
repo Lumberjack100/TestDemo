@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmwareCmdInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.VoiceBroadcastActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -70,7 +71,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.workModeLayout, R.id.productRegisterLayout, R.id.modifyAuthCodeLayout, R.id.syncInstallLocationLayout})
+    @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.voiceBroadcastLayout, R.id.workModeLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -84,16 +85,10 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         } else if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 
+        } else if (id == R.id.voiceBroadcastLayout) {
+            VoiceBroadcastActivity.startActivity(mActivity, deviceInfo);
+
         } else if (id == R.id.workModeLayout) {
-            ToastUtils.show("正在研发中,敬请期待...");
-
-        } else if (id == R.id.productRegisterLayout) {
-            ToastUtils.show("正在研发中,敬请期待...");
-
-        } else if (id == R.id.modifyAuthCodeLayout) {
-            ToastUtils.show("正在研发中,敬请期待...");
-
-        } else if (id == R.id.syncInstallLocationLayout) {
             ToastUtils.show("正在研发中,敬请期待...");
         }
     }

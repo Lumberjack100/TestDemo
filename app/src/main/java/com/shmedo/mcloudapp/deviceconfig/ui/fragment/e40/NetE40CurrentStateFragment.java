@@ -437,7 +437,7 @@ public class NetE40CurrentStateFragment extends BaseNetIotCommunicateFragment {
 
                     double voltage = extendStateInfo.getBase().getVolt();
                     SpannableStringBuilder builder = new SpannableStringBuilder(voltage + "V");
-                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(voltage <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_666666));
+                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(voltage <= 10 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_666666));
                     builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     mTvDeviceExternalVoltage.setText(builder);
                 }

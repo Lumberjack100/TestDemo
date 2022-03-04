@@ -680,21 +680,27 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     private void initOperatorInformation(SystemRunStateInfo runStateInfo) {
         if (runStateInfo == null)
             return;
-
         mTvSignalStrength.setCompoundDrawablesWithIntrinsicBounds(0, 0, DeviceCurrentRunStateUtils.getSignalResIdByCSQValue(Integer.parseInt(runStateInfo.getGprsSignal())), 0);
         mTvSignalStrength.setText(DeviceCurrentRunStateUtils.getOperatorType2(runStateInfo.getOperator()));
 
-        double power = Double.parseDouble(runStateInfo.getBatteryVoltage());
-        String powerStr = DeviceCurrentRunStateUtils.setDeviceInternalBattery(power);
-        SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+        String internalVoltageStr;
+        double internalVoltage;
+        if (runStateInfo.getBatteryVoltage().contains("%")) {
+            internalVoltageStr = runStateInfo.getBatteryVoltage();
+            internalVoltage = Double.parseDouble(internalVoltageStr.replace("%", ""));
+        } else {
+            internalVoltage = Double.parseDouble(runStateInfo.getBatteryVoltage());
+            internalVoltageStr = DeviceCurrentRunStateUtils.setDeviceInternalBattery(internalVoltage);
+        }
+        SpannableStringBuilder builder = new SpannableStringBuilder(internalVoltageStr);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(internalVoltage <= 10 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvDeviceInternalPower.setText(builder);
 
-        String voltageStr = runStateInfo.getExternalVoltage();
-        double voltage = Double.parseDouble(voltageStr);
-        builder = new SpannableStringBuilder(voltageStr + "V");
-        colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+        String externalVoltageStr = runStateInfo.getExternalVoltage();
+        double externalVoltage = Double.parseDouble(externalVoltageStr);
+        builder = new SpannableStringBuilder(externalVoltageStr + "V");
+        colorSpan = new ForegroundColorSpan(externalVoltage <= 5 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvDeviceExternalVoltage.setText(builder);
     }

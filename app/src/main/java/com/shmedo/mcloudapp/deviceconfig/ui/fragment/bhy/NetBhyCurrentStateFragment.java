@@ -529,14 +529,14 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
             String powerStr = dasBaseInfo.getInvolt();
             double power = Double.parseDouble(powerStr.replace("%", ""));
             SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
             builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvDeviceInternalPower.setText(builder);
 
             String voltageStr = dasBaseInfo.getOutvolt();
             double voltage = Double.parseDouble(voltageStr);
             builder = new SpannableStringBuilder(voltageStr + "V");
-            colorSpan = new ForegroundColorSpan(voltage <= 5 ? getContext().getResources().getColor(R.color.red) : getContext().getResources().getColor(R.color.text_color_3AD094));
+            colorSpan = new ForegroundColorSpan(voltage <= 5 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
             builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvDeviceExternalVoltage.setText(builder);
         } catch (Exception ex) {
