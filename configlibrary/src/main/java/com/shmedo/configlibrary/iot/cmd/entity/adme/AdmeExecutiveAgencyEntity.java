@@ -2,15 +2,22 @@ package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
+import java.lang.reflect.Field;
+
+import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  12/29/20 <br/>
  * 描述：     生成ADME 执行机构配置参数拼接指令
  */
 public class AdmeExecutiveAgencyEntity implements Validater {
+    private String meastype;//测量方式（0:实时测量，1:整时整点测量，2:定时定点测量）
     private String datatype;//数据结算方式（0:顶固定法，1底固定法）
     private String datareply;//数据应答（0:关闭，1:启用）
     private String roundwaitetime;//每轮等待时间
+    private String roundmeasinval;//每轮测量间隔
+    private String roundmeasstart;//每轮测量开始时间
     private String datainval;//数据读取间隔
     private String compensatetime;//测量补偿时间
     private String driveaddress;//电机驱动器地址
@@ -114,6 +121,18 @@ public class AdmeExecutiveAgencyEntity implements Validater {
         this.point_offset = point_offset;
     }
 
+    public void setMeastype(String meastype) {
+        this.meastype = meastype;
+    }
+
+    public void setRoundmeasinval(String roundmeasinval) {
+        this.roundmeasinval = roundmeasinval;
+    }
+
+    public void setRoundmeasstart(String roundmeasstart) {
+        this.roundmeasstart = roundmeasstart;
+    }
+
     @Override
     public void validate() {
 
@@ -122,7 +141,7 @@ public class AdmeExecutiveAgencyEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (datatype != null && !datatype.equals("NullKey")) {
+   /*     if (datatype != null && !datatype.equals("NullKey")) {
             stringBuilder.append("datatype=" + datatype);
             stringBuilder.append("&");
         }
@@ -206,9 +225,40 @@ public class AdmeExecutiveAgencyEntity implements Validater {
             stringBuilder.append("point_offset=" + point_offset);
             stringBuilder.append("&");
         }
+        if (meastype != null && !meastype.equals("NullKey")) {
+            stringBuilder.append("meastype=" + meastype);
+            stringBuilder.append("&");
+        }
+        if (roundmeasinval != null && !roundmeasinval.equals("NullKey")) {
+            stringBuilder.append("roundmeasinval=" + roundmeasinval);
+            stringBuilder.append("&");
+        }
+        if (roundmeasstart != null && !roundmeasstart.equals("NullKey")) {
+            stringBuilder.append("roundmeasstart=" + roundmeasstart);
+            stringBuilder.append("&");
+        }
+        if (stringBuilder.toString().endsWith("&")) {
+            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+        }*/
+
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
+        Timber.d("assembleCmdCharacters1 :%s", stringBuilder.toString());
         return stringBuilder.toString();
     }
 }

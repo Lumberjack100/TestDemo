@@ -10,6 +10,22 @@
         android:layout_height="10dp" />
 
     <LinearLayout
+        android:id="@+id/ll_measure_method"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测量方式" />
+
+        <TextView
+            android:id="@+id/tv_measure_method"
+            style="@style/Common_ClickableItem_ValueStyle"
+            tools:text="实时测量" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_data_settlement_method"
         style="@style/Common_ClickableItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
@@ -54,6 +70,23 @@
             android:id="@+id/et_waiting_interval_per_round"
             style="@style/Common_EditItem_EditText_Style"
             android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_measurement_interval_per_round"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="每轮测量间隔(h)" />
+
+        <TextView
+            android:id="@+id/tv_measurement_interval_per_round"
+            style="@style/Common_ClickableItem_ValueStyle"
+            tools:text="3" />
 
     </LinearLayout>
 
