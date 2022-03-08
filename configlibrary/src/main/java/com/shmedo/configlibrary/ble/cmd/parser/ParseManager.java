@@ -37,7 +37,7 @@ public class ParseManager {
         baseValidate(result);
         CommandResult commandResult = new CommandResult();
         String temp = result.replace("\r\n", "");
-        if (temp.endsWith(CommandResult.ERROR_END)) {
+        if (temp.endsWith(CommandResult.ERROR_END) && temp.length() < 10) {
             commandResult.setSuccess(false);
             commandResult.setMessage(temp);
             return commandResult;
