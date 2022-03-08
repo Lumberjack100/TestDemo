@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -34,16 +34,18 @@ public class DasDataReportEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("report_intv=" + report_intv);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(plus_intv)) {
-            stringBuilder.append("plus_intv=" + plus_intv);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(plus_count)) {
-            stringBuilder.append("plus_count=" + plus_count);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());

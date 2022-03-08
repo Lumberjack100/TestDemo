@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -139,95 +139,19 @@ public class DasExternalSensorEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("index=" + index);
-        stringBuilder.append("&");
-
-        stringBuilder.append("type=" + type);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(addr)) {
-            stringBuilder.append("addr=" + addr);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (!TextUtils.isEmpty(threshold)) {
-            stringBuilder.append("threshold=" + threshold);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(corrval)) {
-            stringBuilder.append("corrval=" + corrval);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(spacing)) {
-            stringBuilder.append("spacing=" + spacing);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(holenum)) {
-            stringBuilder.append("holenum=" + holenum);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(tubealti)) {
-            stringBuilder.append("tubealti=" + tubealti);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(ropelen)) {
-            stringBuilder.append("ropelen=" + ropelen);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(poly_a)) {
-            stringBuilder.append("poly_a=" + poly_a);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(poly_b)) {
-            stringBuilder.append("poly_b=" + poly_b);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(poly_c)) {
-            stringBuilder.append("poly_c=" + poly_c);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(temp_k)) {
-            stringBuilder.append("temp_k=" + temp_k);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(temp_t0)) {
-            stringBuilder.append("temp_t0=" + temp_t0);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(sens_k)) {
-            stringBuilder.append("sens_k=" + sens_k);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(temp_b)) {
-            stringBuilder.append("temp_b=" + temp_b);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(referval_f)) {
-            stringBuilder.append("referval_f=" + referval_f);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(elastic_mod)) {
-            stringBuilder.append("elastic_mod=" + elastic_mod);
-            stringBuilder.append("&");
-        }
-
-        if (!TextUtils.isEmpty(lsycsds)) {
-            stringBuilder.append("lsycsds=" + lsycsds);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(lsyysst)) {
-            stringBuilder.append("lsyysst=" + lsyysst);
-            stringBuilder.append("&");
-        }
-
-        if (!TextUtils.isEmpty(initvalx)) {
-            stringBuilder.append("initvalx=" + initvalx);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(initvaly)) {
-            stringBuilder.append("initvaly=" + initvaly);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

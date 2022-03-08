@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -49,29 +49,19 @@ public class E40BoardSolutionEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("inittime=" + inittime);
-        stringBuilder.append("&");
-        if (!TextUtils.isEmpty(calcgap)) {
-            stringBuilder.append("calcgap=" + calcgap);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (!TextUtils.isEmpty(smoothlevel)) {
-            stringBuilder.append("smoothlevel=" + smoothlevel);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(reinit)) {
-            stringBuilder.append("reinit=" + reinit);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(rtkdynamicmode)) {
-            stringBuilder.append("rtkdynamicmode=" + rtkdynamicmode);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(corrval)) {
-            stringBuilder.append("corrval=" + corrval);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

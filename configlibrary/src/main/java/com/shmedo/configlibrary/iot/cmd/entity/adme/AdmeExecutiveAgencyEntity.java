@@ -141,105 +141,23 @@ public class AdmeExecutiveAgencyEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-   /*     if (datatype != null && !datatype.equals("NullKey")) {
-            stringBuilder.append("datatype=" + datatype);
-            stringBuilder.append("&");
-        }
-        if (datareply != null && !datareply.equals("NullKey")) {
-            stringBuilder.append("datareply=" + datareply);
-            stringBuilder.append("&");
-        }
-        if (roundwaitetime != null && !roundwaitetime.equals("NullKey")) {
-            stringBuilder.append("roundwaitetime=" + roundwaitetime);
-            stringBuilder.append("&");
-        }
-        if (datainval != null && !datainval.equals("NullKey")) {
-            stringBuilder.append("datainval=" + datainval);
-            stringBuilder.append("&");
-        }
-        if (compensatetime != null && !compensatetime.equals("NullKey")) {
-            stringBuilder.append("compensatetime=" + compensatetime);
-            stringBuilder.append("&");
-        }
-        if (driveaddress != null && !driveaddress.equals("NullKey")) {
-            stringBuilder.append("driveaddress=" + driveaddress);
-            stringBuilder.append("&");
-        }
-        if (downspeed != null && !downspeed.equals("NullKey")) {
-            stringBuilder.append("downspeed=" + downspeed);
-            stringBuilder.append("&");
-        }
-        if (interdeep != null && !interdeep.equals("NullKey")) {
-            stringBuilder.append("interdeep=" + interdeep);
-            stringBuilder.append("&");
-        }
-        if (downwaitetime != null && !downwaitetime.equals("NullKey")) {
-            stringBuilder.append("downwaitetime=" + downwaitetime);
-            stringBuilder.append("&");
-        }
-        if (upspeed != null && !upspeed.equals("NullKey")) {
-            stringBuilder.append("upspeed=" + upspeed);
-            stringBuilder.append("&");
-        }
-        if (measpacing != null && !measpacing.equals("NullKey")) {
-            stringBuilder.append("measpacing=" + measpacing);
-            stringBuilder.append("&");
-        }
-        if (meaintertime != null && !meaintertime.equals("NullKey")) {
-            stringBuilder.append("meaintertime=" + meaintertime);
-            stringBuilder.append("&");
-        }
-        if (meabaseth != null && !meabaseth.equals("NullKey")) {
-            stringBuilder.append("meabaseth=" + meabaseth);
-            stringBuilder.append("&");
-        }
-        if (dwonblocked != null && !dwonblocked.equals("NullKey")) {
-            stringBuilder.append("dwonblocked=" + dwonblocked);
-            stringBuilder.append("&");
-        }
-        if (untimenum != null && !untimenum.equals("NullKey")) {
-            stringBuilder.append("untimenum=" + untimenum);
-            stringBuilder.append("&");
-        }
-        if (detectiontime != null && !detectiontime.equals("NullKey")) {
-            stringBuilder.append("detectiontime=" + detectiontime);
-            stringBuilder.append("&");
-        }
-        if (detectionstart != null && !detectionstart.equals("NullKey")) {
-            stringBuilder.append("detectionstart=" + detectionstart);
-            stringBuilder.append("&");
-        }
-        if (detectionend != null && !detectionend.equals("NullKey")) {
-            stringBuilder.append("detectionend=" + detectionend);
-            stringBuilder.append("&");
-        }
-        if (interval_compensation != null && !interval_compensation.equals("NullKey")) {
-            stringBuilder.append("interval_compensation=" + interval_compensation);
-            stringBuilder.append("&");
-        }
-        if (interval_fitting != null && !interval_fitting.equals("NullKey")) {
-            stringBuilder.append("interval_fitting=" + interval_fitting);
-            stringBuilder.append("&");
-        }
-        if (point_offset != null && !point_offset.equals("NullKey")) {
-            stringBuilder.append("point_offset=" + point_offset);
-            stringBuilder.append("&");
-        }
-        if (meastype != null && !meastype.equals("NullKey")) {
-            stringBuilder.append("meastype=" + meastype);
-            stringBuilder.append("&");
-        }
-        if (roundmeasinval != null && !roundmeasinval.equals("NullKey")) {
-            stringBuilder.append("roundmeasinval=" + roundmeasinval);
-            stringBuilder.append("&");
-        }
-        if (roundmeasstart != null && !roundmeasstart.equals("NullKey")) {
-            stringBuilder.append("roundmeasstart=" + roundmeasstart);
-            stringBuilder.append("&");
-        }
-        if (stringBuilder.toString().endsWith("&")) {
-            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-        }*/
+//        stringBuilder.append(assembleCharacters("meastype", meastype));
+//        stringBuilder.append(assembleCharacters("datatype", datatype));
+//        stringBuilder.append(assembleCharacters("datareply", datareply));
+//        stringBuilder.append(assembleCharacters("roundwaitetime", roundwaitetime));
+//        stringBuilder.append(assembleCharacters("roundmeasinval", roundmeasinval));
+//        stringBuilder.append(assembleCharacters("datainval", datainval));
+//        stringBuilder.append(assembleCharacters("compensatetime", compensatetime));
+//        stringBuilder.append(assembleCharacters("driveaddress", driveaddress));
+//        stringBuilder.append(assembleCharacters("interdeep", interdeep));
+//        stringBuilder.append(assembleCharacters("downwaitetime", downwaitetime));
+//        stringBuilder.append(assembleCharacters("upspeed", upspeed));
+//        stringBuilder.append(assembleCharacters("measpacing", measpacing));
+//        stringBuilder.append(assembleCharacters("meaintertime", meaintertime));
+//        stringBuilder.append(assembleCharacters("meabaseth", meabaseth));
+//        stringBuilder.append(assembleCharacters("dwonblocked", dwonblocked));
+//        stringBuilder.append(assembleCharacters("untimenum", untimenum));
+//        stringBuilder.append(assembleCharacters("detectiontime", detectiontime));
 
         try {
             for (Field f : getClass().getDeclaredFields()) {
@@ -254,11 +172,18 @@ public class AdmeExecutiveAgencyEntity implements Validater {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
         Timber.d("assembleCmdCharacters1 :%s", stringBuilder.toString());
         return stringBuilder.toString();
+    }
+
+    private String assembleCharacters(String fieldName, String fieldValue) {
+        String res = "";
+        if (fieldValue != null && !fieldValue.equals("NullKey")) {
+            res = String.format("%s=%s&", fieldName, fieldValue);
+        }
+        return res;
     }
 }

@@ -2,6 +2,8 @@ package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
+import java.lang.reflect.Field;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/12/13 <br/>
@@ -42,27 +44,19 @@ public class AdmeVoltageConfigEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (volt_power_over != null && !volt_power_over.equals("NullKey")) {
-            stringBuilder.append("volt_power_over=" + volt_power_over);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (volt_power_low != null && !volt_power_low.equals("NullKey")) {
-            stringBuilder.append("volt_power_low=" + volt_power_low);
-            stringBuilder.append("&");
-        }
-        if (volt_power_under != null && !volt_power_under.equals("NullKey")) {
-            stringBuilder.append("volt_power_under=" + volt_power_under);
-            stringBuilder.append("&");
-        }
-        if (volt_sensor_low != null && !volt_sensor_low.equals("NullKey")) {
-            stringBuilder.append("volt_sensor_low=" + volt_sensor_low);
-            stringBuilder.append("&");
-        }
-        if (volt_sensor_under != null && !volt_sensor_under.equals("NullKey")) {
-            stringBuilder.append("volt_sensor_under=" + volt_sensor_under);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

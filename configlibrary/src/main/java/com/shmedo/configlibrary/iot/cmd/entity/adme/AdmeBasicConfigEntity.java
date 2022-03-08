@@ -2,6 +2,8 @@ package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
+import java.lang.reflect.Field;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  12/24/20 <br/>
@@ -47,35 +49,22 @@ public class AdmeBasicConfigEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-
-        if (inctype != null && !inctype.equals("NullKey")) {
-            stringBuilder.append("inctype=" + inctype);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (address != null && !address.equals("NullKey")) {
-            stringBuilder.append("address=" + address);
-            stringBuilder.append("&");
-        }
-        if (interdeep != null && !interdeep.equals("NullKey")) {
-            stringBuilder.append("interdeep=" + interdeep);
-            stringBuilder.append("&");
-        }
-        if (downspeed != null && !downspeed.equals("NullKey")) {
-            stringBuilder.append("downspeed=" + downspeed);
-            stringBuilder.append("&");
-        }
-        if (downwaitetime != null && !downwaitetime.equals("NullKey")) {
-            stringBuilder.append("downwaitetime=" + downwaitetime);
-            stringBuilder.append("&");
-        }
-        if (datatype != null && !datatype.equals("NullKey")) {
-            stringBuilder.append("datatype=" + datatype);
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
-
         return stringBuilder.toString();
     }
 }

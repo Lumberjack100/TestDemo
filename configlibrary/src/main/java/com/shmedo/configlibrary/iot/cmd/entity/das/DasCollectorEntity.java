@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -49,30 +49,19 @@ public class DasCollectorEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("type=" + type);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(addr)) {
-            stringBuilder.append("addr=" + addr);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (!TextUtils.isEmpty(collgap)) {
-            stringBuilder.append("collgap=" + collgap);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(calcgap)) {
-            stringBuilder.append("calcgap=" + calcgap);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(standbygap)) {
-            stringBuilder.append("standbygap=" + standbygap);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(sensornum)) {
-            stringBuilder.append("sensornum=" + sensornum);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

@@ -1,8 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
-import android.text.TextUtils;
-
-import com.shmedo.configlibrary.ble.exception.DASParameterException;
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 /**
@@ -19,8 +16,7 @@ public class AdmeEquipModelEntity implements Validater {
 
     @Override
     public void validate() {
-        if (TextUtils.isEmpty(model) || (model.equals("0") && model.equals("1")))
-            throw new DASParameterException("ADME 模式不正确");
+
     }
 
     @Override

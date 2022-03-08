@@ -612,10 +612,10 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         String command = "";
         try {
             AdmeExecutiveAgencyEntity entity = new AdmeExecutiveAgencyEntity();
-            entity.setDatatype(admeExecutiveAgencyInfo.getMeastype().equals("NullKey") ? "NullKey" : measureMethod);
+            entity.setMeastype(admeExecutiveAgencyInfo.getMeastype().equals("NullKey") ? "NullKey" : measureMethod);
             entity.setDatatype(admeExecutiveAgencyInfo.getDatatype().equals("NullKey") ? "NullKey" : dataSettlementMethod);
             entity.setDatareply(admeExecutiveAgencyInfo.getDatareply().equals("NullKey") ? "NullKey" : dataResponse);
-            entity.setDatareply(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
+            entity.setRoundmeasinval(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
             entity.setRoundwaitetime(admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") ? "NullKey" : waitingIntervalPerRound);
             entity.setDatainval(admeExecutiveAgencyInfo.getDatainval().equals("NullKey") ? "NullKey" : dataReadingInterval);
             entity.setCompensatetime(admeExecutiveAgencyInfo.getCompensatetime().equals("NullKey") ? "NullKey" : measurementCompensationTime);
@@ -650,7 +650,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             admeExecutiveAgencyInfo = new AdmeExecutiveAgencyInfo();
             return;
         }
-        measureMethodOld = admeExecutiveAgencyInfo.getMeastype().trim();
+        measureMethodOld = "0";
         measureMethod = measureMethodOld;//admeExecutiveAgencyInfo.getMeastype().trim()
         dataSettlementMethodOld = admeExecutiveAgencyInfo.getDatatype().trim();
         dataSettlementMethod = dataSettlementMethodOld;

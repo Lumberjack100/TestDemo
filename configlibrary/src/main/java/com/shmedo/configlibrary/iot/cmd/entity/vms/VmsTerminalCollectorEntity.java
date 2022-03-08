@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.vms;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -82,36 +82,19 @@ public class VmsTerminalCollectorEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("sn=" + sn);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(reptgap)) {
-            stringBuilder.append("reptgap=" + reptgap);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (!TextUtils.isEmpty(repttype)) {
-            stringBuilder.append("repttype=" + repttype);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(filtertype)) {
-            stringBuilder.append("filtertype=" + filtertype);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(filternum)) {
-            stringBuilder.append("filternum=" + filternum);
-            stringBuilder.append("&");
-        }
-
-        if (!TextUtils.isEmpty(collgap)) {
-            stringBuilder.append("collgap=" + collgap);
-            stringBuilder.append("&");
-        }
-
-        if (!TextUtils.isEmpty(waitgap)) {
-            stringBuilder.append("waitgap=" + waitgap);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

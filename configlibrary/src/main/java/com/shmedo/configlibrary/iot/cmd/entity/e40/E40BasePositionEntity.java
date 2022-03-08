@@ -2,6 +2,8 @@ package com.shmedo.configlibrary.iot.cmd.entity.e40;
 
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
+import java.lang.reflect.Field;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/7/2 <br/>
@@ -37,14 +39,19 @@ public class E40BasePositionEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("mode=" + mode);
-        stringBuilder.append("&");
-        stringBuilder.append("lon=" + lon);
-        stringBuilder.append("&");
-        stringBuilder.append("lat=" + lat);
-        stringBuilder.append("&");
-        stringBuilder.append("alt=" + alt);
-
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
