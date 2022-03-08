@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/main_bg_gray"
     android:orientation="vertical">
 
     <View
@@ -89,6 +90,33 @@
             tools:text="3" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_start_time_per_round"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="每轮测量开始时间" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:splitMotionEvents="false"
+        android:visibility="gone"
+        tools:itemCount="4"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_time"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/ll_data_reading_interval"

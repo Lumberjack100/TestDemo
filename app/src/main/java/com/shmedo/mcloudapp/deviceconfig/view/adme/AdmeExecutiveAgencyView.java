@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.view.adme;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -10,9 +11,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ConvertUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -22,9 +33,15 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeExecutiveAgencyInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
+import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeTimeAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.AdmeTimeItem;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +67,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
     @BindView(R.id.et_waiting_interval_per_round)
     ClearEditText mEtWaitingIntervalPerRound;//每轮等待时间
+
+    @BindView(R.id.recyclerview_time)
+    RecyclerView mRecyclerViewTime;
 
     @BindView(R.id.et_data_reading_interval)
     ClearEditText mEtDataReadingInterval;//数据读取间隔
@@ -104,6 +124,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
     @BindView(R.id.ll_measurement_interval_per_round)
     ViewGroup measurementIntervalPerRoundLayout;
+
+    @BindView(R.id.ll_start_time_per_round)
+    ViewGroup startTimePerRoundLayout;
 
     @BindView(R.id.ll_waiting_interval_per_round)
     ViewGroup waitingIntervalPerRoundLayout;
@@ -177,6 +200,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     private final String[] dataResponseTypes = new String[]{"关闭", "启用"};
     private final String[] measIntervalPerRounds = new String[]{"1", "2", "3", "4", "6", "8", "12", "24"};
 
+    private AdmeTimeAdapter admeTimeAdapter;
+    private List<AdmeTimeItem> admeTimeItemList = new ArrayList<>();
+
     private DecimalFormat decimalFormat = new DecimalFormat();
     public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo;
 
@@ -195,6 +221,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.adme_executive_agency_view, this, true);
         ButterKnife.bind(this);
         initView();
+        initTimeAdapter(context);
     }
 
     private void initView() {
@@ -229,6 +256,84 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         measurementIntervalPerRoundOld = "1";
     }
 
+    private void initTimeAdapter(Context context) {
+        mRecyclerViewTime.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        mRecyclerViewTime.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(0.5f), getResources().getColor(R.color.divider_line_bg_efefef)));
+        admeTimeAdapter = new AdmeTimeAdapter(admeTimeItemList);
+        admeTimeAdapter.setAnimationEnable(false);
+        admeTimeAdapter.setAnimationFirstOnly(false);
+        admeTimeAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                processItemClick(context, position);
+            }
+        });
+        admeTimeAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                AdmeTimeItem admeTimeItem = admeTimeItemList.get(position);
+                if (admeTimeItem.isAddButton()) {
+                    return true;
+                }
+                warnDeleteSensorItem(context, position);
+                return true;
+            }
+        });
+        mRecyclerViewTime.setAdapter(admeTimeAdapter);
+    }
+
+    private void processItemClick(Context context, int position) {
+        AdmeTimeItem admeTimeItem = admeTimeItemList.get(position);
+        if (!admeTimeItem.isAddButton())
+            return;
+
+        new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay);
+                if (admeTimeItemList.contains(time)) {
+                    ToastUtils.show("已添加此时间点");
+                    return;
+                }
+                admeTimeItemList.remove(admeTimeItemList.size() - 1);
+                AdmeTimeItem item = new AdmeTimeItem(time, false);
+                admeTimeItemList.add(item);
+                if (admeTimeItemList.size() < 8) {
+                    item = new AdmeTimeItem(null, true);
+                    admeTimeItemList.add(item);
+                }
+                admeTimeAdapter.notifyDataSetChanged();
+            }
+        }, 0, 0, true).show();
+    }
+
+    private void warnDeleteSensorItem(Context context, int position) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context)
+                .title("温馨提示")
+                .content("移除?")
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        admeTimeItemList.remove(position);
+                        admeTimeItemList.remove(admeTimeItemList.size() - 1);
+                        if (admeTimeItemList.size() < 8) {
+                            AdmeTimeItem item = new AdmeTimeItem(null, true);
+                            admeTimeItemList.add(item);
+                        }
+                        admeTimeAdapter.notifyDataSetChanged();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
     /**
      * 选择测量方式
      */
@@ -247,15 +352,18 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                                 if (position == 0) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
-
+                                    startTimePerRoundLayout.setVisibility(View.GONE);
+                                    mRecyclerViewTime.setVisibility(View.GONE);
                                 } else if (position == 1) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
-
+                                    startTimePerRoundLayout.setVisibility(View.GONE);
+                                    mRecyclerViewTime.setVisibility(View.GONE);
                                 } else if (position == 2) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
-
+                                    startTimePerRoundLayout.setVisibility(View.VISIBLE);
+                                    mRecyclerViewTime.setVisibility(View.VISIBLE);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
@@ -615,8 +723,22 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             entity.setMeastype(admeExecutiveAgencyInfo.getMeastype().equals("NullKey") ? "NullKey" : measureMethod);
             entity.setDatatype(admeExecutiveAgencyInfo.getDatatype().equals("NullKey") ? "NullKey" : dataSettlementMethod);
             entity.setDatareply(admeExecutiveAgencyInfo.getDatareply().equals("NullKey") ? "NullKey" : dataResponse);
-            entity.setRoundmeasinval(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
             entity.setRoundwaitetime(admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") ? "NullKey" : waitingIntervalPerRound);
+            entity.setRoundmeasinval(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
+            //定时测量方式
+            if (!admeExecutiveAgencyInfo.getMeastype().equals("NullKey") && admeExecutiveAgencyInfo.getMeastype().equals("2")) {
+                StringBuffer timeBuffer = new StringBuffer();
+                for (AdmeTimeItem admeTimeItem : admeTimeItemList) {
+                    String time = admeTimeItem.getTime();
+                    if (!TextUtils.isEmpty(time)) {
+                        timeBuffer.append(Integer.parseInt(time.substring(0, time.indexOf(":"))));
+                    }
+                    timeBuffer.append("|");
+                }
+                timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
+            } else {
+                entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getRoundmeasstart());
+            }
             entity.setDatainval(admeExecutiveAgencyInfo.getDatainval().equals("NullKey") ? "NullKey" : dataReadingInterval);
             entity.setCompensatetime(admeExecutiveAgencyInfo.getCompensatetime().equals("NullKey") ? "NullKey" : measurementCompensationTime);
             entity.setDriveaddress(admeExecutiveAgencyInfo.getDriveaddress().equals("NullKey") ? "NullKey" : motorDriveAddress);
@@ -650,14 +772,15 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             admeExecutiveAgencyInfo = new AdmeExecutiveAgencyInfo();
             return;
         }
-        measureMethodOld = "0";
-        measureMethod = measureMethodOld;//admeExecutiveAgencyInfo.getMeastype().trim()
+        measureMethodOld = admeExecutiveAgencyInfo.getMeastype().trim();
+        measureMethod = measureMethodOld;
         dataSettlementMethodOld = admeExecutiveAgencyInfo.getDatatype().trim();
         dataSettlementMethod = dataSettlementMethodOld;
         dataResponseOld = admeExecutiveAgencyInfo.getDatareply().trim();
         dataResponse = dataResponseOld;
         measurementIntervalPerRoundOld = admeExecutiveAgencyInfo.getRoundmeasinval().trim();
         measurementIntervalPerRound = measurementIntervalPerRoundOld;
+        startTimePerRound = admeExecutiveAgencyInfo.getRoundmeasstart().trim();
 
         waitingIntervalPerRound = admeExecutiveAgencyInfo.getRoundwaitetime().trim();
         dataReadingInterval = admeExecutiveAgencyInfo.getDatainval().trim();
@@ -676,22 +799,31 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
         if (measureMethodOld.equals("NullKey")) {
             measureMethodLayout.setVisibility(View.GONE);
+            measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+            startTimePerRoundLayout.setVisibility(View.GONE);
+            mRecyclerViewTime.setVisibility(View.GONE);
         } else {
             switch (measureMethodOld) {
                 case "0":
                     mTvMeasureMethod.setText(measureMethods[0]);
                     waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    startTimePerRoundLayout.setVisibility(View.GONE);
+                    mRecyclerViewTime.setVisibility(View.GONE);
                     break;
                 case "1":
                     mTvMeasureMethod.setText(measureMethods[1]);
                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                     measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                    startTimePerRoundLayout.setVisibility(View.GONE);
+                    mRecyclerViewTime.setVisibility(View.GONE);
                     break;
                 case "2":
                     mTvMeasureMethod.setText(measureMethods[2]);
                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    startTimePerRoundLayout.setVisibility(View.VISIBLE);
+                    mRecyclerViewTime.setVisibility(View.VISIBLE);
                     break;
             }
         }
@@ -716,13 +848,25 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             }
         }
 
-        if (measurementIntervalPerRoundOld.equals("NullKey")) {
-            measurementIntervalPerRoundLayout.setVisibility(View.GONE);
-        } else {
-            mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRoundOld);
-        }
-
         try {
+            mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRoundOld);
+
+            if (!startTimePerRound.equals("NullKey")) {
+                AdmeTimeItem item;
+                String[] times = startTimePerRound.split("\\|");
+                for (String time : times) {
+                    if (!TextUtils.isEmpty(time)) {
+                        time = String.format(Locale.getDefault(), "%02d:00:00", Integer.parseInt(time));
+                        item = new AdmeTimeItem(time, false);
+                        admeTimeItemList.add(item);
+                    }
+                }
+                if (admeTimeItemList.size() < 8) {
+                    item = new AdmeTimeItem(null, true);
+                    admeTimeItemList.add(item);
+                }
+                admeTimeAdapter.notifyDataSetChanged();
+            }
             if (waitingIntervalPerRound.equals("NullKey")) {
                 waitingIntervalPerRoundLayout.setVisibility(View.GONE);
             } else {

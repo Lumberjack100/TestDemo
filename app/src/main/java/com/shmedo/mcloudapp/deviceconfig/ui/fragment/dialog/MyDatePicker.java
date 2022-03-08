@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.blankj.utilcode.util.ColorUtils;
 import com.shmedo.mcloudapp.R;
@@ -27,7 +26,7 @@ import kankan.wheel.widget.WheelView;
 import kankan.wheel.widget.adapters.NumericWheelAdapter;
 
 /**
- * A simple {@link Fragment} subclass.
+ * 日期选择对话框
  */
 public class MyDatePicker extends BaseDialogFragment {
     private static final int YEAR_MAX = 218;
@@ -50,7 +49,7 @@ public class MyDatePicker extends BaseDialogFragment {
 
     private String[] dateType;
 
-    private String age;
+    private String date;
     private String title;
 
     private Calendar pickedCalendar = null;
@@ -59,7 +58,7 @@ public class MyDatePicker extends BaseDialogFragment {
 
 
     public MyDatePicker(String date, String title) {
-        this.age = TextUtils.isEmpty(date) ? DateUtil.getNowDateYYYYMMDDString() : date;
+        this.date = TextUtils.isEmpty(date) ? DateUtil.getNowDateYYYYMMDDString() : date;
         this.title = title;
     }
 
@@ -87,8 +86,8 @@ public class MyDatePicker extends BaseDialogFragment {
 
         Calendar calendar = Calendar.getInstance();
         int curYear = calendar.get(Calendar.YEAR);
-        if (age != null && age.contains("-")) {
-            String str[] = age.split("-");
+        if (date != null && date.contains("-")) {
+            String str[] = date.split("-");
             mCurYear = YEAR_MAX - (curYear - Integer.parseInt(str[0]));
             mCurMonth = Integer.parseInt(str[1]) - 1;
             mCurDay = Integer.parseInt(str[2]) - 1;
@@ -96,7 +95,7 @@ public class MyDatePicker extends BaseDialogFragment {
         dateType = mActivity.getResources().getStringArray(R.array.date);
 
         // year
-        yearAdapter = new MyDatePicker.DateNumericAdapter(mActivity, curYear - YEAR_MAX, curYear + 100);
+        yearAdapter = new DateNumericAdapter(mActivity, curYear - YEAR_MAX, curYear + 100);
         yearAdapter.setDataType(dateType[0]);
         year.setViewAdapter(yearAdapter);
         year.setCurrentItem(mCurYear);
@@ -125,7 +124,6 @@ public class MyDatePicker extends BaseDialogFragment {
             updateDays(year, month, day);
         }
     };
-
 
     private void updateDays(WheelView year, WheelView month, WheelView day) {
         Calendar calendar = Calendar.getInstance();
@@ -168,14 +166,12 @@ public class MyDatePicker extends BaseDialogFragment {
 
     @OnClick({R.id.tv_cancel, R.id.tv_confirm})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_cancel:
-                dismiss();
-                break;
+        int id = view.getId();
+        if (id == R.id.tv_cancel) {
+            dismiss();
 
-            case R.id.tv_confirm:
-                doPositiveClick(view);
-                break;
+        }else if (id == R.id.tv_confirm) {
+            doPositiveClick(view);
         }
     }
 
@@ -209,7 +205,7 @@ public class MyDatePicker extends BaseDialogFragment {
          */
         public DateNumericAdapter(Context context, int minValue, int maxValue) {
             super(context, minValue, maxValue);
-            setTextSize(16);
+            setTextSize(15);
         }
 
         @Override
