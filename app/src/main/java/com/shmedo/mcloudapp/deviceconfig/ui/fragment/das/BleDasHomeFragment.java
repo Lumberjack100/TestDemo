@@ -142,7 +142,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         return R.layout.ble_das_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHeadInfo();
@@ -214,7 +214,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
@@ -328,13 +328,14 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-                        clearDevice();
-                        hideProgressBar();
+//                        clearDevice();
+//                        hideProgressBar();
                         onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
                     case DISCONNECTING:
+                        hideProgressBar();
                         stopHeart();
                         break;
                 }
@@ -627,29 +628,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         }
     }
 
-    @Override
-    public boolean onBackPressed() {
-        if (isConnected()) {
-            isExitMode = true;
-            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onStop() {
-        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        LocationUtils.getInstance().stopLocalService();
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        MCloudApp.setCurDeviceToken(null);
-        super.onDestroy();
-    }
-
     /**
      * 危险操作前弹框提醒
      */
@@ -696,4 +674,26 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         mMaterialDialog.show();
     }
 
+    @Override
+    public void onStop() {
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        LocationUtils.getInstance().stopLocalService();
+        super.onStop();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (isConnected()) {
+            isExitMode = true;
+            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        MCloudApp.setCurDeviceToken(null);
+        super.onDestroy();
+    }
 }

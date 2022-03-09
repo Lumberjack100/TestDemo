@@ -112,7 +112,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         return R.layout.universal_config_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHeadInfo();
@@ -143,7 +143,7 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
 
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -220,13 +220,14 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-                        clearDevice();
-                        hideProgressBar();
+//                        clearDevice();
+//                        hideProgressBar();
                         onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
                     case DISCONNECTING://The disconnection was initiated.
+                        hideProgressBar();
                         break;
                 }
             }
@@ -411,6 +412,12 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     @Override
+    public void onStop() {
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        super.onStop();
+    }
+
+    @Override
     public boolean onBackPressed() {
         if (isConnected()) {
             isExitMode = true;
@@ -421,14 +428,9 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
     }
 
     @Override
-    public void onStop() {
-        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        super.onStop();
-    }
-
-    @Override
     public void onDestroy() {
         MCloudApp.setCurDeviceToken(null);
+        clearDevice();
         super.onDestroy();
     }
 }

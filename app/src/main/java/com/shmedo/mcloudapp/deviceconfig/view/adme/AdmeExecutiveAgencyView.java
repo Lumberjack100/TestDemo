@@ -291,9 +291,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 String time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay);
-                if (admeTimeItemList.contains(time)) {
-                    ToastUtils.show("已添加此时间点");
-                    return;
+                for(AdmeTimeItem item :admeTimeItemList) {
+                    if (item.getTime().contains(time)) {
+                        ToastUtils.show("不能设置重复时间点!");
+                        return;
+                    }
                 }
                 admeTimeItemList.remove(admeTimeItemList.size() - 1);
                 AdmeTimeItem item = new AdmeTimeItem(time, false);
