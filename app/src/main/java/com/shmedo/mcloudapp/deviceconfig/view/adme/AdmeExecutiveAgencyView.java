@@ -732,10 +732,12 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                     String time = admeTimeItem.getTime();
                     if (!TextUtils.isEmpty(time)) {
                         timeBuffer.append(Integer.parseInt(time.substring(0, time.indexOf(":"))));
+                        timeBuffer.append("|");
                     }
-                    timeBuffer.append("|");
                 }
                 timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
+                entity.setRoundmeasstart(timeBuffer.toString());
+
             } else {
                 entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getRoundmeasstart());
             }
