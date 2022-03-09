@@ -27,13 +27,13 @@ public class AdmeInclinometerInfoParser implements IOTResultParser<AdmeInclinome
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setInctype(!keyValueMap.containsKey("inctype") ? "NullKey" : keyValueMap.get("inctype"));
-            info.setLowpower(!keyValueMap.containsKey("lowpower") ? "NullKey" : keyValueMap.get("lowpower"));
-            info.setAddress(!keyValueMap.containsKey("address") ? "NullKey" : keyValueMap.get("address"));
-            info.setCollinval(!keyValueMap.containsKey("collinval") ? "NullKey" : keyValueMap.get("collinval"));
-            info.setCalcinval(!keyValueMap.containsKey("calcinval") ? "NullKey" : keyValueMap.get("calcinval"));
-            info.setDormancytime(!keyValueMap.containsKey("dormancytime") ? "NullKey" : keyValueMap.get("dormancytime"));
-            info.setInterupdate(!keyValueMap.containsKey("interupdate") ? "NullKey" : keyValueMap.get("interupdate"));
+            info.setInctype(keyValueMap.getOrDefault("inctype", "NullKey"));
+            info.setLowpower(keyValueMap.getOrDefault("lowpower", "NullKey"));
+            info.setAddress(keyValueMap.getOrDefault("address", "NullKey"));
+            info.setCollinval(keyValueMap.getOrDefault("collinval", "NullKey"));
+            info.setCalcinval(keyValueMap.getOrDefault("calcinval", "NullKey"));
+            info.setDormancytime(keyValueMap.getOrDefault("dormancytime", "NullKey"));
+            info.setInterupdate(keyValueMap.getOrDefault("interupdate", "NullKey"));
 
             return info;
         } catch (Exception ex) {

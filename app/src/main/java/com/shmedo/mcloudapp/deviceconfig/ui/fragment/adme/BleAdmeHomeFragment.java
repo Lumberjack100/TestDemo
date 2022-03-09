@@ -178,14 +178,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        isFirstCreate = false;
-        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        stopQueryMotorStateProgress();
-    }
-
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
         int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
@@ -280,13 +272,14 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-                        clearDevice();
-                        hideProgressBar();
+//                        clearDevice();
+//                        hideProgressBar();
                         onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
                     case DISCONNECTING://The disconnection was initiated.
+                        hideProgressBar();
                         break;
                 }
             }
@@ -648,6 +641,14 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     @Override
+    public void onStop() {
+        isFirstCreate = false;
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        stopQueryMotorStateProgress();
+        super.onStop();
+    }
+
+    @Override
     public boolean onBackPressed() {
         if (isConnected()) {
             isExitMode = true;
@@ -662,6 +663,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         admeViewModel.deviceMode = -1;
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setProductID(-1);
+        clearDevice();
         super.onDestroy();
     }
 }

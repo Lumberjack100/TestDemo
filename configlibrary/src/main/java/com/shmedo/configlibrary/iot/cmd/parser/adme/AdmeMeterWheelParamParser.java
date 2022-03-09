@@ -27,16 +27,16 @@ public class AdmeMeterWheelParamParser implements IOTResultParser<AdmeMeterWheel
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setEnclinenum(!keyValueMap.containsKey("enclinenum") ? "NullKey" : keyValueMap.get("enclinenum"));
-            info.setOutline(!keyValueMap.containsKey("outline") ? "NullKey" : keyValueMap.get("outline"));
-            info.setUptiona(!keyValueMap.containsKey("uptiona") ? "NullKey" : keyValueMap.get("uptiona"));
-            info.setUptionb(!keyValueMap.containsKey("uptionb") ? "NullKey" : keyValueMap.get("uptionb"));
-            info.setUpconstant(!keyValueMap.containsKey("upconstant") ? "NullKey" : keyValueMap.get("upconstant"));
-            info.setUpfilter(!keyValueMap.containsKey("upfilter") ? "NullKey" : keyValueMap.get("upfilter"));
-            info.setDowntiona(!keyValueMap.containsKey("downtiona") ? "NullKey" : keyValueMap.get("downtiona"));
-            info.setDowntionb(!keyValueMap.containsKey("downtionb") ? "NullKey" : keyValueMap.get("downtionb"));
-            info.setDownconstant(!keyValueMap.containsKey("downconstant") ? "NullKey" : keyValueMap.get("downconstant"));
-            info.setDownfilter(!keyValueMap.containsKey("downfilter") ? "NullKey" : keyValueMap.get("downfilter"));
+            info.setEnclinenum(keyValueMap.getOrDefault("enclinenum", "NullKey"));
+            info.setOutline(keyValueMap.getOrDefault("outline", "NullKey"));
+            info.setUptiona(keyValueMap.getOrDefault("uptiona", "NullKey"));
+            info.setUptionb(keyValueMap.getOrDefault("uptionb", "NullKey"));
+            info.setUpconstant(keyValueMap.getOrDefault("upconstant", "NullKey"));
+            info.setUpfilter(keyValueMap.getOrDefault("upfilter", "NullKey"));
+            info.setDowntiona(keyValueMap.getOrDefault("downtiona", "NullKey"));
+            info.setDowntionb(keyValueMap.getOrDefault("downtionb", "NullKey"));
+            info.setDownconstant(keyValueMap.getOrDefault("downconstant", "NullKey"));
+            info.setDownfilter(keyValueMap.getOrDefault("downfilter", "NullKey"));
 
             return info;
         } catch (Exception ex) {

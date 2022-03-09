@@ -317,13 +317,14 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-                        clearDevice();
-                        hideProgressBar();
+//                        clearDevice();
+//                        hideProgressBar();
                         onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
                     case DISCONNECTING:
+                        hideProgressBar();
                         stopHeart();
                         break;
                 }
@@ -616,30 +617,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         }
     }
 
-    @Override
-    public boolean onBackPressed() {
-        if (isConnected()) {
-            isExitMode = true;
-            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onStop() {
-        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        LocationUtils.getInstance().stopLocalService();
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        MCloudApp.setCurDeviceToken(null);
-        MCloudApp.setProductID(-1);
-        super.onDestroy();
-    }
-
     /**
      * 危险操作前弹框提醒
      */
@@ -684,5 +661,29 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    @Override
+    public void onStop() {
+        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+        LocationUtils.getInstance().stopLocalService();
+        super.onStop();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (isConnected()) {
+            isExitMode = true;
+            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setProductID(-1);
+        super.onDestroy();
     }
 }

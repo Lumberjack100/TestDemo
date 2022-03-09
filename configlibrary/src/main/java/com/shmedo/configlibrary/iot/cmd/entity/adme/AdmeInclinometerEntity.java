@@ -2,6 +2,8 @@ package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
+import java.lang.reflect.Field;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  12/28/20 <br/>
@@ -52,39 +54,22 @@ public class AdmeInclinometerEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (inctype != null && !inctype.equals("NullKey")) {
-            stringBuilder.append("inctype=" + inctype);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (lowpower != null && !lowpower.equals("NullKey")) {
-            stringBuilder.append("lowpower=" + lowpower);
-            stringBuilder.append("&");
-        }
-        if (address != null && !address.equals("NullKey")) {
-            stringBuilder.append("address=" + address);
-            stringBuilder.append("&");
-        }
-        if (collinval != null && !collinval.equals("NullKey")) {
-            stringBuilder.append("collinval=" + collinval);
-            stringBuilder.append("&");
-        }
-        if (calcinval != null && !calcinval.equals("NullKey")) {
-            stringBuilder.append("calcinval=" + calcinval);
-            stringBuilder.append("&");
-        }
-        if (dormancytime != null && !dormancytime.equals("NullKey")) {
-            stringBuilder.append("dormancytime=" + dormancytime);
-            stringBuilder.append("&");
-        }
-        if (interupdate != null && !interupdate.equals("NullKey")) {
-            stringBuilder.append("interupdate=" + interupdate);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
-
         return stringBuilder.toString();
     }
 }

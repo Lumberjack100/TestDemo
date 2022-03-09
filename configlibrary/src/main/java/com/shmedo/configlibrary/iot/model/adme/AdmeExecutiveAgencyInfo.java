@@ -8,9 +8,12 @@ import android.text.TextUtils;
  * 描述：     ADME 执行机构参数
  */
 public class AdmeExecutiveAgencyInfo {
+    private String meastype;//测量方式（0:实时测量，1:整时整点测量，2:定时定点测量）
     private String datatype;//数据结算方式（0:顶固定法，1底固定法）
     private String datareply;//数据应答（0:关闭，1:启用）
     private String roundwaitetime;//每轮等待时间
+    private String roundmeasinval;//每轮测量间隔
+    private String roundmeasstart;//每轮测量开始时间
     private String datainval;//数据读取间隔
     private String compensatetime;//测量补偿时间
     private String driveaddress;//电机驱动器地址
@@ -29,7 +32,6 @@ public class AdmeExecutiveAgencyInfo {
     private String interval_compensation;//距离补偿区间h1
     private String interval_fitting;//数据拟合区间h2
     private String point_offset;//测点偏移距离h3
-
 
 
     public String getDatatype() {
@@ -198,5 +200,29 @@ public class AdmeExecutiveAgencyInfo {
 
     public void setPoint_offset(String point_offset) {
         this.point_offset = point_offset;
+    }
+
+    public String getMeastype() {
+        return TextUtils.isEmpty(meastype) ? "0" : meastype;
+    }
+
+    public void setMeastype(String meastype) {
+        this.meastype = meastype;
+    }
+
+    public String getRoundmeasinval() {
+        return TextUtils.isEmpty(roundmeasinval) ? "" : roundmeasinval;
+    }
+
+    public void setRoundmeasinval(String roundmeasinval) {
+        this.roundmeasinval = roundmeasinval;
+    }
+
+    public String getRoundmeasstart() {
+        return TextUtils.isEmpty(roundmeasstart) ? "" : roundmeasstart;
+    }
+
+    public void setRoundmeasstart(String roundmeasstart) {
+        this.roundmeasstart = roundmeasstart;
     }
 }

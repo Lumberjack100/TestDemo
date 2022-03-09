@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -44,25 +44,19 @@ public class E40EthernetEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("dhcp=" + dhcp);
-        stringBuilder.append("&");
-        if (!TextUtils.isEmpty(ip)) {
-            stringBuilder.append("ip=" + ip);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (!TextUtils.isEmpty(netmask)) {
-            stringBuilder.append("netmask=" + netmask);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(gateway)) {
-            stringBuilder.append("gateway=" + gateway);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(dns)) {
-            stringBuilder.append("dns=" + dns);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

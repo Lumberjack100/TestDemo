@@ -20,7 +20,7 @@
         android:background="@android:color/white"
         android:orientation="vertical" >
 
-        <View
+        <Space
             android:layout_width="match_parent"
             android:layout_height="25dp" />
 
@@ -55,7 +55,7 @@
 
         </LinearLayout>
 
-        <View
+        <Space
             android:layout_width="match_parent"
             android:layout_height="30dp" />
 

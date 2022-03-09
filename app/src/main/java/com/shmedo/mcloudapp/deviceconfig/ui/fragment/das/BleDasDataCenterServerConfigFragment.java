@@ -169,7 +169,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         return R.layout.fragment_ble_das_data_center_server_config;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         registProtocols = getResources().getStringArray(R.array.register_protocol);
@@ -627,7 +627,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             case QUERY_DATA_CENTER_PARAM://查询数据中心 1、2、3 参数
                 mRefreshLayout.finishRefresh(true);
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END) && tempStr.length() < 10) {
                     Timber.e("查询数据中心指令出错!");
                     ToastUtils.show("查询数据中心指令出错!");
                     return;
@@ -711,7 +711,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 break;
 
             case SET_MANUAL_REGISTRATION_PLATFORM_PARAM:// MQTT 手动注册设置参数时应答
-                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                if (tempStr.endsWith(CommandResult.ERROR_END) && tempStr.length() < 10) {
                     ToastUtils.show("手动注册平台参数配置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;

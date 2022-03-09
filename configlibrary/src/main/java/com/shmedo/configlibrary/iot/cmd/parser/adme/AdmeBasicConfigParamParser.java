@@ -27,12 +27,12 @@ public class AdmeBasicConfigParamParser implements IOTResultParser<AdmeBasicConf
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setInctype(!keyValueMap.containsKey("inctype") ? "NullKey" : keyValueMap.get("inctype"));
-            info.setAddress(!keyValueMap.containsKey("address") ? "NullKey" : keyValueMap.get("address"));
-            info.setInterdeep(!keyValueMap.containsKey("interdeep") ? "NullKey" : keyValueMap.get("interdeep"));
-            info.setDownspeed(!keyValueMap.containsKey("downspeed") ? "NullKey" : keyValueMap.get("downspeed"));
-            info.setDownwaitetime(!keyValueMap.containsKey("downwaitetime") ? "NullKey" : keyValueMap.get("downwaitetime"));
-            info.setDatatype(!keyValueMap.containsKey("datatype") ? "NullKey" : keyValueMap.get("datatype"));
+            info.setInctype(keyValueMap.getOrDefault("inctype", "NullKey"));
+            info.setAddress(keyValueMap.getOrDefault("address", "NullKey"));
+            info.setInterdeep(keyValueMap.getOrDefault("interdeep", "NullKey"));
+            info.setDownspeed(keyValueMap.getOrDefault("downspeed", "NullKey"));
+            info.setDownwaitetime(keyValueMap.getOrDefault("downwaitetime", "NullKey"));
+            info.setDatatype(keyValueMap.getOrDefault("datatype", "NullKey"));
 
             return info;
         } catch (Exception ex) {

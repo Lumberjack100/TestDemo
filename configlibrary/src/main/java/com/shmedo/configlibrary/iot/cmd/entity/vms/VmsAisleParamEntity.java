@@ -3,6 +3,8 @@ package com.shmedo.configlibrary.iot.cmd.entity.vms;
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 
+import java.lang.reflect.Field;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  11/15/20 <br/>
@@ -118,47 +120,22 @@ public class VmsAisleParamEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("channel=" + vmsAisleNumber.toInt());
-        stringBuilder.append("&");
-
-        if (netid != null && !netid.equals("NullKey")) {
-            stringBuilder.append("netid=" + netid);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (ppt != null && !ppt.equals("NullKey")) {
-            stringBuilder.append("ppt=" + ppt);
-            stringBuilder.append("&");
+        if (stringBuilder.toString().endsWith("&")) {
+            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
-        if (addr != null && !addr.equals("NullKey")) {
-            stringBuilder.append("addr=" + addr);
-            stringBuilder.append("&");
-        }
-        if (chl != null && !chl.equals("NullKey")) {
-            stringBuilder.append("chl=" + chl);
-            stringBuilder.append("&");
-        }
-        if (terminalmode != null && !terminalmode.equals("NullKey")) {
-            stringBuilder.append("terminalmode=" + terminalmode);
-            stringBuilder.append("&");
-        }
-        if (sendgap != null && !sendgap.equals("NullKey")) {
-            stringBuilder.append("sendgap=" + sendgap);
-            stringBuilder.append("&");
-        }
-        if (offline != null && !offline.equals("NullKey")) {
-            stringBuilder.append("offline=" + offline);
-            stringBuilder.append("&");
-        }
-        if (sleepgap != null && !sleepgap.equals("NullKey")) {
-            stringBuilder.append("sleepgap=" + sleepgap);
-            stringBuilder.append("&");
-        }
-        if (wakeupgap != null && !wakeupgap.equals("NullKey")) {
-            stringBuilder.append("wakeupgap=" + wakeupgap);
-            stringBuilder.append("&");
-        }
-        stringBuilder.append("airbaud=" + airbaud);
-
         return stringBuilder.toString();
     }
 }

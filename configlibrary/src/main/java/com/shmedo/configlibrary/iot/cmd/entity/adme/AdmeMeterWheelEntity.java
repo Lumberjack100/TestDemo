@@ -2,6 +2,8 @@ package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
+import java.lang.reflect.Field;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  12/27/20 <br/>
@@ -67,47 +69,19 @@ public class AdmeMeterWheelEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-
-        if (enclinenum != null && !enclinenum.equals("NullKey")) {
-            stringBuilder.append("enclinenum=" + enclinenum);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (outline != null && !outline.equals("NullKey")) {
-            stringBuilder.append("outline=" + outline);
-            stringBuilder.append("&");
-        }
-        if (uptiona != null && !uptiona.equals("NullKey")) {
-            stringBuilder.append("uptiona=" + uptiona);
-            stringBuilder.append("&");
-        }
-        if (uptionb != null && !uptionb.equals("NullKey")) {
-            stringBuilder.append("uptionb=" + uptionb);
-            stringBuilder.append("&");
-        }
-        if (upconstant != null && !upconstant.equals("NullKey")) {
-            stringBuilder.append("upconstant=" + upconstant);
-            stringBuilder.append("&");
-        }
-        if (upfilter != null && !upfilter.equals("NullKey")) {
-            stringBuilder.append("upfilter=" + upfilter);
-            stringBuilder.append("&");
-        }
-        if (downtiona != null && !downtiona.equals("NullKey")) {
-            stringBuilder.append("downtiona=" + downtiona);
-            stringBuilder.append("&");
-        }
-        if (downtionb != null && !downtionb.equals("NullKey")) {
-            stringBuilder.append("downtionb=" + downtionb);
-            stringBuilder.append("&");
-        }
-        if (downconstant != null && !downconstant.equals("NullKey")) {
-            stringBuilder.append("downconstant=" + downconstant);
-            stringBuilder.append("&");
-        }
-        if (downfilter != null && !downfilter.equals("NullKey")) {
-            stringBuilder.append("downfilter=" + downfilter);
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

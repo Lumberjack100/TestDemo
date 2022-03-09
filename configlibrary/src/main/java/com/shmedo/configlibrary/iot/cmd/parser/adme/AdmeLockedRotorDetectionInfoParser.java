@@ -27,20 +27,20 @@ public class AdmeLockedRotorDetectionInfoParser implements IOTResultParser<AdmeL
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setLowtbtss(!keyValueMap.containsKey("lowtbtss") ? "NullKey"  : keyValueMap.get("lowtbtss"));
-            info.setNumpput(!keyValueMap.containsKey("numpput") ? "NullKey" : keyValueMap.get("numpput"));
-            info.setPdajtime(!keyValueMap.containsKey("pdajtime") ? "NullKey"  : keyValueMap.get("pdajtime"));
-            info.setDetintiona(!keyValueMap.containsKey("detintiona") ? "NullKey"  : keyValueMap.get("detintiona"));
-            info.setDetintionb(!keyValueMap.containsKey("detintionb") ? "NullKey"  : keyValueMap.get("detintionb"));
-            info.setLowtorblothr(!keyValueMap.containsKey("lowtorblothr") ? "NullKey"  : keyValueMap.get("lowtorblothr"));
-            info.setLowtordetime(!keyValueMap.containsKey("lowtordetime") ? "NullKey"  : keyValueMap.get("lowtordetime"));
-            info.setLowsusrana(!keyValueMap.containsKey("lowsusrana") ? "NullKey"  : keyValueMap.get("lowsusrana"));
-            info.setLowsusranb(!keyValueMap.containsKey("lowsusranb") ? "NullKey"  : keyValueMap.get("lowsusranb"));
-            info.setUptbtss(!keyValueMap.containsKey("uptbtss") ? "NullKey"  : keyValueMap.get("uptbtss"));
-            info.setUptorblothr(!keyValueMap.containsKey("uptorblothr") ? "NullKey"  : keyValueMap.get("uptorblothr"));
-            info.setUptordetime(!keyValueMap.containsKey("uptordetime") ? "NullKey" : keyValueMap.get("uptordetime"));
-            info.setUpsusrana(!keyValueMap.containsKey("upsusrana") ? "NullKey"  : keyValueMap.get("upsusrana"));
-            info.setUpsusranb(!keyValueMap.containsKey("upsusranb") ? "NullKey"  : keyValueMap.get("upsusranb"));
+            info.setLowtbtss(keyValueMap.getOrDefault("lowtbtss", "NullKey"));
+            info.setNumpput(keyValueMap.getOrDefault("numpput", "NullKey"));
+            info.setPdajtime(keyValueMap.getOrDefault("pdajtime", "NullKey"));
+            info.setDetintiona(keyValueMap.getOrDefault("detintiona", "NullKey"));
+            info.setDetintionb(keyValueMap.getOrDefault("detintionb", "NullKey"));
+            info.setLowtorblothr(keyValueMap.getOrDefault("lowtorblothr", "NullKey"));
+            info.setLowtordetime(keyValueMap.getOrDefault("lowtordetime", "NullKey"));
+            info.setLowsusrana(keyValueMap.getOrDefault("lowsusrana", "NullKey"));
+            info.setLowsusranb(keyValueMap.getOrDefault("lowsusranb", "NullKey"));
+            info.setUptbtss(keyValueMap.getOrDefault("uptbtss", "NullKey"));
+            info.setUptorblothr(keyValueMap.getOrDefault("uptorblothr", "NullKey"));
+            info.setUptordetime(keyValueMap.getOrDefault("uptordetime", "NullKey"));
+            info.setUpsusrana(keyValueMap.getOrDefault("upsusrana", "NullKey"));
+            info.setUpsusranb(keyValueMap.getOrDefault("upsusranb", "NullKey"));
 
             return info;
         } catch (Exception ex) {
