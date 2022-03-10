@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,7 +65,7 @@ import okhttp3.RequestBody;
 import timber.log.Timber;
 
 /**
- * A simple {@link Fragment} subclass.
+ * 4G 设备列表页面
  */
 public class NetDeviceListFragment extends BaseFragment {
     @BindView(R.id.tv_online_num)
@@ -89,7 +88,7 @@ public class NetDeviceListFragment extends BaseFragment {
 
     private DeviceTypeAdapter deviceTypeAdapter;
     private DeviceInfoAdapter deviceInfoAdapter;
-    private List<DeviceOnlineTypeStatistic> deviceTypeStatisticList = new ArrayList<>();
+    private List<DeviceOnlineTypeStatistic> deviceTypeList = new ArrayList<>();
     private List<ProjectDeviceInfo> deviceInfoList = new ArrayList<>();
 
     private static final int PAGE_SIZE = 30;
@@ -102,7 +101,7 @@ public class NetDeviceListFragment extends BaseFragment {
         return R.layout.fragment_net_work_device_list;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pageInfo = new PageInfo(1);
@@ -110,14 +109,14 @@ public class NetDeviceListFragment extends BaseFragment {
         initDeviceInfoAdapter();
         initRefreshLayout();
         initLoadMore();
-
-        // 进入页面，刷新数据
+        // 查询设备类型
         queryDeviceType();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        //切换企业后刷新设备列表
         if (companyID != MCloudApp.getCompanyID()) {
             companyID = MCloudApp.getCompanyID();
             deviceTypeID = -1;
@@ -127,43 +126,34 @@ public class NetDeviceListFragment extends BaseFragment {
             //是否在刷新的时候禁止内容的一切手势操作（默认false）
             mRefreshLayout.setDisableContentWhenRefresh(true);
             mRefreshLayout.autoRefresh();
+            // 查询公司设备类型在线统计信息
             queryCompanyDeviceOnlineTypeStatistics();
         }
-    }
-
-    private void initRefreshLayout() {
-        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                refreshDevices();
-            }
-        });
     }
 
     private void initDeviceTypeAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerViewDeviceType.setLayoutManager(linearLayoutManager);
-        deviceTypeAdapter = new DeviceTypeAdapter(deviceTypeStatisticList);
-        deviceTypeAdapter.setAnimationEnable(true);
-        deviceTypeAdapter.setAnimationFirstOnly(false);
+        deviceTypeAdapter = new DeviceTypeAdapter(deviceTypeList);
+//        deviceTypeAdapter.setAnimationEnable(true);
+//        deviceTypeAdapter.setAnimationFirstOnly(false);
         deviceTypeAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = deviceTypeStatisticList.get(position);
+                DeviceOnlineTypeStatistic deviceOnlineTypeStatistic = deviceTypeList.get(position);
                 if (deviceOnlineTypeStatistic.isChecked()) {
                     return;
                 }
-                for (DeviceOnlineTypeStatistic typeInfo : deviceTypeStatisticList) {
+                for (DeviceOnlineTypeStatistic typeInfo : deviceTypeList) {
                     typeInfo.setChecked(false);
                 }
                 deviceOnlineTypeStatistic.setChecked(true);
                 deviceTypeAdapter.notifyDataSetChanged();
 
                 //点击选中最后一个 Item 时,使RecyclerView滚动到底
-                if (position == deviceTypeStatisticList.size() - 1) {
+                if (position == deviceTypeList.size() - 1) {
                     mRecyclerViewDeviceType.scrollToPosition(adapter.getItemCount() - 1);
                 }
-
                 deviceTypeID = deviceOnlineTypeStatistic.getDeviceTypeID();
                 mRefreshLayout.autoRefresh();
             }
@@ -190,6 +180,15 @@ public class NetDeviceListFragment extends BaseFragment {
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);
     }
 
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                refreshDevices();
+            }
+        });
+    }
+
     /**
      * 初始化加载更多
      */
@@ -197,7 +196,7 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceInfoAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                loadMore();
+                queryCompanyDevice();
             }
         });
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
@@ -205,13 +204,6 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
         // 当数据不满一页时，是否继续自动加载（默认为true）
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
-    }
-
-    @OnClick({R.id.search_placeholder})
-    public void onClick(View v) {
-        if (v.getId() == R.id.search_placeholder) {
-            DeviceSearchActivity.startActivity(getActivity());
-        }
     }
 
     /**
@@ -223,51 +215,6 @@ public class NetDeviceListFragment extends BaseFragment {
         // 下拉刷新，需要重置页数
         pageInfo.reset();
         queryCompanyDevice();
-    }
-
-    /**
-     * 加载更多
-     */
-    private void loadMore() {
-        queryCompanyDevice();
-    }
-
-    private void processOnlineData(DeviceOnlineTypeStatistic deviceOnlineTypeStatistic) {
-        int onlineCount = 0;
-        int offlineCount = 0;
-
-        if (deviceOnlineTypeStatistic.getDeviceTypeName().equals("全部")) {
-            for (DeviceOnlineTypeStatistic typeStatistic : deviceTypeStatisticList) {
-                if (typeStatistic.getDeviceTypeName().equals("全部")) {
-                    continue;
-                }
-                onlineCount += typeStatistic.getOnlineCount();
-                offlineCount += typeStatistic.getOfflineCount();
-            }
-        } else {
-            onlineCount = deviceOnlineTypeStatistic.getOnlineCount();
-            offlineCount = deviceOnlineTypeStatistic.getOfflineCount();
-        }
-
-        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
-        String rate;
-        if ((onlineCount + offlineCount) == 0) {
-            rate = "0%";
-        } else {
-            rate = df.format((float) onlineCount / (onlineCount + offlineCount) * 100) + "%";
-        }
-
-        updateTopView(onlineCount, offlineCount, rate);
-    }
-
-    private void updateTopView(int onlineCount, int offlineCount, String rate) {
-        tvOnlineNum.setText(String.valueOf(onlineCount));
-        tvOfflineNum.setText(String.valueOf(offlineCount));
-
-        SpannableString spannableString = new SpannableString(rate);
-        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
-        spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvOnlineRate.setText(new SpannedString(spannableString));
     }
 
     /**
@@ -296,7 +243,6 @@ public class NetDeviceListFragment extends BaseFragment {
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
                                     return;
                                 }
-
                                 //更新到本地数据库
                                 DaoManager.getInstance().getDaoSession().getDeviceTypeInfoDao().insertOrReplaceInTx(data.getCurrentPageData());
                             } else {
@@ -364,7 +310,7 @@ public class NetDeviceListFragment extends BaseFragment {
      * @param dataList
      */
     private void setDeviceTypeData(List<DeviceOnlineTypeStatistic> dataList) {
-        deviceTypeStatisticList.clear();
+        deviceTypeList.clear();
         if (dataList == null || dataList.size() == 0) {
             return;
         }
@@ -372,7 +318,7 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceOnlineTypeStatistic.setDeviceTypeName("全部");
         deviceOnlineTypeStatistic.setDeviceTypeID(-1);
         deviceOnlineTypeStatistic.setChecked(true);
-        deviceTypeStatisticList.add(deviceOnlineTypeStatistic);
+        deviceTypeList.add(deviceOnlineTypeStatistic);
 
         for (DeviceOnlineTypeStatistic typeStatistic : dataList) {
             //去除不支持物联网协议的 DAG、TPS、VIR 等设备
@@ -383,17 +329,51 @@ public class NetDeviceListFragment extends BaseFragment {
                     || typeStatistic.getDeviceTypeID() == 15) {
                 continue;
             }
-
-            deviceTypeStatisticList.add(typeStatistic);
+            deviceTypeList.add(typeStatistic);
         }
         deviceTypeAdapter.notifyDataSetChanged();
-        if (deviceTypeStatisticList.size() <= 1) {
+        if (deviceTypeList.size() <= 1) {
             mRefreshLayout.finishRefresh(false);
             showNoContentView(StringUtils.getString(R.string.empty_no_data));
         } else {
-            processOnlineData(deviceTypeStatisticList.get(0));
-            refreshDevices();
+            processOnlineData(deviceTypeList.get(0));
+//            refreshDevices();
         }
+    }
+
+    private void processOnlineData(DeviceOnlineTypeStatistic deviceOnlineTypeStatistic) {
+        int onlineCount = 0;
+        int offlineCount = 0;
+        if (deviceOnlineTypeStatistic.getDeviceTypeName().equals("全部")) {
+            for (DeviceOnlineTypeStatistic typeStatistic : deviceTypeList) {
+                if (typeStatistic.getDeviceTypeName().equals("全部")) {
+                    continue;
+                }
+                onlineCount += typeStatistic.getOnlineCount();
+                offlineCount += typeStatistic.getOfflineCount();
+            }
+        } else {
+            onlineCount = deviceOnlineTypeStatistic.getOnlineCount();
+            offlineCount = deviceOnlineTypeStatistic.getOfflineCount();
+        }
+        DecimalFormat df = new DecimalFormat("#.#");//格式化小数
+        String rate;
+        if ((onlineCount + offlineCount) == 0) {
+            rate = "0%";
+        } else {
+            rate = df.format((float) onlineCount / (onlineCount + offlineCount) * 100) + "%";
+        }
+        updateTopView(onlineCount, offlineCount, rate);
+    }
+
+    private void updateTopView(int onlineCount, int offlineCount, String rate) {
+        tvOnlineNum.setText(String.valueOf(onlineCount));
+        tvOfflineNum.setText(String.valueOf(offlineCount));
+
+        SpannableString spannableString = new SpannableString(rate);
+        AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
+        spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvOnlineRate.setText(new SpannedString(spannableString));
     }
 
     /**
@@ -432,7 +412,6 @@ public class NetDeviceListFragment extends BaseFragment {
                                     }
                                     return;
                                 }
-
                                 //如果是加载的第一页数据，清空列表
                                 if (pageInfo.isFirstPage()) {
                                     deviceInfoList.clear();
@@ -533,9 +512,16 @@ public class NetDeviceListFragment extends BaseFragment {
     private void clearData() {
         updateTopView(0, 0, "0%");
 
-        deviceTypeStatisticList.clear();
+        deviceTypeList.clear();
         deviceInfoList.clear();
         deviceTypeAdapter.notifyDataSetChanged();
         deviceInfoAdapter.notifyDataSetChanged();
+    }
+
+    @OnClick({R.id.search_placeholder})
+    public void onClick(View v) {
+        if (v.getId() == R.id.search_placeholder) {
+            DeviceSearchActivity.startActivity(getActivity());
+        }
     }
 }
