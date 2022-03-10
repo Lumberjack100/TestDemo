@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_ctr_motion_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="CTR工作状态:"
+            android:textColor="@color/text_color_3AD094"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_measure_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="18dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/title_text_color"
+            android:textSize="15sp"
+            tools:text="正向测量" />
+
+        <TextView
+            android:id="@+id/tv_motor_info"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="18dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/title_text_color"
+            android:textSize="15sp"
+            tools:text="磁开关触发，测量结束" />
+
+        <TextView
+            android:id="@+id/tv_measure_point"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="18dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/title_text_color"
+            android:textSize="16sp"
+            tools:text="第一个点测量：30.5米" />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/DeviceCurrentState_Group_TitleStyle"
+        android:text="基本信息" />
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备SN号" />
+
+        <TextView
+            android:id="@+id/tv_device_sn"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            android:textColor="@color/text_color_3AD094"
+            tools:text="19F00L" />
+
+    </LinearLayout>
+
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="产品型号" />
+
+        <TextView
+            android:id="@+id/tv_product_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="SIM卡号(ICCID)" />
+
+        <TextView
+            android:id="@+id/tv_sim_card_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="IMEI号" />
+
+        <TextView
+            android:id="@+id/tv_imei_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="固件版本" />
+
+        <TextView
+            android:id="@+id/tv_firmware_version"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/DeviceCurrentState_Group_TitleStyle"
+        android:text="网络状态"
+        android:visibility="gone" />
+
+    <LinearLayout
+        style="@style/DeviceCurrentState_SingleItem_Style"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="信号强度" />
+
+        <TextView
+            android:id="@+id/tv_signal_strength"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            android:drawablePadding="10dp"
+            tools:drawableRight="@drawable/signalstrengthfour"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_corner_3dp_gray_f5f6f8"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:gravity="center_vertical"
+            android:text="中心1"
+            android:textColor="@color/sub_title_text_color"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#E5E5E5" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="66dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_link_one_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="良好" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="状态"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_link_one_send_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="878" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="已发送"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_link_one_unsend_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="21" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="未发送"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_link_one_online_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="87%" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="在线率"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_corner_3dp_gray_f5f6f8"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:gravity="center_vertical"
+            android:text="中心2"
+            android:textColor="@color/sub_title_text_color"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#E5E5E5" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="66dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_link_two_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="良好" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="状态"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_link_two_send_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="878" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="已发送"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_link_two_unsend_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="21" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="未发送"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_link_two_online_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="15sp"
+                    tools:text="87%" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="在线率"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/DeviceCurrentState_Group_TitleStyle"
+        android:layout_marginTop="20dp"
+        android:text="设备工作信息" />
+
+    <LinearLayout
+        android:id="@+id/ll_device_abnormal_diagnosis"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:layout_height="44dp">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备状态"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_device_abnormal_diagnosis"
+            style="@style/Common_ClickableItem_ValueStyle"
+            android:drawableEnd="@null"
+            android:textSize="15sp"
+            tools:text="异常" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="工作模式" />
+
+        <TextView
+            android:id="@+id/tv_work_mode"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="常规测量模式" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="CTR输入电压" />
+
+        <TextView
+            android:id="@+id/tv_ctr_input_voltage"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="22.6v" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="驱动器输入电压" />
+
+        <TextView
+            android:id="@+id/tv_driver_input_voltage"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="22.6v" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备温度" />
+
+        <TextView
+            android:id="@+id/tv_device_temperature"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="41.5°" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备湿度" />
+
+        <TextView
+            android:id="@+id/tv_device_humidity"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="67%" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备下降次数" />
+
+        <TextView
+            android:id="@+id/tv_device_drop_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="67%" />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/DeviceCurrentState_Group_TitleStyle"
+        android:text="测斜仪信息" />
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪类型" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_type"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="433测斜仪" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪信道号" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_channel_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="5" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪位置信息" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_location_information"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="上拉到管口" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪电压" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_voltage"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="22.6v" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪管温度" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_temperature"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="41.5°" />
+
+    </LinearLayout>
+
+</LinearLayout>

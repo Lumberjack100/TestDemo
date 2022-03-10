@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotionState;
@@ -29,8 +27,12 @@ public class AdmeMotionStateParser implements IOTResultParser<AdmeMotionState> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setMotionstate(TextUtils.isEmpty(keyValueMap.get("motionstate")) ? "" : keyValueMap.get("motionstate"));
-            info.setInctiondis(TextUtils.isEmpty(keyValueMap.get("inctiondis")) ? "" : keyValueMap.get("inctiondis"));
+            info.setMotionstate(keyValueMap.getOrDefault("motionstate", "NullKey"));
+            info.setInctiondis(keyValueMap.getOrDefault("inctiondis", "NullKey"));
+            info.setMeasmode(keyValueMap.getOrDefault("measmode", "NullKey"));
+            info.setMotorinfo(keyValueMap.getOrDefault("motorinfo", "NullKey"));
+            info.setMeaspoint(keyValueMap.getOrDefault("measpoint", "NullKey"));
+
             return info;
         } catch (Exception ex) {
             ex.printStackTrace();
