@@ -40,7 +40,7 @@ public class AdmeCurrentStateView extends LinearLayout {
     TextView mTvMeasureMode;//测量模式(0：正测1：反测)
 
     @BindView(R.id.tv_motor_info)
-    TextView mTvMotorInfo;//电机运动信息(0：磁开关触发1：测斜仪配对,设置参数2：测斜仪下放 3：管底等待4：测点测量5：磁开关触发，测量结束6：测斜仪配对,读取数据7：数据上传8：周期等待)
+    TextView mTvMotorInfo;//电机运动信息(1：磁开关触发,测斜仪配对,设置参数2：测斜仪下放 3：管底等待4：测点测量5：磁开关触发，测量结束6：测斜仪配对,读取数据7：数据上传8：周期等待)
 
     @BindView(R.id.tv_measure_point)
     TextView mTvMeasurePoint;
@@ -171,12 +171,8 @@ public class AdmeCurrentStateView extends LinearLayout {
         String measurePoint = admeMotionState.getMeaspoint();
         String msg;
         switch (admeMotionState.getMotorinfo()) {
-            case "0":
-                mTvMotorInfo.setText("磁开关触发");
-                break;
-
             case "1":
-                mTvMotorInfo.setText("测斜仪配对,设置参数");
+                mTvMotorInfo.setText("磁开关触发,测斜仪配对,设置参数");
                 break;
 
             case "2": {//测斜仪下放
