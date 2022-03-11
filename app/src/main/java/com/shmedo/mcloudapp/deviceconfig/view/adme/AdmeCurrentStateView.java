@@ -182,7 +182,7 @@ public class AdmeCurrentStateView extends LinearLayout {
             break;
 
             case "3": {//管底等待
-                msg = (!TextUtils.isEmpty(measurePoint) && !measurePoint.contains("|")) ? String.format("管底等待: %s 米", measurePoint) : "管底等待";
+                msg = (!TextUtils.isEmpty(measurePoint) && !measurePoint.contains("|")) ? String.format("管底等待-位置(%s m)-剩余时间(%s s)", measurePoint, admeMotionState.getWaittime()) : "管底等待";
                 mTvMotorInfo.setText(msg);
             }
             break;
@@ -190,7 +190,7 @@ public class AdmeCurrentStateView extends LinearLayout {
             case "4": {//测点测量
                 if (!TextUtils.isEmpty(measurePoint) && measurePoint.contains("|")) {
                     String[] values = measurePoint.split("\\|");
-                    msg = (!TextUtils.isEmpty(values[0]) && !TextUtils.isEmpty(values[1])) ? String.format("第 %s 个点测量: %s 米", values[0], values[1]) : "测点测量";
+                    msg = (!TextUtils.isEmpty(values[0]) && !TextUtils.isEmpty(values[1])) ? String.format("测点测量-测斜仪位置(%s m)-测点序列(%s)", values[1], values[0]) : "测点测量";
                     mTvMotorInfo.setText(msg);
                 }
             }

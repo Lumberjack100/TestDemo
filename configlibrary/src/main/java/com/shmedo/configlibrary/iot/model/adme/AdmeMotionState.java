@@ -16,7 +16,7 @@ public class AdmeMotionState {
     //   正反测量过程 0、1、2、3、4、5、6、8—》0、1、2、3、4、5、6、8
     private String motorinfo;//电机运动信息
     private String measpoint;//测点信息 (1|20.5  表示第一个测量点：20.5米)
-
+    private String waittime;//管底等待时间
 
     public String getMotionstate() {
         return TextUtils.isEmpty(motionstate) ? "" : motionstate;
@@ -56,5 +56,13 @@ public class AdmeMotionState {
 
     public void setMeaspoint(String measpoint) {
         this.measpoint = measpoint;
+    }
+
+    public String getWaittime() {
+        return TextUtils.isEmpty(waittime) ? "" : waittime;
+    }
+
+    public void setWaittime(String waittime) {
+        this.waittime = waittime;
     }
 }

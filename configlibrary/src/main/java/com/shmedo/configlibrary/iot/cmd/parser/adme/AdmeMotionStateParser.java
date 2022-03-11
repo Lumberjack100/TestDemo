@@ -32,6 +32,7 @@ public class AdmeMotionStateParser implements IOTResultParser<AdmeMotionState> {
             info.setMeasmode(keyValueMap.getOrDefault("measmode", "NullKey"));
             info.setMotorinfo(keyValueMap.getOrDefault("motorinfo", "NullKey"));
             info.setMeaspoint(keyValueMap.getOrDefault("measpoint", "NullKey"));
+            info.setWaittime(keyValueMap.getOrDefault("waittime", "NullKey"));
 
             return info;
         } catch (Exception ex) {
