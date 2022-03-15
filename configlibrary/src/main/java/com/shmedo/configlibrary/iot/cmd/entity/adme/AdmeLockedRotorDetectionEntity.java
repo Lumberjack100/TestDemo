@@ -2,6 +2,8 @@ package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
+import java.lang.reflect.Field;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  3/2/21 <br/>
@@ -87,66 +89,22 @@ public class AdmeLockedRotorDetectionEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (lowtbtss != null && !lowtbtss.equals("NullKey")) {
-            stringBuilder.append("lowtbtss=" + lowtbtss);
-            stringBuilder.append("&");
-        }
-        if (numpput != null && !numpput.equals("NullKey")) {
-            stringBuilder.append("numpput=" + numpput);
-            stringBuilder.append("&");
-        }
-        if (pdajtime != null && !pdajtime.equals("NullKey")) {
-            stringBuilder.append("pdajtime=" + pdajtime);
-            stringBuilder.append("&");
-        }
-        if (detintiona != null && !detintiona.equals("NullKey")) {
-            stringBuilder.append("detintiona=" + detintiona);
-            stringBuilder.append("&");
-        }
-        if (detintionb != null && !detintionb.equals("NullKey")) {
-            stringBuilder.append("detintionb=" + detintionb);
-            stringBuilder.append("&");
-        }
-        if (lowtorblothr != null && !lowtorblothr.equals("NullKey")) {
-            stringBuilder.append("lowtorblothr=" + lowtorblothr);
-            stringBuilder.append("&");
-        }
-        if (lowtordetime != null && !lowtordetime.equals("NullKey")) {
-            stringBuilder.append("lowtordetime=" + lowtordetime);
-            stringBuilder.append("&");
-        }
-        if (lowsusrana != null && !lowsusrana.equals("NullKey")) {
-            stringBuilder.append("lowsusrana=" + lowsusrana);
-            stringBuilder.append("&");
-        }
-        if (lowsusranb != null && !lowsusranb.equals("NullKey")) {
-            stringBuilder.append("lowsusranb=" + lowsusranb);
-            stringBuilder.append("&");
-        }
-        if (uptbtss != null && !uptbtss.equals("NullKey")) {
-            stringBuilder.append("uptbtss=" + uptbtss);
-            stringBuilder.append("&");
-        }
-        if (uptorblothr != null && !uptorblothr.equals("NullKey")) {
-            stringBuilder.append("uptorblothr=" + uptorblothr);
-            stringBuilder.append("&");
-        }
-        if (uptordetime != null && !uptordetime.equals("NullKey")) {
-            stringBuilder.append("uptordetime=" + uptordetime);
-            stringBuilder.append("&");
-        }
-        if (upsusrana != null && !upsusrana.equals("NullKey")) {
-            stringBuilder.append("upsusrana=" + upsusrana);
-            stringBuilder.append("&");
-        }
-        if (upsusranb != null && !upsusranb.equals("NullKey")) {
-            stringBuilder.append("upsusranb=" + upsusranb);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
-
         return stringBuilder.toString();
     }
 }

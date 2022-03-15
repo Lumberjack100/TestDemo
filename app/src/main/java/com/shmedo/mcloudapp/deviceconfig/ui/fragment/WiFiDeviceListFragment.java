@@ -406,7 +406,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     @Override
     public void onStop() {
         super.onStop();
-        hideProgressBar();
+//        hideProgressBar();
     }
 
     @Override

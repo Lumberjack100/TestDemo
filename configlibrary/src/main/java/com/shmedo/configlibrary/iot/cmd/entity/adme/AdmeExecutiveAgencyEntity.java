@@ -2,15 +2,22 @@ package com.shmedo.configlibrary.iot.cmd.entity.adme;
 
 import com.shmedo.configlibrary.ble.interfaces.Validater;
 
+import java.lang.reflect.Field;
+
+import timber.log.Timber;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  12/29/20 <br/>
  * 描述：     生成ADME 执行机构配置参数拼接指令
  */
 public class AdmeExecutiveAgencyEntity implements Validater {
+    private String meastype;//测量方式（0:实时测量，1:整时整点测量，2:定时定点测量）
     private String datatype;//数据结算方式（0:顶固定法，1底固定法）
     private String datareply;//数据应答（0:关闭，1:启用）
     private String roundwaitetime;//每轮等待时间
+    private String roundmeasinval;//每轮测量间隔
+    private String roundmeasstart;//每轮测量开始时间
     private String datainval;//数据读取间隔
     private String compensatetime;//测量补偿时间
     private String driveaddress;//电机驱动器地址
@@ -114,6 +121,18 @@ public class AdmeExecutiveAgencyEntity implements Validater {
         this.point_offset = point_offset;
     }
 
+    public void setMeastype(String meastype) {
+        this.meastype = meastype;
+    }
+
+    public void setRoundmeasinval(String roundmeasinval) {
+        this.roundmeasinval = roundmeasinval;
+    }
+
+    public void setRoundmeasstart(String roundmeasstart) {
+        this.roundmeasstart = roundmeasstart;
+    }
+
     @Override
     public void validate() {
 
@@ -122,93 +141,49 @@ public class AdmeExecutiveAgencyEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (datatype != null && !datatype.equals("NullKey")) {
-            stringBuilder.append("datatype=" + datatype);
-            stringBuilder.append("&");
-        }
-        if (datareply != null && !datareply.equals("NullKey")) {
-            stringBuilder.append("datareply=" + datareply);
-            stringBuilder.append("&");
-        }
-        if (roundwaitetime != null && !roundwaitetime.equals("NullKey")) {
-            stringBuilder.append("roundwaitetime=" + roundwaitetime);
-            stringBuilder.append("&");
-        }
-        if (datainval != null && !datainval.equals("NullKey")) {
-            stringBuilder.append("datainval=" + datainval);
-            stringBuilder.append("&");
-        }
-        if (compensatetime != null && !compensatetime.equals("NullKey")) {
-            stringBuilder.append("compensatetime=" + compensatetime);
-            stringBuilder.append("&");
-        }
-        if (driveaddress != null && !driveaddress.equals("NullKey")) {
-            stringBuilder.append("driveaddress=" + driveaddress);
-            stringBuilder.append("&");
-        }
-        if (downspeed != null && !downspeed.equals("NullKey")) {
-            stringBuilder.append("downspeed=" + downspeed);
-            stringBuilder.append("&");
-        }
-        if (interdeep != null && !interdeep.equals("NullKey")) {
-            stringBuilder.append("interdeep=" + interdeep);
-            stringBuilder.append("&");
-        }
-        if (downwaitetime != null && !downwaitetime.equals("NullKey")) {
-            stringBuilder.append("downwaitetime=" + downwaitetime);
-            stringBuilder.append("&");
-        }
-        if (upspeed != null && !upspeed.equals("NullKey")) {
-            stringBuilder.append("upspeed=" + upspeed);
-            stringBuilder.append("&");
-        }
-        if (measpacing != null && !measpacing.equals("NullKey")) {
-            stringBuilder.append("measpacing=" + measpacing);
-            stringBuilder.append("&");
-        }
-        if (meaintertime != null && !meaintertime.equals("NullKey")) {
-            stringBuilder.append("meaintertime=" + meaintertime);
-            stringBuilder.append("&");
-        }
-        if (meabaseth != null && !meabaseth.equals("NullKey")) {
-            stringBuilder.append("meabaseth=" + meabaseth);
-            stringBuilder.append("&");
-        }
-        if (dwonblocked != null && !dwonblocked.equals("NullKey")) {
-            stringBuilder.append("dwonblocked=" + dwonblocked);
-            stringBuilder.append("&");
-        }
-        if (untimenum != null && !untimenum.equals("NullKey")) {
-            stringBuilder.append("untimenum=" + untimenum);
-            stringBuilder.append("&");
-        }
-        if (detectiontime != null && !detectiontime.equals("NullKey")) {
-            stringBuilder.append("detectiontime=" + detectiontime);
-            stringBuilder.append("&");
-        }
-        if (detectionstart != null && !detectionstart.equals("NullKey")) {
-            stringBuilder.append("detectionstart=" + detectionstart);
-            stringBuilder.append("&");
-        }
-        if (detectionend != null && !detectionend.equals("NullKey")) {
-            stringBuilder.append("detectionend=" + detectionend);
-            stringBuilder.append("&");
-        }
-        if (interval_compensation != null && !interval_compensation.equals("NullKey")) {
-            stringBuilder.append("interval_compensation=" + interval_compensation);
-            stringBuilder.append("&");
-        }
-        if (interval_fitting != null && !interval_fitting.equals("NullKey")) {
-            stringBuilder.append("interval_fitting=" + interval_fitting);
-            stringBuilder.append("&");
-        }
-        if (point_offset != null && !point_offset.equals("NullKey")) {
-            stringBuilder.append("point_offset=" + point_offset);
-            stringBuilder.append("&");
+//        stringBuilder.append(assembleCharacters("meastype", meastype));
+//        stringBuilder.append(assembleCharacters("datatype", datatype));
+//        stringBuilder.append(assembleCharacters("datareply", datareply));
+//        stringBuilder.append(assembleCharacters("roundwaitetime", roundwaitetime));
+//        stringBuilder.append(assembleCharacters("roundmeasinval", roundmeasinval));
+//        stringBuilder.append(assembleCharacters("datainval", datainval));
+//        stringBuilder.append(assembleCharacters("compensatetime", compensatetime));
+//        stringBuilder.append(assembleCharacters("driveaddress", driveaddress));
+//        stringBuilder.append(assembleCharacters("interdeep", interdeep));
+//        stringBuilder.append(assembleCharacters("downwaitetime", downwaitetime));
+//        stringBuilder.append(assembleCharacters("upspeed", upspeed));
+//        stringBuilder.append(assembleCharacters("measpacing", measpacing));
+//        stringBuilder.append(assembleCharacters("meaintertime", meaintertime));
+//        stringBuilder.append(assembleCharacters("meabaseth", meabaseth));
+//        stringBuilder.append(assembleCharacters("dwonblocked", dwonblocked));
+//        stringBuilder.append(assembleCharacters("untimenum", untimenum));
+//        stringBuilder.append(assembleCharacters("detectiontime", detectiontime));
+
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
+        Timber.d("assembleCmdCharacters1 :%s", stringBuilder.toString());
         return stringBuilder.toString();
+    }
+
+    private String assembleCharacters(String fieldName, String fieldValue) {
+        String res = "";
+        if (fieldValue != null && !fieldValue.equals("NullKey")) {
+            res = String.format("%s=%s&", fieldName, fieldValue);
+        }
+        return res;
     }
 }

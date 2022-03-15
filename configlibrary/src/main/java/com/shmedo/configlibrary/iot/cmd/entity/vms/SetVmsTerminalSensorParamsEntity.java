@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.vms;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -124,89 +124,19 @@ public class SetVmsTerminalSensorParamsEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("sn=" + sn);
-        stringBuilder.append("&");
-
-        stringBuilder.append("channel=" + channel);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(insert)) {
-            stringBuilder.append("insert=" + insert);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (!TextUtils.isEmpty(freqtype)) {
-            stringBuilder.append("freqtype=" + freqtype);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(freqmax)) {
-            stringBuilder.append("freqmax=" + freqmax);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(freqmin)) {
-            stringBuilder.append("freqmin=" + freqmin);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(volttype)) {
-            stringBuilder.append("volttype=" + volttype);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(expvolt)) {
-            stringBuilder.append("expvolt=" + expvolt);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(type)) {
-            stringBuilder.append("type=" + type);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(name)) {
-            stringBuilder.append("name=" + name);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(gateval)) {
-            stringBuilder.append("gateval=" + gateval);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(corral)) {
-            stringBuilder.append("corral=" + corral);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(fixsite)) {
-            stringBuilder.append("fixsite=" + fixsite);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(ropelen)) {
-            stringBuilder.append("ropelen=" + ropelen);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(parama)) {
-            stringBuilder.append("parama=" + parama);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(paramb)) {
-            stringBuilder.append("paramb=" + paramb);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(paramc)) {
-            stringBuilder.append("paramc=" + paramc);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(paramk)) {
-            stringBuilder.append("paramk=" + paramk);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(paramm)) {
-            stringBuilder.append("paramm=" + paramm);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(paramf)) {
-            stringBuilder.append("paramf=" + paramf);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(paramt)) {
-            stringBuilder.append("paramt=" + paramt);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

@@ -27,28 +27,31 @@ public class AdmeExecutiveAgencyInfoParser implements IOTResultParser<AdmeExecut
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
+            info.setMeastype(keyValueMap.getOrDefault("meastype", "NullKey"));
+            info.setDatatype(keyValueMap.getOrDefault("datatype", "NullKey"));
+            info.setDatareply(keyValueMap.getOrDefault("datareply", "NullKey"));
+            info.setRoundwaitetime(keyValueMap.getOrDefault("roundwaitetime", "NullKey"));
+            info.setRoundmeasinval(keyValueMap.getOrDefault("roundmeasinval", "NullKey"));
+            info.setRoundmeasstart(keyValueMap.getOrDefault("roundmeasstart", "NullKey"));
 
-            info.setDatatype(!keyValueMap.containsKey("datatype") ? "NullKey" : keyValueMap.get("datatype"));
-            info.setDatareply(!keyValueMap.containsKey("datareply") ? "NullKey" : keyValueMap.get("datareply"));
-            info.setRoundwaitetime(!keyValueMap.containsKey("roundwaitetime") ? "NullKey" : keyValueMap.get("roundwaitetime"));
-            info.setDatainval(!keyValueMap.containsKey("datainval") ? "NullKey" : keyValueMap.get("datainval"));
-            info.setCompensatetime(!keyValueMap.containsKey("compensatetime") ? "NullKey": keyValueMap.get("compensatetime"));
-            info.setDriveaddress(!keyValueMap.containsKey("driveaddress") ? "NullKey" : keyValueMap.get("driveaddress"));
-            info.setDownspeed(!keyValueMap.containsKey("downspeed") ? "NullKey" : keyValueMap.get("downspeed"));
-            info.setInterdeep(!keyValueMap.containsKey("interdeep") ? "NullKey" : keyValueMap.get("interdeep"));
-            info.setDownwaitetime(!keyValueMap.containsKey("downwaitetime") ? "NullKey" : keyValueMap.get("downwaitetime"));
-            info.setUpspeed(!keyValueMap.containsKey("upspeed") ? "NullKey" : keyValueMap.get("upspeed"));
-            info.setMeaspacing(!keyValueMap.containsKey("measpacing") ? "NullKey" : keyValueMap.get("measpacing"));
-            info.setMeaintertime(!keyValueMap.containsKey("meaintertime") ? "NullKey" : keyValueMap.get("meaintertime"));
-            info.setMeabaseth(!keyValueMap.containsKey("meabaseth") ? "NullKey" : keyValueMap.get("meabaseth"));
-            info.setDwonblocked(!keyValueMap.containsKey("dwonblocked") ? "NullKey" : keyValueMap.get("dwonblocked"));
-            info.setUntimenum(!keyValueMap.containsKey("untimenum") ? "NullKey" : keyValueMap.get("untimenum"));
-            info.setDetectiontime(!keyValueMap.containsKey("detectiontime") ? "NullKey" : keyValueMap.get("detectiontime"));
-            info.setDetectionstart(!keyValueMap.containsKey("detectionstart") ? "NullKey" : keyValueMap.get("detectionstart"));
-            info.setDetectionend(!keyValueMap.containsKey("detectionend") ? "NullKey" : keyValueMap.get("detectionend"));
-            info.setInterval_compensation(!keyValueMap.containsKey("interval_compensation") ? "NullKey": keyValueMap.get("interval_compensation"));
-            info.setInterval_fitting(!keyValueMap.containsKey("interval_fitting") ? "NullKey" : keyValueMap.get("interval_fitting"));
-            info.setPoint_offset(!keyValueMap.containsKey("point_offset") ? "NullKey" : keyValueMap.get("point_offset"));
+            info.setDatainval(keyValueMap.getOrDefault("datainval", "NullKey"));
+            info.setCompensatetime(keyValueMap.getOrDefault("compensatetime", "NullKey"));
+            info.setDriveaddress(keyValueMap.getOrDefault("driveaddress", "NullKey"));
+            info.setDownspeed(keyValueMap.getOrDefault("downspeed", "NullKey"));
+            info.setInterdeep(keyValueMap.getOrDefault("interdeep", "NullKey"));
+            info.setDownwaitetime(keyValueMap.getOrDefault("downwaitetime", "NullKey"));
+            info.setUpspeed(keyValueMap.getOrDefault("upspeed", "NullKey"));
+            info.setMeaspacing(keyValueMap.getOrDefault("measpacing", "NullKey"));
+            info.setMeaintertime(keyValueMap.getOrDefault("meaintertime", "NullKey"));
+            info.setMeabaseth(keyValueMap.getOrDefault("meabaseth", "NullKey"));
+            info.setDwonblocked(keyValueMap.getOrDefault("dwonblocked", "NullKey"));
+            info.setUntimenum(keyValueMap.getOrDefault("untimenum", "NullKey"));
+            info.setDetectiontime(keyValueMap.getOrDefault("detectiontime", "NullKey"));
+            info.setDetectionstart(keyValueMap.getOrDefault("detectionstart", "NullKey"));
+            info.setDetectionend(keyValueMap.getOrDefault("detectionend", "NullKey"));
+            info.setInterval_compensation(keyValueMap.getOrDefault("interval_compensation", "NullKey"));
+            info.setInterval_fitting(keyValueMap.getOrDefault("interval_fitting", "NullKey"));
+            info.setPoint_offset(keyValueMap.getOrDefault("point_offset", "NullKey"));
 
             return info;
         } catch (Exception ex) {

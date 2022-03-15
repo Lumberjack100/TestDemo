@@ -22,7 +22,7 @@ public class AdmeWorkModeEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("workmode=" + workmode);
+        stringBuilder.append("workmode=").append(workmode);
 
         return stringBuilder.toString();
     }

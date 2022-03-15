@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -44,25 +44,19 @@ public class E40SerialPortEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("type=" + type);
-        stringBuilder.append("&");
-        if (!TextUtils.isEmpty(baud)) {
-            stringBuilder.append("baud=" + baud);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-        if (!TextUtils.isEmpty(databits)) {
-            stringBuilder.append("databits=" + databits);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(parity)) {
-            stringBuilder.append("parity=" + parity);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(stopbits)) {
-            stringBuilder.append("stopbits=" + stopbits);
-            stringBuilder.append("&");
-        }
-
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }

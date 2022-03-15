@@ -1,8 +1,8 @@
 package com.shmedo.configlibrary.iot.cmd.entity.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.ble.interfaces.Validater;
+
+import java.lang.reflect.Field;
 
 /**
  * 创建者:   gonghe <br/>
@@ -49,28 +49,18 @@ public class DasDigitalPiezometerEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("sw=" + sw);
-        stringBuilder.append("&");
-
-        if (!TextUtils.isEmpty(addr)) {
-            stringBuilder.append("addr=" + addr);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(threshold)) {
-            stringBuilder.append("threshold=" + threshold);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(corrval)) {
-            stringBuilder.append("corrval=" + corrval);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(ropelen)) {
-            stringBuilder.append("ropelen=" + ropelen);
-            stringBuilder.append("&");
-        }
-        if (!TextUtils.isEmpty(tubealti)) {
-            stringBuilder.append("tubealti=" + tubealti);
-            stringBuilder.append("&");
+        try {
+            for (Field f : getClass().getDeclaredFields()) {
+                Object value = f.get(this);
+                if (value != null && !value.equals("NullKey")) {
+                    stringBuilder.append(f.getName());
+                    stringBuilder.append("=");
+                    stringBuilder.append(value);
+                    stringBuilder.append("&");
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());

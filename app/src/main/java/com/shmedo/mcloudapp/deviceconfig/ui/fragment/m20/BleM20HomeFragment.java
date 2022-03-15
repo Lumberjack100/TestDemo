@@ -212,13 +212,14 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-                        clearDevice();
-                        hideProgressBar();
+//                        clearDevice();
+//                        hideProgressBar();
                         onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
                     case DISCONNECTING://The disconnection was initiated.
+                        hideProgressBar();
                         break;
                 }
             }
@@ -419,10 +420,12 @@ public class BleM20HomeFragment extends BaseGOCBleIotCommunicateFragment {
         return false;
     }
 
+
     @Override
     public void onDestroy() {
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setProductID(-1);
+        clearDevice();
         super.onDestroy();
     }
 }
