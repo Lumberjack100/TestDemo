@@ -12,6 +12,8 @@ public class QueryCloudDataParameter {
     private String begin;
     private String end;
     private String number;
+    private String iotData;
+
 
     public String getSn() {
         return sn;
@@ -43,5 +45,13 @@ public class QueryCloudDataParameter {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getIotData() {
+        return iotData;
+    }
+
+    public void setIotData(String iotData) {
+        this.iotData = iotData;
     }
 }

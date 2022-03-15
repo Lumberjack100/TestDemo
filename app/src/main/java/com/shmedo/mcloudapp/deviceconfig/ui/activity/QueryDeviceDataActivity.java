@@ -238,9 +238,10 @@ public class QueryDeviceDataActivity extends BaseActivity {
         paramter.setBegin(startTime);
         paramter.setEnd(endTime);
         paramter.setNumber(itemCount);
+        paramter.setIotData("true");
 
         String json = GsonUtils.toJson(paramter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(json, RequestHeader.JSON_TYPE);
         MDRetrofit.getInstance().createService(ServiceAddressType.CLOUD_PLATFORM_DATA_ADDRESS)
                 .QueryCloudData(body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
