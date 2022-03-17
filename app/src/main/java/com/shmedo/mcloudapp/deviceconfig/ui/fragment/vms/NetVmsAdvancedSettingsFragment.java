@@ -176,7 +176,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
             VmsAisleSettingActivity.startActivity(mActivity, deviceInfo, VmsAisleNumber.NUMBER_THREE);
 
         } else if (id == R.id.ipSetLayout) {
-            E40EthernetActivity.startActivity(mActivity, projectDeviceInfo);
+            E40EthernetActivity.startActivity(mActivity, deviceInfo);
 
         } else if (id == R.id.vmsRebootLayout) {
             showWarnDialog("确定重启网关吗？", VMS_REBOOT);
