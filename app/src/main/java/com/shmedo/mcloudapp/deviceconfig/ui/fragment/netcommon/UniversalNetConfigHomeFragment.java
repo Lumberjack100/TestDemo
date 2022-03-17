@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -88,20 +87,13 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
 
     protected void setHeadInfo() {
         if (deviceInfo != null) {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "" : deviceInfo.getDeviceName());
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName());
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
-            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "" : deviceInfo.getProductName()));
-            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "" : deviceInfo.getFirmwareVersion()));
-            if (deviceInfo.isOnlineStatus()) {
-                mTvDeviceState.setText("在线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-            } else {
-                mTvDeviceState.setText("离线");
-                mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-            }
+//            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+            setDeviceState(mTvDeviceState, deviceInfo.isOnlineStatus());
         }
+        mTvProductModel.setVisibility(View.GONE);
         mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.GONE);
     }

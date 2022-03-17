@@ -45,6 +45,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.adapter.WiFiAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
@@ -120,9 +121,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
-        deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+        deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
-            public void onChanged(String apiKey) {
+            public void onChanged(DeviceBaseInfo deviceBaseInfo) {
                 //获取到物联网指令的设备 ApiKey 后，处理 WiFi 连接
                 if (WiFiDeviceListFragment.this.isVisible() && curWiFi != null) {
                     processWiFiUseSecondLibrary(curWiFi);

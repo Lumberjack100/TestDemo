@@ -30,7 +30,7 @@ import androidx.annotation.Nullable;
 
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
-import com.shmedo.mcloudapp.profile.USRManager;
+import com.shmedo.mcloudapp.profile.CustomBleManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 public class BleDevicesLiveData extends UnPeekLiveData<List<DiscoveredBluetoothDevice>> {
     private static final String FILTER_PREFIX = "MD";//"MD"
     private static final String FILTER_PREFIX2 = "M20";//"MD"
-    private static final ParcelUuid FILTER_UUID = new ParcelUuid(USRManager.USR_SERVICE_UUID);
+    private static final ParcelUuid FILTER_UUID = new ParcelUuid(CustomBleManager.SERVICE_UUID_USR);
     private static final int FILTER_RSSI = -50; // [dBm]
 
     @NonNull

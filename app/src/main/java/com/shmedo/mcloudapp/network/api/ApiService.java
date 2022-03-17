@@ -4,7 +4,7 @@ import com.shmedo.core.model.BasicUserInfo;
 import com.shmedo.core.model.UserPermissionInfo;
 import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.common.model.PageResult;
-import com.shmedo.mcloudapp.deviceconfig.model.BasicDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DetailDeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceStatisticInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -118,10 +118,10 @@ public interface ApiService {
     @POST("GetDeviceList")
     Observable<ResponseWrapper<PageResult<DeviceInfo>>> getDeviceList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    //获取设备概要信息
+    //获取设备详细信息
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
-    @POST("DescribeDeviceSimpleInfo")
-    Observable<ResponseWrapper<BasicDeviceInfo>> getDescribeDeviceSimpleInfo(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+    @POST("GetDeviceDetail")
+    Observable<ResponseWrapper<DetailDeviceInfo>> GetDeviceDetail(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //查询固件列表
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})

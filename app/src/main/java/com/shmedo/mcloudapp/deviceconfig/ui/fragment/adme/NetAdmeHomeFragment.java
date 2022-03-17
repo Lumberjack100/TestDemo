@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,7 +64,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     TextView mTvDeviceSn;//设备SN号
 
     @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//版本信息
+    TextView mTvFirmwareVersion;//版本信息
 
     @BindView(R.id.tv_time_or_sub_model)
     TextView mTvMotionState;//运行状态
@@ -91,7 +90,6 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
 
     private AdmeBaseInfo admeBaseInfo;
     private String equipModel;//设备模式
-
     private String[] modes;
 
 
@@ -106,7 +104,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_home_fragment;
+        return R.layout.adme_home_fragment;
     }
 
     @Override
@@ -362,21 +360,12 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
      */
     private void updateHeadInfo() {
         try {
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "自动化测斜机器人" : deviceInfo.getProductName());
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+            mTvMotionState.setText("运行状态：--");
             if (admeBaseInfo != null) {
-                mTvDeviceName.setText("水平自动监测设备");
-                mTvDeviceSn.setText(String.format("设备编号：%s", admeBaseInfo.getSn()));
-                mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
-                mTvMotionState.setText("运行状态：--");
-                if (!TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0")) {
-                    mTvDeviceState.setText("在线");
-                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-
-                } else if (admeBaseInfo.getOnline().equals("0")) {
-                    mTvDeviceState.setText("离线");
-                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-                }
+                setDeviceState(mTvDeviceState, !TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0"));
                 equipModel = admeBaseInfo.getEquimodel();
                 if (equipModel.equals("0")) {
                     admeViewModel.deviceMode = 0;
@@ -389,19 +378,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
                     mTvConfigModel.setText(modes[2]);
                 }
             } else {
-                mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "" : deviceInfo.getDeviceName());
-                mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
-                mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "ADME" : deviceInfo.getProductName()));
-                mTvMotionState.setText("运行状态：--");
-                if (deviceInfo.isOnlineStatus()) {
-                    mTvDeviceState.setText("在线");
-                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-                } else {
-                    mTvDeviceState.setText("离线");
-                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-                }
+                setDeviceState(mTvDeviceState, deviceInfo.isOnlineStatus());
                 equipModel = "0";
                 admeViewModel.deviceMode = 0;
                 mTvConfigModel.setText(modes[0]);

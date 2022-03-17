@@ -9,10 +9,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="15dp">
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp">
 
         <ImageView
             android:id="@+id/iv_device_logo"
@@ -36,11 +36,11 @@
                     android:id="@+id/tv_device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxEms="8"
+                    android:ellipsize="end"
                     android:singleLine="true"
                     android:textColor="@color/text_color_1f1f1f"
-                    android:textSize="@dimen/text_size_16"
-                    tools:text="物联网数据采集器凤飞飞方法旺旺sss" />
+                    android:textSize="@dimen/text_size_15"
+                    tools:text="ADME-自动化测斜机器人" />
 
                 <TextView
                     android:id="@+id/tv_device_state_flag"
@@ -52,9 +52,9 @@
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:singleLine="true"
-                    android:textSize="@dimen/text_size_10"
                     android:text="已断开"
-                    android:textColor="@color/sub_title_text_color" />
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="@dimen/text_size_10" />
 
             </LinearLayout>
 

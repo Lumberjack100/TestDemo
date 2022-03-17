@@ -38,11 +38,12 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
@@ -63,7 +64,7 @@ import timber.log.Timber;
  * 创建时间:  2022/2/24 <br/>
  * 描述：     一体式裂缝计蓝牙配置主页面
  */
-public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
+public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
     public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     private static final int REBOOT = 0x0002;
@@ -98,6 +99,7 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
+    private DeviceBaseInfo deviceInfo;
     private String sn;
 
 
@@ -126,7 +128,7 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateHeadInfo(null);
+//        updateHeadInfo(null);
         initAdapter();
         initConfigModuleData();
         observerApiKey();
@@ -229,13 +231,14 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-                        clearDevice();
-                        hideProgressBar();
+//                        clearDevice();
+//                        hideProgressBar();
                         onConnectionStateChanged(false);
                         break;
 
                     // fallthrough
                     case DISCONNECTING://The disconnection was initiated.
+                        hideProgressBar();
                         break;
                 }
             }
@@ -246,10 +249,12 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
-            public void onChanged(String apiKey) {
+            public void onChanged(DeviceBaseInfo deviceBaseInfo) {
+                deviceInfo = deviceBaseInfo;
                 hideProgressBar();
+                updateHeadInfo(null);
                 queryBaseInfo();
             }
         });
@@ -465,20 +470,24 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo(M20BaseInfo m20BaseInfo) {
-        mTvPlatformCommunicationState.setVisibility(View.GONE);
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mTvDeviceName.setText("一体式裂缝计");
+        if (deviceInfo == null)
+            deviceInfo = new DeviceBaseInfo();
+
         try {
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "一体式裂缝计" : deviceInfo.getProductName());
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? sn : deviceInfo.getDeviceToken()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+
             if (m20BaseInfo != null) {
-                mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(m20BaseInfo.getSn()) ? m20BaseInfo.getSn() : device.getName().substring(3)));
                 mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(m20BaseInfo.getProductid()) ? m20BaseInfo.getProductid() : "M20"));
                 mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
             } else {
-                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
                 mTvProductModel.setText(String.format("产品型号：：%s", "LR200"));
-                mTvFirmwareVersion.setText("固件版本：--");
             }
+
+            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+            mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -522,6 +531,7 @@ public class BleLR200HomeFragment extends BaseGOCBleIotCommunicateFragment {
     public void onDestroy() {
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setProductID(-1);
+        clearDevice();
         super.onDestroy();
     }
 }

@@ -43,6 +43,7 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
@@ -81,7 +82,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     TextView mTvDeviceSn;//设备SN号
 
     @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//版本信息
+    TextView mTvFirmwareVersion;//版本信息
 
     @BindView(R.id.tv_time_or_sub_model)
     TextView mTvMotionState;//运行状态
@@ -106,6 +107,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
+    private DeviceBaseInfo deviceInfo;
     private AdmeBaseInfo admeBaseInfo;
     private String equipModel = "0";//设备模式
     private String[] modes;
@@ -152,7 +154,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ble_adme_home_fragment;
+        return R.layout.adme_home_fragment;
     }
 
     @Override
@@ -161,7 +163,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         isFirstCreate = true;
         modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();
-        updateHeadInfo();
+//        updateHeadInfo();
         observerApiKey();
         observerConnectionState();
 
@@ -244,7 +246,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察连接状态变化
      */
     private void observerConnectionState() {
-        usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
+        bleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
             @Override
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
@@ -259,7 +261,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        usrBleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -290,10 +292,12 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
-            public void onChanged(String apiKey) {
+            public void onChanged(DeviceBaseInfo deviceBaseInfo) {
+                deviceInfo = deviceBaseInfo;
                 hideProgressBar();
+                updateHeadInfo();
                 queryEquipmentBaseInfo();
             }
         });
@@ -486,41 +490,44 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo() {
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mTvDeviceName.setText("水平自动监测设备");
+        if (deviceInfo == null)
+            deviceInfo = new DeviceBaseInfo();
 
-        if (admeBaseInfo != null) {
-            mTvDeviceSn.setText(String.format("设备编号：%s", !TextUtils.isEmpty(admeBaseInfo.getSn()) ? admeBaseInfo.getSn() : device.getName().substring(3)));
-            mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(admeBaseInfo.getProductid()) ? admeBaseInfo.getProductid() : "ADME"));
+        try {
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "自动化测斜机器人" : deviceInfo.getProductName());
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             mTvMotionState.setText("运行状态：--");
-            if (!TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0")) {
-                mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
-            } else if (admeBaseInfo.getOnline().equals("0")) {
-                mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
-            }
-            equipModel = admeBaseInfo.getEquimodel();
-            if (equipModel.equals("0")) {
+            if (admeBaseInfo != null) {
+                if (!TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0")) {
+                    mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
+                } else if (admeBaseInfo.getOnline().equals("0")) {
+                    mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
+                }
+                equipModel = admeBaseInfo.getEquimodel();
+                if (equipModel.equals("0")) {
+                    admeViewModel.deviceMode = 0;
+                    mTvConfigModel.setText(modes[0]);
+                } else if (equipModel.equals("1")) {
+                    admeViewModel.deviceMode = 1;
+                    mTvConfigModel.setText(modes[1]);
+                } else if (equipModel.equals("2")) {
+                    admeViewModel.deviceMode = 2;
+                    mTvConfigModel.setText(modes[2]);
+                }
+            } else {
+                mTvPlatformCommunicationState.setText("米度平台连接状态：--");
+                equipModel = "0";
                 admeViewModel.deviceMode = 0;
                 mTvConfigModel.setText(modes[0]);
-            } else if (equipModel.equals("1")) {
-                admeViewModel.deviceMode = 1;
-                mTvConfigModel.setText(modes[1]);
-            } else if (equipModel.equals("2")) {
-                admeViewModel.deviceMode = 2;
-                mTvConfigModel.setText(modes[2]);
             }
-        } else {
-            mTvDeviceSn.setText(String.format("设备编号：%s", device.getName().substring(3)));
-            mTvProductModel.setText(String.format("产品型号：：%s", "ADME"));
-            mTvMotionState.setText("运行状态：--");
-            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
+            mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+            mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 
-            equipModel = "0";
-            admeViewModel.deviceMode = 0;
-            mTvConfigModel.setText(modes[0]);
+            updateConfigModuleData();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        updateConfigModuleData();
     }
 
     private CharSequence getPlatformAbnormalMessage(String state) {
@@ -537,7 +544,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             return;
 
         configModuleList.clear();
-        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state,"状态", "获取当前设备状态");
+        ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_basic_config, "基础配置", "设备基础参数配置");

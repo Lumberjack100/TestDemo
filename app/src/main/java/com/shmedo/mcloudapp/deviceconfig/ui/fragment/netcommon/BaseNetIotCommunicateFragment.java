@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -393,4 +395,17 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
+
+    protected void setDeviceState(TextView textView, boolean isOnline) {
+        if (isOnline) {
+            textView.setText("在线");
+            textView.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
+            textView.setBackgroundResource(R.drawable.bg_device_online_state_flag);
+        } else {
+            textView.setText("离线");
+            textView.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
+            textView.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
+        }
+    }
+
 }
