@@ -157,6 +157,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case INFRASOUND://次声仪
             case STATIC_LEVEL://静力水准
             case WEATHER_STATION://气象计
+            case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
                 CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
                 command = "##168" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
@@ -186,6 +187,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case INFRASOUND://次声仪
             case STATIC_LEVEL://静力水准
             case WEATHER_STATION://气象计
+            case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
                 CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
                 command = "##165" +
                         StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
