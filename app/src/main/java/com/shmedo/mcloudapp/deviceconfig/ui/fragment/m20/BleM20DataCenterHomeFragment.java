@@ -29,7 +29,7 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +42,7 @@ import timber.log.Timber;
  * 创建时间:  1/19/21 <br/>
  * 描述：    M20蓝牙模式 数据中心主页面
  */
-public class BleM20DataCenterHomeFragment extends BaseGOCBleIotCommunicateFragment {
+public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
 
     @BindView(R.id.tv_data_center_one)

@@ -23,7 +23,7 @@ import com.shmedo.configlibrary.iot.model.m20.SensorErrnoBean;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ import timber.log.Timber;
  * 创建时间:  1/18/21 <br/>
  * 描述：    M20蓝牙模式 设备运行状态页面
  */
-public class BleM20CurrentStateFragment extends BaseGOCBleIotCommunicateFragment {
+public class BleM20CurrentStateFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 

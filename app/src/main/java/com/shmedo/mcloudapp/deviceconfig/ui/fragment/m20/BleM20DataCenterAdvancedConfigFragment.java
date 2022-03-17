@@ -26,7 +26,7 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.callback.DataCenterConfigListener;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.DataCenterAdvancedConfigView;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ import timber.log.Timber;
  * 创建时间:  1/19/21 <br/>
  * 描述：    M20 数据中心高级参数配置页面
  */
-public class BleM20DataCenterAdvancedConfigFragment extends BaseGOCBleIotCommunicateFragment implements DataCenterConfigListener {
+public class BleM20DataCenterAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragment implements DataCenterConfigListener {
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 

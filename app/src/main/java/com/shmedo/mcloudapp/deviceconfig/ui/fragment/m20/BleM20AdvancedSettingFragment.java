@@ -20,7 +20,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 
@@ -34,7 +34,7 @@ import timber.log.Timber;
  * 创建时间:  1/18/21 <br/>
  * 描述：    M20 设置页面
  */
-public class BleM20AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragment {
+public class BleM20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFragment {
     private static final int REBOOT = 0x1000;
     private static final int RESET = 0x1001;
     private static final int LEVEL_INITIAL = 0x1002;

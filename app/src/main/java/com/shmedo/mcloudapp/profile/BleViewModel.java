@@ -28,36 +28,36 @@ import no.nordicsemi.android.log.Logger;
  * 创建时间:  12/7/20 <br/>
  * 描述：   存储和管理与有人物联网蓝牙模块通讯的数据
  */
-public class USRBleViewModel extends AndroidViewModel {
-    private final USRManager usrManager;
+public class BleViewModel extends AndroidViewModel {
+    private final CustomBleManager customBleManager;
     private BluetoothDevice device;
 
     public final DeviceApiKeyRequest deviceApiKeyRequest = new DeviceApiKeyRequest();
 
-    public USRBleViewModel(@NonNull Application application) {
+    public BleViewModel(@NonNull Application application) {
         super(application);
         // Initialize the manager.
-        usrManager = new USRManager(getApplication());
+        customBleManager = new CustomBleManager(getApplication());
     }
 
     public LiveData<ConnectionState> getConnectionState() {
-        return usrManager.state;
+        return customBleManager.state;
     }
 
     public ProtectedUnPeekLiveData<String> getResponseMsg() {
-        return usrManager.getResponseMsg();
+        return customBleManager.getResponseMsg();
     }
 
     public void clearLastResponseValue() {
-        usrManager.clearLastResponseValue();
+        customBleManager.clearLastResponseValue();
     }
 
     public UnPeekLiveData<Boolean> getLogOutputMode() {
-        return usrManager.getLogOutputMode();
+        return customBleManager.getLogOutputMode();
     }
 
     public void updateLogOutputMode(boolean isLogOutputMode) {
-        usrManager.updateLogOutputMode(isLogOutputMode);
+        customBleManager.updateLogOutputMode(isLogOutputMode);
     }
 
     /**
@@ -70,7 +70,7 @@ public class USRBleViewModel extends AndroidViewModel {
         if (device == null) {
             device = target;
             final LogSession logSession = Logger.newSession(getApplication(), null, target.getAddress(), target.getName());
-            usrManager.setLogger(logSession);
+            customBleManager.setLogger(logSession);
             reconnect();
         }
     }
@@ -82,7 +82,7 @@ public class USRBleViewModel extends AndroidViewModel {
      */
     public void reconnect() {
         if (device != null) {
-            usrManager.connect(device)
+            customBleManager.connect(device)
                     .retry(3, 100)
                     .useAutoConnect(false)
                     .enqueue();
@@ -94,7 +94,7 @@ public class USRBleViewModel extends AndroidViewModel {
      */
     public void disconnect() {
         device = null;
-        usrManager.disconnect().enqueue();
+        customBleManager.disconnect().enqueue();
     }
 
     /**
@@ -102,7 +102,7 @@ public class USRBleViewModel extends AndroidViewModel {
      * discovered yet.
      */
     public final boolean isConnected() {
-        return usrManager.isConnected();
+        return customBleManager.isConnected();
     }
 
     public void clearDevice() {
@@ -117,7 +117,7 @@ public class USRBleViewModel extends AndroidViewModel {
         if (!isConnected()) {
             return;
         }
-        usrManager.writeMessage(command);
+        customBleManager.writeMessage(command);
 
         try {
             Map<String, Object> valueMap = new HashMap<String, Object>();
@@ -133,7 +133,7 @@ public class USRBleViewModel extends AndroidViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        if (usrManager.isConnected()) {
+        if (customBleManager.isConnected()) {
             disconnect();
         }
     }

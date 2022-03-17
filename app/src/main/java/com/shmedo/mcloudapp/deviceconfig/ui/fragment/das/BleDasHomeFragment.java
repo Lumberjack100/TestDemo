@@ -290,7 +290,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
      * 观察连接状态变化
      */
     private void observerConnectionState() {
-        usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
+        bleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
             @Override
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {

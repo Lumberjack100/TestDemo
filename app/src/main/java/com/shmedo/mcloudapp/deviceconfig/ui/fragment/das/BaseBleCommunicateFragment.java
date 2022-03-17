@@ -30,7 +30,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
-import com.shmedo.mcloudapp.profile.USRBleViewModel;
+import com.shmedo.mcloudapp.profile.BleViewModel;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +55,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
     protected static final int DELAY_30000_MILLIS = 30000;//发送配置参数指令超时时间
     protected static final int DELAY_40000_MILLIS = 40000;
 
-    protected USRBleViewModel usrBleViewModel;
+    protected BleViewModel bleViewModel;
 
     private String SN = MCloudApp.getCurDeviceToken();
 
@@ -133,12 +133,12 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usrBleViewModel = getApplicationScopeViewModel(USRBleViewModel.class);
-        usrBleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
+        bleViewModel = getApplicationScopeViewModel(BleViewModel.class);
+        bleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
                 if (!result.startsWith("$$")) {
-                    if (usrBleViewModel.getLogOutputMode().getValue() == null || !usrBleViewModel.getLogOutputMode().getValue()) {
+                    if (bleViewModel.getLogOutputMode().getValue() == null || !bleViewModel.getLogOutputMode().getValue()) {
                         return;
                     }
                 }
@@ -200,7 +200,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
      * ble 建立连接
      */
     protected void connectDevice(BluetoothDevice device) {
-        usrBleViewModel.connect(device);
+        bleViewModel.connect(device);
     }
 
     /**
@@ -208,7 +208,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
      */
     protected void disconnectDevice() {
         Timber.d("disconnectDevice()调用");
-        usrBleViewModel.disconnect();
+        bleViewModel.disconnect();
     }
 
     /**
@@ -216,11 +216,11 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
      * discovered yet.
      */
     protected final boolean isConnected() {
-        return usrBleViewModel.isConnected();
+        return bleViewModel.isConnected();
     }
 
     protected void clearDevice() {
-        usrBleViewModel.clearDevice();
+        bleViewModel.clearDevice();
     }
 
     protected void onAuthenticateResult(boolean isSuccess) {
@@ -326,7 +326,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
     }
 
     protected void sendCommand(String cmdStr) {
-        usrBleViewModel.sendIOTProtocolCommand(cmdStr);
+        bleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
     protected void showDisconnectDialog(String content) {

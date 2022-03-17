@@ -24,7 +24,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
 
@@ -38,7 +38,7 @@ import timber.log.Timber;
  * 创建时间:  2022/2/24 <br/>
  * 描述：     LR200 蓝牙设置页面
  */
-public class BleLR200AdvancedSettingFragment extends BaseGOCBleIotCommunicateFragment {
+public class BleLR200AdvancedSettingFragment extends BaseUSRBleIotCommunicateFragment {
     private static final int RESET = 0x0001;
 
     private String installLocation;

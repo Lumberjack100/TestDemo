@@ -98,7 +98,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         snNumber = MCloudApp.getCurDeviceToken();
         Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
         mTvDebugMode.setText("关闭");
-        usrBleViewModel.updateLogOutputMode(true);
+        bleViewModel.updateLogOutputMode(true);
     }
 
     private void initAdapter() {
@@ -294,7 +294,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
 
     @Override
     public void onDestroy() {
-        usrBleViewModel.updateLogOutputMode(false);
+        bleViewModel.updateLogOutputMode(false);
         setLogOutputMode(false);
 
         String content = String.format("====结束调试设备：%s\r\n", snNumber);

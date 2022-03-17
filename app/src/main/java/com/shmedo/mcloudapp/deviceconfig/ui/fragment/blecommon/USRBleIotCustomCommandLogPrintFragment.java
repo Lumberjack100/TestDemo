@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
@@ -24,7 +24,6 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -89,7 +88,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
     private void setView() {
         snNumber = MCloudApp.getCurDeviceToken();
         Log4a.i(TAG, String.format("====开始调试设备：%s", snNumber));
-        usrBleViewModel.updateLogOutputMode(true);
+        bleViewModel.updateLogOutputMode(true);
     }
 
     private void initAdapter() {
@@ -181,8 +180,8 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
                 return;
             }
             String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-            if (!TextUtils.isEmpty(usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
-                apiKey = usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();
+            if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+                apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
             }
             if (!command.contains("&apikey")) {
                 command += "&apikey=" + apiKey
@@ -204,8 +203,8 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
         entity.setType("bt");
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL, entity);
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
-            apiKey = usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();
+        if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+            apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         if (!command.contains("&apikey")) {
             command += "&apikey=" + apiKey
@@ -239,7 +238,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
 
     @Override
     public void onDestroy() {
-        usrBleViewModel.updateLogOutputMode(false);
+        bleViewModel.updateLogOutputMode(false);
         setLogOutputMode(false);
 
         String content = String.format("====结束调试设备：%s\r\n", snNumber);
