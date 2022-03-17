@@ -127,31 +127,37 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     }
 
     private void setView() {
-        //测斜仪
-        if (iotSensorType != null && iotSensorType == IOTSensorType.INCLINOMETER) {
-            extensionLayout1.setVisibility(View.VISIBLE);
-        }
-        //倾角仪
-        if (iotSensorType != null && iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) {
-            correctionLayout.setVisibility(View.GONE);
-            extensionLayout1.setVisibility(View.VISIBLE);
-            extensionLayout2.setVisibility(View.VISIBLE);
-        }
-        //量水堰计
-        if (iotSensorType != null && iotSensorType == IOTSensorType.WEIR) {
-            extensionLayout1.setVisibility(View.VISIBLE);
-            extensionLayout2.setVisibility(View.VISIBLE);
-        }
-        //静力水准
-        if (iotSensorType != null && iotSensorType == IOTSensorType.STATIC_LEVEL) {
-            extensionLayout1.setVisibility(View.VISIBLE);
-        }
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtExtension1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtExtension2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtExtension3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+        if (iotSensorType == null)
+            return;
+
+        switch (iotSensorType) {
+            case INCLINOMETER://测斜仪
+            case STATIC_LEVEL://静力水准
+                extensionLayout1.setVisibility(View.VISIBLE);
+                break;
+
+            case LUYAN_INCLINOMETER://倾角仪
+                correctionLayout.setVisibility(View.GONE);
+                extensionLayout1.setVisibility(View.VISIBLE);
+                extensionLayout2.setVisibility(View.VISIBLE);
+                break;
+
+            case WEIR: //量水堰计
+            case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
+                extensionLayout1.setVisibility(View.VISIBLE);
+                extensionLayout2.setVisibility(View.VISIBLE);
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void initValue() {
@@ -164,10 +170,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             correctValue = externalSensorInfo.getCorrval();
             switch (iotSensorType) {
                 case RAIN_GAUGE://压电式雨量计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
-                    mTvCorrectValue.setText("修正值(单位:m)");
-                    break;
-
                 case WIRE_SHIFT://拉线位移计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
@@ -190,34 +192,30 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     break;
 
                 case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
-                    mTvCorrectValue.setText("安装高程(单位:m)");
-                    break;
-
                 case RADAR_LEVEL_GAUGE://雷达物位计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
                     break;
 
-                case INFRASOUND://次声
-                    mTvAlarmValue.setText("报警值(单位:Hz)");
-                    mTvCorrectValue.setText("修正值(单位:Hz)");
-                    break;
-
-                case STATIC_LEVEL://静力水准
-                    mTvAlarmValue.setText("报警值(单位:mm)");
-                    mTvCorrectValue.setText("修正值(单位:mm)");
-                    mTvExtension1.setText("高程(单位:m)");
-                    exValue1 = externalSensorInfo.getTubealti();
+                case LUYAN_INCLINOMETER://倾角仪
+                    mTvAlarmValue.setText("报警值(单位:°)");
+                    mTvExtension1.setText("X轴角度(°)");
+                    mTvExtension2.setText("Y轴角度(°)");
+                    exValue1 = externalSensorInfo.getInitvalx();
+                    exValue2 = externalSensorInfo.getInitvaly();
                     if (!TextUtils.isEmpty(exValue1)) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
+                    if (!TextUtils.isEmpty(exValue2)) {
+                        exValue2 = decimalFormat.format(Double.parseDouble(exValue2));
+                        mEtExtension2.setText(exValue2);
+                    }
                     break;
 
-                case WEATHER_STATION://气象计
-                    mTvAlarmValue.setText("报警值(单位:m/s)");
-                    mTvCorrectValue.setText("修正值(单位:m/s)");
+                case INFRASOUND://次声
+                    mTvAlarmValue.setText("报警值(单位:Hz)");
+                    mTvCorrectValue.setText("修正值(单位:Hz)");
                     break;
 
                 case WEIR://量水堰计
@@ -237,17 +235,30 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     }
                     break;
 
+                case STATIC_LEVEL://静力水准
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("修正值(单位:mm)");
+                    mTvExtension1.setText("高程(单位:m)");
+                    exValue1 = externalSensorInfo.getTubealti();
+                    if (!TextUtils.isEmpty(exValue1)) {
+                        exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
+                        mEtExtension1.setText(exValue1);
+                    }
+                    break;
+
+                case WEATHER_STATION://气象计
                 case TURBIDITY_METER://浊度仪
                     mTvAlarmValue.setText("报警值(单位:m/s)");
                     mTvCorrectValue.setText("修正值(单位:m/s)");
                     break;
 
-                case LUYAN_INCLINOMETER://倾角仪
-                    mTvAlarmValue.setText("报警值(单位:°)");
-                    mTvExtension1.setText("X轴角度(°)");
-                    mTvExtension2.setText("Y轴角度(°)");
-                    exValue1 = externalSensorInfo.getInitvalx();
-                    exValue2 = externalSensorInfo.getInitvaly();
+                case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("修正值(单位:m)");
+                    mTvExtension1.setText("高程(单位:m)");
+                    mTvExtension2.setText("绳长(单位:m)");
+                    exValue1 = externalSensorInfo.getTubealti();
+                    exValue2 = externalSensorInfo.getRopelen();
                     if (!TextUtils.isEmpty(exValue1)) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
@@ -439,6 +450,36 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             }
         }
 
+        if (iotSensorType == IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE) {//数字式水位计
+            if (TextUtils.isEmpty(exValue1)) {
+                ToastUtils.show("高程值不能为空!");
+                mEtExtension1.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(exValue1);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的高程值!");
+                mEtExtension1.requestFocus();
+                return false;
+            }
+
+            if (TextUtils.isEmpty(exValue2)) {
+                ToastUtils.show("绳长不能为空!");
+                mEtExtension2.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(exValue2);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的绳长!");
+                mEtExtension2.requestFocus();
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -450,19 +491,32 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         externalSensorInfo.setAddr(sensorAddress);
         externalSensorInfo.setThreshold(triggerThreshold);
         externalSensorInfo.setCorrval(correctValue);
-        if (iotSensorType == IOTSensorType.INCLINOMETER) {//测斜仪
-            externalSensorInfo.setSpacing(exValue1);
-        }
-        if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) {//倾角仪
-            externalSensorInfo.setInitvalx(exValue1);
-            externalSensorInfo.setInitvaly(exValue2);
-        }
-        if (iotSensorType == IOTSensorType.WEIR) {//量水堰计
-            externalSensorInfo.setLsycsds(exValue1);
-            externalSensorInfo.setLsyysst(exValue2);
-        }
-        if (iotSensorType == IOTSensorType.STATIC_LEVEL) {//静力水准
-            externalSensorInfo.setTubealti(exValue1);
+        switch (iotSensorType) {
+            case INCLINOMETER:
+                externalSensorInfo.setSpacing(exValue1);//测斜仪
+                break;
+
+            case LUYAN_INCLINOMETER://倾角仪
+                externalSensorInfo.setInitvalx(exValue1);
+                externalSensorInfo.setInitvaly(exValue2);
+                break;
+
+            case WEIR://量水堰计
+                externalSensorInfo.setLsycsds(exValue1);
+                externalSensorInfo.setLsyysst(exValue2);
+                break;
+
+            case STATIC_LEVEL://静力水准
+                externalSensorInfo.setTubealti(exValue1);
+                break;
+
+            case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
+                externalSensorInfo.setTubealti(exValue1);
+                externalSensorInfo.setRopelen(exValue2);
+                break;
+
+            default:
+                break;
         }
         Intent intent = new Intent();
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);

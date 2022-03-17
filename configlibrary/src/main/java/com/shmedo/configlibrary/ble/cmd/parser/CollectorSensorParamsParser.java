@@ -33,101 +33,6 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
         String sensorTypeCode = StringUtil.formatStringTwo(strs[2]);
         SensorType sensorType = SensorType.value(sensorTypeCode);
         switch (sensorType) {
-            case RAIN_GAUGE://雨量计
-            case WIRE_SHIFT://裂缝计
-            case SOIL_MOISTURE://管式含水率计
-            case INCLINOMETER://固定测斜仪
-            case ULTRASONIC_LEVEL_GAUGE://超声波液(物)位计
-            case RADAR_LEVEL_GAUGE://雷达液(物)位计
-            case MOISTURE_METER://墒情计
-            case TEMPERATURE_HUMIDITY_METER://温湿度计
-            case UPLIFT_PRESSURE_GAUGE://扬压力计
-            case INFRASOUND://次声仪
-            case STATIC_LEVEL://静力水准
-            case WEATHER_STATION: //气象计
-            {
-                sensorParamsInfo = new CollectorSensorParamsInfo();
-                CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
-                sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
-                sensorParamsInfo.setChannelNumber(strs[0].substring(7, 9));
-                sensorParamsInfo.setSensorAddress(strs[1]);
-                sensorParamsInfo.setSensorType(sensorType);
-                commonDigitalSensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
-                commonDigitalSensorInfo.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
-                if (strs.length >= 6)
-                    commonDigitalSensorInfo.setExValue1((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? "0" : strs[5]);
-                if (strs.length >= 7)
-                    commonDigitalSensorInfo.setExValue1((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? "0" : strs[6]);
-                if (strs.length >= 8)
-                    commonDigitalSensorInfo.setExValue1((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? "0" : strs[7]);
-                if (strs.length >= 9)
-                    commonDigitalSensorInfo.setExValue1((TextUtils.isEmpty(strs[8]) || strs[8].contains("nan")) ? "0" : strs[8]);
-                sensorParamsInfo.setSensorData(commonDigitalSensorInfo);
-            }
-            break;
-
-//            case INCLINOMETER: {//固定测斜仪
-//                sensorParamsInfo = new CollectorSensorParamsInfo();
-//                SensorInclinometerInfo info = new SensorInclinometerInfo();
-//                sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
-//                sensorParamsInfo.setChannelNumber(strs[0].substring(7, 9));
-//                sensorParamsInfo.setSensorAddress(strs[1]);
-//                sensorParamsInfo.setSensorType(sensorType);
-//                info.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
-//                info.setMeasureLength((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
-//                info.setCorrectionValue((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? "0" : strs[5]);
-//                sensorParamsInfo.setSensorData(info);
-//            }
-//            break;
-
-//            case ULTRASONIC_LEVEL_GAUGE: {//超声波液(物)位计
-//                sensorParamsInfo = new CollectorSensorParamsInfo();
-//                SensorUltrasonicLevelInfo info = new SensorUltrasonicLevelInfo();
-//                sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
-//                sensorParamsInfo.setChannelNumber(strs[0].substring(7, 9));
-//                sensorParamsInfo.setSensorAddress(strs[1]);
-//                sensorParamsInfo.setSensorType(sensorType);
-//                info.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
-//                info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
-//                if (strs.length == 6)
-//                    info.setProbeElevation(strs[5]);
-//
-//                sensorParamsInfo.setSensorData(info);
-//            }
-//            break;
-
-//            case MOISTURE_METER: {//墒情计
-//                sensorParamsInfo = new CollectorSensorParamsInfo();
-//                SensorMoistureMeterInfo info = new SensorMoistureMeterInfo();
-//                sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
-//                sensorParamsInfo.setChannelNumber(strs[0].substring(7, 9));
-//                sensorParamsInfo.setSensorAddress(strs[1]);
-//                sensorParamsInfo.setSensorType(sensorType);
-//                info.setHumidityTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
-//                info.setHumidityCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
-//                info.setSaltTriggerThreshold((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? "0" : strs[5]);
-//                info.setSaltCorrectionValue((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? "0" : strs[6]);
-//                info.setTemperatureTriggerThreshold((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? "0" : strs[7]);
-//                info.setTemperatureCorrectionValue((TextUtils.isEmpty(strs[8]) || strs[8].contains("nan")) ? "0" : strs[8]);
-//                sensorParamsInfo.setSensorData(info);
-//            }
-//            break;
-
-//            case UPLIFT_PRESSURE_GAUGE: {//扬压力计
-//                sensorParamsInfo = new CollectorSensorParamsInfo();
-//                SensorUpliftPressureInfo info = new SensorUpliftPressureInfo();
-//                sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
-//                sensorParamsInfo.setChannelNumber(strs[0].substring(7, 9));
-//                sensorParamsInfo.setSensorAddress(strs[1]);
-//                sensorParamsInfo.setSensorType(sensorType);
-//                info.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
-//                info.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
-//                info.setCordlength((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? "0" : strs[5]);
-//                info.setInstallationElevation((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? "0" : strs[6]);
-//                sensorParamsInfo.setSensorData(info);
-//            }
-//            break;
-
             case KANG_PERCOLATE: {//基康渗压计
                 sensorParamsInfo = new CollectorSensorParamsInfo();
                 sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
@@ -254,8 +159,38 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
             }
             break;
 
-            default:
-                break;
+            default: {
+//                 RAIN_GAUGE://雨量计
+//                 WIRE_SHIFT://裂缝计
+//                 SOIL_MOISTURE://管式含水率计
+//                 INCLINOMETER://固定测斜仪
+//                 ULTRASONIC_LEVEL_GAUGE://超声波液(物)位计
+//                 RADAR_LEVEL_GAUGE://雷达液(物)位计
+//                 MOISTURE_METER://墒情计
+//                 TEMPERATURE_HUMIDITY_METER://温湿度计
+//                 UPLIFT_PRESSURE_GAUGE://扬压力计
+//                 INFRASOUND://次声仪
+//                 STATIC_LEVEL://静力水准
+//                 WEATHER_STATION: //气象计
+                sensorParamsInfo = new CollectorSensorParamsInfo();
+                CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
+                sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
+                sensorParamsInfo.setChannelNumber(strs[0].substring(7, 9));
+                sensorParamsInfo.setSensorAddress(strs[1]);
+                sensorParamsInfo.setSensorType(sensorType);
+                commonDigitalSensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
+                commonDigitalSensorInfo.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
+                if (strs.length >= 6)
+                    commonDigitalSensorInfo.setExValue1((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? "0" : strs[5]);
+                if (strs.length >= 7)
+                    commonDigitalSensorInfo.setExValue2((TextUtils.isEmpty(strs[6]) || strs[6].contains("nan")) ? "0" : strs[6]);
+                if (strs.length >= 8)
+                    commonDigitalSensorInfo.setExValue3((TextUtils.isEmpty(strs[7]) || strs[7].contains("nan")) ? "0" : strs[7]);
+                if (strs.length >= 9)
+                    commonDigitalSensorInfo.setExValue4((TextUtils.isEmpty(strs[8]) || strs[8].contains("nan")) ? "0" : strs[8]);
+                sensorParamsInfo.setSensorData(commonDigitalSensorInfo);
+            }
+            break;
         }
 
         return sensorParamsInfo;

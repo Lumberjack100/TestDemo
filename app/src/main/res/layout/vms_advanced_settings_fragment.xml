@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
@@ -23,7 +22,8 @@
 
         <LinearLayout
             android:id="@+id/dataCenterOneLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -37,16 +37,10 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <LinearLayout
             android:id="@+id/dataCenterTwoLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -60,16 +54,10 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <LinearLayout
             android:id="@+id/dataCenterThreeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -83,16 +71,10 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <LinearLayout
             android:id="@+id/dataCenterFourLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -117,7 +99,8 @@
 
         <LinearLayout
             android:id="@+id/vmsAisleOneLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -130,16 +113,10 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <LinearLayout
             android:id="@+id/vmsAisleTwoLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -152,16 +129,10 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <LinearLayout
             android:id="@+id/vmsAisleThreeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -184,8 +155,24 @@
             android:textSize="@dimen/text_size_15" />
 
         <LinearLayout
+            android:id="@+id/ipSetLayout"
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="IP设置" />
+
+            <TextView
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/vmsRebootLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -198,16 +185,10 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <LinearLayout
             android:id="@+id/vmsResetLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -220,16 +201,10 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/divider_line_bg_efefef" />
-
         <LinearLayout
             android:id="@+id/logOutputLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"

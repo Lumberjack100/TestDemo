@@ -317,55 +317,74 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         entity.setAddr(externalSensorInfo.getAddr());
         entity.setThreshold(externalSensorInfo.getThreshold());
         entity.setCorrval(externalSensorInfo.getCorrval());
+        switch (IOTSensorType.value(externalSensorInfo.getType())) {
+            case KANG_PERCOLATE://基康渗压计
+                entity.setTubealti(externalSensorInfo.getTubealti());
+                entity.setRopelen(externalSensorInfo.getRopelen());
+                entity.setPoly_a(externalSensorInfo.getPoly_a());
+                entity.setPoly_b(externalSensorInfo.getPoly_b());
+                entity.setPoly_c(externalSensorInfo.getPoly_c());
+                entity.setTemp_k(externalSensorInfo.getTemp_k());
+                entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+                break;
 
-        if (externalSensorInfo.getType().equals("50")) {//基康渗压计
-            entity.setTubealti(externalSensorInfo.getTubealti());
-            entity.setRopelen(externalSensorInfo.getRopelen());
-            entity.setPoly_a(externalSensorInfo.getPoly_a());
-            entity.setPoly_b(externalSensorInfo.getPoly_b());
-            entity.setPoly_c(externalSensorInfo.getPoly_c());
-            entity.setTemp_k(externalSensorInfo.getTemp_k());
-            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+            case GUDAN_PERCOLATE://葛南渗压计
+                entity.setTubealti(externalSensorInfo.getTubealti());
+                entity.setRopelen(externalSensorInfo.getRopelen());
+                entity.setSens_k(externalSensorInfo.getSens_k());
+                entity.setTemp_b(externalSensorInfo.getTemp_b());
+                entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+                entity.setReferval_f(externalSensorInfo.getReferval_f());
+                break;
 
-        } else if (externalSensorInfo.getType().equals("51")) {//葛南渗压计
-            entity.setTubealti(externalSensorInfo.getTubealti());
-            entity.setRopelen(externalSensorInfo.getRopelen());
-            entity.setSens_k(externalSensorInfo.getSens_k());
-            entity.setTemp_b(externalSensorInfo.getTemp_b());
-            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
-            entity.setReferval_f(externalSensorInfo.getReferval_f());
+            case GUDAN_SOIL_PRESSURE://葛南土压力计
+                entity.setSens_k(externalSensorInfo.getSens_k());
+                entity.setTemp_b(externalSensorInfo.getTemp_b());
+                entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+                entity.setReferval_f(externalSensorInfo.getReferval_f());
+                break;
 
-        } else if (externalSensorInfo.getType().equals("52")) {//葛南土压力计
-            entity.setSens_k(externalSensorInfo.getSens_k());
-            entity.setTemp_b(externalSensorInfo.getTemp_b());
-            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
-            entity.setReferval_f(externalSensorInfo.getReferval_f());
+            case GUDAN_STRESS://葛南应力计
+                entity.setSens_k(externalSensorInfo.getSens_k());
+                entity.setTemp_b(externalSensorInfo.getTemp_b());
+                entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+                entity.setReferval_f(externalSensorInfo.getReferval_f());
+                entity.setElastic_mod(externalSensorInfo.getElastic_mod());
+                break;
 
-        } else if (externalSensorInfo.getType().equals("53")) {//葛南应力计
-            entity.setSens_k(externalSensorInfo.getSens_k());
-            entity.setTemp_b(externalSensorInfo.getTemp_b());
-            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
-            entity.setReferval_f(externalSensorInfo.getReferval_f());
-            entity.setElastic_mod(externalSensorInfo.getElastic_mod());
+            case JUNXING_ZLJ_300T://轴力计
+                entity.setSens_k(externalSensorInfo.getSens_k());
+                entity.setTemp_b(externalSensorInfo.getTemp_b());
+                entity.setReferval_f(externalSensorInfo.getReferval_f());
+                entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+                break;
 
-        } else if (externalSensorInfo.getType().equals("58")) {//轴力计
-            entity.setSens_k(externalSensorInfo.getSens_k());
-            entity.setTemp_b(externalSensorInfo.getTemp_b());
-            entity.setReferval_f(externalSensorInfo.getReferval_f());
-            entity.setTemp_t0(externalSensorInfo.getTemp_t0());
+            case INCLINOMETER://固定测斜仪
+                entity.setSpacing(externalSensorInfo.getSpacing());
+                entity.setHolenum(externalSensorInfo.getHolenum());
+                break;
 
-        } else if (externalSensorInfo.getType().equals("4")) {//测斜仪
-            entity.setSpacing(externalSensorInfo.getSpacing());
-            entity.setHolenum(externalSensorInfo.getHolenum());
+            case LUYAN_INCLINOMETER://倾角仪
+                entity.setInitvalx(externalSensorInfo.getInitvalx());
+                entity.setInitvaly(externalSensorInfo.getInitvaly());
+                break;
 
-        } else if (externalSensorInfo.getType().equals("16")) {//倾角仪
-            entity.setInitvalx(externalSensorInfo.getInitvalx());
-            entity.setInitvaly(externalSensorInfo.getInitvaly());
-        } else if (externalSensorInfo.getType().equals("22")) {//量水堰计
-            entity.setLsycsds(externalSensorInfo.getLsycsds());
-            entity.setLsyysst(externalSensorInfo.getLsyysst());
-        } else if (externalSensorInfo.getType().equals("24")) {//静力水准
-            entity.setSpacing(externalSensorInfo.getTubealti());
+            case WEIR://量水堰计
+                entity.setLsycsds(externalSensorInfo.getLsycsds());
+                entity.setLsyysst(externalSensorInfo.getLsyysst());
+                break;
+
+            case STATIC_LEVEL://静力水准
+                entity.setTubealti(externalSensorInfo.getTubealti());
+                break;
+
+            case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
+                entity.setTubealti(externalSensorInfo.getTubealti());
+                entity.setRopelen(externalSensorInfo.getRopelen());
+                break;
+
+            default:
+                break;
         }
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(projectDeviceInfo.getId()));

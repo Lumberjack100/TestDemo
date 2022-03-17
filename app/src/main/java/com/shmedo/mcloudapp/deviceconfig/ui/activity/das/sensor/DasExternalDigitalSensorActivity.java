@@ -147,31 +147,37 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
     }
 
     private void initView() {
-        //测斜仪
-        if (sensorType != null && sensorType == SensorType.INCLINOMETER) {
-            extensionLayout1.setVisibility(View.VISIBLE);
-        }
-        //倾角仪
-        if (sensorType != null && sensorType == SensorType.LUYAN_INCLINOMETER) {
-            correctionLayout.setVisibility(View.GONE);
-            extensionLayout1.setVisibility(View.VISIBLE);
-            extensionLayout2.setVisibility(View.VISIBLE);
-        }
-        //量水堰计
-        if (sensorType != null && sensorType == SensorType.WEIR) {
-            extensionLayout1.setVisibility(View.VISIBLE);
-            extensionLayout2.setVisibility(View.VISIBLE);
-        }
-        //静力水准
-        if (sensorType != null && sensorType == SensorType.STATIC_LEVEL) {
-            extensionLayout1.setVisibility(View.VISIBLE);
-        }
         mEtModbusAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtExtension1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtExtension2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtExtension3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+        if (sensorType == null)
+            return;
+
+        switch (sensorType) {
+            case INCLINOMETER://测斜仪
+            case STATIC_LEVEL://静力水准
+                extensionLayout1.setVisibility(View.VISIBLE);
+                break;
+
+            case LUYAN_INCLINOMETER://倾角仪
+                correctionLayout.setVisibility(View.GONE);
+                extensionLayout1.setVisibility(View.VISIBLE);
+                extensionLayout2.setVisibility(View.VISIBLE);
+                break;
+
+            case WEIR: //量水堰计
+            case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
+                extensionLayout1.setVisibility(View.VISIBLE);
+                extensionLayout2.setVisibility(View.VISIBLE);
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void initValue() {
@@ -186,10 +192,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             }
             switch (sensorType) {
                 case RAIN_GAUGE://雨量计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
-                    mTvCorrectValue.setText("修正值(单位:m)");
-                    break;
-
                 case WIRE_SHIFT://裂缝计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
@@ -211,10 +213,6 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     break;
 
                 case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
-                    mTvCorrectValue.setText("安装高程(单位:m)");
-                    break;
-
                 case RADAR_LEVEL_GAUGE://雷达物位计
                     mTvAlarmValue.setText("报警值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
@@ -238,6 +236,21 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 case WEATHER_STATION://气象计
                     mTvAlarmValue.setText("报警值(单位:m/s)");
                     mTvCorrectValue.setText("修正值(单位:m/s)");
+                    break;
+
+                case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
+                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvCorrectValue.setText("修正值(单位:m)");
+                    mTvExtension1.setText("高程(单位:m)");
+                    mTvExtension2.setText("绳长(单位:m)");
+                    if (!TextUtils.isEmpty(exValue1)) {
+                        exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
+                        mEtExtension1.setText(exValue1);
+                    }
+                    if (!TextUtils.isEmpty(exValue2)) {
+                        exValue2 = decimalFormat.format(Double.parseDouble(exValue2));
+                        mEtExtension2.setText(exValue2);
+                    }
                     break;
             }
             mEtModbusAddress.setText(sensorAddress);
@@ -269,30 +282,16 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
         Intent intent = getIntent();
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
-        switch (sensorType) {
-            case RAIN_GAUGE://雨量计
-            case WIRE_SHIFT://裂缝计
-            case SOIL_MOISTURE://管式含水率计
-            case INCLINOMETER://测斜仪
-            case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-            case RADAR_LEVEL_GAUGE://雷达物位计
-            case INFRASOUND://次声仪
-            case STATIC_LEVEL://静力水准
-            case WEATHER_STATION://气象计
-            {
-                CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
-                commonDigitalSensorInfo.setTriggerThreshold(triggerThreshold);
-                commonDigitalSensorInfo.setCorrectionValue(correctValue);
-                if (!TextUtils.isEmpty(exValue1))
-                    commonDigitalSensorInfo.setExValue1(exValue1);
-                if (!TextUtils.isEmpty(exValue2))
-                    commonDigitalSensorInfo.setExValue2(exValue2);
-                if (!TextUtils.isEmpty(exValue3))
-                    commonDigitalSensorInfo.setExValue3(exValue3);
-                intent.putExtra(AppContants.Extras.SENSOR_PARAM, commonDigitalSensorInfo);
-            }
-            break;
-        }
+        CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
+        commonDigitalSensorInfo.setTriggerThreshold(triggerThreshold);
+        commonDigitalSensorInfo.setCorrectionValue(correctValue);
+        if (!TextUtils.isEmpty(exValue1))
+            commonDigitalSensorInfo.setExValue1(exValue1);
+        if (!TextUtils.isEmpty(exValue2))
+            commonDigitalSensorInfo.setExValue2(exValue2);
+        if (!TextUtils.isEmpty(exValue3))
+            commonDigitalSensorInfo.setExValue3(exValue3);
+        intent.putExtra(AppContants.Extras.SENSOR_PARAM, commonDigitalSensorInfo);
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -354,7 +353,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             return false;
         }
 
-        if (sensorType == SensorType.INCLINOMETER) {
+        if (sensorType == SensorType.INCLINOMETER) {//测斜仪
             if (TextUtils.isEmpty(exValue1)) {
                 ToastUtils.show("测段长值不能为空!");
                 mEtExtension1.requestFocus();
@@ -370,7 +369,7 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             }
         }
 
-        if (sensorType == SensorType.STATIC_LEVEL) {
+        if (sensorType == SensorType.STATIC_LEVEL) {//静力水准
             if (TextUtils.isEmpty(exValue1)) {
                 ToastUtils.show("高程值不能为空!");
                 mEtExtension1.requestFocus();
@@ -385,6 +384,37 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                 return false;
             }
         }
+
+        if (sensorType == SensorType.DIGITAL_WATER_LEVEL_GAUGE) {//数字式水位计
+            if (TextUtils.isEmpty(exValue1)) {
+                ToastUtils.show("高程值不能为空!");
+                mEtExtension1.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(exValue1);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的高程值!");
+                mEtExtension1.requestFocus();
+                return false;
+            }
+
+            if (TextUtils.isEmpty(exValue2)) {
+                ToastUtils.show("绳长不能为空!");
+                mEtExtension2.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(exValue2);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的绳长!");
+                mEtExtension2.requestFocus();
+                return false;
+            }
+        }
+
         return true;
     }
 }

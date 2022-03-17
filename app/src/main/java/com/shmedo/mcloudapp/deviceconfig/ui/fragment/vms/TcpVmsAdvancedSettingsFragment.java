@@ -36,6 +36,7 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40EthernetActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAisleSettingActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -136,7 +137,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
-    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsRebootLayout, R.id.vmsResetLayout, R.id.logOutputLayout})
+    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.ipSetLayout,R.id.vmsRebootLayout, R.id.vmsResetLayout, R.id.logOutputLayout})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -170,6 +171,9 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
 
         } else if (id == R.id.vmsAisleThreeLayout) {
             VmsAisleSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, VmsAisleNumber.NUMBER_THREE);
+
+        } else if (id == R.id.ipSetLayout) {
+            E40EthernetActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT);
 
         } else if (id == R.id.vmsRebootLayout) {
             showWarnDialog("确定重启网关吗？", VMS_REBOOT);
