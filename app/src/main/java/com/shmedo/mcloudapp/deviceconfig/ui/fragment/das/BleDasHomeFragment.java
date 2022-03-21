@@ -416,7 +416,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         }
         if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -684,6 +683,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     public void onDestroy() {
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setProductID(-1);
+        clearDevice();
         super.onDestroy();
     }
 }
