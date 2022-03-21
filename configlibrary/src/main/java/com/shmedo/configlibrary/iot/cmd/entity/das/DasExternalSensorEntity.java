@@ -140,9 +140,14 @@ public class DasExternalSensorEntity implements Validater {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         try {
+            stringBuilder.append("index");
+            stringBuilder.append("=");
+            stringBuilder.append(index);
+            stringBuilder.append("&");
+
             for (Field f : getClass().getDeclaredFields()) {
                 Object value = f.get(this);
-                if (value != null && !value.equals("NullKey")) {
+                if (value != null && !f.getName().equals("index")&& !value.equals("NullKey")) {
                     stringBuilder.append(f.getName());
                     stringBuilder.append("=");
                     stringBuilder.append(value);
