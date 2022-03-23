@@ -57,4 +57,12 @@
         <item>3</item>
         <item>5</item>
     </string-array>
+
+    <!-- 声光报警器报警类型-->
+    <string-array name="alarm_type">
+        <item>暴雨警报</item>
+        <item>滑坡警报</item>
+        <item>崩塌警报</item>
+        <item>泥石流警报</item>
+    </string-array>
 </resources>

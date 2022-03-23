@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmWareInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.FirmwareCmdInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareCmdParam;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.AudibleAlarmActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.VoiceBroadcastActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
@@ -71,7 +72,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.voiceBroadcastLayout, R.id.workModeLayout})
+    @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.voiceBroadcastLayout, R.id.audibleAlarmLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -88,8 +89,8 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         } else if (id == R.id.voiceBroadcastLayout) {
             VoiceBroadcastActivity.startActivity(mActivity, deviceInfo);
 
-        } else if (id == R.id.workModeLayout) {
-            ToastUtils.show("正在研发中,敬请期待...");
+        } else if (id == R.id.audibleAlarmLayout) {
+            AudibleAlarmActivity.startActivity(mActivity, deviceInfo);
         }
     }
 
