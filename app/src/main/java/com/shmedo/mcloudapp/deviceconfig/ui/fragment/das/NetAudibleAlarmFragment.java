@@ -21,9 +21,11 @@ import com.shmedo.configlibrary.iot.cmd.entity.das.AlarmLevelEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.AudibleAlarmEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.das.AlarmLevel;
 import com.shmedo.configlibrary.iot.model.das.AudibleAlarm;
+import com.shmedo.configlibrary.iot.model.das.DasCollectorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
@@ -119,7 +121,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     private String targetAddress;
     private String alarmType;
 
-    private String sensorName;
+    private String sensorType;
     private String rainGaugeLevel1;
     private String rainGaugeLevel2;
     private String rainGaugeLevel3;
@@ -165,7 +167,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         setFilter();
 
         showWaitDialog("加载中...");
-        queryAlarmControl();
+        queryCollectorInfo();
     }
 
     private void setFilter() {
@@ -195,11 +197,25 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         alarmType = "1";
     }
 
+    /**
+     * 查询采集器配置信息
+     */
+    private void queryCollectorInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL);
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+    }
+
+    /**
+     * 查询声光报警器控制参数
+     */
     private void queryAlarmControl() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_AUDIBLE_ALARM);
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
+    /**
+     * 查询声光报警器报警级别参数
+     */
     private void queryAlarmLevel(String type) {
         TypeEntity typeEntity = new TypeEntity(type);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_AUDIBLE_ALARM_LEVEL, typeEntity);
@@ -462,14 +478,16 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
 
         if (!externalSensorLevel1.equals(mEtExternalSensorLevel1.getText().toString())) {
             if (TextUtils.isEmpty(mEtExternalSensorLevel1.getText().toString())) {
-                ToastUtils.show("请输入倾角计无报警值!");
+                String msg = String.format("请输入%s的无报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel1.requestFocus();
                 return false;
             }
             try {
                 int value = Integer.parseInt(mEtExternalSensorLevel1.getText().toString());
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的倾角计无报警值!");
+                String msg = String.format("请输入正确的%s无报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel1.requestFocus();
                 return false;
             }
@@ -480,14 +498,16 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
 
         if (!externalSensorLevel2.equals(mEtExternalSensorLevel2.getText().toString())) {
             if (TextUtils.isEmpty(mEtExternalSensorLevel2.getText().toString())) {
-                ToastUtils.show("请输入倾角计一级报警值!");
+                String msg = String.format("请输入%s的一级报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel2.requestFocus();
                 return false;
             }
             try {
                 int value = Integer.parseInt(mEtExternalSensorLevel2.getText().toString());
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的倾角计一级报警值!");
+                String msg = String.format("请输入正确的%s一级报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel2.requestFocus();
                 return false;
             }
@@ -498,14 +518,16 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
 
         if (!externalSensorLevel3.equals(mEtExternalSensorLevel3.getText().toString())) {
             if (TextUtils.isEmpty(mEtExternalSensorLevel3.getText().toString())) {
-                ToastUtils.show("请输入倾角计二级报警值!");
+                String msg = String.format("请输入%s的二级报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel3.requestFocus();
                 return false;
             }
             try {
                 int value = Integer.parseInt(mEtExternalSensorLevel3.getText().toString());
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的倾角计二级报警值!");
+                String msg = String.format("请输入正确的%s二级报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel3.requestFocus();
                 return false;
             }
@@ -516,14 +538,16 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
 
         if (!externalSensorLevel4.equals(mEtExternalSensorLevel4.getText().toString())) {
             if (TextUtils.isEmpty(mEtExternalSensorLevel4.getText().toString())) {
-                ToastUtils.show("请输入倾角计三级报警值!");
+                String msg = String.format("请输入%s的三级报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel4.requestFocus();
                 return false;
             }
             try {
                 int value = Integer.parseInt(mEtExternalSensorLevel4.getText().toString());
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的倾角计三级报警值!");
+                String msg = String.format("请输入正确的%s三级报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel4.requestFocus();
                 return false;
             }
@@ -534,14 +558,16 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
 
         if (!externalSensorLevel5.equals(mEtExternalSensorLevel5.getText().toString())) {
             if (TextUtils.isEmpty(mEtExternalSensorLevel5.getText().toString())) {
-                ToastUtils.show("请输入倾角计四级报警值!");
+                String msg = String.format("请输入%s的三级报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel5.requestFocus();
                 return false;
             }
             try {
                 int value = Integer.parseInt(mEtExternalSensorLevel5.getText().toString());
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的倾角计四级报警值!");
+                String msg = String.format("请输入正确的%s四级报警值!", mTvExternalSensorName.getText().toString());
+                ToastUtils.show(msg);
                 mEtExternalSensorLevel5.requestFocus();
                 return false;
             }
@@ -694,6 +720,20 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
+            case DAS_MD_GET_COLLECTOR_CONTROL: {//
+                IOTCommandResult<DasCollectorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    dismissWaitDialog();
+                    String errMsg = String.format("%s %s", "查询采集器参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                initCollectorInfo(commandResult.getResult());
+                queryAlarmControl();
+            }
+            break;
+
             case DAS_MD_GET_AUDIBLE_ALARM: {
                 IOTCommandResult<AudibleAlarm> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -766,6 +806,14 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
+    private void initCollectorInfo(DasCollectorInfo collectorInfo) {
+        if (collectorInfo == null)
+            return;
+
+        IOTSensorType sensorType = IOTSensorType.getSensorTypeByCollectorCode(collectorInfo.getType());
+        mTvExternalSensorName.setText(sensorType.getDescription());
+    }
+
     private void initAlarmControl() {
         if (audibleAlarm == null) {
             Timber.e("AudibleAlarm 为空!");
@@ -806,8 +854,8 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
             alarmLevel = new AlarmLevel();
             return;
         }
-        sensorName = alarmLevel.getType();
-        switch (sensorName) {
+        sensorType = alarmLevel.getType();
+        switch (sensorType) {
             case "1": {
                 rainGaugeLevel1 = alarmLevel.getLevel1();
                 rainGaugeLevel2 = alarmLevel.getLevel2();
@@ -857,5 +905,4 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
             break;
         }
     }
-
 }
