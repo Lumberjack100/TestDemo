@@ -680,19 +680,17 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 setSensorStatusColor(mTvInclinometerStatus, dasSubSensorStatusInfo.getMems().getErrno());
 
                 String values[] = dasSubSensorStatusInfo.getMems().getVaule().split(",");
-                if (values.length > 0) {
-                    if (values.length >= 3) {
-                        inclinometerAxisLayout.setVisibility(View.VISIBLE);
-                        mTvAxisX.setText(MessageFormat.format("{0}", values[0]));
-                        mTvAxisY.setText(MessageFormat.format("{0}", values[1]));
-                        mTvAxisZ.setText(MessageFormat.format("{0}", values[2]));
-                    }
-                    if (values.length >= 6) {
-                        inclinometerAccelerationLayout.setVisibility(View.VISIBLE);
-                        mTvAccelerationX.setText(MessageFormat.format("{0}", values[3]));
-                        mTvAccelerationY.setText(MessageFormat.format("{0}", values[4]));
-                        mTvAccelerationZ.setText(MessageFormat.format("{0}", values[5]));
-                    }
+                if (values.length >= 3) {
+                    inclinometerAxisLayout.setVisibility(View.VISIBLE);
+                    mTvAxisX.setText(MessageFormat.format("{0}", values[0]));
+                    mTvAxisY.setText(MessageFormat.format("{0}", values[1]));
+                    mTvAxisZ.setText(MessageFormat.format("{0}", values[2]));
+                }
+                if (values.length >= 6) {
+                    inclinometerAccelerationLayout.setVisibility(View.VISIBLE);
+                    mTvAccelerationX.setText(MessageFormat.format("{0}", values[3]));
+                    mTvAccelerationY.setText(MessageFormat.format("{0}", values[4]));
+                    mTvAccelerationZ.setText(MessageFormat.format("{0}", values[5]));
                 }
                 Map<String, Object> valueMap = new HashMap<String, Object>();
                 valueMap.put("axis_value", dasSubSensorStatusInfo.getMems().getVaule());//自定义参数：音乐类型，值：流行
