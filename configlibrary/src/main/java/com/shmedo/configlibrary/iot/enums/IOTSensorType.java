@@ -3,7 +3,6 @@ package com.shmedo.configlibrary.iot.enums;
 
 import android.text.TextUtils;
 
-import com.shmedo.configlibrary.ble.enums.CollectorModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +83,8 @@ public enum IOTSensorType {
      * 浊度仪传感器
      */
     TURBIDITY_METER("26", "浊度仪"),
+
+    DIGITAL_WATER_LEVEL_GAUGE("27", "数字式水位计"),
 
     /**
      * 基康渗压计 BGK-4500
@@ -167,7 +168,7 @@ public enum IOTSensorType {
     }
 
     public static IOTSensorType getSensorTypeByCollectorCode(String code) {
-        if (CollectorModel.value(code) == CollectorModel.VW08) {
+        if (IOTCollectorModel.value(code) == IOTCollectorModel.VW08) {
             return IOTSensorType.KANG_PERCOLATE;
         } else {
             return IOTSensorType.value(code);

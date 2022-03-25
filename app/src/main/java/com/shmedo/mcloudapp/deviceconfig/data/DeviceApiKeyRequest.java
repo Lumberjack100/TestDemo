@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.data;
 
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.mcloudapp.deviceconfig.data.repository.DeviceRepository;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -9,11 +10,11 @@ import com.shmedo.mcloudapp.deviceconfig.data.repository.DeviceRepository;
  * 描述：     TODO
  */
 public class DeviceApiKeyRequest {
-    private final UnPeekLiveData<String> deviceApiKey = new UnPeekLiveData.Builder<String>()
+    private final UnPeekLiveData<DeviceBaseInfo> deviceApiKey = new UnPeekLiveData.Builder<DeviceBaseInfo>()
             .setAllowNullValue(true)
             .create();
 
-    public UnPeekLiveData<String> getDeviceApiKeyLiveData() {
+    public UnPeekLiveData<DeviceBaseInfo> getDeviceApiKeyLiveData() {
 
         return deviceApiKey;
     }

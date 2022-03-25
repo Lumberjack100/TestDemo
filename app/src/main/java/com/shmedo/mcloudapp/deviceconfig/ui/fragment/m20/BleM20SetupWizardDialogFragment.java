@@ -22,7 +22,7 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 
 import java.lang.ref.WeakReference;
@@ -57,7 +57,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
     @BindView(R.id.tv_right)
     TextView mTvRight;
 
-    private BaseGOCBleIotCommunicateFragment baseGOCBleIotCommunicateFragment;
+    private BaseUSRBleIotCommunicateFragment baseUSRBleIotCommunicateFragment;
 
 
     private final InnerHandler mInnerHandler = new InnerHandler(this);
@@ -102,7 +102,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        baseGOCBleIotCommunicateFragment = (BaseGOCBleIotCommunicateFragment) getParentFragment();
+        baseUSRBleIotCommunicateFragment = (BaseUSRBleIotCommunicateFragment) getParentFragment();
         initView();
     }
 
@@ -130,7 +130,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
             DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
 
         } else if (id == R.id.tv_right) {
-            if (!baseGOCBleIotCommunicateFragment.isConnected()) {
+            if (!baseUSRBleIotCommunicateFragment.isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
@@ -146,7 +146,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
      */
     private void setLevelInitial() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL);
-        baseGOCBleIotCommunicateFragment.sendCommand(command);
+        baseUSRBleIotCommunicateFragment.sendCommand(command);
     }
 
     private void disableTouch() {

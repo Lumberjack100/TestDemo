@@ -186,6 +186,24 @@ public enum IOTCommandType {
      */
     DAS_MD_DEL_EXTERNAL_SENSOR("md_delsensor"),
 
+    /**
+     * 查询声光报警器信息
+     */
+    DAS_MD_GET_AUDIBLE_ALARM("md_getgx909"),
+    /**
+     * 设置声光报警器信息
+     */
+    DAS_MD_SET_AUDIBLE_ALARM("md_setgx909"),
+
+    /**
+     * 查询声光报警器级别
+     */
+    DAS_MD_GET_AUDIBLE_ALARM_LEVEL("md_getalarmlevel"),
+    /**
+     * 设置声光报警器级别
+     */
+    DAS_MD_SET_AUDIBLE_ALARM_LEVEL("md_setalarmlevel"),
+
     /*　VMS-LoRa网关指令  */
     /**
      * 获取网关的基本信息

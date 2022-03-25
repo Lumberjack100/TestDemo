@@ -4,7 +4,8 @@ import android.text.TextUtils;
 
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.mcloudapp.deviceconfig.model.BasicDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DetailDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -36,7 +37,7 @@ public class DeviceRepository {
      *
      * @param sn
      */
-    public void queryDeviceApiKeyBySn(String sn, UnPeekLiveData<String> deviceApiKey) {
+    public void queryDeviceApiKeyBySn(String sn, UnPeekLiveData<DeviceBaseInfo> deviceApiKey) {
         GetDeviceSimpleInfo(sn, deviceApiKey);
 //        String apiKey = DeviceDao.getInstance().getCachedDeviceApiKeyBySn(sn);
 //        if (apiKey == null) {
@@ -49,7 +50,7 @@ public class DeviceRepository {
     /**
      * 获取设备概要信息
      */
-    private void GetDeviceSimpleInfo(String deviceToken, UnPeekLiveData<String> deviceApiKey) {
+    private void GetDeviceSimpleInfo(String deviceToken, UnPeekLiveData<DeviceBaseInfo> deviceApiKey) {
         JSONObject jsonObjectRequest = new JSONObject();
         try {
             jsonObjectRequest.put("deviceToken", deviceToken);
@@ -60,20 +61,20 @@ public class DeviceRepository {
 
         MDRetrofit.getInstance()
                 .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
-                .getDescribeDeviceSimpleInfo(MCloudApp.getAccessToken(), body)
+                .GetDeviceDetail(MCloudApp.getAccessToken(), body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BaseObserver<BasicDeviceInfo>() {
+                .subscribe(new BaseObserver<DetailDeviceInfo>() {
                     @Override
-                    protected void onResponse(BasicDeviceInfo basicDeviceInfo, ErrorInfo errorInfo) {
+                    protected void onResponse(DetailDeviceInfo detailDeviceInfo, ErrorInfo errorInfo) {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
-                                if (basicDeviceInfo == null || TextUtils.isEmpty(basicDeviceInfo.getApiKey())) {
+                                if (detailDeviceInfo == null || detailDeviceInfo.getDeviceBaseInfo() == null || TextUtils.isEmpty(detailDeviceInfo.getDeviceBaseInfo().getApikey())) {
                                     deviceApiKey.postValue(null);
                                     return;
                                 }
-                                MCloudApp.setProductID(basicDeviceInfo.getProductID());
-                                deviceApiKey.postValue(basicDeviceInfo.getApiKey());
+                                MCloudApp.setProductID(detailDeviceInfo.getDeviceBaseInfo().getProductID());
+                                deviceApiKey.postValue(detailDeviceInfo.getDeviceBaseInfo());
                             } else {
                                 deviceApiKey.postValue(null);
                             }

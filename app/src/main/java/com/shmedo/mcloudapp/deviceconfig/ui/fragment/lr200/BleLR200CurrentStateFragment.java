@@ -26,7 +26,7 @@ import com.shmedo.configlibrary.iot.model.m20.M20CurrentStateInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ import timber.log.Timber;
  * 创建时间:  2022/2/25 <br/>
  * 描述：      LR200蓝牙模式 设备运行状态页面
  */
-public class BleLR200CurrentStateFragment extends BaseGOCBleIotCommunicateFragment {
+public class BleLR200CurrentStateFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 

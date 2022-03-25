@@ -483,24 +483,6 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         String command = CommandManager.getInstance().getCommand(CommandType.QUERY_INCLINOMETER_INFO);
         sendCommand(command);
         Timber.d("查询倾角计信息：%s", command);
-//        if (TextUtils.isEmpty(versionMessageInfo.getFirmwareVersion()))
-//            return;
-//
-//        String firmwareVersion = versionMessageInfo.getFirmwareVersion();
-//        firmwareVersion = firmwareVersion.trim().toUpperCase().replace("V", "").replace(".", "");
-//        if (ValidateUtil.isNumeric(firmwareVersion)) {
-//            try {
-//                int version = Integer.parseInt(firmwareVersion);
-//                if (version >= 314) {
-//                    String command = CommandManager.getInstance().getCommand(CommandType.QUERY_INCLINOMETER_INFO);
-//                    sendCommand(command);
-//                    Timber.i("查询倾角计信息：%s", command);
-//                }
-//
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        }
     }
 
     @Override
@@ -627,13 +609,8 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                 if (statusThree != null) {
                     collectorModelStr = statusThree.getCollectorModel();
                     setDeviceStatusThree(statusThree);
-
-                    //裂缝计采集器，查询倾角计信息
-                    if (collectorModelStr.trim().equals("2")) {
-                        queryInclinometerInfo();
-                    } else {
-                        mRefreshLayout.finishRefresh(true);
-                    }
+                    //查询倾角计信息
+                    queryInclinometerInfo();
                 }
                 break;
 
@@ -816,6 +793,13 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
             mTvAxisX.setText(MessageFormat.format("{0}", inclinometerInfo.getxAxis()));
             mTvAxisY.setText(MessageFormat.format("{0}", inclinometerInfo.getyAxis()));
             mTvAxisZ.setText(MessageFormat.format("{0}", inclinometerInfo.getzAxis()));
+        }
+
+        if (!TextUtils.isEmpty(inclinometerInfo.getxAcceleration()) && !TextUtils.isEmpty(inclinometerInfo.getyAcceleration()) && !TextUtils.isEmpty(inclinometerInfo.getzAcceleration())) {
+            inclinometerAccelerationLayout.setVisibility(View.VISIBLE);
+            mTvAccelerationX.setText(MessageFormat.format("{0}", inclinometerInfo.getxAcceleration()));
+            mTvAccelerationY.setText(MessageFormat.format("{0}", inclinometerInfo.getyAcceleration()));
+            mTvAccelerationZ.setText(MessageFormat.format("{0}", inclinometerInfo.getzAcceleration()));
         }
     }
 

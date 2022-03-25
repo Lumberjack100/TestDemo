@@ -24,7 +24,7 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.AdmeViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
-import com.shmedo.mcloudapp.profile.USRBleViewModel;
+import com.shmedo.mcloudapp.profile.BleViewModel;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,13 +44,9 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
     protected static final int DELAY_5000_MILLIS = 5000;
     protected static final int DELAY_10000_MILLIS = 10000;//发送指令超时时间
     protected static final int DELAY_15000_MILLIS = 15000;//蓝牙连接超时时间
+    public static final int DELAY_20000_MILLIS = 20000;
 
-    //自定义心跳包指令
-    private final String heartBeat = IOTCommandManager.getInstance().getCommand(IOTCommandType.HEART_BEAT)
-            + "&apikey=b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9"
-            + "&msgid=" + UUID.randomUUID().toString().substring(30);
-
-    protected USRBleViewModel usrBleViewModel;
+    protected BleViewModel bleViewModel;
 
     protected ConfigPageViewModel configPageViewModel;
 
@@ -103,12 +99,12 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        usrBleViewModel = getApplicationScopeViewModel(USRBleViewModel.class);
-        usrBleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
+        bleViewModel = getApplicationScopeViewModel(BleViewModel.class);
+        bleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
                 if (!result.startsWith("$cmd=")) {
-                    if (usrBleViewModel.getLogOutputMode().getValue() == null || !usrBleViewModel.getLogOutputMode().getValue()) {
+                    if (bleViewModel.getLogOutputMode().getValue() == null || !bleViewModel.getLogOutputMode().getValue()) {
                         return;
                     }
                 }
@@ -142,7 +138,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
      * ble 建立连接
      */
     protected void connectDevice(BluetoothDevice device) {
-        usrBleViewModel.connect(device);
+        bleViewModel.connect(device);
     }
 
     /**
@@ -150,19 +146,19 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
      */
     protected void disconnectDevice() {
         Timber.d("disconnectDevice()调用");
-        usrBleViewModel.disconnect();
+        bleViewModel.disconnect();
     }
 
     /**
      * This method returns true if the device is connected. Services could have not been
      * discovered yet.
      */
-    protected final boolean isConnected() {
-        return usrBleViewModel.isConnected();
+    public final boolean isConnected() {
+        return bleViewModel.isConnected();
     }
 
     protected void clearDevice() {
-        usrBleViewModel.clearDevice();
+        bleViewModel.clearDevice();
     }
 
     /**
@@ -194,20 +190,20 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         sendCommand(command);
     }
 
-    protected void sendCommand(String cmdStr) {
+    public void sendCommand(String cmdStr) {
         if (!isConnected()) {
             return;
         }
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
-            apiKey = usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();
+        if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+            apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         if (!cmdStr.contains("&apikey")) {
             cmdStr += "&apikey=" + apiKey
                     + "&msgid=" + UUID.randomUUID().toString().substring(30);
         }
 
-        usrBleViewModel.sendIOTProtocolCommand(cmdStr );
+        bleViewModel.sendIOTProtocolCommand(cmdStr );
     }
 
     protected void showDisconnectDialog(String content) {

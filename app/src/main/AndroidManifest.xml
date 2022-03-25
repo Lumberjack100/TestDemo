@@ -120,7 +120,7 @@
             android:name=".common.ui.activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/> <!-- Activity在高德 SDK内部实现 -->
+            android:screenOrientation="portrait" /> <!-- Activity在高德 SDK内部实现 -->
         <activity
             android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -402,9 +402,15 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.VoiceBroadcastActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.AudibleAlarmActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait"

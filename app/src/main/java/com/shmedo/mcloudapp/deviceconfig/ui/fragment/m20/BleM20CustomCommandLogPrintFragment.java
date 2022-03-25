@@ -23,7 +23,7 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.CmdLogInfo;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseGOCBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -41,7 +41,7 @@ import me.pqpo.librarylog4a.Log4a;
  * 创建时间:  1/18/21 <br/>
  * 描述：      自定义蓝牙指令交互输出并保存日志文件
  */
-public class BleM20CustomCommandLogPrintFragment extends BaseGOCBleIotCommunicateFragment {
+public class BleM20CustomCommandLogPrintFragment extends BaseUSRBleIotCommunicateFragment {
     private static final String TAG = "GOCBleIotCustomCommandLogPrintFragment";
 
     @BindView(R.id.logPrintEnableSBtn)

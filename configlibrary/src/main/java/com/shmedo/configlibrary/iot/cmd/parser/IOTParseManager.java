@@ -20,6 +20,8 @@ import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionDistanceInfoP
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeVoltageConfigParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeWorkModeParser;
+import com.shmedo.configlibrary.iot.cmd.parser.das.AlarmLevelParser;
+import com.shmedo.configlibrary.iot.cmd.parser.das.AudibleAlarmParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasBaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasBdTerminalInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasCollectorInfoParser;
@@ -213,7 +215,9 @@ public class IOTParseManager {
                 Rn20ModuleStatusParser.class,
                 Rn20PositionInfoParser.class,
                 LogOutputInfoParser.class,
-                LR200PositionInfoParser.class
+                LR200PositionInfoParser.class,
+                AudibleAlarmParser.class,
+                AlarmLevelParser.class
         });
 
         registerWithClass(clazzes);

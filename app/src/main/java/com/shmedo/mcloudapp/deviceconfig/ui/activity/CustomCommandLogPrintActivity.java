@@ -15,7 +15,7 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.util.LogFileUtil;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.USRBleIotCustomCommandLogPrintFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.USRBleIotCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.InclinometerDebugBoxLoggerFragment;

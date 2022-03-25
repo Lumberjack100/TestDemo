@@ -83,6 +83,8 @@ public enum SensorType {
      */
     TURBIDITY_METER("26", "浊度仪"),
 
+    DIGITAL_WATER_LEVEL_GAUGE("27", "数字式水位计"),
+
     /**
      * 基康渗压计 BGK-4500
      */

@@ -38,6 +38,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40EthernetActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsAisleSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
@@ -143,7 +144,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
         getDataCenterStatus(ServerNumber.NUMBER_ONE);
     }
 
-    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.vmsRebootLayout, R.id.vmsResetLayout, R.id.logOutputLayout})
+    @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.vmsAisleOneLayout, R.id.vmsAisleTwoLayout, R.id.vmsAisleThreeLayout, R.id.ipSetLayout, R.id.vmsRebootLayout, R.id.vmsResetLayout, R.id.logOutputLayout})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -173,6 +174,9 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
 
         } else if (id == R.id.vmsAisleThreeLayout) {
             VmsAisleSettingActivity.startActivity(mActivity, deviceInfo, VmsAisleNumber.NUMBER_THREE);
+
+        } else if (id == R.id.ipSetLayout) {
+            E40EthernetActivity.startActivity(mActivity, deviceInfo);
 
         } else if (id == R.id.vmsRebootLayout) {
             showWarnDialog("确定重启网关吗？", VMS_REBOOT);

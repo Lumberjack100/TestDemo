@@ -25,7 +25,7 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
-import com.shmedo.mcloudapp.profile.USRBleViewModel;
+import com.shmedo.mcloudapp.profile.BleViewModel;
 
 import java.util.UUID;
 
@@ -64,7 +64,7 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
     @BindView(R.id.btn_exit)
     TextView btnExit;
 
-    private USRBleViewModel usrBleViewModel;
+    private BleViewModel bleViewModel;
 
     private String motionWay;//运动方式
     private String lastDistance;//上次停止时运动距离
@@ -142,8 +142,8 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView();
-        usrBleViewModel = getApplicationScopeViewModel(USRBleViewModel.class);
-        usrBleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
+        bleViewModel = getApplicationScopeViewModel(BleViewModel.class);
+        bleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
                 if (!result.startsWith("$cmd=") || !isResumed())
@@ -233,13 +233,13 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
             return;
         }
         if (id == R.id.iv_close) {
-            if (!usrBleViewModel.isConnected() || btnExit.getVisibility() == View.VISIBLE) {
+            if (!bleViewModel.isConnected() || btnExit.getVisibility() == View.VISIBLE) {
                 dismiss();
             } else {
                 showExitWarnDialog("确认退出数据运行？");
             }
         } else if (id == R.id.btn_stop) {
-            if (!usrBleViewModel.isConnected()) {
+            if (!bleViewModel.isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
@@ -248,7 +248,7 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
             stopMotorMotion();
 
         } else if (id == R.id.btn_pause) {
-            if (!usrBleViewModel.isConnected()) {
+            if (!bleViewModel.isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
@@ -384,12 +384,12 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
 
     private void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue())) {
-            apiKey = usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue();
+        if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+            apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString().substring(30);
-        usrBleViewModel.sendIOTProtocolCommand(cmdStr);
+        bleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
     /**
@@ -412,7 +412,7 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         isExit = true;
-                        if (usrBleViewModel.isConnected()) {
+                        if (bleViewModel.isConnected()) {
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
                             BleAdmeManualMeasuringHoleDepthBottomDialog.this.dismiss();

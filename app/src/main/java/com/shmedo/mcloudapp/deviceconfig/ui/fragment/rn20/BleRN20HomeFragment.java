@@ -40,6 +40,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
@@ -77,10 +78,10 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     TextView mTvDeviceSn;//设备SN号
 
     @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//产品型号
+    TextView mTvFirmwareVersion;//固件版本
 
     @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvFirmwareVersion;//固件版本
+    TextView mTvVoltage;//电压
 
     @BindView(R.id.tv_platform_communication_state)
     TextView mTvPlatformCommunicationState;//与米度平台连接状态
@@ -99,6 +100,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
+    private DeviceBaseInfo deviceInfo;
     private String sn;
 
     private List<String> rainPrecisionList = Arrays.asList("0.1mm", "0.2mm", "0.5mm", "1mm");
@@ -132,7 +134,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateHeadInfo(null);
+//        updateHeadInfo(null);
         initAdapter();
         initConfigModuleData();
         observerApiKey();
@@ -210,7 +212,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察连接状态变化
      */
     private void observerConnectionState() {
-        usrBleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
+        bleViewModel.getConnectionState().observe(getViewLifecycleOwner(), new Observer<ConnectionState>() {
             @Override
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
@@ -225,7 +227,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        usrBleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -256,10 +258,12 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        usrBleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
-            public void onChanged(String apiKey) {
+            public void onChanged(DeviceBaseInfo deviceBaseInfo) {
+                deviceInfo = deviceBaseInfo;
                 hideProgressBar();
+                updateHeadInfo(null);
                 queryBaseInfo();
             }
         });
@@ -444,7 +448,6 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
         if (v.getId() == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                startDefaultProgress(null, AppContants.MsgWhat.CONNECT_DEVICE, DELAY_15000_MILLIS);
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
@@ -552,20 +555,23 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo(Rn20BaseInfo rn20BaseInfo) {
-        mTvPlatformCommunicationState.setVisibility(View.GONE);
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mTvDeviceName.setText("雨量采集器");
+        if (deviceInfo == null)
+            deviceInfo = new DeviceBaseInfo();
+
         try {
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "雨量采集器" : deviceInfo.getProductName());
+            mTvDeviceSn.setText(String.format("设备编号：%s", sn));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             if (rn20BaseInfo != null) {
-                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
-                mTvProductModel.setText(String.format("固件版本：%s", !TextUtils.isEmpty(rn20BaseInfo.getVer()) ? rn20BaseInfo.getVer() : "--"));
-                mTvFirmwareVersion.setText(String.format("电压：%s", !TextUtils.isEmpty(rn20BaseInfo.getInvolt()) ? rn20BaseInfo.getInvolt() : "--"));
+                mTvFirmwareVersion.setText(String.format("固件版本：%s", !TextUtils.isEmpty(rn20BaseInfo.getVer()) ? rn20BaseInfo.getVer() : "--"));
+                mTvVoltage.setText(String.format("电压：%s", !TextUtils.isEmpty(rn20BaseInfo.getInvolt()) ? rn20BaseInfo.getInvolt() : "--"));
             } else {
-                mTvDeviceSn.setText(String.format("设备编号：%s", sn));
-                mTvProductModel.setText("固件版本：--");
-                mTvFirmwareVersion.setText("电压：--");
+                mTvVoltage.setText("电压：--");
             }
+
+            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+            mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
