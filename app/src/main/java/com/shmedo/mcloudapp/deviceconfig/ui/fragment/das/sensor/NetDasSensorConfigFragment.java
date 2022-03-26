@@ -134,7 +134,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         return R.layout.fragment_das_sensor;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setFilter();
@@ -401,7 +401,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 return false;
             }
         } else {
-            depthTriggerValue = "";
+            depthTriggerValue = null;
         }
 
         decimalFormat.applyPattern("#.###");
@@ -419,7 +419,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 return false;
             }
         } else {
-            depthCorrection = "";
+            depthCorrection = null;
         }
 
         if (!decimalFormat.format(Double.parseDouble(digitalPiezometerInfo.getRopelen())).equals(osmometerLength)) {
@@ -436,7 +436,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 return false;
             }
         } else {
-            osmometerLength = "";
+            osmometerLength = null;
         }
 
         if (!decimalFormat.format(Double.parseDouble(digitalPiezometerInfo.getTubealti())).equals(nozzelHeight)) {
@@ -453,7 +453,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 return false;
             }
         } else {
-            nozzelHeight = "";
+            nozzelHeight = null;
         }
         isDigitalPiezometerChange = true;
         return true;
