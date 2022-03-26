@@ -180,7 +180,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
                 return false;
             }
         } else {
-            calculatTime = "";
+            calculatTime = null;
         }
 
         if (!collectorInfo.getStandbygap().equals(standbyTime)) {
@@ -197,7 +197,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
                 return false;
             }
         } else {
-            standbyTime = "";
+            standbyTime = null;
         }
 
         if (!collectorInfo.getCollgap().equals(collectTime)) {
@@ -214,7 +214,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
                 return false;
             }
         } else {
-            collectTime = "";
+            collectTime = null;
         }
 
         if (!sensitivity.equals("NullKey")) {
