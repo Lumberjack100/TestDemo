@@ -14,9 +14,9 @@ public enum MonitoringType {
 
     DEVICE_STATUS("000", "设备状态"),
 
-//    CRACK_GAUGE("101", "地表裂缝计"),
+    SURFACE_CRACK_METER("101", "地表裂缝计"),
 
-    CRACK_METER("102", "裂缝计"),
+    WALL_CRACK_METER("102", "墙裂缝计"),
 
     ACCELEROMETER("103", "加速度计"),
 
@@ -27,6 +27,8 @@ public enum MonitoringType {
     RAIN_METER("201", "雨量计"),
 
     SOIL_MOISTURE_METER("202", "土壤含水率"),
+
+    CRACK_METER("203", "裂缝计"),
 
     GNSS_RESULT_DATA("204", "GNSS结果数据"),
 
