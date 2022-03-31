@@ -69,7 +69,7 @@ public enum ProductType {
         if (productToken.toUpperCase().contains("E60"))
             return ProductType.E40;
 
-        if (productToken.toUpperCase().contains("GW300"))
+        if (productToken.toUpperCase().contains("GW"))
             return ProductType.VMS;
 
         for (ProductType productType : ProductType.values()) {
