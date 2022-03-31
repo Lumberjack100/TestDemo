@@ -95,7 +95,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     //模数计算方式下支持的传感器
     private List<String> modulusSensorNameList = Arrays.asList(MonitoringType.AXIAL_FORCE_METER.getDescription());
     //倍率计算方式下支持的传感器
-    private List<String> magnificationSensorNameList = Arrays.asList(MonitoringType.RAIN_METER.getDescription(), MonitoringType.BOREHOLE_INCLINOMETER.getDescription());
+    private List<String> magnificationSensorNameList = Arrays.asList(MonitoringType.RAIN_METER.getDescription(), MonitoringType.BOREHOLE_INCLINOMETER.getDescription(), MonitoringType.CRACK_METER.getDescription(), MonitoringType.MUD_LEVEL_METER.getDescription(), MonitoringType.SOIL_MOISTURE_METER.getDescription());
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
@@ -131,7 +131,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         return R.layout.vms_terminal_external_sensor_param_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setView();
@@ -197,7 +197,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
             sensorNameList.clear();
             sensorNameList.addAll(modulusSensorNameList);
-        }else if (sensorCalculation == VmsSensorCalculation.MAGNIFICATION) {//倍率
+        } else if (sensorCalculation == VmsSensorCalculation.MAGNIFICATION) {//倍率
             calculationPosOld = 4;
             calculationPos = 4;
             mTvSensorCalculation.setText(calculationList.get(4));
@@ -369,7 +369,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                                     magnificationView.setVisibility(View.GONE);
                                     sensorNameList.clear();
                                     sensorNameList.addAll(modulusSensorNameList);
-                                }else if (text.contains("倍率")) {
+                                } else if (text.contains("倍率")) {
                                     sensorCalculation = VmsSensorCalculation.MAGNIFICATION;
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.GONE);
@@ -471,7 +471,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         entity.setChannel(sensorInfo.getChannel());
         entity.setInsert("1");
         entity.setType(sensorCalculation.toString());
-        String sensorNameNo = MonitoringType.valueByDesc(sensorName).getCode()+ "_" + sensorSerialNumber;
+        String sensorNameNo = MonitoringType.valueByDesc(sensorName).getCode() + "_" + sensorSerialNumber;
         entity.setName(sensorNameNo);
 
         enableButtonOriginalState = mSbSensorEnable.isChecked();
@@ -556,9 +556,9 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             return linearParamView.checkValueIsChange();
         } else if (sensorCalculation == VmsSensorCalculation.POLYNOMIAL) {
             return polynomialParamView.checkValueIsChange();
-        }else if (sensorCalculation == VmsSensorCalculation.MODULUS) {
+        } else if (sensorCalculation == VmsSensorCalculation.MODULUS) {
             return modulusView.checkValueIsChange();
-        }else if (sensorCalculation == VmsSensorCalculation.MAGNIFICATION) {
+        } else if (sensorCalculation == VmsSensorCalculation.MAGNIFICATION) {
             return magnificationView.checkValueIsChange();
         }
         return false;
