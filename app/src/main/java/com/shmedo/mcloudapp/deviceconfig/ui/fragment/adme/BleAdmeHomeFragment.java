@@ -271,9 +271,9 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-//                        clearDevice();
 //                        hideProgressBar();
                         onConnectionStateChanged(false);
+                        clearDevice();
                         break;
 
                     // fallthrough
