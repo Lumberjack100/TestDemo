@@ -163,6 +163,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         }
 
         if (productType == ProductType.DAS || productType == ProductType.ADME || productType == ProductType.VMS) {
+            dataProtocol = "";
             dataProtocolLayout.setVisibility(View.GONE);
         }
     }
@@ -576,7 +577,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
 
     public void doAfterSetting() {
         transferProtocolOld = transferProtocol;
-        dataProtocolOld = dataProtocol;
+//        dataProtocolOld = dataProtocol;
         platformTypeOld = platformType;
         isResultOK = true;
     }
@@ -598,9 +599,9 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
             return true;
         }
-        if (dataProtocolOld != null && dataProtocol != null && !dataProtocolOld.equals(dataProtocol)) {
-            return true;
-        }
+//        if (dataProtocolOld != null && dataProtocol != null && !dataProtocolOld.equals(dataProtocol)) {
+//            return true;
+//        }
         if (platformTypeOld != null && platformType != null && !platformTypeOld.equals(platformType)) {
             return true;
         }
