@@ -28,7 +28,7 @@ public enum MonitoringType {
 
     SOIL_MOISTURE_METER("202", "土壤含水率"),
 
-    eeCRACK_METER("203", "裂缝计"),
+    CRACK_METER("203", "裂缝计"),
 
     GNSS_RESULT_DATA("204", "GNSS结果数据"),
 

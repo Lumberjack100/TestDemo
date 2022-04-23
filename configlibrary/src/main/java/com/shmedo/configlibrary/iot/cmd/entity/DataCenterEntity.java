@@ -86,8 +86,8 @@ public class DataCenterEntity implements Validater {
             stringBuilder.append("protocol=" + (TextUtils.isEmpty(protocol) ? "" : protocol));
             stringBuilder.append("&");
         }
-        if (datatype != null) {
-            stringBuilder.append("datatype=" + (TextUtils.isEmpty(datatype) ? "" : datatype));
+        if (!TextUtils.isEmpty(datatype)) {
+            stringBuilder.append("datatype=" + datatype);
             stringBuilder.append("&");
         }
         if (plattype != null) {

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
@@ -31,11 +32,14 @@ import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceInfoAdapter;
+import com.shmedo.mcloudapp.deviceconfig.adapter.ProductAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceStatisticInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProductInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceSearchActivity;
+import com.shmedo.mcloudapp.deviceconfig.view.SlidingConflictRecyclerView;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -72,11 +76,17 @@ public class NetDeviceListFragment extends BaseFragment {
     @BindView(R.id.tv_online_rate)
     TextView tvOnlineRate;
 
+    @BindView(R.id.recyclerview_device_type)
+    SlidingConflictRecyclerView mRecyclerViewProduct;
+
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.recyclerview_device)
     RecyclerView mRecyclerViewDevice;
+
+    private ProductAdapter productAdapter;
+    private List<ProductInfo> productList = new ArrayList<>();
 
     private DeviceInfoAdapter deviceInfoAdapter;
     private List<DeviceInfo> deviceInfoList = new ArrayList<>();
@@ -95,9 +105,10 @@ public class NetDeviceListFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         pageInfo = new PageInfo(1);
+        initProductAdapter();
         initDeviceInfoAdapter();
-        initLoadMore();
         initRefreshLayout();
+        initLoadMore();
     }
 
     @Override
@@ -105,13 +116,47 @@ public class NetDeviceListFragment extends BaseFragment {
         super.onStart();
         if (companyID != MCloudApp.getCompanyID()) {
             companyID = MCloudApp.getCompanyID();
+            productID = -1;
             clearData();
             startLoading();
             mRefreshLayout.setEnableLoadMore(false);
             //是否在刷新的时候禁止内容的一切手势操作（默认false）
             mRefreshLayout.setDisableContentWhenRefresh(true);
             mRefreshLayout.autoRefresh();
+            getDeviceStatByCompanyID();
+            // 查询产品信息
+            queryProducts();
         }
+    }
+
+    private void initProductAdapter() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerViewProduct.setLayoutManager(linearLayoutManager);
+        productAdapter = new ProductAdapter(productList);
+//        productAdapter.setAnimationEnable(true);
+//        productAdapter.setAnimationFirstOnly(false);
+        productAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                ProductInfo productInfo = productList.get(position);
+                if (productInfo.isChecked()) {
+                    return;
+                }
+                for (ProductInfo typeInfo : productList) {
+                    typeInfo.setChecked(false);
+                }
+                productInfo.setChecked(true);
+                productAdapter.notifyDataSetChanged();
+
+                //点击选中最后一个 Item 时,使RecyclerView滚动到底
+                if (position == productList.size() - 1) {
+                    mRecyclerViewProduct.scrollToPosition(adapter.getItemCount() - 1);
+                }
+                productID = productInfo.getId();
+                mRefreshLayout.autoRefresh();
+            }
+        });
+        mRecyclerViewProduct.setAdapter(productAdapter);
     }
 
     private void initDeviceInfoAdapter() {
@@ -133,6 +178,15 @@ public class NetDeviceListFragment extends BaseFragment {
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);
     }
 
+    private void initRefreshLayout() {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                refreshDevices();
+            }
+        });
+    }
+
     /**
      * 初始化加载更多
      */
@@ -150,33 +204,89 @@ public class NetDeviceListFragment extends BaseFragment {
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
 
-    private void initRefreshLayout() {
-        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                refreshDevices();
-            }
-        });
-    }
-
-    @OnClick({R.id.search_placeholder})
-    public void onClick(View v) {
-        if (v.getId() == R.id.search_placeholder) {
-            DeviceSearchActivity.startActivity(getActivity());
-        }
-    }
-
     /**
      * 下拉刷新
      */
     private void refreshDevices() {
-        getDeviceStatByCompanyID();
-
+        deviceInfoList.clear();
+        deviceInfoAdapter.notifyDataSetChanged();
         // 这里的作用是防止下拉刷新的时候还可以上拉加载
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
         // 下拉刷新，需要重置页数
         pageInfo.reset();
         queryDeviceList();
+    }
+
+    /**
+     * 查询产品列表
+     */
+    private void queryProducts() {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+            jsonObjectRequest.put("pageSize", 100);
+            jsonObjectRequest.put("currentPage", 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
+        MDRetrofit.getInstance()
+                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
+                .queryProduct(MCloudApp.getAccessToken(), body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
+                .subscribe(new BaseObserver<PageResult<ProductInfo>>() {
+                    @Override
+                    protected void onResponse(PageResult<ProductInfo> data, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
+                                if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
+                                    mRefreshLayout.finishRefresh(false);
+                                    showNoContentView(StringUtils.getString(R.string.empty_no_data));
+                                    return;
+                                }
+                                initProducts(data.getCurrentPageData());
+
+                            } else {
+                                mRefreshLayout.finishRefresh(false);
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
+                                }
+                                loadFailed(StringUtils.getString(R.string.fetch_data_failed) + ": " + errorInfo.getCode());
+                            }
+                        } else {
+                            loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errorInfo.getCode());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                        loadFailed(null);
+                    }
+                });
+    }
+
+    private void initProducts(List<ProductInfo> dataList) {
+        productList.clear();
+        if (dataList == null || dataList.size() == 0) {
+            return;
+        }
+        ProductInfo productInfo = new ProductInfo();
+        productInfo.setProductName("全部");
+        productInfo.setId(-1);
+        productInfo.setChecked(true);
+        productList.add(productInfo);
+
+        productList.addAll(dataList);
+        productAdapter.notifyDataSetChanged();
+        if (productList.size() <= 1) {
+            mRefreshLayout.finishRefresh(false);
+            showNoContentView(StringUtils.getString(R.string.empty_no_data));
+        }
     }
 
     /**
@@ -251,19 +361,15 @@ public class NetDeviceListFragment extends BaseFragment {
                             if (errorInfo.getCode() == 0) {
                                 if (mRefreshLayout.isRefreshing())
                                     mRefreshLayout.finishRefresh();
+
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                                    if (deviceInfoList.size() == 0) {
-                                        showNoContentView(StringUtils.getString(R.string.empty_no_data));
+                                    if (pageInfo.isFirstPage()) {
+                                        deviceInfoAdapter.setEmptyView(R.layout.empty_view);
                                     } else {
                                         //显示没有更多数据布局
                                         deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
                                     }
                                     return;
-                                }
-
-                                //如果是加载的第一页数据，清空列表
-                                if (pageInfo.isFirstPage()) {
-                                    deviceInfoList.clear();
                                 }
                                 filterDevices(data.getCurrentPageData());
 
@@ -311,6 +417,7 @@ public class NetDeviceListFragment extends BaseFragment {
     protected void loadFinished() {
         super.loadFinished();
         mRefreshLayout.setVisibility(View.VISIBLE);
+        mRecyclerViewProduct.setVisibility(View.VISIBLE);
         mRecyclerViewDevice.setVisibility(View.VISIBLE);
     }
 
@@ -321,12 +428,14 @@ public class NetDeviceListFragment extends BaseFragment {
             if (mRefreshLayout.isRefreshing())
                 mRefreshLayout.finishRefresh(false);
             mRefreshLayout.setVisibility(View.GONE);
+            mRecyclerViewProduct.setVisibility(View.GONE);
             mRecyclerViewDevice.setVisibility(View.GONE);
             showBadNetworkView(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startLoading();
                     mRefreshLayout.autoRefresh();
+                    getDeviceStatByCompanyID();
                 }
             });
         } else {
@@ -337,6 +446,8 @@ public class NetDeviceListFragment extends BaseFragment {
     private void clearData() {
         updateTopView(0, 0, "0%");
         productID = -1;
+        productList.clear();
+        productAdapter.notifyDataSetChanged();
         deviceInfoList.clear();
         deviceInfoAdapter.notifyDataSetChanged();
     }
@@ -348,5 +459,12 @@ public class NetDeviceListFragment extends BaseFragment {
         AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(18, true);
         spannableString.setSpan(absoluteSizeSpan, rate.indexOf("%"), spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvOnlineRate.setText(new SpannedString(spannableString));
+    }
+
+    @OnClick({R.id.search_placeholder})
+    public void onClick(View v) {
+        if (v.getId() == R.id.search_placeholder) {
+            DeviceSearchActivity.startActivity(getActivity());
+        }
     }
 }

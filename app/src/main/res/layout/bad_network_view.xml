@@ -3,7 +3,7 @@
     android:id="@+id/badNetworkRootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_bg_gray"
+    android:background="@color/main_bg_gray_f2f2f2"
     android:focusable="true"
     android:foreground="?android:selectableItemBackground">
 

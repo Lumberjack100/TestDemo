@@ -6,7 +6,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.deviceconfig.model.BasicProductInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.ProductInfo;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,14 +18,14 @@ import java.util.List;
  * 创建时间:  2020/8/18 <br/>
  * 描述：    产品适配器
  */
-public class DeviceProductAdapter extends BaseQuickAdapter<BasicProductInfo, BaseViewHolder> {
+public class ProductAdapter extends BaseQuickAdapter<ProductInfo, BaseViewHolder> {
 
-    public DeviceProductAdapter(@Nullable List<BasicProductInfo> data) {
-        super(R.layout.item_device_product, data);
+    public ProductAdapter(@Nullable List<ProductInfo> data) {
+        super(R.layout.item_product, data);
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder holder, BasicProductInfo productInfo) {
+    protected void convert(@NotNull BaseViewHolder holder, ProductInfo productInfo) {
         holder.setText(R.id.tv_name, productInfo.getProductName());
         if (productInfo.getProductName().equals("全部")) {
             holder.setGone(R.id.tv_num, true);

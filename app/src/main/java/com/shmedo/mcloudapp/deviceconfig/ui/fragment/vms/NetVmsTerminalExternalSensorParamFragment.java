@@ -98,13 +98,13 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     private List<String> calculationList = Arrays.asList("直线式", "多项式", "MEMS", "模数", "倍率");
     private List<String> sensorNameList = new ArrayList<>();
     //直线式和多项式计算方式下支持的传感器
-    private List<String> vibratingWireSensorNameList = Arrays.asList(MonitoringType.WALL_CRACK_METER.getDescription(), MonitoringType.AXIAL_FORCE_METER.getDescription(), MonitoringType.WATER_PRESSURE_METER.getDescription(), MonitoringType.WATER_LEVEL_METER.getDescription(), MonitoringType.OSMOMETER.getDescription());
+    private List<String> vibratingWireSensorNameList = Arrays.asList(MonitoringType.CRACK_METER.getDescription(), MonitoringType.AXIAL_FORCE_METER.getDescription(), MonitoringType.WATER_PRESSURE_METER.getDescription(), MonitoringType.WATER_LEVEL_METER.getDescription(), MonitoringType.OSMOMETER.getDescription());
     //MEMS计算方式下支持的传感器
     private List<String> digitalSensorNameList = Arrays.asList(MonitoringType.ACCELEROMETER.getDescription(), MonitoringType.INCLINOMETER_METER.getDescription(), MonitoringType.AVALANCHE_METER.getDescription());
     //模数计算方式下支持的传感器
     private List<String> modulusSensorNameList = Arrays.asList(MonitoringType.AXIAL_FORCE_METER.getDescription());
     //倍率计算方式下支持的传感器
-    private List<String> magnificationSensorNameList = Arrays.asList(MonitoringType.RAIN_METER.getDescription(), MonitoringType.BOREHOLE_INCLINOMETER.getDescription());
+    private List<String> magnificationSensorNameList = Arrays.asList(MonitoringType.RAIN_METER.getDescription(), MonitoringType.BOREHOLE_INCLINOMETER.getDescription(), MonitoringType.CRACK_METER.getDescription(), MonitoringType.MUD_LEVEL_METER.getDescription(), MonitoringType.SOIL_MOISTURE_METER.getDescription());
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorName;
