@@ -44,8 +44,6 @@ public class MagnificationView extends FrameLayout {
     private String ropeLength;
     private String correctValue;
 
-    private String sensorSerialNumber;
-
     public MagnificationView(@NonNull Context context) {
         this(context, null);
     }
@@ -82,7 +80,7 @@ public class MagnificationView extends FrameLayout {
         }
         //解析出传感器序号
         String[] strs = sensorInfo.getName().split("_");
-        sensorSerialNumber = strs.length > 1 ? strs[0] : "";
+        String sensorSerialNumber = strs.length > 1 ? strs[0] : "";
         if (sensorSerialNumber.equals("201")) {
 //            initRainView();
 //            initRainValue(sensorInfo);
@@ -102,6 +100,11 @@ public class MagnificationView extends FrameLayout {
 //        mEtThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
     }
 
+    private void initRainValue(VmsTerminalSensorInfo sensorInfo) {
+//        threshold = sensorInfo.getGateval();
+//        mEtThreshold.setText(threshold);
+    }
+
     private void initInclinometerView() {
         if (viewInclinometer != null) {
             viewInclinometer.setVisibility(View.VISIBLE);
@@ -114,11 +117,6 @@ public class MagnificationView extends FrameLayout {
         mEtCorrectValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
     }
 
-    private void initRainValue(VmsTerminalSensorInfo sensorInfo) {
-//        threshold = sensorInfo.getGateval();
-//        mEtThreshold.setText(threshold);
-    }
-
     private void initInclinometerValue(VmsTerminalSensorInfo sensorInfo) {
         ropeLength = sensorInfo.getRopelen();
         correctValue = sensorInfo.getParamm();
@@ -127,7 +125,10 @@ public class MagnificationView extends FrameLayout {
     }
 
     public boolean updateSensorData(SetVmsTerminalSensorParamsEntity sensorParamsEntity) {
-        if (!checkValueValid()) {
+        //解析出传感器序号
+        String[] strs = sensorParamsEntity.getName().split("_");
+        String sensorSerialNumber = strs.length > 1 ? strs[0] : "";
+        if (!checkValueValid(sensorSerialNumber)) {
             return false;
         }
         if (sensorSerialNumber.equals("201")) {
@@ -140,7 +141,7 @@ public class MagnificationView extends FrameLayout {
         return true;
     }
 
-    private boolean checkValueValid() {
+    private boolean checkValueValid(String sensorSerialNumber) {
         if (sensorSerialNumber.equals("201")) {
 //            threshold = mEtThreshold.getText().toString().trim();
 //            if (!TextUtils.isEmpty(threshold)) {
@@ -153,7 +154,6 @@ public class MagnificationView extends FrameLayout {
 //                    return false;
 //                }
 //            }
-
         } else if (sensorSerialNumber.equals("222")) {
             ropeLength = mEtRopeLength.getText().toString().trim();
             correctValue = mEtCorrectValue.getText().toString().trim();
