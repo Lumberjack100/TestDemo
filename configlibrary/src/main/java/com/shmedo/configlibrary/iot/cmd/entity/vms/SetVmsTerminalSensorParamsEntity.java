@@ -68,6 +68,10 @@ public class SetVmsTerminalSensorParamsEntity implements Validater {
         this.type = type;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
