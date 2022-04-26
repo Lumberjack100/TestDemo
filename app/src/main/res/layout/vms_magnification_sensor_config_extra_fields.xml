@@ -10,6 +10,21 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
+            android:text="修正值(单位:m)" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/correctValue"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="numberSigned|numberDecimal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_ropeLength"
+        style="@style/Common_EditItem_LayoutStyle">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
             android:text="测段长(单位:m)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
@@ -19,17 +34,5 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-        <TextView
-            style="@style/Common_ClickableItem_TitleStyle"
-            android:text="修正值(单位:m)" />
-
-        <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/correctValue"
-            style="@style/Common_EditItem_EditText_Style"
-            android:inputType="numberSigned|numberDecimal" />
-
-    </LinearLayout>
 
 </LinearLayout>

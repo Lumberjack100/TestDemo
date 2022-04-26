@@ -369,10 +369,12 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                                     monitorTypeList.clear();
                                     monitorTypeList.addAll(magnificationMonitorTypeList);
                                 }
-
                                 //如果传感器类型不支持选中的计算方式，则重置等待重新选择
                                 if (!monitorTypeList.contains(mTvMonitorType.getText().toString())) {
                                     mTvMonitorType.setText(monitorTypeList.get(0));
+                                }
+                                if (mTvSensorCalculation.getText().toString().contains("倍率")) {
+                                    magnificationView.setVisibilityBySensorType(text);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
@@ -394,16 +396,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                             @Override
                             public void onSelect(int position, String text) {
                                 mTvMonitorType.setText(text);
-
-                                if (mTvSensorCalculation.getText().toString().contains("直线式")) {
-
-                                } else if (mTvSensorCalculation.getText().toString().contains("多项式")) {
-
-                                } else if (mTvSensorCalculation.getText().toString().contains("MEMS")) {
-
-                                } else if (mTvSensorCalculation.getText().toString().contains("模数")) {
-
-                                } else if (mTvSensorCalculation.getText().toString().contains("倍率")) {
+                                if (mTvSensorCalculation.getText().toString().contains("倍率")) {
                                     magnificationView.setVisibilityBySensorType(text);
                                 }
                             }
