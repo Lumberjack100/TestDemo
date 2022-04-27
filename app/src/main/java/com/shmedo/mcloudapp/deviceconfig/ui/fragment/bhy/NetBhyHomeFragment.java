@@ -79,7 +79,7 @@ public class NetBhyHomeFragment extends UniversalNetConfigHomeFragment {
     protected void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态": {
-                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.BHY);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.DAS);
             }
             break;
 
