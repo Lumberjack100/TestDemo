@@ -25,6 +25,7 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.TcpToBleDebugActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
 import com.shmedo.mcloudapp.util.LocationUtils;
@@ -54,7 +55,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         return R.layout.fragment_ble_das_advanced_setting;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         queryInstallLocation();
@@ -108,7 +109,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         Timber.d("设置重庆地灾平台指令===%s", commandItems.getFirst());
     }
 
-    @OnClick({R.id.resetLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout, R.id.chongQingTestLayout})
+    @OnClick({R.id.resetLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout, R.id.chongQingTestLayout, R.id.remoteDebuggingLayout})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -130,6 +131,9 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
 
         } else if (id == R.id.chongQingTestLayout) {
             showRegisterPlatformDialog();
+
+        } else if (id == R.id.remoteDebuggingLayout) {
+            TcpToBleDebugActivity.startActivity(mActivity);
         }
     }
 
