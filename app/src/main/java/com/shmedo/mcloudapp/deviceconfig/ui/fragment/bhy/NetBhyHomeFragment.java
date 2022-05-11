@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
@@ -64,6 +65,9 @@ public class NetBhyHomeFragment extends UniversalNetConfigHomeFragment {
         configModule = new ConfigModule(R.drawable.ic_device_collector_config, "采集器配置", "采集器参数配置");
         configModuleList.add(configModule);
 
+        configModule = new ConfigModule(R.drawable.ic_device_sensor_config, "传感器配置", "传感器参数配置");
+        configModuleList.add(configModule);
+
         configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "MQTT协议配置");
         configModuleList.add(configModule);
 
@@ -75,7 +79,7 @@ public class NetBhyHomeFragment extends UniversalNetConfigHomeFragment {
     protected void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态": {
-                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.BHY);
+                DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.DAS);
             }
             break;
 
@@ -99,6 +103,10 @@ public class NetBhyHomeFragment extends UniversalNetConfigHomeFragment {
 
             case "采集器配置":
                 DasCollectorSettingActivity.startActivity(mActivity, deviceInfo);
+                break;
+
+            case "传感器配置":
+                DasSensorConfigActivity.startActivity(mActivity, deviceInfo);
                 break;
 
             case "数据中心":

@@ -225,6 +225,19 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_axis_z)
     TextView mTvAxisZ;//角度
 
+    @BindView(R.id.ll_inclinometer_acceleration)
+    View inclinometerAccelerationLayout;
+
+    @BindView(R.id.tv_acceleration_x)
+    TextView mTvAccelerationX;//
+
+    @BindView(R.id.tv_acceleration_y)
+    TextView mTvAccelerationY;//
+
+    @BindView(R.id.tv_acceleration_z)
+    TextView mTvAccelerationZ;//
+
+
     //扩展传感器信息
     @BindView(R.id.mainSensorInfo)
     View mainSensorInfoLayout;
@@ -969,7 +982,12 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     mTvAxisY.setText(MessageFormat.format("{0}", values[1]));
                     mTvAxisZ.setText(MessageFormat.format("{0}", values[2]));
                 }
-
+                if (values.length >= 6) {
+                    inclinometerAccelerationLayout.setVisibility(View.VISIBLE);
+                    mTvAccelerationX.setText(MessageFormat.format("{0}", values[3]));
+                    mTvAccelerationY.setText(MessageFormat.format("{0}", values[4]));
+                    mTvAccelerationZ.setText(MessageFormat.format("{0}", values[5]));
+                }
                 Map<String, Object> valueMap = new HashMap<String, Object>();
                 valueMap.put("axis_value", dasSubSensorStatusInfo.getMems().getVaule());//自定义参数：音乐类型，值：流行
                 MobclickAgent.onEventObject(MCloudApp.getContext(), "qingjiao_axis", valueMap);
