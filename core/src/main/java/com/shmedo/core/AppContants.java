@@ -96,6 +96,9 @@ public interface AppContants {
 
         //蓝牙测斜仪测量间距
         String INCLINOMETER_MEASURINGSPACING = "inclinometer_measuringSpacing";
+
+        String REMOTE_TCP_SHOST = "remote_tcp_shost";
+        String REMOTE_TCP_PORT = "remote_tcp_port";
     }
 
     interface MsgWhat {

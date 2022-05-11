@@ -38,6 +38,9 @@ import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import timber.log.Timber;
 
 public class TcpToBleDebugActivity extends BaseActivity {
+    public static final String TCP_HOST = "com.shmedo.mcloudapp.TCP_HOST";
+    public static final String TCP_PORT = "com.shmedo.mcloudapp.TCP_PORT";
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -57,8 +60,10 @@ public class TcpToBleDebugActivity extends BaseActivity {
     private String host = "192.168.0.107";
     private int port = 1088;
 
-    public static void startActivity(Context context) {
+    public static void startActivity(Context context, String host, int port) {
         Intent intent = new Intent(context, TcpToBleDebugActivity.class);
+        intent.putExtra(TCP_HOST, host);
+        intent.putExtra(TCP_PORT, port);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -72,6 +77,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
+        mToolbar.setTitle("TCP远程调试");
         mToolbar.setSubtitle(host + ":" + port);
         parseIntent();
         initLogAdapter();
@@ -84,7 +90,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
                     printLog("TCP连接成功", R.color.title_text_color);
                 } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
                     mTvConnect.setText("连接");
-                    printLog("TCP连接断开.", R.color.title_text_color);
+                    printLog("TCP连接断开", R.color.title_text_color);
                 }
             }
         });
@@ -105,13 +111,14 @@ public class TcpToBleDebugActivity extends BaseActivity {
 //                        return;
 //                    }
 //                }
+                Timber.d("onResponseMsg: %s", msg);
                 if (msg.startsWith("$$888")) {
                     return;
                 }
                 handleResponseMsg(msg);
             }
         });
-        usrBleViewModel.getConnectionState().observe( this, new Observer<ConnectionState>() {
+        usrBleViewModel.getConnectionState().observe(this, new Observer<ConnectionState>() {
             @Override
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
@@ -132,6 +139,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
                     // fallthrough
                     case DISCONNECTING:
+                        usrBleViewModel.reconnect();
                         break;
                 }
             }
@@ -143,10 +151,8 @@ public class TcpToBleDebugActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent.getExtras() == null)
             return;
-
-//        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-//            projectDeviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
-//        }
+        host = intent.getStringExtra(TCP_HOST);
+        port = intent.getIntExtra(TCP_PORT, 1088);
     }
 
     private void initLogAdapter() {
