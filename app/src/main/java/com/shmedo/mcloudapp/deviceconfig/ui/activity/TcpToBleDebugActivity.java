@@ -15,9 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.BottomMenu;
+import com.kongzue.dialogx.interfaces.OnMenuItemClickListener;
 import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -27,6 +31,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -210,8 +215,50 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 tcpViewModel.disconnect();
             }
         } else if (id == R.id.ivMore) {
-
+            showMoreMenu();
         }
+    }
+
+    private void showMoreMenu() {
+        BottomMenu.show(new String[]{"清空日志", "分享日志"})
+                .setMessage("")
+                .setOnMenuItemClickListener(new OnMenuItemClickListener<BottomMenu>() {
+                    @Override
+                    public boolean onClick(BottomMenu dialog, CharSequence text, int index) {
+                        if (index == 0) {
+                            clearLogs();
+                        } else if (index == 1) {
+                            shareLogs();
+                        }
+                        return false;
+                    }
+                });
+    }
+
+    private void clearLogs() {
+        logInfoList.clear();
+        commonLogAdapter.notifyDataSetChanged();
+    }
+
+    private void shareLogs() {
+        if (logInfoList.size() == 0) {
+            ToastUtils.show("没有日志");
+            return;
+        }
+
+//        FileIOUtils.writeFileFromString()
+
+        String timeStr = TimeUtils.getNowString(new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()));
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(AppUtils.getAppName());
+        stringBuilder.append("_tcp_client_realtime_log_");
+        stringBuilder.append(timeStr);
+        stringBuilder.append(".txt");
+        String str2 = stringBuilder.toString();
+
+        File file = new File(PathUtils.getInternalAppCachePath(), str2);
+        if (file.exists())
+            file.delete();
     }
 
     private void printLog(String msg, int color) {
@@ -220,7 +267,6 @@ public class TcpToBleDebugActivity extends BaseActivity {
         commonLogAdapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(commonLogAdapter.getItemCount() - 1);
     }
-
 
     /**
      * 断开 Tcp 连接警告
