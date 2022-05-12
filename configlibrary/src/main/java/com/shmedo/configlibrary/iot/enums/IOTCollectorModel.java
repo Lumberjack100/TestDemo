@@ -94,7 +94,14 @@ public enum IOTCollectorModel {
     /**
      * 浊度仪传感器
      */
-    ZDY("26","浊度仪");
+    ZDY("26","浊度仪"),
+
+    /**
+     * 浊度仪传感器
+     */
+    SZSW("27","数字式水位计"),
+
+    UNKNOWN_TYPE("-1", "未知类型");
 
     IOTCollectorModel(String code,String description) {
         this.code = code;
@@ -126,7 +133,7 @@ public enum IOTCollectorModel {
                 return collectorModel;
         }
 
-        return VW08;
+        return UNKNOWN_TYPE;
     }
 
     public static boolean isValidCollector(String coll) {

@@ -167,6 +167,22 @@ public enum IOTSensorType {
         return allSensors.contains(coll);
     }
 
+    public static boolean isVibratingWireSensor(IOTSensorType type) {
+        switch (type) {
+            case KANG_PERCOLATE:
+            case GUDAN_PERCOLATE:
+            case GUDAN_SOIL_PRESSURE:
+            case GUDAN_STRESS:
+            case GUDAN_NOT_STRESS:
+            case GUDAN_DISPLACEMENT_METER:
+            case JUNXING_ZLJ_300T:
+               return true;
+
+            default:
+                return false;
+        }
+    }
+
     public static IOTSensorType getSensorTypeByCollectorCode(String code) {
         if (IOTCollectorModel.value(code) == IOTCollectorModel.VW08) {
             return IOTSensorType.KANG_PERCOLATE;

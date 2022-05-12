@@ -6,11 +6,10 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
 import com.shmedo.core.AppContants;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasExternalSensorListFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 /**
  * 创建者:   gonghe <br/>
@@ -50,11 +49,11 @@ public class DasExternalSensorListNewActivity extends BaseConfigFragmentContaine
 
         if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
             collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
-            if (IOTCollectorModel.value(collectorModel) == IOTCollectorModel.VW08) {//振弦式传感器
-                mToolbarTitle.setText("振弦式传感器");
-            } else {
-                mToolbarTitle.setText("数字式传感器");
-            }
+//            if (IOTCollectorModel.value(collectorModel) == IOTCollectorModel.VW08) {//振弦式传感器
+//                mToolbarTitle.setText("振弦式传感器");
+//            } else {
+//                mToolbarTitle.setText("数字式传感器");
+//            }
         }
     }
 
