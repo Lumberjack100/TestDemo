@@ -215,7 +215,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             dasExternalSensorInfo = sensorHashMap.get(curSensorItem.getSensorAddress());
             sensorType = dasExternalSensorInfo.getType().equals("0") ? IOTSensorType.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(dasExternalSensorInfo.getType());
         }
-        DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, deviceInfo, collectorInfo.getType(), sensorType, addressList, dasExternalSensorInfo);
+        DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, deviceInfo, sensorType, addressList, dasExternalSensorInfo);
     }
 
     private void warnDeleteSensorItem() {

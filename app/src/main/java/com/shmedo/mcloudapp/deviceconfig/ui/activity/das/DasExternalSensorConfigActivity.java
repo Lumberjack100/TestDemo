@@ -8,15 +8,14 @@ import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 
-import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
 import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasExternalDigitalSensorFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasExternalVibratingWireSensorFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import java.util.ArrayList;
@@ -28,16 +27,14 @@ import java.util.List;
  * 描述：     TODO
  */
 public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainerActivity {
-    private String collectorModel = "";//采集器类型
     private IOTSensorType sensorType;
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
 
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, DeviceInfo deviceInfo, String collectorModel, IOTSensorType sensorType, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, DeviceInfo deviceInfo, IOTSensorType sensorType, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
         Intent intent = new Intent(context, DasExternalSensorConfigActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
-        intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         intent.putStringArrayListExtra(AppContants.Extras.SENSOR_ADDRESS_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
@@ -51,9 +48,6 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
-            collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
-        }
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_TYPE)) {
             sensorType = (IOTSensorType) intent.getSerializableExtra(AppContants.Extras.SENSOR_TYPE);
         }
@@ -63,21 +57,17 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             externalSensorInfo = (DasExternalSensorInfo) intent.getSerializableExtra(AppContants.Extras.SENSOR_PARAM);
         }
-//        String sensorName = BlueResultParserUtil.getSensorName(Objects.requireNonNull(sensorType));
-//        mToolbarTitle.setText(sensorName);
+        mToolbarTitle.setText(sensorType.getDescription());
     }
 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            if (IOTCollectorModel.value(collectorModel) == IOTCollectorModel.VW08) {//振弦式传感器
-                //TODO #gh# 后面考虑根据选择不同的传感器动态切换 Title 显示
-                mToolbarTitle.setText("振弦式传感器");
+            if (IOTSensorType.isVibratingWireSensor(sensorType)) {
                 mIvAction.setVisibility(View.VISIBLE);
                 mIvAction.setImageResource(R.drawable.ic_scan_device_code);
                 fragment = NetDasExternalVibratingWireSensorFragment.newInstance(addressList, sensorType, externalSensorInfo);
             } else { //数字式传感器
-                mToolbarTitle.setText("数字式传感器");
                 fragment = NetDasExternalDigitalSensorFragment.newInstance(addressList, sensorType, externalSensorInfo);
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
