@@ -417,6 +417,14 @@
             android:theme="@style/LightStatusBarActivity" />
 
         <activity
+            android:name=".deviceconfig.ui.activity.TcpToBleDebugActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:maxAspectRatio="2.4"
+            android:screenOrientation="portrait" />
+
+
+        <activity
             android:name=".ddshare.DDShareActivity"
             android:exported="true"
             android:launchMode="singleInstance"

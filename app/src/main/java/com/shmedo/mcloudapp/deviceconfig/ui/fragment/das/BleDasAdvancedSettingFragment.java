@@ -10,6 +10,9 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.constant.RegexConstants;
+import com.blankj.utilcode.util.RegexUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -26,7 +29,9 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.TcpToBleDebugActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
 import com.shmedo.mcloudapp.util.LocationUtils;
@@ -119,7 +124,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         Timber.d("设置重庆地灾平台指令===%s", commandItems.getFirst());
     }
 
-    @OnClick({R.id.resetLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout, R.id.chongQingTestLayout})
+    @OnClick({R.id.resetLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout, R.id.chongQingTestLayout, R.id.remoteDebuggingLayout})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -141,6 +146,9 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
 
         } else if (id == R.id.chongQingTestLayout) {
             showRegisterPlatformDialog();
+
+        } else if (id == R.id.remoteDebuggingLayout) {
+            setTCPConnection();
         }
     }
 
@@ -208,6 +216,51 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
+    }
+
+    private void setTCPConnection() {
+        String host = SPStaticUtils.getString(AppContants.Extras.REMOTE_TCP_SHOST, "192.168.0.");
+        String port = SPStaticUtils.getString(AppContants.Extras.REMOTE_TCP_PORT, "");
+
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("TCP远程地址")
+                .customView(R.layout.set_tcp_host_port, false)
+                .canceledOnTouchOutside(false);
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+
+        View view = mMaterialDialog.getCustomView();
+        ClearEditText hostET = view.findViewById(R.id.hostET);
+        ClearEditText portET = view.findViewById(R.id.portET);
+        hostET.setText(host);
+        portET.setText(port);
+        view.findViewById(R.id.btn_confirm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!RegexUtils.isIP(hostET.getText())) {
+                    ToastUtils.show("请输入正确的主机地址");
+                    return;
+                }
+                if (!RegexUtils.isMatch(RegexConstants.REGEX_POSITIVE_INTEGER, portET.getText())) {
+                    ToastUtils.show("请输入正确的端口号");
+                    return;
+                }
+                mMaterialDialog.dismiss();
+                if (!host.equals(hostET.getText().toString())) {
+                    SPStaticUtils.put(AppContants.Extras.REMOTE_TCP_SHOST, String.valueOf(hostET.getText()));
+                }
+                if (!port.equals(portET.getText().toString())) {
+                    SPStaticUtils.put(AppContants.Extras.REMOTE_TCP_PORT, String.valueOf(portET.getText()));
+                }
+                TcpToBleDebugActivity.startActivity(mActivity, String.valueOf(hostET.getText()), Integer.parseInt(String.valueOf(portET.getText())));
+            }
+        });
+        view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMaterialDialog.dismiss();
+            }
+        });
     }
 
     @Override
