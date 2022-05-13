@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,11 +17,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.TimeUtils;
+import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.BottomMenu;
+import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.kongzue.dialogx.interfaces.OnMenuItemClickListener;
 import com.littlegreens.netty.client.listener.MessageStateListener;
 import com.shmedo.mcloudapp.R;
@@ -31,7 +36,10 @@ import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
 import com.shmedo.mcloudapp.profile.USRBleViewModel;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +47,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import gdut.bsx.share2.Share2;
+import gdut.bsx.share2.ShareContentType;
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import timber.log.Timber;
 
@@ -140,11 +150,11 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
                     case DISCONNECTED:
                         printLog("蓝牙连接断开", R.color.title_text_color);
+//                        usrBleViewModel.reconnect();
                         break;
 
                     // fallthrough
                     case DISCONNECTING:
-                        usrBleViewModel.reconnect();
                         break;
                 }
             }
@@ -245,20 +255,66 @@ public class TcpToBleDebugActivity extends BaseActivity {
             ToastUtils.show("没有日志");
             return;
         }
-
-//        FileIOUtils.writeFileFromString()
-
+        WaitDialog.show("处理中...")
+                .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
+                    @Override
+                    public boolean onBackPressed() {
+                        WaitDialog.dismiss();
+                        return false;
+                    }
+                });
         String timeStr = TimeUtils.getNowString(new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()));
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(AppUtils.getAppName());
-        stringBuilder.append("_tcp_client_realtime_log_");
-        stringBuilder.append(timeStr);
-        stringBuilder.append(".txt");
-        String str2 = stringBuilder.toString();
-
+        String str2 = AppUtils.getAppName() + "_tcp_client_realtime_log_" + timeStr + ".txt";
         File file = new File(PathUtils.getInternalAppCachePath(), str2);
         if (file.exists())
             file.delete();
+
+        if (!FileUtils.createOrExistsFile(file)) {
+            WaitDialog.dismiss();
+            Timber.e("create file <" + file + "> failed.");
+            return;
+        }
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new FileWriter(file, true));
+            for (CommonLogInfo commonLogInfo : logInfoList) {
+                StringBuilder stringBuilder1 = new StringBuilder();
+                stringBuilder1.append(commonLogInfo.getLogTime());
+                stringBuilder1.append(' ');
+                stringBuilder1.append(commonLogInfo.getLogContent());
+                stringBuilder1.append('\n');
+                str2 = stringBuilder1.toString();
+                bw.write(str2);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                WaitDialog.dismiss();
+                if (bw != null) {
+                    bw.close();
+                    shareFile(file);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                WaitDialog.dismiss();
+            }
+        }
+    }
+
+    private void shareFile(File file) {
+        if (!file.exists()) {
+            ToastUtils.show("日志文件不存在");
+            return;
+        }
+        Uri contentUri = UriUtils.file2Uri(file);
+        new Share2.Builder(this)
+                .setContentType(ShareContentType.FILE)
+                .setShareFileUri(contentUri)
+                .setTitle("分享文件")
+                .setOnActivityResult(300)
+                .build()
+                .shareBySystem();
     }
 
     private void printLog(String msg, int color) {
@@ -306,8 +362,6 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
     @Override
     public void onDestroy() {
-//        TpsMonitor.setCurDeviceToken(null);
-//        clearDevice();
         super.onDestroy();
     }
 
