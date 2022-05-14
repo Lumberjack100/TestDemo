@@ -18,13 +18,13 @@ import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDe
 import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeAdvancedConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeExecutiveAgencyActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeGuideGrooveCalibrationActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeInclinometerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeLowEnergyModeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeterWheelActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeStepperMotorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeVoltageConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AnthropomorphicMovementActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.IntelligentControlActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
 import java.util.ArrayList;
@@ -76,12 +76,10 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
                 if (isDoubleClick(view)) {
                     return;
                 }
-
                 if (!isConnected()) {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
                 processItemClick();
             }
@@ -111,16 +109,16 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
                 BleAdmeLockedRotorDetectionActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
-            case "继电器使能":
-                AdmeLowEnergyModeActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+            case "导槽校准":
+                AdmeGuideGrooveCalibrationActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "电压配置":
                 AdmeVoltageConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
-            case "拟人运动":
-                AnthropomorphicMovementActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+            case "智能控制":
+                IntelligentControlActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
         }
     }
@@ -144,13 +142,13 @@ public class BleAdmeAdvancedConfigFragment extends BaseUSRBleIotCommunicateFragm
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "堵转缓停", "参数配置");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "继电器使能", "参数配置");
+        configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "电压配置", "参数配置");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "拟人运动", "参数配置");
+        configModule = new ConfigModule(R.drawable.ic_adme_advanced_config, "智能控制", "参数配置");
         configModuleList.add(configModule);
     }
 

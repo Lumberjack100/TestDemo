@@ -8,14 +8,14 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAnthropomorphicMovementFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAnthropomorphicMovementFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleIntelligentControlFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetIntelligentControlFragment;
 import com.shmedo.mcloudapp.projects.model.ProjectDeviceInfo;
 
-public class AnthropomorphicMovementActivity extends BaseConfigFragmentContainerActivity {
+public class IntelligentControlActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, ProjectDeviceInfo projectDeviceInfo) {
-        Intent intent = new Intent(context, AnthropomorphicMovementActivity.class);
+        Intent intent = new Intent(context, IntelligentControlActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, projectDeviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -23,7 +23,7 @@ public class AnthropomorphicMovementActivity extends BaseConfigFragmentContainer
 
 
     public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, AnthropomorphicMovementActivity.class);
+        Intent intent = new Intent(context, IntelligentControlActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -32,16 +32,16 @@ public class AnthropomorphicMovementActivity extends BaseConfigFragmentContainer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("拟人运动");
+        mToolbarTitle.setText("智能控制");
     }
 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetAnthropomorphicMovementFragment.newInstance(projectDeviceInfo);
+            fragment = NetIntelligentControlFragment.newInstance(projectDeviceInfo);
 
         } else {
-            fragment = BleAnthropomorphicMovementFragment.newInstance();
+            fragment = BleIntelligentControlFragment.newInstance();
         }
         return fragment;
     }

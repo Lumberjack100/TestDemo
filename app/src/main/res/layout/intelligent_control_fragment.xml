@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_gray"
+    tools:context=".deviceconfig.ui.fragment.adme.NetIntelligentControlFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rl_positive_and_negative_test"
+            style="@style/SwitchButton_LayoutStyle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                style="@style/SwitchButton_TitleStyle"
+                android:text="正反测使能" />
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/positiveAndNegativeEnableSBtn"
+                style="@style/SwitchButton_ButtonStyle"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_low_power"
+            style="@style/SwitchButton_LayoutStyle"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/rl_positive_and_negative_test"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                style="@style/SwitchButton_TitleStyle"
+                android:text="低功耗使能" />
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/lowPowerEnableSBtn"
+                style="@style/SwitchButton_ButtonStyle"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_anthropomorphic_movement"
+            style="@style/SwitchButton_LayoutStyle"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/rl_low_power"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                style="@style/SwitchButton_TitleStyle"
+                android:text="拟人运动使能" />
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/anthropomorphicEnableSBtn"
+                style="@style/SwitchButton_ButtonStyle"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
+
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@+id/maskLayerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</FrameLayout>
