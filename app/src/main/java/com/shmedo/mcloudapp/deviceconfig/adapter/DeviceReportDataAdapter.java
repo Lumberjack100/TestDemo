@@ -2,6 +2,9 @@ package com.shmedo.mcloudapp.deviceconfig.adapter;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCloudDataInfo;
 
@@ -23,6 +26,13 @@ public class DeviceReportDataAdapter extends BaseQuickAdapter<QueryCloudDataInfo
     @Override
     protected void convert(@NotNull BaseViewHolder holder, QueryCloudDataInfo info) {
         holder.setText(R.id.tv_data_time, info.getTimeStr());
-        holder.setText(R.id.tv_data_content, info.getContent());
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String prettyJson = gson.toJson(JsonParser.parseString(info.getContent()));
+            holder.setText(R.id.tv_data_content, prettyJson);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            holder.setText(R.id.tv_data_content, info.getContent());
+        }
     }
 }
