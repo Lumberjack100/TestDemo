@@ -13,10 +13,13 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeAnthropomorphicMovementEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeLowEnergyModelEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeStepperMotorEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeLowEnergyModeInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
@@ -30,16 +33,22 @@ import java.util.List;
 import butterknife.BindView;
 import timber.log.Timber;
 
-public class NetAnthropomorphicMovementFragment extends BaseNetIotCommunicateFragment {
-    @BindView(R.id.paramEnableSBtn)
-    SwitchButton mSbEnable;
+public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment {
+    @BindView(R.id.positiveAndNegativeEnableSBtn)
+    SwitchButton positiveAndNegativeEnableSBtn;
+
+    @BindView(R.id.lowPowerEnableSBtn)
+    SwitchButton lowPowerEnableSBtn;
+
+    @BindView(R.id.anthropomorphicEnableSBtn)
+    SwitchButton anthropomorphicEnableSBtn;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
 
-    public static NetAnthropomorphicMovementFragment newInstance(DeviceInfo deviceInfo) {
-        NetAnthropomorphicMovementFragment fragment = new NetAnthropomorphicMovementFragment();
+    public static NetIntelligentControlFragment newInstance(DeviceInfo deviceInfo) {
+        NetIntelligentControlFragment fragment = new NetIntelligentControlFragment();
         Bundle args = new Bundle();
         args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
@@ -48,14 +57,14 @@ public class NetAnthropomorphicMovementFragment extends BaseNetIotCommunicateFra
 
     @Override
     protected int getLayoutId() {
-        return R.layout.anthropomorphic_movement_fragment;
+        return R.layout.intelligent_control_fragment;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setSwitchViewListener();
-        queryParamInfo();
+        queryPositiveAndNegativeParamInfo();
         //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
             configPageViewModel.configPageEditableChanged.setValue(true);
@@ -65,7 +74,19 @@ public class NetAnthropomorphicMovementFragment extends BaseNetIotCommunicateFra
     }
 
     private void setSwitchViewListener() {
-        mSbEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        positiveAndNegativeEnableSBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                enableOrDisableStepperMotorParam(isChecked);
+            }
+        });
+        lowPowerEnableSBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                enableOrDisableLowEnergy(isChecked);
+            }
+        });
+        anthropomorphicEnableSBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 enableOrDisableAnthropomorphicMovement(isChecked);
@@ -74,12 +95,52 @@ public class NetAnthropomorphicMovementFragment extends BaseNetIotCommunicateFra
     }
 
     /**
+     * 获取设备的步进电机正反测使能信息
+     */
+    private void queryPositiveAndNegativeParamInfo() {
+        showWaitDialog("加载中...");
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+    }
+
+    /**
+     * 获取低功耗使能信息
+     */
+    private void queryLowPowerParamInfo() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE);
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+    }
+
+    /**
      * 获取拟人运动使能参数
      */
-    private void queryParamInfo() {
+    private void queryAnthropomorphicParamInfo() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE);
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-        showWaitDialog("加载中...");
+    }
+
+    /**
+     * 禁用步进电机参数</br>
+     */
+    private void enableOrDisableStepperMotorParam(boolean isOpen) {
+        AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
+        entity.setPosnegtest(isOpen ? "1" : "0");
+
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        showWaitDialog("处理中...");
+    }
+
+    /**
+     * 继电器低功耗使能
+     */
+    private void enableOrDisableLowEnergy(boolean isOpen) {
+        AdmeLowEnergyModelEntity entity = new AdmeLowEnergyModelEntity();
+        entity.setMode(isOpen ? "1" : "0");
+
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOW_ENERGY_MODE, entity);
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        showWaitDialog("处理中...");
     }
 
     /**
@@ -159,6 +220,54 @@ public class NetAnthropomorphicMovementFragment extends BaseNetIotCommunicateFra
         String cmdStr = queryCmdResult.getResponseContent();
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
+            case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
+                IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    dismissWaitDialog();
+                    String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                AdmeStepperMotorInfo  admeStepperMotorInfo = commandResult.getResult();
+                if (admeStepperMotorInfo == null) {
+                    dismissWaitDialog();
+                    Timber.e("AdmeStepperMotorInfo is Null!");
+                    return;
+                }
+                if (admeStepperMotorInfo.getPosnegtest().trim().equals("0")) {
+                    positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(false);
+                } else {
+                    positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(true);
+                }
+                queryLowPowerParamInfo();
+            }
+            break;
+
+            case ADME_MD_GET_LOW_ENERGY_MODE: {
+                IOTCommandResult<AdmeLowEnergyModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    dismissWaitDialog();
+                    String errMsg = String.format("%s %s", "查询低功耗使能状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                AdmeLowEnergyModeInfo admeLowEnergyModeInfo = commandResult.getResult();
+                if (admeLowEnergyModeInfo == null) {
+                    dismissWaitDialog();
+                    Timber.e("AdmeLowEnergyModeInfo is Null!");
+                    return;
+                }
+                if (admeLowEnergyModeInfo.getMode().trim().equals("0")) {
+                    lowPowerEnableSBtn.setCheckedImmediatelyNoEvent(false);
+                } else {
+                    lowPowerEnableSBtn.setCheckedImmediatelyNoEvent(true);
+                }
+                queryAnthropomorphicParamInfo();
+            }
+            break;
+
             case ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE: {
                 dismissWaitDialog();
                 IOTCommandResult<AdmeLowEnergyModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
@@ -171,11 +280,37 @@ public class NetAnthropomorphicMovementFragment extends BaseNetIotCommunicateFra
                 AdmeLowEnergyModeInfo admeLowEnergyModeInfo = commandResult.getResult();
                 if (admeLowEnergyModeInfo != null) {
                     if (admeLowEnergyModeInfo.getMode().trim().equals("0")) {
-                        mSbEnable.setCheckedImmediatelyNoEvent(false);
+                        anthropomorphicEnableSBtn.setCheckedImmediatelyNoEvent(false);
                     } else {
-                        mSbEnable.setCheckedImmediatelyNoEvent(true);
+                        anthropomorphicEnableSBtn.setCheckedImmediatelyNoEvent(true);
                     }
                 }
+            }
+            break;
+
+            case ADME_MD_SET_STEPPER_MOTOR: {//设置ADME的步进电机配置参数
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    dismissWaitDialog();
+                    String errMsg = String.format("%s %s", "设置步进电机参数出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                saveConfigInfo();
+            }
+            break;
+
+            case ADME_MD_SET_LOW_ENERGY_MODE: {
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    dismissWaitDialog();
+                    String errMsg = String.format("%s %s", "设置低功耗使能出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                saveConfigInfo();
             }
             break;
 

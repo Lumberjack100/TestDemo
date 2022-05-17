@@ -51,7 +51,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeGuideGrooveCalibrationActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
@@ -218,10 +217,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
             case "测量孔深":
                 AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                break;
-
-            case "导槽校准":
-                AdmeGuideGrooveCalibrationActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "数据中心":
@@ -551,9 +546,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
         if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
             configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_positive_and_negative_test, "导槽校准", "正反测起点校准");
             configModuleList.add(configModule);
 
             configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");

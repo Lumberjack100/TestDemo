@@ -60,6 +60,83 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_measure_method"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测量方式" />
+
+        <TextView
+            android:id="@+id/tv_measure_method"
+            style="@style/Common_ClickableItem_ValueStyle"
+            tools:text="实时测量" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_waiting_interval_per_round"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="每轮等待时间(min)" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_waiting_interval_per_round"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_measurement_interval_per_round"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="visible">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="每轮测量间隔(h)" />
+
+        <TextView
+            android:id="@+id/tv_measurement_interval_per_round"
+            style="@style/Common_ClickableItem_ValueStyle"
+            android:text="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_start_time_per_round"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="每轮测量开始时间" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:splitMotionEvents="false"
+        android:visibility="gone"
+        tools:itemCount="4"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_time"
+        tools:visibility="visible" />
+
+    <LinearLayout
         android:id="@+id/ll_inclination_tube_hole_depth"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
@@ -98,7 +175,7 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="下放等待时间(min)"/>
+            android:text="下放等待时间(min)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_decentralization_waiting_time"
@@ -123,8 +200,7 @@
 
     </LinearLayout>
 
-    <RelativeLayout
-        style="@style/SwitchButton_LayoutStyle">
+    <RelativeLayout style="@style/SwitchButton_LayoutStyle">
 
         <TextView
             style="@style/SwitchButton_TitleStyle"
@@ -132,6 +208,24 @@
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/decentralizedEnableSBtn"
+            style="@style/SwitchButton_ButtonStyle"
+            app:kswAnimationDuration="100"
+            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+            app:kswThumbHeight="28dp"
+            app:kswThumbRangeRatio="2"
+            app:kswThumbWidth="28dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout style="@style/SwitchButton_LayoutStyle">
+
+        <TextView
+            style="@style/SwitchButton_TitleStyle"
+            android:text="正反测使能" />
+
+        <com.kyleduo.switchbutton.SwitchButton
+            android:id="@+id/positiveAndNegativeEnableSBtn"
             style="@style/SwitchButton_ButtonStyle"
             app:kswAnimationDuration="100"
             app:kswBackDrawable="@drawable/sl_switchbutton_back"

@@ -16,12 +16,12 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="测量模式" />
+            android:text="测量孔深模式" />
 
         <TextView
             android:id="@+id/tv_measure_mode"
             style="@style/Common_ClickableItem_ValueStyle"
-            android:text="手动测孔深模式" />
+            android:text="手动测孔深" />
 
     </LinearLayout>
 
@@ -89,40 +89,18 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="vertical">
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
-            <LinearLayout
-                style="@style/Common_EditItem_LayoutStyle"
-                android:background="@drawable/layer_common_click_item_with_divider">
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="运动距离(m)" />
 
-                <RadioButton
-                    android:id="@+id/radio_auto_control"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:button="@drawable/switch_sensor_radio_selector"
-                    android:text="运动距离(m)"
-                    android:textColor="@color/text_color_343434"
-                    android:textSize="@dimen/text_size_17" />
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/motionDistanceEt"
+                style="@style/Common_EditItem_EditText_Style"
+                android:inputType="numberDecimal" />
 
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/motionDistanceEt"
-                    style="@style/Common_EditItem_EditText_Style"
-                    android:inputType="numberDecimal" />
-
-            </LinearLayout>
-
-            <RadioButton
-                android:id="@+id/radio_manual_control"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginStart="16dp"
-                android:button="@drawable/switch_sensor_radio_selector"
-                android:text="手动模式"
-                android:textColor="@color/text_color_343434"
-                android:textSize="@dimen/text_size_17" />
         </LinearLayout>
 
     </LinearLayout>

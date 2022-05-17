@@ -222,6 +222,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         ButterKnife.bind(this);
         initView();
         initTimeAdapter(context);
+        AdmeTimeItem item = new AdmeTimeItem(null, true);
+        admeTimeItemList.add(item);
+        admeTimeAdapter.notifyDataSetChanged();
     }
 
     private void initView() {
@@ -858,6 +861,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             if (!startTimePerRound.equals("NullKey")) {
                 AdmeTimeItem item;
                 String[] times = startTimePerRound.split("\\|");
+                admeTimeItemList.clear();
                 for (String time : times) {
                     if (!TextUtils.isEmpty(time)) {
                         time = String.format(Locale.getDefault(), "%02d:00:00", Integer.parseInt(time));

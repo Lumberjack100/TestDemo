@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.view.adme;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -10,9 +11,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ConvertUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -20,15 +31,25 @@ import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeBasicConfigEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeExecutiveAgencyEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeLockedRotorDetectionEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeStepperMotorEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBasicConfigInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeExecutiveAgencyInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
+import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeTimeAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.AdmeTimeItem;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +70,18 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     @BindView(R.id.et_mac_address)
     ClearEditText mEtMacAddress;//Mac 地址
 
+    @BindView(R.id.tv_measure_method)
+    TextView mTvMeasureMethod;//测量方式
+
+    @BindView(R.id.et_waiting_interval_per_round)
+    ClearEditText mEtWaitingIntervalPerRound;//每轮等待时间
+
+    @BindView(R.id.tv_measurement_interval_per_round)
+    TextView mTvMeasurementIntervalPerRound;//每轮测量间隔
+
+    @BindView(R.id.recyclerview_time)
+    RecyclerView mRecyclerViewTime;
+
     @BindView(R.id.et_inclination_tube_hole_depth)
     ClearEditText mEtInclinometerTubeHoleDepth;//测斜管孔深(m)
 
@@ -64,6 +97,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     @BindView(R.id.decentralizedEnableSBtn)
     public SwitchButton mSbDecentralizedEnable;
 
+    @BindView(R.id.positiveAndNegativeEnableSBtn)
+    public SwitchButton positiveAndNegativeEnableSBtn;
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
@@ -75,6 +111,18 @@ public class AdmeBasicParamConfigView extends LinearLayout {
 
     @BindView(R.id.ll_mac_address)
     ViewGroup macAddressLayout;
+
+    @BindView(R.id.ll_measure_method)
+    ViewGroup measureMethodLayout;
+
+    @BindView(R.id.ll_waiting_interval_per_round)
+    ViewGroup waitingIntervalPerRoundLayout;
+
+    @BindView(R.id.ll_measurement_interval_per_round)
+    ViewGroup measurementIntervalPerRoundLayout;
+
+    @BindView(R.id.ll_start_time_per_round)
+    ViewGroup startTimePerRoundLayout;
 
     @BindView(R.id.ll_inclination_tube_hole_depth)
     ViewGroup inclinometerTubeHoleDepthLayout;
@@ -88,6 +136,11 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     @BindView(R.id.ll_data_settlement_method)
     ViewGroup dataSettlementMethodLayout;
 
+    private String measureMethod;//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)
+    private String waitingIntervalPerRound;// 每轮等待时间
+    private String measurementIntervalPerRound;// 每轮测量间隔
+    private String startTimePerRound;// 每轮测量开始时间
+
     private String inclinometerTypeOld;//测斜仪类型
     private String inclinometerType;// 测斜仪类型
     private String address;// 采集器地址/Mac 地址
@@ -97,13 +150,17 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private String dataSettlementMethodOld;//数据结算方式
     private String dataSettlementMethod;// 数据结算方式
     private final String[] inclinometerTypes = new String[]{"433测斜仪", "蓝牙测斜仪"};
+    private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
     private final String[] settlementMethods = new String[]{"顶固定法", "底固定法"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
     public AdmeBasicConfigInfo basicConfigParam;
+    public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo;
     public AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
 
+    private AdmeTimeAdapter admeTimeAdapter;
+    private List<AdmeTimeItem> admeTimeItemList = new ArrayList<>();
 
     public AdmeBasicParamConfigView(Context context) {
         this(context, null);
@@ -119,6 +176,10 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.adme_basic_param_view, this, true);
         ButterKnife.bind(this);
         initView();
+        initTimeAdapter(context);
+        AdmeTimeItem item = new AdmeTimeItem(null, true);
+        admeTimeItemList.add(item);
+        admeTimeAdapter.notifyDataSetChanged();
     }
 
     private void initView() {
@@ -135,6 +196,98 @@ public class AdmeBasicParamConfigView extends LinearLayout {
 
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
+
+        mTvInclinometerType.setText(inclinometerTypes[0]);
+        inclinometerTypeOld = "0";
+
+        mTvDataSettlementMethod.setText(settlementMethods[0]);
+        dataSettlementMethodOld = "0";
+
+        mTvMeasureMethod.setText(measureMethods[1]);
+        measureMethod = "1";
+
+        mTvMeasurementIntervalPerRound.setText("1");
+        measurementIntervalPerRound = "1";
+    }
+
+    private void initTimeAdapter(Context context) {
+        mRecyclerViewTime.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        mRecyclerViewTime.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(0.5f), getResources().getColor(R.color.divider_line_bg_efefef)));
+        admeTimeAdapter = new AdmeTimeAdapter(admeTimeItemList);
+        admeTimeAdapter.setAnimationEnable(false);
+        admeTimeAdapter.setAnimationFirstOnly(false);
+        admeTimeAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                processItemClick(context, position);
+            }
+        });
+        admeTimeAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+                AdmeTimeItem admeTimeItem = admeTimeItemList.get(position);
+                if (admeTimeItem.isAddButton()) {
+                    return true;
+                }
+                warnDeleteSensorItem(context, position);
+                return true;
+            }
+        });
+        mRecyclerViewTime.setAdapter(admeTimeAdapter);
+    }
+
+    private void processItemClick(Context context, int position) {
+        AdmeTimeItem admeTimeItem = admeTimeItemList.get(position);
+        if (!admeTimeItem.isAddButton())
+            return;
+
+        new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay);
+                for (AdmeTimeItem item : admeTimeItemList) {
+                    if (item.getTime().contains(time)) {
+                        ToastUtils.show("不能设置重复时间点!");
+                        return;
+                    }
+                }
+                admeTimeItemList.remove(admeTimeItemList.size() - 1);
+                AdmeTimeItem item = new AdmeTimeItem(time, false);
+                admeTimeItemList.add(item);
+                if (admeTimeItemList.size() < 8) {
+                    item = new AdmeTimeItem(null, true);
+                    admeTimeItemList.add(item);
+                }
+                admeTimeAdapter.notifyDataSetChanged();
+            }
+        }, 0, 0, true).show();
+    }
+
+    private void warnDeleteSensorItem(Context context, int position) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(context)
+                .title("温馨提示")
+                .content("移除?")
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        admeTimeItemList.remove(position);
+                        admeTimeItemList.remove(admeTimeItemList.size() - 1);
+                        if (admeTimeItemList.size() < 8) {
+                            AdmeTimeItem item = new AdmeTimeItem(null, true);
+                            admeTimeItemList.add(item);
+                        }
+                        admeTimeAdapter.notifyDataSetChanged();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
     }
 
     /**
@@ -159,6 +312,42 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                                     inclinometerType = "1";
                                     collectorAddressLayout.setVisibility(View.GONE);
                                     macAddressLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
+    }
+
+    /**
+     * 选择测量方式
+     */
+    public void showMeasureMethodDialog(Context context) {
+        int pos = Arrays.asList(measureMethods).indexOf(String.valueOf(mTvMeasureMethod.getText()));
+        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(context)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", measureMethods,
+                        null, pos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvMeasureMethod.setText(text);
+                                measureMethod = String.valueOf(position);
+                                if (position == 0) {
+                                    waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                                    measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    startTimePerRoundLayout.setVisibility(View.GONE);
+                                    mRecyclerViewTime.setVisibility(View.GONE);
+                                } else if (position == 1) {
+                                    waitingIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                                    startTimePerRoundLayout.setVisibility(View.GONE);
+                                    mRecyclerViewTime.setVisibility(View.GONE);
+                                } else if (position == 2) {
+                                    waitingIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    startTimePerRoundLayout.setVisibility(View.VISIBLE);
+                                    mRecyclerViewTime.setVisibility(View.VISIBLE);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
@@ -290,7 +479,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             AdmeBasicConfigEntity entity = new AdmeBasicConfigEntity();
             entity.setInctype(basicConfigParam.getInctype().equals("NullKey") ? "NullKey" : inclinometerType);
             entity.setAddress(basicConfigParam.getAddress().equals("NullKey") ? "NullKey" : address);
-
             decimalFormat.applyPattern("#.##");
             entity.setInterdeep(basicConfigParam.getInterdeep().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth)));
             entity.setDownspeed(basicConfigParam.getDownspeed().equals("NullKey") ? "NullKey" : decentralizationSpeed);
@@ -305,10 +493,64 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         return command;
     }
 
+    public String getExecutiveAgencyCommand() {
+        String command = "";
+        try {
+            AdmeExecutiveAgencyEntity entity = new AdmeExecutiveAgencyEntity();
+            entity.setMeastype(admeExecutiveAgencyInfo.getMeastype().equals("NullKey") ? "NullKey" : measureMethod);
+            entity.setDatatype(admeExecutiveAgencyInfo.getDatatype().equals("NullKey") ? "NullKey" : dataSettlementMethod);
+            entity.setDatareply(admeExecutiveAgencyInfo.getDatareply().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getDatareply());
+            entity.setRoundwaitetime(admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") ? "NullKey" : waitingIntervalPerRound);
+            entity.setRoundmeasinval(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
+            //定时测量方式
+            if (!admeExecutiveAgencyInfo.getMeastype().equals("NullKey") && admeExecutiveAgencyInfo.getMeastype().equals("2")) {
+                StringBuffer timeBuffer = new StringBuffer();
+                for (AdmeTimeItem admeTimeItem : admeTimeItemList) {
+                    String time = admeTimeItem.getTime();
+                    if (!TextUtils.isEmpty(time)) {
+                        timeBuffer.append(Integer.parseInt(time.substring(0, time.indexOf(":"))));
+                        timeBuffer.append("|");
+                    }
+                }
+                timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
+                entity.setRoundmeasstart(timeBuffer.toString());
+            } else {
+                entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getRoundmeasstart());
+            }
+            entity.setDatainval(admeExecutiveAgencyInfo.getDatainval().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getDatainval());
+            entity.setCompensatetime(admeExecutiveAgencyInfo.getCompensatetime().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getCompensatetime());
+            entity.setDriveaddress(admeExecutiveAgencyInfo.getDriveaddress().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getDriveaddress());
+            entity.setDownspeed(admeExecutiveAgencyInfo.getDownspeed().equals("NullKey") ? "NullKey" : decentralizationSpeed);
+            decimalFormat.applyPattern("#.##");
+            entity.setInterdeep(admeExecutiveAgencyInfo.getInterdeep().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth)));
+            entity.setDownwaitetime(admeExecutiveAgencyInfo.getDownwaitetime().equals("NullKey") ? "NullKey" : decentralizationWaitingTime);
+            entity.setUpspeed(admeExecutiveAgencyInfo.getUpspeed().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getUpspeed());
+            entity.setMeaspacing(admeExecutiveAgencyInfo.getMeaspacing().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getMeaspacing());
+            entity.setMeaintertime(admeExecutiveAgencyInfo.getMeaintertime().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getMeaintertime());
+            decimalFormat.applyPattern("#.##");
+            entity.setMeabaseth(admeExecutiveAgencyInfo.getMeabaseth().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getMeabaseth());
+            decimalFormat.applyPattern("#.###");
+            entity.setInterval_compensation(admeExecutiveAgencyInfo.getInterval_compensation().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getInterval_compensation());
+            decimalFormat.applyPattern("#.#");
+            entity.setInterval_fitting(admeExecutiveAgencyInfo.getInterval_fitting().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getInterval_fitting());
+            decimalFormat.applyPattern("#.###");
+            entity.setPoint_offset(admeExecutiveAgencyInfo.getPoint_offset().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getPoint_offset());
+
+            command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY, entity);
+        } catch (Exception ex) {
+            command = "";
+            ex.printStackTrace();
+        }
+        return command;
+    }
+
     /**
      * 获取堵转检测配置指令
      */
     public String getLockRotorCommand(boolean isChecked) {
+        if (lockedRotorDetectionInfo == null) {
+            return null;
+        }
         AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
         entity.setLowtbtss(isChecked ? "1" : "0");
         entity.setNumpput(lockedRotorDetectionInfo.getNumpput());
@@ -330,7 +572,19 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         return command;
     }
 
-    public void initParamConfigInfo() {
+    /**
+     * 获取正反测使能指令
+     */
+    public String getPositiveAndNegativeCommand(boolean isChecked) {
+        AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
+        entity.setPosnegtest(isChecked ? "1" : "0");
+
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
+        return command;
+    }
+
+    public void initBasicConfigInfo(AdmeBasicConfigInfo info) {
+        basicConfigParam = info;
         if (basicConfigParam == null) {
             Timber.e("AdmeBasicConfigParam is Null!");
             basicConfigParam = new AdmeBasicConfigInfo();
@@ -394,15 +648,90 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     }
 
     /**
+     * 初始化执行结构参数
+     */
+    public void initExecutiveAgencyInfo(AdmeExecutiveAgencyInfo info) {
+        admeExecutiveAgencyInfo = info;
+        if (admeExecutiveAgencyInfo == null) {
+            Timber.e("AdmeExecutiveAgencyInfo is Null!");
+            admeExecutiveAgencyInfo = new AdmeExecutiveAgencyInfo();
+            return;
+        }
+        measureMethod = admeExecutiveAgencyInfo.getMeastype().trim();
+        waitingIntervalPerRound = admeExecutiveAgencyInfo.getRoundwaitetime().trim();
+        measurementIntervalPerRound = admeExecutiveAgencyInfo.getRoundmeasinval().trim();
+        startTimePerRound = admeExecutiveAgencyInfo.getRoundmeasstart().trim();
+        if (measureMethod.equals("NullKey")) {
+            measureMethodLayout.setVisibility(View.GONE);
+            measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+            startTimePerRoundLayout.setVisibility(View.GONE);
+            mRecyclerViewTime.setVisibility(View.GONE);
+        } else {
+            switch (measureMethod) {
+                case "0":
+                    mTvMeasureMethod.setText(measureMethods[0]);
+                    waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                    measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    startTimePerRoundLayout.setVisibility(View.GONE);
+                    mRecyclerViewTime.setVisibility(View.GONE);
+                    break;
+                case "1":
+                    mTvMeasureMethod.setText(measureMethods[1]);
+                    waitingIntervalPerRoundLayout.setVisibility(View.GONE);
+                    measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                    startTimePerRoundLayout.setVisibility(View.GONE);
+                    mRecyclerViewTime.setVisibility(View.GONE);
+                    break;
+                case "2":
+                    mTvMeasureMethod.setText(measureMethods[2]);
+                    waitingIntervalPerRoundLayout.setVisibility(View.GONE);
+                    measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    startTimePerRoundLayout.setVisibility(View.VISIBLE);
+                    mRecyclerViewTime.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+
+        try {
+            if (waitingIntervalPerRound.equals("NullKey")) {
+                waitingIntervalPerRoundLayout.setVisibility(View.GONE);
+            } else {
+                mEtWaitingIntervalPerRound.setText(waitingIntervalPerRound);
+            }
+            mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRound);
+            if (!startTimePerRound.equals("NullKey")) {
+                AdmeTimeItem item;
+                String[] times = startTimePerRound.split("\\|");
+                admeTimeItemList.clear();
+                for (String time : times) {
+                    if (!TextUtils.isEmpty(time)) {
+                        time = String.format(Locale.getDefault(), "%02d:00:00", Integer.parseInt(time));
+                        item = new AdmeTimeItem(time, false);
+                        admeTimeItemList.add(item);
+                    }
+                }
+                if (admeTimeItemList.size() < 8) {
+                    item = new AdmeTimeItem(null, true);
+                    admeTimeItemList.add(item);
+                }
+                admeTimeAdapter.notifyDataSetChanged();
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
      * 初始化堵转检测参数
      */
-    public void initLockedRotorDetectionInfo() {
+    public void initLockedRotorDetectionInfo(AdmeLockedRotorDetectionInfo info) {
+        lockedRotorDetectionInfo = info;
         if (lockedRotorDetectionInfo == null) {
             Timber.e("AdmeLockedRotorDetectionInfo is Null!");
             lockedRotorDetectionInfo = new AdmeLockedRotorDetectionInfo();
             return;
         }
-
         if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
             mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(false);
         } else {
@@ -410,48 +739,53 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         }
     }
 
+    /**
+     * 初始化正反测使能参数
+     */
+    public void initPositiveAndNegativeInfo(AdmeStepperMotorInfo admeStepperMotorInfo) {
+        if (admeStepperMotorInfo == null) {
+            Timber.e("AdmeStepperMotorInfo is Null!");
+            return;
+        }
+        if (admeStepperMotorInfo.getPosnegtest().trim().equals("0")) {
+            positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(false);
+        } else {
+            positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(true);
+        }
+    }
+
     public void doAfterSetting() {
-//        if (basicConfigParam != null) {
-//            basicConfigParam.setInctype(inclinometerType);
-//            basicConfigParam.setAddress(address);
-//            basicConfigParam.setInterdeep(inclinometerTubeHoleDepth);
-//            basicConfigParam.setDownspeed(decentralizationSpeed);
-//            basicConfigParam.setDownwaitetime(decentralizationWaitingTime);
-//            basicConfigParam.setDatatype(dataSettlementMethod);
-//        }
-        //TODO #gh#  打开注释，设置为浏览模式
-//        configPageViewModel.configPageEditableChanged.setValue(false);
         inclinometerTypeOld = inclinometerType;
         dataSettlementMethodOld = dataSettlementMethod;
     }
 
     public boolean checkValueIsChange(boolean configPageEditableChanged) {
-        if (!configPageEditableChanged)
-            return false;
-
-        if (inclinometerTypeOld != null && !inclinometerTypeOld.equals("NullKey") && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
-            return true;
-        }
-        if (address != null) {
-            if (inclinometerTypeOld.equals("0") && !inclinometerTypeOld.equals("NullKey") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
-                return true;
-            }
-            if (inclinometerTypeOld.equals("1") && !inclinometerTypeOld.equals("NullKey") && !address.equals(mEtMacAddress.getText().toString().trim())) {
-                return true;
-            }
-        }
-        if (inclinometerTubeHoleDepth != null && !inclinometerTubeHoleDepth.equals("NullKey") && !inclinometerTubeHoleDepth.equals(mEtInclinometerTubeHoleDepth.getText().toString().trim())) {
-            return true;
-        }
-        if (decentralizationSpeed != null && !decentralizationSpeed.equals("NullKey") && !decentralizationSpeed.equals(mEtDecentralizationSpeed.getText().toString().trim())) {
-            return true;
-        }
-        if (decentralizationWaitingTime != null && !decentralizationWaitingTime.equals("NullKey") && !decentralizationWaitingTime.equals(mEtDecentralizationWaitingTime.getText().toString().trim())) {
-            return true;
-        }
-        if (dataSettlementMethodOld != null && !dataSettlementMethodOld.equals("NullKey") && dataSettlementMethod != null && !dataSettlementMethodOld.equals(dataSettlementMethod)) {
-            return true;
-        }
+//        if (!configPageEditableChanged)
+//            return false;
+//
+//        if (inclinometerTypeOld != null && !inclinometerTypeOld.equals("NullKey") && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
+//            return true;
+//        }
+//        if (address != null) {
+//            if (inclinometerTypeOld.equals("0") && !inclinometerTypeOld.equals("NullKey") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (inclinometerTypeOld.equals("1") && !inclinometerTypeOld.equals("NullKey") && !address.equals(mEtMacAddress.getText().toString().trim())) {
+//                return true;
+//            }
+//        }
+//        if (inclinometerTubeHoleDepth != null && !inclinometerTubeHoleDepth.equals("NullKey") && !inclinometerTubeHoleDepth.equals(mEtInclinometerTubeHoleDepth.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (decentralizationSpeed != null && !decentralizationSpeed.equals("NullKey") && !decentralizationSpeed.equals(mEtDecentralizationSpeed.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (decentralizationWaitingTime != null && !decentralizationWaitingTime.equals("NullKey") && !decentralizationWaitingTime.equals(mEtDecentralizationWaitingTime.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (dataSettlementMethodOld != null && !dataSettlementMethodOld.equals("NullKey") && dataSettlementMethod != null && !dataSettlementMethodOld.equals(dataSettlementMethod)) {
+//            return true;
+//        }
         return false;
     }
 
@@ -459,6 +793,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         inclinometerTypeLayout.setEnabled(isEditable);
         mEtCollectorAddress.setEnabled(isEditable);
         mEtMacAddress.setEnabled(isEditable);
+        mEtWaitingIntervalPerRound.setEnabled(isEditable);
         mEtInclinometerTubeHoleDepth.setEnabled(isEditable);
         mEtDecentralizationSpeed.setEnabled(isEditable);
         mEtDecentralizationWaitingTime.setEnabled(isEditable);
@@ -468,6 +803,8 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
             mEtCollectorAddress.setHint("0-32");
             mEtMacAddress.setHint("XXXXXXXXXXXX");
+            mTvMeasureMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
+            mEtWaitingIntervalPerRound.setHint("请输入");
             mEtInclinometerTubeHoleDepth.setHint("请输入");
             mEtDecentralizationSpeed.setHint("1-180");
             mEtDecentralizationWaitingTime.setHint("1-32");
@@ -476,6 +813,8 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mEtCollectorAddress.setHint("");
             mEtMacAddress.setHint("");
+            mTvMeasureMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mEtWaitingIntervalPerRound.setHint("");
             mEtInclinometerTubeHoleDepth.setHint("");
             mEtDecentralizationSpeed.setHint("");
             mEtDecentralizationWaitingTime.setHint("");

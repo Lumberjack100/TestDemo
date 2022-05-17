@@ -72,8 +72,8 @@ public class TcpToBleDebugActivity extends BaseActivity {
     private TcpViewModel tcpViewModel;
     private BleViewModel usrBleViewModel;
 
-    private String host = "192.168.0.107";
-    private int port = 1088;
+    private String host;
+    private int port;
 
     public static void startActivity(Context context, String host, int port) {
         Intent intent = new Intent(context, TcpToBleDebugActivity.class);
@@ -93,7 +93,6 @@ public class TcpToBleDebugActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setToolBar(R.id.toolbar);
         mToolbar.setTitle("TCP远程调试");
-        mToolbar.setSubtitle(host + ":" + port);
         parseIntent();
         initLogAdapter();
         tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
@@ -168,6 +167,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
             return;
         host = intent.getStringExtra(TCP_HOST);
         port = intent.getIntExtra(TCP_PORT, 1088);
+        mToolbar.setSubtitle(host + ":" + port);
     }
 
     private void initLogAdapter() {
