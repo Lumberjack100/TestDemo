@@ -193,17 +193,17 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
             switch (sensorType) {
                 case RAIN_GAUGE://雨量计
                 case WIRE_SHIFT://裂缝计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     break;
 
                 case SOIL_MOISTURE://管式含水率计
-                    mTvAlarmValue.setText("报警值(单位:%rh)");
+                    mTvAlarmValue.setText("触发值(单位:%rh)");
                     mTvCorrectValue.setText("修正值(单位:%rh)");
                     break;
 
                 case INCLINOMETER://测斜仪
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     mTvExtension1.setText("测段长(单位:mm)");
                     if (!TextUtils.isEmpty(exValue1)) {
@@ -214,17 +214,17 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
 
                 case ULTRASONIC_LEVEL_GAUGE://超声波物位计
                 case RADAR_LEVEL_GAUGE://雷达物位计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
                     break;
 
                 case INFRASOUND://次声仪
-                    mTvAlarmValue.setText("报警值(单位:Hz)");
+                    mTvAlarmValue.setText("触发值(单位:Hz)");
                     mTvCorrectValue.setText("修正值(单位:Hz)");
                     break;
 
                 case STATIC_LEVEL://静力水准
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
                     mTvExtension1.setText("高程(单位:m)");
                     if (!TextUtils.isEmpty(exValue1)) {
@@ -234,12 +234,12 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     break;
 
                 case WEATHER_STATION://气象计
-                    mTvAlarmValue.setText("报警值(单位:m/s)");
+                    mTvAlarmValue.setText("触发值(单位:m/s)");
                     mTvCorrectValue.setText("修正值(单位:m/s)");
                     break;
 
                 case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     mTvExtension1.setText("高程(单位:m)");
                     mTvExtension2.setText("绳长(单位:m)");

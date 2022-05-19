@@ -11,7 +11,7 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="报警值(mm)" />
+            android:text="触发值(mm)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_trigger_threshold"
