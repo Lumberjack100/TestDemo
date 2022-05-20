@@ -84,21 +84,6 @@
     <string name="usb_serial_exit_command">AT+ENTM</string>
     <string name="usb_serial_query_voltage">电压</string>
 
-    <!-- 传感器类型名称 -->
-    <string name="sensor_wire_shift">拉绳式裂缝计</string>
-    <string name="sensor_soil_moisture">土壤含水率</string>
-    <string name="sensor_inclinometer">测斜仪</string>
-    <string name="sensor_ultrasonic_level_gauge">超声波物位计</string>
-    <string name="sensor_radar_level_gauge">雷达物位计</string>
-    <string name="sensor_uplift_pressure_gauge">数字水位计</string>
-    <string name="sensor_kang_percolate">基康渗压计</string>
-    <string name="sensor_gudan_percolate">葛南渗压计</string>
-    <string name="sensor_gudan_stress">葛南应变计</string>
-    <string name="sensor_junxing_zlj_300t">轴力计</string>
-    <string name="sensor_weather_station">气象计</string>
-    <string name="sensor_weir">量水堰计</string>
-    <string name="sensor_turbidity_meter">浊度仪</string>
-    <string name="sensor_qingjiao">倾角仪</string>
 
     <!-- 语音播报 -->
     <string name="listen_to_speech">请说，我在聆听…</string>
