@@ -440,7 +440,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             textView.setTextColor(Color.RED);
         } else if (status == 1) {
             textView.setText("正常");
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 
@@ -455,7 +455,7 @@ public class BleRN20CurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
             textView.setTextColor(Color.RED);
         } else {
             textView.setText("正常");
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 

@@ -640,7 +640,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
      */
     private void showAlarmTypeDialog() {
         int pos = Arrays.asList(alarmTypes).indexOf(String.valueOf(mTvAlarmType.getText()));
-        XPopup.setPrimaryColor(ColorUtils.getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", alarmTypes,

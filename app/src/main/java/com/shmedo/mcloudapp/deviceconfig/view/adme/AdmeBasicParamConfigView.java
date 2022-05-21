@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -212,7 +213,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
 
     private void initTimeAdapter(Context context) {
         mRecyclerViewTime.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        mRecyclerViewTime.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(0.5f), getResources().getColor(R.color.divider_line_bg_efefef)));
+        mRecyclerViewTime.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(0.5f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.divider_line_bg_efefef)));
         admeTimeAdapter = new AdmeTimeAdapter(admeTimeItemList);
         admeTimeAdapter.setAnimationEnable(false);
         admeTimeAdapter.setAnimationFirstOnly(false);
@@ -295,7 +296,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
      */
     public void showInclinometerTypeDialog(Context context) {
         int pos = Arrays.asList(inclinometerTypes).indexOf(String.valueOf(mTvInclinometerType.getText()));
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", inclinometerTypes,
@@ -323,7 +324,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
      */
     public void showMeasureMethodDialog(Context context) {
         int pos = Arrays.asList(measureMethods).indexOf(String.valueOf(mTvMeasureMethod.getText()));
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", measureMethods,
@@ -359,7 +360,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
      */
     public void showDataSettlementMethodDialog(Context context) {
         int pos = Arrays.asList(settlementMethods).indexOf(String.valueOf(mTvDataSettlementMethod.getText()));
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", settlementMethods,

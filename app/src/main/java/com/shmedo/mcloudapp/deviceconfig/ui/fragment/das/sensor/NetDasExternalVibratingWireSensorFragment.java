@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.huawei.hms.hmsscankit.ScanUtil;
@@ -198,7 +199,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
     private void showSensorTypeChooseDialog() {
         int pos = sensorTypeList.indexOf(String.valueOf(mTvSensorType.getText()));
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", (String[]) sensorTypeList.toArray(),
@@ -227,7 +228,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
     private void showSensorAisleChooseDialog() {
         int pos = unUsedAisleList.indexOf(String.valueOf(mTvSensorAisle.getText()));
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", unUsedAisleList.toArray(new String[0]),

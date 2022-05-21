@@ -244,7 +244,7 @@ public class RealtimeSpeechDialog extends BaseDialogFragment {
 
     public void updateMsg(String msg, boolean isError) {
         mTvMsg.setText(msg);
-        mTvMsg.setTextColor(isError ? ColorUtils.getColor(R.color.speech_orange) : ColorUtils.getColor(R.color.title_text_color));
+        mTvMsg.setTextColor(isError ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.speech_orange) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.title_text_color));
     }
 
     public void setSpeechDialogClickListener(SpeechDialogListener speechDialogListener) {

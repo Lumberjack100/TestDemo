@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
@@ -209,7 +210,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
     }
 
     private void showDebugModeDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"关闭", "DEBUG", "INFO"},

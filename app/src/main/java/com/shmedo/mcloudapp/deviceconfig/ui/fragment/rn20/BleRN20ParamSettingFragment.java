@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -144,7 +145,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
     }
 
     private void showReportingMethodDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"网关召测", "主动上报"},

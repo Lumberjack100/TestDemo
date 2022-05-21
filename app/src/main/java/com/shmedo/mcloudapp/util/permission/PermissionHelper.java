@@ -102,8 +102,8 @@ public class PermissionHelper {
                 .title("权限申请").content(StringUtils.getString(R.string.permission_request_location_hardware))
                 .negativeText("暂不开启")
                 .positiveText("去设置")
-                .negativeColor(ColorUtils.getColor(R.color.gray_797979))
-                .positiveColor(ColorUtils.getColor(R.color.colorPrimary))
+                .negativeColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.gray_797979))
+                .positiveColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.colorPrimary))
                 .canceledOnTouchOutside(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override

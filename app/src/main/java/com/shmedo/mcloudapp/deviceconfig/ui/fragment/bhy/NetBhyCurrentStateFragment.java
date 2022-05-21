@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.google.gson.reflect.TypeToken;
@@ -276,7 +275,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
     private void initDataCenterAdapter() {
         dataCenterRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), getResources().getColor(R.color.transparent)));
+        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.transparent)));
         dataCenterAdapter = new CommonAdapter<DasNetStatusInfo>(getActivity(), R.layout.item_das_data_center_status, netStatusInfoList) {
             @Override
             protected void convert(CommonViewHolder holder, DasNetStatusInfo netStatusInfo, int position) {
@@ -529,14 +528,14 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
             String powerStr = dasBaseInfo.getInvolt();
             double power = Double.parseDouble(powerStr.replace("%", ""));
             SpannableStringBuilder builder = new SpannableStringBuilder(powerStr);
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(power <= 10 ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
             builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvDeviceInternalPower.setText(builder);
 
             String voltageStr = dasBaseInfo.getOutvolt();
             double voltage = Double.parseDouble(voltageStr);
             builder = new SpannableStringBuilder(voltageStr + "V");
-            colorSpan = new ForegroundColorSpan(voltage <= 5 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
+            colorSpan = new ForegroundColorSpan(voltage <= 5 ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
             builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvDeviceExternalVoltage.setText(builder);
         } catch (Exception ex) {
@@ -619,7 +618,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 ioSensorLayout.setVisibility(View.VISIBLE);
                 if (dasSubSensorStatusInfo.getIo().getType() == 1) {
                     mTvSwitchStatus.setText("接入");
-                    mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                    mTvSwitchStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
                     rainLayout.setVisibility(View.VISIBLE);
                     wireBreakAlarmLayout.setVisibility(View.GONE);
                     decimalFormat.applyPattern("#.#");
@@ -633,7 +632,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
 
                 } else if (dasSubSensorStatusInfo.getIo().getType() == 3) {
                     mTvSwitchStatus.setText("接入");
-                    mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                    mTvSwitchStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
                     rainLayout.setVisibility(View.GONE);
                     wireBreakAlarmLayout.setVisibility(View.VISIBLE);
                     if (dasSubSensorStatusInfo.getIo().getVaule() == 1) {
@@ -641,7 +640,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         mTvAlarmStatus.setTextColor(Color.RED);
                     } else if (dasSubSensorStatusInfo.getIo().getVaule() == 0) {
                         mTvAlarmStatus.setText("未断线");
-                        mTvAlarmStatus.setTextColor(getResources().getColor(R.color.text_color_3AD094));
+                        mTvAlarmStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
                     }
                 }
             }
@@ -707,13 +706,13 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
             textView.setTextColor(Color.RED);
         } else if (status == 1) {
             textView.setText("正常");
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 
     private void setSensorStatusColor(TextView textView, int status) {
         if (status == 0) {
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         } else {
             textView.setTextColor(Color.RED);
         }

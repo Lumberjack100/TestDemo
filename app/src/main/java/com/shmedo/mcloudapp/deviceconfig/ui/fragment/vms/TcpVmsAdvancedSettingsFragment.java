@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -266,7 +265,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
         final String[] logLevels = new String[]{"off", "info", "debug"};
         int pos = Arrays.asList(logLevels).indexOf(String.valueOf(logLevel));
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", logLevels,
@@ -312,7 +311,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterOne.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterOne.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_TWO);
@@ -322,7 +321,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                     }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterTwo.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterTwo.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_THREE);
@@ -332,7 +331,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                     }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterThree.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterThree.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     //表示首次进入页面，需要逐个刷新所有的数据中心
                     if (serverNumber == -1) {
                         getDataCenterStatus(ServerNumber.NUMBER_FOUR);
@@ -343,7 +342,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
                 } else if (centerStatus.getCenterid() == 4) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
-                    mTvDataCenterFour.setTextColor(ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
+                    mTvDataCenterFour.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                     queryLogOutput();
                 }
             }

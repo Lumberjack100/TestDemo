@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -375,7 +376,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void showSwitchConfigModelDialog() {
         int pos = Arrays.asList(modes).indexOf(String.valueOf(mTvConfigModel.getText()));
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", modes,
@@ -526,7 +527,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     private CharSequence getPlatformAbnormalMessage(String state) {
         SpannableStringBuilder builder = new SpannableStringBuilder(state);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "米度平台连接状态：");
 

@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.constant.RegexConstants;
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.RegexUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -40,6 +41,7 @@ import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
@@ -145,8 +147,8 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String cmdKeepAliveValue;//
     private String cmdPlatformParam;//手动/自动注册平台参数
 
-    private String[] registProtocols;
-    private String[] platforms;
+    private final String[] registProtocols = MCloudApp.getContext().getResources().getStringArray(R.array.register_protocol);
+    private final String[] platforms = MCloudApp.getContext().getResources().getStringArray(R.array.register_platform);
 
     public static BleDasDataCenterServerConfigFragment newInstance(ServerNumber serverNumber) {
         BleDasDataCenterServerConfigFragment fragment = new BleDasDataCenterServerConfigFragment();
@@ -172,8 +174,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        registProtocols = getResources().getStringArray(R.array.register_protocol);
-        platforms = getResources().getStringArray(R.array.register_platform);
         setView();
         setSwitchViewListener();
         initRefreshLayout();
@@ -184,10 +184,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     }
 
     private void setView() {
-        childItemsLayout.setVisibility(View.GONE);
-        mTvRegisterPlatform.setText("地大平台");
-        registerPlatform = "0";
-
         mEtDataServerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
         mEtDataServerPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtKeepAlive.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
@@ -199,6 +195,9 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mEtMqttPwd.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
 
         mEtRegisterPlatformAddress.setHint("服务器地址 端口");
+        childItemsLayout.setVisibility(View.GONE);
+        updateViewByCommunicationProtocol(registProtocols[2]);
+        updateViewByRegisterPlatform(platforms[0]);
     }
 
     private void setSwitchViewListener() {
@@ -334,7 +333,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private void showCommunicationProtocolDialog() {
         int pos = Arrays.asList(registProtocols).indexOf(String.valueOf(mTvCommunicationProtocol.getText()));
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", registProtocols,
@@ -354,7 +353,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private void showRegisterPlatformDialog() {
         int pos = Arrays.asList(platforms).indexOf(String.valueOf(mTvRegisterPlatform.getText()));
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", platforms,

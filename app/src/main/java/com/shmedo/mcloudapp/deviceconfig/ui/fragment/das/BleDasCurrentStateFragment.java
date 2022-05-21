@@ -287,7 +287,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
     private void initDataCenterAdapter() {
         dataCenterRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), getResources().getColor(R.color.transparent)));
+        dataCenterRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.transparent)));
         dataCenterAdapter = new CommonAdapter<DeviceNetStatus>(getActivity(), R.layout.item_das_data_center_status, dataCenterStatusInfoList) {
             @Override
             protected void convert(CommonViewHolder holder, DeviceNetStatus netStatusInfo, int position) {
@@ -324,7 +324,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
      */
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), getResources().getColor(R.color.transparent)));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<String>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, String string, int position) {
@@ -670,14 +670,14 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
             internalVoltageStr = DeviceCurrentRunStateUtils.setDeviceInternalBattery(internalVoltage);
         }
         SpannableStringBuilder builder = new SpannableStringBuilder(internalVoltageStr);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(internalVoltage <= 10 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(internalVoltage <= 10 ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvDeviceInternalPower.setText(builder);
 
         String externalVoltageStr = runStateInfo.getExternalVoltage();
         double externalVoltage = Double.parseDouble(externalVoltageStr);
         builder = new SpannableStringBuilder(externalVoltageStr + "V");
-        colorSpan = new ForegroundColorSpan(externalVoltage <= 5 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
+        colorSpan = new ForegroundColorSpan(externalVoltage <= 5 ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvDeviceExternalVoltage.setText(builder);
     }
@@ -727,7 +727,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         switch (type) {
             case "1":
                 mTvSwitchStatus.setText("接入");
-                mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                mTvSwitchStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
                 rainLayout.setVisibility(View.VISIBLE);
                 wireBreakAlarmLayout.setVisibility(View.GONE);
 
@@ -744,7 +744,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case "3":
                 mTvSwitchStatus.setText("接入");
-                mTvSwitchStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                mTvSwitchStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
                 rainLayout.setVisibility(View.GONE);
                 wireBreakAlarmLayout.setVisibility(View.VISIBLE);
 
@@ -753,7 +753,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     mTvAlarmStatus.setTextColor(Color.RED);
                 } else {
                     mTvAlarmStatus.setText("未断线");
-                    mTvAlarmStatus.setTextColor(getResources().getColor(R.color.text_color_3AD094));
+                    mTvAlarmStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
                 }
                 break;
         }
@@ -809,7 +809,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
             textView.setTextColor(Color.RED);
         } else if (status.equals("0")) {
             textView.setText("正常");
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 

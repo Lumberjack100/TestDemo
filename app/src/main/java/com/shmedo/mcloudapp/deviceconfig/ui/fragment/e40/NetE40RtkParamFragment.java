@@ -161,7 +161,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
      * 选择RTK 模式
      */
     private void showRTKModeDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"基站", "移动站"},
@@ -187,7 +187,7 @@ public class NetE40RtkParamFragment extends BaseNetIotCommunicateFragment {
      * 选择基准点模式
      */
     private void showBaseModeDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"自动", "首次自动", "手动"},

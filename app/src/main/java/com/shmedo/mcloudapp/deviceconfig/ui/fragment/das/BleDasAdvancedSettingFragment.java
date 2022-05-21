@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.constant.RegexConstants;
+import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
@@ -205,7 +206,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         String[] numbers = new String[]{"1", "2"};
         int pos = Arrays.asList(numbers).indexOf(serverNumber);
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("选择数据中心", numbers,

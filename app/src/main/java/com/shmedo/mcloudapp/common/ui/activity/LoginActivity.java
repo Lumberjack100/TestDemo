@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.EncryptUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
@@ -341,7 +340,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
         public void updateDrawState(TextPaint ds) {
             super.updateDrawState(ds);
             //设置文本的颜色
-            ds.setColor(ColorUtils.getColor(R.color.colorPrimary));
+            ds.setColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.colorPrimary));
             //超链接形式的下划线，false 表示不显示下划线，true表示显示下划线
             ds.setUnderlineText(false);
         }

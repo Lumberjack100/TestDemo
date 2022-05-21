@@ -468,7 +468,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
     private CharSequence getPlatformAbnormalMessage(String state) {
         SpannableStringBuilder builder = new SpannableStringBuilder(state);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "米度平台连接状态：");
 
