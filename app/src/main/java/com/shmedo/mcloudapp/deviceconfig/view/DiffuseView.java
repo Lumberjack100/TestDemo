@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.shmedo.mcloudapp.R;
 
 import java.util.ArrayList;
@@ -22,9 +23,9 @@ import java.util.List;
 public class DiffuseView extends View {
 
     /** 扩散圆圈颜色 */
-    private int mColor = getResources().getColor(R.color.colorAccent);
+    private int mColor = com.blankj.utilcode.util.ColorUtils.getColor(R.color.colorAccent);
     /** 圆圈中心颜色 */
-    private int mCoreColor = getResources().getColor(R.color.colorPrimary);
+    private int mCoreColor = com.blankj.utilcode.util.ColorUtils.getColor(R.color.colorPrimary);
     /** 圆圈中心图片 */
     private Bitmap mBitmap;
     /** 中心圆半径 */

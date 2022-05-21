@@ -227,7 +227,7 @@ public class BleM20CurrentStateFragment extends BaseUSRBleIotCommunicateFragment
                     }
                 }
                 mTvSensorStatus.setText(sensorAbnormal ? "未接入" : "正常");
-                mTvSensorStatus.setTextColor(sensorAbnormal ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
+                mTvSensorStatus.setTextColor(sensorAbnormal ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
 
                 String angel = String.format("%s°,%s°,%s°", m20CurrentStateInfo.getX_Angle(), m20CurrentStateInfo.getY_Angle(), m20CurrentStateInfo.getZ_Angle());
                 mTvInclination.setText(angel);
@@ -253,13 +253,13 @@ public class BleM20CurrentStateFragment extends BaseUSRBleIotCommunicateFragment
     private void initLinkStatus(TextView tvLinkStatus, String linkStatus) {
         if (linkStatus.equals("0")) {
             tvLinkStatus.setText("未开启");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.device_unopened_platform));
         } else if (linkStatus.equals("1")) {
             tvLinkStatus.setText("已上线");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         } else if (linkStatus.equals("2")) {
             tvLinkStatus.setText("未上线");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_not_connected_platform));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.device_not_connected_platform));
         }
     }
 

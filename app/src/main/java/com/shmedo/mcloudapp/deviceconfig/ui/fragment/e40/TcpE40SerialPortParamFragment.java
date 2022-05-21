@@ -98,7 +98,7 @@ public class TcpE40SerialPortParamFragment extends BaseTcpIotCommunicateFragment
      * 选择输出的数据格式
      */
     private void showTypeDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"CMD", "NMEA", "RAW_OUT"},
@@ -132,7 +132,7 @@ public class TcpE40SerialPortParamFragment extends BaseTcpIotCommunicateFragment
      * 选择波特率
      */
     private void showBaudDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"9600", "115200"},

@@ -47,7 +47,7 @@ public class DeviceCurrentRunStateUtils {
             textView.setTextColor(Color.RED);
         } else if (status.equals("0")) {
             textView.setText("正常");
-            textView.setTextColor(context.getResources().getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 

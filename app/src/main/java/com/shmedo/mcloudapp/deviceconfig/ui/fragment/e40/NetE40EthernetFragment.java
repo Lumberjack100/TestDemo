@@ -127,7 +127,7 @@ public class NetE40EthernetFragment extends BaseNetIotCommunicateFragment {
      * 选择DHCP
      */
     private void showDhcpDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"手动", "自动"},

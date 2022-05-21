@@ -114,7 +114,7 @@ public class TcpE40GpsWorkParamFragment extends BaseTcpIotCommunicateFragment {
      * 选择数据频率
      */
     private void showDataFrequencyDialog() {
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"0.05s", "0.1s", "0.2s", "1s", "5s", "10s", "15s", "30s"},

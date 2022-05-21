@@ -251,19 +251,19 @@ public class BleLR200CurrentStateFragment extends BaseUSRBleIotCommunicateFragme
     private void initLinkStatus(TextView tvLinkStatus, String linkStatus) {
         if (linkStatus.equals("0")) {
             tvLinkStatus.setText("未开启");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.device_unopened_platform));
         } else if (linkStatus.equals("1")) {
             tvLinkStatus.setText("已上线");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         } else if (linkStatus.equals("2")) {
             tvLinkStatus.setText("未上线");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_not_connected_platform));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.device_not_connected_platform));
         }
     }
 
     private void setSensorStatusColor(TextView textView, int status) {
         if (status == 0) {
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         } else {
             textView.setTextColor(Color.RED);
         }

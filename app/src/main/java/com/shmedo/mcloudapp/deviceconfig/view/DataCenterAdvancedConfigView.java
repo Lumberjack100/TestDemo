@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -271,7 +272,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         int pos = Arrays.asList(protocols).indexOf(String.valueOf(transferProtocol));
         pos = (pos == -1) ? 0 : pos;
 
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mContext)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", protocols,
@@ -300,7 +301,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         int pos = Arrays.asList(protocols).indexOf(mTvDataProtocol.getText().toString());
         pos = (pos == -1) ? 0 : pos;
 
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mContext)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", protocols,
@@ -347,7 +348,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         int pos = Arrays.asList(platforms).indexOf(mTvPlatformType.getText().toString());
         pos = (pos == -1) ? 0 : pos;
 
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mContext)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", platforms,

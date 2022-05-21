@@ -98,4 +98,10 @@
     <!-- 语音播报 -->
     <color name="speech_orange">#ff7502</color>
 
+
+    <color name="dialog_mask">#4D000000</color>
+    <color name="receive_data_color">#ff088c32</color>
+    <color name="response_data_color">#ff2d78e7</color>
+
+
 </resources>

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -75,12 +74,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @BindView(R.id.motionDistanceEt)
     ClearEditText mEtMotionDistance;
 
-    @BindView(R.id.radio_auto_control)
-    RadioButton rbAutoControl;
-
-    @BindView(R.id.radio_manual_control)
-    RadioButton rbManualControl;
-
     /**
      * 自动测孔深模式
      */
@@ -123,7 +116,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     private BleAdmeAutoMeasuringHoleDepthBottomDialog autoMeasuringHoleDepthBottomDialog;
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-    private final String[] measureModes = new String[]{"手动测孔深模式", "自动测孔深模式"};
+    private final String[] measureModes = new String[]{"手动测孔深", "自动测孔深"};
 
     public static BleAdmeMeasuringHoleDepthFragment newInstance() {
         return new BleAdmeMeasuringHoleDepthFragment();
@@ -139,7 +132,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         super.onViewCreated(view, savedInstanceState);
         setView();
         setSwitchViewListener();
-        setRadioButtonListener();
         queryLockRotorInfo();
     }
 
@@ -147,8 +139,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMovementSpeed.setHint("1-180");
         mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-        rbAutoControl.setChecked(true);
-        rbManualControl.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
 
         mEtDownSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDownSpeed.setHint("1-120");
@@ -172,40 +162,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     return;
                 }
                 setLockRotorInfo(isChecked);
-            }
-        });
-    }
-
-    /**
-     * 单选框事件
-     */
-    private void setRadioButtonListener() {
-        //自动单选按钮
-        rbAutoControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    rbAutoControl.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
-                    mEtMotionDistance.setEnabled(true);
-                    rbManualControl.setChecked(false);
-
-                } else {
-                    rbAutoControl.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
-                    mEtMotionDistance.setEnabled(false);
-                }
-            }
-        });
-
-        //手动单选按钮
-        rbManualControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    rbManualControl.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
-                    rbAutoControl.setChecked(false);
-                } else {
-                    rbManualControl.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
-                }
             }
         });
     }
@@ -354,7 +310,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      */
     private void showMeasureModeDialog() {
         int pos = Arrays.asList(measureModes).indexOf(String.valueOf(mTvMeasureMode.getText()));
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", measureModes,
@@ -383,7 +339,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         final String[] values = new String[]{"上拉", "下放"};
         int pos = Arrays.asList(values).indexOf(String.valueOf(mTvMotionWay.getText()));
 
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", values,
@@ -393,6 +349,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                             public void onSelect(int position, String text) {
                                 mTvMotionWay.setText(text);
                                 if (position == 0) {
+                                    ToastUtils.show("触发磁开关最大安全速度为20");
                                     motionWay = "0";
                                 } else {
                                     motionWay = "1";
@@ -423,27 +380,24 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 mEtMovementSpeed.requestFocus();
                 return false;
             }
-            if (rbAutoControl.isChecked()) {
-                if (TextUtils.isEmpty(totalDistanceGoal)) {
-                    ToastUtils.show("请输入运动距离!");
-                    mEtMotionDistance.requestFocus();
-                    return false;
-                }
-                try {
-                    double value = Double.parseDouble(totalDistanceGoal);
-                    if (value <= 0) {
-                        ToastUtils.show("请输入正确的运动距离!");
-                        mEtMotionDistance.requestFocus();
-                        return false;
-                    }
-                } catch (Exception ex) {
+            if (TextUtils.isEmpty(totalDistanceGoal)) {
+                ToastUtils.show("请输入运动距离!");
+                mEtMotionDistance.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(totalDistanceGoal);
+                if (value <= 0) {
                     ToastUtils.show("请输入正确的运动距离!");
                     mEtMotionDistance.requestFocus();
                     return false;
                 }
-            } else {
-                totalDistanceGoal = "99999";
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的运动距离!");
+                mEtMotionDistance.requestFocus();
+                return false;
             }
+
         } else {
             downSpeed = mEtDownSpeed.getText().toString().trim();
             safeDistance = mEtSafeDistance.getText().toString().trim();

@@ -33,7 +33,7 @@ public class MyCountDownTimer extends CountDownTimer {
         btnTime.setText("剩余" + l / 1000 + "秒");
 //        btnTime.setBackgroundResource(R.drawable.shape_verify_btn_press);
         if (timerColorId != -1) {
-            btnTime.setTextColor(ColorUtils.getColor(timerColorId));
+            btnTime.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(timerColorId));
         }
     }
 
@@ -46,7 +46,7 @@ public class MyCountDownTimer extends CountDownTimer {
         btnTime.setClickable(true);
 //        btnTime.setBackgroundResource(R.drawable.btn_blue_selector);
         if (orginalColorId != -1) {
-            btnTime.setTextColor(ColorUtils.getColor(orginalColorId));
+            btnTime.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(orginalColorId));
         }
     }
 

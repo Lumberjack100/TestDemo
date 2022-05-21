@@ -177,7 +177,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             int id = buttonView.getId();
             if (id == R.id.radio_close_switch_sensor) {//关闭开关传感器单选按钮
                 if (isChecked) {
-                    rbCloseSwitchSensor.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
+                    rbCloseSwitchSensor.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_343434));
                     rbRainGauge.setChecked(false);
                     rbBreakAlarm.setChecked(false);
                     if (!mSbDigitalOsmometerEnable.isChecked()) {
@@ -188,24 +188,24 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     entity.setType("0");
                     setSwitchSensorInfo(entity);
                 } else {
-                    rbCloseSwitchSensor.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                    rbCloseSwitchSensor.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 }
             } else if (id == R.id.radio_rain_gauge) {//雨量计单选按钮
                 if (isChecked) {
                     rbCloseSwitchSensor.setChecked(false);
-                    rbRainGauge.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
+                    rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_343434));
                     rainPrecisionLayout.setVisibility(View.VISIBLE);
                     rbBreakAlarm.setChecked(false);
                     btnConfirm.setVisibility(View.VISIBLE);
                 } else {
-                    rbRainGauge.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                    rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                     rainPrecisionLayout.setVisibility(View.GONE);
                 }
             } else if (id == R.id.radio_break_alarm) {  //断线报警器单选按钮
                 if (isChecked) {
                     rbCloseSwitchSensor.setChecked(false);
                     rbRainGauge.setChecked(false);
-                    rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_343434));
+                    rbBreakAlarm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_343434));
                     rgBreakAlarmItems.setVisibility(View.VISIBLE);
                     if (!mSbDigitalOsmometerEnable.isChecked()) {
                         btnConfirm.setVisibility(View.GONE);
@@ -216,7 +216,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     entity.setValue("0");
                     setSwitchSensorInfo(entity);
                 } else {
-                    rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                    rbBreakAlarm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                     rgBreakAlarmItems.setVisibility(View.GONE);
                 }
             }
@@ -617,9 +617,9 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 //初始化时不需要触发 OnCheckedChangeListener 事件
                 rbCloseSwitchSensor.setOnCheckedChangeListener(null);
                 rbCloseSwitchSensor.setChecked(true);
-                rbRainGauge.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rainPrecisionLayout.setVisibility(View.GONE);
-                rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                rbBreakAlarm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbCloseSwitchSensor.setOnCheckedChangeListener(onCheckedChangeListener);
                 break;
@@ -629,8 +629,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 rbRainGauge.setOnCheckedChangeListener(null);
                 rbRainGauge.setChecked(true);
                 rainPrecisionLayout.setVisibility(View.VISIBLE);
-                rbCloseSwitchSensor.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
-                rbBreakAlarm.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                rbCloseSwitchSensor.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
+                rbBreakAlarm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
                 btnConfirm.setVisibility(View.VISIBLE);
@@ -650,8 +650,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 rbBreakAlarm.setChecked(true);
                 rgBreakAlarmItems.setOnCheckedChangeListener(null);
                 rgBreakAlarmItems.setVisibility(View.VISIBLE);
-                rbCloseSwitchSensor.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
-                rbRainGauge.setTextColor(ColorUtils.getColor(R.color.text_color_cccccc));
+                rbCloseSwitchSensor.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
+                rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rainPrecisionLayout.setVisibility(View.GONE);
                 if (ioSensorInfo.getValue().equals("0")) {
                     rbBreakAlarmOpen.setChecked(true);

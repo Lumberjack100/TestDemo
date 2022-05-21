@@ -36,7 +36,7 @@ import timber.log.Timber;
 public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
     @BindView(R.id.tv_triggerThreshold)
-    TextView mTvAlarmValue;//报警值
+    TextView mTvAlarmValue;//触发值
 
     @BindView(R.id.et_trigger_threshold)
     EditText mEtAlarmValue;
@@ -171,17 +171,17 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             switch (iotSensorType) {
                 case RAIN_GAUGE://压电式雨量计
                 case WIRE_SHIFT://拉线位移计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     break;
 
                 case SOIL_MOISTURE://土壤含水率
-                    mTvAlarmValue.setText("报警值(单位:%rh)");
+                    mTvAlarmValue.setText("触发值(单位:%rh)");
                     mTvCorrectValue.setText("修正值(单位:%rh)");
                     break;
 
                 case INCLINOMETER://测斜仪
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
                     mTvExtension1.setText("测段长(单位:mm)");
                     exValue1 = externalSensorInfo.getSpacing();
@@ -193,12 +193,12 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
                 case ULTRASONIC_LEVEL_GAUGE://超声波物位计
                 case RADAR_LEVEL_GAUGE://雷达物位计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
                     break;
 
                 case LUYAN_INCLINOMETER://倾角仪
-                    mTvAlarmValue.setText("报警值(单位:°)");
+                    mTvAlarmValue.setText("触发值(单位:°)");
                     mTvExtension1.setText("X轴角度(°)");
                     mTvExtension2.setText("Y轴角度(°)");
                     exValue1 = externalSensorInfo.getInitvalx();
@@ -214,12 +214,12 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     break;
 
                 case INFRASOUND://次声
-                    mTvAlarmValue.setText("报警值(单位:Hz)");
+                    mTvAlarmValue.setText("触发值(单位:Hz)");
                     mTvCorrectValue.setText("修正值(单位:Hz)");
                     break;
 
                 case WEIR://量水堰计
-                    mTvAlarmValue.setText("报警值(单位:m³/s)");
+                    mTvAlarmValue.setText("触发值(单位:m³/s)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
                     mTvExtension1.setText("初始读数(单位:mm)");
                     mTvExtension2.setText("堰上水头(单位:mm)");
@@ -236,7 +236,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     break;
 
                 case STATIC_LEVEL://静力水准
-                    mTvAlarmValue.setText("报警值(单位:mm)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
                     mTvExtension1.setText("高程(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
@@ -248,14 +248,14 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
                 case WEATHER_STATION://气象计
                 case TURBIDITY_METER://浊度仪
-                    mTvAlarmValue.setText("报警值(单位:m/s)");
+                    mTvAlarmValue.setText("触发值(单位:m/s)");
                     mTvCorrectValue.setText("修正值(单位:m/s)");
                     break;
 
                 case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
-                    mTvAlarmValue.setText("报警值(单位:mm)");
-                    mTvCorrectValue.setText("修正值(单位:m)");
-                    mTvExtension1.setText("高程(单位:m)");
+                    mTvAlarmValue.setText("触发值(单位:mm)");
+                    mTvCorrectValue.setText("修正值(单位:mm)");
+                    mTvExtension1.setText("安装高程(单位:m)");
                     mTvExtension2.setText("绳长(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
                     exValue2 = externalSensorInfo.getRopelen();

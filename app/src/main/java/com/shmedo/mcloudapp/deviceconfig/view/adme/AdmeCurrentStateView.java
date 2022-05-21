@@ -255,7 +255,7 @@ public class AdmeCurrentStateView extends LinearLayout {
             if (currentStateInfo.getAbndiasis().equals("0")) {
                 deviceAbnormalDiagnosisLayout.setEnabled(false);
                 mTvDeviceAbnormalDiagnosis.setText("正常");
-                mTvDeviceAbnormalDiagnosis.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                mTvDeviceAbnormalDiagnosis.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
                 mTvDeviceAbnormalDiagnosis.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             } else {
                 deviceAbnormalDiagnosisLayout.setEnabled(true);

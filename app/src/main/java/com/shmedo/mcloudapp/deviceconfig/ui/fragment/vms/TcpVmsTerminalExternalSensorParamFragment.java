@@ -321,7 +321,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     private void showcCalculationChooseDialog() {
         int pos = calculationList.indexOf(String.valueOf(mTvSensorCalculation.getText()));
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(ColorUtils.getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", calculationList.toArray(new String[0]),
@@ -387,7 +387,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     private void showcSensorNameChooseDialog() {
         int pos = monitorTypeList.indexOf(String.valueOf(mTvMonitorType.getText()));
         pos = pos == -1 ? 0 : pos;
-        XPopup.setPrimaryColor(ColorUtils.getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", monitorTypeList.toArray(new String[0]),

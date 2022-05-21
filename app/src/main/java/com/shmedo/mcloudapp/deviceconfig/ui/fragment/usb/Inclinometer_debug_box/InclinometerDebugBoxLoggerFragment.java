@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
@@ -108,7 +109,7 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         observerConnectionState();
-        mTvReceiveText.setTextColor(getResources().getColor(R.color.orange_FF7502)); // set as default color to reduce number of spans
+        mTvReceiveText.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.orange_FF7502)); // set as default color to reduce number of spans
         mTvReceiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         hexWatcher = new TextUtil.HexWatcher(mEtHexValue);
@@ -241,7 +242,7 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
     private void enterCommand() {
         String cmd = WHBLE102CommandType.ENTER_COMMAND.toString();
         SpannableStringBuilder spn = new SpannableStringBuilder(cmd + '\n');
-        spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.testspeed_result_bg)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spn.setSpan(new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.testspeed_result_bg)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvReceiveText.append(spn);
         usbSerialViewModel.sendData(cmd.getBytes());
     }
@@ -254,7 +255,7 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
         byte[] data = (cmd + newline).getBytes();
 
         SpannableStringBuilder spn = new SpannableStringBuilder(cmd + '\n');
-        spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.testspeed_result_bg)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spn.setSpan(new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.testspeed_result_bg)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvReceiveText.append(spn);
         usbSerialViewModel.sendData(data);
     }
@@ -267,7 +268,7 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
         byte[] data = (cmd + newline).getBytes();
 
         SpannableStringBuilder spn = new SpannableStringBuilder(cmd + '\n');
-        spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.testspeed_result_bg)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spn.setSpan(new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.testspeed_result_bg)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvReceiveText.append(spn);
         usbSerialViewModel.sendData(data);
     }
@@ -286,7 +287,7 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
             data = (msg + newline).getBytes();
         }
         SpannableStringBuilder spn = new SpannableStringBuilder(msg + '\n');
-        spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.testspeed_result_bg)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spn.setSpan(new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.testspeed_result_bg)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         mTvReceiveText.append(spn);
         usbSerialViewModel.sendData(data);
     }

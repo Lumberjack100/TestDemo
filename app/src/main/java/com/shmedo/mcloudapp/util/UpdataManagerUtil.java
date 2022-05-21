@@ -56,7 +56,7 @@ public class UpdataManagerUtil {
                         .setDownloadUrl(model.getDownloadURL());
 
                 XUpdate.newBuild(activity)
-                        .promptThemeColor(ColorUtils.getColor(R.color.update_theme_color))
+                        .promptThemeColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.update_theme_color))
                         .promptButtonTextColor(Color.WHITE)
                         .promptTopResId(R.drawable.bg_update_top)
 //                        .promptWidthRatio(0.7F)

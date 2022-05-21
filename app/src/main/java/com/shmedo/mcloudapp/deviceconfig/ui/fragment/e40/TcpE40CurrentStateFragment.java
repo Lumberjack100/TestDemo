@@ -232,7 +232,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
      */
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), getResources().getColor(R.color.transparent)));
+        sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px( 10f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.transparent)));
         sensorAdapter = new CommonAdapter<SensorBean>(getActivity(), R.layout.item_e40_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, SensorBean sensorBean, int position) {
@@ -379,7 +379,7 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
 
                     double voltage = extendStateInfo.getBase().getVolt();
                     SpannableStringBuilder builder = new SpannableStringBuilder(voltage + "V");
-                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(voltage <= 10 ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_666666));
+                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(voltage <= 10 ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_666666));
                     builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     mTvDeviceExternalVoltage.setText(builder);
                 }
@@ -391,29 +391,29 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
                         int tfCradValue = Integer.parseInt(extendStateInfo.getStorage().getTfcard().replace("%", ""));
 
                         if (ramValue <= 80) {
-                            ramProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_normal));
+                            ramProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_normal));
                         } else if (ramValue <= 100) {
-                            ramProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
+                            ramProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_warn));
                         } else {
-                            ramProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
+                            ramProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_abnormal));
                             mTvStorageRam.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_storage_error, 0);
                         }
 
                         if (flashValue <= 80) {
-                            flashProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_normal));
+                            flashProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_normal));
                         } else if (flashValue <= 100) {
-                            flashProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
+                            flashProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_warn));
                         } else {
-                            flashProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
+                            flashProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_abnormal));
                             mTvStorageFlash.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_storage_error, 0);
                         }
 
                         if (tfCradValue <= 80) {
-                            tfcardProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_normal));
+                            tfcardProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_normal));
                         } else if (tfCradValue <= 100) {
-                            tfcardProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_warn));
+                            tfcardProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_warn));
                         } else {
-                            tfcardProgress.setRingProgressColor(getResources().getColor(R.color.storage_ring_progress_abnormal));
+                            tfcardProgress.setRingProgressColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.storage_ring_progress_abnormal));
                             mTvStorageTfCard.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_storage_error, 0);
                         }
                         ramProgress.setCurrentProgress(ramValue);
@@ -574,20 +574,20 @@ public class TcpE40CurrentStateFragment extends BaseTcpIotCommunicateFragment {
     private void initLinkStatus(TextView tvLinkStatus, int linkStatus) {
         if (linkStatus == 0) {
             tvLinkStatus.setText("未开启");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.device_unopened_platform));
         } else if (linkStatus == 1) {
             tvLinkStatus.setText("已上线");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         } else if (linkStatus == 2) {
             tvLinkStatus.setText("未上线");
-            tvLinkStatus.setTextColor(ColorUtils.getColor(R.color.device_not_connected_platform));
+            tvLinkStatus.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.device_not_connected_platform));
         }
     }
 
     private void setDeviceStatus(TextView textView, boolean status) {
         if (status) {
             textView.setText("正常");
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         } else {
             textView.setText("未接入");
             textView.setTextColor(Color.RED);

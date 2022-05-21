@@ -124,10 +124,10 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
                 mTvFirmwareVersion.setText(TextUtils.isEmpty(devcieCurrentState.getSw_version()) ? "--" : devcieCurrentState.getSw_version());
                 mTvOnlineState.setText(devcieCurrentState.isOn_4g() ? "在线" : "离线");
                 if (devcieCurrentState.isOn_4g()) {
-                    mTvOnlineState.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094));
+                    mTvOnlineState.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
 
                 } else {
-                    mTvOnlineState.setTextColor(ColorUtils.getColor(R.color.red));
+                    mTvOnlineState.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
                 }
                 mTv4gSignal.setText(devcieCurrentState.get_$4g_signal() + "dBm");
             }
@@ -136,13 +136,13 @@ public class QueryCurrentStateDialog extends BaseDispatchCmdDialog {
         }
 
         mTvConfirm.setText("查看详情");
-        mTvConfirm.setTextColor(ColorUtils.getColor(R.color.blue_52B4F8));
+        mTvConfirm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
     }
 
     @Override
     protected void onQueryCmdResponseResultTimeOut(QueryCmdResult queryCmdResult) {
         super.onQueryCmdResponseResultTimeOut(queryCmdResult);
         mTvConfirm.setText("好的");
-        mTvConfirm.setTextColor(ColorUtils.getColor(R.color.sub_title_text_color));
+        mTvConfirm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.sub_title_text_color));
     }
 }

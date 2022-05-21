@@ -100,7 +100,7 @@ public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
     private void initView() {
         mTvTitle.setText("设备状态");
         mTvConfirm.setText("查看详情");
-        mTvConfirm.setTextColor(ColorUtils.getColor(R.color.blue_52B4F8));
+        mTvConfirm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         mTvUplinkSignalStrength.setText(String.valueOf(vmsTerminalInfo.getUprssi()));
         mTvDownlinkSignalStrength.setText(String.valueOf(vmsTerminalInfo.getDownrssi()));
         mTvSendData.setText(String.valueOf(vmsTerminalInfo.getTx()));
@@ -118,7 +118,7 @@ public class VmsTerminalCurrentStateDialog extends BaseDialogFragment {
                 }
             }
             mTvSensorStatus.setText(sensorAbnormal ? "未接入" : "正常");
-            mTvSensorStatus.setTextColor(sensorAbnormal ? ColorUtils.getColor(R.color.red) : ColorUtils.getColor(R.color.text_color_3AD094));
+            mTvSensorStatus.setTextColor(sensorAbnormal ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
         }
     }
 

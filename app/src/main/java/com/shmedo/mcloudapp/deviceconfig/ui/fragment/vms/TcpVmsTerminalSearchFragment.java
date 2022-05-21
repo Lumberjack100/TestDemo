@@ -249,7 +249,7 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
 
     private CharSequence getWarnMessage() {
         SpannableStringBuilder builder = new SpannableStringBuilder(vmsTerminalInfo.getSn());
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_52B4F8));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "确认移除 ");
         builder.append(" 设备?");

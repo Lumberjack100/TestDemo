@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/main_bg_gray"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="主机" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/hostET"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="textUri"
+            android:text="192.168.0."/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="端口号" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/portET"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btn_confirm"
+        style="@style/SubmitBordelessButtonStyle"
+        android:text="确定" />
+
+    <Button
+        android:id="@+id/btn_cancel"
+        style="@style/SubmitBordelessButtonStyle"
+        android:layout_marginTop="0dp"
+        android:text="取消" />
+
+</LinearLayout>

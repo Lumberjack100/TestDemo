@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/connection_toolbar_primary_bg" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/main_bg_gray_f9f9f9">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutCount"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:background="@color/white"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#ffdddddd"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/countGuideline"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <View
+                android:id="@+id/receiveIndicator"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/receive_data_color"
+                app:layout_constraintBottom_toTopOf="@id/countGuideline"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvReceiveColon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:text="设备接收数据"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_12"
+                app:layout_constraintBottom_toTopOf="@id/countGuideline"
+                app:layout_constraintStart_toEndOf="@id/receiveIndicator" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvReceiveData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textColor="@color/title_text_color"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/countGuideline"
+                app:layout_constraintStart_toEndOf="@id/tvReceiveColon"
+                tools:text="1024" />
+
+            <View
+                android:id="@+id/responseIndicator"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/response_data_color"
+                app:layout_constraintStart_toStartOf="@id/receiveIndicator"
+                app:layout_constraintTop_toBottomOf="@id/countGuideline" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvResponseColon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备响应数据"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_12"
+                app:layout_constraintStart_toStartOf="@id/tvReceiveColon"
+                app:layout_constraintTop_toBottomOf="@id/countGuideline" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvResponseData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textColor="@color/title_text_color"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/tvReceiveData"
+                app:layout_constraintTop_toBottomOf="@id/countGuideline"
+                tools:text="10245" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_log"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scrollbarSize="2dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+            android:scrollbars="vertical"
+            android:splitMotionEvents="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutCount"
+            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_common_log" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

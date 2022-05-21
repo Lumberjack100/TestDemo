@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -139,7 +140,7 @@ public class AdmeInclinometerView extends LinearLayout {
      */
     public void showInclinometerTypeDialog(Context context) {
         int pos = Arrays.asList(inclinometerTypes).indexOf(String.valueOf(mTvInclinometerType.getText()));
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", inclinometerTypes,
@@ -167,7 +168,7 @@ public class AdmeInclinometerView extends LinearLayout {
      */
     public void showLowPowerModeDialog(Context context) {
         int pos = Arrays.asList(powerModes).indexOf(String.valueOf(mTvLowPowerMode.getText()));
-        XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", powerModes,

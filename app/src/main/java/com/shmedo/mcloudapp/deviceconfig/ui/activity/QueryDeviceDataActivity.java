@@ -112,7 +112,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
             if (!TextUtils.isEmpty(snNubmer)) {
                 mEtSn.setEnabled(false);
                 mEtSn.setText(snNubmer);
-                mEtSn.setTextColor(ColorUtils.getColor(R.color.sub_title_text_color));
+                mEtSn.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.sub_title_text_color));
                 startTime = mTvStartTime.getText().toString() + " 00:00:00";
                 endTime = mTvEndTime.getText().toString() + " 23:59:59";
                 queryCloudData();
@@ -169,7 +169,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
             break;
 
             case R.id.itemCountLayout:
-                XPopup.setPrimaryColor(getResources().getColor(R.color.blue_52B4F8));
+                XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
                 new XPopup.Builder(QueryDeviceDataActivity.this)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asBottomList("", new String[]{"30", "100", "500", "800"},

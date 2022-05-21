@@ -232,8 +232,8 @@ public class MyDatePicker extends BaseDialogFragment {
             if (index >= 0 && index < getItemsCount()) {
                 if (convertView == null) {
                     convertView = new WheelTextView(context);
-                    ((WheelTextView) convertView).setDefaultColor(ColorUtils.getColor(R.color.text_color_cccccc));//LTGRAY
-                    ((WheelTextView) convertView).setCurrentColor(ColorUtils.getColor(R.color.title_text_color));
+                    ((WheelTextView) convertView).setDefaultColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));//LTGRAY
+                    ((WheelTextView) convertView).setCurrentColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.title_text_color));
 
                     ((WheelTextView) convertView).setDefaultSize(15);
                     ((WheelTextView) convertView).setCurrentSize(18);

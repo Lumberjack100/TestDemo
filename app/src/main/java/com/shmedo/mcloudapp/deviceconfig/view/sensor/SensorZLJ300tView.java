@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
  */
 public class SensorZLJ300tView extends FrameLayout {
     @BindView(R.id.et_trigger_threshold)
-    EditText mEtTriggerThreshold;//报警值
+    EditText mEtTriggerThreshold;//触发值
     @BindView(R.id.et_correct_value)
     EditText mEtCorrectValue;//修正值
     @BindView(R.id.sensitivityK)
