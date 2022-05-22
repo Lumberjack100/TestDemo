@@ -75,6 +75,8 @@ public class TcpToBleDebugActivity extends BaseActivity {
     private String host;
     private int port;
 
+    private volatile boolean isManualDisconnect = false;
+
     public static void startActivity(Context context, String host, int port) {
         Intent intent = new Intent(context, TcpToBleDebugActivity.class);
         intent.putExtra(TCP_HOST, host);
@@ -102,9 +104,14 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
                     mTvConnect.setText("断开");
                     printLog("TCP连接成功", R.color.title_text_color);
+                    isManualDisconnect = false;
+
                 } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
                     mTvConnect.setText("连接");
                     printLog("TCP连接断开", R.color.title_text_color);
+                    if(!isManualDisconnect){
+                        setupTcpConnect();
+                    }
                 }
             }
         });
@@ -120,11 +127,6 @@ public class TcpToBleDebugActivity extends BaseActivity {
         usrBleViewModel.getResponseMsg().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
-//                if (!result.startsWith("$$")) {
-//                    if (usrBleViewModel.getLogOutputMode().getValue() == null || !usrBleViewModel.getLogOutputMode().getValue()) {
-//                        return;
-//                    }
-//                }
                 Timber.d("onResponseMsg: %s", msg);
                 if (msg.startsWith("$$888")) {
                     return;
@@ -158,6 +160,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 }
             }
         });
+        tcpViewModel.initTcpClient(host, port);
         setupTcpConnect();
     }
 
@@ -181,7 +184,6 @@ public class TcpToBleDebugActivity extends BaseActivity {
      */
     private void setupTcpConnect() {
         printLog("正在连接远程TCP...", R.color.title_text_color);
-        tcpViewModel.initTcpClient(host, port);
         tcpViewModel.connect();
     }
 
@@ -219,9 +221,9 @@ public class TcpToBleDebugActivity extends BaseActivity {
         int id = view.getId();
         if (id == R.id.tvConnect) {
             if (!tcpViewModel.getConnectStatus()) {
-                printLog("正在连接...", R.color.title_text_color);
-                tcpViewModel.connect();
+                setupTcpConnect();
             } else {
+                isManualDisconnect = true;
                 tcpViewModel.disconnect();
             }
         } else if (id == R.id.ivMore) {
@@ -343,6 +345,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
+                        isManualDisconnect = true;
                         tcpViewModel.disconnect();
                         finish();
                     }
