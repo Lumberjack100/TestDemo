@@ -42,7 +42,7 @@ public class TcpManager implements NettyClientListener<String> {
                 .setHost(host)    //设置服务端地址
                 .setTcpPort(port) //设置服务端端口号
                 .setMaxReconnectTimes(3)    //设置最大重连次数
-                .setReconnectIntervalTime(5)    //设置重连间隔时间。单位：秒
+                .setReconnectIntervalTime(3000)    //设置重连间隔时间。单位：秒
                 .setSendheartBeat(true) //设置是否发送心跳
                 .setHeartBeatInterval(15)    //设置心跳间隔时间。单位：秒
                 .setHeartBeatData(heartBeat) //设置心跳数据，可以是String类型，也可以是byte[]，以后设置的为准
@@ -72,21 +72,6 @@ public class TcpManager implements NettyClientListener<String> {
         receivedMessage.postValue(null);
     }
 
-    /**
-     * 当接收到系统消息
-     * @param msg 消息
-     * @param index tcp 客户端的标识，因为一个应用程序可能有很多个长链接
-     */
-    @Override
-    public void onMessageResponseClient(String msg, int index) {
-//        Timber.d("onMessageResponseClient data length: %s", msg.getBytes().length);
-        //跳过心跳包数据的分发处理
-        if (msg.contains(IOTCommandType.HEART_BEAT.toString()))
-            return;
-
-        receivedMessage.postValue(msg);
-    }
-
     @Override
     public void onClientStatusConnectChanged(int statusCode, int index) {
         if (statusCode == ConnectState.STATUS_CONNECT_SUCCESS) {
@@ -103,11 +88,25 @@ public class TcpManager implements NettyClientListener<String> {
         }
     }
 
+    /**
+     * 当接收到系统消息
+     *
+     * @param msg   消息
+     * @param index tcp 客户端的标识，因为一个应用程序可能有很多个长链接
+     */
+    @Override
+    public void onMessageResponseClient(String msg, int index) {
+//        Timber.d("onMessageResponseClient data length: %s", msg.getBytes().length);
+        //跳过心跳包数据的分发处理
+        if (msg.contains(IOTCommandType.HEART_BEAT.toString()))
+            return;
+
+        receivedMessage.postValue(msg);
+    }
+
     public void connect() {
         if (!mNettyTcpClient.getConnectStatus()) {
             mNettyTcpClient.connect();//连接服务器
-        } else {
-            mNettyTcpClient.disconnect();
         }
     }
 
