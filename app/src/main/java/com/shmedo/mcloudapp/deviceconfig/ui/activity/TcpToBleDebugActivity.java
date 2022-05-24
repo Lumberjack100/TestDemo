@@ -28,6 +28,7 @@ import com.kongzue.dialogx.dialogs.BottomMenu;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.kongzue.dialogx.interfaces.OnMenuItemClickListener;
+import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -102,7 +103,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
         mToolbar.setTitle("TCP远程调试");
         parseIntent();
         initLogAdapter();
-        tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
+        tcpViewModel = getActivityScopeViewModel(TcpViewModel.class);
         tcpViewModel.getTcpConnectionState().observe(this, new Observer<TcpConnectionState>() {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
@@ -122,7 +123,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 Timber.d("getReceivedMessage: %s", msg);
                 if (TextUtils.isEmpty(msg) || (!msg.startsWith("##") && !msg.startsWith("$cmd")))
                     return;
-                handleReceiveMsg(msg);
+                handleReceiveMsgFromTCPServer(msg);
             }
         });
         usrBleViewModel = getApplicationScopeViewModel(BleViewModel.class);
@@ -133,7 +134,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 if (msg.startsWith("$$888")) {
                     return;
                 }
-                handleResponseMsg(msg);
+                handleResponseMsgFromDevice(msg);
             }
         });
         usrBleViewModel.getConnectionState().observe(this, new Observer<ConnectionState>() {
@@ -150,6 +151,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
                     case READY:
                         printLog("蓝牙连接成功", R.color.title_text_color);
                         isNeedReconnect = true;
+                        usrBleViewModel.setAuthenticateWay();
                         break;
 
                     case DISCONNECTED:
@@ -198,14 +200,15 @@ public class TcpToBleDebugActivity extends BaseActivity {
      *
      * @param msg
      */
-    private void handleReceiveMsg(String msg) {
+    private void handleReceiveMsgFromTCPServer(String msg) {
         printLog(msg, R.color.receive_data_color);
         if (!usrBleViewModel.isConnected()) {
             ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return;
         }
-        if (!msg.endsWith("\r\n"))
+        if (!msg.endsWith("\r\n")) {
             msg += "\r\n";
+        }
         usrBleViewModel.sendIOTProtocolCommand(msg);
     }
 
@@ -214,13 +217,34 @@ public class TcpToBleDebugActivity extends BaseActivity {
      *
      * @param msg
      */
-    private void handleResponseMsg(String msg) {
+    private void handleResponseMsgFromDevice(String msg) {
         printLog(msg, R.color.response_data_color);
-        if (!tcpViewModel.getConnectStatus()) {
-            ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-            return;
+        try {
+            String cmdArray[] = msg.replace("\r\n", "").split(",");
+            if (msg.startsWith("$$224")) {//认证方式
+                if (msg.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
+                    usrBleViewModel.setAuthenticateWay();//重新认证
+                    return;
+                }
+                usrBleViewModel.sendAuthenticateCodeCmd(cmdArray[3]);
+
+            } else if (msg.startsWith("$$223")) {//设备登录验证结果指令
+                if (!cmdArray[1].contains("1")) {
+                    printLog("设备认证失败!", R.color.response_data_color);
+                }
+            } else if (msg.contains("Please verify the equipment.\r\n")) {
+                printLog("设备认证失败!", R.color.response_data_color);
+
+            } else {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    return;
+                }
+                tcpViewModel.sendMsgToServer(msg);
+            }
+        } catch (Exception ex) {
+            Timber.e(ex);
         }
-        tcpViewModel.sendMsgToServer(msg);
     }
 
     @OnClick({R.id.tvConnect, R.id.ivMore})
@@ -251,7 +275,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
                         } else if (text.equals("分享日志")) {
                             shareLogs();
                         } else if (text.equals("测试")) {
-                            handleReceiveMsg("##042\r\n");
+                            handleReceiveMsgFromTCPServer("##042\r\n");
                         }
                         return false;
                     }
