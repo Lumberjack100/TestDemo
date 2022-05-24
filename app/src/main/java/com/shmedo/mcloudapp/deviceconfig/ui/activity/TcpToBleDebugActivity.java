@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -27,13 +28,17 @@ import com.kongzue.dialogx.dialogs.BottomMenu;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.kongzue.dialogx.interfaces.OnMenuItemClickListener;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.adapter.CommonLogAdapter;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.CommonLogInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.profile.BleViewModel;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -74,6 +79,8 @@ public class TcpToBleDebugActivity extends BaseActivity {
     private String host;
     private int port;
 
+    private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
+    private volatile boolean isNeedReconnect = true;
 
     public static void startActivity(Context context, String host, int port) {
         Intent intent = new Intent(context, TcpToBleDebugActivity.class);
@@ -106,16 +113,13 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
                     mTvConnect.setText("连接");
                     printLog("TCP连接断开", R.color.title_text_color);
-//                    if (tcpViewModel.isNeedReconnect()) {
-//                        printLog("正在重连远程TCP...", R.color.title_text_color);
-//                        tcpViewModel.reconnect();
-//                    }
                 }
             }
         });
         tcpViewModel.getReceivedMessage().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
+                Timber.d("getReceivedMessage: %s", msg);
                 if (TextUtils.isEmpty(msg) || (!msg.startsWith("##") && !msg.startsWith("$cmd")))
                     return;
                 handleReceiveMsg(msg);
@@ -145,15 +149,20 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
                     case READY:
                         printLog("蓝牙连接成功", R.color.title_text_color);
+                        isNeedReconnect = true;
                         break;
 
                     case DISCONNECTED:
                         printLog("蓝牙连接断开", R.color.title_text_color);
-//                        usrBleViewModel.reconnect();
+                        if (isNeedReconnect) {
+                            isNeedReconnect = false;
+                            mDefaultHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.CONNECT_DEVICE, 5000);
+                        }
                         break;
 
                     // fallthrough
                     case DISCONNECTING:
+                        printLog("蓝牙连接正在断开...", R.color.title_text_color);
                         break;
                 }
             }
@@ -181,12 +190,12 @@ public class TcpToBleDebugActivity extends BaseActivity {
      * 建立 Tcp 通讯连接
      */
     private void setupTcpConnect() {
-        printLog("正在连接远程TCP...", R.color.title_text_color);
         tcpViewModel.connect();
     }
 
     /**
      * 处理接收的 TCP 消息，通过蓝牙转发给设备
+     *
      * @param msg
      */
     private void handleReceiveMsg(String msg) {
@@ -202,6 +211,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
     /**
      * 处理设备相应的消息，通过 TCP 转发给远程调试客户端
+     *
      * @param msg
      */
     private void handleResponseMsg(String msg) {
@@ -228,14 +238,17 @@ public class TcpToBleDebugActivity extends BaseActivity {
     }
 
     private void showMoreMenu() {
-        BottomMenu.show(new String[]{"清空日志", "分享日志"})
+        String[] menuItems = usrBleViewModel.isConnected() ? new String[]{"清空日志", "分享日志"} : new String[]{"蓝牙重连", "清空日志", "分享日志"};
+        BottomMenu.show(menuItems)
                 .setMessage("")
                 .setOnMenuItemClickListener(new OnMenuItemClickListener<BottomMenu>() {
                     @Override
                     public boolean onClick(BottomMenu dialog, CharSequence text, int index) {
-                        if (index == 0) {
+                        if (text.equals("蓝牙重连")) {
+                            usrBleViewModel.reconnect();
+                        } else if (text.equals("清空日志")) {
                             clearLogs();
-                        } else if (index == 1) {
+                        } else if (text.equals("分享日志")) {
                             shareLogs();
                         }
                         return false;
@@ -347,6 +360,42 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 .setOnActivityResult(300)
                 .build()
                 .shareBySystem();
+    }
+
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!usrBleViewModel.isConnected()) {
+                    usrBleViewModel.reconnect();
+                }
+            }
+            break;
+        }
+    }
+
+    private static final class DefaultHandler extends WeakHandler<TcpToBleDebugActivity> {
+        private DefaultHandler(TcpToBleDebugActivity context) {
+            super(context);
+        }
+
+        @Override
+        protected void handleMessage(Message msg, TcpToBleDebugActivity context) {
+            context.customHandleMessage(msg);
+        }
+    }
+
+    protected void stopDefaultProgress(int what) {
+        mDefaultHandler.removeMessages(what);
+    }
+
+    protected void stopAllProgress() {
+        mDefaultHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopAllProgress();
     }
 
     @Override

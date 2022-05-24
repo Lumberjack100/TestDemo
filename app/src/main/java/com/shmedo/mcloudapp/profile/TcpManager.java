@@ -42,9 +42,9 @@ public class TcpManager implements NettyClientListener<String> {
                 .setHost(host)    //设置服务端地址
                 .setTcpPort(port) //设置服务端端口号
                 .setMaxReconnectTimes(3)    //设置最大重连次数
-                .setReconnectIntervalTime(3000)    //设置重连间隔时间。单位：秒
+                .setReconnectIntervalTime(3000)    //设置重连间隔时间。单位：毫秒
                 .setSendheartBeat(true) //设置是否发送心跳
-                .setHeartBeatInterval(15)    //设置心跳间隔时间。单位：秒
+                .setHeartBeatInterval(20)    //设置心跳间隔时间。单位：秒
                 .setHeartBeatData(heartBeat) //设置心跳数据，可以是String类型，也可以是byte[]，以后设置的为准
                 .setIndex(0)    //设置客户端标识.(因为可能存在多个tcp连接)
 //                .setPacketSeparator("&&")//用特殊字符，作为分隔符，解决粘包问题，默认是用换行符作为分隔符

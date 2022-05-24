@@ -75,7 +75,7 @@ public class BleViewModel extends AndroidViewModel {
     public void reconnect() {
         if (device != null) {
             customBleManager.connect(device)
-                    .retry(3, 100)
+                    .retry(3, 300)
                     .useAutoConnect(false)
                     .enqueue();
         }
