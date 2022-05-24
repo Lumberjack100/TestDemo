@@ -26,6 +26,10 @@ public class TcpViewModel extends AndroidViewModel {
         tcpManager.initTcpClient(host, port);
     }
 
+    public void initTcpClient(String host, int port, boolean isSendheartBeat, String packetSeparator) {
+        tcpManager.initTcpClient(host, port, isSendheartBeat, packetSeparator);
+    }
+
     public void connect() {
         tcpManager.connect();
     }

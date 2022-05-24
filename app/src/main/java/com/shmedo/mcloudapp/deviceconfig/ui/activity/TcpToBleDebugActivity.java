@@ -167,7 +167,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 }
             }
         });
-        tcpViewModel.initTcpClient(host, port);
+        tcpViewModel.initTcpClient(host, port, false, "\r\n");
         setupTcpConnect();
     }
 
@@ -238,7 +238,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
     }
 
     private void showMoreMenu() {
-        String[] menuItems = usrBleViewModel.isConnected() ? new String[]{"清空日志", "分享日志"} : new String[]{"蓝牙重连", "清空日志", "分享日志"};
+        String[] menuItems = usrBleViewModel.isConnected() ? new String[]{"清空日志", "分享日志", "测试"} : new String[]{"蓝牙重连", "清空日志", "分享日志"};
         BottomMenu.show(menuItems)
                 .setMessage("")
                 .setOnMenuItemClickListener(new OnMenuItemClickListener<BottomMenu>() {
@@ -250,6 +250,8 @@ public class TcpToBleDebugActivity extends BaseActivity {
                             clearLogs();
                         } else if (text.equals("分享日志")) {
                             shareLogs();
+                        } else if (text.equals("测试")) {
+                            handleReceiveMsg("##042\r\n");
                         }
                         return false;
                     }
