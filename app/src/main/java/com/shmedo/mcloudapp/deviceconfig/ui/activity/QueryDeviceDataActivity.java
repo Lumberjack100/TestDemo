@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -240,7 +239,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
         paramter.setNumber(itemCount);
 
         String json = GsonUtils.toJson(paramter);
-        RequestBody body = RequestBody.create(RequestHeader.JSON_TYPE, json);
+        RequestBody body = RequestBody.create(json, RequestHeader.JSON_TYPE);
         MDRetrofit.getInstance().createService(ServiceAddressType.CLOUD_PLATFORM_DATA_ADDRESS)
                 .QueryCloudData(body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))

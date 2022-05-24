@@ -25,7 +25,12 @@ public enum ServiceAddressType {
     /**
      * 云平台原始数据地址
      */
-    CLOUD_PLATFORM_DATA_ADDRESS(4);
+    CLOUD_PLATFORM_DATA_ADDRESS(4),
+
+    /**
+     * 设备远程调试服务器地址
+     */
+    DEVICE_REMOTE_DEBUG_ADDRESS(5);
 
     private int type;
 

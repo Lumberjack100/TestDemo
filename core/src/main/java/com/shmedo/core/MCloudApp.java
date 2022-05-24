@@ -40,6 +40,7 @@ public class MCloudApp {
     private static final String iotManagerServiceAddress = "https://mdiotbff.shmedo.cn";//物联网设备管理服务地址
     private static final String iotInteractiveServiceAddress = "https://mdiotbff.shmedo.cn";//物联网指令交互服务地址
     private static final String cloudPlatformDataAddress = "https://chaxun.shmedo.cn";//云平台原始数据地址
+    private static final String deviceRemoteDebugAddress = "http://ams4.shmedo.com:22000/api/v1/";//云平台原始数据地址
 
 
     /**
@@ -84,6 +85,10 @@ public class MCloudApp {
 
     public static String getCloudPlatformDataAddress() {
         return cloudPlatformDataAddress;
+    }
+
+    public static String getDeviceRemoteDebugAddress() {
+        return deviceRemoteDebugAddress;
     }
 
     public static UserWrapperInfo getCurrentUserInfo() {

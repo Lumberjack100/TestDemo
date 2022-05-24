@@ -5,6 +5,7 @@ import com.shmedo.core.model.UserPermissionInfo;
 import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.deviceconfig.model.DetailDeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceDebugAddress;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceStatisticInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -149,4 +150,8 @@ public interface ApiService {
     //查询数据
     @POST("queryCloudData")
     Observable<ResponseWrapper<List<QueryCloudDataInfo>>> QueryCloudData(@Body RequestBody parameter);
+
+    //查询设备远程调试连接地址信息
+    @POST("DeviceLogin")
+    Observable<ResponseWrapper<DeviceDebugAddress>> DeviceLogin(@Body RequestBody parameter);
 }
