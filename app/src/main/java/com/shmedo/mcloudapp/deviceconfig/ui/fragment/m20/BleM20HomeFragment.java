@@ -173,7 +173,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "设置":

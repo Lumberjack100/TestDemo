@@ -127,7 +127,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
 
         } else if (id == R.id.tv_left) {
             dismiss();
-            DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+            DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, true);
 
         } else if (id == R.id.tv_right) {
             if (!baseUSRBleIotCommunicateFragment.isConnected()) {
@@ -174,7 +174,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
                 @Override
                 public void run() {
                     dismiss();
-                    DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+                    DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, true);
                 }
             }, 1500);
         } else {

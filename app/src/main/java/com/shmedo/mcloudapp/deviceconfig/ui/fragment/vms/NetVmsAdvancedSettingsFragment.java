@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -32,7 +31,6 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.model.IotLogOutputInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -152,19 +150,19 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, deviceInfo,  ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, deviceInfo,  ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, deviceInfo, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             serverNumber = SERVER_NUMBER_FOUR;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.VMS, deviceInfo,  ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.vmsAisleOneLayout) {
             VmsAisleSettingActivity.startActivity(mActivity, deviceInfo, VmsAisleNumber.NUMBER_ONE);

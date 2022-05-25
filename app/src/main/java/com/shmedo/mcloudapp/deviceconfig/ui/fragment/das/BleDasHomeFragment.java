@@ -260,7 +260,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "设置":

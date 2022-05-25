@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -55,8 +54,6 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
     @BindView(R.id.tv_data_center_four)
     TextView mTvDataCenterFour;
 
-    private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
-
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;
     private static final int SERVER_NUMBER_THREE = 0x1003;
@@ -64,20 +61,14 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
     private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public static TcpE40DataCenterHomeFragment newInstance(int configMethod) {
+    public static TcpE40DataCenterHomeFragment newInstance() {
         TcpE40DataCenterHomeFragment fragment = new TcpE40DataCenterHomeFragment();
-        Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
-        }
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -119,7 +110,7 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
         return R.layout.fragment_e40_data_center_home;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
@@ -138,19 +129,19 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, configMethod, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             serverNumber = SERVER_NUMBER_FOUR;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, configMethod, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
         }
     }
 

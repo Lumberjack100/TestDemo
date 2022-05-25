@@ -11,14 +11,9 @@ import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.UniversalUSRBleDataCenterAdvancedConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.UniversalUSRBleDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasDataCenterServerConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterAdvancedConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20DataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterAdvancedConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetDataCenterBasicConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterAdvancedConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataCenterBasicConfigFragment;
 
 /**
  * 创建者:   gonghe <br/>
@@ -26,28 +21,25 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon.UniversalTcpDataC
  * 描述：    数据中心配置页面
  */
 public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivity {
-    private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private ProductType productType = ProductType.DAS;
 
     private ServerNumber serverNumber;
     private String serverStatus;
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProductType productType, DeviceInfo deviceInfo, int configMethod, ServerNumber serverNumber, String status) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProductType productType, DeviceInfo deviceInfo, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, DataCenterConfigActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
-        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         launcher.launch(intent);
     }
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProductType productType, int connectWay, int configMethod, ServerNumber serverNumber, String status) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProductType productType, int connectWay, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, DataCenterConfigActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
         intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -63,40 +55,18 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
         if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
             productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
         }
-
-        if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_CONFIG_METHOD)) {
-            configMethod = intent.getIntExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
-        }
-
         if (intent.getExtras().containsKey(AppContants.Extras.DATA_SERVER_NUMBER)) {
             serverNumber = (ServerNumber) intent.getSerializableExtra(AppContants.Extras.DATA_SERVER_NUMBER);
             if (serverNumber == ServerNumber.NUMBER_ONE) {
-                if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                    mToolbarTitle.setText("中心1基础配置");
-                } else {
-                    mToolbarTitle.setText("中心1高级配置");
-                }
+                mToolbarTitle.setText("数据中心1");
             } else if (serverNumber == ServerNumber.NUMBER_TWO) {
-                if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                    mToolbarTitle.setText("中心2基础配置");
-                } else {
-                    mToolbarTitle.setText("中心2高级配置");
-                }
+                mToolbarTitle.setText("数据中心2");
             } else if (serverNumber == ServerNumber.NUMBER_THREE) {
-                if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                    mToolbarTitle.setText("中心3基础配置");
-                } else {
-                    mToolbarTitle.setText("中心3高级配置");
-                }
+                mToolbarTitle.setText("数据中心3");
             } else if (serverNumber == ServerNumber.NUMBER_FOUR) {
-                if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                    mToolbarTitle.setText("中心4基础配置");
-                } else {
-                    mToolbarTitle.setText("中心4高级配置");
-                }
+                mToolbarTitle.setText("数据中心4");
             }
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.DATA_SERVER_STATUS)) {
             serverStatus = intent.getStringExtra(AppContants.Extras.DATA_SERVER_STATUS);
         }
@@ -111,11 +81,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                 case M20:
                 case E40:
                 case VMS:
-                    if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                        fragment = UniversalNetDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus, deviceInfo);
-                    } else {
-                        fragment = UniversalNetDataCenterAdvancedConfigFragment.newInstance(productType, serverNumber, serverStatus, deviceInfo);
-                    }
+                    fragment = UniversalNetDataCenterAdvancedConfigFragment.newInstance(productType, serverNumber, serverStatus, deviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
@@ -125,30 +91,15 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                     break;
 
                 case ADME:
-                    if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                        fragment = UniversalUSRBleDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
-                    } else {
-                        fragment = UniversalUSRBleDataCenterAdvancedConfigFragment.newInstance(productType, serverNumber, serverStatus);
-                    }
-                    break;
-
                 case M20:
-                    if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                        fragment = BleM20DataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
-                    } else {
-                        fragment = BleM20DataCenterAdvancedConfigFragment.newInstance(productType, serverNumber, serverStatus);
-                    }
+                    fragment = UniversalUSRBleDataCenterAdvancedConfigFragment.newInstance(productType, serverNumber, serverStatus);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             switch (productType) {
                 case VMS:
                 case E40:
-                    if (configMethod == AppContants.DataCenterConfigMethod.BASIC_CONFIG) {
-                        fragment = UniversalTcpDataCenterBasicConfigFragment.newInstance(serverNumber, serverStatus);
-                    } else {
-                        fragment = UniversalTcpDataCenterAdvancedConfigFragment.newInstance(productType, serverNumber, serverStatus);
-                    }
+                    fragment = UniversalTcpDataCenterAdvancedConfigFragment.newInstance(productType, serverNumber, serverStatus);
                     break;
             }
         }

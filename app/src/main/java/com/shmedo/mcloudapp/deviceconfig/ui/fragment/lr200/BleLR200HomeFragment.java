@@ -189,7 +189,7 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, ProductType.LR200, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.LR200, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "设置":

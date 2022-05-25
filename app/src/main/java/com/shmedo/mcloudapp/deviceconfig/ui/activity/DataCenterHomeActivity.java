@@ -25,44 +25,39 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20DataCenterHomeFra
 public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity {
     private static final String LEVEL_INITIAL = "com.shmedo.mcloudapp.LEVEL_INITIAL";
 
-    private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private ProductType productType = ProductType.DAS;
     private boolean isLevelInit = false;
 
 
-    public static void startActivity(Context context, ProductType productType, DeviceInfo deviceInfo, int configMethod) {
+    public static void startActivity(Context context, ProductType productType, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
-        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, ProductType productType, int connectWay, int configMethod) {
-        Intent intent = new Intent(context, DataCenterHomeActivity.class);
-        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
-        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
-
-    public static void startActivity(Context context, ProductType productType, DeviceInfo deviceInfo, int configMethod, boolean isLevelInit) {
+    public static void startActivity(Context context, ProductType productType, DeviceInfo deviceInfo, boolean isLevelInit) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
-        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         intent.putExtra(LEVEL_INITIAL, isLevelInit);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, ProductType productType, int connectWay, int configMethod, boolean isLevelInit) {
+    public static void startActivity(Context context, ProductType productType, int connectWay) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        context.startActivity(intent);
+    }
+
+    public static void startActivity(Context context, ProductType productType, int connectWay, boolean isLevelInit) {
+        Intent intent = new Intent(context, DataCenterHomeActivity.class);
+        intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(LEVEL_INITIAL, isLevelInit);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -79,9 +74,6 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
         if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
             productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
         }
-        if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_CONFIG_METHOD)) {
-            configMethod = intent.getIntExtra(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
-        }
         if (intent.getExtras().containsKey(LEVEL_INITIAL)) {
             isLevelInit = intent.getBooleanExtra(LEVEL_INITIAL, false);
         }
@@ -96,15 +88,15 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
                     break;
 
                 case ADME:
-                    fragment = NetAdmeDataCenterHomeFragment.newInstance(configMethod, deviceInfo);
+                    fragment = NetAdmeDataCenterHomeFragment.newInstance(deviceInfo);
                     break;
 
                 case M20:
-                    fragment = NetM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit, deviceInfo);
+                    fragment = NetM20DataCenterHomeFragment.newInstance(isLevelInit, deviceInfo);
                     break;
 
                 case E40:
-                    fragment = NetE40DataCenterHomeFragment.newInstance(configMethod, deviceInfo);
+                    fragment = NetE40DataCenterHomeFragment.newInstance(deviceInfo);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
@@ -114,18 +106,18 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
                     break;
 
                 case ADME:
-                    fragment = BleAdmeDataCenterHomeFragment.newInstance(configMethod);
+                    fragment = BleAdmeDataCenterHomeFragment.newInstance();
                     break;
 
                 case M20:
                 case LR200:
-                    fragment = BleM20DataCenterHomeFragment.newInstance(configMethod, isLevelInit);
+                    fragment = BleM20DataCenterHomeFragment.newInstance(isLevelInit);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
             switch (productType) {
                 case E40:
-                    fragment = TcpE40DataCenterHomeFragment.newInstance(configMethod);
+                    fragment = TcpE40DataCenterHomeFragment.newInstance();
                     break;
             }
         }

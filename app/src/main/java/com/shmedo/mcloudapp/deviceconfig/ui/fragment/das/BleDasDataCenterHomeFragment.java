@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -180,7 +179,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_ONE, "");
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_ONE, "");
                 break;
 
             case R.id.dataCenterTwoLayout:
@@ -188,7 +187,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_TWO, "");
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_TWO, "");
                 break;
 
             case R.id.dataCenterThreeLayout:
@@ -196,7 +195,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG, ServerNumber.NUMBER_THREE, "");
+                DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_THREE, "");
                 break;
 
             case R.id.btn_confirm:

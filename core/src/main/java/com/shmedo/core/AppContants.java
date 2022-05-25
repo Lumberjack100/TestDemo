@@ -31,14 +31,6 @@ public interface AppContants {
         int USB_SERIAL = 0x004;//通过 USB 串口连接
     }
 
-    /**
-     * 数据中心配置方式
-     */
-    interface DataCenterConfigMethod {
-        int BASIC_CONFIG = 0x001;//基本配置
-        int ADVANCED_CONFIG = 0x002;//高级配置
-    }
-
     interface Extras {
         String CUR_DEVICE_SN = "cur_device_sn";
 
