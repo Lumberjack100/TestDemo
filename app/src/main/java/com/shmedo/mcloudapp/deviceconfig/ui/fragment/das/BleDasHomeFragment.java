@@ -113,7 +113,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
-    private String sn;
 
     private String collectorModel = "";//采集器类型
     private BaseConfigInfo baseConfigInfo;
@@ -261,7 +260,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "设置":
@@ -317,9 +316,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-//                        hideProgressBar();
                         onConnectionStateChanged(false);
-                        clearDevice();
                         break;
 
                     // fallthrough

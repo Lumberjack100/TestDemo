@@ -15,7 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -60,7 +59,6 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
     @BindView(R.id.btn_confirm)
     Button mBtnComplete;
 
-    private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private boolean isLevelInit = false;
 
     private static final int SERVER_NUMBER_ONE = 0x1001;
@@ -71,10 +69,9 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
     private ActivityResultLauncher<Intent> resultLauncher;
 
 
-    public static BleM20DataCenterHomeFragment newInstance(int configMethod, boolean isLevelInit) {
+    public static BleM20DataCenterHomeFragment newInstance(boolean isLevelInit) {
         BleM20DataCenterHomeFragment fragment = new BleM20DataCenterHomeFragment();
         Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         args.putBoolean(LEVEL_INITIAL, isLevelInit);
         fragment.setArguments(args);
         return fragment;
@@ -84,7 +81,6 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
             isLevelInit = getArguments().getBoolean(LEVEL_INITIAL, false);
         }
         resultLauncher = registerForActivityResult(
@@ -129,7 +125,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
         return R.layout.m20_data_center_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (isLevelInit) {
@@ -163,7 +159,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                 return;
             }
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             if (!isConnected()) {
@@ -171,7 +167,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                 return;
             }
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             if (!isConnected()) {
@@ -179,7 +175,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                 return;
             }
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             if (!isConnected()) {
@@ -187,7 +183,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                 return;
             }
             serverNumber = SERVER_NUMBER_FOUR;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.btn_confirm) {
             mActivity.finish();

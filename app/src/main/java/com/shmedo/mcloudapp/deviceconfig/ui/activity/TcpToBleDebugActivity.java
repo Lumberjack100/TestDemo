@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -27,14 +28,18 @@ import com.kongzue.dialogx.dialogs.BottomMenu;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.kongzue.dialogx.interfaces.OnMenuItemClickListener;
-import com.littlegreens.netty.client.listener.MessageStateListener;
+import com.shmedo.configlibrary.ble.cmd.CommandResult;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.deviceconfig.adapter.CommonLogAdapter;
+import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.CommonLogInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.profile.BleViewModel;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -75,6 +80,9 @@ public class TcpToBleDebugActivity extends BaseActivity {
     private String host;
     private int port;
 
+    private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
+    private volatile boolean isNeedReconnect = true;
+
     public static void startActivity(Context context, String host, int port) {
         Intent intent = new Intent(context, TcpToBleDebugActivity.class);
         intent.putExtra(TCP_HOST, host);
@@ -95,13 +103,14 @@ public class TcpToBleDebugActivity extends BaseActivity {
         mToolbar.setTitle("TCP远程调试");
         parseIntent();
         initLogAdapter();
-        tcpViewModel = getApplicationScopeViewModel(TcpViewModel.class);
+        tcpViewModel = getActivityScopeViewModel(TcpViewModel.class);
         tcpViewModel.getTcpConnectionState().observe(this, new Observer<TcpConnectionState>() {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
                 if (tcpConnectionState == TcpConnectionState.CONNECT_SUCCESS) {
                     mTvConnect.setText("断开");
                     printLog("TCP连接成功", R.color.title_text_color);
+
                 } else if (tcpConnectionState == TcpConnectionState.CONNECT_CLOSED) {
                     mTvConnect.setText("连接");
                     printLog("TCP连接断开", R.color.title_text_color);
@@ -111,25 +120,21 @@ public class TcpToBleDebugActivity extends BaseActivity {
         tcpViewModel.getReceivedMessage().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
-                if (TextUtils.isEmpty(msg) || msg.equals("\r\n"))
+                Timber.d("getReceivedMessage: %s", msg);
+                if (TextUtils.isEmpty(msg) || (!msg.startsWith("##") && !msg.startsWith("$cmd")))
                     return;
-                handleReceiveMsg(msg);
+                handleReceiveMsgFromTCPServer(msg);
             }
         });
         usrBleViewModel = getApplicationScopeViewModel(BleViewModel.class);
         usrBleViewModel.getResponseMsg().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String msg) {
-//                if (!result.startsWith("$$")) {
-//                    if (usrBleViewModel.getLogOutputMode().getValue() == null || !usrBleViewModel.getLogOutputMode().getValue()) {
-//                        return;
-//                    }
-//                }
                 Timber.d("onResponseMsg: %s", msg);
                 if (msg.startsWith("$$888")) {
                     return;
                 }
-                handleResponseMsg(msg);
+                handleResponseMsgFromDevice(msg);
             }
         });
         usrBleViewModel.getConnectionState().observe(this, new Observer<ConnectionState>() {
@@ -145,19 +150,26 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
                     case READY:
                         printLog("蓝牙连接成功", R.color.title_text_color);
+                        isNeedReconnect = true;
+                        usrBleViewModel.setAuthenticateWay();
                         break;
 
                     case DISCONNECTED:
                         printLog("蓝牙连接断开", R.color.title_text_color);
-//                        usrBleViewModel.reconnect();
+                        if (isNeedReconnect) {
+                            isNeedReconnect = false;
+                            mDefaultHandler.sendEmptyMessageDelayed(AppContants.MsgWhat.CONNECT_DEVICE, 5000);
+                        }
                         break;
 
                     // fallthrough
                     case DISCONNECTING:
+                        printLog("蓝牙连接正在断开...", R.color.title_text_color);
                         break;
                 }
             }
         });
+        tcpViewModel.initTcpClient(host, port, false, "\r\n");
         setupTcpConnect();
     }
 
@@ -180,38 +192,59 @@ public class TcpToBleDebugActivity extends BaseActivity {
      * 建立 Tcp 通讯连接
      */
     private void setupTcpConnect() {
-        printLog("正在连接远程TCP...", R.color.title_text_color);
-        tcpViewModel.initTcpClient(host, port);
         tcpViewModel.connect();
     }
 
-    private void handleReceiveMsg(String msg) {
+    /**
+     * 处理接收的 TCP 消息，通过蓝牙转发给设备
+     *
+     * @param msg
+     */
+    private void handleReceiveMsgFromTCPServer(String msg) {
         printLog(msg, R.color.receive_data_color);
         if (!usrBleViewModel.isConnected()) {
             ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return;
         }
-        if (!msg.endsWith("\r\n"))
+        if (!msg.endsWith("\r\n")) {
             msg += "\r\n";
+        }
         usrBleViewModel.sendIOTProtocolCommand(msg);
     }
 
-    private void handleResponseMsg(String msg) {
+    /**
+     * 处理设备相应的消息，通过 TCP 转发给远程调试客户端
+     *
+     * @param msg
+     */
+    private void handleResponseMsgFromDevice(String msg) {
         printLog(msg, R.color.response_data_color);
-        if (!tcpViewModel.getConnectStatus()) {
-            ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
-            return;
-        }
-        tcpViewModel.sendMsgToServer(msg, new MessageStateListener() {
-            @Override
-            public void isSendSuccss(boolean isSuccess) {
-                if (isSuccess) {
-//                    Timber.d("发送指令成功");
-                } else {
-                    Timber.e("发送指令失败");
+        try {
+            String cmdArray[] = msg.replace("\r\n", "").split(",");
+            if (msg.startsWith("$$224")) {//认证方式
+                if (msg.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
+                    usrBleViewModel.setAuthenticateWay();//重新认证
+                    return;
                 }
+                usrBleViewModel.sendAuthenticateCodeCmd(cmdArray[3]);
+
+            } else if (msg.startsWith("$$223")) {//设备登录验证结果指令
+                if (!cmdArray[1].contains("1")) {
+                    printLog("设备认证失败!", R.color.response_data_color);
+                }
+            } else if (msg.contains("Please verify the equipment.\r\n")) {
+                printLog("设备认证失败!", R.color.response_data_color);
+
+            } else {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    return;
+                }
+                tcpViewModel.sendMsgToServer(msg);
             }
-        });
+        } catch (Exception ex) {
+            Timber.e(ex);
+        }
     }
 
     @OnClick({R.id.tvConnect, R.id.ivMore})
@@ -219,8 +252,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
         int id = view.getId();
         if (id == R.id.tvConnect) {
             if (!tcpViewModel.getConnectStatus()) {
-                printLog("正在连接...", R.color.title_text_color);
-                tcpViewModel.connect();
+                setupTcpConnect();
             } else {
                 tcpViewModel.disconnect();
             }
@@ -230,19 +262,58 @@ public class TcpToBleDebugActivity extends BaseActivity {
     }
 
     private void showMoreMenu() {
-        BottomMenu.show(new String[]{"清空日志", "分享日志"})
+        String[] menuItems = usrBleViewModel.isConnected() ? new String[]{"清空日志", "分享日志", "测试"} : new String[]{"蓝牙重连", "清空日志", "分享日志"};
+        BottomMenu.show(menuItems)
                 .setMessage("")
                 .setOnMenuItemClickListener(new OnMenuItemClickListener<BottomMenu>() {
                     @Override
                     public boolean onClick(BottomMenu dialog, CharSequence text, int index) {
-                        if (index == 0) {
+                        if (text.equals("蓝牙重连")) {
+                            usrBleViewModel.reconnect();
+                        } else if (text.equals("清空日志")) {
                             clearLogs();
-                        } else if (index == 1) {
+                        } else if (text.equals("分享日志")) {
                             shareLogs();
+                        } else if (text.equals("测试")) {
+                            handleReceiveMsgFromTCPServer("##042\r\n");
                         }
                         return false;
                     }
                 });
+    }
+
+    /**
+     * 断开 Tcp 连接警告
+     *
+     * @param content
+     */
+    private void showDisconnectDialog(String content) {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
+                .title("温馨提示：")
+                .content(content)
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        tcpViewModel.disconnect();
+                        finish();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    private void printLog(String msg, int color) {
+        CommonLogInfo commonLogInfo = new CommonLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), msg, color);
+        logInfoList.add(commonLogInfo);
+        commonLogAdapter.notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(commonLogAdapter.getItemCount() - 1);
     }
 
     private void clearLogs() {
@@ -317,38 +388,40 @@ public class TcpToBleDebugActivity extends BaseActivity {
                 .shareBySystem();
     }
 
-    private void printLog(String msg, int color) {
-        CommonLogInfo commonLogInfo = new CommonLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), msg, color);
-        logInfoList.add(commonLogInfo);
-        commonLogAdapter.notifyDataSetChanged();
-        mRecyclerView.scrollToPosition(commonLogAdapter.getItemCount() - 1);
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!usrBleViewModel.isConnected()) {
+                    usrBleViewModel.reconnect();
+                }
+            }
+            break;
+        }
     }
 
-    /**
-     * 断开 Tcp 连接警告
-     *
-     * @param content
-     */
-    private void showDisconnectDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(this)
-                .title("温馨提示：")
-                .content(content)
-                .contentColorRes(R.color.title_text_color)
-                .canceledOnTouchOutside(false)
-                .positiveText("确定")
-                .negativeText("取消")
-                .positiveColorRes(R.color.blue_52B4F8)
-                .negativeColorRes(R.color.sub_title_text_color)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        tcpViewModel.disconnect();
-                        finish();
-                    }
-                });
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
+    private static final class DefaultHandler extends WeakHandler<TcpToBleDebugActivity> {
+        private DefaultHandler(TcpToBleDebugActivity context) {
+            super(context);
+        }
+
+        @Override
+        protected void handleMessage(Message msg, TcpToBleDebugActivity context) {
+            context.customHandleMessage(msg);
+        }
+    }
+
+    protected void stopDefaultProgress(int what) {
+        mDefaultHandler.removeMessages(what);
+    }
+
+    protected void stopAllProgress() {
+        mDefaultHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopAllProgress();
     }
 
     @Override
@@ -364,5 +437,4 @@ public class TcpToBleDebugActivity extends BaseActivity {
     public void onDestroy() {
         super.onDestroy();
     }
-
 }

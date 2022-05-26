@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
@@ -62,7 +61,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
         return R.layout.net_m20_setup_wizard_dialog_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         netM20HomeFragment = (NetM20HomeFragment) getParentFragment();
@@ -87,7 +86,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
 
         } else if (id == R.id.tv_left) {
             dismiss();
-            DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, netM20HomeFragment.deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+            DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, netM20HomeFragment.deviceInfo, true);
 
         } else if (id == R.id.tv_right) {
             mTvContent.setText("下发水平初始化指令...");
@@ -128,6 +127,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
 
     /**
      * 查询指令响应结果成功
+     *
      * @param queryCmdResult
      */
     @Override
@@ -141,9 +141,9 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
                 @Override
                 public void run() {
                     dismiss();
-                    DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, netM20HomeFragment.deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG, true);
+                    DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, netM20HomeFragment.deviceInfo, true);
                 }
-            },1500);
+            }, 1500);
         } else {
             mTvContent.setText(String.format("初始化失败! %s", cmdResponseResult.getReason()));
         }
@@ -151,10 +151,11 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
 
     /**
      * 查询指令响应结果出错了
+     *
      * @param errMsg
      */
     @Override
-    protected void onQueryCmdResponseResultError(String errMsg){
+    protected void onQueryCmdResponseResultError(String errMsg) {
         super.onQueryCmdResponseResultError(errMsg);
         enableTouch();
         mTvContent.setVisibility(View.VISIBLE);
@@ -163,6 +164,7 @@ public class NetM20SetupWizardDialogFragment extends BaseDispatchCmdDialog {
 
     /**
      * 查询指令响应结果超时
+     *
      * @param queryCmdResult
      */
     @Override

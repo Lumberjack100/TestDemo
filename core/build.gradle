@@ -45,7 +45,7 @@ dependencies {
     api 'com.thanosfisherman.elvis:elvis:3.0'
 
     //A library that makes working with Bluetooth LE on Android a pleasure.
-    api "no.nordicsemi.android:ble:$rootProject.thirdLib.nordicsemiBle"
+    api "no.nordicsemi.android:ble-livedata:$rootProject.thirdLib.nordicsemiBle"
 
     api "io.netty:netty-all:$rootProject.thirdLib.nettyVersion"
 

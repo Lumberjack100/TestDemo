@@ -1,9 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.os.Bundle;
 import android.os.Message;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -12,10 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.constant.RegexConstants;
-import com.blankj.utilcode.util.ColorUtils;
-import com.blankj.utilcode.util.RegexUtils;
-import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -32,20 +28,32 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.view.ClearEditText;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceDebugAddress;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.TcpToBleDebugActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrorInfo;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.LocationUtils;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.RequestBody;
 import timber.log.Timber;
 
 /**
@@ -151,7 +159,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             showRegisterPlatformDialog();
 
         } else if (id == R.id.remoteDebuggingLayout) {
-            setTCPConnection();
+            getDeviceLogin();
         }
     }
 
@@ -221,77 +229,53 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                 .show();
     }
 
-    private void setTCPConnection() {
-        String host = SPStaticUtils.getString(AppContants.Extras.REMOTE_TCP_SHOST, "192.168.0.");
-        String port = SPStaticUtils.getString(AppContants.Extras.REMOTE_TCP_PORT, "");
+    /**
+     * 查询设备远程调试连接地址信息
+     */
+    private void getDeviceLogin() {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("appKey", "b80dd379-5256-48c8-947a-2208872c8a8f");
+            jsonObjectRequest.put("appSecret", "3dc8e0ec1f673325c6694b4da534dabe");
+            jsonObjectRequest.put("deviceSn", MCloudApp.getCurDeviceToken());
+            jsonObjectRequest.put("deviceKey", bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null ? bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey() : "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9");
+            jsonObjectRequest.put("reCreate", false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
-                .title("TCP远程地址")
-                .customView(R.layout.set_tcp_host_port, false)
-                .canceledOnTouchOutside(false);
-        MaterialDialog mMaterialDialog = mBuilder.build();
-        mMaterialDialog.show();
-
-        View view = mMaterialDialog.getCustomView();
-        ClearEditText hostET = view.findViewById(R.id.hostET);
-        ClearEditText portET = view.findViewById(R.id.portET);
-        hostET.setFilters(ipFilters);
-        hostET.setText(host);
-        portET.setText(port);
-        view.findViewById(R.id.btn_confirm).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!RegexUtils.isIP(hostET.getText())) {
-                    ToastUtils.show("请输入正确的主机地址");
-                    return;
-                }
-                if (!RegexUtils.isMatch(RegexConstants.REGEX_POSITIVE_INTEGER, portET.getText())) {
-                    ToastUtils.show("请输入正确的端口号");
-                    return;
-                }
-                mMaterialDialog.dismiss();
-                if (!host.equals(hostET.getText().toString())) {
-                    SPStaticUtils.put(AppContants.Extras.REMOTE_TCP_SHOST, String.valueOf(hostET.getText()));
-                }
-                if (!port.equals(portET.getText().toString())) {
-                    SPStaticUtils.put(AppContants.Extras.REMOTE_TCP_PORT, String.valueOf(portET.getText()));
-                }
-                TcpToBleDebugActivity.startActivity(mActivity, String.valueOf(hostET.getText()), Integer.parseInt(String.valueOf(portET.getText())));
-            }
-        });
-        view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMaterialDialog.dismiss();
-            }
-        });
-    }
-
-
-    private InputFilter[] ipFilters = new InputFilter[]{
-            new InputFilter() {
-                @Override
-                public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                    if (end > start) {
-                        String destTxt = dest.toString();
-                        String resultingTxt = destTxt.substring(0, dstart)
-                                + source.subSequence(start, end)
-                                + destTxt.substring(dend);
-                        if (!resultingTxt.matches("^\\d{1,3}(\\.(\\d{1,3}(\\.(\\d{1,3}(\\.(\\d{1,3})?)?)?)?)?)?")) {
-                            return "";
-                        } else {
-                            String[] splits = resultingTxt.split("\\.");
-                            for (String split : splits) {
-                                if (Integer.parseInt(split) > 255) {
-                                    return "";
+        MDRetrofit.getInstance()
+                .createService(ServiceAddressType.DEVICE_REMOTE_DEBUG_ADDRESS)
+                .DeviceLogin(body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
+                .subscribe(new BaseObserver<DeviceDebugAddress>() {
+                    @Override
+                    protected void onResponse(DeviceDebugAddress deviceDebugAddress, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
+                                if (deviceDebugAddress == null || deviceDebugAddress.getDeviceServerInfo() == null || TextUtils.isEmpty(deviceDebugAddress.getDeviceServerInfo().getServerAddr())) {
+                                    ToastUtils.show("未获取到远程服务器地址和端口信息");
+                                    return;
+                                }
+                                TcpToBleDebugActivity.startActivity(mActivity, deviceDebugAddress.getDeviceServerInfo().getServerAddr(), deviceDebugAddress.getDeviceServerInfo().getServerPort());
+                            } else {
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
                                 }
                             }
                         }
                     }
-                    return null;
-                }
-            }
-    };
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
+    }
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
@@ -403,7 +387,6 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                 break;
         }
     }
-
 
     private void doAfterSetting() {
 //        ToastUtils.show("配置成功");

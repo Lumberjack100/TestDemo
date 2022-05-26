@@ -2,26 +2,28 @@ package com.shmedo.mcloudapp.profile;
 
 import android.app.Application;
 import android.bluetooth.BluetoothDevice;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.blankj.utilcode.util.SPStaticUtils;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
-import com.shmedo.configlibrary.at.ATCommand;
-import com.shmedo.core.AppContants;
+import com.shmedo.configlibrary.ble.cmd.CommandManager;
+import com.shmedo.configlibrary.ble.cmd.entity.AuthenticationConfigEntity;
+import com.shmedo.configlibrary.ble.enums.CommandType;
+import com.shmedo.configlibrary.ble.utils.DesUtil;
+import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.deviceconfig.data.DeviceApiKeyRequest;
-import com.umeng.analytics.MobclickAgent;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
 
 import no.nordicsemi.android.ble.livedata.state.ConnectionState;
 import no.nordicsemi.android.log.LogSession;
 import no.nordicsemi.android.log.Logger;
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -83,7 +85,7 @@ public class BleViewModel extends AndroidViewModel {
     public void reconnect() {
         if (device != null) {
             customBleManager.connect(device)
-                    .retry(3, 100)
+                    .retry(3, 300)
                     .useAutoConnect(false)
                     .enqueue();
         }
@@ -118,15 +120,43 @@ public class BleViewModel extends AndroidViewModel {
             return;
         }
         customBleManager.writeMessage(command);
+    }
 
+
+    /**
+     * 蓝牙连接成功,发送认证方式
+     */
+    public void setAuthenticateWay() {
+        AuthenticationConfigEntity configEntity = new AuthenticationConfigEntity(MCloudApp.getCurDeviceToken(), 0);
+        String command = CommandManager.getInstance().getCommand(CommandType.AUTHENTICATION_CONFIG, configEntity);
+        Timber.d("设置认证类型指令===%s", command);
+        sendIOTProtocolCommand("\r\n" + command);
+    }
+
+    /**
+     * 开始认证流程
+     */
+    public void sendAuthenticateCodeCmd(String authenticateParam) {
+//        Timber.d("解密前:%s", authenticateParam);
+        byte[] resultData = StringUtil.hexStringToBytes(authenticateParam);
         try {
-            Map<String, Object> valueMap = new HashMap<String, Object>();
-            valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
-            valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
-            valueMap.put("command_content", command.replace(ATCommand.NEWLINE_CR, "").replace(ATCommand.NEWLINE_LF, ""));
-            MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            String deskey = "12345678";
+            //解密后认证码
+            String strDecrypt = new String(DesUtil.decrypt(resultData, deskey), StandardCharsets.UTF_8);
+//            Timber.d("解密后:%s", strDecrypt);
+
+            if (!TextUtils.isEmpty(strDecrypt)) {
+                //反转6位随机码
+                String reverseRandomCode = StringUtil.reverseString(strDecrypt.substring(0, 6));
+                byte[] byteEncryt = DesUtil.encrypt((reverseRandomCode + deskey).getBytes(), deskey);
+                //加密后认证码
+                String strEncryt = StringUtil.bytesToHexString(byteEncryt);
+                String cmd = "##222," + MCloudApp.getCurDeviceToken() + ",0," + strEncryt.toUpperCase() + "\r\n";
+                Timber.d("设备登录验证指令===%s", cmd);
+                sendIOTProtocolCommand(cmd);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -25,7 +24,6 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -63,7 +61,6 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @BindView(R.id.btn_confirm)
     Button mBtnComplete;
 
-    private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
     private boolean isLevelInit = false;
 
     private static final int SERVER_NUMBER_ONE = 0x1001;
@@ -73,10 +70,9 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public static NetM20DataCenterHomeFragment newInstance(int configMethod, boolean isLevelInit, DeviceInfo deviceInfo) {
+    public static NetM20DataCenterHomeFragment newInstance(boolean isLevelInit, DeviceInfo deviceInfo) {
         NetM20DataCenterHomeFragment fragment = new NetM20DataCenterHomeFragment();
         Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         args.putBoolean(LEVEL_INITIAL, isLevelInit);
         args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
@@ -87,7 +83,6 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
             isLevelInit = getArguments().getBoolean(LEVEL_INITIAL, false);
         }
         resultLauncher = registerForActivityResult(
@@ -132,7 +127,7 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         return R.layout.m20_data_center_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (isLevelInit) {
@@ -153,19 +148,19 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, configMethod, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             serverNumber = SERVER_NUMBER_FOUR;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, configMethod, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.btn_confirm) {
             mActivity.finish();

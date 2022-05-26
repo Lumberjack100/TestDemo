@@ -17,7 +17,6 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -48,7 +47,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
@@ -218,10 +216,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
             case "测量孔深":
                 AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                break;
-
-            case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "指令下发":
@@ -547,9 +541,6 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
         if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
             configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
-            configModuleList.add(configModule);
-
-            configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
             configModuleList.add(configModule);
 
             configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");

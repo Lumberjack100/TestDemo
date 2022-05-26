@@ -13,7 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -24,7 +23,6 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -58,8 +56,6 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @BindView(R.id.tv_data_center_four)
     TextView mTvDataCenterFour;
 
-    private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
-
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;
     private static final int SERVER_NUMBER_THREE = 0x1003;
@@ -68,10 +64,9 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private ActivityResultLauncher<Intent> resultLauncher;
 
 
-    public static NetE40DataCenterHomeFragment newInstance(int configMethod,  DeviceInfo deviceInfo) {
+    public static NetE40DataCenterHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetE40DataCenterHomeFragment fragment = new NetE40DataCenterHomeFragment();
         Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
@@ -81,9 +76,6 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
-        }
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -125,7 +117,7 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         return R.layout.fragment_e40_data_center_home;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         showWaitDialog("加载中...");
@@ -140,19 +132,19 @@ public class NetE40DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
             serverNumber = SERVER_NUMBER_THREE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, configMethod, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
             serverNumber = SERVER_NUMBER_FOUR;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, configMethod, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
         }
     }
 

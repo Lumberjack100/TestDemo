@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -26,7 +25,6 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeWorkModeInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
@@ -140,7 +138,7 @@ public class NetAdmeAdvancedSettingFragment extends BaseNetIotCommunicateFragmen
         }
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, ProductType.ADME, deviceInfo, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+            DataCenterHomeActivity.startActivity(mActivity, ProductType.ADME, deviceInfo);
 
         } else if (id == R.id.rebootLayout) {//重启
             showWarnDialog("确定重启设备吗？", REBOOT);

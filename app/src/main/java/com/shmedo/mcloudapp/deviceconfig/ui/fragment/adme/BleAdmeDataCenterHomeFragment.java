@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -48,8 +47,6 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
     @BindView(R.id.tv_data_center_two)
     TextView mTvDataCenterTwo;
 
-    private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
-
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;
     private static final int SERVER_NUMBER_THREE = 0x1003;
@@ -57,20 +54,14 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
     private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
-    public static BleAdmeDataCenterHomeFragment newInstance(int configMethod) {
+    public static BleAdmeDataCenterHomeFragment newInstance() {
         BleAdmeDataCenterHomeFragment fragment = new BleAdmeDataCenterHomeFragment();
-        Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
-        }
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -141,11 +132,11 @@ public class BleAdmeDataCenterHomeFragment extends BaseUSRBleIotCommunicateFragm
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher,ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
         }
     }
 

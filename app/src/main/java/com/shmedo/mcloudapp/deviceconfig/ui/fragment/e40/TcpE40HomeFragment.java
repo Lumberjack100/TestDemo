@@ -110,7 +110,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
         return R.layout.tcp_e40_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvDeviceState.setVisibility(View.INVISIBLE);
@@ -191,7 +191,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
 
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
@@ -241,7 +241,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                 break;
 
             case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+                DataCenterHomeActivity.startActivity(mActivity, ProductType.E40, AppContants.CommunicationWay.TCP_CONNECT);
                 break;
 
             case "重启":

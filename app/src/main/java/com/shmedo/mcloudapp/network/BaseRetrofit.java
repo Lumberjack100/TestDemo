@@ -51,6 +51,10 @@ public abstract class BaseRetrofit {
                 baseUrl = MCloudApp.getCloudPlatformDataAddress();
                 break;
 
+            case DEVICE_REMOTE_DEBUG_ADDRESS:
+                baseUrl = MCloudApp.getDeviceRemoteDebugAddress();
+                break;
+
             default:
                 break;
         }

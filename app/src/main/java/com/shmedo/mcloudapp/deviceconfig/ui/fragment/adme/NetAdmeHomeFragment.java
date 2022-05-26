@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -28,7 +27,6 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeBaseInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotionState;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
@@ -37,7 +35,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
@@ -147,10 +144,6 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
 
             case "基础配置":
                 AdmeBasicParamActivity.startActivity(mActivity, deviceInfo);
-                break;
-
-            case "数据中心":
-                DataCenterHomeActivity.startActivity(mActivity, ProductType.ADME, deviceInfo, AppContants.DataCenterConfigMethod.BASIC_CONFIG);
                 break;
 
             case "高级配置":
@@ -451,9 +444,6 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         configModuleList.add(configModule);
 
         if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
-            configModule = new ConfigModule(R.drawable.ic_device_data_center, "数据中心", "基础参数配置");
-            configModuleList.add(configModule);
-
             configModule = new ConfigModule(R.drawable.ic_device_advanced_setting, "高级配置", "设备高级参数配置");
             configModuleList.add(configModule);
 

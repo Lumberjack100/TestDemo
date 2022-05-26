@@ -13,7 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -24,7 +23,6 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
-import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -44,15 +42,13 @@ import timber.log.Timber;
  * 创建时间:  2021/4/23 <br/>
  * 描述：     TODO
  */
-public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragment {
+public class NetAdmeDataCenterHomeFragment extends BaseNetIotCommunicateFragment {
 
     @BindView(R.id.tv_data_center_one)
     TextView mTvDataCenterOne;
 
     @BindView(R.id.tv_data_center_two)
     TextView mTvDataCenterTwo;
-
-    private int configMethod = AppContants.DataCenterConfigMethod.BASIC_CONFIG;
 
     private static final int SERVER_NUMBER_ONE = 0x1001;
     private static final int SERVER_NUMBER_TWO = 0x1002;
@@ -62,10 +58,9 @@ public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragmen
     private ActivityResultLauncher<Intent> resultLauncher;
 
 
-    public static NetAdmeDataCenterHomeFragment newInstance(int configMethod, DeviceInfo deviceInfo) {
+    public static NetAdmeDataCenterHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeDataCenterHomeFragment fragment = new NetAdmeDataCenterHomeFragment();
         Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD, configMethod);
         args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
@@ -74,9 +69,6 @@ public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragmen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            configMethod = getArguments().getInt(AppContants.Extras.DATA_CENTER_CONFIG_METHOD);
-        }
         resultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -142,11 +134,11 @@ public class NetAdmeDataCenterHomeFragment  extends BaseNetIotCommunicateFragmen
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             serverNumber = SERVER_NUMBER_ONE;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.ADME, deviceInfo, configMethod, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.ADME, deviceInfo, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
             serverNumber = SERVER_NUMBER_TWO;
-            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.E40, deviceInfo, configMethod, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
+            DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.ADME, deviceInfo, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
         }
     }
 

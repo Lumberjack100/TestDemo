@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -115,7 +114,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         }
         int id = v.getId();
         if (id == R.id.dataCenterConfigLayout) {
-            DataCenterHomeActivity.startActivity(mActivity, ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT, AppContants.DataCenterConfigMethod.ADVANCED_CONFIG);
+            DataCenterHomeActivity.startActivity(mActivity, ProductType.ADME, AppContants.CommunicationWay.BLE_CONNECT);
         } else if (id == R.id.rebootLayout) {//重启
             showWarnDialog("确定重启设备吗？", REBOOT);
 

@@ -417,18 +417,6 @@
             android:maxAspectRatio="2.4"
             android:screenOrientation="portrait" />
 
-
-        <activity
-            android:name=".ddshare.DDShareActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
