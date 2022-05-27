@@ -1,14 +1,15 @@
 ext {
     android = [
             applicationId    : 'com.shmedo.mcloudapp.iot',
-            compileSdkVersion: 30,
+            compileSdkVersion: 31,
             minSdkVersion    : 24,
-            targetSdkVersion : 30,
-            appVersionName      : '3.1.3'
+            targetSdkVersion : 31,
+            appVersionName   : '3.1.3'
     ]
     thirdLib = [
-            appcompat                    : '1.3.1',
-            material                     : '1.4.0',
+            appcompat                    : '1.4.1',
+            material                     : '1.6.0',
+            lifecycleVersion             : "2.4.1",
             recyclerview                 : '1.2.1',
 
             rxjava                       : '3.1.1',
@@ -16,33 +17,33 @@ ext {
             retrofitVersion              : '2.9.0',
             adapterRxjava3               : '2.9.0',
             okHttpVersion                : '5.0.0-alpha.2',
+            autodispose2Version          : '2.1.1',
 
-            butterknife                  : '10.2.1',
-            butterknifeCompiler          : '10.2.1',
+            butterknife                  : '10.2.3',
+            butterknifeCompiler          : '10.2.3',
 
-            glideVersion                 : '4.12.0',
-            circleimageview              : '3.0.0',
+            glideVersion                 : '4.13.2',
+            circleimageview              : '3.1.0',
             banner                       : '2.1.0',
 
             materialDialogsCore          : '0.9.6.0',
-            xpopupVersion                : '2.6.7',
+            xpopupVersion                : '2.8.0',
             dialogxVersion               : '0.0.43',
-            ToastUtils                   : '9.6',
+            ToastUtils                   : '10.3',
 
-            switchbutton                 : '2.0.0',
+            switchbutton                 : '2.1.0',
 
-            pgyerSdk                     : '4.2.5',
-            buglyCrashReport             : '3.4.4',
-            buglyNativeCrashReport       : '3.9.2',
+            pgyerSdk                     : '4.2.8',
+            buglyCrashReport             : '4.0.4',
 
             timberVersion                : '5.0.1',
             Log4a                        : '1.5.0',
             Logcat                       : '9.8',
 
-            permissionx                  : '1.5.0',
+            permissionx                  : '1.6.4',
 
             swiperefreshlayout           : '1.1.0',
-            SmartRefreshLayout           : '2.0.3',
+            SmartRefreshLayout           : '2.0.5',
 
             SwipeRecyclerView            : '1.3.2',
             BaseRecyclerViewAdapterHelper: '3.0.4',
@@ -55,23 +56,22 @@ ext {
             amapLocation                 : '5.4.0',
             amapSearch                   : '7.9.0',
 
-            immersionbar                 : '3.0.0',
+            immersionbar                 : '3.2.2',
 
-            nordicsemiScanner            : '1.5.1',
+            nordicsemiScanner            : '1.6.0',
+            nordicsemiBle                : '2.4.1',
             nordicsemiLog                : '2.3.0',
-            nordicsemiBle                : '2.3.1',
 
-            hmsScanVersion               : '2.2.0.300',
+            hmsScanVersion               : '2.5.0.300',
 
-            umsdkCommonVersion           : '9.4.4',
-            umsdkAsmsVersion             : '1.4.1',
-            umsdkApmVersion              : '1.5.2',
+            umsdkCommonVersion           : '9.4.9',
+            umsdkAsmsVersion             : '1.6.3',
 
-            usbSerialVersion             : '3.4.2',
+            usbSerialVersion             : '3.4.4',
 
             nettyVersion                 : '4.1.70.Final',
 
-            gsonVersion                  : '2.8.9',
+            gsonVersion                  : '2.9.0',
 
             unpeekLivedataVersion        : '7.2.0-beta1',
 

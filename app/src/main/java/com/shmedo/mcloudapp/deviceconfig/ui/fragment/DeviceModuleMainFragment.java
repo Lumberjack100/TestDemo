@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -37,13 +38,13 @@ import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseTranslucentFragment;
+import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
 import com.shmedo.mcloudapp.deviceconfig.util.BleScannerUtils;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerStateLiveData;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
-import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
@@ -158,7 +159,7 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
         super.onViewCreated(view, savedInstanceState);
 //        EventBus.getDefault().register(this);
         scannerViewModel = getFragmentScopeViewModel(BleScannerViewModel.class);
-        scannerViewModel.getBleScannerState().observe(getViewLifecycleOwner(), this::startScan);
+        scannerViewModel.getBleScannerState().observe(getViewLifecycleOwner(), this::startScanDevices);
         scannerViewModel.getDevices().observe(getViewLifecycleOwner(), new Observer<List<DiscoveredBluetoothDevice>>() {
             @Override
             public void onChanged(List<DiscoveredBluetoothDevice> newDevices) {
@@ -290,18 +291,21 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
      * <br>
      * BleScannerStateLiveData 实例每次更新值时，回调此方法
      */
-    private void startScan(final BleScannerStateLiveData state) {
-        //位置服务开关未开启
-//        if (BleScannerUtils.isLocationRequired(mActivity) && !BleScannerUtils.isLocationEnabled(mActivity)) {
-        if (!BleScannerUtils.isLocationEnabled(mActivity)) {
-            PermissionHelper.showGPSSettingDialog(mActivity);
-        } else {
-            //缺少定位权限
-            if (!BleScannerUtils.isLocationPermissionsGranted(mActivity)) {
-                checkPermissionForLocation();
-            } else {
+    private void startScanDevices(final BleScannerStateLiveData state) {
+        // First, check the Location permission.
+        // This is required since Marshmallow up until Android 11 in order to scan for Bluetooth LE devices.
+        if (!BleScannerUtils.isLocationPermissionRequired() ||
+                BleScannerUtils.isLocationPermissionGranted(mActivity)) {
+
+            // On Android 12+ a new BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions need to be requested.
+            //
+            // Note: This has to be done before asking user to enable Bluetooth, as
+            //       sending BluetoothAdapter.ACTION_REQUEST_ENABLE intent requires
+            //       BLUETOOTH_CONNECT permission.
+            if (!BleScannerUtils.isSorAbove() || BleScannerUtils.isBluetoothScanPermissionGranted(mActivity)) {
                 // Bluetooth must be enabled.
                 if (state.isBluetoothEnabled()) {
+
                     if (enableScan && !scannerViewModel.isScanning()) {
                         // We are now OK to start scanning.
                         scannerViewModel.startScan();
@@ -313,7 +317,56 @@ public class DeviceModuleMainFragment extends BaseTranslucentFragment implements
                         clear();
                     }
                 }
+            } else {
+                checkPermissionForBluetoothScan();
             }
+        } else {
+            //位置服务开关未开启
+            if (!BleScannerUtils.isLocationEnabled(mActivity)) {
+                PermissionHelper.showGPSSettingDialog(mActivity);
+                return;
+            }
+            //位置服务开关已经开启, 但缺少定位权限
+            if (!BleScannerUtils.isLocationPermissionGranted(mActivity)) {
+                checkPermissionForLocation();
+                return;
+            }
+        }
+    }
+
+    private void checkPermissionForBluetoothScan() {
+        List<String> requestList = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestList.add(Manifest.permission.BLUETOOTH_SCAN);
+            requestList.add(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+        if (!requestList.isEmpty()) {
+            PermissionX.init(this)
+                    .permissions(requestList)
+                    .explainReasonBeforeRequest()
+                    .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
+                        @Override
+                        public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                            scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
+                        }
+                    })
+                    .onForwardToSettings(new ForwardToSettingsCallback() {
+                        @Override
+                        public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                            scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                        }
+                    })
+                    .request(new RequestCallback() {
+                        @Override
+                        public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                            if (allGranted) {
+                                processStartScan();
+
+                            } else {
+                                ToastUtils.show("下列权限被拒绝：" + deniedList);
+                            }
+                        }
+                    });
         }
     }
 

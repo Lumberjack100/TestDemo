@@ -345,15 +345,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
         if (mApplicationProvider == null) {
-            mApplicationProvider = new ViewModelProvider((MCloudApplication) this.getApplicationContext(),
-                    getAppFactory(this));
+            mApplicationProvider = new ViewModelProvider((MCloudApplication) this.getApplicationContext());
         }
         return mApplicationProvider.get(modelClass);
-    }
-
-    private ViewModelProvider.Factory getAppFactory(Activity activity) {
-        Application application = checkApplication(activity);
-        return ViewModelProvider.AndroidViewModelFactory.getInstance(application);
     }
 
     private Application checkApplication(Activity activity) {

@@ -1,7 +1,5 @@
 package com.shmedo.mcloudapp.common.ui.fragment;
 
-import android.app.Activity;
-import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -368,32 +366,9 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
     protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
         if (mApplicationProvider == null) {
-            mApplicationProvider = new ViewModelProvider(
-                    (MCloudApplication) mActivity.getApplicationContext(), getApplicationFactory(mActivity));
+            mApplicationProvider = new ViewModelProvider((MCloudApplication) mActivity.getApplicationContext());
         }
         return mApplicationProvider.get(modelClass);
-    }
-
-    private ViewModelProvider.Factory getApplicationFactory(Activity activity) {
-        checkActivity(this);
-        Application application = checkApplication(activity);
-        return ViewModelProvider.AndroidViewModelFactory.getInstance(application);
-    }
-
-    private Application checkApplication(Activity activity) {
-        Application application = activity.getApplication();
-        if (application == null) {
-            throw new IllegalStateException("Your activity/fragment is not yet attached to "
-                    + "Application. You can't request ViewModel before onCreate call.");
-        }
-        return application;
-    }
-
-    private void checkActivity(Fragment fragment) {
-        Activity activity = fragment.getActivity();
-        if (activity == null) {
-            throw new IllegalStateException("Can't create ViewModelProvider for detached fragment");
-        }
     }
 
     private boolean isExcludedFragment() {
@@ -402,7 +377,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
                 || name.contains("TcpVmsHomeFragment")) {
             return true;
         }
-
         return false;
     }
 }

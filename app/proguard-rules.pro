@@ -40,8 +40,8 @@
    -keep class no.nordicsemi.android.log.** { *; }
 
  #避免混淆Bugly
-   -dontwarn com.tencent.bugly.**
-   -keep public class com.tencent.bugly.**{*;}
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
 
 #加入排除HMS Core SDK的混淆配置脚本
    -ignorewarnings

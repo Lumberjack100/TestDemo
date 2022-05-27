@@ -38,7 +38,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi-v7a"//"x86", "armeabi", "armeabi-v7a"
+            abiFilters "x86_64","armeabi-v7a"//"x86", "armeabi", "armeabi-v7a"
         }
     }
 
@@ -111,16 +111,15 @@ dependencies {
     implementation project(path: ':configlibrary')
     implementation project(path: ':core')
 
-    implementation "androidx.appcompat:appcompat:$rootProject.thirdLib.appcompat"
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation "androidx.lifecycle:lifecycle-runtime:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.thirdLib.lifecycleVersion"
 
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.thirdLib.rxjava"
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.thirdLib.rxandroid"
@@ -128,17 +127,16 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava3:$rootProject.thirdLib.adapterRxjava3"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.thirdLib.retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.okHttpVersion"
-    implementation 'com.uber.autodispose2:autodispose-androidx-lifecycle:2.1.1'
+    implementation "com.uber.autodispose2:autodispose-androidx-lifecycle:$rootProject.thirdLib.autodispose2Version"
 
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
     // Glide
     implementation "com.github.bumptech.glide:glide:$rootProject.thirdLib.glideVersion"
     //annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.thirdLib.glideVersion"
     implementation "de.hdodenhof:circleimageview:$rootProject.thirdLib.circleimageview"
-    implementation "com.youth.banner:banner:$rootProject.thirdLib.banner"
+//    implementation "com.youth.banner:banner:$rootProject.thirdLib.banner"
 
     //Material Dialog
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
@@ -156,16 +154,15 @@ dependencies {
     implementation "com.pgyer:analytics:$rootProject.thirdLib.pgyerSdk"
     //异常信息上报组件
     implementation "com.tencent.bugly:crashreport:$rootProject.thirdLib.buglyCrashReport"
-    implementation "com.tencent.bugly:nativecrashreport:$rootProject.thirdLib.buglyNativeCrashReport"
 
     //An open source Android library that makes handling runtime permissions extremely easy.
     implementation "com.guolindev.permissionx:permissionx:$rootProject.thirdLib.permissionx"
 
     //下拉刷新
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$rootProject.thirdLib.swiperefreshlayout"
-    implementation "com.scwang.smart:refresh-layout-kernel:$rootProject.thirdLib.SmartRefreshLayout"
+    implementation "io.github.scwang90:refresh-layout-kernel:$rootProject.thirdLib.SmartRefreshLayout"
     //经典刷新头,核心必须依赖
-    implementation "com.scwang.smart:refresh-header-classics:$rootProject.thirdLib.SmartRefreshLayout"
+    implementation "io.github.scwang90:refresh-header-classics:$rootProject.thirdLib.SmartRefreshLayout"
 
     //RecyclerView侧滑菜单，Item拖拽，滑动删除Item，自动加载更多，HeaderView，FooterView，Item分组黏贴
     implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
@@ -186,9 +183,7 @@ dependencies {
     implementation "com.amap.api:search:$rootProject.thirdLib.amapSearch"
 
     // 透明系统栏设置基础依赖包，必须要依赖
-    implementation "com.gyf.immersionbar:immersionbar:$rootProject.thirdLib.immersionbar"
-    // fragment快速实现（可选）
-    implementation "com.gyf.immersionbar:immersionbar-components:$rootProject.thirdLib.immersionbar"
+    implementation "com.geyifeng.immersionbar:immersionbar:$rootProject.thirdLib.immersionbar"
 
     //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
     implementation "no.nordicsemi.android.support.v18:scanner:$rootProject.thirdLib.nordicsemiScanner"
@@ -206,14 +201,11 @@ dependencies {
     implementation "com.umeng.umsdk:asms:$rootProject.thirdLib.umsdkAsmsVersion"// 必选
 
     // 一个轻量级、高可用性的Android版本更新框架
-    implementation 'com.github.xuexiangjys:XUpdate:2.1.0'
+    implementation 'com.github.xuexiangjys:XUpdate:2.1.2'
     implementation 'com.zhy:okhttputils:2.6.2'
 
 //    debugImplementation because LeakCanary should only run in debug builds
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
-
-//    日志调试框架： https://github.com/getActivity/Logcat
-//    debugImplementation "com.github.getActivity:Logcat:$rootProject.thirdLib.Logcat"
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
