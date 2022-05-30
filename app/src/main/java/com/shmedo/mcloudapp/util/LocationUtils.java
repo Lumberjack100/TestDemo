@@ -43,15 +43,15 @@ public class LocationUtils {
             Manifest.permission.ACCESS_FINE_LOCATION
     };
 
-    private static class LocationHolder {
-        private static final LocationUtils INSTANCE = new LocationUtils();
-    }
+//    private static class LocationHolder {
+//        private static final LocationUtils INSTANCE = new LocationUtils();
+//    }
+//
+//    public static LocationUtils getInstance() {
+//        return LocationHolder.INSTANCE;
+//    }
 
     private final UnPeekLiveData<SyncPositionInfo> syncPositionBeanLiveData = new UnPeekLiveData<>();
-
-    public static LocationUtils getInstance() {
-        return LocationHolder.INSTANCE;
-    }
 
     public ProtectedUnPeekLiveData<SyncPositionInfo> getSyncPositionBean() {
         return syncPositionBeanLiveData;

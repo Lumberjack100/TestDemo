@@ -38,7 +38,6 @@ import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
-import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.jetbrains.annotations.NotNull;
@@ -401,11 +400,5 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                 ToastUtils.show("响应超时,请稍后尝试");
                 break;
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LocationUtils.getInstance().stopLocalService();
     }
 }

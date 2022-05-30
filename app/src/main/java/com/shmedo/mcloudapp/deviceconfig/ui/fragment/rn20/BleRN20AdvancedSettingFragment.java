@@ -24,7 +24,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivi
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.SyncInstallationLocationDialog;
-import com.shmedo.mcloudapp.util.LocationUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -162,9 +161,4 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LocationUtils.getInstance().stopLocalService();
-    }
 }

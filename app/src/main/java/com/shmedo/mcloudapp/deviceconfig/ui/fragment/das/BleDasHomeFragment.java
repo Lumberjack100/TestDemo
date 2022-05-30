@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
+import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
@@ -53,7 +54,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
-import com.shmedo.mcloudapp.util.LocationUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -131,6 +131,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         return fragment;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -334,7 +335,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
      */
     private void observerLocation() {
         locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
-        locationViewModel.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionInfo>() {
+        locationViewModel.locationUtils.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionInfo>() {
             @Override
             public void onChanged(SyncPositionInfo syncPositionInfo) {
                 try {
@@ -440,7 +441,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 }
                 baseConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
                 initBaseConfigInfo();
-                LocationUtils.getInstance().getPositionPermission(mActivity);
+                locationViewModel.locationUtils.getPositionPermission(mActivity);
                 startHeart();
                 break;
 
@@ -504,7 +505,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             break;
 
             case INSTALL_LOCATION: {
-                LocationUtils.getInstance().stopLocalService();
+                locationViewModel.locationUtils.stopLocalService();
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("同步安装位置出错!");
                     ToastUtils.show("同步安装位置出错!");
@@ -662,7 +663,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     @Override
     public void onStop() {
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        LocationUtils.getInstance().stopLocalService();
+        locationViewModel.locationUtils.stopLocalService();
         super.onStop();
     }
 

@@ -114,12 +114,11 @@ dependencies {
     implementation "com.google.android.material:material:$rootProject.thirdLib.material"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation "androidx.lifecycle:lifecycle-runtime:$rootProject.thirdLib.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.thirdLib.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.thirdLib.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.thirdLib.lifecycleVersion"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.thirdLib.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.thirdLib.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.thirdLib.lifecycleVersion"
+//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.thirdLib.lifecycleVersion"
 
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.thirdLib.rxjava"
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.thirdLib.rxandroid"
@@ -136,7 +135,6 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$rootProject.thirdLib.glideVersion"
     //annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.thirdLib.glideVersion"
     implementation "de.hdodenhof:circleimageview:$rootProject.thirdLib.circleimageview"
-//    implementation "com.youth.banner:banner:$rootProject.thirdLib.banner"
 
     //Material Dialog
     implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
