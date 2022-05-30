@@ -39,7 +39,7 @@ public class BleViewModel extends AndroidViewModel {
     public BleViewModel(@NonNull Application application) {
         super(application);
         // Initialize the manager.
-        customBleManager = new CustomBleManager(getApplication());
+        customBleManager = new CustomBleManager(application);
     }
 
     public LiveData<ConnectionState> getConnectionState() {

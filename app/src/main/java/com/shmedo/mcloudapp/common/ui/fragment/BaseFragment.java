@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.common.ui.fragment;
 
+import android.app.Activity;
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -364,11 +366,41 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         return mActivityProvider.get(modelClass);
     }
 
+//    protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
+//        if (mApplicationProvider == null) {
+//            mApplicationProvider = new ViewModelProvider((MCloudApplication) mActivity.getApplicationContext());
+//        }
+//        return mApplicationProvider.get(modelClass);
+//    }
+
     protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
         if (mApplicationProvider == null) {
-            mApplicationProvider = new ViewModelProvider((MCloudApplication) mActivity.getApplicationContext());
+            mApplicationProvider = new ViewModelProvider(
+                    (MCloudApplication) mActivity.getApplicationContext(), getApplicationFactory(mActivity));
         }
         return mApplicationProvider.get(modelClass);
+    }
+
+    private ViewModelProvider.Factory getApplicationFactory(Activity activity) {
+        checkActivity(this);
+        Application application = checkApplication(activity);
+        return (ViewModelProvider.Factory) ViewModelProvider.AndroidViewModelFactory.getInstance(application);
+    }
+
+    private void checkActivity(Fragment fragment) {
+        Activity activity = fragment.getActivity();
+        if (activity == null) {
+            throw new IllegalStateException("Can't create ViewModelProvider for detached fragment");
+        }
+    }
+
+    private Application checkApplication(Activity activity) {
+        Application application = activity.getApplication();
+        if (application == null) {
+            throw new IllegalStateException("Your activity/fragment is not yet attached to "
+                    + "Application. You can't request ViewModel before onCreate call.");
+        }
+        return application;
     }
 
     private boolean isExcludedFragment() {

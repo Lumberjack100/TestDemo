@@ -21,7 +21,7 @@ public class ShareViewModel extends AndroidViewModel {
 
     public ShareViewModel(@NonNull Application application) {
         super(application);
-        netWorkManager = new NetWorkManager(getApplication());
+        netWorkManager = new NetWorkManager(application);
     }
 
     public ProtectedUnPeekLiveData<NetworkChangeEvent> getNetworkChangeEvent() {

@@ -128,7 +128,7 @@ public class CustomBleManager extends ObservableBleManager {
     private final IOTCommandDataCallback notifyCallback = new IOTCommandDataCallback() {
         @Override
         public void onResponseReceived(@NonNull BluetoothDevice device, String result) {
-            log(LogContract.Log.Level.APPLICATION, "接收数据(onResponseReceived): " + result);
+            log(Log.VERBOSE, "接收数据(onResponseReceived): " + result);
 
             //处理接收的数据中有多条指令拼接的情况(其他指令和心跳包拼接的情况）
             if (result.contains("$$")) {
@@ -176,7 +176,7 @@ public class CustomBleManager extends ObservableBleManager {
                         public void onMtuChanged(@NonNull BluetoothDevice device, int mtu) {
 //                            USRManager.this.mtu = mtu;
                             Timber.d("MTU changed to %s", mtu);
-                            log(LogContract.Log.Level.APPLICATION, "MTU changed to " + mtu);
+                            log(Log.VERBOSE, "MTU changed to " + mtu);
                         }
                     })
                     .done(new SuccessCallback() {
@@ -317,7 +317,7 @@ public class CustomBleManager extends ObservableBleManager {
                     @Override
                     public void onRequestCompleted(@NonNull BluetoothDevice device) {
                         Timber.v("已写入数据(writeMessage): length=%s bytes;content: %s", command.getBytes().length, command);
-                        log(LogContract.Log.Level.APPLICATION, "已写入数据(writeMessage): " + command);
+                        log(Log.VERBOSE, "已写入数据(writeMessage): " + command);
                     }
                 })
                 // Callback called when write has failed.
