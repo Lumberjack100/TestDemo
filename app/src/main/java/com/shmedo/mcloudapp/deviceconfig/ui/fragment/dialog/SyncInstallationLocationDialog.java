@@ -88,7 +88,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
+        locationViewModel = getFragmentScopeViewModel(LocationViewModel.class);
         locationViewModel.locationUtils.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionInfo>() {
             @Override
             public void onChanged(SyncPositionInfo syncPositionInfo) {

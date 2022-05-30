@@ -334,7 +334,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
      * 观察获取定位信息
      */
     private void observerLocation() {
-        locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
+        locationViewModel = getFragmentScopeViewModel(LocationViewModel.class);
         locationViewModel.locationUtils.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionInfo>() {
             @Override
             public void onChanged(SyncPositionInfo syncPositionInfo) {
