@@ -43,7 +43,7 @@ import timber.log.Timber;
 
 public abstract class BaseFragment extends Fragment implements HandleBackInterface {
     //防止按钮重复点击设置的时间间隔
-    private static final int DOUBLE_CLICK_TIME_INTERVAL = 1500;
+    private static final int DOUBLE_CLICK_TIME_INTERVAL = 1000;
 
     protected AppCompatActivity mActivity;
     private ViewModelProvider mFragmentProvider;

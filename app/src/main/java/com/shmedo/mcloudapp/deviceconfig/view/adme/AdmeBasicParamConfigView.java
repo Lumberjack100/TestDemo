@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -152,6 +151,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private String dataSettlementMethod;// 数据结算方式
     private final String[] inclinometerTypes = new String[]{"433测斜仪", "蓝牙测斜仪"};
     private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
+    private final String[] measIntervalPerRounds = new String[]{"1", "2", "3", "4", "6", "8", "12", "24"};
     private final String[] settlementMethods = new String[]{"顶固定法", "底固定法"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
@@ -356,6 +356,25 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     }
 
     /**
+     * 选择每轮测量间隔
+     */
+    public void showMeasIntervalPerRoundsDialog(Context context) {
+        int pos = Arrays.asList(measIntervalPerRounds).indexOf(String.valueOf(mTvMeasurementIntervalPerRound.getText()));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(context)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", measIntervalPerRounds,
+                        null, pos, true,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvMeasurementIntervalPerRound.setText(text);
+                                measurementIntervalPerRound = text;
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
+    }
+    /**
      * 选择数据结算方式
      */
     public void showDataSettlementMethodDialog(Context context) {
@@ -417,11 +436,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             }
             try {
                 double value = Double.parseDouble(inclinometerTubeHoleDepth);
-                if (value < 1) {
-                    ToastUtils.show("请输入正确的测斜管孔深!");
-                    mEtInclinometerTubeHoleDepth.requestFocus();
-                    return false;
-                }
+
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的测斜管孔深!");
                 mEtInclinometerTubeHoleDepth.requestFocus();
@@ -437,7 +452,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             }
             try {
                 int port = Integer.parseInt(decentralizationSpeed);
-                if (port < 1 || port > 180) {
+                if (port < 1 || port > 120) {
                     ToastUtils.show("请输入正确的下放速度!");
                     mEtDecentralizationSpeed.requestFocus();
                     return false;
