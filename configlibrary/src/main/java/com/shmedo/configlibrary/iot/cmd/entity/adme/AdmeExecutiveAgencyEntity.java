@@ -4,8 +4,6 @@ import com.shmedo.configlibrary.ble.interfaces.Validater;
 
 import java.lang.reflect.Field;
 
-import timber.log.Timber;
-
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  12/29/20 <br/>
@@ -175,7 +173,6 @@ public class AdmeExecutiveAgencyEntity implements Validater {
         if (stringBuilder.toString().endsWith("&")) {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
-        Timber.d("assembleCmdCharacters1 :%s", stringBuilder.toString());
         return stringBuilder.toString();
     }
 
