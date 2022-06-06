@@ -139,24 +139,6 @@ public class AdmeExecutiveAgencyEntity implements Validater {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append(assembleCharacters("meastype", meastype));
-//        stringBuilder.append(assembleCharacters("datatype", datatype));
-//        stringBuilder.append(assembleCharacters("datareply", datareply));
-//        stringBuilder.append(assembleCharacters("roundwaitetime", roundwaitetime));
-//        stringBuilder.append(assembleCharacters("roundmeasinval", roundmeasinval));
-//        stringBuilder.append(assembleCharacters("datainval", datainval));
-//        stringBuilder.append(assembleCharacters("compensatetime", compensatetime));
-//        stringBuilder.append(assembleCharacters("driveaddress", driveaddress));
-//        stringBuilder.append(assembleCharacters("interdeep", interdeep));
-//        stringBuilder.append(assembleCharacters("downwaitetime", downwaitetime));
-//        stringBuilder.append(assembleCharacters("upspeed", upspeed));
-//        stringBuilder.append(assembleCharacters("measpacing", measpacing));
-//        stringBuilder.append(assembleCharacters("meaintertime", meaintertime));
-//        stringBuilder.append(assembleCharacters("meabaseth", meabaseth));
-//        stringBuilder.append(assembleCharacters("dwonblocked", dwonblocked));
-//        stringBuilder.append(assembleCharacters("untimenum", untimenum));
-//        stringBuilder.append(assembleCharacters("detectiontime", detectiontime));
-
         try {
             for (Field f : getClass().getDeclaredFields()) {
                 Object value = f.get(this);
@@ -174,13 +156,5 @@ public class AdmeExecutiveAgencyEntity implements Validater {
             stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
         }
         return stringBuilder.toString();
-    }
-
-    private String assembleCharacters(String fieldName, String fieldValue) {
-        String res = "";
-        if (fieldValue != null && !fieldValue.equals("NullKey")) {
-            res = String.format("%s=%s&", fieldName, fieldValue);
-        }
-        return res;
     }
 }

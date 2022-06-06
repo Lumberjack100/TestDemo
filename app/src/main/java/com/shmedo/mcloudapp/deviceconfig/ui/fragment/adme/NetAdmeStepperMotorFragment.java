@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
-import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeStepperMotorEntity;
@@ -42,9 +41,6 @@ import timber.log.Timber;
  */
 public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
 
-    @BindView(R.id.paramEnableSBtn)
-    SwitchButton mSbParamEnable;
-
     @BindView(R.id.et_accuracy_correction_value)
     ClearEditText mEtAccuracyCorrectionValue;
 
@@ -56,9 +52,6 @@ public class NetAdmeStepperMotorFragment extends BaseNetIotCommunicateFragment {
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
-
-    @BindView(R.id.maskLayerChild)
-    ViewGroup maskLayerChild;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;

@@ -59,7 +59,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
             //在attachBaseContext方法中调用初始化sdk
             new PgyerSDKManager.Init()
                     .setContext(this) //设置上下文对象
-                    .enable(Features.CHECK_UPDATE)//开启自动更新检测（不设置默认功能关闭 ，AndroidManifest中也可以设置该属性的开关）
+//                    .enable(Features.CHECK_UPDATE)//开启自动更新检测（不设置默认功能关闭 ，AndroidManifest中也可以设置该属性的开关）
                     .start();
         } catch (Exception ex) {
             ex.printStackTrace();

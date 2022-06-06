@@ -245,7 +245,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
-                .createService(ServiceAddressType.DEVICE_REMOTE_DEBUG_ADDRESS)
+                .createService(ServiceAddressType.getCustomAddress("http://ams4.shmedo.com:22000/api/v1/"))
                 .DeviceLogin(body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())

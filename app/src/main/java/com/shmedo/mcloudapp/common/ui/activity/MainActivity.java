@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setCheckNetWork(true);
         initView(savedInstanceState);
-        UpdataManagerUtil.checkNewVersion(this, false);
+        UpdataManagerUtil.checkNewVersion2(this, false);
     }
 
     private void initView(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
 
     private void initBottomNavigationItemSelectedListener() {
         //为底部导航设置条目选中监听
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {

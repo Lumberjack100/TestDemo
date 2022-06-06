@@ -1,7 +1,5 @@
 package com.shmedo.mcloudapp.network;
 
-import com.shmedo.core.MCloudApp;
-
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -33,31 +31,7 @@ public abstract class BaseRetrofit {
                 .addNetworkInterceptor(interceptor)
                 .build();
 
-        String baseUrl = "";
-        switch (addressType) {
-            case AUTHORITY_SERVICE_ADDRESS://权限服务地址
-                baseUrl = MCloudApp.getAuthorityServiceAddress();
-                break;
-
-            case IOT_MANAGER_SERVICE_ADDRESS://物联网设备管理服务地址
-                baseUrl = MCloudApp.getIotManagerServiceAddress();
-                break;
-
-            case IOT_INTERACTIVE_SERVICE_ADDRESS://物联网指令交互服务地址
-                baseUrl = MCloudApp.getIotInteractiveServiceAddress();
-                break;
-
-            case CLOUD_PLATFORM_DATA_ADDRESS://云平台原始数据地址
-                baseUrl = MCloudApp.getCloudPlatformDataAddress();
-                break;
-
-            case DEVICE_REMOTE_DEBUG_ADDRESS:
-                baseUrl = MCloudApp.getDeviceRemoteDebugAddress();
-                break;
-
-            default:
-                break;
-        }
+        String baseUrl = addressType.getBaseUrl();
         return new Retrofit.Builder()
                 //设置网络请求的Url地址
                 .baseUrl(baseUrl)

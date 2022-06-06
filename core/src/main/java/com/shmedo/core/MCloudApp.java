@@ -36,12 +36,6 @@ public class MCloudApp {
     private static String curDeviceToken;//设备名称
     private static List<UserPermissionInfo> userPermissionInfoList = new ArrayList<>();//用户在某公司某服务中的所有权限
 
-    private static final String authorityServiceAddress = "https://mdiotbff.shmedo.cn";//物联网权限服务地址
-    private static final String iotManagerServiceAddress = "https://mdiotbff.shmedo.cn";//物联网设备管理服务地址
-    private static final String iotInteractiveServiceAddress = "https://mdiotbff.shmedo.cn";//物联网指令交互服务地址
-    private static final String cloudPlatformDataAddress = "https://chaxun.shmedo.cn";//云平台原始数据地址
-    private static final String deviceRemoteDebugAddress = "http://ams4.shmedo.com:22000/api/v1/";//云平台原始数据地址
-
 
     /**
      * 初始化接口。这里会进行应用程序的初始化操作，一定要在代码执行的最开始调用。
@@ -69,26 +63,6 @@ public class MCloudApp {
      */
     public static Handler getMainHandler() {
         return handler;
-    }
-
-    public static String getAuthorityServiceAddress() {
-        return authorityServiceAddress + "/api/v1/auth/";
-    }
-
-    public static String getIotManagerServiceAddress() {
-        return iotManagerServiceAddress + "/api/v1/iot/";
-    }
-
-    public static String getIotInteractiveServiceAddress() {
-        return iotInteractiveServiceAddress + "/api/v1/interactive/";
-    }
-
-    public static String getCloudPlatformDataAddress() {
-        return cloudPlatformDataAddress;
-    }
-
-    public static String getDeviceRemoteDebugAddress() {
-        return deviceRemoteDebugAddress;
     }
 
     public static UserWrapperInfo getCurrentUserInfo() {

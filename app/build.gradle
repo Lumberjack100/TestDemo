@@ -22,8 +22,19 @@ def gitShortCommitId() {
  * 获取Git库的提交次数
  */
 def gitVersionCode() {
-    def cmd = 'git rev-list HEAD --count'
-    cmd.execute().text.trim().toInteger()
+    def buildnum = 1
+    try {
+        //底层使用的是 Runtime.getRuntime().exec()去执行
+        def getGit = 'git rev-list --count HEAD'.execute()
+        if (getGit.text.trim() == '')
+            buildnum = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
+        else {
+            buildnum = getGit.text.trim().toInteger()
+        }
+    } catch (e) {
+        e.printStackTrace()
+    }
+    return buildnum
 }
 
 android {
@@ -63,6 +74,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
     }

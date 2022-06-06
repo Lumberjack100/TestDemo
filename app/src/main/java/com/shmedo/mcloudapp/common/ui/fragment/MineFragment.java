@@ -111,7 +111,7 @@ public class MineFragment extends BaseTranslucentFragment {
                 break;
 
             case R.id.checkVersionLayout:
-                UpdataManagerUtil.checkNewVersion(getActivity(), true);
+                UpdataManagerUtil.checkNewVersion2(getActivity(), true);
                 break;
 
             case R.id.aboutLayout:

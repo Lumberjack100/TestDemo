@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.network.api;
 
+import com.pgyer.pgyersdk.model.CheckSoftModel;
 import com.shmedo.core.model.BasicUserInfo;
 import com.shmedo.core.model.UserPermissionInfo;
 import com.shmedo.core.model.UserWrapperInfo;
@@ -154,4 +155,8 @@ public interface ApiService {
     //查询设备远程调试连接地址信息
     @POST("DeviceLogin")
     Observable<ResponseWrapper<DeviceDebugAddress>> DeviceLogin(@Body RequestBody parameter);
+
+    //蒲公英接口 检测App是否有更新
+    @POST("check")
+    Observable<ResponseWrapper<CheckSoftModel>> checkVersionUpdate(@Body RequestBody parameter);
 }
