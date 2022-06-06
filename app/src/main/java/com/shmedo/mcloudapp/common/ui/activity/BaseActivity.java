@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -63,8 +62,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private WindowManager mWindowManager;
 
     private WindowManager.LayoutParams mLayoutParams;
-
-    protected MaterialDialog loadingDialog = null;
 
     /**
      * 判断当前Activity是否在前台。
@@ -182,31 +179,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             int[] grantResults) {
         XPermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    protected void showLoadingDialog(String tip) {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            return;
-        }
-        if (loadingDialog == null) {
-            loadingDialog = new MaterialDialog.Builder(this)
-                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(false)
-                    .build();
-//            loadingDialog.setCancelable(false);
-            loadingDialog.setCanceledOnTouchOutside(false);
-        }
-        if (!loadingDialog.isShowing()) {
-            loadingDialog.show();
-        }
-    }
-
-    protected void dismissLoadingDialog() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
-            loadingDialog = null;
-        }
     }
 
     protected void showWaitDialog(String message) {

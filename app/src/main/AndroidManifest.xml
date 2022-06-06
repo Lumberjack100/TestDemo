@@ -9,37 +9,32 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加ACCESS_BACKGROUND_LOCATION权限声明
-如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框 -->
+    <!--
+ 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加ACCESS_BACKGROUND_LOCATION权限声明
+如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框
+    -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- 允许程序访问精良位置(如GPS) -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> <!-- 允许应用程序访问额外的位置提供命令 -->
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的读权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的写权限 -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Android8.0 安装 apk 需要添加权限,更新自身及下载安装app  -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Android8.0 安装 apk 需要添加权限,更新自身及下载安装app -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 请求访问使用照相设备 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 允许程序录制音频 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 允许阻止进程睡眠或屏幕变暗,用WakeLock使Android应用程序保持后台唤醒 -->
     <uses-permission android:name="android.permission.FLASHLIGHT" /> <!-- 访问闪光灯 -->
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 允许访问振动设备 -->
-
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="no.nordicsemi.android.LOG" />
-
-    <!-- Bluetooth permission is required on Android 4.3 - 11 in order to communicate with Bluetooth LE devices. -->
+    <uses-permission android:name="no.nordicsemi.android.LOG" /> <!-- Bluetooth permission is required on Android 4.3 - 11 in order to communicate with Bluetooth LE devices. -->
     <uses-permission
         android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="30"/>
-    <!-- Bluetooth Admin permission is required on Android 4.3 - 11 in order to scan for Bluetooth LE devices.-->
+        android:maxSdkVersion="30" /> <!-- Bluetooth Admin permission is required on Android 4.3 - 11 in order to scan for Bluetooth LE devices. -->
     <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="30"/>
-
+        android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -47,7 +42,6 @@
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 声明应用仅适用于支持 BLE 的设备 -->
     <uses-feature android:name="android.hardware.usb.host" />
@@ -63,37 +57,29 @@
         tools:replace="android:name"
         tools:targetApi="p">
 
+
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
-
         <meta-data
             android:name="PGYER_API_KEY"
             android:value="${pgyerKey}" />
-
         <meta-data
             android:name="PGYER_FRONTJS_KEY"
             android:value="${frontJSToken}" />
-
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${buglyAppId}" /> <!-- 配置APP版本号 -->
         <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
-
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
             android:value="false" />
-
         <meta-data
             android:name="UMENG_APP_KEY"
-            android:value="${umengAppkey}" />
-
-        <!--适配华为（huawei）刘海屏-->
+            android:value="${umengAppkey}" /> <!-- 适配华为（huawei）刘海屏 -->
         <meta-data
             android:name="android.notch_support"
-            android:value="true"/>
-
-        <!--适配小米（xiaomi）刘海屏-->
+            android:value="true" /> <!-- 适配小米（xiaomi）刘海屏 -->
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
@@ -106,6 +92,7 @@
             android:theme="@style/MCloud.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -415,20 +402,24 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.AudibleAlarmActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.TcpToBleDebugActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".deviceconfig.ui.activity.DeviceListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
 
         <service android:name="com.amap.api.location.APSService" />
 
@@ -442,7 +433,6 @@
                 android:resource="@xml/file_paths"
                 tools:replace="android:resource" />
         </provider>
-
     </application>
 
 </manifest>

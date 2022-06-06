@@ -49,10 +49,10 @@ import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalSearchActivity;
-import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
@@ -551,7 +551,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
         if (resultCode != Activity.RESULT_OK || data == null) {
             return;
         }
-        if (requestCode == XPermissionUtils.REQUEST_CODE_SCAN) {
+        if (requestCode == PermissionHelper.REQUEST_CODE_SCAN) {
             HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
             if (obj != null) {
                 Timber.d("扫描结果为：%s", obj.originalValue);

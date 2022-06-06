@@ -45,7 +45,7 @@ import timber.log.Timber;
 /**
  * 我的模块主页面
  */
-public class MineFragment extends BaseTranslucentFragment {
+public class MineFragment extends BaseFragment {
     @BindView(R.id.userAvatar)
     CircleImageView mIvUserAvatar;
 

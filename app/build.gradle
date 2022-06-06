@@ -26,12 +26,9 @@ def gitVersionCode() {
     try {
         //底层使用的是 Runtime.getRuntime().exec()去执行
         def getGit = 'git rev-list --count HEAD'.execute()
-        if (getGit.text.trim() == '')
-            buildnum = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
-        else {
-            buildnum = getGit.text.trim().toInteger()
-        }
+        buildnum = getGit.text.trim().toInteger()
     } catch (e) {
+        buildnum = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
         e.printStackTrace()
     }
     return buildnum

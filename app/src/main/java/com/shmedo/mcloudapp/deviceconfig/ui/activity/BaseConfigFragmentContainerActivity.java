@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
-import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import butterknife.BindView;
@@ -42,8 +41,6 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
 
     protected Intent intent;
 
-    protected ConfigPageViewModel configPageViewModel;
-
     protected DeviceInfo deviceInfo;
 
 
@@ -58,7 +55,6 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         setToolBar(R.id.toolbar);
         parseIntent();
         replaceFragment(initFragment());
-        configPageViewModel = getActivityScopeViewModel(ConfigPageViewModel.class);
     }
 
     protected void parseIntent() {
@@ -94,13 +90,6 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         }
         int id = view.getId();
         if (id == R.id.tv_action) {
-            if (mTvAction.getText().toString().equals("编辑")) {
-                configPageViewModel.configPageEditableChanged.setValue(true);
-                mTvAction.setText("取消");
-            } else if (mTvAction.getText().toString().equals("取消")) {
-                configPageViewModel.configPageEditableChanged.setValue(false);
-                mTvAction.setText("编辑");
-            }
             onTextActionClick();
         } else if (id == R.id.iv_action) {
             onIconActionClick();

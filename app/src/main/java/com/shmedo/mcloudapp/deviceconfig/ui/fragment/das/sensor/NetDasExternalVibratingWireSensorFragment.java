@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.huawei.hms.hmsscankit.ScanUtil;
@@ -30,7 +29,7 @@ import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorYLJView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
+import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -286,7 +285,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
         if (resultCode != Activity.RESULT_OK || data == null) {
             return;
         }
-        if (requestCode == XPermissionUtils.REQUEST_CODE_SCAN) {
+        if (requestCode == PermissionHelper.REQUEST_CODE_SCAN) {
             HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
             if (obj != null) {
                 Timber.d("扫描结果为：%s", obj.originalValue);

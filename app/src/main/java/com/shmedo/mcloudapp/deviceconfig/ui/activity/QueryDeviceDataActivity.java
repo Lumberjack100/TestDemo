@@ -230,7 +230,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
 
 
     private void queryCloudData() {
-        showLoadingDialog("加载中...");
+        showWaitDialog("加载中...");
 
         QueryCloudDataParameter paramter = new QueryCloudDataParameter();
         paramter.setSn(snNubmer);
@@ -249,7 +249,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
                 .subscribe(new BaseObserver<List<QueryCloudDataInfo>>() {
                     @Override
                     protected void onResponse(List<QueryCloudDataInfo> queryCloudDataInfos, ErrorInfo errorInfo) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             queryCloudDataInfoList.clear();
                             if (errorInfo.getCode() == 0) {
@@ -274,7 +274,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        dismissLoadingDialog();
+                        dismissWaitDialog();
                         queryCloudDataInfoList.clear();
                         adapter.setEmptyView(getErrorView());
                         adapter.notifyDataSetChanged();

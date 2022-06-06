@@ -117,6 +117,7 @@ public class MainActivity extends BaseActivity {
                 showFragment(deviceModuleMainFragment);
                 //设置系统栏(状态栏、导航栏)的背景色、字体等
                 ImmersionBar.with(this)
+                        .fitsSystemWindows(true)  //使用该属性,必须指定状态栏颜色
                         .statusBarColor(R.color.white)
                         .statusBarDarkFont(true)
                         .navigationBarDarkIcon(true)
@@ -128,6 +129,7 @@ public class MainActivity extends BaseActivity {
                 showFragment(mineFragment);
                 //设置系统栏(状态栏、导航栏)的背景色、字体等
                 ImmersionBar.with(this)
+                        .fitsSystemWindows(true)  //使用该属性,必须指定状态栏颜色
                         .statusBarColor(R.color.white)
                         .statusBarDarkFont(true)
                         .navigationBarDarkIcon(true)

@@ -20,8 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.constant.RegexConstants;
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.RegexUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
@@ -295,7 +296,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 String time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay);
-                for(AdmeTimeItem item :admeTimeItemList) {
+                for (AdmeTimeItem item : admeTimeItemList) {
                     if (item.getTime().contains(time)) {
                         ToastUtils.show("不能设置重复时间点!");
                         return;
@@ -445,22 +446,38 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     }
 
     public boolean checkValueIsValid() {
-        waitingIntervalPerRound = mEtWaitingIntervalPerRound.getText().toString().trim();
-        dataReadingInterval = mEtDataReadingInterval.getText().toString().trim();
-        measurementCompensationTime = mEtMeasurementCompensationTime.getText().toString().trim();
-        motorDriveAddress = mEtMotorDriveAddress.getText().toString().trim();
-        decentralizationSpeed = mEtDecentralizationSpeed.getText().toString().trim();
-        inclinometerTubeHoleDepth = mEtInclinometerTubeHoleDepth.getText().toString().trim();
-        decentralizationWaitingTime = mEtDecentralizationWaitingTime.getText().toString().trim();
-        pullUpSpeed = mEtPullUpSpeed.getText().toString().trim();
-        measuringDistance = mEtMeasuringDistance.getText().toString().trim();
-        measurementIntervalTime = mEtMeasurementIntervalTime.getText().toString().trim();
-        measuringReferenceDepth = mEtMeasuringReferenceDepth.getText().toString().trim();
-        intervalCompensation = mEtIntervalCompensation.getText().toString().trim();
-        intervalFitting = mEtIntervalFitting.getText().toString().trim();
-        pointOffset = mEtPointOffset.getText().toString().trim();
+        waitingIntervalPerRound = mEtWaitingIntervalPerRound.getText().toString();
+        dataReadingInterval = mEtDataReadingInterval.getText().toString();
+        measurementCompensationTime = mEtMeasurementCompensationTime.getText().toString();
+        motorDriveAddress = mEtMotorDriveAddress.getText().toString();
+        decentralizationSpeed = mEtDecentralizationSpeed.getText().toString();
+        inclinometerTubeHoleDepth = mEtInclinometerTubeHoleDepth.getText().toString();
+        decentralizationWaitingTime = mEtDecentralizationWaitingTime.getText().toString();
+        pullUpSpeed = mEtPullUpSpeed.getText().toString();
+        measuringDistance = mEtMeasuringDistance.getText().toString();
+        measurementIntervalTime = mEtMeasurementIntervalTime.getText().toString();
+        measuringReferenceDepth = mEtMeasuringReferenceDepth.getText().toString();
+        intervalCompensation = mEtIntervalCompensation.getText().toString();
+        intervalFitting = mEtIntervalFitting.getText().toString();
+        pointOffset = mEtPointOffset.getText().toString();
 
-        if (!admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey")) {
+//        if (admeExecutiveAgencyInfo.getMeastype().equals("NullKey") || admeExecutiveAgencyInfo.getMeastype().equals(measureMethod)) {
+//            measureMethod = null;
+//        }
+//
+//        if (admeExecutiveAgencyInfo.getDatatype().equals("NullKey") || admeExecutiveAgencyInfo.getDatatype().equals(dataSettlementMethod)) {
+//            dataSettlementMethod = null;
+//        }
+//
+//        if (admeExecutiveAgencyInfo.getDatareply().equals("NullKey") || admeExecutiveAgencyInfo.getDatareply().equals(dataResponse)) {
+//            dataResponse = null;
+//        }
+//
+//        if (admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") || admeExecutiveAgencyInfo.getRoundmeasinval().equals(measurementIntervalPerRound)) {
+//            measurementIntervalPerRound = null;
+//        }
+
+        if (!admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") && !admeExecutiveAgencyInfo.getRoundwaitetime().equals(waitingIntervalPerRound)) {
             if (TextUtils.isEmpty(waitingIntervalPerRound)) {
                 ToastUtils.show("请输入每轮等待时间!");
                 mEtWaitingIntervalPerRound.requestFocus();
@@ -479,7 +496,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 return false;
             }
         }
-        if (!admeExecutiveAgencyInfo.getDatainval().equals("NullKey")) {
+        else {
+//            waitingIntervalPerRound = null;
+        }
+
+        if (!admeExecutiveAgencyInfo.getDatainval().equals("NullKey") && !admeExecutiveAgencyInfo.getDatainval().equals(dataReadingInterval)) {
             if (TextUtils.isEmpty(dataReadingInterval)) {
                 ToastUtils.show("请输入数据读取间隔!");
                 mEtDataReadingInterval.requestFocus();
@@ -497,8 +518,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtDataReadingInterval.requestFocus();
                 return false;
             }
+        } else {
+//            dataReadingInterval = null;
         }
-        if (!admeExecutiveAgencyInfo.getCompensatetime().equals("NullKey")) {
+
+        if (!admeExecutiveAgencyInfo.getCompensatetime().equals("NullKey") && !admeExecutiveAgencyInfo.getCompensatetime().equals(measurementCompensationTime)) {
             if (TextUtils.isEmpty(measurementCompensationTime)) {
                 ToastUtils.show("请输入测量补偿时间!");
                 mEtMeasurementCompensationTime.requestFocus();
@@ -516,8 +540,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtMeasurementCompensationTime.requestFocus();
                 return false;
             }
+        } else {
+//            measurementCompensationTime = null;
         }
-        if (!admeExecutiveAgencyInfo.getDriveaddress().equals("NullKey")) {
+
+        if (!admeExecutiveAgencyInfo.getDriveaddress().equals("NullKey") && !admeExecutiveAgencyInfo.getDriveaddress().equals(motorDriveAddress)) {
             if (TextUtils.isEmpty(motorDriveAddress)) {
                 ToastUtils.show("请输入电机驱动器地址!");
                 mEtMotorDriveAddress.requestFocus();
@@ -535,8 +562,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtMotorDriveAddress.requestFocus();
                 return false;
             }
+        } else {
+//            motorDriveAddress = null;
         }
-        if (!admeExecutiveAgencyInfo.getDownspeed().equals("NullKey")) {
+
+        if (!admeExecutiveAgencyInfo.getDownspeed().equals("NullKey") && !admeExecutiveAgencyInfo.getDownspeed().equals(decentralizationSpeed)) {
             if (TextUtils.isEmpty(decentralizationSpeed)) {
                 ToastUtils.show("请输入电机下放速度!");
                 mEtDecentralizationSpeed.requestFocus();
@@ -554,8 +584,14 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtDecentralizationSpeed.requestFocus();
                 return false;
             }
+        } else {
+//            decentralizationSpeed = null;
         }
-        if (!admeExecutiveAgencyInfo.getInterdeep().equals("NullKey")) {
+
+        decimalFormat.applyPattern("#.##");
+        if (!admeExecutiveAgencyInfo.getInterdeep().equals("NullKey") && RegexUtils.isMatch(RegexConstants.REGEX_FLOAT, admeExecutiveAgencyInfo.getInterdeep())
+                && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getInterdeep())).equals(inclinometerTubeHoleDepth)) {
+
             if (TextUtils.isEmpty(inclinometerTubeHoleDepth)) {
                 ToastUtils.show("请输入测斜管孔深!");
                 mEtInclinometerTubeHoleDepth.requestFocus();
@@ -569,8 +605,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtInclinometerTubeHoleDepth.requestFocus();
                 return false;
             }
+        } else {
+//            inclinometerTubeHoleDepth = null;
         }
-        if (!admeExecutiveAgencyInfo.getDownwaitetime().equals("NullKey")) {
+
+        if (!admeExecutiveAgencyInfo.getDownwaitetime().equals("NullKey") && !admeExecutiveAgencyInfo.getDownwaitetime().equals(decentralizationWaitingTime)) {
             if (TextUtils.isEmpty(decentralizationWaitingTime)) {
                 ToastUtils.show("请输入下放等待时间!");
                 mEtDecentralizationWaitingTime.requestFocus();
@@ -588,8 +627,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtDecentralizationWaitingTime.requestFocus();
                 return false;
             }
+        } else {
+//            decentralizationWaitingTime = null;
         }
-        if (!admeExecutiveAgencyInfo.getUpspeed().equals("NullKey")) {
+
+        if (!admeExecutiveAgencyInfo.getUpspeed().equals("NullKey") && !admeExecutiveAgencyInfo.getUpspeed().equals(pullUpSpeed)) {
             if (TextUtils.isEmpty(pullUpSpeed)) {
                 ToastUtils.show("请输入电机上拉速度!");
                 mEtPullUpSpeed.requestFocus();
@@ -607,8 +649,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtPullUpSpeed.requestFocus();
                 return false;
             }
+        } else {
+//            pullUpSpeed = null;
         }
-        if (!admeExecutiveAgencyInfo.getMeaspacing().equals("NullKey")) {
+
+        if (!admeExecutiveAgencyInfo.getMeaspacing().equals("NullKey") && !admeExecutiveAgencyInfo.getMeaspacing().equals(measuringDistance)) {
             if (TextUtils.isEmpty(measuringDistance)) {
                 ToastUtils.show("请输入测量间距!");
                 mEtMeasuringDistance.requestFocus();
@@ -626,8 +671,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtMeasuringDistance.requestFocus();
                 return false;
             }
+        } else {
+//            measuringDistance = null;
         }
-        if (!admeExecutiveAgencyInfo.getMeaintertime().equals("NullKey")) {
+
+        if (!admeExecutiveAgencyInfo.getMeaintertime().equals("NullKey") && !admeExecutiveAgencyInfo.getMeaintertime().equals(measurementIntervalTime)) {
             if (TextUtils.isEmpty(measurementIntervalTime)) {
                 ToastUtils.show("请输入测量间隔时间!");
                 mEtMeasurementIntervalTime.requestFocus();
@@ -645,8 +693,14 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtMeasurementIntervalTime.requestFocus();
                 return false;
             }
+        } else {
+//            measurementIntervalTime = null;
         }
-        if (!admeExecutiveAgencyInfo.getMeabaseth().equals("NullKey")) {
+
+        decimalFormat.applyPattern("#.##");
+        if (!admeExecutiveAgencyInfo.getMeabaseth().equals("NullKey")
+                && RegexUtils.isMatch(RegexConstants.REGEX_FLOAT, admeExecutiveAgencyInfo.getMeabaseth())
+                && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getMeabaseth())).equals(measuringReferenceDepth)) {
             if (TextUtils.isEmpty(measuringReferenceDepth)) {
                 ToastUtils.show("请输入测量基准深度!");
                 mEtMeasuringReferenceDepth.requestFocus();
@@ -660,8 +714,15 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtMeasuringReferenceDepth.requestFocus();
                 return false;
             }
+        } else {
+//            measuringReferenceDepth = null;
         }
-        if (!admeExecutiveAgencyInfo.getInterval_compensation().equals("NullKey")) {
+
+        decimalFormat.applyPattern("#.###");
+        if (!admeExecutiveAgencyInfo.getInterval_compensation().equals("NullKey")
+                && RegexUtils.isMatch(RegexConstants.REGEX_FLOAT, admeExecutiveAgencyInfo.getInterval_compensation())
+                && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getInterval_compensation())).equals(intervalCompensation)) {
+
             if (TextUtils.isEmpty(intervalCompensation)) {
                 ToastUtils.show("请输入距离补偿区间h1!");
                 mEtIntervalCompensation.requestFocus();
@@ -679,8 +740,15 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtIntervalCompensation.requestFocus();
                 return false;
             }
+        } else {
+//            intervalCompensation = null;
         }
-        if (!admeExecutiveAgencyInfo.getInterval_fitting().equals("NullKey")) {
+
+        decimalFormat.applyPattern("#.#");
+        if (!admeExecutiveAgencyInfo.getInterval_fitting().equals("NullKey")
+                && RegexUtils.isMatch(RegexConstants.REGEX_FLOAT, admeExecutiveAgencyInfo.getInterval_fitting())
+                && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getInterval_fitting())).equals(intervalFitting)) {
+
             if (TextUtils.isEmpty(intervalFitting)) {
                 ToastUtils.show("请输入数据拟合区间h2!");
                 mEtIntervalFitting.requestFocus();
@@ -698,8 +766,14 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtIntervalFitting.requestFocus();
                 return false;
             }
+        } else {
+//            intervalFitting = null;
         }
-        if (!admeExecutiveAgencyInfo.getPoint_offset().equals("NullKey")) {
+
+        decimalFormat.applyPattern("#.###");
+        if (!admeExecutiveAgencyInfo.getPoint_offset().equals("NullKey")
+                && RegexUtils.isMatch(RegexConstants.REGEX_FLOAT, admeExecutiveAgencyInfo.getPoint_offset())
+                && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getPoint_offset())).equals(pointOffset)) {
             if (TextUtils.isEmpty(pointOffset)) {
                 ToastUtils.show("请输入测点偏移距离h3!");
                 mEtPointOffset.requestFocus();
@@ -717,6 +791,8 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtPointOffset.requestFocus();
                 return false;
             }
+        } else {
+//            pointOffset = null;
         }
 
         return true;
@@ -726,11 +802,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         String command = "";
         try {
             AdmeExecutiveAgencyEntity entity = new AdmeExecutiveAgencyEntity();
-            entity.setMeastype(admeExecutiveAgencyInfo.getMeastype().equals("NullKey") ? "NullKey" : measureMethod);
-            entity.setDatatype(admeExecutiveAgencyInfo.getDatatype().equals("NullKey") ? "NullKey" : dataSettlementMethod);
-            entity.setDatareply(admeExecutiveAgencyInfo.getDatareply().equals("NullKey") ? "NullKey" : dataResponse);
-            entity.setRoundwaitetime(admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") ? "NullKey" : waitingIntervalPerRound);
-            entity.setRoundmeasinval(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
+            entity.setMeastype(measureMethod);
+            entity.setDatatype(dataSettlementMethod);
+            entity.setDatareply(dataResponse);
+            entity.setRoundwaitetime(waitingIntervalPerRound);
+            entity.setRoundmeasinval(measurementIntervalPerRound);
             //定时测量方式
             if (!admeExecutiveAgencyInfo.getMeastype().equals("NullKey") && admeExecutiveAgencyInfo.getMeastype().equals("2")) {
                 StringBuffer timeBuffer = new StringBuffer();
@@ -743,28 +819,22 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 }
                 timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
                 entity.setRoundmeasstart(timeBuffer.toString());
-
             } else {
-                entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getRoundmeasstart());
+                entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart());
             }
-            entity.setDatainval(admeExecutiveAgencyInfo.getDatainval().equals("NullKey") ? "NullKey" : dataReadingInterval);
-            entity.setCompensatetime(admeExecutiveAgencyInfo.getCompensatetime().equals("NullKey") ? "NullKey" : measurementCompensationTime);
-            entity.setDriveaddress(admeExecutiveAgencyInfo.getDriveaddress().equals("NullKey") ? "NullKey" : motorDriveAddress);
-            entity.setDownspeed(admeExecutiveAgencyInfo.getDownspeed().equals("NullKey") ? "NullKey" : decentralizationSpeed);
-            decimalFormat.applyPattern("#.##");
-            entity.setInterdeep(admeExecutiveAgencyInfo.getInterdeep().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth)));
-            entity.setDownwaitetime(admeExecutiveAgencyInfo.getDownwaitetime().equals("NullKey") ? "NullKey" : decentralizationWaitingTime);
-            entity.setUpspeed(admeExecutiveAgencyInfo.getUpspeed().equals("NullKey") ? "NullKey" : pullUpSpeed);
-            entity.setMeaspacing(admeExecutiveAgencyInfo.getMeaspacing().equals("NullKey") ? "NullKey" : measuringDistance);
-            entity.setMeaintertime(admeExecutiveAgencyInfo.getMeaintertime().equals("NullKey") ? "NullKey" : measurementIntervalTime);
-            decimalFormat.applyPattern("#.##");
-            entity.setMeabaseth(admeExecutiveAgencyInfo.getMeabaseth().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(measuringReferenceDepth)));
-            decimalFormat.applyPattern("#.###");
-            entity.setInterval_compensation(admeExecutiveAgencyInfo.getInterval_compensation().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(intervalCompensation)));
-            decimalFormat.applyPattern("#.#");
-            entity.setInterval_fitting(admeExecutiveAgencyInfo.getInterval_fitting().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(intervalFitting)));
-            decimalFormat.applyPattern("#.###");
-            entity.setPoint_offset(admeExecutiveAgencyInfo.getPoint_offset().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(pointOffset)));
+            entity.setDatainval(dataReadingInterval);
+            entity.setCompensatetime(measurementCompensationTime);
+            entity.setDriveaddress(motorDriveAddress);
+            entity.setDownspeed(decentralizationSpeed);
+            entity.setInterdeep(inclinometerTubeHoleDepth);
+            entity.setDownwaitetime(decentralizationWaitingTime);
+            entity.setUpspeed(pullUpSpeed);
+            entity.setMeaspacing(measuringDistance);
+            entity.setMeaintertime(measurementIntervalTime);
+            entity.setMeabaseth(measuringReferenceDepth);
+            entity.setInterval_compensation(intervalCompensation);
+            entity.setInterval_fitting(intervalFitting);
+            entity.setPoint_offset(pointOffset);
 
             command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY, entity);
         } catch (Exception ex) {
@@ -780,36 +850,37 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             admeExecutiveAgencyInfo = new AdmeExecutiveAgencyInfo();
             return;
         }
-        measureMethodOld = admeExecutiveAgencyInfo.getMeastype().trim();
+        measureMethodOld = admeExecutiveAgencyInfo.getMeastype();
         measureMethod = measureMethodOld;
-        dataSettlementMethodOld = admeExecutiveAgencyInfo.getDatatype().trim();
+        dataSettlementMethodOld = admeExecutiveAgencyInfo.getDatatype();
         dataSettlementMethod = dataSettlementMethodOld;
-        dataResponseOld = admeExecutiveAgencyInfo.getDatareply().trim();
+        dataResponseOld = admeExecutiveAgencyInfo.getDatareply();
         dataResponse = dataResponseOld;
-        measurementIntervalPerRoundOld = admeExecutiveAgencyInfo.getRoundmeasinval().trim();
+        measurementIntervalPerRoundOld = admeExecutiveAgencyInfo.getRoundmeasinval();
         measurementIntervalPerRound = measurementIntervalPerRoundOld;
-        startTimePerRound = admeExecutiveAgencyInfo.getRoundmeasstart().trim();
+        startTimePerRound = admeExecutiveAgencyInfo.getRoundmeasstart();
 
-        waitingIntervalPerRound = admeExecutiveAgencyInfo.getRoundwaitetime().trim();
-        dataReadingInterval = admeExecutiveAgencyInfo.getDatainval().trim();
-        measurementCompensationTime = admeExecutiveAgencyInfo.getCompensatetime().trim();
-        motorDriveAddress = admeExecutiveAgencyInfo.getDriveaddress().trim();
-        decentralizationSpeed = admeExecutiveAgencyInfo.getDownspeed().trim();
-        inclinometerTubeHoleDepth = admeExecutiveAgencyInfo.getInterdeep().trim();
-        decentralizationWaitingTime = admeExecutiveAgencyInfo.getDownwaitetime().trim();
-        pullUpSpeed = admeExecutiveAgencyInfo.getUpspeed().trim();
-        measuringDistance = admeExecutiveAgencyInfo.getMeaspacing().trim();
-        measurementIntervalTime = admeExecutiveAgencyInfo.getMeaintertime().trim();
-        measuringReferenceDepth = admeExecutiveAgencyInfo.getMeabaseth().trim();
-        intervalCompensation = admeExecutiveAgencyInfo.getInterval_compensation().trim();
-        intervalFitting = admeExecutiveAgencyInfo.getInterval_fitting().trim();
-        pointOffset = admeExecutiveAgencyInfo.getPoint_offset().trim();
+        waitingIntervalPerRound = admeExecutiveAgencyInfo.getRoundwaitetime();
+        dataReadingInterval = admeExecutiveAgencyInfo.getDatainval();
+        measurementCompensationTime = admeExecutiveAgencyInfo.getCompensatetime();
+        motorDriveAddress = admeExecutiveAgencyInfo.getDriveaddress();
+        decentralizationSpeed = admeExecutiveAgencyInfo.getDownspeed();
+        inclinometerTubeHoleDepth = admeExecutiveAgencyInfo.getInterdeep();
+        decentralizationWaitingTime = admeExecutiveAgencyInfo.getDownwaitetime();
+        pullUpSpeed = admeExecutiveAgencyInfo.getUpspeed();
+        measuringDistance = admeExecutiveAgencyInfo.getMeaspacing();
+        measurementIntervalTime = admeExecutiveAgencyInfo.getMeaintertime();
+        measuringReferenceDepth = admeExecutiveAgencyInfo.getMeabaseth();
+        intervalCompensation = admeExecutiveAgencyInfo.getInterval_compensation();
+        intervalFitting = admeExecutiveAgencyInfo.getInterval_fitting();
+        pointOffset = admeExecutiveAgencyInfo.getPoint_offset();
 
         if (measureMethodOld.equals("NullKey")) {
             measureMethodLayout.setVisibility(View.GONE);
             measurementIntervalPerRoundLayout.setVisibility(View.GONE);
             startTimePerRoundLayout.setVisibility(View.GONE);
             mRecyclerViewTime.setVisibility(View.GONE);
+
         } else {
             switch (measureMethodOld) {
                 case "0":
@@ -876,59 +947,70 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 }
                 admeTimeAdapter.notifyDataSetChanged();
             }
+
             if (waitingIntervalPerRound.equals("NullKey")) {
                 waitingIntervalPerRoundLayout.setVisibility(View.GONE);
             } else {
                 mEtWaitingIntervalPerRound.setText(waitingIntervalPerRound);
             }
+
             if (dataReadingInterval.equals("NullKey")) {
                 dataReadingIntervalLayout.setVisibility(View.GONE);
             } else {
                 mEtDataReadingInterval.setText(dataReadingInterval);
             }
+
             if (measurementCompensationTime.equals("NullKey")) {
                 measurementCompensationTimeLayout.setVisibility(View.GONE);
             } else {
                 mEtMeasurementCompensationTime.setText(measurementCompensationTime);
             }
+
             if (motorDriveAddress.equals("NullKey")) {
                 motorDriveAddressLayout.setVisibility(View.GONE);
             } else {
                 mEtMotorDriveAddress.setText(motorDriveAddress);
             }
-            decimalFormat.applyPattern("#.##");
+
             if (decentralizationSpeed.equals("NullKey")) {
                 decentralizationSpeedLayout.setVisibility(View.GONE);
             } else {
                 mEtDecentralizationSpeed.setText(decentralizationSpeed);
             }
+
+            decimalFormat.applyPattern("#.##");
             if (inclinometerTubeHoleDepth.equals("NullKey")) {
                 inclinationTubeHoleDepthLayout.setVisibility(View.GONE);
             } else {
                 inclinometerTubeHoleDepth = decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth));
                 mEtInclinometerTubeHoleDepth.setText(inclinometerTubeHoleDepth);
             }
+
             if (decentralizationWaitingTime.equals("NullKey")) {
                 decentralizationWaitingTimeLayout.setVisibility(View.GONE);
             } else {
                 mEtDecentralizationWaitingTime.setText(decentralizationWaitingTime);
             }
+
             if (pullUpSpeed.equals("NullKey")) {
                 pullUpSpeedLayout.setVisibility(View.GONE);
             } else {
                 mEtPullUpSpeed.setText(pullUpSpeed);
             }
+
             if (measuringDistance.equals("NullKey")) {
                 measuringDistanceLayout.setVisibility(View.GONE);
             } else {
                 measuringDistance = decimalFormat.format(Double.parseDouble(measuringDistance));
                 mEtMeasuringDistance.setText(measuringDistance);
             }
+
             if (measurementIntervalTime.equals("NullKey")) {
                 measurementIntervalTimeLayout.setVisibility(View.GONE);
             } else {
                 mEtMeasurementIntervalTime.setText(measurementIntervalTime);
             }
+
             decimalFormat.applyPattern("#.##");
             if (measuringReferenceDepth.equals("NullKey")) {
                 measuringReferenceDepthLayout.setVisibility(View.GONE);
@@ -936,6 +1018,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 measuringReferenceDepth = decimalFormat.format(Double.parseDouble(measuringReferenceDepth));
                 mEtMeasuringReferenceDepth.setText(measuringReferenceDepth);
             }
+
             decimalFormat.applyPattern("#.###");
             if (intervalCompensation.equals("NullKey")) {
                 intervalCompensationLayout.setVisibility(View.GONE);
@@ -943,6 +1026,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 intervalCompensation = decimalFormat.format(Double.parseDouble(intervalCompensation));
                 mEtIntervalCompensation.setText(intervalCompensation);
             }
+
             decimalFormat.applyPattern("#.#");
             if (intervalFitting.equals("NullKey")) {
                 intervalFittingLayout.setVisibility(View.GONE);
@@ -950,6 +1034,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 intervalFitting = decimalFormat.format(Double.parseDouble(intervalFitting));
                 mEtIntervalFitting.setText(intervalFitting);
             }
+
             decimalFormat.applyPattern("#.###");
             if (pointOffset.equals("NullKey")) {
                 pointOffsetLayout.setVisibility(View.GONE);
@@ -960,29 +1045,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
+
     }
 
     public void doAfterSetting() {
-//        if (admeExecutiveAgencyInfo != null) {
-//            admeExecutiveAgencyInfo.setDatatype(dataSettlementMethod);
-//            admeExecutiveAgencyInfo.setDatareply(dataResponse);
-//            admeExecutiveAgencyInfo.setRoundwaitetime(waitingIntervalPerRound);
-//            admeExecutiveAgencyInfo.setDatainval(dataReadingInterval);
-//            admeExecutiveAgencyInfo.setCompensatetime(measurementCompensationTime);
-//            admeExecutiveAgencyInfo.setDriveaddress(motorDriveAddress);
-//            admeExecutiveAgencyInfo.setDownspeed(decentralizationSpeed);
-//            admeExecutiveAgencyInfo.setInterdeep(inclinometerTubeHoleDepth);
-//            admeExecutiveAgencyInfo.setDownwaitetime(decentralizationWaitingTime);
-//            admeExecutiveAgencyInfo.setUpspeed(pullUpSpeed);
-//            admeExecutiveAgencyInfo.setMeaspacing(measuringDistance);
-//            admeExecutiveAgencyInfo.setMeaintertime(measurementIntervalTime);
-//            admeExecutiveAgencyInfo.setMeabaseth(measuringReferenceDepth);
-//            admeExecutiveAgencyInfo.setInterval_compensation(intervalCompensation);
-//            admeExecutiveAgencyInfo.setInterval_fitting(intervalFitting);
-//            admeExecutiveAgencyInfo.setPoint_offset(pointOffset);
-//        }
-        //TODO  打开注释，设置为浏览模式
-//        configPageViewModel.configPageEditableChanged.setValue(false);
         dataSettlementMethodOld = dataSettlementMethod;
         dataResponseOld = dataResponse;
     }

@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.huawei.hms.hmsscankit.ScanUtil;
@@ -34,10 +33,8 @@ import java.util.List;
  */
 public class PermissionHelper {
     public static final int REQUEST_CODE_OPEN_GPS = 0x1000;
-    public static final int REQUEST_CODE_LOCATION = 0x1001;
-    public static final int REQUEST_CODE_GPS_LOCATION = 0x1002;
-    public static final int REQUEST_CODE_NAVI = 0x1002;
-    public static final int REQUEST_CODE_ROUTE = 0x1003;
+    public static final int REQUEST_CODE_SCAN = 0x1008;
+
 
     public static void requestScanPermissions(FragmentActivity activity) {
         PermissionX.init(activity)
@@ -59,7 +56,7 @@ public class PermissionHelper {
                     @Override
                     public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
                         if (allGranted) {
-                            int result = ScanUtil.startScan(activity, XPermissionUtils.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
+                            int result = ScanUtil.startScan(activity, PermissionHelper.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
 
                         } else {
                             ToastUtils.show("下列权限被拒绝：" + deniedList);
@@ -88,7 +85,7 @@ public class PermissionHelper {
                     @Override
                     public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
                         if (allGranted) {
-                            int result = ScanUtil.startScan(fragment.getActivity(), XPermissionUtils.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
+                            int result = ScanUtil.startScan(fragment.getActivity(), PermissionHelper.REQUEST_CODE_SCAN, new HmsScanAnalyzerOptions.Creator().setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create());
 
                         } else {
                             ToastUtils.show("下列权限被拒绝：" + deniedList);

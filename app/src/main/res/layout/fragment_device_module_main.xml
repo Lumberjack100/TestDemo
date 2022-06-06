@@ -7,11 +7,6 @@
     android:background="@color/main_bg_gray"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/status_bar_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -28,14 +23,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="12dp">
 
-                <ImageView
-                    android:id="@+id/iv_query_data"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_query_device_data" />
-
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabs"
                     android:layout_width="wrap_content"
@@ -49,14 +36,12 @@
 
                 <ImageView
                     android:id="@+id/iv_scan_device_code"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
-                    android:visibility="invisible"
-                    tools:visibility="visible"
-                    android:src="@drawable/ic_scan_device_code" />
+                    android:src="@drawable/ic_add_more" />
 
             </RelativeLayout>
 

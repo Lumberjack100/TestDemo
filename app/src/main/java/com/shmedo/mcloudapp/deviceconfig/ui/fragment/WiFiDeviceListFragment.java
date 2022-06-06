@@ -111,6 +111,9 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
 
     private DeviceApiKeyViewModel deviceApiKeyViewModel;
 
+    public static WiFiDeviceListFragment newInstance() {
+        return new WiFiDeviceListFragment();
+    }
 
     @Override
     protected int getLayoutId() {

@@ -117,6 +117,10 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         }
     };
 
+    public static BleScannerListFragment newInstance() {
+        return new BleScannerListFragment();
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_ble_scanner_list;
