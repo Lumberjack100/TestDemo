@@ -330,13 +330,13 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
 
     /**
      * 处理电机运动状态变化<br>
-     * 在轮询十次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
+     * 在轮询 N 次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
      */
     public void processMotorMotionState(AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo) {
         if (measuringHoleDepthInfo == null) {
             return;
         }
-        //轮询十次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
+        //轮询 N 次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
         if (measuringHoleDepthInfo.getMorunstate().trim().equals("1")) {
             repeatNum = 0;
             startQueryMotorMotionDataProgress();

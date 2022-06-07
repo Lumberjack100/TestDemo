@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -294,7 +293,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
                     motorMotionAngleFragment.processMotorMotionState(grooveCalibrationInfo);
                 } else {
                     initParamConfigInfo();
-                    getMotorMotionData();
+//                    getMotorMotionData();
                 }
             }
             break;
@@ -382,9 +381,9 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
             mEtMotionPulse.setText(totalPulseGoal);
         }
         //电机处于运动状态，弹出底部运行数据展示框
-        if (grooveCalibrationInfo.getMorunstate().trim().equals("1")) {
-            showMotorMotionDialog();
-        }
+//        if (grooveCalibrationInfo.getMorunstate().trim().equals("1")) {
+//            showMotorMotionDialog();
+//        }
     }
 
     private void doAfterSetting() {
