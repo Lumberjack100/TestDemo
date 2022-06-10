@@ -325,6 +325,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                                 //自动测量孔深模式，需要打开堵转检测
                                 if (position == 1) {
                                     if (lockedRotorDetectionInfo != null && lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
+                                        mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
                                         setLockRotorInfo(true);
                                     }
                                 }
