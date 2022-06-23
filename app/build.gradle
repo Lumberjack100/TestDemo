@@ -46,7 +46,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "x86_64","armeabi-v7a"//"x86", "armeabi", "armeabi-v7a"
+            abiFilters "armeabi-v7a"//"x86_64","x86", "armeabi", "armeabi-v7a"
         }
     }
 

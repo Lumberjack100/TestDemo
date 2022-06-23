@@ -93,8 +93,10 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
     private void setView() {
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMovementSpeed.setHint("1-600");
-
         mEtMotionPulse.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
+
+        mTvMotionWay.setText("正转");
+        motionWay = "0";
 
         clearMotionDataLayout.setVisibility(View.VISIBLE);
         motionDataClearCompleteLayout.setVisibility(View.GONE);

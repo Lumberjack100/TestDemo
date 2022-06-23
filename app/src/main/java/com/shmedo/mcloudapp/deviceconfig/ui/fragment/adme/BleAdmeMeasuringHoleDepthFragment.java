@@ -152,6 +152,10 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         mTvMeasureMode.setText(measureModes[1]);
         mEtDownSpeed.setText("100");
         mEtSafeDistance.setText("3");
+
+        mTvMotionWay.setText("上拉");
+        motionWay = "0";
+
         decentralizedLayout.setVisibility(View.GONE);
         manualMeasureModeLayout.setVisibility(View.GONE);
         autoMeasureModeLayout.setVisibility(View.VISIBLE);
