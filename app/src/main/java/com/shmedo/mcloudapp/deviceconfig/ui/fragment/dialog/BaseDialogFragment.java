@@ -135,7 +135,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     private ViewModelProvider.Factory getApplicationFactory(Activity activity) {
         checkActivity(this);
         Application application = checkApplication(activity);
-        return ViewModelProvider.AndroidViewModelFactory.getInstance(application);
+        return (ViewModelProvider.Factory) ViewModelProvider.AndroidViewModelFactory.getInstance(application);
     }
 
     private Application checkApplication(Activity activity) {

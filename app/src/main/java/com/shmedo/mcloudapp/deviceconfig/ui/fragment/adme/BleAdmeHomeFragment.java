@@ -161,7 +161,8 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         isFirstCreate = true;
         modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();
-//        updateHeadInfo();
+        updateHeadInfo();
+        updateDeviceMode();
         observerApiKey();
         observerConnectionState();
 
@@ -363,6 +364,10 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 showDisconnectDialog(getResources().getString(R.string.disconnect_device));
             }
         } else if (id == R.id.ll_switch_config_model) {//切换设备模式
+            if (!isConnected()) {
+                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                return;
+            }
             showSwitchConfigModelDialog();
         }
     }
@@ -390,6 +395,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                                     equipModel = "1";
                                     admeViewModel.deviceMode = 1;
                                 }
+                                updateConfigModuleData();
                                 setEquipModel();
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
@@ -402,6 +408,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void setEquipModel() {
         AdmeEquipModelEntity entity = new AdmeEquipModelEntity(equipModel);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EQUIPMENT_MODEL, entity);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
         sendCommand(command);
     }
 
@@ -425,7 +432,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                     return;
                 }
                 admeBaseInfo = commandResult.getResult();
-                updateHeadInfo();
+                updateDeviceMode();
                 //获取设备的运行状态
                 startQueryMotorStateProgress(0);
             }
@@ -448,17 +455,19 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             case ADME_MD_SET_EQUIPMENT_MODEL: {//设置设备模式
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置设备模式出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                updateConfigModuleData();
+//                updateConfigModuleData();
                 saveConfigInfo();
             }
             break;
 
             case MD_SAVE_CONFIG_PARAM: {
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "保存指令出错!", cmdResult.getReason());
@@ -487,36 +496,38 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             mTvMotionState.setText("运行状态：--");
-            if (admeBaseInfo != null) {
-                if (!TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0")) {
-                    mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
-                } else if (admeBaseInfo.getOnline().equals("0")) {
-                    mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
-                }
-                equipModel = admeBaseInfo.getEquimodel();
-                if (equipModel.equals("0")) {
-                    admeViewModel.deviceMode = 0;
-                    mTvConfigModel.setText(modes[0]);
-                } else if (equipModel.equals("1")) {
-                    admeViewModel.deviceMode = 1;
-                    mTvConfigModel.setText(modes[1]);
-                } else if (equipModel.equals("2")) {
-                    admeViewModel.deviceMode = 2;
-                    mTvConfigModel.setText(modes[2]);
-                }
+            if (deviceInfo.isOnlineStatus()) {
+                mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
             } else {
-                mTvPlatformCommunicationState.setText("米度平台连接状态：--");
-                equipModel = "0";
-                admeViewModel.deviceMode = 0;
-                mTvConfigModel.setText(modes[0]);
+                mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
             }
             mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
             mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
 
-            updateConfigModuleData();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void updateDeviceMode() {
+        if (admeBaseInfo != null) {
+            equipModel = admeBaseInfo.getEquimodel();
+            if (equipModel.equals("0")) {
+                admeViewModel.deviceMode = 0;
+                mTvConfigModel.setText(modes[0]);
+            } else if (equipModel.equals("1")) {
+                admeViewModel.deviceMode = 1;
+                mTvConfigModel.setText(modes[1]);
+            } else if (equipModel.equals("2")) {
+                admeViewModel.deviceMode = 2;
+                mTvConfigModel.setText(modes[2]);
+            }
+        } else {
+            equipModel = "0";
+            admeViewModel.deviceMode = 0;
+            mTvConfigModel.setText(modes[0]);
+        }
+        updateConfigModuleData();
     }
 
     private CharSequence getPlatformAbnormalMessage(String state) {

@@ -227,16 +227,16 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
             Timber.e("AdmeMotorMotionDistanceInfo is Null!");
             return;
         }
-        if (!TextUtils.isEmpty(curPulse)){
-            if(motorMotionDistanceInfo.getPulsenumber().equals(curPulse)){
+        if (!TextUtils.isEmpty(curPulse)) {
+            if (motorMotionDistanceInfo.getPulsenumber().equals(curPulse)) {
                 repeatNum++;
                 Timber.d("updateMotionData: curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
-                //轮询十次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
+                //轮询 N 次电机脉冲数据不变化时，查询电机运动状态，判断电机是否停止运动
                 if (repeatNum >= 6) {
                     queryMotorMotionConfig();
                     return;
                 }
-            }else{
+            } else {
                 repeatNum = 0;
             }
         }
@@ -250,13 +250,13 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
 
     /**
      * 处理电机运动状态变化<br>
-     * 在轮询十次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
+     * 在轮询 N 次电机脉冲数据不变化后，根据查询的电机运动状态更新底部弹框按钮状态
      */
     public void processMotorMotionState(AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo) {
         if (measuringHoleDepthInfo == null) {
             return;
         }
-        //轮询十次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
+        //轮询 N 次电机脉冲数据不变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
         if (measuringHoleDepthInfo.getMorunstate().trim().equals("1")) {
             repeatNum = 0;
             startQueryMotorMotionDataProgress();
@@ -279,7 +279,7 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
 
     private void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+        if (bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null && !TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
             apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         cmdStr += "&apikey=" + apiKey

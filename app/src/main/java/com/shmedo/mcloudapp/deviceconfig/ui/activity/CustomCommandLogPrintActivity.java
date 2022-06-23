@@ -17,7 +17,6 @@ import com.shmedo.core.util.LogFileUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.USRBleIotCustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCustomCommandLogPrintFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CustomCommandLogPrintFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.usb.Inclinometer_debug_box.InclinometerDebugBoxLoggerFragment;
 
 import java.io.File;
@@ -72,12 +71,9 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
 
                 case ADME:
                 case RN20:
-                    fragment = USRBleIotCustomCommandLogPrintFragment.newInstance();
-                    break;
-
                 case M20:
                 case LR200:
-                    fragment = BleM20CustomCommandLogPrintFragment.newInstance();
+                    fragment = USRBleIotCustomCommandLogPrintFragment.newInstance();
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.USB_SERIAL) {

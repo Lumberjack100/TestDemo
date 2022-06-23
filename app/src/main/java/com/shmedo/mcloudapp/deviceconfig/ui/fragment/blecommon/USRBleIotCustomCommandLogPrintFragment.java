@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -31,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -76,7 +74,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
         return R.layout.ble_iot_custom_command_log_print_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setView();
@@ -179,14 +177,6 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
                 ToastUtils.show("指令格式不正确，请重新输入");
                 return;
             }
-            String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-            if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
-                apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
-            }
-            if (!command.contains("&apikey")) {
-                command += "&apikey=" + apiKey
-                        + "&msgid=" + UUID.randomUUID().toString().substring(30);
-            }
             sendCommand(command);
 //            btnSend.setEnabled(false);
             CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
@@ -202,14 +192,6 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
         entity.setLevel(isOpen ? "info" : "off");
         entity.setType("bt");
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL, entity);
-        String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
-            apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
-        }
-        if (!command.contains("&apikey")) {
-            command += "&apikey=" + apiKey
-                    + "&msgid=" + UUID.randomUUID().toString().substring(30);
-        }
         sendCommand(command);
         CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
         logDataList.add(cmdLogInfo);

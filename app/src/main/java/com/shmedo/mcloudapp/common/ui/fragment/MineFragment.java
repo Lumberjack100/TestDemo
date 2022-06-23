@@ -45,7 +45,7 @@ import timber.log.Timber;
 /**
  * 我的模块主页面
  */
-public class MineFragment extends BaseTranslucentFragment {
+public class MineFragment extends BaseFragment {
     @BindView(R.id.userAvatar)
     CircleImageView mIvUserAvatar;
 
@@ -111,7 +111,7 @@ public class MineFragment extends BaseTranslucentFragment {
                 break;
 
             case R.id.checkVersionLayout:
-                UpdataManagerUtil.checkNewVersion(getActivity(), true);
+                UpdataManagerUtil.checkNewVersion2(getActivity(), true);
                 break;
 
             case R.id.aboutLayout:

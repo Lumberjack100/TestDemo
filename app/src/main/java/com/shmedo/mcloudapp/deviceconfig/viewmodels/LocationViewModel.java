@@ -1,12 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.viewmodels;
 
-import android.app.Application;
+import androidx.lifecycle.ViewModel;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-
-import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
-import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.util.LocationUtils;
 
 /**
@@ -14,14 +9,8 @@ import com.shmedo.mcloudapp.util.LocationUtils;
  * 创建时间:  11/16/20 <br/>
  * 描述：     定位相关
  */
-public class LocationViewModel extends AndroidViewModel {
+public class LocationViewModel extends ViewModel {
 
-    public LocationViewModel(@NonNull Application application) {
-        super(application);
-    }
-
-    public ProtectedUnPeekLiveData<SyncPositionInfo> getSyncPositionBean() {
-        return LocationUtils.getInstance().getSyncPositionBean();
-    }
+    public final LocationUtils locationUtils = new LocationUtils();
 
 }

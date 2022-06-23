@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setCheckNetWork(true);
         initView(savedInstanceState);
-        UpdataManagerUtil.checkNewVersion(this, false);
+        UpdataManagerUtil.checkNewVersion2(this, false);
     }
 
     private void initView(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity {
 
     private void initBottomNavigationItemSelectedListener() {
         //为底部导航设置条目选中监听
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -117,6 +117,7 @@ public class MainActivity extends BaseActivity {
                 showFragment(deviceModuleMainFragment);
                 //设置系统栏(状态栏、导航栏)的背景色、字体等
                 ImmersionBar.with(this)
+                        .fitsSystemWindows(true)  //使用该属性,必须指定状态栏颜色
                         .statusBarColor(R.color.white)
                         .statusBarDarkFont(true)
                         .navigationBarDarkIcon(true)
@@ -128,6 +129,7 @@ public class MainActivity extends BaseActivity {
                 showFragment(mineFragment);
                 //设置系统栏(状态栏、导航栏)的背景色、字体等
                 ImmersionBar.with(this)
+                        .fitsSystemWindows(true)  //使用该属性,必须指定状态栏颜色
                         .statusBarColor(R.color.white)
                         .statusBarDarkFont(true)
                         .navigationBarDarkIcon(true)

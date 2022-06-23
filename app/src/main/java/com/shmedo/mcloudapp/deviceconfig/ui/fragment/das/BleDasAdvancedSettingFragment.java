@@ -38,7 +38,6 @@ import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
-import com.shmedo.mcloudapp.util.LocationUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.jetbrains.annotations.NotNull;
@@ -246,7 +245,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
 
         MDRetrofit.getInstance()
-                .createService(ServiceAddressType.DEVICE_REMOTE_DEBUG_ADDRESS)
+                .createService(ServiceAddressType.getCustomAddress("http://ams4.shmedo.com:22000/api/v1/"))
                 .DeviceLogin(body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
@@ -401,11 +400,5 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                 ToastUtils.show("响应超时,请稍后尝试");
                 break;
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LocationUtils.getInstance().stopLocalService();
     }
 }

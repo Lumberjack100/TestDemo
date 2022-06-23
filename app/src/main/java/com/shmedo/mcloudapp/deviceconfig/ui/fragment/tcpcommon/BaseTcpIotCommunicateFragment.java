@@ -149,7 +149,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
     protected void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+        if (deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null &&!TextUtils.isEmpty(deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
             apiKey = deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         cmdStr += "&apikey=" + apiKey

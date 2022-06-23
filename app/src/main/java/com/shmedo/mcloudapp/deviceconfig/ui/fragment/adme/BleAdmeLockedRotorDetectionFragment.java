@@ -574,9 +574,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                     return;
                 }
             }
-            if (isSaveParamOperation) {
-                ToastUtils.show("保存成功");
-            }
+            ToastUtils.show("保存成功");
             break;
 
             default:

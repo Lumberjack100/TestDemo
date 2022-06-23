@@ -262,7 +262,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
     }
 
     private void showMoreMenu() {
-        String[] menuItems = usrBleViewModel.isConnected() ? new String[]{"清空日志", "分享日志", "测试"} : new String[]{"蓝牙重连", "清空日志", "分享日志"};
+        String[] menuItems = usrBleViewModel.isConnected() ? new String[]{"清空日志", "分享日志", "打开debug模式", "打开info模式", "测试"} : new String[]{"蓝牙重连", "清空日志", "分享日志"};
         BottomMenu.show(menuItems)
                 .setMessage("")
                 .setOnMenuItemClickListener(new OnMenuItemClickListener<BottomMenu>() {
@@ -274,8 +274,15 @@ public class TcpToBleDebugActivity extends BaseActivity {
                             clearLogs();
                         } else if (text.equals("分享日志")) {
                             shareLogs();
-                        } else if (text.equals("测试")) {
-                            handleReceiveMsgFromTCPServer("##042\r\n");
+                        } else if (text.equals("打开debug模式")) {
+                            handleReceiveMsgFromTCPServer("##2261\r\n");
+                            handleReceiveMsgFromTCPServer("##0062\r\n");
+                        }else if (text.equals("打开info模式")) {
+                            handleReceiveMsgFromTCPServer("##2261\r\n");
+                            handleReceiveMsgFromTCPServer("##0063\r\n");
+                        }
+                        else if (text.equals("测试")) {
+                            handleReceiveMsgFromTCPServer("##000\r\n");
                         }
                         return false;
                     }
@@ -435,6 +442,8 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
     @Override
     public void onDestroy() {
+        handleReceiveMsgFromTCPServer("##2260\r\n");
+        handleReceiveMsgFromTCPServer("##0061\r\n");
         super.onDestroy();
     }
 }

@@ -195,7 +195,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
             return;
         }
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (!TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+        if (bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null && !TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
             apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         if (!cmdStr.contains("&apikey")) {
@@ -203,7 +203,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
                     + "&msgid=" + UUID.randomUUID().toString().substring(30);
         }
 
-        bleViewModel.sendIOTProtocolCommand(cmdStr );
+        bleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
     protected void showDisconnectDialog(String content) {

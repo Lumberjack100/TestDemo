@@ -130,7 +130,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
         });
     }
 
-    @OnClick({R.id.ll_inclinometer_type, R.id.ll_measure_method, R.id.ll_data_settlement_method, R.id.btn_confirm})
+    @OnClick({R.id.ll_inclinometer_type, R.id.ll_measure_method, R.id.ll_measurement_interval_per_round, R.id.ll_data_settlement_method, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -140,6 +140,9 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
             admeBasicParamConfigView.showInclinometerTypeDialog(mActivity);
         } else if (id == R.id.ll_measure_method) {
             admeBasicParamConfigView.showMeasureMethodDialog(mActivity);
+
+        } else if (id == R.id.ll_measurement_interval_per_round) {
+            admeBasicParamConfigView.showMeasIntervalPerRoundsDialog(mActivity);
 
         } else if (id == R.id.ll_data_settlement_method) {
             admeBasicParamConfigView.showDataSettlementMethodDialog(mActivity);

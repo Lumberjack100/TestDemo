@@ -68,13 +68,13 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     TextView mTvMotionState;//运行状态
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;// 与平台通信状态
+    TextView mTvPlatformCommunicationState;// 与平台通信状态,隐藏
 
     @BindView(R.id.tv_device_state_flag)
-    TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
+    TextView mTvDeviceState;//与平台通信状态
 
     @BindView(R.id.tv_device_connect_operate)
-    TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
+    TextView mTvDeviceConnectOperate;//隐藏
 
     @BindView(R.id.tv_config_model)
     TextView mTvConfigModel;//设备模式
@@ -111,6 +111,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();
         updateHeadInfo();
+        updateDeviceMode();
         queryEquipmentBaseInfo();
     }
 
@@ -206,6 +207,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
                                     equipModel = "1";
                                     admeViewModel.deviceMode = 1;
                                 }
+                                updateConfigModuleData();
                                 setEquipModel();
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
@@ -297,9 +299,9 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
                     return;
                 }
                 admeBaseInfo = commandResult.getResult();
-                updateHeadInfo();
+                updateDeviceMode();
                 //获取设备的运行状态
-                queryMotorState();
+//                queryMotorState();
             }
             break;
 
@@ -327,7 +329,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                updateConfigModuleData();
+//                updateConfigModuleData();
                 saveConfigInfo();
             }
             break;
@@ -358,32 +360,37 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             mTvMotionState.setText("运行状态：--");
-            if (admeBaseInfo != null) {
-                setDeviceState(mTvDeviceState, !TextUtils.isEmpty(admeBaseInfo.getOnline()) && !admeBaseInfo.getOnline().equals("0"));
-                equipModel = admeBaseInfo.getEquimodel();
-                if (equipModel.equals("0")) {
-                    admeViewModel.deviceMode = 0;
-                    mTvConfigModel.setText(modes[0]);
-                } else if (equipModel.equals("1")) {
-                    admeViewModel.deviceMode = 1;
-                    mTvConfigModel.setText(modes[1]);
-                } else if (equipModel.equals("2")) {
-                    admeViewModel.deviceMode = 2;
-                    mTvConfigModel.setText(modes[2]);
-                }
-            } else {
-                setDeviceState(mTvDeviceState, deviceInfo.isOnlineStatus());
-                equipModel = "0";
-                admeViewModel.deviceMode = 0;
-                mTvConfigModel.setText(modes[0]);
-            }
+            setDeviceState(mTvDeviceState, deviceInfo.isOnlineStatus());
             mTvPlatformCommunicationState.setVisibility(View.GONE);
             mTvDeviceConnectOperate.setVisibility(View.GONE);
 
-            updateConfigModuleData();
+            //TODO #gh# 暂时不展示运行状态处理，后期考虑优化
+            mTvMotionState.setVisibility(View.GONE);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void updateDeviceMode() {
+        if (admeBaseInfo != null) {
+            equipModel = admeBaseInfo.getEquimodel();
+            if (equipModel.equals("0")) {
+                admeViewModel.deviceMode = 0;
+                mTvConfigModel.setText(modes[0]);
+            } else if (equipModel.equals("1")) {
+                admeViewModel.deviceMode = 1;
+                mTvConfigModel.setText(modes[1]);
+            } else if (equipModel.equals("2")) {
+                admeViewModel.deviceMode = 2;
+                mTvConfigModel.setText(modes[2]);
+            }
+        } else {
+            equipModel = "0";
+            admeViewModel.deviceMode = 0;
+            mTvConfigModel.setText(modes[0]);
+        }
+        updateConfigModuleData();
     }
 
     /**

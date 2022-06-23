@@ -28,7 +28,6 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
-import com.shmedo.mcloudapp.util.LocationUtils;
 
 import java.util.Locale;
 
@@ -89,8 +88,8 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        locationViewModel = getApplicationScopeViewModel(LocationViewModel.class);
-        locationViewModel.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionInfo>() {
+        locationViewModel = getFragmentScopeViewModel(LocationViewModel.class);
+        locationViewModel.locationUtils.getSyncPositionBean().observe(getViewLifecycleOwner(), new Observer<SyncPositionInfo>() {
             @Override
             public void onChanged(SyncPositionInfo syncPositionInfo) {
                 String address = syncPositionInfo.getAddress();
@@ -126,7 +125,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
             }
         }
         if (latLng != null) {
-            mEtLatLong.setText(latLng.longitude + "," + latLng.latitude);
+            mEtLatLong.setText(String.format("%s,%s", latLng.longitude, latLng.latitude));
             processSearchAddressByLatLng();
         }
     }
@@ -165,7 +164,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
             dismiss();
 
         } else if (id == R.id.iv_locate) {
-            LocationUtils.getInstance().getPositionPermission(activity);
+            locationViewModel.locationUtils.getPositionPermission(activity);
 
         } else if (id == R.id.tv_cancel) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtLatLong);
@@ -216,7 +215,6 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
     @Override
     public void onStop() {
         super.onStop();
-        LocationUtils.getInstance().stopLocalService();
+        locationViewModel.locationUtils.stopLocalService();
     }
-
 }

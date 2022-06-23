@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -64,8 +63,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private WindowManager.LayoutParams mLayoutParams;
 
-    protected MaterialDialog loadingDialog = null;
-
     /**
      * 判断当前Activity是否在前台。
      */
@@ -93,7 +90,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         //初始化沉浸式
         initImmersionBar();
-        initTipView();//初始化提示View
+        //初始化提示View
+        initTipView();
 
         shareViewModel = getApplicationScopeViewModel(ShareViewModel.class);
         shareViewModel.getNetworkChangeEvent().observe(this, new Observer<NetworkChangeEvent>() {
@@ -116,14 +114,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void setRequestedOrientation(int requestedOrientation) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && UiUtils.isTranslucentOrFloating(this)) {
-//            Timber.i("===api 26 全屏横竖屏切换 crash");
-//            return;
-//        }
-        super.setRequestedOrientation(requestedOrientation);
-    }
 
     /**
      * 初始化沉浸式
@@ -138,12 +128,11 @@ public abstract class BaseActivity extends AppCompatActivity {
      * Use a Toolbar as an Action Bar
      */
     protected void setToolBar(int toolbarId) {
-        Toolbar toolbar = (Toolbar) findViewById(toolbarId);
+        Toolbar toolbar = findViewById(toolbarId);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
     }
-
 
     @Override
     protected void onResume() {
@@ -192,39 +181,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    protected void showLoadingDialog(String tip) {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            return;
-        }
-
-        if (loadingDialog == null) {
-            loadingDialog = new MaterialDialog.Builder(this)
-                    .content(TextUtils.isEmpty(tip) ? "正在加载..." : tip)
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(false)
-                    .build();
-//            loadingDialog.setCancelable(false);
-            loadingDialog.setCanceledOnTouchOutside(false);
-        }
-
-        if (!loadingDialog.isShowing()) {
-            loadingDialog.show();
-        }
-    }
-
-    protected void dismissLoadingDialog() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
-            loadingDialog = null;
-        }
-    }
-
     protected void showWaitDialog(String message) {
         WaitDialog.show(message)
                 .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
                     @Override
                     public boolean onBackPressed() {
-//                        cancelRequest();
                         WaitDialog.dismiss();
                         return false;
                     }
@@ -343,6 +304,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         return mActivityProvider.get(modelClass);
     }
 
+//    protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
+//        if (mApplicationProvider == null) {
+//            mApplicationProvider = new ViewModelProvider((MCloudApplication) this.getApplicationContext());
+//        }
+//        return mApplicationProvider.get(modelClass);
+//    }
+
     protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
         if (mApplicationProvider == null) {
             mApplicationProvider = new ViewModelProvider((MCloudApplication) this.getApplicationContext(),
@@ -353,7 +321,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private ViewModelProvider.Factory getAppFactory(Activity activity) {
         Application application = checkApplication(activity);
-        return ViewModelProvider.AndroidViewModelFactory.getInstance(application);
+        return (ViewModelProvider.Factory) ViewModelProvider.AndroidViewModelFactory.getInstance(application);
     }
 
     private Application checkApplication(Activity activity) {

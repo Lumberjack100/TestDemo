@@ -43,7 +43,7 @@ import timber.log.Timber;
 
 public abstract class BaseFragment extends Fragment implements HandleBackInterface {
     //防止按钮重复点击设置的时间间隔
-    private static final int DOUBLE_CLICK_TIME_INTERVAL = 1500;
+    private static final int DOUBLE_CLICK_TIME_INTERVAL = 1000;
 
     protected AppCompatActivity mActivity;
     private ViewModelProvider mFragmentProvider;
@@ -366,6 +366,13 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         return mActivityProvider.get(modelClass);
     }
 
+//    protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
+//        if (mApplicationProvider == null) {
+//            mApplicationProvider = new ViewModelProvider((MCloudApplication) mActivity.getApplicationContext());
+//        }
+//        return mApplicationProvider.get(modelClass);
+//    }
+
     protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
         if (mApplicationProvider == null) {
             mApplicationProvider = new ViewModelProvider(
@@ -377,7 +384,14 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     private ViewModelProvider.Factory getApplicationFactory(Activity activity) {
         checkActivity(this);
         Application application = checkApplication(activity);
-        return ViewModelProvider.AndroidViewModelFactory.getInstance(application);
+        return (ViewModelProvider.Factory) ViewModelProvider.AndroidViewModelFactory.getInstance(application);
+    }
+
+    private void checkActivity(Fragment fragment) {
+        Activity activity = fragment.getActivity();
+        if (activity == null) {
+            throw new IllegalStateException("Can't create ViewModelProvider for detached fragment");
+        }
     }
 
     private Application checkApplication(Activity activity) {
@@ -389,20 +403,12 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         return application;
     }
 
-    private void checkActivity(Fragment fragment) {
-        Activity activity = fragment.getActivity();
-        if (activity == null) {
-            throw new IllegalStateException("Can't create ViewModelProvider for detached fragment");
-        }
-    }
-
     private boolean isExcludedFragment() {
         if (name.contains("DeviceModuleMainFragment")
                 || name.contains("NetVmsHomeFragment")
                 || name.contains("TcpVmsHomeFragment")) {
             return true;
         }
-
         return false;
     }
 }

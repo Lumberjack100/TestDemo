@@ -6,6 +6,7 @@ import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -95,7 +96,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     View emptyView;
 
     @BindView(R.id.bluetooth_off)
-    View noBluetoothView;
+    View bluetoothOffView;
 
     private BleDeviceAdapter bleDeviceAdapter;
 
@@ -116,6 +117,10 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         }
     };
 
+    public static BleScannerListFragment newInstance() {
+        return new BleScannerListFragment();
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_ble_scanner_list;
@@ -130,7 +135,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         setEditTextListener();
 
         scannerViewModel = getFragmentScopeViewModel(BleScannerViewModel.class);
-        scannerViewModel.getBleScannerState().observe(getViewLifecycleOwner(), this::startScan);
+        scannerViewModel.getBleScannerState().observe(getViewLifecycleOwner(), this::startScanDevices);
         scannerViewModel.getDevices().observe(getViewLifecycleOwner(), new Observer<List<DiscoveredBluetoothDevice>>() {
             @Override
             public void onChanged(List<DiscoveredBluetoothDevice> newDevices) {
@@ -247,20 +252,20 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
      * BleScannerStateLiveData 实例每次更新值时，回调此方法
      */
     private void startScan(final BleScannerStateLiveData state) {
-        //if (BleScannerUtils.isLocationRequired(mActivity) && !BleScannerUtils.isLocationEnabled(mActivity)) {
+
         //位置服务开关未开启
         if (!BleScannerUtils.isLocationEnabled(mActivity)) {
             PermissionHelper.showGPSSettingDialog(mActivity);
             return;
         }
         //位置服务开关已经开启, 但缺少定位权限
-        if (!BleScannerUtils.isLocationPermissionsGranted(mActivity)) {
+        if (!BleScannerUtils.isLocationPermissionGranted(mActivity)) {
             checkPermissionForLocation();
             return;
         }
         // Bluetooth must be enabled.
         if (state.isBluetoothEnabled()) {
-            noBluetoothView.setVisibility(View.GONE);
+            bluetoothOffView.setVisibility(View.GONE);
             searchLayoutGroup.setVisibility(View.VISIBLE);
             refreshLayout.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.VISIBLE);
@@ -271,7 +276,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
             }
         } else {
-            noBluetoothView.setVisibility(View.VISIBLE);
+            bluetoothOffView.setVisibility(View.VISIBLE);
             searchLayoutGroup.setVisibility(View.GONE);
             refreshLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.GONE);
@@ -279,6 +284,94 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             if (bleDeviceAdapter.getItemCount() > 0) {
                 clear();
             }
+        }
+    }
+
+    private void startScanDevices(final BleScannerStateLiveData state) {
+        // First, check the Location permission.
+        // This is required since Marshmallow up until Android 11 in order to scan for Bluetooth LE devices.
+        if (!BleScannerUtils.isLocationPermissionRequired() ||
+                BleScannerUtils.isLocationPermissionGranted(mActivity)) {
+
+            // On Android 12+ a new BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions need to be requested.
+            //
+            // Note: This has to be done before asking user to enable Bluetooth, as
+            //       sending BluetoothAdapter.ACTION_REQUEST_ENABLE intent requires
+            //       BLUETOOTH_CONNECT permission.
+            if (!BleScannerUtils.isSorAbove() || BleScannerUtils.isBluetoothScanPermissionGranted(mActivity)) {
+                // Bluetooth must be enabled.
+                if (state.isBluetoothEnabled()) {
+                    bluetoothOffView.setVisibility(View.GONE);
+                    searchLayoutGroup.setVisibility(View.VISIBLE);
+                    refreshLayout.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+
+                    if (enableScan && !scannerViewModel.isScanning()) {
+                        // We are now OK to start scanning.
+                        scannerViewModel.startScan();
+                        updateRefreshView(true);
+                        mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
+                    }
+                } else {
+                    bluetoothOffView.setVisibility(View.VISIBLE);
+                    searchLayoutGroup.setVisibility(View.GONE);
+                    refreshLayout.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.GONE);
+                    //emptyView.setVisibility(View.GONE);
+                    if (bleDeviceAdapter.getItemCount() > 0) {
+                        clear();
+                    }
+                }
+            } else {
+                checkPermissionForBluetoothScan();
+            }
+        } else {
+            //位置服务开关未开启
+            if (!BleScannerUtils.isLocationEnabled(mActivity)) {
+                PermissionHelper.showGPSSettingDialog(mActivity);
+                return;
+            }
+            //位置服务开关已经开启, 但缺少定位权限
+            if (!BleScannerUtils.isLocationPermissionGranted(mActivity)) {
+                checkPermissionForLocation();
+                return;
+            }
+        }
+    }
+
+    private void checkPermissionForBluetoothScan() {
+        List<String> requestList = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestList.add(Manifest.permission.BLUETOOTH_SCAN);
+            requestList.add(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+        if (!requestList.isEmpty()) {
+            PermissionX.init(this)
+                    .permissions(requestList)
+                    .explainReasonBeforeRequest()
+                    .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
+                        @Override
+                        public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                            scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
+                        }
+                    })
+                    .onForwardToSettings(new ForwardToSettingsCallback() {
+                        @Override
+                        public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                            scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                        }
+                    })
+                    .request(new RequestCallback() {
+                        @Override
+                        public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                            if (allGranted) {
+                                processStartScan();
+
+                            } else {
+                                ToastUtils.show("下列权限被拒绝：" + deniedList);
+                            }
+                        }
+                    });
         }
     }
 

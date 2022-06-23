@@ -20,7 +20,7 @@ public class UsbSerialViewModel extends AndroidViewModel {
 
     public UsbSerialViewModel(@NonNull Application application) {
         super(application);
-        usbSerialManager = new UsbSerialManager(getApplication());
+        usbSerialManager = new UsbSerialManager(application);
     }
 
     public LiveData<USBConnectionState> getConnectionState() {

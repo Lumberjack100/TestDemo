@@ -70,7 +70,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
         sendCommand(command);
     }
 
-    @OnClick({R.id.ll_measure_method, R.id.ll_data_settlement_method, R.id.ll_data_response,R.id.ll_measurement_interval_per_round, R.id.btn_confirm})
+    @OnClick({R.id.ll_measure_method, R.id.ll_data_settlement_method, R.id.ll_data_response, R.id.ll_measurement_interval_per_round, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -88,7 +88,7 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
         } else if (id == R.id.ll_measurement_interval_per_round) {
             admeExecutiveAgencyView.showMeasIntervalPerRoundsDialog(mActivity);
 
-        }  else if (id == R.id.btn_confirm) {
+        } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));

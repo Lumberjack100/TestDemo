@@ -42,15 +42,14 @@ import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSn;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalSearchActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.VmsViewModel;
-import com.shmedo.mcloudapp.deviceconfig.adapter.PageAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -598,7 +597,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         if (resultCode != Activity.RESULT_OK || data == null) {
             return;
         }
-        if (requestCode == XPermissionUtils.REQUEST_CODE_SCAN) {
+        if (requestCode == PermissionHelper.REQUEST_CODE_SCAN) {
             HmsScan obj = data.getParcelableExtra(ScanUtil.RESULT);
             if (obj != null) {
                 Timber.d("扫描结果为：%s", obj.originalValue);
