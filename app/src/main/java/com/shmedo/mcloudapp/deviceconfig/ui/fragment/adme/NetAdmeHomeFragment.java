@@ -290,6 +290,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_BASIS: {//获取设备的基本信息
+                dismissWaitDialog();
                 IOTCommandResult<AdmeBaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     dismissWaitDialog();

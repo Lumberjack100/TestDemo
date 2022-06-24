@@ -604,11 +604,9 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 break;
 
             case AppContants.MsgWhat.CONNECT_DEVICE: {
-                if (!isConnected()) {
-                    hideProgressBar();
-                    disconnectDevice();
-                    ToastUtils.show("连接超时");
-                }
+                hideProgressBar();
+                disconnectDevice();
+                ToastUtils.show("连接超时");
             }
             break;
         }
