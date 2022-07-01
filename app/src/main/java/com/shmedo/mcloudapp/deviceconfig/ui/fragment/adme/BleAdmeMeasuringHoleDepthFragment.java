@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -134,6 +135,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         setSwitchViewListener();
         //进入页面默认自动测孔深，需要打开堵转检测，先查询是否打开
         queryLockRotorInfo();
+        loadLastHistoryData(true);
     }
 
     private void setView() {
@@ -234,6 +236,15 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      */
     private void setManualMeasuringHoledepth() {
         try {
+            if (motionWay.equals("0")) {
+                //持久化保存用户数据到SharedPreferences文件中
+                SPStaticUtils.put(AppContants.ADME.LAST_MOTOR_PULL_UP_SPEED, movementSpeed);
+                SPStaticUtils.put(AppContants.ADME.LAST_MOTOR_PULL_UP_DISTANCE, totalDistanceGoal);
+            } else {
+                SPStaticUtils.put(AppContants.ADME.LAST_MOTOR_DROP_SPEED, movementSpeed);
+                SPStaticUtils.put(AppContants.ADME.LAST_MOTOR_DROP_DISTANCE, totalDistanceGoal);
+            }
+
             AdmeMeasuringHoleDepthEntity entity = new AdmeMeasuringHoleDepthEntity();
             entity.setMovementway(motionWay);
             entity.setMotorspeed(movementSpeed);
@@ -333,11 +344,11 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                                         setLockRotorInfo(true);
                                     }
                                 }
-
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
+
 
     /**
      * 选择运动方式
@@ -358,12 +369,28 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                                 if (position == 0) {
                                     ToastUtils.show("触发磁开关最大安全速度为20");
                                     motionWay = "0";
+                                    loadLastHistoryData(true);
                                 } else {
                                     motionWay = "1";
+                                    loadLastHistoryData(false);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
+    }
+
+    private void loadLastHistoryData(boolean isPullUp) {
+        if (isPullUp) {
+            String speed = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_PULL_UP_SPEED, "");
+            String distance = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_PULL_UP_DISTANCE, "");
+            mEtMovementSpeed.setText(speed);
+            mEtMotionDistance.setText(distance);
+        } else {
+            String speed = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_DROP_SPEED, "");
+            String distance = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_DROP_DISTANCE, "");
+            mEtMovementSpeed.setText(speed);
+            mEtMotionDistance.setText(distance);
+        }
     }
 
     private boolean checkValueIsValid() {
