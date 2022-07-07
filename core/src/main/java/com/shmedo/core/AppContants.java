@@ -131,4 +131,17 @@ public interface AppContants {
         }
     }
 
+
+    /**
+     * ADME 参数键值对键名
+     */
+    interface ADME {
+        //上一次电机上拉速度
+        String LAST_MOTOR_PULL_UP_SPEED = "last_motor_pull_up_speed";
+        //上一次电机上拉距离
+        String LAST_MOTOR_PULL_UP_DISTANCE = "last_motor_pull_up_distance";
+        String LAST_MOTOR_DROP_SPEED = "last_motor_drop_speed";
+        String LAST_MOTOR_DROP_DISTANCE = "last_motor_drop_distance";
+    }
+
 }

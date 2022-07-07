@@ -104,7 +104,8 @@
 
         <LinearLayout
             android:id="@+id/remoteDebuggingLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:visibility="gone">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
