@@ -477,6 +477,18 @@ public enum IOTCommandType {
      */
     ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE("md_setanthrmove"),
 
+    /*　 ADME AC10 型号指令  */
+    /**
+     * 获取AC10的孔深测量配置参数
+     */
+    ADME_AC10_GET_HOLE_MEASURE_PARAM("md_getholemeasparame"),
+
+    /**
+     * 获取AC10的数据测量配置参数
+     */
+    ADME_AC10_GET_DATA_MEASURE_PARAM("md_getdatameasparame"),
+
+
     /*　 M20 指令  */
     /**
      * 获取M20的基本信息

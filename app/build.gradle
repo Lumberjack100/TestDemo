@@ -129,9 +129,9 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.thirdLib.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.thirdLib.lifecycleVersion"
-//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.thirdLib.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.thirdLib.lifecycleVersion"
-//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.thirdLib.lifecycleVersion"
 
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.thirdLib.rxjava"
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.thirdLib.rxandroid"
@@ -142,6 +142,8 @@ dependencies {
     implementation "com.uber.autodispose2:autodispose-androidx-lifecycle:$rootProject.thirdLib.autodispose2Version"
 
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
     // Glide

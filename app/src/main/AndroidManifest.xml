@@ -57,7 +57,6 @@
         tools:replace="android:name"
         tools:targetApi="p">
 
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
@@ -413,9 +412,21 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".deviceconfig.ui.activity.DeviceListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+        <activity
+            android:name=".deviceconfig.ui.activity.ac10.AdmeAC10MeasuringHoleDepthActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.ac10.AdmeAC10MeasuringDataActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"

@@ -3,6 +3,8 @@ package com.shmedo.configlibrary.iot.cmd.parser;
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.parser.ac10.AdmeAC10HoleAreaDepthInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.ac10.AdmeAC10MeasuringDataInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeAnthropomorphicMovementInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
@@ -89,28 +91,27 @@ public class IOTParseManager {
 
     public <T> IOTCommandResult<T> parse(String result) {
         baseValidate(result);
-        IOTCommandResult commandResult = new IOTCommandResult();
-        String temp = result.replace("&&", "");
+        String tempCmd = result.replace("&&", "");
+        IOTCommandResult<T> commandResult = new IOTCommandResult<>();
+
         //失败的指令处理
-        if (temp.contains(IOTCommandResult.ERROR_FLAG)) {
+        if (tempCmd.contains(IOTCommandResult.ERROR_FLAG)) {
             CommonSettingCmdResult settingCmdResult = CommonSettingCmdResultParser.getInstance().parse(result);
             commandResult.setSuccess(false);
             commandResult.setMessage(settingCmdResult.getReason());
             return commandResult;
         }
-
-        IOTCommandType cmdType = IOTStringUtil.extractCommandType(temp);
+        IOTCommandType cmdType = IOTStringUtil.extractCommandType(tempCmd);
         IOTResultParser parser = parserMap.get(cmdType);
         if (parser == null) {
-//            throw new RuntimeException("未找到命令：" + cmdType + "的解析器");
             commandResult.setSuccess(false);
-            commandResult.setMessage("无法解析命令： " + temp);
+            commandResult.setMessage("未找到命令：" + cmdType.toString() + "的解析器");
             commandResult.setCommandType(cmdType);
             return commandResult;
         }
 
-        parser.validate(temp);
-        T data = (T) parser.parse(temp);
+        parser.validate(tempCmd);
+        T data = (T) parser.parse(tempCmd);
         commandResult.setSuccess(true);
         commandResult.setCommandType(cmdType);
         commandResult.setResult(data);
@@ -140,7 +141,7 @@ public class IOTParseManager {
     }
 
     /**
-     * 这个方式只执行初级的格式校验，具体的逻辑校验由Validater接口和StringValidater接口执行
+     * 这个方式只执行初级的格式校验，具体的逻辑校验由Validator接口和StringValidator接口执行
      *
      * @param result
      */
@@ -217,7 +218,9 @@ public class IOTParseManager {
                 LogOutputInfoParser.class,
                 LR200PositionInfoParser.class,
                 AudibleAlarmParser.class,
-                AlarmLevelParser.class
+                AlarmLevelParser.class,
+                AdmeAC10MeasuringDataInfoParser.class,
+                AdmeAC10HoleAreaDepthInfoParser.class
         });
 
         registerWithClass(clazzes);

@@ -24,22 +24,17 @@ public class IOTStringUtil {
 //            throw new IllegalArgumentException("指令结果格式错误:" + result);
             return IOTCommandType.UNKNOWN_TYPE;
         }
-
         String[] strs = result.split("&");
         String cmd = strs[0].replace(IOTCommandResult.COMMAND_HEADER, "").trim();
         Holder<IOTCommandType> cmdTypeHolder = new Holder<>();
         for (IOTCommandType commandType : IOTCommandType.values()) {
             if (commandType.toString().equals(cmd)) {
                 cmdTypeHolder.setData(commandType);
+                break;
             }
         }
-
         IOTCommandType cmdType = cmdTypeHolder.getData();
-        if (cmdType == null) {
-            return IOTCommandType.UNKNOWN_TYPE;
-//            throw new IllegalArgumentException("未找到命令:" + result);
-        }
 
-        return cmdType;
+        return cmdType == null ? IOTCommandType.UNKNOWN_TYPE : cmdType;
     }
 }
