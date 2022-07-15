@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasDigitalPiezometerInfo;
@@ -29,12 +27,12 @@ public class DasDigitalPiezometerInfoParser implements IOTResultParser<DasDigita
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
-            info.setSw(TextUtils.isEmpty(keyValueMap.get("sw")) ? "" : keyValueMap.get("sw"));
-            info.setThreshold(TextUtils.isEmpty(keyValueMap.get("threshold")) ? "" : keyValueMap.get("threshold"));
-            info.setCorrval(TextUtils.isEmpty(keyValueMap.get("corrval")) ? "" : keyValueMap.get("corrval"));
-            info.setRopelen(TextUtils.isEmpty(keyValueMap.get("ropelen")) ? "" : keyValueMap.get("ropelen"));
-            info.setTubealti(TextUtils.isEmpty(keyValueMap.get("tubealti")) ? "" : keyValueMap.get("tubealti"));
+            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
+            info.setSw(keyValueMap.getOrDefault("sw", "NullKey"));
+            info.setThreshold(keyValueMap.getOrDefault("threshold", "NullKey"));
+            info.setCorrval(keyValueMap.getOrDefault("corrval", "NullKey"));
+            info.setRopelen(keyValueMap.getOrDefault("ropelen", "NullKey"));
+            info.setTubealti(keyValueMap.getOrDefault("tubealti", "NullKey"));
 
             return info;
         } catch (Exception ex) {

@@ -1,4 +1,4 @@
-package com.shmedo.configlibrary.iot.cmd.parser.ac10;
+package com.shmedo.configlibrary.iot.cmd.parser.hac;
 
 import android.text.TextUtils;
 
@@ -6,8 +6,8 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.ac10.AdmeAC10HoleAreaDepthInfo;
-import com.shmedo.configlibrary.iot.model.ac10.AdmeAC10MeasuringDataInfo;
+import com.shmedo.configlibrary.iot.model.hac.HacHoleAreaDepthInfo;
+import com.shmedo.configlibrary.iot.model.hac.HacMeasuringDataInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +17,10 @@ import java.util.List;
  * 创建时间:  2022/7/11 <br/>
  * 描述：    解析 AC10 数据测量配置参数
  */
-public class AdmeAC10MeasuringDataInfoParser implements IOTResultParser<AdmeAC10MeasuringDataInfo> {
+public class HacMeasuringDataInfoParser implements IOTResultParser<HacMeasuringDataInfo> {
     @Override
-    public AdmeAC10MeasuringDataInfo parse(String result) {
-        AdmeAC10MeasuringDataInfo info = new AdmeAC10MeasuringDataInfo();
+    public HacMeasuringDataInfo parse(String result) {
+        HacMeasuringDataInfo info = new HacMeasuringDataInfo();
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -33,13 +33,13 @@ public class AdmeAC10MeasuringDataInfoParser implements IOTResultParser<AdmeAC10
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setAddress(TextUtils.isEmpty(keyValueMap.get("address")) ? "" : keyValueMap.get("address"));
-            info.setDownwaitetime(TextUtils.isEmpty(keyValueMap.get("downwaitetime")) ? "" : keyValueMap.get("downwaitetime"));
-            info.setDatatype(TextUtils.isEmpty(keyValueMap.get("datatype")) ? "" : keyValueMap.get("datatype"));
-            info.setOnewaytest(TextUtils.isEmpty(keyValueMap.get("onewaytest")) ? "" : keyValueMap.get("onewaytest"));
+            info.setAddress(keyValueMap.getOrDefault("address", "NullKey"));
+            info.setDownwaitetime(keyValueMap.getOrDefault("downwaitetime", "NullKey"));
+            info.setDatatype(keyValueMap.getOrDefault("datatype", "NullKey"));
+            info.setOnewaytest(keyValueMap.getOrDefault("onewaytest", "NullKey"));
 
             String value = keyValueMap.get("holelist");
-            List<AdmeAC10HoleAreaDepthInfo> tempList = TextUtils.isEmpty(value) ? null : GsonUtils.fromJson(value, new TypeToken<List<AdmeAC10HoleAreaDepthInfo>>() {
+            List<HacHoleAreaDepthInfo> tempList = TextUtils.isEmpty(value) ? null : GsonUtils.fromJson(value, new TypeToken<List<HacHoleAreaDepthInfo>>() {
             }.getType());
 
             info.setHolelist(tempList);
@@ -58,6 +58,6 @@ public class AdmeAC10MeasuringDataInfoParser implements IOTResultParser<AdmeAC10
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_AC10_GET_DATA_MEASURE_PARAM;
+        return IOTCommandType.ADME_HAC_MD_GET_DATA_MEASURE_PARAM;
     }
 }

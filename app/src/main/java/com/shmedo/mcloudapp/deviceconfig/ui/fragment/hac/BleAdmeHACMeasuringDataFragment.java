@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.fragment.ac10;
+package com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac;
 
 import android.os.Bundle;
 import android.os.Message;
@@ -12,7 +12,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.model.ac10.AdmeAC10MeasuringDataInfo;
+import com.shmedo.configlibrary.iot.model.hac.HacMeasuringDataInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -22,16 +22,16 @@ import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
-public class BleAdmeAC10MeasuringDataFragment extends BaseUSRBleIotCommunicateFragment {
+public class BleAdmeHACMeasuringDataFragment extends BaseUSRBleIotCommunicateFragment {
 
 
-    public static BleAdmeAC10MeasuringDataFragment newInstance() {
-        return new BleAdmeAC10MeasuringDataFragment();
+    public static BleAdmeHACMeasuringDataFragment newInstance() {
+        return new BleAdmeHACMeasuringDataFragment();
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_ble_adme_ac10_measuring_data;
+        return R.layout.fragment_ble_adme_hac_measuring_data;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class BleAdmeAC10MeasuringDataFragment extends BaseUSRBleIotCommunicateFr
      */
     private void queryBasicParamConfigInfo() {
         startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_AC10_GET_DATA_MEASURE_PARAM);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_GET_DATA_MEASURE_PARAM);
         sendCommand(command);
     }
 
@@ -85,9 +85,9 @@ public class BleAdmeAC10MeasuringDataFragment extends BaseUSRBleIotCommunicateFr
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_AC10_GET_DATA_MEASURE_PARAM: {//获取数据测量配置参数
+            case ADME_HAC_MD_GET_DATA_MEASURE_PARAM: {//获取数据测量配置参数
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                IOTCommandResult<AdmeAC10MeasuringDataInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<HacMeasuringDataInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
@@ -95,7 +95,7 @@ public class BleAdmeAC10MeasuringDataFragment extends BaseUSRBleIotCommunicateFr
 //                    maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
-                AdmeAC10MeasuringDataInfo measuringDataInfo = commandResult.getResult();
+                HacMeasuringDataInfo measuringDataInfo = commandResult.getResult();
                 ToastUtils.show("接收完成");
             }
             break;

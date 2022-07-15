@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasDataReportInfo;
@@ -29,9 +27,9 @@ public class DasDataReportInfoParser implements IOTResultParser<DasDataReportInf
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setReport_intv(TextUtils.isEmpty(keyValueMap.get("report_intv")) ? "" : keyValueMap.get("report_intv"));
-            info.setPlus_intv(TextUtils.isEmpty(keyValueMap.get("plus_intv")) ? "" : keyValueMap.get("plus_intv"));
-            info.setPlus_count(TextUtils.isEmpty(keyValueMap.get("plus_count")) ? "" : keyValueMap.get("plus_count"));
+            info.setReport_intv(keyValueMap.getOrDefault("report_intv", "NullKey"));
+            info.setPlus_intv(keyValueMap.getOrDefault("plus_intv", "NullKey"));
+            info.setPlus_count(keyValueMap.getOrDefault("plus_count", "NullKey"));
 
             return info;
         } catch (Exception ex) {

@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.e40.E40SerialPortInfo;
@@ -29,11 +27,11 @@ public class E40SerialPortInfoParser implements IOTResultParser<E40SerialPortInf
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setType(TextUtils.isEmpty(keyValueMap.get("type")) ? "" : keyValueMap.get("type"));
-            info.setBaud(TextUtils.isEmpty(keyValueMap.get("baud")) ? "" : keyValueMap.get("baud"));
-            info.setDatabits(TextUtils.isEmpty(keyValueMap.get("databits")) ? "" : keyValueMap.get("databits"));
-            info.setParity(TextUtils.isEmpty(keyValueMap.get("parity")) ? "" : keyValueMap.get("parity"));
-            info.setStopbits(TextUtils.isEmpty(keyValueMap.get("stopbits")) ? "" : keyValueMap.get("stopbits"));
+            info.setType(keyValueMap.getOrDefault("type", "NullKey"));
+            info.setBaud(keyValueMap.getOrDefault("baud", "NullKey"));
+            info.setDatabits(keyValueMap.getOrDefault("databits", "NullKey"));
+            info.setParity(keyValueMap.getOrDefault("parity", "NullKey"));
+            info.setStopbits(keyValueMap.getOrDefault("stopbits", "NullKey"));
 
             return info;
         } catch (Exception ex) {

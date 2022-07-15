@@ -285,7 +285,7 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="距离补偿区间h1(m)" />
+            android:text="管口安全距离(m)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_interval_compensation"

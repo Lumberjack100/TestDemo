@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.rn20;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
@@ -29,18 +27,19 @@ public class Rn20BaseInfoParser implements IOTResultParser<Rn20BaseInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
-            info.setVer(TextUtils.isEmpty(keyValueMap.get("ver")) ? "" : keyValueMap.get("ver"));
-            info.setLocal(TextUtils.isEmpty(keyValueMap.get("local")) ? "" : keyValueMap.get("local"));
-            info.setInvolt(TextUtils.isEmpty(keyValueMap.get("involt")) ? "" : keyValueMap.get("involt"));
-            info.setSsi(TextUtils.isEmpty(keyValueMap.get("ssi")) ? "" : keyValueMap.get("ssi"));
-            info.setRecvbuf(TextUtils.isEmpty(keyValueMap.get("recvbuf")) ? "" : keyValueMap.get("recvbuf"));
-            info.setSendbuf(TextUtils.isEmpty(keyValueMap.get("sendbuf")) ? "" : keyValueMap.get("sendbuf"));
-            info.setNetid(TextUtils.isEmpty(keyValueMap.get("netid")) ? "" : keyValueMap.get("netid"));
-            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
-            info.setChannel(TextUtils.isEmpty(keyValueMap.get("channel")) ? "" : keyValueMap.get("channel"));
-            info.setFinaltime(TextUtils.isEmpty(keyValueMap.get("finaltime")) ? "" : keyValueMap.get("finaltime"));
-            info.setLogintime(TextUtils.isEmpty(keyValueMap.get("logintime")) ? "" : keyValueMap.get("logintime"));
+            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
+            info.setVer(keyValueMap.getOrDefault("ver", "NullKey"));
+            info.setLocal(keyValueMap.getOrDefault("local", "NullKey"));
+            info.setInvolt(keyValueMap.getOrDefault("involt", "NullKey"));
+            info.setSsi(keyValueMap.getOrDefault("ssi", "NullKey"));
+            info.setRecvbuf(keyValueMap.getOrDefault("recvbuf", "NullKey"));
+            info.setSendbuf(keyValueMap.getOrDefault("sendbuf", "NullKey"));
+            info.setNetid(keyValueMap.getOrDefault("netid", "NullKey"));
+            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
+            info.setChannel(keyValueMap.getOrDefault("channel", "NullKey"));
+            info.setFinaltime(keyValueMap.getOrDefault("finaltime", "NullKey"));
+            info.setLogintime(keyValueMap.getOrDefault("logintime", "NullKey"));
+
 
             return info;
         } catch (Exception ex) {

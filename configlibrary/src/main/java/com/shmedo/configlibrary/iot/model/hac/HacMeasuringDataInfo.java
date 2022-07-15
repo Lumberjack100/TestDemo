@@ -1,4 +1,4 @@
-package com.shmedo.configlibrary.iot.model.ac10;
+package com.shmedo.configlibrary.iot.model.hac;
 
 import android.text.TextUtils;
 
@@ -10,12 +10,12 @@ import java.util.List;
  * 创建时间:  2022/7/11 <br/>
  * 描述：     ADME AC10 数据测量配置参数
  */
-public class AdmeAC10MeasuringDataInfo {
+public class HacMeasuringDataInfo {
     private String address;//MAC 地址
     private String downwaitetime;//下放等待时间
     private String datatype;//数据结算方式（0:顶固定法，1底固定法）
     private String onewaytest;//单向测量
-    private List<AdmeAC10HoleAreaDepthInfo> holelist;
+    private List<HacHoleAreaDepthInfo> holelist;
 
     public String getAddress() {
         return TextUtils.isEmpty(address) ? "" : address;
@@ -49,11 +49,11 @@ public class AdmeAC10MeasuringDataInfo {
         this.onewaytest = onewaytest;
     }
 
-    public List<AdmeAC10HoleAreaDepthInfo> getHolelist() {
+    public List<HacHoleAreaDepthInfo> getHolelist() {
         return holelist == null ? new ArrayList<>() : holelist;
     }
 
-    public void setHolelist(List<AdmeAC10HoleAreaDepthInfo> holelist) {
+    public void setHolelist(List<HacHoleAreaDepthInfo> holelist) {
         this.holelist = holelist;
     }
 }

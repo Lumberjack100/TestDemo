@@ -419,14 +419,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.ac10.AdmeAC10MeasuringHoleDepthActivity"
+            android:name=".deviceconfig.ui.activity.hac.AdmeHACMeasuringHoleDepthActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
 
         <activity
-            android:name=".deviceconfig.ui.activity.ac10.AdmeAC10MeasuringDataActivity"
+            android:name=".deviceconfig.ui.activity.hac.AdmeHACMeasuringDataActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"

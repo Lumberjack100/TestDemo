@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.e40.E40EthernetInfo;
@@ -29,11 +27,11 @@ public class E40EthernetInfoParser implements IOTResultParser<E40EthernetInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setDhcp(TextUtils.isEmpty(keyValueMap.get("dhcp")) ? "" : keyValueMap.get("dhcp"));
-            info.setIp(TextUtils.isEmpty(keyValueMap.get("ip")) ? "" : keyValueMap.get("ip"));
-            info.setNetmask(TextUtils.isEmpty(keyValueMap.get("netmask")) ? "" : keyValueMap.get("netmask"));
-            info.setGateway(TextUtils.isEmpty(keyValueMap.get("gateway")) ? "" : keyValueMap.get("gateway"));
-            info.setDns(TextUtils.isEmpty(keyValueMap.get("dns")) ? "" : keyValueMap.get("dns"));
+            info.setDhcp(keyValueMap.getOrDefault("dhcp", "NullKey"));
+            info.setIp(keyValueMap.getOrDefault("ip", "NullKey"));
+            info.setNetmask(keyValueMap.getOrDefault("netmask", "NullKey"));
+            info.setGateway(keyValueMap.getOrDefault("gateway", "NullKey"));
+            info.setDns(keyValueMap.getOrDefault("dns", "NullKey"));
 
             return info;
         } catch (Exception ex) {

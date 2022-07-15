@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasCollectorInfo;
@@ -29,12 +27,12 @@ public class DasCollectorInfoParser implements IOTResultParser<DasCollectorInfo>
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setType(TextUtils.isEmpty(keyValueMap.get("type")) ? "" : keyValueMap.get("type"));
-            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
-            info.setCollgap(TextUtils.isEmpty(keyValueMap.get("collgap")) ? "" : keyValueMap.get("collgap"));
-            info.setCalcgap(TextUtils.isEmpty(keyValueMap.get("calcgap")) ? "" : keyValueMap.get("calcgap"));
-            info.setStandbygap(TextUtils.isEmpty(keyValueMap.get("standbygap")) ? "" : keyValueMap.get("standbygap"));
-            info.setSensornum(TextUtils.isEmpty(keyValueMap.get("sensornum")) ? "" : keyValueMap.get("sensornum"));
+            info.setType(keyValueMap.getOrDefault("type", "NullKey"));
+            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
+            info.setCollgap(keyValueMap.getOrDefault("collgap", "NullKey"));
+            info.setCalcgap(keyValueMap.getOrDefault("calcgap", "NullKey"));
+            info.setStandbygap(keyValueMap.getOrDefault("standbygap", "NullKey"));
+            info.setSensornum(keyValueMap.getOrDefault("sensornum", "NullKey"));
             info.setSensitivity(keyValueMap.getOrDefault("sensitivity", "NullKey"));
 
             return info;

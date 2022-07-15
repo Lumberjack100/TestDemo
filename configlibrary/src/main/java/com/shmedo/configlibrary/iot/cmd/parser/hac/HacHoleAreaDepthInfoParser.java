@@ -1,4 +1,4 @@
-package com.shmedo.configlibrary.iot.cmd.parser.ac10;
+package com.shmedo.configlibrary.iot.cmd.parser.hac;
 
 import android.text.TextUtils;
 
@@ -6,7 +6,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.ac10.AdmeAC10HoleAreaDepthInfo;
+import com.shmedo.configlibrary.iot.model.hac.HacHoleAreaDepthInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +16,10 @@ import java.util.List;
  * 创建时间:  2022/7/12 <br/>
  * 描述：      解析 AC10 孔深测量参数
  */
-public class AdmeAC10HoleAreaDepthInfoParser implements IOTResultParser<List<AdmeAC10HoleAreaDepthInfo>> {
+public class HacHoleAreaDepthInfoParser implements IOTResultParser<List<HacHoleAreaDepthInfo>> {
     @Override
-    public List<AdmeAC10HoleAreaDepthInfo> parse(String result) {
-        List<AdmeAC10HoleAreaDepthInfo> holeAreaDepthInfoListList = null;
+    public List<HacHoleAreaDepthInfo> parse(String result) {
+        List<HacHoleAreaDepthInfo> holeAreaDepthInfoListList = null;
         try {
             String[] keyValues = result.split("&");
             HashMap<String, String> keyValueMap = new HashMap<>();
@@ -33,7 +33,7 @@ public class AdmeAC10HoleAreaDepthInfoParser implements IOTResultParser<List<Adm
                 }
             }
             String value = keyValueMap.get("holelist");
-            holeAreaDepthInfoListList = TextUtils.isEmpty(value) ? null : GsonUtils.fromJson(value, new TypeToken<List<AdmeAC10HoleAreaDepthInfo>>() {
+            holeAreaDepthInfoListList = TextUtils.isEmpty(value) ? null : GsonUtils.fromJson(value, new TypeToken<List<HacHoleAreaDepthInfo>>() {
             }.getType());
 
             return holeAreaDepthInfoListList;
@@ -50,6 +50,6 @@ public class AdmeAC10HoleAreaDepthInfoParser implements IOTResultParser<List<Adm
 
     @Override
     public IOTCommandType commandType() {
-        return IOTCommandType.ADME_AC10_GET_HOLE_MEASURE_PARAM;
+        return IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PARAM;
     }
 }

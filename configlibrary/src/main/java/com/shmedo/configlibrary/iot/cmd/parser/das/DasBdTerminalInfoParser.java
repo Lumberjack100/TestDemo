@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasBdTerminalInfo;
@@ -29,9 +27,9 @@ public class DasBdTerminalInfoParser implements IOTResultParser<DasBdTerminalInf
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSw(TextUtils.isEmpty(keyValueMap.get("sw")) ? "" : keyValueMap.get("sw"));
-            info.setDstaddr(TextUtils.isEmpty(keyValueMap.get("dstaddr")) ? "" : keyValueMap.get("dstaddr"));
-            info.setBaud(TextUtils.isEmpty(keyValueMap.get("baud")) ? "" : keyValueMap.get("baud"));
+            info.setSw(keyValueMap.getOrDefault("sw", "NullKey"));
+            info.setDstaddr(keyValueMap.getOrDefault("dstaddr", "NullKey"));
+            info.setBaud(keyValueMap.getOrDefault("baud", "NullKey"));
 
             return info;
         } catch (Exception ex) {

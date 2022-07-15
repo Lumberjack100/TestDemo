@@ -3,8 +3,8 @@ package com.shmedo.configlibrary.iot.cmd.parser;
 import android.text.TextUtils;
 
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.parser.ac10.AdmeAC10HoleAreaDepthInfoParser;
-import com.shmedo.configlibrary.iot.cmd.parser.ac10.AdmeAC10MeasuringDataInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacHoleAreaDepthInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacMeasuringDataInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeAnthropomorphicMovementInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
@@ -219,8 +219,8 @@ public class IOTParseManager {
                 LR200PositionInfoParser.class,
                 AudibleAlarmParser.class,
                 AlarmLevelParser.class,
-                AdmeAC10MeasuringDataInfoParser.class,
-                AdmeAC10HoleAreaDepthInfoParser.class
+                HacMeasuringDataInfoParser.class,
+                HacHoleAreaDepthInfoParser.class
         });
 
         registerWithClass(clazzes);

@@ -1,4 +1,4 @@
-package com.shmedo.configlibrary.iot.model.ac10;
+package com.shmedo.configlibrary.iot.model.hac;
 
 import android.text.TextUtils;
 
@@ -7,7 +7,7 @@ import android.text.TextUtils;
  * 创建时间:  2022/7/11 <br/>
  * 描述：     孔号、区号、孔深对应实体类
  */
-public class AdmeAC10HoleAreaDepthInfo {
+public class HacHoleAreaDepthInfo {
     private String holeno;//孔号
     private String areano;//区号
     private String holedepth;// 孔深

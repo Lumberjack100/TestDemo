@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.rn20;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.rn20.Rn20ModuleStatus;
@@ -29,18 +27,18 @@ public class Rn20ModuleStatusParser implements IOTResultParser<Rn20ModuleStatus>
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
-            info.setFlash(TextUtils.isEmpty(keyValueMap.get("flash")) ? "" : keyValueMap.get("flash"));
-            info.setAds(TextUtils.isEmpty(keyValueMap.get("ads")) ? "" : keyValueMap.get("ads"));
-            info.setBle(TextUtils.isEmpty(keyValueMap.get("ble")) ? "" : keyValueMap.get("ble"));
-            info.setLora(TextUtils.isEmpty(keyValueMap.get("lora")) ? "" : keyValueMap.get("lora"));
-            info.setVm501(TextUtils.isEmpty(keyValueMap.get("vm501")) ? "" : keyValueMap.get("vm501"));
-            info.setAdxl362(TextUtils.isEmpty(keyValueMap.get("adxl362")) ? "" : keyValueMap.get("adxl362"));
-            info.setMmc5883(TextUtils.isEmpty(keyValueMap.get("mmc5883")) ? "" : keyValueMap.get("mmc5883"));
-            info.setScl3300(TextUtils.isEmpty(keyValueMap.get("scl3300")) ? "" : keyValueMap.get("scl3300"));
-            info.setAht21(TextUtils.isEmpty(keyValueMap.get("aht21")) ? "" : keyValueMap.get("aht21"));
-            info.setRtc(TextUtils.isEmpty(keyValueMap.get("rtc")) ? "" : keyValueMap.get("rtc"));
-            info.setLtc2945(TextUtils.isEmpty(keyValueMap.get("ltc2945")) ? "" : keyValueMap.get("ltc2945"));
+            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
+            info.setFlash(keyValueMap.getOrDefault("flash", "NullKey"));
+            info.setAds(keyValueMap.getOrDefault("ads", "NullKey"));
+            info.setBle(keyValueMap.getOrDefault("ble", "NullKey"));
+            info.setLora(keyValueMap.getOrDefault("lora", "NullKey"));
+            info.setVm501(keyValueMap.getOrDefault("vm501", "NullKey"));
+            info.setAdxl362(keyValueMap.getOrDefault("adxl362", "NullKey"));
+            info.setMmc5883(keyValueMap.getOrDefault("mmc5883", "NullKey"));
+            info.setScl3300(keyValueMap.getOrDefault("scl3300", "NullKey"));
+            info.setAht21(keyValueMap.getOrDefault("aht21", "NullKey"));
+            info.setRtc(keyValueMap.getOrDefault("rtc", "NullKey"));
+            info.setLtc2945(keyValueMap.getOrDefault("ltc2945", "NullKey"));
 
             return info;
         } catch (Exception ex) {

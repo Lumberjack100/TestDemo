@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo;
@@ -29,8 +27,8 @@ public class DasIOSensorInfoParser implements IOTResultParser<DasIOSensorInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setType(TextUtils.isEmpty(keyValueMap.get("type")) ? "" : keyValueMap.get("type"));
-            info.setValue(TextUtils.isEmpty(keyValueMap.get("value")) ? "" : keyValueMap.get("value"));
+            info.setType(keyValueMap.getOrDefault("type", "NullKey"));
+            info.setValue(keyValueMap.getOrDefault("value", "NullKey"));
 
             return info;
         } catch (Exception ex) {

@@ -133,7 +133,7 @@
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                android:text="安全距离补偿(m)" />
+                android:text="管底补偿距离(m)" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_safe_distance"

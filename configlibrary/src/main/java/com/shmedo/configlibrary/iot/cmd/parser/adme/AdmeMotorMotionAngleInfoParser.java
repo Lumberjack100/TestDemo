@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionAngleInfo;
@@ -29,8 +27,8 @@ public class AdmeMotorMotionAngleInfoParser implements IOTResultParser<AdmeMotor
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setPulsenumber(TextUtils.isEmpty(keyValueMap.get("pulsenumber")) ? "" : keyValueMap.get("pulsenumber"));
-            info.setRealmoveangle(TextUtils.isEmpty(keyValueMap.get("realmoveangle")) ? "" : keyValueMap.get("realmoveangle"));
+            info.setPulsenumber(keyValueMap.getOrDefault("pulsenumber", "NullKey"));
+            info.setRealmoveangle(keyValueMap.getOrDefault("realmoveangle", "NullKey"));
 
             return info;
         } catch (Exception ex) {
