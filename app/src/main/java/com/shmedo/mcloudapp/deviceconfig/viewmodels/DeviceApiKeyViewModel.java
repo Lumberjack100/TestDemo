@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.viewmodels;
 
 import androidx.lifecycle.ViewModel;
 
-import com.shmedo.mcloudapp.deviceconfig.data.DeviceApiKeyRequest;
+import com.shmedo.mcloudapp.deviceconfig.data.DeviceRequest;
 
 /**
  * 创建者:   gonghe <br/>
@@ -10,6 +10,6 @@ import com.shmedo.mcloudapp.deviceconfig.data.DeviceApiKeyRequest;
  * 描述：     TODO #gh#
  */
 public class DeviceApiKeyViewModel extends ViewModel {
-    public final DeviceApiKeyRequest deviceApiKeyRequest = new DeviceApiKeyRequest();
+    public final DeviceRequest deviceRequest = new DeviceRequest();
 
 }

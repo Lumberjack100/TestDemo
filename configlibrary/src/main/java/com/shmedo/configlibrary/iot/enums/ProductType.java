@@ -13,6 +13,8 @@ public enum ProductType {
 
     ADME("ADME", "T", "自动化测斜机器人"),
 
+    HAC("HAC", "T", "半自动化测斜机器人"),
+
     VMS("VMS|GW300", "G", "振弦式采集仪"),
 
     E40("E40|E60", "B", "GNSS"),
@@ -59,6 +61,7 @@ public enum ProductType {
 
     /**
      * 根据产品类型名称前缀标识匹配产品类型
+     *
      * @param productToken
      * @return
      */
@@ -66,15 +69,12 @@ public enum ProductType {
         if (TextUtils.isEmpty(productToken))
             return UnKnown;
 
-        if (productToken.toUpperCase().contains("E60"))
-            return ProductType.E40;
-
-        if (productToken.toUpperCase().contains("GW"))
-            return ProductType.VMS;
-
         for (ProductType productType : ProductType.values()) {
-            if (productToken.toUpperCase().contains(productType.getPrefix()))
-                return productType;
+            String[] tags = productType.getPrefix().split("\\|");
+            for(String tag : tags){
+                if (productToken.toUpperCase().startsWith(tag))
+                    return productType;
+            }
         }
 
         return UnKnown;
@@ -82,6 +82,7 @@ public enum ProductType {
 
     /**
      * 根据产品 SN 号后缀标识匹配产品类型
+     *
      * @param deviceToken
      * @return
      */

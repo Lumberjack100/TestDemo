@@ -237,7 +237,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             jsonObjectRequest.put("appKey", "b80dd379-5256-48c8-947a-2208872c8a8f");
             jsonObjectRequest.put("appSecret", "3dc8e0ec1f673325c6694b4da534dabe");
             jsonObjectRequest.put("deviceSn", MCloudApp.getCurDeviceToken());
-            jsonObjectRequest.put("deviceKey", bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null ? bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey() : "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9");
+            jsonObjectRequest.put("deviceKey", bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue() != null ? bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey() : "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9");
             jsonObjectRequest.put("reCreate", false);
         } catch (JSONException e) {
             e.printStackTrace();

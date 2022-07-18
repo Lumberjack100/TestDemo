@@ -8,17 +8,17 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHACMeasuringHoleDepthFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacMeasuringHoleDepthFragment;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2022/7/11<br/>
  * 描述：     AC10 测孔深参数配置页面
  */
-public class AdmeHACMeasuringHoleDepthActivity extends BaseConfigFragmentContainerActivity {
+public class AdmeHacMeasuringHoleDepthActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, AdmeHACMeasuringHoleDepthActivity.class);
+        Intent intent = new Intent(context, AdmeHacMeasuringHoleDepthActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -37,7 +37,7 @@ public class AdmeHACMeasuringHoleDepthActivity extends BaseConfigFragmentContain
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = BleAdmeHACMeasuringHoleDepthFragment.newInstance();
+            fragment = BleAdmeHacMeasuringHoleDepthFragment.newInstance();
         }
 
         return fragment;

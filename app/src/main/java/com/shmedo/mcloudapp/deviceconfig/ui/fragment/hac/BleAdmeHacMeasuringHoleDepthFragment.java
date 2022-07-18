@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 
 import timber.log.Timber;
 
-public class BleAdmeHACMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateFragment {
+public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateFragment {
 
 
-    public static BleAdmeHACMeasuringHoleDepthFragment newInstance() {
-        return new BleAdmeHACMeasuringHoleDepthFragment();
+    public static BleAdmeHacMeasuringHoleDepthFragment newInstance() {
+        return new BleAdmeHacMeasuringHoleDepthFragment();
     }
 
     @Override

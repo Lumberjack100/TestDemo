@@ -1,19 +1,26 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.hjq.toast.ToastUtils;
+import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceSimpleInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeHomeFragment;
@@ -29,8 +36,24 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.NetDeviceHomeFrag
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20.BleRN20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.NetVmsHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms.TcpVmsHomeFragment;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrorInfo;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.sql.Time;
 import java.util.List;
+
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.RequestBody;
+import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -38,7 +61,7 @@ import java.util.List;
  * 描述：     Das设备配置页面
  */
 public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
+    private static final String BLE_DEVICE = "com.shmedo.mcloudapp.BLE_DEVICE";
 
     private ProductType productType = ProductType.UnKnown;
 
@@ -57,7 +80,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             return;
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(EXTRA_DEVICE, deviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, type);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -67,18 +90,19 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
      * Ble 通讯方式
      *
      * @param context
-     * @param connectWay
      * @param device
      */
-    public static void startActivity(Context context, int connectWay, DiscoveredBluetoothDevice device) {
-        ProductType type = ProductType.valueBySuffix(device.getDevice().getName());
+    public static void startActivity(Context context, DiscoveredBluetoothDevice device, String productToken) {
+        Timber.d("TestProductToken: %s",productToken);
+        ProductType type = TextUtils.isEmpty(productToken) ? ProductType.valueBySuffix(device.getDevice().getName()) : ProductType.valueByPrefix(productToken);
+        Timber.d("TestProductType: %s",type.getPrefix());
         if (type == ProductType.UnKnown) {
             ToastUtils.show("暂不支持此设备类型!");
             return;
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(EXTRA_DEVICE, device);
+        intent.putExtra(BLE_DEVICE, device);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.BLE_CONNECT);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, type);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -88,12 +112,11 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
      * Wi-Fi 通讯方式
      *
      * @param context
-     * @param connectWay
      * @param productType
      */
-    public static void startActivity(Context context, int connectWay, ProductType productType) {
+    public static void startActivity(Context context, ProductType productType) {
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.TCP_CONNECT);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -105,12 +128,9 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         if (intent.getExtras() == null)
             return;
 
-        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            deviceInfo = intent.getParcelableExtra(EXTRA_DEVICE);
-        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            device = intent.getParcelableExtra(EXTRA_DEVICE);
+        if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+            device = intent.getParcelableExtra(BLE_DEVICE);
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
             productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
         }

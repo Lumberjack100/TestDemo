@@ -8,17 +8,17 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHACMeasuringDataFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacMeasuringDataFragment;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2022/7/12<br/>
  * 描述：     AC10 数据测量参数配置页面
  */
-public class AdmeHACMeasuringDataActivity extends BaseConfigFragmentContainerActivity {
+public class AdmeHacMeasuringDataActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, AdmeHACMeasuringDataActivity.class);
+        Intent intent = new Intent(context, AdmeHacMeasuringDataActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -35,7 +35,7 @@ public class AdmeHACMeasuringDataActivity extends BaseConfigFragmentContainerAct
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = BleAdmeHACMeasuringDataFragment.newInstance();
+            fragment = BleAdmeHacMeasuringDataFragment.newInstance();
         }
 
         return fragment;

@@ -35,7 +35,6 @@ import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
 import com.permissionx.guolindev.callback.RequestCallback;
 import com.permissionx.guolindev.request.ExplainScope;
 import com.permissionx.guolindev.request.ForwardScope;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -47,6 +46,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.util.BleScannerUtils;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerStateLiveData;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
+import com.shmedo.mcloudapp.profile.BleViewModel;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import java.util.ArrayList;
@@ -60,8 +60,6 @@ import butterknife.OnClick;
  * 低功耗蓝牙设备扫描列表页面
  */
 public class BleScannerListFragment extends BaseFragment implements TextWatcher, TextView.OnEditorActionListener {
-    private static final int REQUEST_ACCESS_FINE_LOCATION = 1022;
-
     // Stops scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10000;
 
@@ -101,10 +99,12 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     private BleDeviceAdapter bleDeviceAdapter;
 
     private List<DiscoveredBluetoothDevice> tempDeviceList = new ArrayList<>();
-
-    private Animator animator;
+    private DiscoveredBluetoothDevice discoveredBluetoothDevice;
 
     private BleScannerViewModel scannerViewModel;
+    private BleViewModel bleViewModel;
+
+    private Animator animator;
 
     private boolean enableScan = false;
 
@@ -152,6 +152,13 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 mTvDeviceCount.setText(String.format(Locale.getDefault(), "(%d)", tempDeviceList.size()));
             }
         });
+        bleViewModel = getFragmentScopeViewModel(BleViewModel.class);
+        bleViewModel.deviceRequest.getProductTokenLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String productToken) {
+                DeviceConfigActivity.startActivity(getActivity(), discoveredBluetoothDevice, productToken);
+            }
+        });
         //进入页面刷新蓝牙设备列表
         if (!scannerViewModel.isScanning()) {
             processStartScan();
@@ -173,10 +180,11 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 processStopScan();
-                DiscoveredBluetoothDevice bluetoothDevice = bleDeviceAdapter.getItem(position);
-                String deviceName = bluetoothDevice.getDevice().getName();
-                MCloudApp.setCurDeviceToken(deviceName.replace("MD-", ""));
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, bluetoothDevice);
+                discoveredBluetoothDevice = bleDeviceAdapter.getItem(position);
+                String SN = discoveredBluetoothDevice.getDevice().getName().replace("MD-", "");
+                MCloudApp.setCurDeviceToken(SN);
+
+                bleViewModel.deviceRequest.queryProductTokenBySn(SN);
             }
         });
     }

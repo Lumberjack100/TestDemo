@@ -6,6 +6,7 @@ import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.deviceconfig.model.DetailDeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceSimpleInfo;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -38,7 +39,7 @@ public class DeviceRepository {
      * @param sn
      */
     public void queryDeviceApiKeyBySn(String sn, UnPeekLiveData<DeviceBaseInfo> deviceApiKey) {
-        GetDeviceSimpleInfo(sn, deviceApiKey);
+        GetDeviceDetailInfo(sn, deviceApiKey);
 //        String apiKey = DeviceDao.getInstance().getCachedDeviceApiKeyBySn(sn);
 //        if (apiKey == null) {
 //            queryCompanyDevice(sn);
@@ -48,9 +49,9 @@ public class DeviceRepository {
     }
 
     /**
-     * 获取设备概要信息
+     * 获取设备详细信息
      */
-    private void GetDeviceSimpleInfo(String deviceToken, UnPeekLiveData<DeviceBaseInfo> deviceApiKey) {
+    private void GetDeviceDetailInfo(String deviceToken, UnPeekLiveData<DeviceBaseInfo> deviceApiKey) {
         JSONObject jsonObjectRequest = new JSONObject();
         try {
             jsonObjectRequest.put("deviceToken", deviceToken);
@@ -87,6 +88,49 @@ public class DeviceRepository {
                     public void onError(Throwable e) {
 //                        ResponseHandler.getInstance().handleFailure((Exception) e);
                         deviceApiKey.postValue(null);
+                    }
+                });
+    }
+
+    /**
+     * 获取设备ProductToken
+     */
+    public void queryProductTokenBySn(String deviceToken, UnPeekLiveData<String> productToken) {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("deviceToken", deviceToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
+        MDRetrofit.getInstance()
+                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
+                .GetDeviceSimpleInfo(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<DeviceSimpleInfo>() {
+                    @Override
+                    protected void onResponse(DeviceSimpleInfo deviceSimpleInfo, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
+                                if (deviceSimpleInfo == null || TextUtils.isEmpty(deviceSimpleInfo.getProductToken())) {
+                                    productToken.postValue(null);
+                                    return;
+                                }
+                                productToken.postValue(deviceSimpleInfo.getProductToken());
+                            } else {
+                                productToken.postValue(null);
+                            }
+                        } else {
+                            productToken.postValue(null);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+//                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                        productToken.postValue(null);
                     }
                 });
     }

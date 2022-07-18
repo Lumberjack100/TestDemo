@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2022/3/15 <br/>
- * 描述：     TODO
+ * 描述：     设备详细信息接口返回的设备信息实体
  */
 public class DetailDeviceInfo {
 
