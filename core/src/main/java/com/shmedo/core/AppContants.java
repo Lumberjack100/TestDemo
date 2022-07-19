@@ -32,38 +32,31 @@ public interface AppContants {
     }
 
     interface Extras {
-        String CUR_DEVICE_SN = "cur_device_sn";
-
-        String COLLECTOR_MODE = "collector_mode";
-
-        String SENSOR_TYPE = "sensor_type";
-
-        String SENSOR_ADDRESS_LIST = "sensor_address_list";
-
-        String SENSOR_ADDRESS = "sensor_address";
-
-        String SENSOR_PARAM = "sensor_param";
-
         //与设备通讯方式
         String COMMUNICATION_WAY = "communication_way";
+        //产品类型
+        String PRODUCT_TYPE = "product_type";
+        //设备信息
+        String DEVICE_INFO = "device_info";
+
+        String DEVICE_SN = "device_sn";
+
+        String COLLECTOR_MODE = "collector_mode";
+        String SENSOR_TYPE = "sensor_type";
+        String SENSOR_ADDRESS_LIST = "sensor_address_list";
+        String SENSOR_ADDRESS = "sensor_address";
+        String SENSOR_PARAM = "sensor_param";
 
         //数据中心配置方式
         String DATA_CENTER_CONFIG_METHOD = "data_center_config_method";
-
         //数据中心编号
-        String DATA_SERVER_NUMBER = "data_server_number";
-
+        String DATA_CENTER_NUMBER = "data_center_number";
         //数据中心状态
-        String DATA_SERVER_STATUS = "data_server_status";
-
-        // 设备类型
-        String PRODUCT_TYPE = "product_type";
-
-        String DEVICE_ID = "device_id";
+        String DATA_CENTER_STATUS = "data_center_status";
 
         String USB_PORT_NUM = "usb_port_num";
-
         String USB_BAUD_RATE = "usb_baud_rate";
+        String USB_DEVICE_ID = "usb_device_id";
 
         //蓝牙测斜仪测量间距
         String INCLINOMETER_MEASURINGSPACING = "inclinometer_measuringSpacing";

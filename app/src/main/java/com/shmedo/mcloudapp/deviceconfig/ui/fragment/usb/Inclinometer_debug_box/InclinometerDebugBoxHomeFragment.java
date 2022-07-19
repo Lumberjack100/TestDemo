@@ -95,7 +95,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
     public static InclinometerDebugBoxHomeFragment newInstance(int deviceId, int port, int baudRate) {
         InclinometerDebugBoxHomeFragment fragment = new InclinometerDebugBoxHomeFragment();
         Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DEVICE_ID, deviceId);
+        args.putInt(AppContants.Extras.USB_DEVICE_ID, deviceId);
         args.putInt(AppContants.Extras.USB_PORT_NUM, port);
         args.putInt(AppContants.Extras.USB_BAUD_RATE, baudRate);
         fragment.setArguments(args);
@@ -106,7 +106,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            deviceId = getArguments().getInt(AppContants.Extras.DEVICE_ID);
+            deviceId = getArguments().getInt(AppContants.Extras.USB_DEVICE_ID);
             portNum = getArguments().getInt(AppContants.Extras.USB_PORT_NUM);
             baudRate = getArguments().getInt(AppContants.Extras.USB_BAUD_RATE);
         }

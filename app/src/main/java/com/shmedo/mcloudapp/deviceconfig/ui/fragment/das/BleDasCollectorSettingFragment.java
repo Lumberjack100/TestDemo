@@ -250,7 +250,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             collectTime = "";
         }
 
-        if (!sensitivity.equals("NullKey")) {
+        if (!TextUtils.isEmpty(sensitivity) && !sensitivity.equals("NullKey")) {
             sensitivity = mEtSensitivity.getText().toString().trim();
             try {
                 double value = Double.parseDouble(sensitivity);

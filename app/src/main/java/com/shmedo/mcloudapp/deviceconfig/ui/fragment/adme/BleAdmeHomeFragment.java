@@ -224,7 +224,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "高级配置":
-                AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME, null);
                 break;
 
             case "设置":
@@ -661,7 +661,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     public void onDestroy() {
-        admeViewModel.deviceMode = -1;
+        admeViewModel.deviceMode = 0;
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setProductID(-1);
         clearDevice();

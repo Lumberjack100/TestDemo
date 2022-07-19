@@ -34,7 +34,6 @@ public class HacMotionStateParser implements IOTResultParser<HacMotionState> {
             info.setWaittime(keyValueMap.getOrDefault("waittime", "NullKey"));
             info.setIncvoltage(keyValueMap.getOrDefault("incvoltage", "NullKey"));
             info.setDriveinputv(keyValueMap.getOrDefault("driveinputv", "NullKey"));
-            info.setEndtime(keyValueMap.getOrDefault("endtime", "NullKey"));
 
             return info;
         } catch (Exception ex) {

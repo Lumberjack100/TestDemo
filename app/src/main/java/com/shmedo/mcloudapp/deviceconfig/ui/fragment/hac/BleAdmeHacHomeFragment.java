@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac;
 
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -21,8 +22,10 @@ import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
+import com.shmedo.configlibrary.iot.model.hac.HacMotionState;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
@@ -36,6 +39,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,7 +158,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void processItemClick() {
         switch (selectedConfigModule.getName()) {
             case "状态":
-                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME);
+                DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.HAC);
                 break;
 
             case "基础配置":
@@ -169,7 +174,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "高级配置":
-                AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.HAC, null);
                 break;
 
             case "设置":
@@ -362,4 +367,93 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         moduleAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * 刷新电机运动状态
+     */
+    private void updateMotionState(HacMotionState hacMotionState) {
+        if (hacMotionState == null) {
+            Timber.e("AdmeMotionState is Null!");
+            return;
+        }
+        switch (hacMotionState.getMotorinfo()) {
+            case "0":
+                mTvMotionState.setText("运行状态：管口停止");
+                break;
+
+            case "1":
+                mTvMotionState.setText("运行状态：管底停止");
+                break;
+
+            case "2":
+                mTvMotionState.setText("运行状态：管口测量");
+                break;
+
+            case "3":
+                mTvMotionState.setText("运行状态：管口测试");
+                break;
+
+            case "4":
+                mTvMotionState.setText("运行状态：上拉测量");
+                break;
+
+            case "5":
+                mTvMotionState.setText("运行状态：上拉测试");
+                break;
+
+            case "6":
+                mTvMotionState.setText("运行状态：下放测量");
+                break;
+
+            case "7":
+                mTvMotionState.setText("运行状态：下放测试");
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                ToastUtils.show("发送指令超时,请稍后尝试");
+                break;
+
+            case AppContants.MsgWhat.CONNECT_DEVICE: {
+                if (!isConnected()) {
+                    hideProgressBar();
+                    disconnectDevice();
+                    ToastUtils.show("连接超时");
+                }
+            }
+            break;
+        }
+    }
+
+    @Override
+    public void onStop() {
+//        isFirstCreate = false;
+//        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
+//        stopQueryMotorStateProgress();
+        super.onStop();
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (isConnected()) {
+            isExitMode = true;
+            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        MCloudApp.setCurDeviceToken(null);
+        MCloudApp.setProductID(-1);
+        clearDevice();
+        super.onDestroy();
+    }
 }

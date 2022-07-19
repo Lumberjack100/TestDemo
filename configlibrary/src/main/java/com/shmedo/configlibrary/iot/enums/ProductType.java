@@ -11,9 +11,9 @@ public enum ProductType {
 
     DAS("DAS", "L", "智能采集器"),
 
-    ADME("ADME", "T", "自动化测斜机器人"),
+    HAC("ADME_HAC10", "T", "半自动化测斜机器人"),
 
-    HAC("HAC", "T", "半自动化测斜机器人"),
+    ADME("ADME", "T", "自动化测斜机器人"),
 
     VMS("VMS|GW300", "G", "振弦式采集仪"),
 
@@ -71,7 +71,7 @@ public enum ProductType {
 
         for (ProductType productType : ProductType.values()) {
             String[] tags = productType.getPrefix().split("\\|");
-            for(String tag : tags){
+            for (String tag : tags) {
                 if (productToken.toUpperCase().startsWith(tag))
                     return productType;
             }
@@ -90,8 +90,12 @@ public enum ProductType {
         if (TextUtils.isEmpty(deviceToken))
             return UnKnown;
 
-        if (deviceToken.startsWith("M20") && deviceToken.endsWith("T"))
-            return ProductType.M20;
+        if (deviceToken.endsWith("T")) {
+            if (deviceToken.startsWith("M20")) {
+                return ProductType.M20;
+            }
+            return ProductType.ADME;
+        }
 
         for (ProductType productType : ProductType.values()) {
             if (deviceToken.endsWith(productType.getSuffix()))

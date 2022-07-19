@@ -156,6 +156,10 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         bleViewModel.deviceRequest.getProductTokenLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String productToken) {
+//                dismissProgressDialog();
+                if (discoveredBluetoothDevice == null) {
+                    return;
+                }
                 DeviceConfigActivity.startActivity(getActivity(), discoveredBluetoothDevice, productToken);
             }
         });
@@ -184,6 +188,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                 String SN = discoveredBluetoothDevice.getDevice().getName().replace("MD-", "");
                 MCloudApp.setCurDeviceToken(SN);
 
+//                showProgressDialog("处理中...");
                 bleViewModel.deviceRequest.queryProductTokenBySn(SN);
             }
         });

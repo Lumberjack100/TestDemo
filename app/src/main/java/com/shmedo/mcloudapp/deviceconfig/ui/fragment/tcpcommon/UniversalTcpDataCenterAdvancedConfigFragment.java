@@ -53,8 +53,8 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
         UniversalTcpDataCenterAdvancedConfigFragment fragment = new UniversalTcpDataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(AppContants.Extras.PRODUCT_TYPE, productType);
-        args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
-        args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
+        args.putSerializable(AppContants.Extras.DATA_CENTER_NUMBER, serverNumber);
+        args.putSerializable(AppContants.Extras.DATA_CENTER_STATUS, status);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,8 +64,8 @@ public class UniversalTcpDataCenterAdvancedConfigFragment extends BaseTcpIotComm
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             productType = (ProductType) getArguments().getSerializable(AppContants.Extras.PRODUCT_TYPE);
-            serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_SERVER_NUMBER);
-            serverStatus = getArguments().getString(AppContants.Extras.DATA_SERVER_STATUS);
+            serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_CENTER_NUMBER);
+            serverStatus = getArguments().getString(AppContants.Extras.DATA_CENTER_STATUS);
         }
     }
 

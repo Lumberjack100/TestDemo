@@ -2,9 +2,7 @@ package com.shmedo.mcloudapp.common.ui.fragment;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +19,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.callback.HandleBackInterface;
@@ -79,7 +79,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     protected boolean isActive = false;
     protected String name;
 
-    protected ProgressDialog progressDialog = null;
 
 
     @Override
@@ -283,51 +282,18 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
     }
 
     protected void showProgressDialog(String message) {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage(message);
-            progressDialog.setIndeterminate(false);
-            progressDialog.setCancelable(true);
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-
-        if (!progressDialog.isShowing()) {
-            progressDialog.show();
-        }
-    }
-
-    protected void showProgressDialog(String message, String buttonText, DialogInterface.OnClickListener listener) {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage(message);
-            progressDialog.setIndeterminate(false);
-            progressDialog.setCancelable(true);
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setButton(DialogInterface.BUTTON_POSITIVE, buttonText, listener);
-        }
-        if (!progressDialog.isShowing()) {
-            progressDialog.show();
-        }
+        WaitDialog.show(message)
+                .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
+                    @Override
+                    public boolean onBackPressed() {
+                        WaitDialog.dismiss();
+                        return false;
+                    }
+                });
     }
 
     protected void dismissProgressDialog() {
-        if (progressDialog != null) {
-            try {
-                progressDialog.dismiss();
-                progressDialog = null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        WaitDialog.dismiss();
     }
 
     protected boolean isDoubleClick(View v) {

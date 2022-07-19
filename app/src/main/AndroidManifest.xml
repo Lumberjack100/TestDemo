@@ -318,7 +318,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity"
+            android:name=".deviceconfig.ui.activity.adme.AdmeLockedRotorDetectionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"

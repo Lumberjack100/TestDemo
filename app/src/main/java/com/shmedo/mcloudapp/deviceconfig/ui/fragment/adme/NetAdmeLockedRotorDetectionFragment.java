@@ -112,12 +112,12 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     private String decentralizedPulseDetectionEnd;//堵转检测终点
     private String decentralizedTorqueStallThreshold;//下放力矩堵转阈值
     private String decentralizedTorqueDetectionTime;//下放力矩检测判断时间
-    private String decentralizedTorqueDetectionStart;//下放力矩检测起点
-    private String decentralizedTorqueDetectionEnd;//下放力矩检测终点
+    private String decentralizedTorqueDetectionStart;//下放缓停区间起始值
+    private String decentralizedTorqueDetectionEnd;//下放缓停区间终值
     private String pullUpTorqueStallThreshold;//上拉力矩堵转阈值
     private String pullUpTorqueDetectionTime;//上拉力矩检测判断时间
-    private String pullUpTorqueDetectionStart;//上拉力矩检测起点
-    private String pullUpTorqueDetectionEnd;//上拉力矩检测终点
+    private String pullUpTorqueDetectionStart;//上拉缓停区间起始值
+    private String pullUpTorqueDetectionEnd;//上拉缓停区间终值
 
     private boolean paramEnableInitial;//开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭开关操作

@@ -104,7 +104,7 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
 
     protected void startDefaultProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
-            showProgressDialog(dialogContent, null, null);
+            showProgressDialog(dialogContent);
         }
         mDefaultHandler.sendEmptyMessageDelayed(what, delayMillis);
     }

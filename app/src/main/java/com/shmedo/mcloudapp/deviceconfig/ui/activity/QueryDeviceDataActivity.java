@@ -81,7 +81,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
 
     public static void startActivity(Context context, String sn) {
         Intent intent = new Intent(context, QueryDeviceDataActivity.class);
-        intent.putExtra(AppContants.Extras.CUR_DEVICE_SN, sn);
+        intent.putExtra(AppContants.Extras.DEVICE_SN, sn);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -106,8 +106,8 @@ public class QueryDeviceDataActivity extends BaseActivity {
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(AppContants.Extras.CUR_DEVICE_SN)) {
-            snNubmer = intent.getStringExtra(AppContants.Extras.CUR_DEVICE_SN);
+        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_SN)) {
+            snNubmer = intent.getStringExtra(AppContants.Extras.DEVICE_SN);
             if (!TextUtils.isEmpty(snNubmer)) {
                 mEtSn.setEnabled(false);
                 mEtSn.setText(snNubmer);

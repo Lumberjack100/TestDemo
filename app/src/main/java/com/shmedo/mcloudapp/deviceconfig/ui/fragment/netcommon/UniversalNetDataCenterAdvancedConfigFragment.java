@@ -59,8 +59,8 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         UniversalNetDataCenterAdvancedConfigFragment fragment = new UniversalNetDataCenterAdvancedConfigFragment();
         Bundle args = new Bundle();
         args.putSerializable(AppContants.Extras.PRODUCT_TYPE, productType);
-        args.putSerializable(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
-        args.putSerializable(AppContants.Extras.DATA_SERVER_STATUS, status);
+        args.putSerializable(AppContants.Extras.DATA_CENTER_NUMBER, serverNumber);
+        args.putSerializable(AppContants.Extras.DATA_CENTER_STATUS, status);
         args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
@@ -71,8 +71,8 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             productType = (ProductType)getArguments().getSerializable(AppContants.Extras.PRODUCT_TYPE);
-            serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_SERVER_NUMBER);
-            serverStatus = getArguments().getString(AppContants.Extras.DATA_SERVER_STATUS);
+            serverNumber = (ServerNumber) getArguments().getSerializable(AppContants.Extras.DATA_CENTER_NUMBER);
+            serverStatus = getArguments().getString(AppContants.Extras.DATA_CENTER_STATUS);
         }
     }
 
