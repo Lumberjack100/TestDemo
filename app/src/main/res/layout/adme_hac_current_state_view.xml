@@ -109,7 +109,6 @@
 
     <TextView
         style="@style/DeviceCurrentState_Group_TitleStyle"
-        android:layout_marginTop="20dp"
         android:text="设备工作信息" />
 
     <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">

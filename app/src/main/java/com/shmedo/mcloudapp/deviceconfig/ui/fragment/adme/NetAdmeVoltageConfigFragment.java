@@ -165,7 +165,7 @@ public class NetAdmeVoltageConfigFragment extends BaseNetIotCommunicateFragment 
                 dismissWaitDialog();
                 IOTCommandResult<AdmeVoltageConfigInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取设备的电压配置参数出错!", commandResult.getMessage());
+                    String errMsg = String.format("%s %s", "获取设备的电压阈值参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(commandResult.getMessage().contains("unsupported") ? "设备版本不支持!" : errMsg);
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
@@ -180,7 +180,7 @@ public class NetAdmeVoltageConfigFragment extends BaseNetIotCommunicateFragment 
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     dismissWaitDialog();
-                    String errMsg = String.format("%s %s", "保存电压配置参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "保存电压阈值参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;

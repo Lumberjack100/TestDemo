@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.shmedo.mcloudapp.deviceconfig.view.hac.AdmeHacExecutiveAgencyView
-            android:id="@+id/hacExecutiveAgencyView"
+        <com.shmedo.mcloudapp.deviceconfig.view.hac.AdmeHacThresholdConfigView
+            android:id="@+id/hacThresholdConfigView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

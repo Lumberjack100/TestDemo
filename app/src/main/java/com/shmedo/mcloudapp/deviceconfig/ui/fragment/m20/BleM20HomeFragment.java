@@ -214,9 +214,8 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-//                        hideProgressBar();
                         onConnectionStateChanged(false);
-                        clearDevice();
+//                        clearDevice();
                         break;
 
                     // fallthrough

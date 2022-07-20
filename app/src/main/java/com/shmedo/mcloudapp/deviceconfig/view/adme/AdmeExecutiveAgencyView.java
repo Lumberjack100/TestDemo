@@ -104,7 +104,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     ClearEditText mEtMeasuringReferenceDepth;//测量基准深度
 
     @BindView(R.id.et_interval_compensation)
-    ClearEditText mEtIntervalCompensation;//距离补偿区间h1
+    ClearEditText mEtIntervalCompensation;//管口安全距离h1
 
     @BindView(R.id.et_interval_fitting)
     ClearEditText mEtIntervalFitting;//数据拟合区间h2
@@ -193,7 +193,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     private String measuringDistance;// 测量间距
     private String measurementIntervalTime;// 测量间隔时间
     private String measuringReferenceDepth;// 测量基准深度
-    private String intervalCompensation;// 距离补偿区间h1
+    private String intervalCompensation;// 管口安全距离h1
     private String intervalFitting;// 数据拟合区间h2
     private String pointOffset;// 测点偏移距离h3
 
@@ -236,18 +236,18 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDecentralizationSpeed.setHint("1-180");
-
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
-
         mEtPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtPullUpSpeed.setHint("1-180");
-
         mEtMeasuringDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-
+        mEtIntervalCompensation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtIntervalFitting.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtPointOffset.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        
         mTvMeasureMethod.setText("实时测量");
         measureMethodOld = "0";
 
@@ -724,19 +724,19 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getInterval_compensation())).equals(intervalCompensation)) {
 
             if (TextUtils.isEmpty(intervalCompensation)) {
-                ToastUtils.show("请输入距离补偿区间h1!");
+                ToastUtils.show("请输入管口安全距离h1!");
                 mEtIntervalCompensation.requestFocus();
                 return false;
             }
             try {
                 double value = Double.parseDouble(intervalCompensation);
                 if (value <= -10 || value >= 10) {
-                    ToastUtils.show("请输入正确的距离补偿区间h1!");
+                    ToastUtils.show("请输入正确的管口安全距离h1!");
                     mEtIntervalCompensation.requestFocus();
                     return false;
                 }
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的距离补偿区间h1!");
+                ToastUtils.show("请输入正确的管口安全距离h1!");
                 mEtIntervalCompensation.requestFocus();
                 return false;
             }

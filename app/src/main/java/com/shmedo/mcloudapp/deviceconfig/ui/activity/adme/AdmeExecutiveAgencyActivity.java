@@ -12,7 +12,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeExecutiveAgencyFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeExecutiveAgencyFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacInclinometerFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacExecutiveAgencyFragment;
 
 /**
  * 创建者:   gonghe <br/>
@@ -54,7 +54,7 @@ public class AdmeExecutiveAgencyActivity extends BaseConfigFragmentContainerActi
             fragment = NetAdmeExecutiveAgencyFragment.newInstance(deviceInfo);
 
         } else {
-            fragment = (productType == ProductType.ADME) ? BleAdmeExecutiveAgencyFragment.newInstance() : BleAdmeHacInclinometerFragment.newInstance();
+            fragment = (productType == ProductType.ADME) ? BleAdmeExecutiveAgencyFragment.newInstance() : BleAdmeHacExecutiveAgencyFragment.newInstance();
         }
 
         return fragment;

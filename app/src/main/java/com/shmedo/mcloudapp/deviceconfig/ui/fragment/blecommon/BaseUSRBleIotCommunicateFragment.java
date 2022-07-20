@@ -30,6 +30,7 @@ import com.umeng.analytics.MobclickAgent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -56,6 +57,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
 
     private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
 
+    protected LinkedList<String> commandItems = new LinkedList<>();
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
 
@@ -204,6 +206,34 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         }
 
         bleViewModel.sendIOTProtocolCommand(cmdStr);
+    }
+
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList() {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            sendCommand(command);
+            commandItems.removeFirst();
+        } else {
+            stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+        }
+    }
+
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList(String dialogContent, int what, long delayMillis) {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            sendCommand(command);
+            commandItems.removeFirst();
+            if (TextUtils.isEmpty(dialogContent) && delayMillis != 0)
+                startDefaultProgress(dialogContent, what, delayMillis);
+        } else {
+            stopDefaultProgress(what);
+        }
     }
 
     protected void showDisconnectDialog(String content) {

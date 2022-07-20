@@ -19,7 +19,7 @@ import java.util.List;
  * 描述：     设备上报数据
  */
 public class DeviceReportDataAdapter extends BaseQuickAdapter<QueryCloudDataInfo, BaseViewHolder> {
-    public DeviceReportDataAdapter( @Nullable List<QueryCloudDataInfo> data) {
+    public DeviceReportDataAdapter(@Nullable List<QueryCloudDataInfo> data) {
         super(R.layout.item_device_report_data, data);
     }
 
@@ -27,8 +27,16 @@ public class DeviceReportDataAdapter extends BaseQuickAdapter<QueryCloudDataInfo
     protected void convert(@NotNull BaseViewHolder holder, QueryCloudDataInfo info) {
         holder.setText(R.id.tv_data_time, info.getTimeStr());
         try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String prettyJson = gson.toJson(JsonParser.parseString(info.getContent()));
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .disableHtmlEscaping()
+                    .create();
+
+//            String content = "{\"20001_1\":{\"device_id\":\"13230\",\"time\":\"2022-07-20 17:32:05\",\"level\":\"warn\",\"msg\":\"iot_cmd:$cmd=md_getworkmode \"}}\u0000\u0000\u0000";
+            String content = info.getContent();
+            content = content.replace("\u0000", ""); // removes NUL chars
+            content = content.replace("\\u0000", ""); // removes backslash+u0000
+            String prettyJson = gson.toJson(JsonParser.parseString(content));
             holder.setText(R.id.tv_data_content, prettyJson);
         } catch (Exception ex) {
             ex.printStackTrace();

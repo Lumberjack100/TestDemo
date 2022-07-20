@@ -12,7 +12,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeVoltageConfigFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeVoltageConfigFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacInclinometerFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacThresholdConfigFragment;
 
 /**
  * 创建者:   gonghe <br/>
@@ -55,7 +55,7 @@ public class AdmeVoltageConfigActivity extends BaseConfigFragmentContainerActivi
             fragment = NetAdmeVoltageConfigFragment.newInstance(deviceInfo);
 
         } else {
-            fragment = (productType == ProductType.ADME) ? BleAdmeVoltageConfigFragment.newInstance() : BleAdmeHacInclinometerFragment.newInstance();
+            fragment = (productType == ProductType.ADME) ? BleAdmeVoltageConfigFragment.newInstance() : BleAdmeHacThresholdConfigFragment.newInstance();
         }
         return fragment;
     }

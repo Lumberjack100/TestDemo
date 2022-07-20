@@ -44,6 +44,15 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     @BindView(R.id.anthropomorphicEnableSBtn)
     SwitchButton anthropomorphicEnableSBtn;
 
+    @BindView(R.id.rl_positive_and_negative_test)
+    ViewGroup positiveAndNegativeTestLayout;
+
+    @BindView(R.id.rl_low_power)
+    ViewGroup lowPowerLayout;
+
+    @BindView(R.id.rl_anthropomorphic_movement)
+    ViewGroup anthropomorphicMovementLayout;
+
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
@@ -65,13 +74,13 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setSwitchViewListener();
-        queryPositiveAndNegativeParamInfo();
         //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
             configPageViewModel.configPageEditableChanged.setValue(true);
         } else {
             configPageViewModel.configPageEditableChanged.setValue(false);
         }
+        intQueryCommands();
     }
 
     private void setSwitchViewListener() {
@@ -95,33 +104,27 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
         });
     }
 
-    /**
-     * 获取设备的步进电机正反测使能信息
-     */
-    private void queryPositiveAndNegativeParamInfo() {
-        showWaitDialog("加载中...");
+    private void intQueryCommands() {
+        commandItems.clear();
+
+        //获取设备的步进电机正反测使能信息
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        commandItems.add(command);
+
+        //获取低功耗使能信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE);
+        commandItems.add(command);
+
+        //获取拟人运动使能信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE);
+        commandItems.add(command);
+
+        showWaitDialog("加载中...");
+        sendCommandFromCmdList();
     }
 
     /**
-     * 获取低功耗使能信息
-     */
-    private void queryLowPowerParamInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
-
-    /**
-     * 获取拟人运动使能参数
-     */
-    private void queryAnthropomorphicParamInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
-
-    /**
-     * 禁用步进电机参数</br>
+     * 步进电机正反测使能</br>
      */
     private void enableOrDisableStepperMotorParam(boolean isOpen) {
         AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
@@ -222,17 +225,19 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
+                sendCommandFromCmdList();
                 IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    if (!commandResult.getMessage().contains("unsupported"))
+                        ToastUtils.show(errMsg);
+                    positiveAndNegativeTestLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
                     return;
                 }
                 AdmeStepperMotorInfo  admeStepperMotorInfo = commandResult.getResult();
                 if (admeStepperMotorInfo == null) {
-                    dismissWaitDialog();
                     Timber.e("AdmeStepperMotorInfo is Null!");
                     return;
                 }
@@ -241,22 +246,23 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
                 } else {
                     positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(true);
                 }
-                queryLowPowerParamInfo();
             }
             break;
 
             case ADME_MD_GET_LOW_ENERGY_MODE: {
+                sendCommandFromCmdList();
                 IOTCommandResult<AdmeLowEnergyModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询低功耗使能状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    if (!commandResult.getMessage().contains("unsupported"))
+                        ToastUtils.show(errMsg);
+                    lowPowerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
                     return;
                 }
                 AdmeLowEnergyModeInfo admeLowEnergyModeInfo = commandResult.getResult();
                 if (admeLowEnergyModeInfo == null) {
-                    dismissWaitDialog();
                     Timber.e("AdmeLowEnergyModeInfo is Null!");
                     return;
                 }
@@ -265,17 +271,19 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
                 } else {
                     lowPowerEnableSBtn.setCheckedImmediatelyNoEvent(true);
                 }
-                queryAnthropomorphicParamInfo();
             }
             break;
 
             case ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE: {
-                dismissWaitDialog();
+                sendCommandFromCmdList();
                 IOTCommandResult<AdmeAnthropomorphicMovementInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "查询拟人运动使能状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    if (!commandResult.getMessage().contains("unsupported"))
+                        ToastUtils.show(errMsg);
+                    anthropomorphicMovementLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
                     return;
                 }
                 AdmeAnthropomorphicMovementInfo anthropomorphicMovementInfo = commandResult.getResult();

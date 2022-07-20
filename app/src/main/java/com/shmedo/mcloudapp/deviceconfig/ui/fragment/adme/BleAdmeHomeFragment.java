@@ -265,9 +265,8 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-//                        hideProgressBar();
                         onConnectionStateChanged(false);
-                        clearDevice();
+//                        clearDevice();
                         break;
 
                     // fallthrough
@@ -497,9 +496,9 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             mTvMotionState.setText("运行状态：--");
             if (deviceInfo.isOnlineStatus()) {
-                mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
             } else {
-                mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
             }
             mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
             mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -530,9 +529,9 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         updateConfigModuleData();
     }
 
-    private CharSequence getPlatformAbnormalMessage(String state) {
+    private CharSequence getPlatformStateMessage(String state) {
         SpannableStringBuilder builder = new SpannableStringBuilder(state);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(state.contains("在线") ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "米度平台连接状态：");
 
