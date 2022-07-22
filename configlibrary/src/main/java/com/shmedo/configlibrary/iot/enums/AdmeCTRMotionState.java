@@ -5,10 +5,10 @@ import android.text.TextUtils;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2022/7/18 <br/>
- * 描述：     TODO
+ * 描述：    设备测量过程状态枚举
  */
 public enum AdmeCTRMotionState {
-    NOZZLE_WAITING("0", "管口等待", "管口等待"),
+    NOZZLE_WAITING("0", "上拉至管口", "上拉至管口"),
 
     PAIR_SETTING_PARAM("1", "测斜仪配对,设置参数", "配对,设置参数"),
 
@@ -22,9 +22,11 @@ public enum AdmeCTRMotionState {
 
     READ_DATA("6", "测斜仪配对,读取数据", "读取数据"),
 
-    UPLOAD_DATA("7", "上传数据", "上传数据"),
+    UPLOAD_DATA("7", "数据上传", "数据上传"),
 
-    WAITING_BACKTESTING("8", "等待反测", "等待反测"),
+    WAITING_NEXT_TESTING("8", "数据上传完成等待下次测量", "等待下次测量"),
+
+    WAITING_BACK_TESTING("9", "等待反测", "等待反测"),
 
     UNKNOWN_ERROR("-100", "未知", "未知");
 

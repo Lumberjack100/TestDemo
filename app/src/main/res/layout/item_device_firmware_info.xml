@@ -17,7 +17,6 @@
             android:id="@+id/iv_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:src="@drawable/ic_tip" />
 
         <TextView
@@ -25,36 +24,31 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_weight="4"
+            android:layout_weight="1"
             android:maxLines="3"
             android:textColor="@color/text_color_666666"
-            android:textSize="17sp"
+            android:textSize="@dimen/text_size_14"
             tools:text="DASV22_BHY-LF-V4.1.1_Q2(01.00.02.01)" />
 
         <TextView
             android:id="@+id/tv_latest_flag"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="5dp"
             android:background="@drawable/bg_device_online_state_flag"
             android:gravity="center"
-            android:paddingStart="7dp"
-            android:paddingEnd="7dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:singleLine="true"
             android:text="最新版"
             android:textColor="@color/text_color_50E9B9"
             android:textSize="@dimen/text_size_11" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
         <ImageView
             android:id="@+id/iv_checked_flag"
             android:layout_width="21dp"
             android:layout_height="21dp"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="10dp"
             android:src="@drawable/ic_device_firmware_checked" />
 
     </LinearLayout>

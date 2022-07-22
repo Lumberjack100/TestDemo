@@ -20,6 +20,10 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
+import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
+import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
+import com.shmedo.configlibrary.iot.enums.AdmeCTRMotionState;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.hac.HacMotionState;
@@ -36,7 +40,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeBasicParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
@@ -82,8 +85,10 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    private DiscoveredBluetoothDevice device;
+    private DiscoveredBluetoothDevice bluetoothDevice;
     private DeviceBaseInfo deviceInfo;
+
+    private boolean isFirstCreate = true;
 
     public static BleAdmeHacHomeFragment newInstance(DiscoveredBluetoothDevice device) {
         BleAdmeHacHomeFragment fragment = new BleAdmeHacHomeFragment();
@@ -97,7 +102,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            device = getArguments().getParcelable(EXTRA_DEVICE);
+            bluetoothDevice = getArguments().getParcelable(EXTRA_DEVICE);
         }
     }
 
@@ -109,24 +114,23 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        isFirstCreate = true;
         initAdapter();
         updateHeadInfo();
-        updateConfigModuleData();
+        initConfigModuleData();
         observerApiKey();
         observerConnectionState();
 
         //建立蓝牙连接
-        connectDevice(device.getDevice());
+        connectDevice(bluetoothDevice.getDevice());
     }
 
     @Override
     public void onResume() {
         super.onResume();
         onConnectionStateChanged(isConnected());
-//        if (!isFirstCreate) {
-//            startQueryMotorStateProgress(0);
-//        }
+        if (!isFirstCreate && !isConnected()) {
+            queryMotorState();
+        }
     }
 
     private void initAdapter() {
@@ -161,23 +165,27 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.HAC);
                 break;
 
-            case "基础配置":
-                AdmeBasicParamActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                break;
-
-            case "测量孔深":
+            case "孔深测量":
                 AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                break;
-
-            case "指令下发":
-                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME);
                 break;
 
             case "高级配置":
                 AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.HAC, null);
                 break;
 
-            case "设置":
+            case "开始测斜":
+
+                break;
+
+            case "历史数据":
+
+                break;
+
+            case "指令下发":
+                CustomCommandLogPrintActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME);
+                break;
+
+            case "其他设置":
                 AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME);
                 break;
         }
@@ -202,7 +210,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(bluetoothDevice.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -238,7 +246,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 deviceInfo = deviceBaseInfo;
                 hideProgressBar();
                 updateHeadInfo();
-//                queryEquipmentBaseInfo();
+                queryMotorState();
             }
         });
     }
@@ -283,7 +291,13 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         WaitDialog.dismiss();
     }
 
-
+    /**
+     * 获取电机的运行状态
+     */
+    private void queryMotorState() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE);
+        sendCommand(command);
+    }
 
     @OnClick({R.id.tv_device_connect_operate})
     public void onClick(View v) {
@@ -293,13 +307,14 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                connectDevice(device.getDevice());
+                connectDevice(bluetoothDevice.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
                 showDisconnectDialog(getResources().getString(R.string.disconnect_device));
             }
         }
     }
+
     @Override
     protected void parseResponseMessage(String cmdStr) {
         if (!isActive) {
@@ -307,11 +322,22 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
         setResultData(cmdStr);
     }
+
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-
-
+            case ADME_HAC_MD_GET_MOTION_STATE: {//获取ADME的运行状态
+                IOTCommandResult<HacMotionState> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    String errMsg = String.format("%s %s", "获取设备的运行状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                HacMotionState admeMotionState = commandResult.getResult();
+                updateMotionState(admeMotionState);
+            }
+            break;
 
             default:
                 super.parseResponseMessage(cmdStr);
@@ -328,7 +354,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
         try {
             mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "HAC-半自动化测斜机器人" : deviceInfo.getProductName());
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
+            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? bluetoothDevice.getName().substring(3) : deviceInfo.getDeviceToken()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             mTvMotionState.setText("运行状态：--");
 
@@ -340,7 +366,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
     }
 
-    private void updateConfigModuleData() {
+    private void initConfigModuleData() {
         configModuleList.clear();
         ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "状态", "获取当前设备状态");
         configModuleList.add(configModule);
@@ -354,13 +380,13 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "开始测斜", "测量位移");
         configModuleList.add(configModule);
 
-         configModule = new ConfigModule(R.drawable.ic_device_current_state, "历史数据", "获取测量历史数据");
+        configModule = new ConfigModule(R.drawable.ic_device_current_state, "历史数据", "获取测量历史数据");
         configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
         configModuleList.add(configModule);
 
-        configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
+        configModule = new ConfigModule(R.drawable.ic_device_setting, "其他设置", "高级设置");
         configModuleList.add(configModule);
 
         moduleAdapter.notifyDataSetChanged();
@@ -374,42 +400,11 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
             Timber.e("AdmeMotionState is Null!");
             return;
         }
-        switch (hacMotionState.getMotorinfo()) {
-            case "0":
-                mTvMotionState.setText("运行状态：管口停止");
-                break;
+        AdmeCTRMotionState ctrMotionState = AdmeCTRMotionState.valueByCode(hacMotionState.getMotorinfo());
+        if (ctrMotionState == AdmeCTRMotionState.UNKNOWN_ERROR)
+            return;
 
-            case "1":
-                mTvMotionState.setText("运行状态：管底停止");
-                break;
-
-            case "2":
-                mTvMotionState.setText("运行状态：管口测量");
-                break;
-
-            case "3":
-                mTvMotionState.setText("运行状态：管口测试");
-                break;
-
-            case "4":
-                mTvMotionState.setText("运行状态：上拉测量");
-                break;
-
-            case "5":
-                mTvMotionState.setText("运行状态：上拉测试");
-                break;
-
-            case "6":
-                mTvMotionState.setText("运行状态：下放测量");
-                break;
-
-            case "7":
-                mTvMotionState.setText("运行状态：下放测试");
-                break;
-
-            default:
-                break;
-        }
+        mTvMotionState.setText(ctrMotionState.getSimpleInfo());
     }
 
     @Override
@@ -432,9 +427,8 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     public void onStop() {
-//        isFirstCreate = false;
-//        stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-//        stopQueryMotorStateProgress();
+        isFirstCreate = false;
+        stopAllProgress();
         super.onStop();
     }
 

@@ -175,8 +175,8 @@ public class DeviceModuleMainFragment extends BaseFragment implements TabLayout.
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         processStopScan();
     }
 
