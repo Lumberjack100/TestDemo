@@ -125,7 +125,7 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"0.05s", "0.1s", "0.2s", "1s", "5s", "10s", "15s", "30s"},
-                        null, frequencyPos, true,
+                        null, frequencyPos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

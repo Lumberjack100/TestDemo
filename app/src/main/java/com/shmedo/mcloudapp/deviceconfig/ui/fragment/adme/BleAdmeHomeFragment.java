@@ -215,8 +215,8 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 AdmeBasicParamActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
-            case "测量孔深":
-                AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+            case "孔深测量":
+                AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME, null);
                 break;
 
             case "指令下发":
@@ -378,7 +378,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", modes,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -550,7 +550,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         configModuleList.add(configModule);
 
         if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
-            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
+            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "孔深测量", "测量测斜管深度");
             configModuleList.add(configModule);
 
             configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");

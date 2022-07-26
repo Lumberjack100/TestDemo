@@ -149,7 +149,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"常规测量模式", "特定点位模式", "静态测量模式", "设备停用模式"},
-                        null, workModePos, true,
+                        null, workModePos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

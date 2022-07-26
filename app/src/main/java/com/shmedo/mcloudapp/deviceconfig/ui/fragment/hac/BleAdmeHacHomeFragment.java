@@ -166,7 +166,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "孔深测量":
-                AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.HAC, null);
                 break;
 
             case "高级配置":
@@ -404,7 +404,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         if (ctrMotionState == AdmeCTRMotionState.UNKNOWN_ERROR)
             return;
 
-        mTvMotionState.setText(ctrMotionState.getSimpleInfo());
+        mTvMotionState.setText("运行状态：" + ctrMotionState.getSimpleInfo());
     }
 
     @Override

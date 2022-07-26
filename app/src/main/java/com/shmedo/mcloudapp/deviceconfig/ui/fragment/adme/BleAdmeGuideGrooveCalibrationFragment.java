@@ -224,7 +224,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"正转", "反转"},
-                        null, motionWayPos, true,
+                        null, motionWayPos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

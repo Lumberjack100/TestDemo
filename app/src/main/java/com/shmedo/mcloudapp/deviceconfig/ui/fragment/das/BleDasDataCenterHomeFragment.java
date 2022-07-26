@@ -141,7 +141,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                 new XPopup.Builder(mActivity)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asBottomList("", new String[]{"4G", "SMS", "BD", "BD+4G"},
-                                null, pos, true,
+                                null, pos,
                                 new OnSelectListener() {
                                     @Override
                                     public void onSelect(int position, String text) {

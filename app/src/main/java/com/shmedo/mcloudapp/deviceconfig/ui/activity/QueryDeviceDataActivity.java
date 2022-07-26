@@ -172,7 +172,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
                 new XPopup.Builder(QueryDeviceDataActivity.this)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asBottomList("", new String[]{"30", "100", "500", "800"},
-                                null, pos, true,
+                                null, pos,
                                 new OnSelectListener() {
                                     @Override
                                     public void onSelect(int position, String text) {

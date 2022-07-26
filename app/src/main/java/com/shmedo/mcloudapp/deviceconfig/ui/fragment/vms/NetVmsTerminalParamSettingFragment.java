@@ -159,7 +159,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"网关召测", "主动上报"},
-                        null, reportingMethodPos, true,
+                        null, reportingMethodPos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

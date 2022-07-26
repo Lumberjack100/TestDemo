@@ -328,7 +328,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", measureModes,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -361,7 +361,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", values,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -631,7 +631,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                             double holeValue = Math.abs(Double.parseDouble(holeDepth));
                             double safeValue = Math.abs(Double.parseDouble(safeDistance));
                             //测孔深值不等于安全补偿距离表示测孔深值有效
-                            if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safeDistance) && holeValue != safeValue) {
+                            if (holeValue != safeValue) {
                                 mTvHoleDepth.setText(holeDepth);
                             }
                         } catch (Exception ex) {
@@ -697,17 +697,5 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         }
         clearMotionDataLayout.setVisibility(View.VISIBLE);
         motionDataClearCompleteLayout.setVisibility(View.GONE);
-    }
-
-    private void processMotorMotionState() {
-        if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
-            if (manualMeasuringHoleDepthBottomDialog.isVisible()) {
-                manualMeasuringHoleDepthBottomDialog.processMotorMotionState(measuringHoleDepthInfo);
-            }
-        } else {
-            if (autoMeasuringHoleDepthBottomDialog.isVisible()) {
-                autoMeasuringHoleDepthBottomDialog.processMotorMotionState(measuringHoleDepthInfo);
-            }
-        }
     }
 }

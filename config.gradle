@@ -27,7 +27,7 @@ ext {
             banner                       : '2.1.0',
 
             materialDialogsCore          : '0.9.6.0',
-            xpopupVersion                : '2.8.0',
+            xpopupVersion                : '2.8.14',
             dialogxVersion               : '0.0.45',
             ToastUtils                   : '10.3',
 
