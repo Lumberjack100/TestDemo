@@ -426,6 +426,20 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
 
+        <activity
+            android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataProcedureActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataResultsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
         <service android:name="com.amap.api.location.APSService" />
 
         <provider

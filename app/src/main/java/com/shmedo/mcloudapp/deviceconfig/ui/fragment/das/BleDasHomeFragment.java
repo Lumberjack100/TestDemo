@@ -659,10 +659,10 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         locationViewModel.locationUtils.stopLocalService();
-        super.onStop();
     }
 
     @Override

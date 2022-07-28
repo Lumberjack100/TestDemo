@@ -1,5 +1,7 @@
 package com.shmedo.configlibrary.iot.model.hac;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 /**
@@ -7,7 +9,7 @@ import android.text.TextUtils;
  * 创建时间:  12/28/20 <br/>
  * 描述：     ADME HAC的电机运动状态
  */
-public class HacMotionState {
+public class HacMotionState implements Parcelable {
     private String abndiasis;//设备异常诊断 0：正常
     private String measmode;//测量模式 (0：正测  1：反测)
     //电机运动信息(0：上拉至管口 1：测斜仪配对,设置参数 2：测斜仪下放 3：管底等待 4：测点测量 5：磁开关触发，测量结束 6：测斜仪配对,读取数据 7：数据上传 8：数据上传完成等待下次测量 9:等待反测)
@@ -18,6 +20,49 @@ public class HacMotionState {
     private String waittime;//等待时间
     private String incvoltage;//测斜仪电压
     private String driveinputv;//驱动器输入电压
+
+    public HacMotionState() {
+    }
+
+    protected HacMotionState(Parcel in) {
+        abndiasis = in.readString();
+        measmode = in.readString();
+        motorinfo = in.readString();
+        measpoint = in.readString();
+        waittime = in.readString();
+        incvoltage = in.readString();
+        driveinputv = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(abndiasis);
+        dest.writeString(measmode);
+        dest.writeString(motorinfo);
+        dest.writeString(measpoint);
+        dest.writeString(waittime);
+        dest.writeString(incvoltage);
+        dest.writeString(driveinputv);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<HacMotionState> CREATOR = new Creator<HacMotionState>() {
+        @Override
+        public HacMotionState createFromParcel(Parcel in) {
+            return new HacMotionState(in);
+        }
+
+        @Override
+        public HacMotionState[] newArray(int size) {
+            return new HacMotionState[size];
+        }
+    };
+
+
 
     public String getAbndiasis() {
         return TextUtils.isEmpty(abndiasis) ? "0" : abndiasis;
@@ -36,7 +81,7 @@ public class HacMotionState {
     }
 
     public String getMotorinfo() {
-        return TextUtils.isEmpty(motorinfo) ? "0" : motorinfo;
+        return TextUtils.isEmpty(motorinfo) ? "" : motorinfo;
     }
 
     public void setMotorinfo(String motorinfo) {
@@ -74,5 +119,4 @@ public class HacMotionState {
     public void setDriveinputv(String driveinputv) {
         this.driveinputv = driveinputv;
     }
-
 }

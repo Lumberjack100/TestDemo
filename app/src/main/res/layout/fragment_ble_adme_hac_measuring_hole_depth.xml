@@ -17,7 +17,7 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="Mac地址" />
+            android:text="测斜仪Mac地址" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_mac_address"

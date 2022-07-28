@@ -97,7 +97,6 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
     @BindView(R.id.btn_run)
     Button mBtnRun;
 
-    private HacMeasuringHoleDepthInfo measuringHoleDepthInfo;
     private BleAdmeHacManualMeasuringHoleDepthDialog manualMeasuringHoleDepthBottomDialog;
     private BleAdmeHacAutoMeasuringHoleDepthDialog autoMeasuringHoleDepthBottomDialog;
 
@@ -109,14 +108,14 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
     private String safedistance;//管底补偿距离
     private String movementway;//运动方式（0:上拉，1:下放）
     private String movedistance;//设定运动距离
-    private String lastDistance;//当前距离
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
-    private List<HacHoleAreaDepthInfo> depthInfoArrayList = new ArrayList<>();
-    private final String[] measureModes = new String[]{"自动测量孔深", "手动测量孔深"};
+    private final String[] measureWays = new String[]{"自动测量孔深", "手动测量孔深"};
     private final String[] movementWays = new String[]{"上拉", "下放"};
 
+    private HacMeasuringHoleDepthInfo measuringHoleDepthInfo;
+    private final List<HacHoleAreaDepthInfo> holeAreaDepthInfoArrayList = new ArrayList<>();
     private List<String> holeNumList = new ArrayList<>();
 
     public static BleAdmeHacMeasuringHoleDepthFragment newInstance() {
@@ -164,7 +163,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
 
         //默认自动测量模式
         measway = "0";
-        mTvMeasureMode.setText(measureModes[0]);
+        mTvMeasureMode.setText(measureWays[0]);
         autoMeasureModeLayout.setVisibility(View.VISIBLE);
         manualMeasureModeLayout.setVisibility(View.GONE);
         mTvMovementWay.setText("上拉");
@@ -181,18 +180,9 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
     }
 
     /**
-     * 清空电机运动数据记录
-     */
-    private void clearMotorMotionData() {
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_15000_MILLIS);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA);
-        sendCommand(command);
-    }
-
-    /**
      * 测孔深配置参数
      */
-    private void setMeasuringHoledepthParam() {
+    private String setMeasuringHoledepthParamCommand() {
         try {
             if (mTvMeasureMode.getText().toString().contains("手动测量")) {
                 //上拉
@@ -206,6 +196,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                 }
             }
             HacMeasuringHoleDepthInfoEntity entity = new HacMeasuringHoleDepthInfoEntity();
+            entity.setModel("0");
             entity.setAddress(address);
             entity.setHoleno(holeno);
             entity.setAreano(areano);
@@ -222,12 +213,12 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
             }
 
             mTvHoleDepth.setText("0");
-            mBtnRun.setEnabled(false);
-//            startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_SET_HOLE_MEASURE_PARAM, entity);
-            sendCommand(command);
+
+            return command;
         } catch (Exception ex) {
             ex.printStackTrace();
+            return null;
         }
     }
 
@@ -256,8 +247,28 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                 Timber.w("配置参数错误!");
                 return;
             }
-            clearMotorMotionData();
+            intCommands();
         }
+    }
+
+    private void intCommands() {
+        commandItems.clear();
+
+        //清空电机运动脉冲数据记录
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA);
+        commandItems.add(command);
+
+        //测孔深配置参数
+        command = setMeasuringHoledepthParamCommand();
+        if (!TextUtils.isEmpty(command))
+            commandItems.add(command);
+
+        //保存参数指令
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM);
+        commandItems.add(command);
+
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_15000_MILLIS);
+        sendCommandFromCmdList();
     }
 
     /**
@@ -281,7 +292,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                     @Override
                     public void onSelect(int position, String text) {
                         mEtHoleNum.setText(text);
-                        HacHoleAreaDepthInfo info = depthInfoArrayList.get(position);
+                        HacHoleAreaDepthInfo info = holeAreaDepthInfoArrayList.get(position);
                         mEtAreaNum.setText(info != null ? info.getAreano() : "");
                     }
                 }, 0, 0);
@@ -292,11 +303,11 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
      * 选择测量模式
      */
     private void showMeasureModeDialog() {
-        int pos = Arrays.asList(measureModes).indexOf(String.valueOf(mTvMeasureMode.getText()));
+        int pos = Arrays.asList(measureWays).indexOf(String.valueOf(mTvMeasureMode.getText()));
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", measureModes,
+                .asBottomList("", measureWays,
                         null, pos,
                         new OnSelectListener() {
                             @Override
@@ -338,17 +349,10 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
     }
 
     private void loadLastHistoryData(boolean isPullUp) {
-        if (isPullUp) {
-            String speed = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_PULL_UP_SPEED, "");
-            String distance = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_PULL_UP_DISTANCE, "");
-            mEtMovementSpeed.setText(speed);
-            mEtGoalMovementDistance.setText(distance);
-        } else {
-            String speed = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_DROP_SPEED, "");
-            String distance = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_DROP_DISTANCE, "");
-            mEtMovementSpeed.setText(speed);
-            mEtGoalMovementDistance.setText(distance);
-        }
+        String speed = SPStaticUtils.getString(isPullUp ? AppContants.ADME.LAST_MOTOR_PULL_UP_SPEED : AppContants.ADME.LAST_MOTOR_DROP_SPEED, "");
+        String distance = SPStaticUtils.getString(isPullUp ? AppContants.ADME.LAST_MOTOR_PULL_UP_DISTANCE : AppContants.ADME.LAST_MOTOR_DROP_DISTANCE, "");
+        mEtMovementSpeed.setText(speed);
+        mEtGoalMovementDistance.setText(distance);
     }
 
     private boolean checkValueIsValid() {
@@ -469,13 +473,16 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
+        if (!isActive) {
+            return;
+        }
         setResultData(cmdStr);
     }
 
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_HAC_MD_GET_HOLE_MEASURE_PARAM: {//获取HAC的孔深测量配置参数
+            case ADME_HAC_MD_GET_HOLE_MEASURE_PARAM: {//获取孔深测量配置参数
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<HacMeasuringHoleDepthInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -489,21 +496,20 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
             }
             break;
 
-            case ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA: {//ADME测量孔深清空
+            case ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA: {//清空脉冲数记录
+                sendCommandFromCmdList();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    String errMsg = String.format("%s %s", "清空数据出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "清空脉冲数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                setMeasuringHoledepthParam();
             }
             break;
 
-            case ADME_HAC_MD_SET_HOLE_MEASURE_PARAM: {//设置HAC的孔深测量配置参数
-                mBtnRun.setEnabled(true);
+            case ADME_HAC_MD_SET_HOLE_MEASURE_PARAM: {//设置孔深测量参数,开始测量
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
@@ -512,7 +518,10 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                     ToastUtils.show(errMsg);
                     return;
                 }
-                saveConfigInfo();
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else
+                    showMotorMotionDialog();
             }
             break;
 
@@ -529,7 +538,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
             }
             break;
 
-            case ADME_HAC_MD_GET_HOLE_MEASURE_PULSE: {//查询ADME测孔深运动的脉冲数、运动距离
+            case ADME_HAC_MD_GET_HOLE_MEASURE_PULSE: {//实时查询脉冲数、运动距离
                 IOTCommandResult<HacMotorMotionDistanceInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取电机的实时脉冲数出错!", commandResult.getMessage());
@@ -539,29 +548,30 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                 }
                 HacMotorMotionDistanceInfo motorMotionDistanceInfo = commandResult.getResult();
                 if (motorMotionDistanceInfo != null) {
-                    lastDistance = motorMotionDistanceInfo.getRealmovedistance();
                     String holeDepth = motorMotionDistanceInfo.getRealholedepth();
-                    if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safedistance)) {
-                        try {
-                            double holeValue = Math.abs(Double.parseDouble(holeDepth));
-                            double safeValue = Math.abs(Double.parseDouble(safedistance));
-                            //测孔深值不等于安全补偿距离表示测孔深值有效
-                            if (holeValue != safeValue) {
-                                mTvHoleDepth.setText(holeDepth);
+                    if (mTvMeasureMode.getText().toString().contains("手动")) {
+                        mTvHoleDepth.setText(holeDepth);
+                    } else {
+                        //自动测孔深模式下
+                        if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safedistance)) {
+                            try {
+                                double holeValue = Math.abs(Double.parseDouble(holeDepth));
+                                double safeValue = Math.abs(Double.parseDouble(safedistance));
+                                //测孔深值不等于安全补偿距离表示测孔深值有效
+                                if (holeValue != safeValue) {
+                                    mTvHoleDepth.setText(holeDepth);
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
                         }
                     }
                 }
-                if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null)
-                    return;
-
-                if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
-                    if (manualMeasuringHoleDepthBottomDialog.isVisible())
+                if (mTvMeasureMode.getText().toString().contains("手动")) {
+                    if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog.isVisible())
                         manualMeasuringHoleDepthBottomDialog.updateMotionData(motorMotionDistanceInfo);
                 } else {
-                    if (autoMeasuringHoleDepthBottomDialog.isVisible())
+                    if (autoMeasuringHoleDepthBottomDialog != null && autoMeasuringHoleDepthBottomDialog.isVisible())
                         autoMeasuringHoleDepthBottomDialog.updateMotionData(motorMotionDistanceInfo);
                 }
             }
@@ -584,13 +594,13 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
 
         mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(measuringHoleDepthInfo.getLowtbtss().equals("1"));
 
-        depthInfoArrayList.clear();
-        depthInfoArrayList.addAll(measuringHoleDepthInfo.getHolelist());
-        if (depthInfoArrayList == null || depthInfoArrayList.size() == 0) {
+        holeAreaDepthInfoArrayList.clear();
+        holeAreaDepthInfoArrayList.addAll(measuringHoleDepthInfo.getHolelist());
+        if (holeAreaDepthInfoArrayList.size() == 0) {
             return;
         }
         holeNumList.clear();
-        for (HacHoleAreaDepthInfo info : depthInfoArrayList) {
+        for (HacHoleAreaDepthInfo info : holeAreaDepthInfoArrayList) {
             holeNumList.add(info.getHoleno());
         }
     }
@@ -599,14 +609,13 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
      * 打开数据运行弹框
      */
     private void showMotorMotionDialog() {
-        if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
+        if (mTvMeasureMode.getText().toString().contains("手动")) {
             //数据运行弹框已经显示了
             if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog.isVisible()) {
                 manualMeasuringHoleDepthBottomDialog.processContinueMotorMotion();
                 return;
             }
-            Timber.d("start Motion: lastDistance=%s,totalDistanceGoal=%s", lastDistance, movedistance);
-            manualMeasuringHoleDepthBottomDialog = BleAdmeHacManualMeasuringHoleDepthDialog.newInstance(movementway, lastDistance, movedistance);
+            manualMeasuringHoleDepthBottomDialog = BleAdmeHacManualMeasuringHoleDepthDialog.newInstance(movementway);
             manualMeasuringHoleDepthBottomDialog.show(getChildFragmentManager(), "dialog");
         } else {
             autoMeasuringHoleDepthBottomDialog = BleAdmeHacAutoMeasuringHoleDepthDialog.newInstance();

@@ -134,7 +134,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
     private String intervalFitting;// 数据拟合区间h2
     private String pointOffset;// 测点偏移距离h3
 
-    private final String[] settlementMethods = new String[]{"顶固定法", "底固定法"};
+    private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
     public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo;
@@ -172,7 +172,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
         mEtIntervalFitting.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtPointOffset.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
-        mTvDataSettlementMethod.setText("顶固定法");
+        mTvDataSettlementMethod.setText("顶部固定法");
         dataSettlementMethodOld = "0";
     }
 

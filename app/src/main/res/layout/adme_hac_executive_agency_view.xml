@@ -23,7 +23,7 @@
         <TextView
             android:id="@+id/tv_data_settlement_method"
             style="@style/Common_ClickableItem_ValueStyle"
-            tools:text="顶固定法" />
+            tools:text="顶部固定法" />
 
     </LinearLayout>
 

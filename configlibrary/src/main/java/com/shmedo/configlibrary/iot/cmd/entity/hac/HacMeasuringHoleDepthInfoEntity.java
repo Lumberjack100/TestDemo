@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
  * 描述：     TODO
  */
 public class HacMeasuringHoleDepthInfoEntity implements Validater {
+    private String model;//电机工作标识  0: 重新开始测量 1：继续测量
     private String address;//MAC 地址
     private String holeno;//孔号
     private String areano;//区号
@@ -19,6 +20,10 @@ public class HacMeasuringHoleDepthInfoEntity implements Validater {
     private String safedistance;//管底补偿距离
     private String movementway;//运动方式（0:上拉，1:下放）
     private String movedistance;//设定运动距离
+
+    public void setModel(String model) {
+        this.model = model;
+    }
 
     public void setAddress(String address) {
         this.address = address;

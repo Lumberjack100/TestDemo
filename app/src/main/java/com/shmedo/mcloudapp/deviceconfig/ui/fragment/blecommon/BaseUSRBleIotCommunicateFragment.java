@@ -93,8 +93,8 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
 

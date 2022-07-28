@@ -102,10 +102,16 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopAllProgress();
+//    }
 
     public static BleAdmeManualMeasuringHoleDepthBottomDialog newInstance(String motionWay, String lastDistance, String totalDistanceGoal) {
         BleAdmeManualMeasuringHoleDepthBottomDialog fragment = new BleAdmeManualMeasuringHoleDepthBottomDialog();
@@ -243,8 +249,8 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            stopAllProgress();
             isStopClick = true;
+            stopAllProgress();
             stopMotorMotion();
 
         } else if (id == R.id.btn_pause) {
@@ -254,6 +260,7 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
             }
             isStopClick = false;
             if (btnPause.getText().toString().equals("暂停")) {
+                stopAllProgress();
                 stopMotorMotion();
             } else {
                 continueMotorMotion();
@@ -413,13 +420,11 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
                         dialog.dismiss();
                         isExit = true;
                         if (bleViewModel.isConnected()) {
+                            stopAllProgress();
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
-                            BleAdmeManualMeasuringHoleDepthBottomDialog.this.dismiss();
-                        } else {
-                            //直接关闭运行页面
-                            BleAdmeManualMeasuringHoleDepthBottomDialog.this.dismiss();
                         }
+                        BleAdmeManualMeasuringHoleDepthBottomDialog.this.dismiss();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

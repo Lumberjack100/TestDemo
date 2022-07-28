@@ -74,10 +74,16 @@ public abstract class BaseUSBSerialCommunicateFragment extends BaseFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopAllProgress();
+//    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

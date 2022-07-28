@@ -380,17 +380,10 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     }
 
     private void loadLastHistoryData(boolean isPullUp) {
-        if (isPullUp) {
-            String speed = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_PULL_UP_SPEED, "");
-            String distance = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_PULL_UP_DISTANCE, "");
-            mEtMovementSpeed.setText(speed);
-            mEtMotionDistance.setText(distance);
-        } else {
-            String speed = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_DROP_SPEED, "");
-            String distance = SPStaticUtils.getString(AppContants.ADME.LAST_MOTOR_DROP_DISTANCE, "");
-            mEtMovementSpeed.setText(speed);
-            mEtMotionDistance.setText(distance);
-        }
+        String speed = SPStaticUtils.getString(isPullUp ? AppContants.ADME.LAST_MOTOR_PULL_UP_SPEED : AppContants.ADME.LAST_MOTOR_DROP_SPEED, "");
+        String distance = SPStaticUtils.getString(isPullUp ? AppContants.ADME.LAST_MOTOR_PULL_UP_DISTANCE : AppContants.ADME.LAST_MOTOR_DROP_DISTANCE, "");
+        mEtMovementSpeed.setText(speed);
+        mEtMotionDistance.setText(distance);
     }
 
     private boolean checkValueIsValid() {

@@ -147,12 +147,12 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private String inclinometerTubeHoleDepth;// 测斜管孔深(m)
     private String decentralizationSpeed;// 下放速度(r/min)
     private String decentralizationWaitingTime;//下放等待时间(min)
-    private String dataSettlementMethodOld;//数据结算方式
-    private String dataSettlementMethod;// 数据结算方式
+    private String dataSettlementMethodOld;//数据解算方式
+    private String dataSettlementMethod;// 数据解算方式
     private final String[] inclinometerTypes = new String[]{"433测斜仪", "蓝牙测斜仪"};
     private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
     private final String[] measIntervalPerRounds = new String[]{"1", "2", "3", "4", "6", "8", "12", "24"};
-    private final String[] settlementMethods = new String[]{"顶固定法", "底固定法"};
+    private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -375,7 +375,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                 .show();
     }
     /**
-     * 选择数据结算方式
+     * 选择数据解算方式
      */
     public void showDataSettlementMethodDialog(Context context) {
         int pos = Arrays.asList(settlementMethods).indexOf(String.valueOf(mTvDataSettlementMethod.getText()));

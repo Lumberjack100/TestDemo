@@ -67,7 +67,7 @@ public class BleAdmeHacThresholdConfigFragment extends BaseUSRBleIotCommunicateF
 
         //获取电压阈值参数
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_VOLTAGE);
-        sendCommand(command);
+        commandItems.add(command);
 
         //获取预警级别参数
         command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_GET_WARN);

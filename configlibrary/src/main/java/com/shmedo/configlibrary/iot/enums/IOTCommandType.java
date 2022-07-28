@@ -511,7 +511,7 @@ public enum IOTCommandType {
     /**
      * 查询HAC测孔深运动的脉冲数、运动距离
      */
-    ADME_HAC_MD_GET_HOLE_MEASURE_PULSE("md_getmhdpulsedistance"),
+    ADME_HAC_MD_GET_HOLE_MEASURE_PULSE("md_hac_getmhdpulsedistance"),
 
     /**
      * 查询HAC数据测量参数
@@ -524,7 +524,7 @@ public enum IOTCommandType {
     ADME_HAC_MD_SET_DATA_MEASURE_PARAM("md_hac_setdatameasparame"),
 
     /**
-     * 查询电机运动状态
+     * 查询电机当前运动状态
      */
     ADME_HAC_MD_GET_MOTION_STATE("md_hac_getmotionstate"),
 

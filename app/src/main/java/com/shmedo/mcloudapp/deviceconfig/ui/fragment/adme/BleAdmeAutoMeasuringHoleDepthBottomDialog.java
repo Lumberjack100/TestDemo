@@ -86,10 +86,16 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopAllProgress();
+//    }
 
     public static BleAdmeAutoMeasuringHoleDepthBottomDialog newInstance() {
         BleAdmeAutoMeasuringHoleDepthBottomDialog fragment = new BleAdmeAutoMeasuringHoleDepthBottomDialog();
@@ -270,11 +276,11 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
      * 更新电机停止运动状态页面
      */
     private void updateStopState() {
+        stopAllProgress();
         repeatNum = 0;
         mIvClose.setVisibility(View.VISIBLE);
         btnStop.setVisibility(View.GONE);
         btnExit.setVisibility(View.VISIBLE);
-        stopAllProgress();
     }
 
     private void sendCommand(String cmdStr) {
@@ -308,13 +314,11 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
                         dialog.dismiss();
                         isExit = true;
                         if (bleViewModel.isConnected()) {
+                            stopAllProgress();
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
-                            BleAdmeAutoMeasuringHoleDepthBottomDialog.this.dismiss();
-                        } else {
-                            //直接关闭运行页面
-                            BleAdmeAutoMeasuringHoleDepthBottomDialog.this.dismiss();
                         }
+                        BleAdmeAutoMeasuringHoleDepthBottomDialog.this.dismiss();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

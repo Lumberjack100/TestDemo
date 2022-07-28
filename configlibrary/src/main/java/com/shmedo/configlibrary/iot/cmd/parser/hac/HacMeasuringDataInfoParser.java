@@ -33,6 +33,7 @@ public class HacMeasuringDataInfoParser implements IOTResultParser<HacMeasuringD
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
+            info.setEquipmodel(keyValueMap.getOrDefault("equipmodel", "NullKey"));
             info.setAddress(keyValueMap.getOrDefault("address", "NullKey"));
             info.setDownwaitetime(keyValueMap.getOrDefault("downwaitetime", "NullKey"));
             info.setDatatype(keyValueMap.getOrDefault("datatype", "NullKey"));

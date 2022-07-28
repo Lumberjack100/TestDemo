@@ -175,8 +175,8 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
     private String measureMethodOld;//测量方式
     private String measureMethod;//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)
-    private String dataSettlementMethodOld;//数据结算方式
-    private String dataSettlementMethod;// 数据结算方式
+    private String dataSettlementMethodOld;//数据解算方式
+    private String dataSettlementMethod;// 数据解算方式
     private String dataResponseOld;//数据应答（0:关闭，1:启用）
     private String dataResponse;// 数据应答（0:关闭，1:启用）
     private String measurementIntervalPerRoundOld;// 每轮测量间隔
@@ -198,7 +198,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     private String pointOffset;// 测点偏移距离h3
 
     private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
-    private final String[] settlementMethods = new String[]{"顶固定法", "底固定法"};
+    private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
     private final String[] dataResponseTypes = new String[]{"关闭", "启用"};
     private final String[] measIntervalPerRounds = new String[]{"1", "2", "3", "4", "6", "8", "12", "24"};
 
@@ -251,7 +251,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mTvMeasureMethod.setText("实时测量");
         measureMethodOld = "0";
 
-        mTvDataSettlementMethod.setText("顶固定法");
+        mTvDataSettlementMethod.setText("顶部固定法");
         dataSettlementMethodOld = "0";
 
         mTvDataResponse.setText("关闭");
@@ -378,7 +378,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     }
 
     /**
-     * 选择数据结算方式
+     * 选择数据解算方式
      */
     public void showDataSettlementMethodDialog(Context context) {
         int pos = Arrays.asList(settlementMethods).indexOf(String.valueOf(mTvDataSettlementMethod.getText()));

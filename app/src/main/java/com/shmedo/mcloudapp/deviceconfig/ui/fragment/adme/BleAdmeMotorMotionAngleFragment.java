@@ -99,12 +99,17 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
     protected void stopAllProgress() {
         mDefaultHandler.removeCallbacksAndMessages(null);
     }
-
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopAllProgress();
+//    }
 
     public static BleAdmeMotorMotionAngleFragment newInstance(String motionWay, String lastPulse, String totalPulseGoal) {
         BleAdmeMotorMotionAngleFragment fragment = new BleAdmeMotorMotionAngleFragment();

@@ -41,6 +41,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.CustomCommandLogPrintActivi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.hac.AdmeHacMeasuringDataActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -174,7 +175,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "开始测斜":
-
+                AdmeHacMeasuringDataActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
             case "历史数据":
@@ -426,10 +427,10 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         isFirstCreate = false;
         stopAllProgress();
-        super.onStop();
     }
 
     @Override

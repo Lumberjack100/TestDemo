@@ -582,10 +582,11 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
     }
 
+
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        super.onStop();
     }
 
     @Override

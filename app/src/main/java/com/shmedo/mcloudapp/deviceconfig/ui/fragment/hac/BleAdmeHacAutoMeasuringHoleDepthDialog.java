@@ -63,7 +63,6 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
     private String curPulse;//脉冲数
 
     private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
-    private boolean isExit = false;
 
     private final BleAdmeHacAutoMeasuringHoleDepthDialog.DefaultHandler mDefaultHandler = new BleAdmeHacAutoMeasuringHoleDepthDialog.DefaultHandler(this);
 
@@ -89,10 +88,16 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopAllProgress();
+//    }
 
     public static BleAdmeHacAutoMeasuringHoleDepthDialog newInstance() {
         BleAdmeHacAutoMeasuringHoleDepthDialog fragment = new BleAdmeHacAutoMeasuringHoleDepthDialog();
@@ -201,11 +206,6 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                //关闭页面
-                if (isExit) {
-                    BleAdmeHacAutoMeasuringHoleDepthDialog.this.dismiss();
-                    return;
-                }
                 //电机停止,更新运动状态页面
                 updateStopState();
             }
@@ -308,16 +308,12 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        isExit = true;
                         if (bleViewModel.isConnected()) {
                             stopAllProgress();
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
-                            BleAdmeHacAutoMeasuringHoleDepthDialog.this.dismiss();
-                        } else {
-                            //直接关闭运行页面
-                            BleAdmeHacAutoMeasuringHoleDepthDialog.this.dismiss();
                         }
+                        BleAdmeHacAutoMeasuringHoleDepthDialog.this.dismiss();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

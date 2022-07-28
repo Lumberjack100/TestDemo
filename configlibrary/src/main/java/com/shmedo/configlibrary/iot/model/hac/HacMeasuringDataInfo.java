@@ -11,11 +11,20 @@ import java.util.List;
  * 描述：     ADME AC10 数据测量配置参数
  */
 public class HacMeasuringDataInfo {
+    private String equipmodel;//电机工作标识 0：正常测量 1：停止 2: 异常
     private String address;//MAC 地址
     private String downwaitetime;//下放等待时间
-    private String datatype;//数据结算方式（0:顶固定法，1底固定法）
+    private String datatype;//数据解算方式（0:顶部固定法，1底部固定法）
     private String onewaytest;//单向测量
     private List<HacHoleAreaDepthInfo> holelist;
+
+    public String getEquipmodel() {
+        return TextUtils.isEmpty(equipmodel) ? "" : equipmodel;
+    }
+
+    public void setEquipmodel(String equipmodel) {
+        this.equipmodel = equipmodel;
+    }
 
     public String getAddress() {
         return TextUtils.isEmpty(address) ? "" : address;

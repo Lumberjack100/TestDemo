@@ -8,34 +8,35 @@ import androidx.fragment.app.Fragment;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacMeasuringDataFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacMeasuringDataResultsFragment;
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2022/7/12<br/>
- * 描述：     AC10 数据测量参数配置页面
+ * 描述：     AC10 数据测量过程展示页面
  */
-public class AdmeHacMeasuringDataActivity extends BaseConfigFragmentContainerActivity {
+public class AdmeHacMeasuringDataResultsActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, AdmeHacMeasuringDataActivity.class);
+        Intent intent = new Intent(context, AdmeHacMeasuringDataResultsActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("数据测量");
+        mToolbarTitle.setText("数据展示");
     }
+
 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = BleAdmeHacMeasuringDataFragment.newInstance();
+            fragment = BleAdmeHacMeasuringDataResultsFragment.newInstance();
         }
 
         return fragment;

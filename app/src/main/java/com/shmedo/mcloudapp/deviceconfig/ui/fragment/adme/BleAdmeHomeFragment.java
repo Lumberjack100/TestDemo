@@ -641,11 +641,11 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         isFirstCreate = false;
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         stopQueryMotorStateProgress();
-        super.onStop();
     }
 
     @Override
