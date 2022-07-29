@@ -38,7 +38,7 @@ public class HacMotorMotionDistanceInfo {
     }
 
     public String getAbndiasis() {
-        return abndiasis;
+        return TextUtils.isEmpty(abndiasis) ? "0" : abndiasis;
     }
 
     public void setAbndiasis(String abndiasis) {

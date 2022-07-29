@@ -129,16 +129,16 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        isStopQuery = false;
-        startQueryMotorStateProgress(0);
-    }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
 //        isStopQuery = false;
 //        startQueryMotorStateProgress(0);
-//    }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isStopQuery = false;
+        startQueryMotorStateProgress(5000);
+    }
 
     @Override
     public void onPause() {
@@ -205,7 +205,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 //TODO #test# 测试用例
 //                AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
 
-
             } else if (btnAction.getText().toString().equals("下一步")) {
                 if (motionState.getMotorinfo().equals("8")) {//等待下次测量,进入测量结果展示页面
                     AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
@@ -251,7 +250,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                     ToastUtils.show(errMsg);
                     return;
                 }
-                mTvKindTips.setText(MessageFormat.format("本轮测量已停止,预计 {1} 分钟后可重新测量", motionState.getWaittime()));
+                mTvKindTips.setText(MessageFormat.format("本轮测量已停止,预计 {0} 分钟后可重新测量", motionState.getWaittime()));
                 btnAction.setVisibility(View.INVISIBLE);
             }
             break;
@@ -267,7 +266,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             stopQueryMotorStateProgress();
             showErrorProtectionTip(motionState.getAbndiasis());
         }
-
         try {
             String batteryStr = motionState.getIncvoltage();
             SpannableStringBuilder builder = new SpannableStringBuilder(batteryStr + "%");
@@ -308,6 +306,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 btnAction.setVisibility(View.INVISIBLE);
 
             } else if (motionState.getMotorinfo().equals("8") || motionState.getMotorinfo().equals("9")) {//
+                stopQueryMotorStateProgress();
+
                 mTvKindTips.setText("测量完成");
                 waitingTimeLayout.setVisibility(View.INVISIBLE);
                 btnAction.setText("下一步");
@@ -315,7 +315,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             }
 
             mTvMotorInfo.setText(AdmeCTRMotionState.valueByCode(motionState.getMotorinfo()).getDescription());
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -349,6 +348,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                         tvContent.setText(stringBuilder.toString());
                     }
                 })
+                .setCancelable(false)
                 .setMaskColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.dialog_mask))
                 .show();
     }

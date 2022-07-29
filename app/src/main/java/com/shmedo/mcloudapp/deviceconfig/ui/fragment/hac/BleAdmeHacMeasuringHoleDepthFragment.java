@@ -184,7 +184,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
      */
     private String setMeasuringHoledepthParamCommand() {
         try {
-            if (mTvMeasureMode.getText().toString().contains("手动测量")) {
+            if (mTvMeasureMode.getText().toString().contains("手动")) {
                 //上拉
                 if (movementway.equals("0")) {
                     //持久化保存用户数据到SharedPreferences文件中

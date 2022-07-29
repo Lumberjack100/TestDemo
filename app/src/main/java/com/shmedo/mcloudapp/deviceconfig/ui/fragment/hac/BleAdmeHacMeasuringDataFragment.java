@@ -77,7 +77,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
-    private String equipmodel = "1";//电机工作标识  0：正常 1：停止 2: 异常
+    private String equipmodel = "0";//电机工作标识  0：停止  1：正常 2: 异常
     private String address;//MAC 地址
     private String holeno;//孔号
     private String areano;//区号
@@ -112,7 +112,9 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     @Override
     public void onResume() {
         super.onResume();
-        initQueryCommands();
+        if (isConnected()) {
+            initQueryCommands();
+        }
     }
 
     private void setView() {
@@ -270,7 +272,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     private String setMeasuringDataParamCommand() {
         try {
             HacMeasuringDataInfoEntity entity = new HacMeasuringDataInfoEntity();
-            entity.setEquipmodel("0");
+            entity.setEquipmodel("1");
             entity.setAddress(address);
             entity.setHoleno(holeno);
             entity.setAreano(areano);
@@ -351,6 +353,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                 }
                 motionState = commandResult.getResult();
                 initMotionState();
+                sendCommandFromCmdList();
             }
             break;
 
@@ -439,14 +442,18 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
         /**
          * 逻辑处理
          * 进入数据测量页面时，查询 md_hac_getdatameasparame 和 md_hac_getmotionstate 指令，先判断 equipmodel
-         1.1 equipmodel =0(正常测量状态)：
+         1.1 equipmodel =1(正常测量状态)：
          根据 motorinfo 控制跳转页面，motorinfo=2|3|4 进入数据测量页面状态；motorinfo=5|6 进入数据读取页面状态；motorinfo=7 进入数据上传页面状态。
-         1.2 equipmodel =1 (停止状态)：
+         1.2 equipmodel =0 (停止状态)：
          单测时按钮显示正向测量；正反测时，motorinfo=8，按钮显示正向测量；motorinfo=9，按钮显示反向测量。
          1.3 equipmodel =2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
          */
-        if (equipmodel.equals("0")) {//表示在测量 然后根据 motorinfo 控制跳转页面
-            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, motionState);
+        if (equipmodel.equals("1")) {//表示在测量 然后根据 motorinfo 控制跳转页面
+            if (!motionState.getMotorinfo().equals("8") && !motionState.getMotorinfo().equals("9")) {
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, motionState);
+            } else {
+                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+            }
             return;
         }
         //停止或异常状态下,判断是否单测模式，单测模式下显示正向测量；正反测模式下，根据 motorinfo 处理操作按钮
@@ -488,6 +495,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                         tvContent.setText(stringBuilder.toString());
                     }
                 })
+                .setCancelable(false)
                 .setMaskColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.dialog_mask))
                 .show();
     }
