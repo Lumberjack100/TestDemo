@@ -76,6 +76,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
 
     private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
     private boolean isStopClick = false;//是否是点击停止按钮操作
+    private boolean isStopQueryMotorState = false;
 
     private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
 
@@ -90,20 +91,21 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
         }
     }
 
-    protected void startQueryMotorMotionDataProgress() {
-        if (!isResumed())
+    protected void startQueryMotorStateProgress(long delayMillis) {
+        if (isStopQueryMotorState)
             return;
-        mDefaultHandler.sendEmptyMessageDelayed(0, 800);
+        mDefaultHandler.sendEmptyMessageDelayed(0, delayMillis);
     }
 
-    protected void stopAllProgress() {
+    protected void stopQueryMotorStateProgress() {
+        isStopQueryMotorState = true;
         mDefaultHandler.removeCallbacksAndMessages(null);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        stopAllProgress();
+        stopQueryMotorStateProgress();
     }
 
 //    @Override
@@ -162,7 +164,8 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
     @Override
     public void onResume() {
         super.onResume();
-        startQueryMotorMotionDataProgress();
+        isStopQueryMotorState = false;
+        startQueryMotorStateProgress(0);
     }
 
     private void initView() {
@@ -221,7 +224,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
                 return;
             }
             isStopClick = true;
-            stopAllProgress();
+            stopQueryMotorStateProgress();
             stopMotorMotion();
 
         } else if (id == R.id.btn_pause) {
@@ -231,7 +234,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
             }
             isStopClick = false;
             if (btnPause.getText().toString().equals("暂停")) {
-                stopAllProgress();
+                stopQueryMotorStateProgress();
                 stopMotorMotion();
             } else {
                 continueMotorMotion();
@@ -285,7 +288,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
                 repeatNum++;
                 Timber.d("updateMotionData:curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
                 //轮询 N 次电机脉冲数据不变化时，停留当前状态页面
-                if (repeatNum >= 6) {
+                if (repeatNum >= 10) {
                     return;
                 }
             } else {
@@ -320,14 +323,14 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
         }
 
         //继续轮询电机脉冲数据
-        startQueryMotorMotionDataProgress();
+        startQueryMotorStateProgress(1000);
     }
 
     /**
      * 更新电机停止运动状态页面
      */
     private void updateStopState() {
-        stopAllProgress();
+        stopQueryMotorStateProgress();
         repeatNum = 0;
         mIvClose.setVisibility(View.VISIBLE);
         btnStop.setVisibility(View.GONE);
@@ -339,12 +342,13 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
      * 处理电机继续运动
      */
     public void processContinueMotorMotion() {
-        Timber.d("Continue Motion: curDistance=%s,curPulse=%s", curDistance,  curPulse);
+        Timber.d("Continue Motion: curDistance=%s,curPulse=%s", curDistance, curPulse);
         if (btnPause.getText().toString().equals("继续")) {
             btnPause.setText("暂停");
             btnPause.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
         }
-        startQueryMotorMotionDataProgress();
+        isStopQueryMotorState = false;
+        startQueryMotorStateProgress(1000);
     }
 
     private void sendCommand(String cmdStr) {
@@ -377,7 +381,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         if (bleViewModel.isConnected()) {
-                            stopAllProgress();
+                            stopQueryMotorStateProgress();
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
                         }

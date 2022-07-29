@@ -71,6 +71,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @BindView(R.id.btn_action)
     TextView btnAction; // 动作按钮
 
+    @BindView(R.id.ll_waiting_time)
+    View waitingTimeLayout; //
+
     private HacMotionState motionState;
 
     private final QueryMotorStateHandler queryMotorStateHandler = new QueryMotorStateHandler(this);
@@ -126,16 +129,16 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        updateMotionState();
-//        startQueryMotorStateProgress(0);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         isStopQuery = false;
         startQueryMotorStateProgress(0);
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        isStopQuery = false;
+//        startQueryMotorStateProgress(0);
+//    }
 
     @Override
     public void onPause() {
@@ -199,8 +202,17 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             if (btnAction.getText().toString().equals("停止")) {
                 showStopWarnDialog();
 
+                //TODO #test# 测试用例
+//                AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+
+
             } else if (btnAction.getText().toString().equals("下一步")) {
-                AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                if (motionState.getMotorinfo().equals("8")) {//等待下次测量,进入测量结果展示页面
+                    AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                    mActivity.finish();
+                } else if (motionState.getMotorinfo().equals("9")) {//等待反测,回到测量参数配置页面
+                    mActivity.finish();
+                }
             }
         }
     }
@@ -275,7 +287,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 mTvWaitingTimeTitle.setText("下放结束预计剩余");
                 mTvWaitingTime.setText(MessageFormat.format("{0}分钟", motionState.getWaittime()));
 
-                mTvKindTips.setText(MessageFormat.format("{0}测量中，请耐心等待...", motionState.getMeasmode().equals("0") ? "正向" : "反向"));
+                mTvKindTips.setText("测斜仪下放中，请耐心等待...");
             } else if (motionState.getMotorinfo().equals("4")) {//测点测量
                 mTvWaitingTimeTitle.setText("测量结束预计剩余");
                 mTvWaitingTime.setText(MessageFormat.format("{0}分钟", motionState.getWaittime()));
@@ -286,11 +298,20 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 mTvWaitingTime.setText(MessageFormat.format("{0}分钟", motionState.getWaittime()));
 
                 mTvKindTips.setText("数据读取中，请耐心等待...");
+                btnAction.setVisibility(View.INVISIBLE);
+
             } else if (motionState.getMotorinfo().equals("7")) {//数据上传
                 mTvWaitingTimeTitle.setText("数据上传结束预计剩余");
                 mTvWaitingTime.setText(MessageFormat.format("{0}分钟", motionState.getWaittime()));
 
                 mTvKindTips.setText("数据上传中，请耐心等待...");
+                btnAction.setVisibility(View.INVISIBLE);
+
+            } else if (motionState.getMotorinfo().equals("8") || motionState.getMotorinfo().equals("9")) {//
+                mTvKindTips.setText("测量完成");
+                waitingTimeLayout.setVisibility(View.INVISIBLE);
+                btnAction.setText("下一步");
+                btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
             }
 
             mTvMotorInfo.setText(AdmeCTRMotionState.valueByCode(motionState.getMotorinfo()).getDescription());

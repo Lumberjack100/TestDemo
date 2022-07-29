@@ -351,7 +351,6 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                 }
                 motionState = commandResult.getResult();
                 initMotionState();
-                sendCommandFromCmdList();
             }
             break;
 

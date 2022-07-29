@@ -15,7 +15,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.adme.AdmeExecutiveAgencyInfo;
+import com.shmedo.configlibrary.iot.model.hac.HacExecutiveAgencyInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -66,7 +66,7 @@ public class BleAdmeHacExecutiveAgencyFragment extends BaseUSRBleIotCommunicateF
      */
     private void queryParamInfo() {
         startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_GET_EXECUTIVE_AGENCY);
         sendCommand(command);
     }
 
@@ -114,9 +114,9 @@ public class BleAdmeHacExecutiveAgencyFragment extends BaseUSRBleIotCommunicateF
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case ADME_MD_GET_EXECUTIVE_AGENCY: {//获取ADME的执行机构配置参数
+            case ADME_HAC_MD_GET_EXECUTIVE_AGENCY: {//获取ADME的执行机构配置参数
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                IOTCommandResult<AdmeExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                IOTCommandResult<HacExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询执行机构参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
@@ -129,7 +129,7 @@ public class BleAdmeHacExecutiveAgencyFragment extends BaseUSRBleIotCommunicateF
             }
             break;
 
-            case ADME_MD_SET_EXECUTIVE_AGENCY: {//设置ADME的执行机构配置参数
+            case ADME_HAC_MD_SET_EXECUTIVE_AGENCY: {//设置ADME的执行机构配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);

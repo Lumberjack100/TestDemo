@@ -95,11 +95,11 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.decentralizedChildLayout)
-    ViewGroup decentralizedChildLayout;
+    @BindView(R.id.decentralizedChildMaskLayer)
+    ViewGroup decentralizedChildMaskLayer;
 
-    @BindView(R.id.pullUpChildLayout)
-    ViewGroup pullUpChildLayout;
+    @BindView(R.id.pullUpChildMaskLayer)
+    ViewGroup pullUpChildMaskLayer;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
@@ -179,7 +179,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定使下放堵转检测不生效？", DECENTRALIZED_OPERATOR);
                 } else {
-                    decentralizedChildLayout.setVisibility(View.VISIBLE);
+                    decentralizedChildMaskLayer.setVisibility(View.GONE);
                     mBtnSave.setVisibility(View.VISIBLE);
                 }
             }
@@ -190,7 +190,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定使上拉堵转检测不生效？", PULLUP_OPERATOR);
                 } else {
-                    pullUpChildLayout.setVisibility(View.VISIBLE);
+                    pullUpChildMaskLayer.setVisibility(View.GONE);
                     mBtnSave.setVisibility(View.VISIBLE);
                 }
             }
@@ -291,13 +291,13 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                         dialog.dismiss();
                         if (type == DECENTRALIZED_OPERATOR) {
                             processSave();
-                            decentralizedChildLayout.setVisibility(View.GONE);
+                            decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
                             if (!mSbPullUpEnable.isChecked()) {
                                 mBtnSave.setVisibility(View.GONE);
                             }
                         } else if (type == PULLUP_OPERATOR) {
                             processSave();
-                            pullUpChildLayout.setVisibility(View.GONE);
+                            pullUpChildMaskLayer.setVisibility(View.VISIBLE);
                             if (!mSbDecentralizedEnable.isChecked()) {
                                 mBtnSave.setVisibility(View.GONE);
                             }
@@ -644,21 +644,21 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
         if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
             mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(false);
-            decentralizedChildLayout.setVisibility(View.GONE);
+            decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
         } else {
             mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
-            decentralizedChildLayout.setVisibility(View.VISIBLE);
+            decentralizedChildMaskLayer.setVisibility(View.GONE);
         }
 
         if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
-            pullUpChildLayout.setVisibility(View.GONE);
+            pullUpChildMaskLayer.setVisibility(View.VISIBLE);
             if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
                 mBtnSave.setVisibility(View.GONE);
             }
         } else {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
-            pullUpChildLayout.setVisibility(View.VISIBLE);
+            pullUpChildMaskLayer.setVisibility(View.GONE);
         }
 
         try {

@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.hac.AdmeHacMeasuringDataActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
 
@@ -41,7 +42,7 @@ public class BleAdmeHacMeasuringDataResultsFragment extends BaseUSRBleIotCommuni
             AdmeHacMeasuringDataActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
 
         } else if (id == R.id.btn_save) {
-
+            DeviceConfigActivity.startActivity(mActivity, null, "ADME_HAC10");
         }
     }
 }

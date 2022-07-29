@@ -20,9 +20,9 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
-import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeExecutiveAgencyEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.hac.HacExecutiveAgencyInfoEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.model.adme.AdmeExecutiveAgencyInfo;
+import com.shmedo.configlibrary.iot.model.hac.HacExecutiveAgencyInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
@@ -137,7 +137,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
     private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-    public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo;
+    public HacExecutiveAgencyInfo admeExecutiveAgencyInfo;
 
 
     public AdmeHacExecutiveAgencyView(Context context) {
@@ -472,7 +472,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
     public String getSetCommand() {
         String command = "";
         try {
-            AdmeExecutiveAgencyEntity entity = new AdmeExecutiveAgencyEntity();
+            HacExecutiveAgencyInfoEntity entity = new HacExecutiveAgencyInfoEntity();
             entity.setDatatype(dataSettlementMethod);
             entity.setDatareply(dataResponseEnableSBtn.isChecked() ? "1" : "0");
             entity.setDatainval(dataReadingInterval);
@@ -487,7 +487,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
             entity.setInterval_fitting(intervalFitting);
             entity.setPoint_offset(pointOffset);
 
-            command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY, entity);
+            command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_SET_EXECUTIVE_AGENCY, entity);
         } catch (Exception ex) {
             command = "";
             ex.printStackTrace();
@@ -497,8 +497,8 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
 
     public void initParamConfigInfo() {
         if (admeExecutiveAgencyInfo == null) {
-            Timber.e("AdmeExecutiveAgencyInfo is Null!");
-            admeExecutiveAgencyInfo = new AdmeExecutiveAgencyInfo();
+            Timber.e("HacExecutiveAgencyInfo is Null!");
+            admeExecutiveAgencyInfo = new HacExecutiveAgencyInfo();
             return;
         }
         dataSettlementMethodOld = admeExecutiveAgencyInfo.getDatatype();

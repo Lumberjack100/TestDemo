@@ -43,6 +43,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.e40.E40NmeaTimeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40RTKModeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40SatelitteInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40SerialPortInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacExecutiveAgencyInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.hac.HacMeasuringDataInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.hac.HacMeasuringHoleDepthInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.hac.HacMotionStateParser;
@@ -226,7 +227,8 @@ public class IOTParseManager {
                 HacMeasuringHoleDepthInfoParser.class,
                 HacMotionStateParser.class,
                 HacWarningValueParser.class,
-                HacMotorMotionDistanceInfoParser.class
+                HacMotorMotionDistanceInfoParser.class,
+                HacExecutiveAgencyInfoParser.class
         });
 
         registerWithClass(clazzes);
