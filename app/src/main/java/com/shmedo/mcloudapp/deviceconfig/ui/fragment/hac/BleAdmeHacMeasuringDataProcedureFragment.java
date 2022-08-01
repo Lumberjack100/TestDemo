@@ -137,7 +137,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     public void onResume() {
         super.onResume();
         isStopQuery = false;
-        startQueryMotorStateProgress(5000);
+        startQueryMotorStateProgress(0);
     }
 
     @Override
@@ -275,33 +275,30 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             mTvInclinometerBattery.setText(builder);
 
             batteryStr = motionState.getDriveinputv();
-            builder = new SpannableStringBuilder(batteryStr);
-            battery = Double.parseDouble(batteryStr.replace("%", ""));
+            builder = new SpannableStringBuilder(batteryStr+ "%");
+            battery = Double.parseDouble(batteryStr);
             colorSpan = new ForegroundColorSpan(battery <= 20 ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
             builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvDeviceBattery.setText(builder);
 
+            waitingTimeLayout.setVisibility(View.VISIBLE);
             if (motionState.getMotorinfo().equals("2") || motionState.getMotorinfo().equals("3")) {//管底等待
                 mTvWaitingTimeTitle.setText("下放结束预计剩余");
-                mTvWaitingTime.setText(MessageFormat.format("{0}分钟", motionState.getWaittime()));
-
+                mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
                 mTvKindTips.setText("测斜仪下放中，请耐心等待...");
             } else if (motionState.getMotorinfo().equals("4")) {//测点测量
                 mTvWaitingTimeTitle.setText("测量结束预计剩余");
-                mTvWaitingTime.setText(MessageFormat.format("{0}分钟", motionState.getWaittime()));
-
+                mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
                 mTvKindTips.setText(MessageFormat.format("{0}测量中，请耐心等待...", motionState.getMeasmode().equals("0") ? "正向" : "反向"));
             } else if (motionState.getMotorinfo().equals("6")) {//测斜仪配对,读取数据
                 mTvWaitingTimeTitle.setText("数据读取结束预计剩余");
-                mTvWaitingTime.setText(MessageFormat.format("{0}分钟", motionState.getWaittime()));
-
+                mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
                 mTvKindTips.setText("数据读取中，请耐心等待...");
                 btnAction.setVisibility(View.INVISIBLE);
 
             } else if (motionState.getMotorinfo().equals("7")) {//数据上传
                 mTvWaitingTimeTitle.setText("数据上传结束预计剩余");
-                mTvWaitingTime.setText(MessageFormat.format("{0}分钟", motionState.getWaittime()));
-
+                mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
                 mTvKindTips.setText("数据上传中，请耐心等待...");
                 btnAction.setVisibility(View.INVISIBLE);
 

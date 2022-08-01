@@ -297,10 +297,6 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
         if (!TextUtils.isEmpty(command))
             commandItems.add(command);
 
-        //保存参数指令
-        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM);
-        commandItems.add(command);
-
         startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_15000_MILLIS);
         sendCommandFromCmdList();
     }
@@ -358,24 +354,10 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             break;
 
             case ADME_HAC_MD_SET_DATA_MEASURE_PARAM: {//设置HAC数据测量参数,开始测量
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, motionState);
-                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
-                if (!cmdResult.isSucceed()) {
-                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    String errMsg = String.format("%s %s", "设置数据测量参数出错!", cmdResult.getReason());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                sendCommandFromCmdList();
-            }
-            break;
-
-            case MD_SAVE_CONFIG_PARAM: {
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    String errMsg = String.format("%s %s", "发送保存指令出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置数据测量参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
@@ -462,7 +444,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
         } else {
             mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
         }
-        if (equipmodel.equals("2")) {//表示异常，展示异常原因
+        if (equipmodel.equals("2") && !motionState.getAbndiasis().equals("0")) {//表示异常，展示异常原因
             showErrorProtectionTip(motionState.getAbndiasis());
         }
     }

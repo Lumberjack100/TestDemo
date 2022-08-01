@@ -51,7 +51,7 @@
                 android:layout_marginTop="8dp"
                 android:text="测斜仪电量"
                 android:textColor="@color/title_text_color"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -78,7 +78,7 @@
                 android:layout_marginTop="8dp"
                 android:text="设备电量"
                 android:textColor="@color/title_text_color"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -106,7 +106,7 @@
                 android:layout_marginTop="8dp"
                 android:text="测量结束倒计时"
                 android:textColor="@color/title_text_color"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:text="设备运行状态:"
             android:textColor="@color/title_text_color"
-            android:textSize="13sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_motorinfo"
@@ -130,7 +130,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_size_10"
             android:textColor="@color/title_text_color"
-            android:textSize="13sp"
+            android:textSize="14sp"
             tools:text="下放运动" />
 
     </LinearLayout>
