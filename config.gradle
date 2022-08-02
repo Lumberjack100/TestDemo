@@ -32,6 +32,7 @@ ext {
             ToastUtils                   : '10.3',
 
             switchbutton                 : '2.1.0',
+            progressbutton               : '2.1.0',
 
             pgyerSdk                     : '4.2.8',
             buglyCrashReport             : '4.0.4',

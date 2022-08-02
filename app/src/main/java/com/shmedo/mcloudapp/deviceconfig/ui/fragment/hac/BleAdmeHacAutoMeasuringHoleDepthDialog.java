@@ -14,6 +14,10 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.ColorUtils;
+import com.github.razir.progressbutton.DrawableButtonExtensionsKt;
+import com.github.razir.progressbutton.ProgressButtonHolderKt;
+import com.github.razir.progressbutton.ProgressParams;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
@@ -31,6 +35,8 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
 /**
@@ -152,6 +158,8 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
         mTvMotionState.setText("正常");
         mTvMotionPulse.setText("0");
         mTvMotionDistance.setText("0");
+
+        ProgressButtonHolderKt.bindProgressButton(this, btnStop);
     }
 
     /**
@@ -174,9 +182,6 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
     @OnClick({R.id.iv_close, R.id.btn_stop, R.id.btn_exit})
     public void onClick(View view) {
         int id = view.getId();
-//        if (isDoubleClick(view)) {
-//            return;
-//        }
         if (id == R.id.iv_close) {
             if (!bleViewModel.isConnected() || btnExit.getVisibility() == View.VISIBLE) {
                 dismiss();
@@ -190,6 +195,15 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
             }
             stopQueryMotorStateProgress();
             stopMotorMotion();
+            DrawableButtonExtensionsKt.showProgress(btnStop, new Function1<ProgressParams, Unit>() {
+                @Override
+                public Unit invoke(ProgressParams progressParams) {
+                    progressParams.setButtonTextRes(R.string.processing);
+                    progressParams.setProgressColor(ColorUtils.getColor(R.color.colorPrimary));
+                    return Unit.INSTANCE;
+                }
+            });
+            btnStop.setEnabled(false);
 
         } else if (id == R.id.btn_exit) {
             dismiss();
@@ -203,6 +217,8 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_STOP_MEASURING_HOLEDEPTH: {//停止电机运动
+                btnStop.setEnabled(true);
+                DrawableButtonExtensionsKt.hideProgress(btnStop, "停止");
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "停止电机出错!", cmdResult.getReason());
@@ -264,7 +280,7 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
             }
             mTvMotionState.setText(stringBuilder.toString());
             mTvMotionState.setTextColor(Color.RED);
-        }else{
+        } else {
             mTvMotionState.setText("正常");
             mTvMotionState.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_54DA99));
         }

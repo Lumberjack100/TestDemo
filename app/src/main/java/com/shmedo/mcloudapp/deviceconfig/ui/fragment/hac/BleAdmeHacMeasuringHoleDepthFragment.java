@@ -18,8 +18,6 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.AttachPopupView;
-import com.lxj.xpopup.enums.PopupAnimation;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -46,6 +44,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.refactor.kmpautotextview.KMPAutoComplTextView;
 import timber.log.Timber;
 
 public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateFragment implements TextWatcher {
@@ -53,7 +52,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
     ClearEditText mEtMacAddress;
 
     @BindView(R.id.et_hole_num)
-    ClearEditText mEtHoleNum; //孔号
+    KMPAutoComplTextView mEtHoleNum; //孔号
 
     @BindView(R.id.et_area_num)
     ClearEditText mEtAreaNum;//区号
@@ -133,13 +132,6 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         setView();
         loadLastHistoryData(true);
         queryMeasuringHoleDepthInfoParam();
-//        initTestData();
-    }
-
-    private void initTestData() {
-        for (int i = 1; i <= 100; i++) {
-            holeNumList.add(String.valueOf(i));
-        }
     }
 
     private void setView() {
@@ -159,8 +151,6 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         mEtMovementSpeed.setHint("1-180");
         mEtGoalMovementDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
-        mEtHoleNum.addTextChangedListener(this);
-
         //默认自动测量模式
         measway = "0";
         mTvMeasureMode.setText(measureWays[0]);
@@ -168,6 +158,23 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         manualMeasureModeLayout.setVisibility(View.GONE);
         mTvMovementWay.setText("上拉");
         movementway = "0";
+
+        mEtHoleNum.addTextChangedListener(this);
+        mEtHoleNum.setOnPopupItemClickListener(new KMPAutoComplTextView.OnPopupItemClickListener() {
+            @Override
+            public void onPopupItemClick(CharSequence charSequence) {
+                try {
+                    int value1 = Integer.parseInt(charSequence.toString());
+                    for (HacHoleAreaDepthInfo info : holeAreaDepthInfoArrayList) {
+                        int tempValue = Integer.parseInt(info.getHoleno());
+                        if (tempValue == value1)
+                            mEtAreaNum.setText(info.getAreano());
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -222,16 +229,13 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         }
     }
 
-    @OnClick({R.id.iv_show_hole_dropdown, R.id.ll_measure_mode, R.id.ll_movement_way, R.id.btn_run})
+    @OnClick({R.id.ll_measure_mode, R.id.ll_movement_way, R.id.btn_run})
     public void onClick(View view) {
         int id = view.getId();
         if (isDoubleClick(view)) {
             return;
         }
-        if (id == R.id.iv_show_hole_dropdown) {
-            showHoleDropDownList(view);
-
-        } else if (id == R.id.ll_measure_mode) {
+        if (id == R.id.ll_measure_mode) {
             showMeasureModeDialog();
 
         } else if (id == R.id.ll_movement_way) {
@@ -269,34 +273,6 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
 
         startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_15000_MILLIS);
         sendCommandFromCmdList();
-    }
-
-    /**
-     * 选择孔号
-     *
-     * @param v
-     */
-    private void showHoleDropDownList(View v) {
-        if (holeNumList == null || holeNumList.size() == 0) {
-            ToastUtils.show("没有可选孔号");
-            return;
-        }
-        String[] holeNums = holeNumList.toArray(new String[0]);
-        AttachPopupView attachPopupView = new XPopup.Builder(getContext())
-                .hasShadowBg(false)
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .isDarkTheme(false)
-                .popupAnimation(PopupAnimation.NoAnimation) //NoAnimation表示禁用动画
-                .atView(v)  // 依附于所点击的View，内部会自动判断在上方或者下方显示
-                .asAttachList(holeNums, null, new OnSelectListener() {
-                    @Override
-                    public void onSelect(int position, String text) {
-                        mEtHoleNum.setText(text);
-                        HacHoleAreaDepthInfo info = holeAreaDepthInfoArrayList.get(position);
-                        mEtAreaNum.setText(info != null ? info.getAreano() : "");
-                    }
-                }, 0, 0);
-        attachPopupView.show();
     }
 
     /**
@@ -603,6 +579,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         for (HacHoleAreaDepthInfo info : holeAreaDepthInfoArrayList) {
             holeNumList.add(info.getHoleno());
         }
+        mEtHoleNum.setDatas(holeNumList);
     }
 
     /**
@@ -630,14 +607,16 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (holeNumList.contains(s.toString())) {
-            mBtnRun.setText("重测孔深");
-        } else {
-            mBtnRun.setText("启动");
-        }
+
     }
 
     @Override
     public void afterTextChanged(Editable s) {
+        if (holeNumList.contains(s.toString())) {
+            mBtnRun.setText("重测孔深");
+        } else {
+            mBtnRun.setText("启动");
+            mEtAreaNum.setText("");
+        }
     }
 }

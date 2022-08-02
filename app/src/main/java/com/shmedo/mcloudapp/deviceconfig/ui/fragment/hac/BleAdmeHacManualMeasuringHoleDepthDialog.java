@@ -226,6 +226,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
             isStopClick = true;
             stopQueryMotorStateProgress();
             stopMotorMotion();
+            btnStop.setEnabled(false);
 
         } else if (id == R.id.btn_pause) {
             if (!bleViewModel.isConnected()) {
@@ -236,6 +237,8 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
             if (btnPause.getText().toString().equals("暂停")) {
                 stopQueryMotorStateProgress();
                 stopMotorMotion();
+                btnPause.setEnabled(false);
+
             } else {
                 continueMotorMotion();
             }
@@ -251,6 +254,8 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_STOP_MEASURING_HOLEDEPTH: {//停止电机运动
+                btnStop.setEnabled(true);
+                btnPause.setEnabled(true);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     String errMsg = String.format("%s %s", "停止电机出错!", cmdResult.getReason());

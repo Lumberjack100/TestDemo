@@ -241,7 +241,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 }
                 motionState = commandResult.getResult();
                 refreshMotionState();
-                startQueryMotorStateProgress(10000);
+                startQueryMotorStateProgress(3000);
             }
             break;
 
@@ -332,6 +332,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 stopQueryMotorStateProgress();
 
                 mTvKindTips.setText("测量完成");
+                btnAction.setVisibility(View.VISIBLE);
                 btnAction.setText("下一步");
                 btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
             }

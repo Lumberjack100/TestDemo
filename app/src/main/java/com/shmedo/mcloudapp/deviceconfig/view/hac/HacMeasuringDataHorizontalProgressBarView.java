@@ -65,7 +65,7 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
 
             double result = maxValue == 0 ? 0 : (float) progress / maxValue;
             result = result * 100;
-            mTvDataPercent.setText(String.format("%s%", result));
+            mTvDataPercent.setText(String.format("%s%", result + ""));
 
         } catch (Exception ex) {
             ex.printStackTrace();

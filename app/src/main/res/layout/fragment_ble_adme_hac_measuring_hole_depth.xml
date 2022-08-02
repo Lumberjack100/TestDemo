@@ -34,7 +34,20 @@
             style="@style/Common_ClickableItem_TitleStyle"
             android:text="孔号" />
 
-        <LinearLayout
+        <cn.refactor.kmpautotextview.KMPAutoComplTextView
+            android:id="@+id/et_hole_num"
+            style="@style/Common_EditItem_EditText_Style"
+            android:layout_marginStart="150dp"
+            android:layout_marginEnd="10dp"
+            android:completionThreshold="1"
+            android:inputType="number"
+            android:hint="1-99"
+            app:completionHighlightColor="@color/colorPrimary"
+            app:completionIgnoreCase="true"
+            app:completionTextColor="@color/title_text_color"
+            app:completionTextSize="16sp" />
+
+       <!-- <LinearLayout
             android:id="@+id/layoutNewLine"
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -44,13 +57,18 @@
             android:gravity="center_vertical"
             android:background="@drawable/bg_corner_3dp_gray_stroke">
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
+            <cn.refactor.kmpautotextview.KMPAutoComplTextView
                 android:id="@+id/et_hole_num"
                 style="@style/Common_EditItem_EditText_Style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="01-99"
-                android:inputType="number" />
+                android:completionThreshold="1"
+                android:inputType="number"
+                android:hint="1-99"
+                app:completionHighlightColor="@color/colorPrimary"
+                app:completionIgnoreCase="true"
+                app:completionTextColor="@color/title_text_color"
+                app:completionTextSize="16sp" />
 
             <ImageView
                 android:id="@+id/iv_show_hole_dropdown"
@@ -61,7 +79,7 @@
                 android:src="@drawable/ic_expand_more_black_24dp"
                 app:tint="@color/gray_808080" />
 
-        </LinearLayout>
+        </LinearLayout>-->
 
     </LinearLayout>
 
@@ -76,7 +94,7 @@
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_area_num"
             style="@style/Common_EditItem_EditText_Style"
-            android:hint="01-99"
+            android:hint="1-99"
             android:inputType="number" />
 
     </LinearLayout>

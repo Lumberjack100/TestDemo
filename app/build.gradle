@@ -162,6 +162,8 @@ dependencies {
 
     //开关 Button
     implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
+    //Add progress to any button by few lines of code without layout changes
+    implementation "com.github.razir.progressbutton:progressbutton:$rootProject.thirdLib.progressbutton"
 
     //蒲公英SDk
     implementation "com.pgyer:analytics:$rootProject.thirdLib.pgyerSdk"
