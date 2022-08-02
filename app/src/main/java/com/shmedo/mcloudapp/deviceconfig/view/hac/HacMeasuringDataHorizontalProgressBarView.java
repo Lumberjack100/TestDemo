@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 
 import com.shmedo.mcloudapp.R;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -29,6 +31,9 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
 
     @BindView(R.id.horizontalBar)
     ProgressBar horizontalBar;//
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
 
     public HacMeasuringDataHorizontalProgressBarView(Context context) {
         this(context, null);
@@ -63,9 +68,10 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
                 horizontalBar.setProgress(progress, true);
             }
 
-            double result = maxValue == 0 ? 0 : (float) progress / maxValue;
+            mTvDataNum.setText(String.format("(%s/%s)", values[0], values[1]));
+            float result = maxValue == 0 ? 0 : (float) progress / maxValue;
             result = result * 100;
-            mTvDataPercent.setText(String.format("%s%", result + ""));
+            mTvDataPercent.setText(String.format("%s%%", decimalFormat.format(result)));
 
         } catch (Exception ex) {
             ex.printStackTrace();

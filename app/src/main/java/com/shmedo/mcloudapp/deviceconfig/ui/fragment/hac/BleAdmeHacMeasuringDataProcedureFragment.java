@@ -308,7 +308,13 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 waitingTimeLayout.setVisibility(View.VISIBLE);
                 mTvWaitingTimeTitle.setText("测量结束预计剩余");
                 mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
-                mTvKindTips.setText(MessageFormat.format("{0}测量中，请耐心等待...", motionState.getMeasmode().equals("0") ? "正向" : "反向"));
+                mTvKindTips.setText(String.format("%s测量中，请耐心等待...", motionState.getMeasmode().equals("0") ? "正向" : "反向"));
+            } else if (motionState.getMotorinfo().equals("5")) {//测点测量
+                verticalProgressBarView.setVisibility(View.VISIBLE);
+                horizontalProgressBarView.setVisibility(View.GONE);
+                verticalProgressBarView.updateProgress(motionState.getMeaspoint());
+
+                mTvKindTips.setText("测量结束，等待读取数据...");
             } else if (motionState.getMotorinfo().equals("6")) {//测斜仪配对,读取数据
                 horizontalProgressBarView.setVisibility(View.VISIBLE);
                 verticalProgressBarView.setVisibility(View.GONE);
