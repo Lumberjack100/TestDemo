@@ -362,7 +362,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, motionState);
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
             }
             break;
         }
@@ -432,7 +432,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
          */
         if (equipmodel.equals("1")) {//表示在测量 然后根据 motorinfo 控制跳转页面
             if (!motionState.getMotorinfo().equals("8") && !motionState.getMotorinfo().equals("9")) {
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, motionState);
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
             } else {
                 mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
             }

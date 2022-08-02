@@ -13,7 +13,7 @@
         android:id="@+id/tv_kind_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="正向测量中"
+        tools:text="正向测量中"
         android:textColor="@color/app_color_theme_1"
         android:textSize="15sp" />
 

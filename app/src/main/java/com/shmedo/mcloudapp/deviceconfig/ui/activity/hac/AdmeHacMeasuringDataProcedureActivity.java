@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import com.shmedo.configlibrary.iot.model.hac.HacMotionState;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacMeasuringDataProcedureFragment;
@@ -17,13 +16,13 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacMeasuringData
  * 描述：     AC10 数据测量过程展示页面
  */
 public class AdmeHacMeasuringDataProcedureActivity extends BaseConfigFragmentContainerActivity {
-    protected static final String MOTION_STATE = "motion_state";
-    private HacMotionState motionState;
+    protected static final String HOLE_DEPTH = "hole_depth";
+    private String holeDepth;
 
-    public static void startActivity(Context context, int connectWay, HacMotionState motionState) {
+    public static void startActivity(Context context, int connectWay, String holeDepth) {
         Intent intent = new Intent(context, AdmeHacMeasuringDataProcedureActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(MOTION_STATE, motionState);
+        intent.putExtra(HOLE_DEPTH, holeDepth);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -40,8 +39,8 @@ public class AdmeHacMeasuringDataProcedureActivity extends BaseConfigFragmentCon
         if (intent.getExtras() == null)
             return;
 
-        if (intent.getExtras().containsKey(MOTION_STATE)) {
-            motionState =  intent.getParcelableExtra(MOTION_STATE);
+        if (intent.getExtras().containsKey(HOLE_DEPTH)) {
+            holeDepth =  intent.getStringExtra(HOLE_DEPTH);
         }
     }
 
@@ -50,7 +49,7 @@ public class AdmeHacMeasuringDataProcedureActivity extends BaseConfigFragmentCon
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = BleAdmeHacMeasuringDataProcedureFragment.newInstance(motionState);
+            fragment = BleAdmeHacMeasuringDataProcedureFragment.newInstance(holeDepth);
         }
 
         return fragment;

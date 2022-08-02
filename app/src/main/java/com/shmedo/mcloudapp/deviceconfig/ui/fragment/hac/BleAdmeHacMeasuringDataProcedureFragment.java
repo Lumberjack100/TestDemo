@@ -33,6 +33,8 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.hac.AdmeHacMeasuringDataResultsActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotCommunicateFragment;
+import com.shmedo.mcloudapp.deviceconfig.view.hac.HacMeasuringDataHorizontalProgressBarView;
+import com.shmedo.mcloudapp.deviceconfig.view.hac.HacMeasuringDataVerticalProgressBarView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +50,13 @@ import timber.log.Timber;
  * 描述：     测量数据动态过程展示页面
  */
 public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommunicateFragment {
-    protected static final String MOTION_STATE = "motion_state";
+    protected static final String HOLE_DEPTH = "hole_depth";
+
+    @BindView(R.id.verticalProgressBarView)
+    HacMeasuringDataVerticalProgressBarView verticalProgressBarView;
+
+    @BindView(R.id.horizontalProgressBarView)
+    HacMeasuringDataHorizontalProgressBarView horizontalProgressBarView;
 
     @BindView(R.id.tv_kind_tips)
     TextView mTvKindTips; // 温馨提示
@@ -75,6 +83,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     View waitingTimeLayout; //
 
     private HacMotionState motionState;
+    private String holeDepth;
 
     private final QueryMotorStateHandler queryMotorStateHandler = new QueryMotorStateHandler(this);
 
@@ -101,14 +110,15 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     }
 
     protected void stopQueryMotorStateProgress() {
+        Timber.d("call stopQueryMotorStateProgress");
         isStopQuery = true;
         queryMotorStateHandler.removeCallbacksAndMessages(null);
     }
 
-    public static BleAdmeHacMeasuringDataProcedureFragment newInstance(HacMotionState motionState) {
+    public static BleAdmeHacMeasuringDataProcedureFragment newInstance(String holeDepth) {
         BleAdmeHacMeasuringDataProcedureFragment fragment = new BleAdmeHacMeasuringDataProcedureFragment();
         Bundle args = new Bundle();
-        args.putParcelable(MOTION_STATE, motionState);
+        args.putString(HOLE_DEPTH, holeDepth);
         fragment.setArguments(args);
         return fragment;
     }
@@ -116,8 +126,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().containsKey(MOTION_STATE)) {
-            motionState = getArguments().getParcelable(MOTION_STATE);
+        if (getArguments() != null && getArguments().containsKey(HOLE_DEPTH)) {
+            holeDepth = getArguments().getString(HOLE_DEPTH);
         }
     }
 
@@ -129,8 +139,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        isStopQuery = false;
-//        startQueryMotorStateProgress(0);
     }
 
     @Override
@@ -163,7 +171,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             entity.setEquipmodel("0");
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM, entity);
-
             return command;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -202,9 +209,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             if (btnAction.getText().toString().equals("停止")) {
                 showStopWarnDialog();
 
-                //TODO #test# 测试用例
-//                AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-
             } else if (btnAction.getText().toString().equals("下一步")) {
                 if (motionState.getMotorinfo().equals("8")) {//等待下次测量,进入测量结果展示页面
                     AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
@@ -218,9 +222,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
-        if (!isActive) {
-            return;
-        }
+//        if (!isActive) {
+//            return;
+//        }
         setResultData(cmdStr);
     }
 
@@ -236,8 +240,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                     return;
                 }
                 motionState = commandResult.getResult();
-                updateMotionState();
-                startQueryMotorStateProgress(5000);
+                refreshMotionState();
+                startQueryMotorStateProgress(10000);
             }
             break;
 
@@ -257,7 +261,10 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         }
     }
 
-    private void updateMotionState() {
+    /**
+     * 实时刷新电机运动状态
+     */
+    private void refreshMotionState() {
         if (motionState == null) {
             return;
         }
@@ -275,38 +282,56 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             mTvInclinometerBattery.setText(builder);
 
             batteryStr = motionState.getDriveinputv();
-            builder = new SpannableStringBuilder(batteryStr+ "%");
+            builder = new SpannableStringBuilder(batteryStr + "%");
             battery = Double.parseDouble(batteryStr);
             colorSpan = new ForegroundColorSpan(battery <= 20 ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.red) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
             builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvDeviceBattery.setText(builder);
 
-            waitingTimeLayout.setVisibility(View.VISIBLE);
-            if (motionState.getMotorinfo().equals("2") || motionState.getMotorinfo().equals("3")) {//管底等待
+            waitingTimeLayout.setVisibility(View.INVISIBLE);
+            if (motionState.getMotorinfo().equals("1")) {
+                mTvKindTips.setText("测斜仪配对，请耐心等待...");
+
+            } else if (motionState.getMotorinfo().equals("2") || motionState.getMotorinfo().equals("3")) {//管底等待
+                verticalProgressBarView.setVisibility(View.VISIBLE);
+                horizontalProgressBarView.setVisibility(View.GONE);
+
+                waitingTimeLayout.setVisibility(View.VISIBLE);
                 mTvWaitingTimeTitle.setText("下放结束预计剩余");
                 mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
                 mTvKindTips.setText("测斜仪下放中，请耐心等待...");
             } else if (motionState.getMotorinfo().equals("4")) {//测点测量
+                verticalProgressBarView.setVisibility(View.VISIBLE);
+                horizontalProgressBarView.setVisibility(View.GONE);
+                verticalProgressBarView.updateProgress(motionState.getMeaspoint());
+
+                waitingTimeLayout.setVisibility(View.VISIBLE);
                 mTvWaitingTimeTitle.setText("测量结束预计剩余");
                 mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
                 mTvKindTips.setText(MessageFormat.format("{0}测量中，请耐心等待...", motionState.getMeasmode().equals("0") ? "正向" : "反向"));
             } else if (motionState.getMotorinfo().equals("6")) {//测斜仪配对,读取数据
+                horizontalProgressBarView.setVisibility(View.VISIBLE);
+                verticalProgressBarView.setVisibility(View.GONE);
+                horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
+
+                waitingTimeLayout.setVisibility(View.VISIBLE);
                 mTvWaitingTimeTitle.setText("数据读取结束预计剩余");
                 mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
                 mTvKindTips.setText("数据读取中，请耐心等待...");
                 btnAction.setVisibility(View.INVISIBLE);
-
             } else if (motionState.getMotorinfo().equals("7")) {//数据上传
+                horizontalProgressBarView.setVisibility(View.VISIBLE);
+                verticalProgressBarView.setVisibility(View.GONE);
+                horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
+
                 mTvWaitingTimeTitle.setText("数据上传结束预计剩余");
                 mTvWaitingTime.setText(String.format("%s分钟", motionState.getWaittime()));
                 mTvKindTips.setText("数据上传中，请耐心等待...");
                 btnAction.setVisibility(View.INVISIBLE);
-
             } else if (motionState.getMotorinfo().equals("8") || motionState.getMotorinfo().equals("9")) {//
                 stopQueryMotorStateProgress();
 
                 mTvKindTips.setText("测量完成");
-                waitingTimeLayout.setVisibility(View.INVISIBLE);
                 btnAction.setText("下一步");
                 btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
             }
