@@ -58,6 +58,8 @@ public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
             String[] values = measurePoint.split("\\|");
             if (!TextUtils.isEmpty(values[1])) {
                 double depth = Double.parseDouble(values[1]);
+                if (depth == 0)
+                    return;
                 mTvHoleDepth.setText(String.format("孔深 %s 米", decimalFormat.format(depth)));
                 verticalBar.setMax((int) (depth * 10));
             }
@@ -73,11 +75,19 @@ public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
 
         try {
             String[] values = measurePoint.split("\\|");
+            if (!TextUtils.isEmpty(values[1])) {
+                double depth = Double.parseDouble(values[1]);
+                if (depth == 0)
+                    return;
+
+                mTvHoleDepth.setText(String.format("孔深 %s 米", decimalFormat.format(depth)));
+                verticalBar.setMax((int) (depth * 10));
+            }
             if (TextUtils.isEmpty(values[0]))
                 verticalBar.setProgress(0, true);
             else {
                 double value = Double.parseDouble(values[0]);
-                mTvHoleDepth.setText(String.format("当前测得 %s 米", decimalFormat.format(value)));
+                mTvCurDepth.setText(String.format("当前测量 %s 米", decimalFormat.format(value)));
                 verticalBar.setProgress((int) (value * 10), true);
             }
         } catch (Exception ex) {
@@ -85,7 +95,7 @@ public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
         }
     }
 
-    public void setLastProgress(){
-        verticalBar.setProgress( verticalBar.getMax(), true);
+    public void setLastProgress() {
+        verticalBar.setProgress(verticalBar.getMax(), true);
     }
 }
