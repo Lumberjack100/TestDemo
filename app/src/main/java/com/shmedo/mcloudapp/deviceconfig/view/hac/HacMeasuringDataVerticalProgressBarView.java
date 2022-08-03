@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 
 import com.shmedo.mcloudapp.R;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -21,11 +23,17 @@ import butterknife.ButterKnife;
  * 描述：     数据测量阶段动态进度展示控件
  */
 public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
+    @BindView(R.id.tv_cur_depth)
+    TextView mTvCurDepth;//
+
     @BindView(R.id.tv_hole_depth)
     TextView mTvHoleDepth;// 孔深
 
     @BindView(R.id.verticalBar)
     ProgressBar verticalBar;//
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
+
 
     public HacMeasuringDataVerticalProgressBarView(Context context) {
         this(context, null);
@@ -42,29 +50,42 @@ public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public void updateProgress(String measurePoint) {
+    public void init(String measurePoint) {
         if (TextUtils.isEmpty(measurePoint) || !measurePoint.contains("|"))
             return;
 
         try {
             String[] values = measurePoint.split("\\|");
             if (!TextUtils.isEmpty(values[1])) {
-                mTvHoleDepth.setText(String.format("孔深 %s 米", values[1]));
-
-                double value = Double.parseDouble(values[1]);
-                int max = (int) (value * 100);
-                verticalBar.setMax(max);
+                double depth = Double.parseDouble(values[1]);
+                mTvHoleDepth.setText(String.format("孔深 %s 米", decimalFormat.format(depth)));
+                verticalBar.setMax((int) (depth * 10));
             }
+            verticalBar.setProgress(0, true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-            if (TextUtils.isEmpty(values[0]) || values[0].equals("0")) {
+    public void updateProgress(String measurePoint) {
+        if (TextUtils.isEmpty(measurePoint) || !measurePoint.contains("|"))
+            return;
+
+        try {
+            String[] values = measurePoint.split("\\|");
+            if (TextUtils.isEmpty(values[0]))
                 verticalBar.setProgress(0, true);
-            } else {
+            else {
                 double value = Double.parseDouble(values[0]);
-                int progress = (int) (value * 100);
-                verticalBar.setProgress(progress, true);
+                mTvHoleDepth.setText(String.format("当前测得 %s 米", decimalFormat.format(value)));
+                verticalBar.setProgress((int) (value * 10), true);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void setLastProgress(){
+        verticalBar.setProgress( verticalBar.getMax(), true);
     }
 }

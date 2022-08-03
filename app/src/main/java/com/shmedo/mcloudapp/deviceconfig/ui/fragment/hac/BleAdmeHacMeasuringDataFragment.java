@@ -6,19 +6,20 @@ import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatSpinner;
 
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.CustomDialog;
 import com.kongzue.dialogx.interfaces.OnBindView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.AttachPopupView;
-import com.lxj.xpopup.enums.PopupAnimation;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -53,8 +54,8 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     @BindView(R.id.et_mac_address)
     ClearEditText mEtMacAddress;
 
-    @BindView(R.id.tv_hole_num)
-    TextView mTvHoleNum; //孔号
+    @BindView(R.id.spinner)
+    AppCompatSpinner spinnerHoleNum;
 
     @BindView(R.id.tv_area_num)
     TextView mTvAreaNum;//区号
@@ -143,16 +144,13 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
         sendCommandFromCmdList();
     }
 
-    @OnClick({R.id.iv_show_hole_dropdown, R.id.ll_data_settlement_method, R.id.btn_run})
+    @OnClick({R.id.ll_data_settlement_method, R.id.btn_run})
     public void onClick(View view) {
         int id = view.getId();
         if (isDoubleClick(view)) {
             return;
         }
-        if (id == R.id.iv_show_hole_dropdown) {
-            showHoleDropDownList(view);
-
-        } else if (id == R.id.ll_data_settlement_method) {
+        if (id == R.id.ll_data_settlement_method) {
             showDataSettlementMethodDialog();
 
         } else if (id == R.id.btn_run) {
@@ -167,35 +165,6 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             }
             initRunCommands();
         }
-    }
-
-    /**
-     * 选择孔号
-     *
-     * @param v
-     */
-    private void showHoleDropDownList(View v) {
-        if (holeNumList == null || holeNumList.size() == 0) {
-            ToastUtils.show("没有可选孔号");
-            return;
-        }
-        String[] holeNums = holeNumList.toArray(new String[0]);
-        AttachPopupView attachPopupView = new XPopup.Builder(getContext())
-                .hasShadowBg(false)
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .isDarkTheme(false)
-                .popupAnimation(PopupAnimation.NoAnimation) //NoAnimation表示禁用动画
-                .atView(v)  // 依附于所点击的View，内部会自动判断在上方或者下方显示
-                .asAttachList(holeNums, null, new OnSelectListener() {
-                    @Override
-                    public void onSelect(int position, String text) {
-                        mTvHoleNum.setText(text);
-                        HacHoleAreaDepthInfo info = holeAreaDepthInfoArrayList.get(position);
-                        mTvAreaNum.setText(info != null ? info.getAreano() : "");
-                        mTvHoleDepth.setText(info != null ? decimalFormat.format(Double.parseDouble(info.getHoledepth())) : "");
-                    }
-                }, 0, 0);
-        attachPopupView.show();
     }
 
     /**
@@ -224,7 +193,6 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
 
     private boolean checkValueIsValid() {
         address = mEtMacAddress.getText().toString();
-        holeno = mTvHoleNum.getText().toString();
         areano = mTvAreaNum.getText().toString();
         decentralizationWaitingTime = mEtDecentralizationWaitingTime.getText().toString();
 
@@ -404,9 +372,24 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                 holeNumList.add(info.getHoleno());
             }
             HacHoleAreaDepthInfo info = holeAreaDepthInfoArrayList.get(0);
-            mTvHoleNum.setText(info.getHoleno());
+            holeno = info.getHoleno();
             mTvAreaNum.setText(info.getAreano());
             mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
+
+            spinnerHoleNum.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, holeNumList));
+            spinnerHoleNum.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                    HacHoleAreaDepthInfo info = holeAreaDepthInfoArrayList.get(position);
+                    holeno = info.getHoleno();
+                    mTvAreaNum.setText(info.getAreano());
+                    mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -461,7 +444,6 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                 stringBuilder.append("\n");
             }
         }
-        stringBuilder.append("\n已启动异常保护，请排除故障后重新测量");
         CustomDialog.build()
                 .setCustomView(new OnBindView<CustomDialog>(R.layout.error_protection_tip) {
                     @Override
