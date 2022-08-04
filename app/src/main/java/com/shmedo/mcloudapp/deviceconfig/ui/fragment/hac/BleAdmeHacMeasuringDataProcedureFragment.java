@@ -369,7 +369,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     private void showErrorProtectionTip(String abndiasis) {
         //列出异常原因
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("异常原因: \n");
         String[] codes = abndiasis.split("\\|");
         for (String code : codes) {
             AdmeModuleErrorType errorType = AdmeModuleErrorType.valueByCode(code);

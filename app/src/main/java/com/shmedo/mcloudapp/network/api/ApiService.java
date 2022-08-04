@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.network.api;
 
-import com.pgyer.pgyersdk.model.CheckSoftModel;
 import com.shmedo.core.model.BasicUserInfo;
+import com.shmedo.core.model.CheckSoftModel;
 import com.shmedo.core.model.UserPermissionInfo;
 import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.common.model.PageResult;

@@ -60,12 +60,12 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
-        <meta-data
+       <!-- <meta-data
             android:name="PGYER_API_KEY"
             android:value="${pgyerKey}" />
         <meta-data
             android:name="PGYER_FRONTJS_KEY"
-            android:value="${frontJSToken}" />
+            android:value="${frontJSToken}" />-->
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${buglyAppId}" /> <!-- 配置APP版本号 -->
