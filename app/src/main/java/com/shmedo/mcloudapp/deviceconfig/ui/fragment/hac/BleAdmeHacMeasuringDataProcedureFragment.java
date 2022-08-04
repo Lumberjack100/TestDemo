@@ -86,8 +86,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     private HacMotionState motionState;
     private String holeDepth;
 
-    private final QueryMotorStateHandler queryMotorStateHandler = new QueryMotorStateHandler(this);
+    private IOTCommandType curCommandType = IOTCommandType.UNKNOWN_TYPE;
 
+    private final QueryMotorStateHandler queryMotorStateHandler = new QueryMotorStateHandler(this);
     private boolean isStopQuery = false;
 
     private static final class QueryMotorStateHandler extends WeakHandler<BleAdmeHacMeasuringDataProcedureFragment> {
@@ -97,7 +98,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
         @Override
         protected void handleMessage(Message msg, BleAdmeHacMeasuringDataProcedureFragment fragment) {
-            if (fragment.isActive && fragment.isConnected()) {
+            if (fragment.isConnected()) {
                 fragment.queryMotorState();
             }
         }
@@ -159,7 +160,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
      * 获取电机的运行状态
      */
     private void queryMotorState() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE);
+        curCommandType = IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE;
+        String command = IOTCommandManager.getInstance().getCommand(curCommandType);
         sendCommand(command);
     }
 
@@ -171,7 +173,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             HacMeasuringDataInfoEntity entity = new HacMeasuringDataInfoEntity();
             entity.setEquipmodel("0");
 
-            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM, entity);
+            curCommandType = IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM;
+            String command = IOTCommandManager.getInstance().getCommand(curCommandType, entity);
             return command;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -223,9 +226,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 
@@ -259,6 +259,12 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 btnAction.setVisibility(View.INVISIBLE);
             }
             break;
+
+            case LENGTH_INVALID://接收的数据格式不符合物联网指令协议，进入此逻辑处理
+                if (curCommandType == IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE) {
+                    startQueryMotorStateProgress(5000);
+                }
+                break;
         }
     }
 

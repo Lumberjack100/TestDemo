@@ -280,9 +280,6 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
 
     @Override
     protected void parseResponseMessage(@NotNull String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 

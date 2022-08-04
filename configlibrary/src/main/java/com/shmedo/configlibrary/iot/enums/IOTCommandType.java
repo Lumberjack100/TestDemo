@@ -649,6 +649,11 @@ public enum IOTCommandType {
     HEART_BEAT("HeartBeatData"),
 
     /**
+     * 长度不够指令头最低长度要求
+     */
+    LENGTH_INVALID("length_invalid"),
+
+    /**
      * 未知的命令类型
      */
     UNKNOWN_TYPE("unknown_type");

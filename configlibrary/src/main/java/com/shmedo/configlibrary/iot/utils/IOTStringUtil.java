@@ -21,8 +21,7 @@ public class IOTStringUtil {
      */
     public static IOTCommandType extractCommandType(String result) {
         if (TextUtils.isEmpty(result) || result.length() < IOTCommandResult.RESULT_MIN_LENGTH) {
-//            throw new IllegalArgumentException("指令结果格式错误:" + result);
-            return IOTCommandType.UNKNOWN_TYPE;
+            return IOTCommandType.LENGTH_INVALID;
         }
         String[] strs = result.split("&");
         String cmd = strs[0].replace(IOTCommandResult.COMMAND_HEADER, "").trim();

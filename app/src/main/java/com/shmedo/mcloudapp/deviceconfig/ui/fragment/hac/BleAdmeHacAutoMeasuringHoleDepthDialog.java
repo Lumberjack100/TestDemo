@@ -132,8 +132,6 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
         bleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
-                if (!result.startsWith("$cmd=") || !isResumed())
-                    return;
                 try {
                     parseResponseMessage(result);
                 } catch (Exception ex) {
