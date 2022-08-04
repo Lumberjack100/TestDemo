@@ -344,6 +344,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
                 horizontalProgressBarView.setVisibility(View.VISIBLE);
                 verticalProgressBarView.setVisibility(View.GONE);
+                horizontalProgressBarView.setLastProgress();
                 mTvKindTips.setText("测量完成");
                 btnAction.setVisibility(View.VISIBLE);
                 btnAction.setText("下一步");
