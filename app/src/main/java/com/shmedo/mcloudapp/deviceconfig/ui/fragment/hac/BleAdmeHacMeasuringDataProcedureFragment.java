@@ -83,6 +83,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @BindView(R.id.ll_waiting_time)
     View waitingTimeLayout; //
 
+
+    private CustomDialog customDialog;
+
     private HacMotionState motionState;
     private String holeDepth;
 
@@ -100,6 +103,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         protected void handleMessage(Message msg, BleAdmeHacMeasuringDataProcedureFragment fragment) {
             if (fragment.isConnected()) {
                 fragment.queryMotorState();
+                //实现查询电机状态指令响应超时，重新发送查询
+//                fragment.startDefaultProgress(null, AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
             }
         }
     }
@@ -115,6 +120,22 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         Timber.d("call stopQueryMotorStateProgress");
         isStopQuery = true;
         queryMotorStateHandler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * 查询电机状态指令响应超时回调
+     *
+     * @param msg
+     */
+    @Override
+    protected void customHandleMessage(@NonNull @NotNull Message msg) {
+        switch (msg.what) {
+            case AppContants.MsgWhat.MSG_DEFAULT:
+                Timber.d("queryMotorState timeout");
+                //查询电机状态指令响应超时，重新发送查询
+                startQueryMotorStateProgress(0);
+                break;
+        }
     }
 
     public static BleAdmeHacMeasuringDataProcedureFragment newInstance(String holeDepth) {
@@ -233,6 +254,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_HAC_MD_GET_MOTION_STATE: {//查询电机当前运动状态
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<HacMotionState> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取电机当前运动状态出错!", commandResult.getMessage());
@@ -374,6 +396,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     }
 
     private void showErrorProtectionTip(String abndiasis) {
+        if (customDialog != null && customDialog.isShow())
+            return;
+
         //列出异常原因
         StringBuilder stringBuilder = new StringBuilder();
         String[] codes = abndiasis.split("\\|");
@@ -384,7 +409,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 stringBuilder.append("\n");
             }
         }
-        CustomDialog.build()
+        customDialog = CustomDialog.build()
                 .setCustomView(new OnBindView<CustomDialog>(R.layout.error_protection_tip) {
                     @Override
                     public void onBind(final CustomDialog dialog, View v) {
@@ -400,8 +425,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                     }
                 })
                 .setCancelable(false)
-                .setMaskColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.dialog_mask))
-                .show();
+                .setMaskColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.dialog_mask));
+
+        customDialog.show();
     }
 
     /**

@@ -63,9 +63,8 @@ public class HacMotionState implements Parcelable {
     };
 
 
-
     public String getAbndiasis() {
-        return TextUtils.isEmpty(abndiasis) ? "0" : abndiasis;
+        return TextUtils.isEmpty(abndiasis) || abndiasis.equals("NullKey") ? "0" : abndiasis;
     }
 
     public void setAbndiasis(String abndiasis) {
@@ -73,7 +72,7 @@ public class HacMotionState implements Parcelable {
     }
 
     public String getMeasmode() {
-        return TextUtils.isEmpty(measmode) ? "0" : measmode;
+        return TextUtils.isEmpty(measmode) || measmode.equals("NullKey")  ? "0" : measmode;
     }
 
     public void setMeasmode(String measmode) {
