@@ -589,9 +589,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 

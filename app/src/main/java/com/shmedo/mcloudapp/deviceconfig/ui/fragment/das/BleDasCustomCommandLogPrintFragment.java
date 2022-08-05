@@ -270,10 +270,6 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        super.parseResponseMessage(cmdStr);
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 

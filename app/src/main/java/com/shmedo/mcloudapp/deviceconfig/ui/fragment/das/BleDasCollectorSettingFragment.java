@@ -302,9 +302,6 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 
