@@ -97,8 +97,8 @@ android {
             applicationId rootProject.android.applicationId
             resValue "string", "app_name", "米易通物联网"   // 设置默认的app_name
             manifestPlaceholders = ["mapApikey"   : "61b252e0afae07eebf71fd8b519b511c",
-                                    "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
-                                    "frontJSToken": "b90c635e2cc7113d03ee6a213a8e013d",
+//                                    "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
+//                                    "frontJSToken": "b90c635e2cc7113d03ee6a213a8e013d",
                                     "buglyAppId"  : "09b15cd6a7",
                                     "umengAppkey" : "6209cd80226836222738b72b"]
 
@@ -129,9 +129,9 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.thirdLib.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.thirdLib.lifecycleVersion"
-//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.thirdLib.lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.thirdLib.lifecycleVersion"
-//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.thirdLib.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.thirdLib.lifecycleVersion"
 
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.thirdLib.rxjava"
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.thirdLib.rxandroid"
@@ -142,6 +142,7 @@ dependencies {
     implementation "com.uber.autodispose2:autodispose-androidx-lifecycle:$rootProject.thirdLib.autodispose2Version"
 
     implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
 
     // Glide
@@ -160,9 +161,11 @@ dependencies {
 
     //开关 Button
     implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
+    //Add progress to any button by few lines of code without layout changes
+    implementation "com.github.razir.progressbutton:progressbutton:$rootProject.thirdLib.progressbutton"
 
     //蒲公英SDk
-    implementation "com.pgyer:analytics:$rootProject.thirdLib.pgyerSdk"
+//    implementation "com.pgyer:analytics:$rootProject.thirdLib.pgyerSdk"
     //异常信息上报组件
     implementation "com.tencent.bugly:crashreport:$rootProject.thirdLib.buglyCrashReport"
 

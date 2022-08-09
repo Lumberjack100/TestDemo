@@ -32,42 +32,49 @@ import timber.log.Timber;
  * 描述：     ADME电压配置页面
  */
 public class AdmeVoltageConfigView extends LinearLayout {
-    @BindView(R.id.et_drive_overvoltage_threshold)
-    ClearEditText mEtDriveOverVoltageThreshold;//驱动器过压阈值
+    @BindView(R.id.et_drive_standard_voltage_threshold)
+    ClearEditText mEtDriveStandardVoltageThreshold;//驱动器标压阈值
 
-    @BindView(R.id.et_drive_lowvoltage_threshold)
+    @BindView(R.id.et_drive_low_voltage_threshold)
     ClearEditText mEtDriveLowVoltageThreshold;//驱动器低压阈值
 
-    @BindView(R.id.et_drive_undervoltage_threshold)
+    @BindView(R.id.et_drive_under_voltage_threshold)
     ClearEditText mEtDriveUnderVoltageThreshold;//驱动器欠压阈值
 
-    @BindView(R.id.et_inclinometer_lowvoltage_threshold)
+    @BindView(R.id.et_inclinometer_standard_voltage_threshold)
+    ClearEditText mEtInclinometerStandardVoltageThreshold;//测斜仪标压阈值
+
+    @BindView(R.id.et_inclinometer_low_voltage_threshold)
     ClearEditText mEtInclinometerLowVoltageThreshold;//测斜仪低压阈值
 
-    @BindView(R.id.et_inclinometer_undervoltage_threshold)
+    @BindView(R.id.et_inclinometer_under_voltage_threshold)
     ClearEditText mEtInclinometerUnderVoltageThreshold;//测斜仪欠压阈值
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.ll_drive_overvoltage_threshold)
-    ViewGroup driveOverVoltageThresholdLayout;
+    @BindView(R.id.ll_drive_standard_voltage_threshold)
+    ViewGroup driveStandardVoltageThresholdLayout;
 
-    @BindView(R.id.ll_drive_lowvoltage_threshold)
+    @BindView(R.id.ll_drive_low_voltage_threshold)
     ViewGroup driveLowVoltageThresholdLayout;
 
-    @BindView(R.id.ll_drive_undervoltage_threshold)
+    @BindView(R.id.ll_drive_under_voltage_threshold)
     ViewGroup driveUnderVoltageThresholdLayout;
 
-    @BindView(R.id.ll_inclinometer_lowvoltage_threshold)
+    @BindView(R.id.ll_inclinometer_standard_voltage_threshold)
+    ViewGroup inclinometerStandardVoltageThresholdLayout;
+
+    @BindView(R.id.ll_inclinometer_low_voltage_threshold)
     ViewGroup inclinometerLowVoltageThresholdLayout;
 
-    @BindView(R.id.ll_inclinometer_undervoltage_threshold)
+    @BindView(R.id.ll_inclinometer_under_voltage_threshold)
     ViewGroup inclinometerUnderVoltageThresholdLayout;
 
-    private String driveOverVoltageThreshold;
+    private String driveStandardVoltageThreshold;
     private String driveLowVoltageThreshold;
     private String driveUnderVoltageThreshold;
+    private String inclinometerStandardVoltageThreshold;
     private String inclinometerLowVoltageThreshold;
     private String inclinometerUnderVoltageThreshold;
 
@@ -93,31 +100,32 @@ public class AdmeVoltageConfigView extends LinearLayout {
     }
 
     private void initView() {
-        mEtDriveOverVoltageThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtDriveStandardVoltageThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtDriveLowVoltageThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtDriveUnderVoltageThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtInclinometerStandardVoltageThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtInclinometerLowVoltageThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtInclinometerUnderVoltageThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
     }
 
     public boolean checkValueIsValid() {
-        if (!driveOverVoltageThreshold.equals("NullKey")) {
-            driveOverVoltageThreshold = mEtDriveOverVoltageThreshold.getText().toString().trim();
-            if (TextUtils.isEmpty(driveOverVoltageThreshold)) {
-                ToastUtils.show("请输入驱动器过压阈值!");
-                mEtDriveOverVoltageThreshold.requestFocus();
+        if (!driveStandardVoltageThreshold.equals("NullKey")) {
+            driveStandardVoltageThreshold = mEtDriveStandardVoltageThreshold.getText().toString().trim();
+            if (TextUtils.isEmpty(driveStandardVoltageThreshold)) {
+                ToastUtils.show("请输入驱动器标压阈值!");
+                mEtDriveStandardVoltageThreshold.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(driveOverVoltageThreshold);
+                double value = Double.parseDouble(driveStandardVoltageThreshold);
                 if (value < 1) {
-                    ToastUtils.show("请输入正确的驱动器过压阈值!");
-                    mEtDriveOverVoltageThreshold.requestFocus();
+                    ToastUtils.show("请输入正确的驱动器标压阈值!");
+                    mEtDriveStandardVoltageThreshold.requestFocus();
                     return false;
                 }
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的驱动器过压阈值!");
-                mEtDriveOverVoltageThreshold.requestFocus();
+                ToastUtils.show("请输入正确的驱动器标压阈值!");
+                mEtDriveStandardVoltageThreshold.requestFocus();
                 return false;
             }
         }
@@ -164,6 +172,26 @@ public class AdmeVoltageConfigView extends LinearLayout {
             }
         }
 
+        if (!inclinometerStandardVoltageThreshold.equals("NullKey")) {
+            inclinometerStandardVoltageThreshold = mEtInclinometerStandardVoltageThreshold.getText().toString().trim();
+            if (TextUtils.isEmpty(inclinometerStandardVoltageThreshold)) {
+                ToastUtils.show("请输入测斜仪标压阈值!");
+                mEtInclinometerStandardVoltageThreshold.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(inclinometerStandardVoltageThreshold);
+                if (value < 1) {
+                    ToastUtils.show("请输入正确的测斜仪标压阈值!");
+                    mEtInclinometerStandardVoltageThreshold.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的测斜仪标压阈值!");
+                mEtInclinometerStandardVoltageThreshold.requestFocus();
+                return false;
+            }
+        }
         if (!inclinometerLowVoltageThreshold.equals("NullKey")) {
             inclinometerLowVoltageThreshold = mEtInclinometerLowVoltageThreshold.getText().toString().trim();
             if (TextUtils.isEmpty(inclinometerLowVoltageThreshold)) {
@@ -214,9 +242,10 @@ public class AdmeVoltageConfigView extends LinearLayout {
         String command = "";
         try {
             AdmeVoltageConfigEntity entity = new AdmeVoltageConfigEntity();
-            entity.setVolt_power_over(voltageConfigInfo.getVolt_power_over().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveOverVoltageThreshold)));
+            entity.setVolt_power_standard(voltageConfigInfo.getVolt_power_standard().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveStandardVoltageThreshold)));
             entity.setVolt_power_low(voltageConfigInfo.getVolt_power_low().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveLowVoltageThreshold)));
             entity.setVolt_power_under(voltageConfigInfo.getVolt_power_under().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(driveUnderVoltageThreshold)));
+            entity.setVolt_sensor_standard(voltageConfigInfo.getVolt_sensor_standard().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerStandardVoltageThreshold)));
             entity.setVolt_sensor_low(voltageConfigInfo.getVolt_sensor_low().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerLowVoltageThreshold)));
             entity.setVolt_sensor_under(voltageConfigInfo.getVolt_sensor_under().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerUnderVoltageThreshold)));
 
@@ -234,17 +263,18 @@ public class AdmeVoltageConfigView extends LinearLayout {
             voltageConfigInfo = new AdmeVoltageConfigInfo();
             return;
         }
-        driveOverVoltageThreshold = voltageConfigInfo.getVolt_power_over().trim();
+        driveStandardVoltageThreshold = voltageConfigInfo.getVolt_power_standard().trim();
         driveLowVoltageThreshold = voltageConfigInfo.getVolt_power_low().trim();
         driveUnderVoltageThreshold = voltageConfigInfo.getVolt_power_under().trim();
+        inclinometerStandardVoltageThreshold = voltageConfigInfo.getVolt_sensor_standard().trim();
         inclinometerLowVoltageThreshold = voltageConfigInfo.getVolt_sensor_low().trim();
         inclinometerUnderVoltageThreshold = voltageConfigInfo.getVolt_sensor_under().trim();
         try {
-            if (driveOverVoltageThreshold.equals("NullKey")) {
-                driveOverVoltageThresholdLayout.setVisibility(View.GONE);
+            if (driveStandardVoltageThreshold.equals("NullKey")) {
+                driveStandardVoltageThresholdLayout.setVisibility(View.GONE);
             } else {
-                driveOverVoltageThreshold = decimalFormat.format(Double.parseDouble(driveOverVoltageThreshold));
-                mEtDriveOverVoltageThreshold.setText(driveOverVoltageThreshold);
+                driveStandardVoltageThreshold = decimalFormat.format(Double.parseDouble(driveStandardVoltageThreshold));
+                mEtDriveStandardVoltageThreshold.setText(driveStandardVoltageThreshold);
             }
 
             if (driveLowVoltageThreshold.equals("NullKey")) {
@@ -259,6 +289,13 @@ public class AdmeVoltageConfigView extends LinearLayout {
             } else {
                 driveUnderVoltageThreshold = decimalFormat.format(Double.parseDouble(driveUnderVoltageThreshold));
                 mEtDriveUnderVoltageThreshold.setText(driveUnderVoltageThreshold);
+            }
+
+            if (inclinometerStandardVoltageThreshold.equals("NullKey")) {
+                inclinometerStandardVoltageThresholdLayout.setVisibility(View.GONE);
+            } else {
+                inclinometerStandardVoltageThreshold = decimalFormat.format(Double.parseDouble(inclinometerStandardVoltageThreshold));
+                mEtInclinometerStandardVoltageThreshold.setText(inclinometerStandardVoltageThreshold);
             }
 
             if (inclinometerLowVoltageThreshold.equals("NullKey")) {
@@ -283,13 +320,16 @@ public class AdmeVoltageConfigView extends LinearLayout {
         if (!configPageEditableChanged)
             return false;
 
-        if (driveOverVoltageThreshold != null && !driveOverVoltageThreshold.equals("NullKey") && !driveOverVoltageThreshold.equals(mEtDriveOverVoltageThreshold.getText().toString().trim())) {
+        if (driveStandardVoltageThreshold != null && !driveStandardVoltageThreshold.equals("NullKey") && !driveStandardVoltageThreshold.equals(mEtDriveStandardVoltageThreshold.getText().toString().trim())) {
             return true;
         }
         if (driveLowVoltageThreshold != null && !driveLowVoltageThreshold.equals("NullKey") && !driveLowVoltageThreshold.equals(mEtDriveLowVoltageThreshold.getText().toString().trim())) {
             return true;
         }
         if (driveUnderVoltageThreshold != null && !driveUnderVoltageThreshold.equals("NullKey") && !driveUnderVoltageThreshold.equals(mEtDriveUnderVoltageThreshold.getText().toString().trim())) {
+            return true;
+        }
+        if (inclinometerStandardVoltageThreshold != null && !inclinometerStandardVoltageThreshold.equals("NullKey") && !inclinometerStandardVoltageThreshold.equals(mEtInclinometerStandardVoltageThreshold.getText().toString().trim())) {
             return true;
         }
         if (inclinometerLowVoltageThreshold != null && !inclinometerLowVoltageThreshold.equals("NullKey") && !inclinometerLowVoltageThreshold.equals(mEtInclinometerLowVoltageThreshold.getText().toString().trim())) {
@@ -302,22 +342,25 @@ public class AdmeVoltageConfigView extends LinearLayout {
     }
 
     public void onEditableChanged(boolean isEditable) {
-        mEtDriveOverVoltageThreshold.setEnabled(isEditable);
+        mEtDriveStandardVoltageThreshold.setEnabled(isEditable);
         mEtDriveLowVoltageThreshold.setEnabled(isEditable);
         mEtDriveUnderVoltageThreshold.setEnabled(isEditable);
+        mEtInclinometerStandardVoltageThreshold.setEnabled(isEditable);
         mEtInclinometerLowVoltageThreshold.setEnabled(isEditable);
         mEtInclinometerUnderVoltageThreshold.setEnabled(isEditable);
         if (isEditable) {
-            mEtDriveOverVoltageThreshold.setHint("请输入");
+            mEtDriveStandardVoltageThreshold.setHint("请输入");
             mEtDriveLowVoltageThreshold.setHint("请输入");
             mEtDriveUnderVoltageThreshold.setHint("请输入");
+            mEtInclinometerStandardVoltageThreshold.setHint("请输入");
             mEtInclinometerLowVoltageThreshold.setHint("请输入");
             mEtInclinometerUnderVoltageThreshold.setHint("请输入");
 
         }else {
-            mEtDriveOverVoltageThreshold.setHint("");
+            mEtDriveStandardVoltageThreshold.setHint("");
             mEtDriveLowVoltageThreshold.setHint("");
             mEtDriveUnderVoltageThreshold.setHint("");
+            mEtInclinometerStandardVoltageThreshold.setHint("");
             mEtInclinometerLowVoltageThreshold.setHint("");
             mEtInclinometerUnderVoltageThreshold.setHint("");
         }

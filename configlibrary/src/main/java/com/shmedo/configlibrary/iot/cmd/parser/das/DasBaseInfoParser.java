@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasBaseInfo;
@@ -29,16 +27,16 @@ public class DasBaseInfoParser implements IOTResultParser<DasBaseInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
-            info.setIccid(TextUtils.isEmpty(keyValueMap.get("iccid")) ? "" : keyValueMap.get("iccid"));
-            info.setImei(TextUtils.isEmpty(keyValueMap.get("imei")) ? "" : keyValueMap.get("imei"));
-            info.setVer(TextUtils.isEmpty(keyValueMap.get("ver")) ? "" : keyValueMap.get("ver"));
-            info.setLocal(TextUtils.isEmpty(keyValueMap.get("local")) ? "" : keyValueMap.get("local"));
-            info.setInvolt(TextUtils.isEmpty(keyValueMap.get("involt")) ? "" : keyValueMap.get("involt"));
-            info.setOutvolt(TextUtils.isEmpty(keyValueMap.get("outvolt")) ? "" : keyValueMap.get("outvolt"));
-            info.setCsq(TextUtils.isEmpty(keyValueMap.get("csq")) ? "" : keyValueMap.get("csq"));
-            info.setIsp(TextUtils.isEmpty(keyValueMap.get("isp")) ? "" : keyValueMap.get("isp"));
-            info.setCode(TextUtils.isEmpty(keyValueMap.get("code")) ? "" : keyValueMap.get("code"));
+            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
+            info.setIccid(keyValueMap.getOrDefault("iccid", "NullKey"));
+            info.setImei(keyValueMap.getOrDefault("imei", "NullKey"));
+            info.setVer(keyValueMap.getOrDefault("ver", "NullKey"));
+            info.setLocal(keyValueMap.getOrDefault("local", "NullKey"));
+            info.setInvolt(keyValueMap.getOrDefault("involt", "NullKey"));
+            info.setOutvolt(keyValueMap.getOrDefault("outvolt", "NullKey"));
+            info.setCsq(keyValueMap.getOrDefault("csq", "NullKey"));
+            info.setIsp(keyValueMap.getOrDefault("isp", "NullKey"));
+            info.setCode(keyValueMap.getOrDefault("code", "NullKey"));
 
             return info;
         } catch (Exception ex) {

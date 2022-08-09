@@ -26,9 +26,10 @@ public class AdmeVoltageConfigParser implements IOTResultParser<AdmeVoltageConfi
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setVolt_power_over(keyValueMap.getOrDefault("volt_power_over", "NullKey"));
+            info.setVolt_power_standard(keyValueMap.getOrDefault("volt_power_standard", "NullKey"));
             info.setVolt_power_low(keyValueMap.getOrDefault("volt_power_low", "NullKey"));
             info.setVolt_power_under(keyValueMap.getOrDefault("volt_power_under", "NullKey"));
+            info.setVolt_sensor_standard(keyValueMap.getOrDefault("volt_sensor_standard", "NullKey"));
             info.setVolt_sensor_low(keyValueMap.getOrDefault("volt_sensor_low", "NullKey"));
             info.setVolt_sensor_under(keyValueMap.getOrDefault("volt_sensor_under", "NullKey"));
 

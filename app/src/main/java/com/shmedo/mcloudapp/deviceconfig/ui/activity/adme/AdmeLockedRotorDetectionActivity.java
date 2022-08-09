@@ -17,20 +17,15 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
  * 创建时间:  3/2/21 <br/>
  * 描述：    ADME 堵转缓停停参数配置页面
  */
-public class BleAdmeLockedRotorDetectionActivity extends BaseConfigFragmentContainerActivity {
-    public static void startActivity(Context context, DeviceInfo deviceInfo) {
-        Intent intent = new Intent(context, BleAdmeLockedRotorDetectionActivity.class);
+public class AdmeLockedRotorDetectionActivity extends BaseConfigFragmentContainerActivity {
+    public static void startActivity(Context context, int connectWay, DeviceInfo deviceInfo) {
+        Intent intent = new Intent(context, AdmeLockedRotorDetectionActivity.class);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
-    public static void startActivity(Context context, int connectWay) {
-        Intent intent = new Intent(context, BleAdmeLockedRotorDetectionActivity.class);
-        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

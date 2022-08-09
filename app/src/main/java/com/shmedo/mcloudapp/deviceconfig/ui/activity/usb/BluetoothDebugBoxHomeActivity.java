@@ -15,7 +15,7 @@ public class BluetoothDebugBoxHomeActivity extends BaseConfigFragmentContainerAc
 
     public static void startActivity(Context context, int deviceId, int port, int baudRate) {
         Intent intent = new Intent(context, BluetoothDebugBoxHomeActivity.class);
-        intent.putExtra(AppContants.Extras.DEVICE_ID, deviceId);
+        intent.putExtra(AppContants.Extras.USB_DEVICE_ID, deviceId);
         intent.putExtra(AppContants.Extras.USB_PORT_NUM, port);
         intent.putExtra(AppContants.Extras.USB_BAUD_RATE, baudRate);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -34,7 +34,7 @@ public class BluetoothDebugBoxHomeActivity extends BaseConfigFragmentContainerAc
         if (intent.getExtras() == null)
             return;
 
-        deviceId = intent.getIntExtra(AppContants.Extras.DEVICE_ID, -1);
+        deviceId = intent.getIntExtra(AppContants.Extras.USB_DEVICE_ID, -1);
         portNum = intent.getIntExtra(AppContants.Extras.USB_PORT_NUM, 0);
         baudRate = intent.getIntExtra(AppContants.Extras.USB_BAUD_RATE, 115200);
     }

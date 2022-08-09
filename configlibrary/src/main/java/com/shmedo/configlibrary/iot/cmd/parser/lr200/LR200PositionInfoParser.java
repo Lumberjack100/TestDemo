@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.lr200;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.lr200.LR200PositionInfo;
@@ -29,8 +27,8 @@ public class LR200PositionInfoParser implements IOTResultParser<LR200PositionInf
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setLng(TextUtils.isEmpty(keyValueMap.get("lng")) ? "" : keyValueMap.get("lng"));
-            info.setLat(TextUtils.isEmpty(keyValueMap.get("lat")) ? "" : keyValueMap.get("lat"));
+            info.setLng(keyValueMap.getOrDefault("lng", "NullKey"));
+            info.setLat(keyValueMap.getOrDefault("lat", "NullKey"));
 
             return info;
         } catch (Exception ex) {

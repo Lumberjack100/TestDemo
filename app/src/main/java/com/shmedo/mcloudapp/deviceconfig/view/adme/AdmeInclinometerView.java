@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -144,7 +143,7 @@ public class AdmeInclinometerView extends LinearLayout {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", inclinometerTypes,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -172,7 +171,7 @@ public class AdmeInclinometerView extends LinearLayout {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", powerModes,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -386,17 +385,6 @@ public class AdmeInclinometerView extends LinearLayout {
     }
 
     public void doAfterSetting() {
-//        if (admeInclinometerInfo != null) {
-//            admeInclinometerInfo.setInctype(inclinometerType);
-//            admeInclinometerInfo.setLowpower(lowPowerMode);
-//            admeInclinometerInfo.setAddress(address);
-//            admeInclinometerInfo.setCollinval(collectionInterval);
-//            admeInclinometerInfo.setCalcinval(solvingInterval);
-//            admeInclinometerInfo.setDormancytime(sleepTime);
-//            admeInclinometerInfo.setInterupdate(correctionValue);
-//        }
-        //TODO #gh#  打开注释，设置为浏览模式
-//        configPageViewModel.configPageEditableChanged.setValue(false);
         inclinometerTypeOld = inclinometerType;
         lowPowerModeOld = lowPowerMode;
     }
@@ -412,10 +400,10 @@ public class AdmeInclinometerView extends LinearLayout {
             return true;
         }
         if (address != null) {
-            if (inclinometerTypeOld.equals("0") && !inclinometerTypeOld.equals("NullKey") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
+            if (inclinometerTypeOld.equals("0") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
                 return true;
             }
-            if (inclinometerTypeOld.equals("1") && !inclinometerTypeOld.equals("NullKey") && !address.equals(mEtMacAddress.getText().toString().trim())) {
+            if (inclinometerTypeOld.equals("1") && !address.equals(mEtMacAddress.getText().toString().trim())) {
                 return true;
             }
         }
@@ -462,7 +450,6 @@ public class AdmeInclinometerView extends LinearLayout {
             mEtSolvingInterval.setHint("");
             mEtSleepTime.setHint("");
             mEtCorrectionValue.setHint("");
-//            initParamConfigInfo();
         }
         mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }

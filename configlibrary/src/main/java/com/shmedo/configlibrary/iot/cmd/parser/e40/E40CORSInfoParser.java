@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.e40.E40CORSInfo;
@@ -29,12 +27,12 @@ public class E40CORSInfoParser implements IOTResultParser<E40CORSInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSw(TextUtils.isEmpty(keyValueMap.get("sw")) ? "0" : keyValueMap.get("sw"));
-            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
-            info.setPort(TextUtils.isEmpty(keyValueMap.get("port")) ? "" : keyValueMap.get("port"));
-            info.setUser(TextUtils.isEmpty(keyValueMap.get("user")) ? "" : keyValueMap.get("user"));
-            info.setPswd(TextUtils.isEmpty(keyValueMap.get("pswd")) ? "" : keyValueMap.get("pswd"));
-            info.setSta(TextUtils.isEmpty(keyValueMap.get("sta")) ? "" : keyValueMap.get("sta"));
+            info.setSw(keyValueMap.getOrDefault("sw", "NullKey"));
+            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
+            info.setPort(keyValueMap.getOrDefault("port", "NullKey"));
+            info.setUser(keyValueMap.getOrDefault("user", "NullKey"));
+            info.setPswd(keyValueMap.getOrDefault("pswd", "NullKey"));
+            info.setSta(keyValueMap.getOrDefault("sta", "NullKey"));
 
             return info;
         } catch (Exception ex) {

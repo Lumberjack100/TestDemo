@@ -30,8 +30,8 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
         Intent intent = new Intent(context, DataCenterConfigActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
-        intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
-        intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
+        intent.putExtra(AppContants.Extras.DATA_CENTER_NUMBER, serverNumber);
+        intent.putExtra(AppContants.Extras.DATA_CENTER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         launcher.launch(intent);
     }
@@ -40,8 +40,8 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
         Intent intent = new Intent(context, DataCenterConfigActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.DATA_SERVER_NUMBER, serverNumber);
-        intent.putExtra(AppContants.Extras.DATA_SERVER_STATUS, status);
+        intent.putExtra(AppContants.Extras.DATA_CENTER_NUMBER, serverNumber);
+        intent.putExtra(AppContants.Extras.DATA_CENTER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         launcher.launch(intent);
     }
@@ -55,8 +55,8 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
         if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
             productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
         }
-        if (intent.getExtras().containsKey(AppContants.Extras.DATA_SERVER_NUMBER)) {
-            serverNumber = (ServerNumber) intent.getSerializableExtra(AppContants.Extras.DATA_SERVER_NUMBER);
+        if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_NUMBER)) {
+            serverNumber = (ServerNumber) intent.getSerializableExtra(AppContants.Extras.DATA_CENTER_NUMBER);
             if (serverNumber == ServerNumber.NUMBER_ONE) {
                 mToolbarTitle.setText("数据中心1");
             } else if (serverNumber == ServerNumber.NUMBER_TWO) {
@@ -67,8 +67,8 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
                 mToolbarTitle.setText("数据中心4");
             }
         }
-        if (intent.getExtras().containsKey(AppContants.Extras.DATA_SERVER_STATUS)) {
-            serverStatus = intent.getStringExtra(AppContants.Extras.DATA_SERVER_STATUS);
+        if (intent.getExtras().containsKey(AppContants.Extras.DATA_CENTER_STATUS)) {
+            serverStatus = intent.getStringExtra(AppContants.Extras.DATA_CENTER_STATUS);
         }
     }
 

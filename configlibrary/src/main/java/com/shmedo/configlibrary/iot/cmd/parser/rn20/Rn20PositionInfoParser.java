@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.rn20;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.rn20.Rn20PositionInfo;
@@ -29,8 +27,8 @@ public class Rn20PositionInfoParser implements IOTResultParser<Rn20PositionInfo>
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setLongitude(TextUtils.isEmpty(keyValueMap.get("longitude")) ? "" : keyValueMap.get("longitude"));
-            info.setLatitude(TextUtils.isEmpty(keyValueMap.get("latitude")) ? "" : keyValueMap.get("latitude"));
+            info.setLongitude(keyValueMap.getOrDefault("longitude", "NullKey"));
+            info.setLatitude(keyValueMap.getOrDefault("latitude", "NullKey"));
 
             return info;
         } catch (Exception ex) {

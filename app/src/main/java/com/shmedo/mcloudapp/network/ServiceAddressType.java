@@ -26,12 +26,7 @@ public enum ServiceAddressType {
     /**
      * 云平台原始数据地址
      */
-    CLOUD_PLATFORM_DATA_ADDRESS("https://chaxun.shmedo.cn"),
-
-    /**
-     * 设备远程调试服务器地址
-     */
-//    DEVICE_REMOTE_DEBUG_ADDRESS("http://ams4.shmedo.com:22000/api/v1/"),
+    CLOUD_PLATFORM_DATA_ADDRESS("https://queryapi.shmedo.cn"),
 
     /**
      * 自定义 Url

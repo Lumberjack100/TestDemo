@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDistanceInfo;
@@ -29,10 +27,10 @@ public class AdmeMotorMotionDistanceInfoParser implements IOTResultParser<AdmeMo
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setPulsenumber(TextUtils.isEmpty(keyValueMap.get("pulsenumber")) ? "" : keyValueMap.get("pulsenumber"));
-            info.setRealmovedistance(TextUtils.isEmpty(keyValueMap.get("realmovedistance")) ? "" : keyValueMap.get("realmovedistance"));
-            info.setRealholedepth(TextUtils.isEmpty(keyValueMap.get("realholedepth")) ? "" : keyValueMap.get("realholedepth"));
-            info.setRealmoveangle(TextUtils.isEmpty(keyValueMap.get("realmoveangle")) ? "" : keyValueMap.get("realmoveangle"));
+            info.setPulsenumber(keyValueMap.getOrDefault("pulsenumber", "NullKey"));
+            info.setRealmovedistance(keyValueMap.getOrDefault("realmovedistance", "NullKey"));
+            info.setRealholedepth(keyValueMap.getOrDefault("realholedepth", "NullKey"));
+            info.setRealmoveangle(keyValueMap.getOrDefault("realmoveangle", "NullKey"));
 
             return info;
         } catch (Exception ex) {

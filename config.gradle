@@ -27,11 +27,12 @@ ext {
             banner                       : '2.1.0',
 
             materialDialogsCore          : '0.9.6.0',
-            xpopupVersion                : '2.8.0',
-            dialogxVersion               : '0.0.43',
+            xpopupVersion                : '2.8.14',
+            dialogxVersion               : '0.0.45',
             ToastUtils                   : '10.3',
 
             switchbutton                 : '2.1.0',
+            progressbutton               : '2.1.0',
 
             pgyerSdk                     : '4.2.8',
             buglyCrashReport             : '4.0.4',

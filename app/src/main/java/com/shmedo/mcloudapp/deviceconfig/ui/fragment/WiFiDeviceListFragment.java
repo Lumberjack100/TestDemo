@@ -39,7 +39,6 @@ import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.configlibrary.iot.enums.ProductType;
-import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
@@ -124,7 +123,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         deviceApiKeyViewModel = getApplicationScopeViewModel(DeviceApiKeyViewModel.class);
-        deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
+        deviceApiKeyViewModel.deviceRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
             public void onChanged(DeviceBaseInfo deviceBaseInfo) {
                 //获取到物联网指令的设备 ApiKey 后，处理 WiFi 连接
@@ -145,10 +144,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         if (curWiFi.isConnected()) {//已连接
             hideProgressBar();
             if (curWiFi.name().contains("VMS")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, ProductType.VMS);
+                DeviceConfigActivity.startActivity(getActivity(), ProductType.VMS);
 
             } else if (curWiFi.name().contains("E40")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, ProductType.E40);
+                DeviceConfigActivity.startActivity(getActivity(), ProductType.E40);
             }
         } else if (curWiFi.isSaved() || !curWiFi.isEncrypt()) {//已保存/未加密
             WifiUtils.withContext(getContext().getApplicationContext())
@@ -170,10 +169,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         public void success() {
             hideProgressBar();
             if (curWiFi.name().contains("VMS")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, ProductType.VMS);
+                DeviceConfigActivity.startActivity(getActivity(), ProductType.VMS);
 
             } else if (curWiFi.name().contains("E40")) {
-                DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.TCP_CONNECT, ProductType.E40);
+                DeviceConfigActivity.startActivity(getActivity(), ProductType.E40);
             }
         }
 
@@ -210,7 +209,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 String[] strs = curWiFi.name().split("-");
                 showProgressBar();
                 //先查询下发物联网指令时用到的设备的 ApiKey
-                deviceApiKeyViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(strs[strs.length - 1]);
+                deviceApiKeyViewModel.deviceRequest.queryDeviceApiKeyBySn(strs[strs.length - 1]);
             }
         });
     }
@@ -416,7 +415,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     @Override
     public void onDestroy() {
         MCloudApp.getMainHandler().removeCallbacksAndMessages(null);
-        deviceApiKeyViewModel.deviceApiKeyRequest.clearDeviceApiKey();
+        deviceApiKeyViewModel.deviceRequest.clearDeviceApiKey();
         super.onDestroy();
     }
 

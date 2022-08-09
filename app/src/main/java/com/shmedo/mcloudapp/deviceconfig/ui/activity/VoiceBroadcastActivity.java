@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import com.iflytek.cloud.SpeechUtility;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetVoiceBroadcastFragment;
@@ -28,6 +29,7 @@ public class VoiceBroadcastActivity extends BaseConfigFragmentContainerActivity 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mToolbarTitle.setText("语音播报");
+        SpeechUtility.createUtility(this, "appid=2ad1229c");
     }
 
     @Override

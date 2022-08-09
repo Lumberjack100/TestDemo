@@ -102,7 +102,7 @@ public class TcpE40SerialPortParamFragment extends BaseTcpIotCommunicateFragment
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"CMD", "NMEA", "RAW_OUT"},
-                        null, typePos, true,
+                        null, typePos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -136,7 +136,7 @@ public class TcpE40SerialPortParamFragment extends BaseTcpIotCommunicateFragment
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"9600", "115200"},
-                        null, baudPos, true,
+                        null, baudPos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

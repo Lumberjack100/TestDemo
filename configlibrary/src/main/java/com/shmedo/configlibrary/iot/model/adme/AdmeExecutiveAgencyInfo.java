@@ -9,7 +9,7 @@ import android.text.TextUtils;
  */
 public class AdmeExecutiveAgencyInfo {
     private String meastype;//测量方式（0:实时测量，1:整时整点测量，2:定时定点测量）
-    private String datatype;//数据结算方式（0:顶固定法，1底固定法）
+    private String datatype;//数据解算方式（0:顶部固定法，1底部固定法）
     private String datareply;//数据应答（0:关闭，1:启用）
     private String roundwaitetime;//每轮等待时间
     private String roundmeasinval;//每轮测量间隔

@@ -426,10 +426,15 @@ public class TcpToBleDebugActivity extends BaseActivity {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopAllProgress();
+//    }
 
     @Override
     public void onBackPressed() {

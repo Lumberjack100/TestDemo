@@ -6,6 +6,7 @@ import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleTerminalInfo;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 
 /**
@@ -32,7 +33,7 @@ public class VmsAisleTerminalInfoParser implements IOTResultParser<VmsAisleTermi
 
             String status = keyValueMap.get("status");
             info = GsonUtils.fromJson(status, VmsAisleTerminalInfo.class);
-            info.setChannel(Integer.parseInt(keyValueMap.get("channel")));
+            info.setChannel(Integer.parseInt(Objects.requireNonNull(keyValueMap.get("channel"))));
 
             return info;
         } catch (Exception ex) {

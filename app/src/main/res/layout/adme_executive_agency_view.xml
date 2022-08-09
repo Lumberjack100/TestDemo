@@ -33,12 +33,12 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="数据结算方式" />
+            android:text="数据解算方式" />
 
         <TextView
             android:id="@+id/tv_data_settlement_method"
             style="@style/Common_ClickableItem_ValueStyle"
-            tools:text="顶固定法" />
+            tools:text="顶部固定法" />
 
     </LinearLayout>
 
@@ -285,7 +285,7 @@
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="距离补偿区间h1(m)" />
+            android:text="管口安全距离(m)" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_interval_compensation"

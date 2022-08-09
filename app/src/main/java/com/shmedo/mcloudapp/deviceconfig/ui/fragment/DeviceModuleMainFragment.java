@@ -50,6 +50,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.QueryDeviceDataActivity;
 import com.shmedo.mcloudapp.deviceconfig.util.BleScannerUtils;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerStateLiveData;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.BleScannerViewModel;
+import com.shmedo.mcloudapp.profile.BleViewModel;
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import java.util.ArrayList;
@@ -76,8 +77,12 @@ public class DeviceModuleMainFragment extends BaseFragment implements TabLayout.
     private TabLayoutMediator tabLayoutMediator;
 
     private BleScannerViewModel scannerViewModel;
+    private BleViewModel bleViewModel;
+
     private boolean enableScan = false;
     private List<DiscoveredBluetoothDevice> tempDeviceList = new ArrayList<>();
+    private DiscoveredBluetoothDevice discoveredBluetoothDevice;
+
 
     private final String[] addMore = new String[]{"扫一扫", "WIFI 设备", "USB 设备", "查询数据"};
 
@@ -152,18 +157,26 @@ public class DeviceModuleMainFragment extends BaseFragment implements TabLayout.
                     for (DiscoveredBluetoothDevice device : tempDeviceList) {
                         if (!TextUtils.isEmpty(MCloudApp.getCurDeviceToken()) && device.getName().contains(MCloudApp.getCurDeviceToken())) {
                             processStopScan();
-                            DeviceConfigActivity.startActivity(getActivity(), AppContants.CommunicationWay.BLE_CONNECT, device);
+                            discoveredBluetoothDevice = device;
+                            bleViewModel.deviceRequest.queryProductTokenBySn(MCloudApp.getCurDeviceToken());
                             break;
                         }
                     }
                 }
             }
         });
+        bleViewModel = getFragmentScopeViewModel(BleViewModel.class);
+        bleViewModel.deviceRequest.getProductTokenLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String productToken) {
+                DeviceConfigActivity.startActivity(getActivity(), discoveredBluetoothDevice, productToken);
+            }
+        });
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         processStopScan();
     }
 

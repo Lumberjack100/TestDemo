@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dimen_size_16"
+    android:paddingEnd="@dimen/dimen_size_16">
+
+    <TextView
+        android:id="@+id/tv_kind_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="正向测量中"
+        android:textColor="@color/app_color_theme_1"
+        android:textSize="15sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginBottom="@dimen/dimen_size_5"
+        android:background="@color/divider_line_bg_efefef" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_inclinometer_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/title_text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="100%" />
+
+            <TextView
+                android:id="@+id/tv_inclinometer_battery_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="测斜仪电量"
+                android:textColor="@color/title_text_color"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_device_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/title_text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="100%" />
+
+            <TextView
+                android:id="@+id/tv_device_battery_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="设备电量"
+                android:textColor="@color/title_text_color"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_waiting_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical|start"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_waiting_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/title_text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="30分钟" />
+
+            <TextView
+                android:id="@+id/tv_waiting_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="测量结束倒计时"
+                android:textColor="@color/title_text_color"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备运行状态:"
+            android:textColor="@color/title_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_motorinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_size_10"
+            android:textColor="@color/title_text_color"
+            android:textSize="14sp"
+            tools:text="下放运动" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_action"
+        android:layout_width="150dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/bg_btn_stop_measuring_data"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:text="停止"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

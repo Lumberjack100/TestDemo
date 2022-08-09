@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_ctr_motion_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/DeviceCurrentState_Group_TitleStyle"
+            android:text="CTR工作状态" />
+
+        <TextView
+            android:id="@+id/tv_measure_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="18dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/title_text_color"
+            android:textSize="15sp"
+            tools:text="正向测量" />
+
+        <TextView
+            android:id="@+id/tv_motor_info"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="18dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/title_text_color"
+            android:textSize="15sp"
+            tools:text="磁开关触发，测量结束" />
+
+        <TextView
+            android:id="@+id/tv_measure_point"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="18dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/title_text_color"
+            android:textSize="16sp"
+            tools:text="第一个点测量：30.5米" />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/DeviceCurrentState_Group_TitleStyle"
+        android:text="基本信息" />
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备SN号" />
+
+        <TextView
+            android:id="@+id/tv_device_sn"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            android:textColor="@color/text_color_3AD094"
+            tools:text="19F00L" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="SIM卡号(ICCID)" />
+
+        <TextView
+            android:id="@+id/tv_sim_card_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="IMEI号" />
+
+        <TextView
+            android:id="@+id/tv_imei_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="固件版本" />
+
+        <TextView
+            android:id="@+id/tv_firmware_version"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/DeviceCurrentState_Group_TitleStyle"
+        android:text="设备工作信息" />
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="工作模式" />
+
+        <TextView
+            android:id="@+id/tv_work_mode"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="常规测量模式" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="CTR输入电压" />
+
+        <TextView
+            android:id="@+id/tv_ctr_input_voltage"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="22.6v" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="驱动器输入电压" />
+
+        <TextView
+            android:id="@+id/tv_driver_input_voltage"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="22.6v" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备温度" />
+
+        <TextView
+            android:id="@+id/tv_device_temperature"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="41.5°" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备湿度" />
+
+        <TextView
+            android:id="@+id/tv_device_humidity"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="67%" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备下降次数" />
+
+        <TextView
+            android:id="@+id/tv_device_drop_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="67%" />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/DeviceCurrentState_Group_TitleStyle"
+        android:text="测斜仪信息" />
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪信道号" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_channel_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="5" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪位置信息" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_location_information"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="上拉到管口" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪电压" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_voltage"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="22.6v" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="测斜仪管温度" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_temperature"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="41.5°" />
+
+    </LinearLayout>
+
+</LinearLayout>

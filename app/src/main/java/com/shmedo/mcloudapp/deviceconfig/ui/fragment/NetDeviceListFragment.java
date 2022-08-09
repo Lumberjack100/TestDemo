@@ -26,6 +26,7 @@ import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
+import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.model.PageResult;
@@ -53,6 +54,7 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
@@ -273,16 +275,27 @@ public class NetDeviceListFragment extends BaseFragment {
     private void initProducts(List<ProductInfo> dataList) {
         productList.clear();
         if (dataList == null || dataList.size() == 0) {
+            mRefreshLayout.finishRefresh(false);
+            showNoContentView(StringUtils.getString(R.string.empty_no_data));
             return;
         }
+        for (ProductInfo info : dataList) {
+            ProductType type = ProductType.valueByPrefix(info.getProductToken().toUpperCase());
+            if (type == ProductType.UnKnown) {
+                continue;
+            }
+            productList.add(info);
+        }
+        Collections.sort(productList);
+
         ProductInfo productInfo = new ProductInfo();
         productInfo.setProductName("全部");
         productInfo.setId(-1);
         productInfo.setChecked(true);
-        productList.add(productInfo);
+        productList.add(0, productInfo);
 
-        productList.addAll(dataList);
         productAdapter.notifyDataSetChanged();
+
         if (productList.size() <= 1) {
             mRefreshLayout.finishRefresh(false);
             showNoContentView(StringUtils.getString(R.string.empty_no_data));

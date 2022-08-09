@@ -9,23 +9,23 @@
         android:layout_height="10dp" />
 
     <LinearLayout
-        android:id="@+id/ll_drive_overvoltage_threshold"
+        android:id="@+id/ll_drive_standard_voltage_threshold"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
-            android:text="驱动器过压阈值" />
+            android:text="驱动器标压阈值" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_drive_overvoltage_threshold"
+            android:id="@+id/et_drive_standard_voltage_threshold"
             style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_drive_lowvoltage_threshold"
+        android:id="@+id/ll_drive_low_voltage_threshold"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -34,14 +34,14 @@
             android:text="驱动器低压阈值" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_drive_lowvoltage_threshold"
+            android:id="@+id/et_drive_low_voltage_threshold"
             style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_drive_undervoltage_threshold"
+        android:id="@+id/ll_drive_under_voltage_threshold"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -50,14 +50,30 @@
             android:text="驱动器欠压阈值" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_drive_undervoltage_threshold"
+            android:id="@+id/et_drive_under_voltage_threshold"
             style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_inclinometer_lowvoltage_threshold"
+        android:id="@+id/ll_inclinometer_standard_voltage_threshold"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测斜仪标压阈值" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_inclinometer_standard_voltage_threshold"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_inclinometer_low_voltage_threshold"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -66,14 +82,14 @@
             android:text="测斜仪低压阈值" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_inclinometer_lowvoltage_threshold"
+            android:id="@+id/et_inclinometer_low_voltage_threshold"
             style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_inclinometer_undervoltage_threshold"
+        android:id="@+id/ll_inclinometer_under_voltage_threshold"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -82,7 +98,7 @@
             android:text="测斜仪欠压阈值" />
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
-            android:id="@+id/et_inclinometer_undervoltage_threshold"
+            android:id="@+id/et_inclinometer_under_voltage_threshold"
             style="@style/Common_EditItem_EditText_Style"
             android:inputType="numberDecimal" />
 

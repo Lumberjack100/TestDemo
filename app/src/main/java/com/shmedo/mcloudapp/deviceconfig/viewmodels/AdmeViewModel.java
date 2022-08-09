@@ -9,5 +9,5 @@ import androidx.lifecycle.ViewModel;
  */
 public class AdmeViewModel extends ViewModel {
     //ADME 设备模式 0：设备配置模式，1：自动检测模式，2：异常保护模式
-    public int deviceMode = -1;
+    public int deviceMode = 0;
 }

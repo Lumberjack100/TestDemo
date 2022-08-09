@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -276,7 +275,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         new XPopup.Builder(mContext)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", protocols,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -305,7 +304,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         new XPopup.Builder(mContext)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", protocols,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -352,7 +351,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         new XPopup.Builder(mContext)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", platforms,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

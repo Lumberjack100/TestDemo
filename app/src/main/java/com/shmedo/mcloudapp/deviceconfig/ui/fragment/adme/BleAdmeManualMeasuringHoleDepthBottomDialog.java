@@ -102,10 +102,16 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopAllProgress();
+//    }
 
     public static BleAdmeManualMeasuringHoleDepthBottomDialog newInstance(String motionWay, String lastDistance, String totalDistanceGoal) {
         BleAdmeManualMeasuringHoleDepthBottomDialog fragment = new BleAdmeManualMeasuringHoleDepthBottomDialog();
@@ -243,8 +249,8 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            stopAllProgress();
             isStopClick = true;
+            stopAllProgress();
             stopMotorMotion();
 
         } else if (id == R.id.btn_pause) {
@@ -254,6 +260,7 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
             }
             isStopClick = false;
             if (btnPause.getText().toString().equals("暂停")) {
+                stopAllProgress();
                 stopMotorMotion();
             } else {
                 continueMotorMotion();
@@ -384,8 +391,8 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
 
     private void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null && !TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
-            apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
+        if (bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue() != null && !TextUtils.isEmpty(bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+            apiKey = bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString().substring(30);
@@ -413,13 +420,11 @@ public class BleAdmeManualMeasuringHoleDepthBottomDialog extends BaseDialogFragm
                         dialog.dismiss();
                         isExit = true;
                         if (bleViewModel.isConnected()) {
+                            stopAllProgress();
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             stopMotorMotion();
-                            BleAdmeManualMeasuringHoleDepthBottomDialog.this.dismiss();
-                        } else {
-                            //直接关闭运行页面
-                            BleAdmeManualMeasuringHoleDepthBottomDialog.this.dismiss();
                         }
+                        BleAdmeManualMeasuringHoleDepthBottomDialog.this.dismiss();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();

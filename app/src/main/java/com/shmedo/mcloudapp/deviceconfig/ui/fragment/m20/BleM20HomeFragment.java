@@ -20,13 +20,10 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
-import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
-import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
-import com.shmedo.configlibrary.iot.model.m20.M20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -67,10 +64,10 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     TextView mTvDeviceSn;//设备SN号
 
     @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//产品型号
+    TextView mTvFirmwareVersion;//固件版本
 
     @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvFirmwareVersion;//固件版本
+    TextView mTvSubMod;//
 
     @BindView(R.id.tv_platform_communication_state)
     TextView mTvPlatformCommunicationState;//与米度平台连接状态
@@ -119,8 +116,8 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        updateHeadInfo(null);
         initAdapter();
+        updateHeadInfo();
         initConfigModuleData();
         observerApiKey();
         observerConnectionState();
@@ -201,7 +198,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
                         //查询设备 ApiKey
-                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -214,9 +211,8 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-//                        hideProgressBar();
                         onConnectionStateChanged(false);
-                        clearDevice();
+//                        clearDevice();
                         break;
 
                     // fallthrough
@@ -232,13 +228,12 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
+        bleViewModel.deviceRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
             public void onChanged(DeviceBaseInfo deviceBaseInfo) {
                 deviceInfo = deviceBaseInfo;
                 hideProgressBar();
-                updateHeadInfo(null);
-                queryBaseInfo();
+                updateHeadInfo();
             }
         });
     }
@@ -299,14 +294,6 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         configModuleList.add(configModule);
     }
 
-    /**
-     * 获取设备的基本信息
-     */
-    private void queryBaseInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.M20_MD_GET_BASE_INFO);
-        sendCommand(command);
-    }
-
     @OnClick({R.id.tv_device_connect_operate})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
@@ -324,7 +311,8 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+        // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+        if (!isResumed()) {
             return;
         }
         setResultData(cmdStr);
@@ -333,18 +321,6 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
-                IOTCommandResult<M20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                updateHeadInfo(commandResult.getResult());
-            }
-            break;
-
             case M20_MD_LEVEL_INITIAL://水平初始化
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -369,7 +345,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo(M20BaseInfo m20BaseInfo) {
+    private void updateHeadInfo() {
         if (deviceInfo == null)
             deviceInfo = new DeviceBaseInfo();
 
@@ -378,13 +354,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? sn : deviceInfo.getDeviceToken()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
 
-            if (m20BaseInfo != null) {
-                mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(m20BaseInfo.getProductid()) ? m20BaseInfo.getProductid() : "M20"));
-                mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
-            } else {
-                mTvProductModel.setText(String.format("产品型号：：%s", "M20"));
-            }
-
+            mTvSubMod.setVisibility(View.GONE);
             mTvPlatformCommunicationState.setVisibility(View.GONE);
             mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
             mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -412,10 +382,11 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        super.onStop();
     }
+
 
     @Override
     public boolean onBackPressed() {

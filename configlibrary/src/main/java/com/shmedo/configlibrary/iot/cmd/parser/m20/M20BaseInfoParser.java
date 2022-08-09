@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.m20;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.m20.M20BaseInfo;
@@ -29,9 +27,9 @@ public class M20BaseInfoParser implements IOTResultParser<M20BaseInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
-            info.setProductid(TextUtils.isEmpty(keyValueMap.get("productid")) ? "" : keyValueMap.get("productid"));
-            info.setFirversion(TextUtils.isEmpty(keyValueMap.get("firversion")) ? "" : keyValueMap.get("firversion"));
+            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
+            info.setProductid(keyValueMap.getOrDefault("productid", "NullKey"));
+            info.setFirversion(keyValueMap.getOrDefault("firversion", "NullKey"));
 
             return info;
         } catch (Exception ex) {

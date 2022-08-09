@@ -141,7 +141,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                 new XPopup.Builder(mActivity)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asBottomList("", new String[]{"4G", "SMS", "BD", "BD+4G"},
-                                null, pos, true,
+                                null, pos,
                                 new OnSelectListener() {
                                     @Override
                                     public void onSelect(int position, String text) {
@@ -256,7 +256,8 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+        // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+        if (!isResumed()) {
             return;
         }
         setResultData(cmdStr);

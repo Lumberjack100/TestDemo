@@ -154,9 +154,10 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         if (firmWareInfo == null || TextUtils.isEmpty(firmWareInfo.getFwNote()))
             return;
 
+        String content = String.format("上传时间: %s\n备注: %s", firmWareInfo.getUploadTime(), firmWareInfo.getFwNote());
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
                 .title("固件说明")
-                .content(firmWareInfo.getFwNote())
+                .content(content)
                 .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(true)
                 .positiveText("确定")
@@ -207,6 +208,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
             jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
             if (productID != -1)
                 jsonObjectRequest.put("productID", productID);//198
+            jsonObjectRequest.put("fwStatus", 1);//运营环境固件
             jsonObjectRequest.put("nameAndVersion", false);
             jsonObjectRequest.put("pageSize", PAGE_SIZE);
             jsonObjectRequest.put("currentPage", pageInfo.getPage());

@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMeasuringHoleDepthInfo;
@@ -29,10 +27,10 @@ public class AdmeMeasuringHoleDepthInfoParser implements IOTResultParser<AdmeMea
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setMorunstate(TextUtils.isEmpty(keyValueMap.get("morunstate")) ? "" : keyValueMap.get("morunstate"));
-            info.setMovementway(TextUtils.isEmpty(keyValueMap.get("movementway")) ? "" : keyValueMap.get("movementway"));
-            info.setMotorspeed(TextUtils.isEmpty(keyValueMap.get("motorspeed")) ? "" : keyValueMap.get("motorspeed"));
-            info.setMovedistance(TextUtils.isEmpty(keyValueMap.get("movedistance")) ? "" : keyValueMap.get("movedistance"));
+            info.setMorunstate(keyValueMap.getOrDefault("morunstate", "NullKey"));
+            info.setMovementway(keyValueMap.getOrDefault("movementway", "NullKey"));
+            info.setMotorspeed(keyValueMap.getOrDefault("motorspeed", "NullKey"));
+            info.setMovedistance(keyValueMap.getOrDefault("movedistance", "NullKey"));
 
             return info;
         } catch (Exception ex) {

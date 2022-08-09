@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalCollectorInfo;
@@ -29,12 +27,12 @@ public class VmsTerminalCollectorInfoParser implements IOTResultParser<VmsTermin
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setReptgap(TextUtils.isEmpty(keyValueMap.get("reptgap")) ? "" : keyValueMap.get("reptgap"));
-            info.setRepttype(TextUtils.isEmpty(keyValueMap.get("repttype")) ? "" : keyValueMap.get("repttype"));
-            info.setFiltertype(TextUtils.isEmpty(keyValueMap.get("filtertype")) ? "" : keyValueMap.get("filtertype"));
-            info.setFilternum(TextUtils.isEmpty(keyValueMap.get("filternum")) ? "" : keyValueMap.get("filternum"));
-            info.setCollgap(TextUtils.isEmpty(keyValueMap.get("collgap")) ? "" : keyValueMap.get("collgap"));
-            info.setWaitgap(TextUtils.isEmpty(keyValueMap.get("waitgap")) ? "" : keyValueMap.get("waitgap"));
+            info.setReptgap(keyValueMap.getOrDefault("reptgap", "NullKey"));
+            info.setRepttype(keyValueMap.getOrDefault("repttype", "NullKey"));
+            info.setFiltertype(keyValueMap.getOrDefault("filtertype", "NullKey"));
+            info.setFilternum(keyValueMap.getOrDefault("filternum", "NullKey"));
+            info.setCollgap(keyValueMap.getOrDefault("collgap", "NullKey"));
+            info.setWaitgap(keyValueMap.getOrDefault("waitgap", "NullKey"));
 
             return info;
         } catch (Exception ex) {

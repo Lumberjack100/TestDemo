@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
@@ -214,7 +213,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"关闭", "DEBUG", "INFO"},
-                        null, debugModePos, true,
+                        null, debugModePos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -271,10 +270,6 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        super.parseResponseMessage(cmdStr);
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 

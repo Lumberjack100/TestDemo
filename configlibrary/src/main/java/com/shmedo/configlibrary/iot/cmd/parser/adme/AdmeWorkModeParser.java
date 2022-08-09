@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeWorkModeInfo;
@@ -29,7 +27,7 @@ public class AdmeWorkModeParser implements IOTResultParser<AdmeWorkModeInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setWorkmode(TextUtils.isEmpty(keyValueMap.get("workmode")) ? "" : keyValueMap.get("workmode"));
+            info.setWorkmode(keyValueMap.getOrDefault("workmode", "NullKey"));
 
             return info;
         } catch (Exception ex) {

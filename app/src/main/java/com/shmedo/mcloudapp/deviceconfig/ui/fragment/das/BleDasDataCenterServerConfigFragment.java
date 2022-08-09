@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.constant.RegexConstants;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.RegexUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -337,7 +336,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", registProtocols,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -357,7 +356,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", platforms,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -590,9 +589,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 

@@ -134,8 +134,8 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        updateHeadInfo(null);
         initAdapter();
+        updateHeadInfo();
         initConfigModuleData();
         observerApiKey();
         observerConnectionState();
@@ -227,7 +227,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -240,9 +240,8 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-//                        hideProgressBar();
                         onConnectionStateChanged(false);
-                        clearDevice();
+//                        clearDevice();
                         break;
 
                     // fallthrough
@@ -258,13 +257,14 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
+        bleViewModel.deviceRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
             public void onChanged(DeviceBaseInfo deviceBaseInfo) {
                 deviceInfo = deviceBaseInfo;
                 hideProgressBar();
-                updateHeadInfo(null);
-                queryBaseInfo();
+                updateHeadInfo();
+                //查询雨量精度
+                querySwitchSensorInfo();
             }
         });
     }
@@ -331,14 +331,6 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
-    }
-
-    /**
-     * 获取设备的基本信息
-     */
-    private void queryBaseInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE);
-        sendCommand(command);
     }
 
     /**
@@ -458,7 +450,8 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+        // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+        if (!isResumed()) {
             return;
         }
         setResultData(cmdStr);
@@ -467,21 +460,6 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case RN20_MD_GET_TERMINAL_BASE: {
-                IOTCommandResult<Rn20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-//                    ToastUtils.show(errMsg);
-                    return;
-                }
-                Rn20BaseInfo rn20BaseInfo = commandResult.getResult();
-                updateHeadInfo(rn20BaseInfo);
-                //查询雨量精度
-                querySwitchSensorInfo();
-            }
-            break;
-
             case DAS_MD_GET_IO_SENSOR_INFO: {//查询开关量传感器参数
                 IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -554,7 +532,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo(Rn20BaseInfo rn20BaseInfo) {
+    private void updateHeadInfo() {
         if (deviceInfo == null)
             deviceInfo = new DeviceBaseInfo();
 
@@ -562,13 +540,8 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
             mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "雨量采集器" : deviceInfo.getProductName());
             mTvDeviceSn.setText(String.format("设备编号：%s", sn));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
-            if (rn20BaseInfo != null) {
-                mTvFirmwareVersion.setText(String.format("固件版本：%s", !TextUtils.isEmpty(rn20BaseInfo.getVer()) ? rn20BaseInfo.getVer() : "--"));
-                mTvVoltage.setText(String.format("电压：%s", !TextUtils.isEmpty(rn20BaseInfo.getInvolt()) ? rn20BaseInfo.getInvolt() : "--"));
-            } else {
-                mTvVoltage.setText("电压：--");
-            }
 
+            mTvVoltage.setVisibility(View.GONE);
             mTvPlatformCommunicationState.setVisibility(View.GONE);
             mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
             mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -610,10 +583,11 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
     }
 
+
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        super.onStop();
     }
 
     @Override

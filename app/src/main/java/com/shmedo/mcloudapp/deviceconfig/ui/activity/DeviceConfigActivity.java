@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40HomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200.BleLR200HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20HomeFragment;
@@ -38,7 +40,7 @@ import java.util.List;
  * 描述：     Das设备配置页面
  */
 public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
+    private static final String BLE_DEVICE = "com.shmedo.mcloudapp.BLE_DEVICE";
 
     private ProductType productType = ProductType.UnKnown;
 
@@ -57,9 +59,9 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             return;
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(EXTRA_DEVICE, deviceInfo);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, type);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
@@ -67,20 +69,22 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
      * Ble 通讯方式
      *
      * @param context
-     * @param connectWay
      * @param device
      */
-    public static void startActivity(Context context, int connectWay, DiscoveredBluetoothDevice device) {
-        ProductType type = ProductType.valueBySuffix(device.getDevice().getName());
+    public static void startActivity(Context context, DiscoveredBluetoothDevice device, String productToken) {
+        ProductType type = TextUtils.isEmpty(productToken) ? ProductType.valueBySuffix(device.getDevice().getName()) : ProductType.valueByPrefix(productToken);
+        //TODO  测试用例
+        if (device != null && (device.getDevice().getName().contains("212021T") || device.getDevice().getName().contains("212029T")))
+            type = ProductType.HAC;
         if (type == ProductType.UnKnown) {
             ToastUtils.show("暂不支持此设备类型!");
             return;
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(EXTRA_DEVICE, device);
+        intent.putExtra(BLE_DEVICE, device);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.BLE_CONNECT);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, type);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
@@ -88,14 +92,13 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
      * Wi-Fi 通讯方式
      *
      * @param context
-     * @param connectWay
      * @param productType
      */
-    public static void startActivity(Context context, int connectWay, ProductType productType) {
+    public static void startActivity(Context context, ProductType productType) {
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.TCP_CONNECT);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
 
@@ -105,12 +108,9 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
         if (intent.getExtras() == null)
             return;
 
-        if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            deviceInfo = intent.getParcelableExtra(EXTRA_DEVICE);
-        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            device = intent.getParcelableExtra(EXTRA_DEVICE);
+        if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+            device = intent.getParcelableExtra(BLE_DEVICE);
         }
-
         if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
             productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);
         }
@@ -179,6 +179,10 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
 
                 case ADME:
                     fragment = BleAdmeHomeFragment.newInstance(device);
+                    break;
+
+                case HAC:
+                    fragment = BleAdmeHacHomeFragment.newInstance(device);
                     break;
 
                 case M20:
