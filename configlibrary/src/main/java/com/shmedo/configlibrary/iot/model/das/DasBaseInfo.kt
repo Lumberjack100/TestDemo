@@ -1,101 +1,29 @@
-package com.shmedo.configlibrary.iot.model.das;
-
-import android.text.TextUtils;
+package com.shmedo.configlibrary.iot.model.das
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/4/15 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/4/15 <br></br>
  * 描述：    DAS 状态页面基本信息
  */
-public class DasBaseInfo {
-    private String sn;//SN号
-    private String iccid;//SIM卡识别码
-    private String imei;//IMEI号
-    private String ver;//固件版本
-    private String local;//位置
-    private String involt;//内部电量
-    private String outvolt;//外部电压
-    private String csq;//信号强度
-    private String isp;//网络运营商
-    private String code;//设备启动代码
+class DasBaseInfo {
 
-    public String getSn() {
-        return TextUtils.isEmpty(sn) ? "" : sn;
-    }
+    var sn : String = ""//SN号
 
-    public void setSn(String sn) {
-        this.sn = sn;
-    }
+    var iccid : String = ""//SIM卡识别码
 
-    public String getIccid() {
-        return TextUtils.isEmpty(iccid) ? "" : iccid;
-    }
+    var imei : String = ""//IMEI号
 
-    public void setIccid(String iccid) {
-        this.iccid = iccid;
-    }
+    var ver : String = ""//固件版本
 
-    public String getImei() {
-        return TextUtils.isEmpty(imei) ? "" : imei;
-    }
+    var local : String = ""//位置
 
-    public void setImei(String imei) {
-        this.imei = imei;
-    }
+    var involt : String = ""//内部电量
 
-    public String getVer() {
-        return TextUtils.isEmpty(ver) ? "" : ver;
-    }
+    var outvolt : String = ""//外部电压
 
-    public void setVer(String ver) {
-        this.ver = ver;
-    }
+    var csq : String = ""//信号强度
 
-    public String getLocal() {
-        return TextUtils.isEmpty(local) ? "" : local;
-    }
+    var isp : String = ""//网络运营商
 
-    public void setLocal(String local) {
-        this.local = local;
-    }
-
-    public String getInvolt() {
-        return TextUtils.isEmpty(involt) ? "0" : involt;
-    }
-
-    public void setInvolt(String involt) {
-        this.involt = involt;
-    }
-
-    public String getOutvolt() {
-        return TextUtils.isEmpty(outvolt) ? "0" : outvolt;
-    }
-
-    public void setOutvolt(String outvolt) {
-        this.outvolt = outvolt;
-    }
-
-    public String getCsq() {
-        return TextUtils.isEmpty(csq) ? "" : csq;
-    }
-
-    public void setCsq(String csq) {
-        this.csq = csq;
-    }
-
-    public String getIsp() {
-        return TextUtils.isEmpty(isp) ? "" : isp;
-    }
-
-    public void setIsp(String isp) {
-        this.isp = isp;
-    }
-
-    public String getCode() {
-        return TextUtils.isEmpty(code) ? "" : code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
+    var code: String = "" //设备启动代码
 }

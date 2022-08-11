@@ -188,6 +188,7 @@ public class DeviceSearchActivity extends BaseActivity {
             jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
             jsonObjectRequest.put("deviceToken", keyWords);
             jsonObjectRequest.put("tokenAndVersion", false);
+            jsonObjectRequest.put("deviceStatus", "启用");
             jsonObjectRequest.put("pageSize", PAGE_SIZE);
             jsonObjectRequest.put("currentPage", pageInfo.getPage());
         } catch (JSONException e) {

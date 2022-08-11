@@ -1,47 +1,16 @@
-package com.shmedo.configlibrary.iot.model.das;
-
-import android.text.TextUtils;
+package com.shmedo.configlibrary.iot.model.das
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2022/3/23 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2022/3/23 <br></br>
  * 描述：     声光报警器信息
  */
-public class AudibleAlarm {
-    private String channel;//通信信道
-    private String panid;//网络编号
-    private String groupid;//目标地址
-    private String alarmtype;//报警类型
+class AudibleAlarm {
+    var channel: String = "" //通信信道
 
-    public String getChannel() {
-        return TextUtils.isEmpty(channel) ? "" : channel;
-    }
+    var panid: String = "" //网络编号
 
-    public void setChannel(String channel) {
-        this.channel = channel;
-    }
+    var groupid: String = ""//目标地址
 
-    public String getPanid() {
-        return TextUtils.isEmpty(panid) ? "" : panid;
-    }
-
-    public void setPanid(String panid) {
-        this.panid = panid;
-    }
-
-    public String getGroupid() {
-        return TextUtils.isEmpty(groupid) ? "" : groupid;
-    }
-
-    public void setGroupid(String groupid) {
-        this.groupid = groupid;
-    }
-
-    public String getAlarmtype() {
-        return TextUtils.isEmpty(alarmtype) ? "" : alarmtype;
-    }
-
-    public void setAlarmtype(String alarmtype) {
-        this.alarmtype = alarmtype;
-    }
+    var alarmtype: String = ""//报警类型
 }

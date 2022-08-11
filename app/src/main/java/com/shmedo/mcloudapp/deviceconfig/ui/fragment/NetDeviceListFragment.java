@@ -211,7 +211,7 @@ public class NetDeviceListFragment extends BaseFragment {
      */
     private void refreshDevices() {
         deviceInfoList.clear();
-        deviceInfoAdapter.notifyDataSetChanged();
+//        deviceInfoAdapter.notifyDataSetChanged();
         // 这里的作用是防止下拉刷新的时候还可以上拉加载
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
         // 下拉刷新，需要重置页数
@@ -280,6 +280,9 @@ public class NetDeviceListFragment extends BaseFragment {
             return;
         }
         for (ProductInfo info : dataList) {
+            if (info.getDeviceNum() == 0)
+                continue;
+
             ProductType type = ProductType.valueByPrefix(info.getProductToken().toUpperCase());
             if (type == ProductType.UnKnown) {
                 continue;
@@ -293,7 +296,6 @@ public class NetDeviceListFragment extends BaseFragment {
         productInfo.setId(-1);
         productInfo.setChecked(true);
         productList.add(0, productInfo);
-
         productAdapter.notifyDataSetChanged();
 
         if (productList.size() <= 1) {
@@ -352,6 +354,7 @@ public class NetDeviceListFragment extends BaseFragment {
             jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
             jsonObjectRequest.put("productID", productID == -1 ? "" : productID);
             jsonObjectRequest.put("tokenAndVersion", false);
+            jsonObjectRequest.put("deviceStatus", "启用");
             jsonObjectRequest.put("pageSize", PAGE_SIZE);
             jsonObjectRequest.put("currentPage", pageInfo.getPage());
         } catch (JSONException e) {

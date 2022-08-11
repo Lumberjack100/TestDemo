@@ -73,9 +73,6 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
      */
     public static void startActivity(Context context, DiscoveredBluetoothDevice device, String productToken) {
         ProductType type = TextUtils.isEmpty(productToken) ? ProductType.valueBySuffix(device.getDevice().getName()) : ProductType.valueByPrefix(productToken);
-        //TODO  测试用例
-        if (device != null && (device.getDevice().getName().contains("212021T") || device.getDevice().getName().contains("212029T")))
-            type = ProductType.HAC;
         if (type == ProductType.UnKnown) {
             ToastUtils.show("暂不支持此设备类型!");
             return;

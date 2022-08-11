@@ -107,12 +107,6 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setView();
-//        initQueryCommands();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         if (isConnected()) {
             initQueryCommands();
         }
