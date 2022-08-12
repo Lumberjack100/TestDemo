@@ -41,6 +41,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BaseUSRBleIotComm
 
 import org.jetbrains.annotations.NotNull;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,7 +93,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     private final List<HacHoleAreaDepthInfo> holeAreaDepthInfoArrayList = new ArrayList<>();
     private List<String> holeNumList = new ArrayList<>();
 
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public static BleAdmeHacMeasuringDataFragment newInstance() {
         return new BleAdmeHacMeasuringDataFragment();
@@ -378,6 +379,8 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     HacHoleAreaDepthInfo info = holeAreaDepthInfoArrayList.get(position);
                     holeno = info.getHoleno();
                     mTvAreaNum.setText(info.getAreano());
+                    //指定舍入方式为：RoundingMode.DOWN，直接舍去格式化以外的部分
+                    decimalFormat.setRoundingMode(RoundingMode.DOWN);
                     mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
                 }
 

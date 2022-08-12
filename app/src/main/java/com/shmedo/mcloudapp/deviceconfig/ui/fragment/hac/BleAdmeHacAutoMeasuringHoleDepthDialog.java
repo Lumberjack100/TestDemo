@@ -68,7 +68,7 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
     private String curDistance;//当前距离
     private String curPulse;//脉冲数
 
-    private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
+    private int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
     private boolean isStopQueryMotorState = false;
 
     private final BleAdmeHacAutoMeasuringHoleDepthDialog.DefaultHandler mDefaultHandler = new BleAdmeHacAutoMeasuringHoleDepthDialog.DefaultHandler(this);
@@ -237,24 +237,22 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
     /**
      * 实时刷新脉冲和运动距离
      */
-    public void updateMotionData(HacMotorMotionDistanceInfo motorMotionDistanceInfo) {
+    public void updateMotionData(HacMotorMotionDistanceInfo motorMotionDistanceInfo, boolean isMeasureOver) {
         if (motorMotionDistanceInfo == null) {
             Timber.e("HacMotorMotionDistanceInfo is Null!");
             return;
         }
-        if (!TextUtils.isEmpty(curPulse)) {
-            if (motorMotionDistanceInfo.getPulsenumber().equals(curPulse)) {
-                repeatNum++;
-                Timber.d("updateMotionData: curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
-                //轮询 N 次电机脉冲数据不变化时，停止电机运动
-                if (repeatNum >= 10) {
-                    stopQueryMotorStateProgress();
-                    stopMotorMotion();
-                    return;
-                }
-            } else {
-                repeatNum = 0;
+        if (isMeasureOver && !TextUtils.isEmpty(curPulse) && motorMotionDistanceInfo.getPulsenumber().equals(curPulse)) {
+            repeatNum++;
+            Timber.d("updateMotionData: curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
+            //轮询 N 次电机脉冲数据不变化时，停止轮询脉冲数并发送停止电机运动指令
+            if (repeatNum >= 8) {
+                stopQueryMotorStateProgress();
+                stopMotorMotion();
+                return;
             }
+        } else {
+            repeatNum = 0;
         }
         curPulse = motorMotionDistanceInfo.getPulsenumber();
         curDistance = motorMotionDistanceInfo.getRealmovedistance();

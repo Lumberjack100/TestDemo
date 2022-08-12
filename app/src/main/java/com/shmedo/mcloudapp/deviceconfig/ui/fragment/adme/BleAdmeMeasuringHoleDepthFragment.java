@@ -63,28 +63,28 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     RelativeLayout decentralizedLayout;
 
     /**
-     * 手动测孔深模式
-     */
-    @BindView(R.id.tv_motion_way)
-    TextView mTvMotionWay;
-
-    @BindView(R.id.et_motor_movement_speed)
-    ClearEditText mEtMovementSpeed;
-
-    @BindView(R.id.motionDistanceEt)
-    ClearEditText mEtMotionDistance;
-
-    /**
      * 自动测孔深模式
      */
     @BindView(R.id.et_down_speed)
     ClearEditText mEtDownSpeed;//下放速度
 
-    @BindView(R.id.et_safe_distance)
-    ClearEditText mEtSafeDistance;//安全距离补偿
+    @BindView(R.id.et_bottom_safe_distance)
+    ClearEditText mEtBottomSafeDistance;//管底补偿距离
 
     @BindView(R.id.tv_hole_depth)
     TextView mTvHoleDepth;//测孔深度
+
+    /**
+     * 手动测孔深模式
+     */
+    @BindView(R.id.tv_movement_way)
+    TextView mTvMovementWay;//运动方式 上拉  下放
+
+    @BindView(R.id.et_motor_movement_speed)
+    ClearEditText mEtMovementSpeed;//电机运动速度
+
+    @BindView(R.id.goalMovementDistanceEt)
+    ClearEditText mEtGoalMovementDistance;//设定运动距离
 
     @BindView(R.id.ll_manual_measure_mode)
     ViewGroup manualMeasureModeLayout;
@@ -101,21 +101,24 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @BindView(R.id.btn_run)
     Button mBtnRun;
 
-    private String motionWay;// 运动方式
+    private String downSpeed;// 电机下放速度(r/min)
+    private String safeDistance;// 安全距离补偿
+    private String holeDepth;// 测量孔深
+
+    private String movementway;// 运动方式
     private String movementSpeed;// 电机运动速度(r/min)
     private String totalDistanceGoal;//  运动距离
     private String lastDistance;//当前距离
 
-    private String downSpeed;// 电机下放速度(r/min)
-    private String safeDistance;// 安全距离补偿
-    private String holeDepth;// 测量孔深
 
     private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
     private BleAdmeManualMeasuringHoleDepthBottomDialog manualMeasuringHoleDepthBottomDialog;
     private BleAdmeAutoMeasuringHoleDepthBottomDialog autoMeasuringHoleDepthBottomDialog;
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-    private final String[] measureModes = new String[]{"手动测孔深", "自动测孔深"};
+
+    private final String[] measureWays = new String[]{"自动测孔深", "手动测孔深"};
+    private final String[] movementWays = new String[]{"上拉", "下放"};
 
     private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
 
@@ -135,32 +138,29 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         setSwitchViewListener();
         //进入页面默认自动测孔深，需要打开堵转检测，先查询是否打开
         queryLockRotorInfo();
-        loadLastHistoryData(true);
+        loadAutoLastHistoryData();
     }
 
     private void setView() {
-        mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtMovementSpeed.setHint("1-180");
-        mEtMotionDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-
         mEtDownSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDownSpeed.setHint("1-120");
-        mEtSafeDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtSafeDistance.setHint("0-10");
+        mEtBottomSafeDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtBottomSafeDistance.setHint("0-10");
+
+        mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtMovementSpeed.setHint("1-180");
+        mEtGoalMovementDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
         //进入页面默认自动测孔深，需要打开堵转检测
         mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
 
-        mTvMeasureMode.setText(measureModes[1]);
-        mEtDownSpeed.setText("100");
-        mEtSafeDistance.setText("3");
-
-        mTvMotionWay.setText("上拉");
-        motionWay = "0";
-
+        //默认自动测量模式
+        mTvMeasureMode.setText(measureWays[0]);
         decentralizedLayout.setVisibility(View.GONE);
-        manualMeasureModeLayout.setVisibility(View.GONE);
         autoMeasureModeLayout.setVisibility(View.VISIBLE);
+        manualMeasureModeLayout.setVisibility(View.GONE);
+        mTvMovementWay.setText("上拉");
+        movementway = "0";
 
         clearMotionDataLayout.setVisibility(View.VISIBLE);
         motionDataClearCompleteLayout.setVisibility(View.GONE);
@@ -236,17 +236,12 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      */
     private void setManualMeasuringHoledepth() {
         try {
-            if (motionWay.equals("0")) {
-                //持久化保存用户数据到SharedPreferences文件中
-                SPStaticUtils.put(AppContants.ADME.LAST_MOTOR_PULL_UP_SPEED, movementSpeed);
-                SPStaticUtils.put(AppContants.ADME.LAST_MOTOR_PULL_UP_DISTANCE, totalDistanceGoal);
-            } else {
-                SPStaticUtils.put(AppContants.ADME.LAST_MOTOR_DROP_SPEED, movementSpeed);
-                SPStaticUtils.put(AppContants.ADME.LAST_MOTOR_DROP_DISTANCE, totalDistanceGoal);
-            }
+            //持久化保存用户数据到SharedPreferences文件中
+            SPStaticUtils.put(movementway.equals("0") ? AppContants.ADME.MANUAL_LAST_MOTOR_PULL_UP_SPEED : AppContants.ADME.MANUAL_LAST_MOTOR_DROP_SPEED, movementSpeed);
+            SPStaticUtils.put(movementway.equals("0") ? AppContants.ADME.MANUAL_LAST_MOTOR_PULL_UP_DISTANCE : AppContants.ADME.MANUAL_LAST_MOTOR_DROP_DISTANCE, totalDistanceGoal);
 
             AdmeMeasuringHoleDepthEntity entity = new AdmeMeasuringHoleDepthEntity();
-            entity.setMovementway(motionWay);
+            entity.setMovementway(movementway);
             entity.setMotorspeed(movementSpeed);
             decimalFormat.applyPattern("#.###");
             totalDistanceGoal = decimalFormat.format(Double.parseDouble(totalDistanceGoal));
@@ -266,6 +261,10 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      */
     private void setAutoMeasuringHoledepth() {
         try {
+            //持久化保存用户数据到SharedPreferences文件中
+            SPStaticUtils.put(AppContants.ADME.AUTO_LAST_MOTOR_DROP_SPEED, downSpeed);
+            SPStaticUtils.put(AppContants.ADME.AUTO_LAST_BOTTOM_SAFE_DISTANCE, safeDistance);
+
             AdmeAutoMeasuringHoleDepthEntity entity = new AdmeAutoMeasuringHoleDepthEntity();
             entity.setMotorspeed(downSpeed);
             decimalFormat.applyPattern("#.###");
@@ -304,7 +303,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 Timber.w("配置参数错误!");
                 return;
             }
-            if (mTvMeasureMode.getText().toString().equals(measureModes[0]))
+            if (mTvMeasureMode.getText().toString().equals(measureWays[1]))
                 setManualMeasuringHoledepth();
             else
                 setAutoMeasuringHoledepth();
@@ -323,22 +322,27 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * 选择测量模式
      */
     private void showMeasureModeDialog() {
-        int pos = Arrays.asList(measureModes).indexOf(String.valueOf(mTvMeasureMode.getText()));
+        int pos = Arrays.asList(measureWays).indexOf(String.valueOf(mTvMeasureMode.getText()));
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", measureModes,
+                .asBottomList("", measureWays,
                         null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
                                 mTvMeasureMode.setText(text);
-                                decentralizedLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
-                                manualMeasureModeLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
-                                autoMeasureModeLayout.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+                                decentralizedLayout.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+                                autoMeasureModeLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
+                                manualMeasureModeLayout.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+
+                                if (position == 0)
+                                    loadAutoLastHistoryData();
+                                else
+                                    loadManualLastHistoryData(true);
 
                                 //自动测量孔深模式，需要打开堵转检测
-                                if (position == 1) {
+                                if (position == 0) {
                                     if (lockedRotorDetectionInfo != null && lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
                                         mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
                                         setLockRotorInfo(true);
@@ -354,42 +358,53 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * 选择运动方式
      */
     private void showMotionTypeDialog() {
-        final String[] values = new String[]{"上拉", "下放"};
-        int pos = Arrays.asList(values).indexOf(String.valueOf(mTvMotionWay.getText()));
-
+        int pos = Arrays.asList(movementWays).indexOf(String.valueOf(mTvMovementWay.getText()));
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", values,
+                .asBottomList("", movementWays,
                         null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                mTvMotionWay.setText(text);
+                                mTvMovementWay.setText(text);
                                 if (position == 0) {
                                     ToastUtils.show("触发磁开关最大安全速度为20");
-                                    motionWay = "0";
-                                    loadLastHistoryData(true);
+                                    movementway = "0";
+                                    loadManualLastHistoryData(true);
                                 } else {
-                                    motionWay = "1";
-                                    loadLastHistoryData(false);
+                                    movementway = "1";
+                                    loadManualLastHistoryData(false);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
 
-    private void loadLastHistoryData(boolean isPullUp) {
-        String speed = SPStaticUtils.getString(isPullUp ? AppContants.ADME.LAST_MOTOR_PULL_UP_SPEED : AppContants.ADME.LAST_MOTOR_DROP_SPEED, "");
-        String distance = SPStaticUtils.getString(isPullUp ? AppContants.ADME.LAST_MOTOR_PULL_UP_DISTANCE : AppContants.ADME.LAST_MOTOR_DROP_DISTANCE, "");
+    /**
+     * 自动测孔深模式加载本地缓存的参数
+     */
+    private void loadAutoLastHistoryData() {
+        String speed = SPStaticUtils.getString(AppContants.ADME.AUTO_LAST_MOTOR_DROP_SPEED, "");
+        String distance = SPStaticUtils.getString(AppContants.ADME.AUTO_LAST_BOTTOM_SAFE_DISTANCE, "");
+        mEtDownSpeed.setText(speed);
+        mEtBottomSafeDistance.setText(distance);
+    }
+
+    /**
+     * 手动测孔深模式加载本地缓存的参数
+     */
+    private void loadManualLastHistoryData(boolean isPullUp) {
+        String speed = SPStaticUtils.getString(isPullUp ? AppContants.ADME.MANUAL_LAST_MOTOR_PULL_UP_SPEED : AppContants.ADME.MANUAL_LAST_MOTOR_DROP_SPEED, "");
+        String distance = SPStaticUtils.getString(isPullUp ? AppContants.ADME.MANUAL_LAST_MOTOR_PULL_UP_DISTANCE : AppContants.ADME.MANUAL_LAST_MOTOR_DROP_DISTANCE, "");
         mEtMovementSpeed.setText(speed);
-        mEtMotionDistance.setText(distance);
+        mEtGoalMovementDistance.setText(distance);
     }
 
     private boolean checkValueIsValid() {
-        if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
+        if (mTvMeasureMode.getText().toString().equals(measureWays[1])) {
             movementSpeed = mEtMovementSpeed.getText().toString().trim();
-            totalDistanceGoal = mEtMotionDistance.getText().toString().trim();
+            totalDistanceGoal = mEtGoalMovementDistance.getText().toString().trim();
             if (TextUtils.isEmpty(movementSpeed)) {
                 ToastUtils.show("请输入电机运动速度!");
                 mEtMovementSpeed.requestFocus();
@@ -409,25 +424,25 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             }
             if (TextUtils.isEmpty(totalDistanceGoal)) {
                 ToastUtils.show("请输入运动距离!");
-                mEtMotionDistance.requestFocus();
+                mEtGoalMovementDistance.requestFocus();
                 return false;
             }
             try {
                 double value = Double.parseDouble(totalDistanceGoal);
                 if (value <= 0) {
                     ToastUtils.show("请输入正确的运动距离!");
-                    mEtMotionDistance.requestFocus();
+                    mEtGoalMovementDistance.requestFocus();
                     return false;
                 }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的运动距离!");
-                mEtMotionDistance.requestFocus();
+                mEtGoalMovementDistance.requestFocus();
                 return false;
             }
 
         } else {
             downSpeed = mEtDownSpeed.getText().toString().trim();
-            safeDistance = mEtSafeDistance.getText().toString().trim();
+            safeDistance = mEtBottomSafeDistance.getText().toString().trim();
             if (TextUtils.isEmpty(downSpeed)) {
                 ToastUtils.show("请输入下放速度!");
                 mEtDownSpeed.requestFocus();
@@ -448,19 +463,19 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
             if (TextUtils.isEmpty(safeDistance)) {
                 ToastUtils.show("请输入安全距离补偿!");
-                mEtSafeDistance.requestFocus();
+                mEtBottomSafeDistance.requestFocus();
                 return false;
             }
             try {
                 double value = Double.parseDouble(safeDistance);
                 if (value < 0 || value > 10) {
                     ToastUtils.show("请输入正确的安全距离补偿!");
-                    mEtSafeDistance.requestFocus();
+                    mEtBottomSafeDistance.requestFocus();
                     return false;
                 }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的安全距离补偿!");
-                mEtSafeDistance.requestFocus();
+                mEtBottomSafeDistance.requestFocus();
                 return false;
             }
         }
@@ -595,7 +610,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                     return;
                 }
                 //轮询 N 次电机脉冲数据不变化时，查询电机运动状态进行后续处理
-                if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
+                if (mTvMeasureMode.getText().toString().equals(measureWays[1])) {
                     if (manualMeasuringHoleDepthBottomDialog.isVisible()) {
                         manualMeasuringHoleDepthBottomDialog.processMotorMotionState(measuringHoleDepthInfo);
                     }
@@ -635,7 +650,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null)
                     return;
 
-                if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
+                if (mTvMeasureMode.getText().toString().equals(measureWays[1])) {
                     if (manualMeasuringHoleDepthBottomDialog.isVisible())
                         manualMeasuringHoleDepthBottomDialog.updateMotionData(motorMotionDistanceInfo);
                 } else {
@@ -675,14 +690,14 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * 打开数据运行弹框
      */
     private void showMotorMotionDialog() {
-        if (mTvMeasureMode.getText().toString().equals(measureModes[0])) {
+        if (mTvMeasureMode.getText().toString().equals(measureWays[1])) {
             //数据运行弹框已经显示了
             if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog.isVisible()) {
                 manualMeasuringHoleDepthBottomDialog.processContinueMotorMotion();
                 return;
             }
             Timber.d("start Motion: lastDistance=%s,totalDistanceGoal=%s", lastDistance, totalDistanceGoal);
-            manualMeasuringHoleDepthBottomDialog = BleAdmeManualMeasuringHoleDepthBottomDialog.newInstance(motionWay, lastDistance, totalDistanceGoal);
+            manualMeasuringHoleDepthBottomDialog = BleAdmeManualMeasuringHoleDepthBottomDialog.newInstance(movementway, lastDistance, totalDistanceGoal);
             manualMeasuringHoleDepthBottomDialog.show(getChildFragmentManager(), "dialog");
         } else {
             autoMeasuringHoleDepthBottomDialog = BleAdmeAutoMeasuringHoleDepthBottomDialog.newInstance();

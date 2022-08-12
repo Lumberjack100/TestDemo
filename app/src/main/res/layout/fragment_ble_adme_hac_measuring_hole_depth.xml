@@ -230,6 +230,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_hole_depth"
         style="@style/Common_ClickableItem_LayoutStyle"
         android:clickable="false">
 

@@ -41,8 +41,6 @@ import timber.log.Timber;
  */
 public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment {
     private static final String MOTION_WAY = "motion_way";
-    private static final String LAST_DISTANCE = "last_distance";
-    private static final String MOTION_DISTANCE = "motion_distance";
 
     @BindView(R.id.tv_title)
     TextView mTvTitle;
@@ -74,7 +72,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
     private String curDistance;//当前距离
     private String curPulse;//脉冲数
 
-    private static int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
+    private int repeatNum = 0;//当查询电机脉冲数重复超过一定次数时，判定电机停止
     private boolean isStopClick = false;//是否是点击停止按钮操作
     private boolean isStopQueryMotorState = false;
 

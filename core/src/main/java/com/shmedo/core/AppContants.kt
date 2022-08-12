@@ -102,12 +102,15 @@ interface AppContants {
      */
     interface ADME {
         companion object {
-            //上一次电机上拉速度
-            const val LAST_MOTOR_PULL_UP_SPEED = "last_motor_pull_up_speed"
-            //上一次电机上拉距离
-            const val LAST_MOTOR_PULL_UP_DISTANCE = "last_motor_pull_up_distance"
-            const val LAST_MOTOR_DROP_SPEED = "last_motor_drop_speed"
-            const val LAST_MOTOR_DROP_DISTANCE = "last_motor_drop_distance"
+            /**手动测孔深本地存储键值对*/
+            const val MANUAL_LAST_MOTOR_PULL_UP_SPEED = "last_motor_pull_up_speed" //上一次电机上拉速度
+            const val MANUAL_LAST_MOTOR_PULL_UP_DISTANCE = "last_motor_pull_up_distance" //上一次电机上拉距离
+            const val MANUAL_LAST_MOTOR_DROP_SPEED = "last_motor_drop_speed"
+            const val MANUAL_LAST_MOTOR_DROP_DISTANCE = "last_motor_drop_distance"
+
+            /**自动测孔深本地存储键值对*/
+            const val AUTO_LAST_MOTOR_DROP_SPEED = "auto_last_motor_drop_speed"//上一次电机下放速度
+            const val AUTO_LAST_BOTTOM_SAFE_DISTANCE = "auto_last_bottom_safe_distance"//上一次管底安全补偿距离
         }
     }
 

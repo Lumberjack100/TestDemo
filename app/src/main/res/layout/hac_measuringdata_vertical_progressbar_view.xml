@@ -24,21 +24,22 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimen_size_10"
         android:layout_marginTop="10dp"
-        android:text="当前测量 0 米"
+        android:text="当前孔深深度 -- 米"
         android:textColor="@color/title_text_color"
         android:textSize="@dimen/text_size_14"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tv_hole_depth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/verticalBar"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/tv_hole_depth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="孔深 -- 米"
+        android:text="测斜管深度 -- 米"
         android:textColor="@color/title_text_color"
         android:textSize="@dimen/text_size_14"
         android:textStyle="bold"

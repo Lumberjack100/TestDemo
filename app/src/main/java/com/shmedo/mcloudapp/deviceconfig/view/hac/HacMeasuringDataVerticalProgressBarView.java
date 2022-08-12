@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -51,6 +52,8 @@ public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
     }
 
     public void init(String measurePoint) {
+        mTvCurDepth.setVisibility(View.INVISIBLE);
+
         if (TextUtils.isEmpty(measurePoint) || !measurePoint.contains("|"))
             return;
 
@@ -58,9 +61,11 @@ public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
             String[] values = measurePoint.split("\\|");
             if (!TextUtils.isEmpty(values[1])) {
                 double depth = Double.parseDouble(values[1]);
-                if (depth == 0)
+                if (depth == 0) {
+                    mTvHoleDepth.setText("测斜管深度 -- 米");
                     return;
-                mTvHoleDepth.setText(String.format("孔深 %s 米", decimalFormat.format(depth)));
+                }
+                mTvHoleDepth.setText(String.format("测斜管深度 %s 米", decimalFormat.format(depth)));
                 verticalBar.setMax((int) (depth * 10));
             }
             verticalBar.setProgress(0, true);
@@ -70,24 +75,28 @@ public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
     }
 
     public void updateProgress(String measurePoint) {
+        mTvCurDepth.setVisibility(View.VISIBLE);
+
         if (TextUtils.isEmpty(measurePoint) || !measurePoint.contains("|"))
             return;
 
         try {
+            double depth = 0;
             String[] values = measurePoint.split("\\|");
             if (!TextUtils.isEmpty(values[1])) {
-                double depth = Double.parseDouble(values[1]);
-                if (depth == 0)
+                depth = Double.parseDouble(values[1]);
+                if (depth == 0) {
+                    mTvHoleDepth.setText("测斜管深度 -- 米");
                     return;
-
-                mTvHoleDepth.setText(String.format("孔深 %s 米", decimalFormat.format(depth)));
+                }
+                mTvHoleDepth.setText(String.format("测斜管深度 %s 米", decimalFormat.format(depth)));
                 verticalBar.setMax((int) (depth * 10));
             }
             if (TextUtils.isEmpty(values[0]))
                 verticalBar.setProgress(0, true);
             else {
                 double value = Double.parseDouble(values[0]);
-                mTvCurDepth.setText(String.format("当前测量 %s 米", decimalFormat.format(value)));
+                mTvCurDepth.setText(String.format("当前孔深深度 %s 米", decimalFormat.format(depth - value)));
                 verticalBar.setProgress((int) (value * 10), true);
             }
         } catch (Exception ex) {
