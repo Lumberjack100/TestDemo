@@ -45,7 +45,9 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ResponseWrapper;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
+import com.shmedo.mcloudapp.network.api.ApiService;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.jetbrains.annotations.NotNull;
@@ -61,6 +63,7 @@ import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import timber.log.Timber;
@@ -70,13 +73,13 @@ import timber.log.Timber;
  */
 public class NetDeviceListFragment extends BaseFragment {
     @BindView(R.id.tv_online_num)
-    TextView tvOnlineNum;
+    TextView tvOnlineNum;//在线设备
 
     @BindView(R.id.tv_offline_num)
-    TextView tvOfflineNum;
+    TextView tvOfflineNum;//离线设备
 
     @BindView(R.id.tv_online_rate)
-    TextView tvOnlineRate;
+    TextView tvOnlineRate;//在线率
 
     @BindView(R.id.recyclerview_device_type)
     SlidingConflictRecyclerView mRecyclerViewProduct;
@@ -94,9 +97,10 @@ public class NetDeviceListFragment extends BaseFragment {
     private List<DeviceInfo> deviceInfoList = new ArrayList<>();
 
     private static final int PAGE_SIZE = 30;
-    private PageInfo pageInfo;
+    private PageInfo pageInfo = new PageInfo(1);
     private int companyID = -100;
     private int productID = -1;
+    private boolean isHasListSuperInfoPermission = false;//是否具有 ListSuperInfo 系统权限
 
     @Override
     protected int getLayoutId() {
@@ -106,37 +110,41 @@ public class NetDeviceListFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        pageInfo = new PageInfo(1);
         initProductAdapter();
         initDeviceInfoAdapter();
         initRefreshLayout();
         initLoadMore();
+        if (MCloudApp.getPermissionNameList().contains("ListSuperInfo"))
+            isHasListSuperInfoPermission = true;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (companyID != MCloudApp.getCompanyID()) {
-            companyID = MCloudApp.getCompanyID();
-            productID = -1;
-            clearData();
-            startLoading();
-            mRefreshLayout.setEnableLoadMore(false);
-            //是否在刷新的时候禁止内容的一切手势操作（默认false）
-            mRefreshLayout.setDisableContentWhenRefresh(true);
-            mRefreshLayout.autoRefresh();
-            getDeviceStatByCompanyID();
-            // 查询产品信息
-            queryProducts();
-        }
+//        if (companyID != MCloudApp.getCompanyID()) {
+        companyID = MCloudApp.getCompanyID();
+        loadAllData();
+//        }
     }
 
+    private void loadAllData() {
+        clearAllData();
+        startLoading();
+        //查询设备在线统计信息
+        getDeviceStatByCompanyID();
+        //查询产品列表
+        queryProducts();
+        //刷新设备列表
+        mRefreshLayout.autoRefresh();
+    }
+
+    /**
+     * 初始化产品列表适配器
+     */
     private void initProductAdapter() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerViewProduct.setLayoutManager(linearLayoutManager);
         productAdapter = new ProductAdapter(productList);
-//        productAdapter.setAnimationEnable(true);
-//        productAdapter.setAnimationFirstOnly(false);
         productAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -161,6 +169,9 @@ public class NetDeviceListFragment extends BaseFragment {
         mRecyclerViewProduct.setAdapter(productAdapter);
     }
 
+    /**
+     * 初始化设备列表适配器
+     */
     private void initDeviceInfoAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
         int spacing = ConvertUtils.dp2px(10);//每一个矩形的间距
@@ -168,8 +179,8 @@ public class NetDeviceListFragment extends BaseFragment {
         //设置每个item间距
         mRecyclerViewDevice.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         deviceInfoAdapter = new DeviceInfoAdapter(deviceInfoList);
-        deviceInfoAdapter.setAnimationEnable(true);
-        deviceInfoAdapter.setAnimationFirstOnly(false);
+//        deviceInfoAdapter.setAnimationEnable(true);
+//        deviceInfoAdapter.setAnimationFirstOnly(false);
         deviceInfoAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -181,10 +192,18 @@ public class NetDeviceListFragment extends BaseFragment {
     }
 
     private void initRefreshLayout() {
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                refreshDevices();
+                deviceInfoList.clear();
+                // 这里的作用是防止下拉刷新的时候还可以上拉加载
+                deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
+                // 下拉刷新，需要重置页数
+                pageInfo.reset();
+                queryDeviceList();
             }
         });
     }
@@ -207,16 +226,43 @@ public class NetDeviceListFragment extends BaseFragment {
     }
 
     /**
-     * 下拉刷新
+     * 查询公司设备在线统计信息
      */
-    private void refreshDevices() {
-        deviceInfoList.clear();
-//        deviceInfoAdapter.notifyDataSetChanged();
-        // 这里的作用是防止下拉刷新的时候还可以上拉加载
-        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
-        // 下拉刷新，需要重置页数
-        pageInfo.reset();
-        queryDeviceList();
+    private void getDeviceStatByCompanyID() {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+        ApiService apiService = MDRetrofit.getInstance().createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS);
+        Observable<ResponseWrapper<DeviceStatisticInfo>> observable = isHasListSuperInfoPermission ? apiService.listSuperDeviceStat(MCloudApp.getAccessToken(), body) : apiService.getDeviceStatByCompanyID(MCloudApp.getAccessToken(), body);
+        observable.doOnDispose(() -> Timber.i("Disposing subscription"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
+                .subscribe(new BaseObserver<DeviceStatisticInfo>() {
+                    @Override
+                    protected void onResponse(DeviceStatisticInfo data, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
+                                DecimalFormat df = new DecimalFormat("#.##");//格式化小数
+                                String rate = df.format(data.getOnlinePercent()) + "%";
+                                updateTopView(data.getOnlineCount(), data.getOfflineCount(), rate);
+                            } else {
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
     }
 
     /**
@@ -225,18 +271,17 @@ public class NetDeviceListFragment extends BaseFragment {
     private void queryProducts() {
         JSONObject jsonObjectRequest = new JSONObject();
         try {
-            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+            if (!isHasListSuperInfoPermission)
+                jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
             jsonObjectRequest.put("pageSize", 100);
             jsonObjectRequest.put("currentPage", 1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
-
-        MDRetrofit.getInstance()
-                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
-                .queryProduct(MCloudApp.getAccessToken(), body)
-                .doOnDispose(() -> Timber.i("Disposing subscription"))
+        ApiService apiService = MDRetrofit.getInstance().createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS);
+        Observable<ResponseWrapper<PageResult<ProductInfo>>> observable = isHasListSuperInfoPermission ? apiService.listSuperProduct(MCloudApp.getAccessToken(), body) : apiService.queryProduct(MCloudApp.getAccessToken(), body);
+        observable.doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
@@ -274,21 +319,22 @@ public class NetDeviceListFragment extends BaseFragment {
 
     private void initProducts(List<ProductInfo> dataList) {
         productList.clear();
-        if (dataList == null || dataList.size() == 0) {
-            mRefreshLayout.finishRefresh(false);
-            showNoContentView(StringUtils.getString(R.string.empty_no_data));
-            return;
-        }
         for (ProductInfo info : dataList) {
+            //过滤掉没有设备的产品
             if (info.getDeviceNum() == 0)
                 continue;
-
             ProductType type = ProductType.valueByPrefix(info.getProductToken().toUpperCase());
             if (type == ProductType.UnKnown) {
                 continue;
             }
             productList.add(info);
         }
+        if (productList.size() == 0) {
+            mRefreshLayout.finishRefresh(false);
+            showNoContentView(StringUtils.getString(R.string.empty_no_data));
+            return;
+        }
+        //安装产品名排序
         Collections.sort(productList);
 
         ProductInfo productInfo = new ProductInfo();
@@ -297,52 +343,6 @@ public class NetDeviceListFragment extends BaseFragment {
         productInfo.setChecked(true);
         productList.add(0, productInfo);
         productAdapter.notifyDataSetChanged();
-
-        if (productList.size() <= 1) {
-            mRefreshLayout.finishRefresh(false);
-            showNoContentView(StringUtils.getString(R.string.empty_no_data));
-        }
-    }
-
-    /**
-     * 查询公司设备在线统计信息
-     */
-    private void getDeviceStatByCompanyID() {
-        JSONObject jsonObjectRequest = new JSONObject();
-        try {
-            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
-        MDRetrofit.getInstance()
-                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
-                .getDeviceStatByCompanyID(MCloudApp.getAccessToken(), body)
-                .doOnDispose(() -> Timber.i("Disposing subscription"))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
-                .subscribe(new BaseObserver<DeviceStatisticInfo>() {
-                    @Override
-                    protected void onResponse(DeviceStatisticInfo data, ErrorInfo errorInfo) {
-                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
-                            if (errorInfo.getCode() == 0) {
-                                DecimalFormat df = new DecimalFormat("#.##");//格式化小数
-                                String rate = df.format(data.getOnlinePercent()) + "%";
-                                updateTopView(data.getOnlineCount(), data.getOfflineCount(), rate);
-                            } else {
-                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
-                                    ToastUtils.show(errorInfo.getMsg());
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ResponseHandler.getInstance().handleFailure((Exception) e);
-                    }
-                });
     }
 
     /**
@@ -355,17 +355,15 @@ public class NetDeviceListFragment extends BaseFragment {
             jsonObjectRequest.put("productID", productID == -1 ? "" : productID);
             jsonObjectRequest.put("tokenAndVersion", false);
             jsonObjectRequest.put("deviceStatus", "启用");
-            jsonObjectRequest.put("pageSize", PAGE_SIZE);
             jsonObjectRequest.put("currentPage", pageInfo.getPage());
+            jsonObjectRequest.put("pageSize", PAGE_SIZE);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
-
-        MDRetrofit.getInstance()
-                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
-                .getDeviceList(MCloudApp.getAccessToken(), body)
-                .doOnDispose(() -> Timber.i("Disposing subscription"))
+        ApiService apiService = MDRetrofit.getInstance().createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS);
+        Observable<ResponseWrapper<PageResult<DeviceInfo>>> observable = isHasListSuperInfoPermission ? apiService.listSuperDevice(MCloudApp.getAccessToken(), body) : apiService.getDeviceList(MCloudApp.getAccessToken(), body);
+        observable.doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
@@ -411,7 +409,7 @@ public class NetDeviceListFragment extends BaseFragment {
     }
 
     /**
-     * 安装在线、离线排序加载
+     * 在线、离线排序加载
      */
     private void filterDevices(List<DeviceInfo> tempList) {
         deviceInfoList.addAll(tempList);
@@ -449,9 +447,7 @@ public class NetDeviceListFragment extends BaseFragment {
             showBadNetworkView(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startLoading();
-                    mRefreshLayout.autoRefresh();
-                    getDeviceStatByCompanyID();
+                    loadAllData();
                 }
             });
         } else {
@@ -459,13 +455,13 @@ public class NetDeviceListFragment extends BaseFragment {
         }
     }
 
-    private void clearData() {
-        updateTopView(0, 0, "0%");
+    private void clearAllData() {
+//        updateTopView(0, 0, "0%");
         productID = -1;
         productList.clear();
-        productAdapter.notifyDataSetChanged();
+//        productAdapter.notifyDataSetChanged();
         deviceInfoList.clear();
-        deviceInfoAdapter.notifyDataSetChanged();
+//        deviceInfoAdapter.notifyDataSetChanged();
     }
 
     private void updateTopView(int onlineCount, int offlineCount, String rate) {

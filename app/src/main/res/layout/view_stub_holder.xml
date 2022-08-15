@@ -5,7 +5,7 @@
         android:id="@+id/noContentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout="@layout/no_content_view" />
+        android:layout="@layout/empty_view" />
 
     <ViewStub
         android:id="@+id/badNetworkView"

@@ -33,7 +33,9 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ResponseWrapper;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
+import com.shmedo.mcloudapp.network.api.ApiService;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.json.JSONException;
@@ -46,6 +48,7 @@ import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import okhttp3.RequestBody;
 import timber.log.Timber;
@@ -164,6 +167,7 @@ public class DeviceSearchActivity extends BaseActivity {
     }
 
     private void refresh() {
+        deviceInfoList.clear();
         // 这里的作用是防止下拉刷新的时候还可以上拉加载
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
         // 下拉刷新，需要重置页数
@@ -195,11 +199,9 @@ public class DeviceSearchActivity extends BaseActivity {
             e.printStackTrace();
         }
         RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
-
-        MDRetrofit.getInstance()
-                .createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS)
-                .getDeviceList(MCloudApp.getAccessToken(), body)
-                .doOnDispose(() -> Timber.i("Disposing subscription"))
+        ApiService apiService = MDRetrofit.getInstance().createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS);
+        Observable<ResponseWrapper<PageResult<DeviceInfo>>> observable = MCloudApp.getPermissionNameList().contains("ListSuperInfo") ? apiService.listSuperDevice(MCloudApp.getAccessToken(), body) : apiService.getDeviceList(MCloudApp.getAccessToken(), body);
+        observable.doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
@@ -217,10 +219,6 @@ public class DeviceSearchActivity extends BaseActivity {
                                         deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
                                     }
                                     return;
-                                }
-                                //如果是加载的第一页数据，清空列表
-                                if (pageInfo.isFirstPage()) {
-                                    deviceInfoList.clear();
                                 }
                                 deviceInfoList.addAll(data.getCurrentPageData());
                                 deviceInfoAdapter.notifyDataSetChanged();
@@ -242,6 +240,7 @@ public class DeviceSearchActivity extends BaseActivity {
                             deviceInfoAdapter.setEmptyView(getErrorView());
                         }
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
