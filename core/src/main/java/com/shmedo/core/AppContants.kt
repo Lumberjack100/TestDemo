@@ -78,6 +78,7 @@ interface AppContants {
             const val CONNECT_DEVICE = 0x002 //
             const val MSG_HEART = 0x006 //
             const val MSG_SMART_REFRESH = 0x007 //
+            const val MSG_POLLING = 0x003
         }
     }
 

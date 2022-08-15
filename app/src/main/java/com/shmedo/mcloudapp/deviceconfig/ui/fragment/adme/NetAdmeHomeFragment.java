@@ -62,20 +62,23 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    TextView mTvFirmwareVersion;//版本信息
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
+    @BindView(R.id.tv_firmware_version)
+    TextView mTvFirmwareVersion;//固件版本
+
+    @BindView(R.id.tv_extended_field3)
     TextView mTvMotionState;//运行状态
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;// 与平台通信状态,隐藏
+    TextView mTvPlatformCommunicationState;//与平台通信状态(文字标识)
 
     @BindView(R.id.tv_device_state_flag)
-    TextView mTvDeviceState;//与平台通信状态
+    TextView mTvDeviceState;//与平台通信状态(图标)
 
     @BindView(R.id.tv_device_connect_operate)
-    TextView mTvDeviceConnectOperate;//隐藏
+    TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
 
     @BindView(R.id.tv_config_model)
     TextView mTvConfigModel;//设备模式
@@ -100,7 +103,6 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         return fragment;
     }
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.adme_home_fragment;
@@ -111,7 +113,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         super.onViewCreated(view, savedInstanceState);
         modes = getResources().getStringArray(R.array.adme_device_mode);
         initAdapter();
-        updateHeadInfo();
+        initHeadInfo();
         updateDeviceMode();
         queryEquipmentBaseInfo();
     }
@@ -356,19 +358,18 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo() {
+    private void initHeadInfo() {
         try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "自动化测斜机器人" : deviceInfo.getProductName());
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "ADME" : deviceInfo.getDeviceName());
+            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
+            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             mTvMotionState.setText("运行状态：--");
             setDeviceState(mTvDeviceState, deviceInfo.isOnlineStatus());
-            mTvPlatformCommunicationState.setVisibility(View.GONE);
-            mTvDeviceConnectOperate.setVisibility(View.GONE);
-
             //TODO #gh# 暂时不展示运行状态处理，后期考虑优化
             mTvMotionState.setVisibility(View.GONE);
-
+            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            mTvDeviceConnectOperate.setVisibility(View.GONE);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

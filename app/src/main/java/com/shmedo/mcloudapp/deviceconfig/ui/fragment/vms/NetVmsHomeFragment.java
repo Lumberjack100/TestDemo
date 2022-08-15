@@ -79,11 +79,14 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//版本信息
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvSubModel;//网关电压
+    @BindView(R.id.tv_firmware_version)
+    TextView mTvFirmwareVersion;//固件版本
+
+    @BindView(R.id.tv_extended_field3)
+    TextView mTvVoltage;//网关电压
 
     @BindView(R.id.tv_platform_communication_state)
     TextView mTvPlatformCommunicationState;// 与数据平台的通信状态
@@ -169,7 +172,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         tabLayout.addOnTabSelectedListener(this);
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
@@ -196,36 +199,12 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
      */
     private void updateHeadInfo() {
         try {
-            if (vmsBasicInfo != null) {
-                mTvDeviceName.setText("VMS网关");
-                mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBasicInfo.getSn()));
-                mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
-                mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
-                if (!TextUtils.isEmpty(vmsBasicInfo.getOnline()) && !vmsBasicInfo.getOnline().equals("0")) {
-                    mTvDeviceState.setText("在线");
-                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-
-                } else if (vmsBasicInfo.getOnline().equals("0")) {
-                    mTvDeviceState.setText("离线");
-                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-                }
-            } else {
-                mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "" : deviceInfo.getDeviceName());
-                mTvDeviceSn.setText(String.format("设备SN号：%s", deviceInfo.getDeviceToken()));
-                mTvProductModel.setText(String.format("版本信息：%s", deviceInfo.getFirmwareVersion()));
-                mTvSubModel.setText("网关电压：--");
-                if (deviceInfo.isOnlineStatus()) {
-                    mTvDeviceState.setText("在线");
-                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
-                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_online_state_flag);
-                } else {
-                    mTvDeviceState.setText("离线");
-                    mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.sub_title_text_color));
-                    mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
-                }
-            }
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? deviceInfo.getDeviceToken() : deviceInfo.getDeviceName());
+            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
+            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+            mTvVoltage.setText(String.format("网关电压：%s", vmsBasicInfo != null ? vmsBasicInfo.getVolt() + "V" : "--"));
+            setDeviceState(mTvDeviceState, deviceInfo.isOnlineStatus());
             mTvPlatformCommunicationState.setVisibility(View.GONE);
             mTvDeviceConnectOperate.setVisibility(View.GONE);
         } catch (Exception ex) {
@@ -564,8 +543,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.finishRefresh(false);
         }

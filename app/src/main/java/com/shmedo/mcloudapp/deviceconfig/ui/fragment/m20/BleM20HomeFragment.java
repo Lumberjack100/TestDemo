@@ -3,7 +3,10 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -63,14 +66,17 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
+
+    @BindView(R.id.tv_firmware_version)
     TextView mTvFirmwareVersion;//固件版本
 
-    @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvSubMod;//
+    @BindView(R.id.tv_extended_field3)
+    TextView mTvExtendedField;//
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;//与米度平台连接状态
+    TextView mTvPlatformCommunicationState;//与平台通信状态(文字标识)
 
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
@@ -348,19 +354,31 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void updateHeadInfo() {
         if (deviceInfo == null)
             deviceInfo = new DeviceBaseInfo();
-
         try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "普适型GNSS一体机" : deviceInfo.getProductName());
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? sn : deviceInfo.getDeviceToken()));
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "M20" : deviceInfo.getDeviceName());
+            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
+            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
-
-            mTvSubMod.setVisibility(View.GONE);
-            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            if (deviceInfo.isOnlineStatus()) {
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
+            } else {
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
+            }
+            mTvExtendedField.setVisibility(View.GONE);
             mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
             mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private CharSequence getPlatformStateMessage(String state) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(state);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(state.contains("在线") ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.insert(0, "米度平台连接状态：");
+
+        return builder;
     }
 
     @Override

@@ -61,10 +61,13 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//版本信息
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
+    @BindView(R.id.tv_firmware_version)
+    TextView mTvFirmwareVersion;//固件版本
+
+    @BindView(R.id.tv_extended_field3)
     TextView mTvTime;//接入网关时间
 
     @BindView(R.id.tv_platform_communication_state)
@@ -106,15 +109,15 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
         return R.layout.universal_config_home_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeadInfo();
+        initHeadInfo();
         initAdapter();
         initConfigModuleData();
     }
 
-    private void setHeadInfo() {
+    private void initHeadInfo() {
         if (vmsTerminalInfo != null) {
             if (vmsTerminalInfo.getSn().toUpperCase().endsWith("D")) {
                 mTvDeviceName.setText("振弦式采集器");
@@ -125,10 +128,9 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
             } else if (vmsTerminalInfo.getSn().toUpperCase().endsWith("W")) {
                 mTvDeviceName.setText("崩滑仪");
             }
-            mTvDeviceSn.setText(String.format("设备编号：%s", vmsTerminalInfo.getSn()));
-            mTvProductModel.setText(String.format("固件版本：%s", ""));
+            mTvDeviceSn.setText(String.format("设备SN号：%s", vmsTerminalInfo.getSn()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", ""));
             mTvTime.setText(String.format("接入时间：%s", vmsTerminalInfo.getLogintime()));
-            mTvDeviceState.setVisibility(View.VISIBLE);
             mTvDeviceState.setText(processTerminalState(vmsTerminalInfo.getLastpackagetime(), vmsTerminalInfo.getLogintime()));
             if (vmsTerminalInfo.getStatus() != 0) {
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
@@ -138,6 +140,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
             }
         }
+        mTvProductName.setVisibility(View.GONE);
         mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.GONE);
     }
@@ -158,7 +161,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
 
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));

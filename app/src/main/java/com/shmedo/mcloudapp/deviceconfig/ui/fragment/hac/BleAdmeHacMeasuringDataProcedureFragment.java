@@ -104,7 +104,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             if (fragment.isConnected()) {
                 fragment.queryMotorState();
                 //实现查询电机状态指令响应超时，重新发送查询
-//                fragment.startDefaultProgress(null, AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+//                fragment.startDefaultProgress(null, AppContants.MsgWhat.MSG_POLLING, DELAY_10000_MILLIS);
             }
         }
     }
@@ -130,10 +130,10 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         switch (msg.what) {
-            case AppContants.MsgWhat.MSG_DEFAULT:
+            case AppContants.MsgWhat.MSG_POLLING:
                 Timber.d("queryMotorState timeout");
                 //查询电机状态指令响应超时，重新发送查询
-                startQueryMotorStateProgress(0);
+                queryMotorState();
                 break;
         }
     }
@@ -254,7 +254,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_HAC_MD_GET_MOTION_STATE: {//查询电机当前运动状态
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                stopDefaultProgress(AppContants.MsgWhat.MSG_POLLING);
                 IOTCommandResult<HacMotionState> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取电机当前运动状态出错!", commandResult.getMessage());

@@ -281,7 +281,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         }
     }
 
-    @OnClick({R.id.ll_measure_mode, R.id.ll_motion_type, R.id.btn_run, R.id.ll_clear_motion_data})
+    @OnClick({R.id.ll_measure_mode, R.id.ll_movement_way, R.id.btn_run, R.id.ll_clear_motion_data})
     public void onClick(View view) {
         int id = view.getId();
         if (isDoubleClick(view)) {
@@ -290,7 +290,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         if (id == R.id.ll_measure_mode) {
             showMeasureModeDialog();
 
-        } else if (id == R.id.ll_motion_type) {
+        } else if (id == R.id.ll_movement_way) {
             showMotionTypeDialog();
 
         } else if (id == R.id.btn_run) {

@@ -18,7 +18,7 @@ public class DASAuthenticRequestEntity implements Validater {
     @Override
     public void validate() {
         if (sn.length() != 7)
-            throw new DASParameterException("SN设备编号错误");
+            throw new DASParameterException("设备SN错误");
     }
 
     @Override

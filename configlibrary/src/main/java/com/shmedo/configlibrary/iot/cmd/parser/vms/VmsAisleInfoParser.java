@@ -29,9 +29,9 @@ public class VmsAisleInfoParser implements IOTResultParser<VmsAisleInfo> {
                 }
             }
             info.setChannel(Integer.parseInt(Objects.requireNonNull(keyValueMap.get("channel"))));
-            info.setNetid(keyValueMap.getOrDefault("sn", "NullKey"));
-            info.setAddr(keyValueMap.getOrDefault("sn", "NullKey"));
-            info.setChl(keyValueMap.getOrDefault("sn", "NullKey"));
+            info.setNetid(keyValueMap.getOrDefault("netid", "NullKey"));
+            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
+            info.setChl(keyValueMap.getOrDefault("chl", "NullKey"));
             info.setAirbaud(keyValueMap.getOrDefault("airbaud", "NullKey"));
             info.setPpt(keyValueMap.getOrDefault("ppt", "NullKey"));
             info.setTerminalmode(keyValueMap.getOrDefault("terminalmode", "NullKey"));
