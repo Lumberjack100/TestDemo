@@ -47,6 +47,7 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +75,8 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     protected ConfigPageViewModel configPageViewModel;
 
     protected AdmeViewModel admeViewModel;
+
+    protected LinkedList<String> commandItems = new LinkedList<>();
 
     protected List<String> msgIDList = new ArrayList<>();
 
@@ -367,6 +370,19 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             stopQueryCmdResponse();
             cmdResultDisposable.dispose();
             cmdResultDisposable = null;
+        }
+    }
+
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList() {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+            commandItems.removeFirst();
+        } else {
+            dismissWaitDialog();
         }
     }
 

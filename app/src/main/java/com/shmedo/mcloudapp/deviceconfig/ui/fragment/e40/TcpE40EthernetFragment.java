@@ -124,7 +124,7 @@ public class TcpE40EthernetFragment extends BaseTcpIotCommunicateFragment {
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"手动", "自动"},
-                        null, dhcpPos, true,
+                        null, dhcpPos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

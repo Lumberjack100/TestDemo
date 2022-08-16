@@ -204,8 +204,6 @@ public class LoginManager implements DefaultLifecycleObserver {
                             if (!checkPermission(permissionInfoList))
                                 return;
 
-                            //用户在某公司某服务中的所有权限
-                            MCloudApp.setUserPermissionInfoList(permissionInfoList);
                             queryUserByID(companyID, userID);
                         } else {
                             if (loginCallback != null) {
@@ -231,11 +229,14 @@ public class LoginManager implements DefaultLifecycleObserver {
             }
             return false;
         }
-
         List<String> tempList = new ArrayList<>();
         for (UserPermissionInfo permissionInfo : permissionInfoList) {
             tempList.add(permissionInfo.getPermissionToken());
         }
+        //用户在某公司某服务中的所有权限
+        MCloudApp.setUserPermissionInfoList(permissionInfoList);
+        MCloudApp.setPermissionNameList(tempList);
+
         if (!tempList.contains("DescribeUser")) {
             if (loginCallback != null) {
                 loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, "缺少查询用户(DescribeUser)权限");

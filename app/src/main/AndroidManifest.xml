@@ -57,16 +57,15 @@
         tools:replace="android:name"
         tools:targetApi="p">
 
-
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
-        <meta-data
+       <!-- <meta-data
             android:name="PGYER_API_KEY"
             android:value="${pgyerKey}" />
         <meta-data
             android:name="PGYER_FRONTJS_KEY"
-            android:value="${frontJSToken}" />
+            android:value="${frontJSToken}" />-->
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${buglyAppId}" /> <!-- 配置APP版本号 -->
@@ -319,7 +318,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
         <activity
-            android:name=".deviceconfig.ui.activity.adme.BleAdmeLockedRotorDetectionActivity"
+            android:name=".deviceconfig.ui.activity.adme.AdmeLockedRotorDetectionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -413,9 +412,29 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".deviceconfig.ui.activity.DeviceListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataProcedureActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataResultsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"

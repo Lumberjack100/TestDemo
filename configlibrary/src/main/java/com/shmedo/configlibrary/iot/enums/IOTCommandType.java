@@ -477,6 +477,58 @@ public enum IOTCommandType {
      */
     ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE("md_setanthrmove"),
 
+    /*　 ADME HAC 型号指令  */
+    /**
+     * 获取HAC的预警配置参数
+     */
+    ADME_HAC_MD_GET_WARN("md_hac_getwarn"),
+
+    /**
+     * 设置HAC的预警配置参数
+     */
+    ADME_HAC_MD_SET_WARN("md_hac_setwarn"),
+
+    /**
+     * 获取HAC执⾏机构参数
+     */
+    ADME_HAC_MD_GET_EXECUTIVE_AGENCY("md_hac_getactuator"),
+
+    /**
+     * 设置HAC执⾏机构参数
+     */
+    ADME_HAC_MD_SET_EXECUTIVE_AGENCY("md_hac_setactuator"),
+
+    /**
+     * 获取HAC的孔深测量配置参数
+     */
+    ADME_HAC_MD_GET_HOLE_MEASURE_PARAM("md_hac_getholemeasparame"),
+
+    /**
+     * 设置HAC的孔深测量配置参数
+     */
+    ADME_HAC_MD_SET_HOLE_MEASURE_PARAM("md_hac_setholemeasparame"),
+
+    /**
+     * 查询HAC测孔深运动的脉冲数、运动距离
+     */
+    ADME_HAC_MD_GET_HOLE_MEASURE_PULSE("md_hac_getmhdpulsedistance"),
+
+    /**
+     * 查询HAC数据测量参数
+     */
+    ADME_HAC_MD_GET_DATA_MEASURE_PARAM("md_hac_getdatameasparame"),
+
+    /**
+     * 设置HAC数据测量参数
+     */
+    ADME_HAC_MD_SET_DATA_MEASURE_PARAM("md_hac_setdatameasparame"),
+
+    /**
+     * 查询电机当前运动状态
+     */
+    ADME_HAC_MD_GET_MOTION_STATE("md_hac_getmotionstate"),
+
+
     /*　 M20 指令  */
     /**
      * 获取M20的基本信息
@@ -595,6 +647,11 @@ public enum IOTCommandType {
      * 自定义心跳包
      */
     HEART_BEAT("HeartBeatData"),
+
+    /**
+     * 长度不够指令头最低长度要求
+     */
+    LENGTH_INVALID("length_invalid"),
 
     /**
      * 未知的命令类型

@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
@@ -29,27 +27,28 @@ public class VmsTerminalSensorInfoParser implements IOTResultParser<VmsTerminalS
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
-            info.setChannel(TextUtils.isEmpty(keyValueMap.get("channel")) ? "" : keyValueMap.get("channel"));
-            info.setInsert(TextUtils.isEmpty(keyValueMap.get("insert")) ? "" : keyValueMap.get("insert"));
-            info.setFreqtype(TextUtils.isEmpty(keyValueMap.get("freqtype")) ? "" : keyValueMap.get("freqtype"));
-            info.setFreqmax(TextUtils.isEmpty(keyValueMap.get("freqmax")) ? "" : keyValueMap.get("freqmax"));
-            info.setFreqmin(TextUtils.isEmpty(keyValueMap.get("freqmin")) ? "" : keyValueMap.get("freqmin"));
-            info.setVolttype(TextUtils.isEmpty(keyValueMap.get("volttype")) ? "" : keyValueMap.get("volttype"));
-            info.setExpvolt(TextUtils.isEmpty(keyValueMap.get("expvolt")) ? "" : keyValueMap.get("expvolt"));
-            info.setType(TextUtils.isEmpty(keyValueMap.get("type")) ? "" : keyValueMap.get("type"));
-            info.setName(TextUtils.isEmpty(keyValueMap.get("name")) ? "" : keyValueMap.get("name"));
-            info.setGateval(TextUtils.isEmpty(keyValueMap.get("gateval")) ? "" : keyValueMap.get("gateval"));
-            info.setCorral(TextUtils.isEmpty(keyValueMap.get("corral")) ? "" : keyValueMap.get("corral"));
-            info.setFixsite(TextUtils.isEmpty(keyValueMap.get("fixsite")) ? "" : keyValueMap.get("fixsite"));
-            info.setRopelen(TextUtils.isEmpty(keyValueMap.get("ropelen")) ? "" : keyValueMap.get("ropelen"));
-            info.setParama(TextUtils.isEmpty(keyValueMap.get("parama")) ? "" : keyValueMap.get("parama"));
-            info.setParamb(TextUtils.isEmpty(keyValueMap.get("paramb")) ? "" : keyValueMap.get("paramb"));
-            info.setParamc(TextUtils.isEmpty(keyValueMap.get("paramc")) ? "" : keyValueMap.get("paramc"));
-            info.setParamk(TextUtils.isEmpty(keyValueMap.get("paramk")) ? "" : keyValueMap.get("paramk"));
-            info.setParamm(TextUtils.isEmpty(keyValueMap.get("paramm")) ? "" : keyValueMap.get("paramm"));
-            info.setParamf(TextUtils.isEmpty(keyValueMap.get("paramf")) ? "" : keyValueMap.get("paramf"));
-            info.setParamt(TextUtils.isEmpty(keyValueMap.get("paramt")) ? "" : keyValueMap.get("paramt"));
+            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
+            info.setChannel(keyValueMap.getOrDefault("channel", "NullKey"));
+            info.setInsert(keyValueMap.getOrDefault("insert", "NullKey"));
+            info.setFreqtype(keyValueMap.getOrDefault("freqtype", "NullKey"));
+            info.setFreqmax(keyValueMap.getOrDefault("freqmax", "NullKey"));
+            info.setFreqmin(keyValueMap.getOrDefault("freqmin", "NullKey"));
+            info.setVolttype(keyValueMap.getOrDefault("volttype", "NullKey"));
+            info.setExpvolt(keyValueMap.getOrDefault("expvolt", "NullKey"));
+            info.setType(keyValueMap.getOrDefault("type", "NullKey"));
+            info.setName(keyValueMap.getOrDefault("name", "NullKey"));
+            info.setGateval(keyValueMap.getOrDefault("gateval", "NullKey"));
+            info.setCorral(keyValueMap.getOrDefault("corral", "NullKey"));
+            info.setFixsite(keyValueMap.getOrDefault("fixsite", "NullKey"));
+            info.setRopelen(keyValueMap.getOrDefault("ropelen", "NullKey"));
+            info.setParama(keyValueMap.getOrDefault("parama", "NullKey"));
+            info.setParamb(keyValueMap.getOrDefault("paramb", "NullKey"));
+            info.setParamc(keyValueMap.getOrDefault("paramc", "NullKey"));
+            info.setParamk(keyValueMap.getOrDefault("paramk", "NullKey"));
+            info.setParamm(keyValueMap.getOrDefault("paramm", "NullKey"));
+            info.setParamf(keyValueMap.getOrDefault("paramf", "NullKey"));
+            info.setParamt(keyValueMap.getOrDefault("paramt", "NullKey"));
+
 
             return info;
         } catch (Exception ex) {

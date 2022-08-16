@@ -79,14 +79,17 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    TextView mTvFirmwareVersion;//版本信息
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
+    @BindView(R.id.tv_firmware_version)
+    TextView mTvFirmwareVersion;//固件版本
+
+    @BindView(R.id.tv_extended_field3)
     TextView mTvMotionState;//运行状态
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;// 与平台通信状态
+    TextView mTvPlatformCommunicationState;//与平台通信状态(文字标识)
 
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
@@ -120,7 +123,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
         @Override
         protected void handleMessage(Message msg, BleAdmeHomeFragment fragment) {
-            if (fragment.isActive && fragment.isConnected()) {
+            if (fragment.isConnected()) {
                 fragment.queryMotorState();
             }
         }
@@ -215,8 +218,8 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 AdmeBasicParamActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                 break;
 
-            case "测量孔深":
-                AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+            case "孔深测量":
+                AdmeMeasuringHoleDepthActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME, null);
                 break;
 
             case "指令下发":
@@ -224,7 +227,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 break;
 
             case "高级配置":
-                AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
+                AdmeAdvancedConfigActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.ADME, null);
                 break;
 
             case "设置":
@@ -252,7 +255,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -265,9 +268,8 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-//                        hideProgressBar();
                         onConnectionStateChanged(false);
-                        clearDevice();
+//                        clearDevice();
                         break;
 
                     // fallthrough
@@ -283,7 +285,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
+        bleViewModel.deviceRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
             public void onChanged(DeviceBaseInfo deviceBaseInfo) {
                 deviceInfo = deviceBaseInfo;
@@ -379,7 +381,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", modes,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -414,7 +416,8 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+        // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+        if (!isResumed()) {
             return;
         }
         setResultData(cmdStr);
@@ -492,18 +495,18 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             deviceInfo = new DeviceBaseInfo();
 
         try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "自动化测斜机器人" : deviceInfo.getProductName());
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "ADME" : deviceInfo.getDeviceName());
+            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
+            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             mTvMotionState.setText("运行状态：--");
             if (deviceInfo.isOnlineStatus()) {
-                mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
             } else {
-                mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
             }
             mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
             mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -530,9 +533,9 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         updateConfigModuleData();
     }
 
-    private CharSequence getPlatformAbnormalMessage(String state) {
+    private CharSequence getPlatformStateMessage(String state) {
         SpannableStringBuilder builder = new SpannableStringBuilder(state);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(state.contains("在线") ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "米度平台连接状态：");
 
@@ -551,7 +554,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         configModuleList.add(configModule);
 
         if (equipModel.equals("0")) {//0：设备配置模式，1：自动监测模式
-            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "测量孔深", "测量测斜管深度");
+            configModule = new ConfigModule(R.drawable.ic_measuring_hole_depth, "孔深测量", "测量测斜管深度");
             configModuleList.add(configModule);
 
             configModule = new ConfigModule(R.drawable.ic_device_instruction_send, "指令下发", "自定义指令下发");
@@ -642,11 +645,11 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         isFirstCreate = false;
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         stopQueryMotorStateProgress();
-        super.onStop();
     }
 
     @Override
@@ -661,7 +664,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     public void onDestroy() {
-        admeViewModel.deviceMode = -1;
+        admeViewModel.deviceMode = 0;
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setProductID(-1);
         clearDevice();

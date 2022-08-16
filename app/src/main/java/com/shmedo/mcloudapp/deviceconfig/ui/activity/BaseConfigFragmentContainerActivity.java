@@ -65,7 +65,6 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
-
         if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
             deviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
         }

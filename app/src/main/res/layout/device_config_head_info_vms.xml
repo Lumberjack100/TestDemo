@@ -66,27 +66,37 @@
                 android:singleLine="true"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_13"
-                tools:text="设备编号：183123R" />
+                tools:text="设备SN号：183123R" />
 
             <TextView
-                android:id="@+id/tv_product_model"
+                android:id="@+id/tv_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:singleLine="true"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_13"
-                tools:text="产品型号：DAS" />
+                tools:text="所属产品：DAS-V1.5-雷达物位采集器" />
 
             <TextView
-                android:id="@+id/tv_time_or_sub_model"
+                android:id="@+id/tv_firmware_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:singleLine="true"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_13"
-                tools:text="采集器型号：裂缝采集器凤飞飞方法旺旺sss" />
+                tools:text="固件版本：3.1.10_Q12" />
+
+            <TextView
+                android:id="@+id/tv_extended_field3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:singleLine="true"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_13"
+                tools:text="运行状态：等待" />
 
             <TextView
                 android:id="@+id/tv_platform_communication_state"

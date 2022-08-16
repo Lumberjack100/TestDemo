@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_size_20"
+    android:background="@drawable/bg_corner_5dp_white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dimen_size_16"
+    android:paddingEnd="@dimen/dimen_size_16">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:src="@drawable/ic_warning" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="异常保护"
+        android:textColor="@color/title_text_color"
+        android:textSize="@dimen/text_size_18"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_20"
+        android:textColor="@color/red"
+        android:textSize="@dimen/text_size_16"
+        tools:text="测斜仪配对失败；\n伺服电机低力矩；\n计米器基数脉冲不足\n" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:text="已启动异常保护，请排除故障后重新测量"
+        android:textColor="@color/title_text_color"
+        android:textSize="@dimen/text_size_14" />
+
+    <Button
+        android:id="@+id/btn_sure"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/btn_select"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="我已知晓"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_18" />
+
+</LinearLayout>

@@ -104,7 +104,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     ClearEditText mEtMeasuringReferenceDepth;//测量基准深度
 
     @BindView(R.id.et_interval_compensation)
-    ClearEditText mEtIntervalCompensation;//距离补偿区间h1
+    ClearEditText mEtIntervalCompensation;//管口安全距离h1
 
     @BindView(R.id.et_interval_fitting)
     ClearEditText mEtIntervalFitting;//数据拟合区间h2
@@ -175,8 +175,8 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
     private String measureMethodOld;//测量方式
     private String measureMethod;//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)
-    private String dataSettlementMethodOld;//数据结算方式
-    private String dataSettlementMethod;// 数据结算方式
+    private String dataSettlementMethodOld;//数据解算方式
+    private String dataSettlementMethod;// 数据解算方式
     private String dataResponseOld;//数据应答（0:关闭，1:启用）
     private String dataResponse;// 数据应答（0:关闭，1:启用）
     private String measurementIntervalPerRoundOld;// 每轮测量间隔
@@ -193,12 +193,12 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     private String measuringDistance;// 测量间距
     private String measurementIntervalTime;// 测量间隔时间
     private String measuringReferenceDepth;// 测量基准深度
-    private String intervalCompensation;// 距离补偿区间h1
+    private String intervalCompensation;// 管口安全距离h1
     private String intervalFitting;// 数据拟合区间h2
     private String pointOffset;// 测点偏移距离h3
 
     private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
-    private final String[] settlementMethods = new String[]{"顶固定法", "底固定法"};
+    private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
     private final String[] dataResponseTypes = new String[]{"关闭", "启用"};
     private final String[] measIntervalPerRounds = new String[]{"1", "2", "3", "4", "6", "8", "12", "24"};
 
@@ -236,22 +236,22 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDecentralizationSpeed.setHint("1-180");
-
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
-
         mEtPullUpSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtPullUpSpeed.setHint("1-180");
-
         mEtMeasuringDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-
+        mEtIntervalCompensation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtIntervalFitting.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtPointOffset.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        
         mTvMeasureMethod.setText("实时测量");
         measureMethodOld = "0";
 
-        mTvDataSettlementMethod.setText("顶固定法");
+        mTvDataSettlementMethod.setText("顶部固定法");
         dataSettlementMethodOld = "0";
 
         mTvDataResponse.setText("关闭");
@@ -350,7 +350,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", measureMethods,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -378,7 +378,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     }
 
     /**
-     * 选择数据结算方式
+     * 选择数据解算方式
      */
     public void showDataSettlementMethodDialog(Context context) {
         int pos = Arrays.asList(settlementMethods).indexOf(String.valueOf(mTvDataSettlementMethod.getText()));
@@ -386,7 +386,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", settlementMethods,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -410,7 +410,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", dataResponseTypes,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -434,7 +434,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", measIntervalPerRounds,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -724,19 +724,19 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getInterval_compensation())).equals(intervalCompensation)) {
 
             if (TextUtils.isEmpty(intervalCompensation)) {
-                ToastUtils.show("请输入距离补偿区间h1!");
+                ToastUtils.show("请输入管口安全距离h1!");
                 mEtIntervalCompensation.requestFocus();
                 return false;
             }
             try {
                 double value = Double.parseDouble(intervalCompensation);
                 if (value <= -10 || value >= 10) {
-                    ToastUtils.show("请输入正确的距离补偿区间h1!");
+                    ToastUtils.show("请输入正确的管口安全距离h1!");
                     mEtIntervalCompensation.requestFocus();
                     return false;
                 }
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的距离补偿区间h1!");
+                ToastUtils.show("请输入正确的管口安全距离h1!");
                 mEtIntervalCompensation.requestFocus();
                 return false;
             }

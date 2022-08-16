@@ -1,12 +1,11 @@
 package com.shmedo.configlibrary.iot.cmd.parser;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * 创建者:   gonghe <br/>
@@ -29,8 +28,8 @@ public class DataCenterStatusParser implements IOTResultParser<DataCenterStatus>
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setCenterid(Integer.parseInt(keyValueMap.get("centerid")));
-            info.setStatus(TextUtils.isEmpty(keyValueMap.get("status")) ? "" : keyValueMap.get("status"));
+            info.setCenterid(Integer.parseInt(Objects.requireNonNull(keyValueMap.get("centerid"))));
+            info.setStatus(keyValueMap.getOrDefault("status", "NullKey"));
 
             return info;
         } catch (Exception ex) {

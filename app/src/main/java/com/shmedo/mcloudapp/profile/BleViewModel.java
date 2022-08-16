@@ -16,7 +16,7 @@ import com.shmedo.configlibrary.ble.enums.CommandType;
 import com.shmedo.configlibrary.ble.utils.DesUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.mcloudapp.deviceconfig.data.DeviceApiKeyRequest;
+import com.shmedo.mcloudapp.deviceconfig.data.DeviceRequest;
 
 import java.nio.charset.StandardCharsets;
 
@@ -34,7 +34,7 @@ public class BleViewModel extends AndroidViewModel {
     private final CustomBleManager customBleManager;
     private BluetoothDevice device;
 
-    public final DeviceApiKeyRequest deviceApiKeyRequest = new DeviceApiKeyRequest();
+    public final DeviceRequest deviceRequest = new DeviceRequest();
 
     public BleViewModel(@NonNull Application application) {
         super(application);
@@ -73,8 +73,8 @@ public class BleViewModel extends AndroidViewModel {
             device = target;
             final LogSession logSession = Logger.newSession(getApplication(), null, target.getAddress(), target.getName());
             customBleManager.setLogger(logSession);
-            reconnect();
         }
+        reconnect();
     }
 
     /**
@@ -83,7 +83,7 @@ public class BleViewModel extends AndroidViewModel {
      * reconnection may help.
      */
     public void reconnect() {
-        if (device != null) {
+        if (device != null && !isConnected()) {
             customBleManager.connect(device)
                     .retry(3, 300)
                     .useAutoConnect(false)
@@ -109,7 +109,7 @@ public class BleViewModel extends AndroidViewModel {
 
     public void clearDevice() {
         device = null;
-        deviceApiKeyRequest.clearDeviceApiKey();
+        deviceRequest.clearDeviceApiKey();
     }
 
     /**

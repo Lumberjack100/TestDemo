@@ -2,15 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_bg_gray_f2f2f2"
+    android:background="@color/main_bg_gray"
     android:gravity="center"
     android:orientation="vertical">
 
     <ImageView
-        style="@style/empty_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/ic_no_data" />
 
     <TextView
+        android:id="@+id/noContentText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

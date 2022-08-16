@@ -16,6 +16,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCurrentStateFragm
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40CurrentStateFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacCurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200.BleLR200CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.BleM20CurrentStateFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.m20.NetM20CurrentStateFragment;
@@ -95,6 +96,10 @@ public class DeviceCurrentStateActivity extends BaseConfigFragmentContainerActiv
 
                 case ADME:
                     fragment = BleAdmeCurrentStateFragment.newInstance();
+                    break;
+
+                case HAC:
+                    fragment = BleAdmeHacCurrentStateFragment.newInstance();
                     break;
 
                 case M20:

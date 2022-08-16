@@ -3,7 +3,10 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.rn20;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,7 +35,6 @@ import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DeviceTimeInfo;
 import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo;
-import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -77,14 +79,17 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
+
+    @BindView(R.id.tv_firmware_version)
     TextView mTvFirmwareVersion;//固件版本
 
-    @BindView(R.id.tv_time_or_sub_model)
+    @BindView(R.id.tv_extended_field3)
     TextView mTvVoltage;//电压
 
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;//与米度平台连接状态
+    TextView mTvPlatformCommunicationState;//与平台通信状态(文字标识)
 
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
@@ -134,8 +139,8 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        updateHeadInfo(null);
         initAdapter();
+        updateHeadInfo();
         initConfigModuleData();
         observerApiKey();
         observerConnectionState();
@@ -227,7 +232,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -240,9 +245,8 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                                 Timber.e("DISCONNECTED: 连接超时");
                             }
                         }
-//                        hideProgressBar();
                         onConnectionStateChanged(false);
-                        clearDevice();
+//                        clearDevice();
                         break;
 
                     // fallthrough
@@ -258,13 +262,14 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
+        bleViewModel.deviceRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
             public void onChanged(DeviceBaseInfo deviceBaseInfo) {
                 deviceInfo = deviceBaseInfo;
                 hideProgressBar();
-                updateHeadInfo(null);
-                queryBaseInfo();
+                updateHeadInfo();
+                //查询雨量精度
+                querySwitchSensorInfo();
             }
         });
     }
@@ -331,14 +336,6 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
-    }
-
-    /**
-     * 获取设备的基本信息
-     */
-    private void queryBaseInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.RN20_MD_GET_TERMINAL_BASE);
-        sendCommand(command);
     }
 
     /**
@@ -458,7 +455,8 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+        // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+        if (!isResumed()) {
             return;
         }
         setResultData(cmdStr);
@@ -467,21 +465,6 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case RN20_MD_GET_TERMINAL_BASE: {
-                IOTCommandResult<Rn20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询基本信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-//                    ToastUtils.show(errMsg);
-                    return;
-                }
-                Rn20BaseInfo rn20BaseInfo = commandResult.getResult();
-                updateHeadInfo(rn20BaseInfo);
-                //查询雨量精度
-                querySwitchSensorInfo();
-            }
-            break;
-
             case DAS_MD_GET_IO_SENSOR_INFO: {//查询开关量传感器参数
                 IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -554,27 +537,34 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo(Rn20BaseInfo rn20BaseInfo) {
+    private void updateHeadInfo() {
         if (deviceInfo == null)
             deviceInfo = new DeviceBaseInfo();
-
         try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "雨量采集器" : deviceInfo.getProductName());
-            mTvDeviceSn.setText(String.format("设备编号：%s", sn));
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "RN20" : deviceInfo.getDeviceName());
+            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
+            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
-            if (rn20BaseInfo != null) {
-                mTvFirmwareVersion.setText(String.format("固件版本：%s", !TextUtils.isEmpty(rn20BaseInfo.getVer()) ? rn20BaseInfo.getVer() : "--"));
-                mTvVoltage.setText(String.format("电压：%s", !TextUtils.isEmpty(rn20BaseInfo.getInvolt()) ? rn20BaseInfo.getInvolt() : "--"));
+            if (deviceInfo.isOnlineStatus()) {
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
             } else {
-                mTvVoltage.setText("电压：--");
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
             }
-
-            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            mTvVoltage.setVisibility(View.GONE);
             mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
             mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private CharSequence getPlatformStateMessage(String state) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(state);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(state.contains("在线") ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.insert(0, "米度平台连接状态：");
+
+        return builder;
     }
 
     private void initSwitchSensor(DasIOSensorInfo ioSensorInfo) {
@@ -610,10 +600,11 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         }
     }
 
+
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        super.onStop();
     }
 
     @Override

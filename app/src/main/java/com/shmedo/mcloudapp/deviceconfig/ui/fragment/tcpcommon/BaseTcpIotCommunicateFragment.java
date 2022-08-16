@@ -70,7 +70,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
     protected void startDefaultProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
-            showProgressDialog(dialogContent, null, null);
+            showProgressDialog(dialogContent);
         }
         mDefaultHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
@@ -86,10 +86,16 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        stopAllProgress();
+//    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -98,9 +104,8 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
         tcpViewModel.getTcpConnectionState().observe(getViewLifecycleOwner(), new Observer<TcpConnectionState>() {
             @Override
             public void onChanged(TcpConnectionState tcpConnectionState) {
-                //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
-                // TODO #gh# 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
-                if (!isActive) {
+                // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+                if (!isResumed()) {
                     return;
                 }
                 onConnectionChange(tcpConnectionState);
@@ -109,9 +114,8 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
         tcpViewModel.getReceivedMessage().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String msg) {
-                //只供当前处于Active(即处于onResume状态)的页面观察者消费此事件
-                // TODO #gh# 返到上一级页面时，LiveData事件会早于上一级页面的onResume()方法分发，即上级页面处于isActive前事件就来了
-                if (!isActive) {
+                // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+                if (!isResumed()) {
                     return;
                 }
                 parseResponseMessage(msg);
@@ -149,8 +153,8 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
 
     protected void sendCommand(String cmdStr) {
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null &&!TextUtils.isEmpty(deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
-            apiKey = deviceApiKeyViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
+        if (deviceApiKeyViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue() != null &&!TextUtils.isEmpty(deviceApiKeyViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+            apiKey = deviceApiKeyViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         cmdStr += "&apikey=" + apiKey
                 + "&msgid=" + UUID.randomUUID().toString();

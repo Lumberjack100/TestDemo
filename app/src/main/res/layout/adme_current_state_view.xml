@@ -79,7 +79,7 @@
 
         <TextView
             style="@style/DeviceCurrentState_SingleItem_NameStyle"
-            android:text="产品型号" />
+            android:text="设备型号" />
 
         <TextView
             android:id="@+id/tv_product_number"

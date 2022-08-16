@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.e40.E40RTKModeInfo;
@@ -29,7 +27,7 @@ public class E40RTKModeInfoParser implements IOTResultParser<E40RTKModeInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setMode(TextUtils.isEmpty(keyValueMap.get("mode")) ? "0" : keyValueMap.get("mode"));
+            info.setMode(keyValueMap.getOrDefault("mode", "NullKey"));
 
             return info;
         } catch (Exception ex) {

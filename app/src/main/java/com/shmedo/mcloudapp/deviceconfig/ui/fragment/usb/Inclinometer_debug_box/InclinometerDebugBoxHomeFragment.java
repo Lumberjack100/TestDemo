@@ -66,11 +66,14 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//产品型号
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
+    @BindView(R.id.tv_firmware_version)
     TextView mTvFirmwareVersion;//固件版本
+
+    @BindView(R.id.tv_extended_field3)
+    TextView mTvExtendedField;//
 
     @BindView(R.id.tv_platform_communication_state)
     TextView mTvPlatformCommunicationState;//与米度平台连接状态
@@ -95,7 +98,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
     public static InclinometerDebugBoxHomeFragment newInstance(int deviceId, int port, int baudRate) {
         InclinometerDebugBoxHomeFragment fragment = new InclinometerDebugBoxHomeFragment();
         Bundle args = new Bundle();
-        args.putInt(AppContants.Extras.DEVICE_ID, deviceId);
+        args.putInt(AppContants.Extras.USB_DEVICE_ID, deviceId);
         args.putInt(AppContants.Extras.USB_PORT_NUM, port);
         args.putInt(AppContants.Extras.USB_BAUD_RATE, baudRate);
         fragment.setArguments(args);
@@ -106,7 +109,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            deviceId = getArguments().getInt(AppContants.Extras.DEVICE_ID);
+            deviceId = getArguments().getInt(AppContants.Extras.USB_DEVICE_ID);
             portNum = getArguments().getInt(AppContants.Extras.USB_PORT_NUM);
             baudRate = getArguments().getInt(AppContants.Extras.USB_BAUD_RATE);
         }
@@ -120,7 +123,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeadInfo();
+        initHeadInfo();
         initAdapter();
         initConfigModuleData();
         observerConnectionState();
@@ -130,11 +133,12 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
         connectDevice();
     }
 
-    private void setHeadInfo() {
+    private void initHeadInfo() {
         mTvDeviceName.setText("--");
-        mTvDeviceSn.setText(String.format("固件版本：%s", "--"));
-        mTvProductModel.setVisibility(View.GONE);
-        mTvFirmwareVersion.setVisibility(View.GONE);
+        mTvFirmwareVersion.setText(String.format("固件版本：%s", "--"));
+        mTvDeviceSn.setVisibility(View.GONE);
+        mTvProductName.setVisibility(View.GONE);
+        mTvExtendedField.setVisibility(View.GONE);
         mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);

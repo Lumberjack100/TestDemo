@@ -278,7 +278,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", new String[]{"9600", "115200"},
-                        null, baudRatePos, true,
+                        null, baudRatePos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

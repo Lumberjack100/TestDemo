@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
@@ -29,18 +27,18 @@ public class DataCenterInfoParser implements IOTResultParser<DataCenterInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setCenterid(TextUtils.isEmpty(keyValueMap.get("centerid")) ? "" : keyValueMap.get("centerid"));
-            info.setProtocol(TextUtils.isEmpty(keyValueMap.get("protocol")) ? "" : keyValueMap.get("protocol"));
-            info.setDatatype(TextUtils.isEmpty(keyValueMap.get("datatype")) ? "" : keyValueMap.get("datatype"));
-            info.setPlattype(TextUtils.isEmpty(keyValueMap.get("plattype")) ? "" : keyValueMap.get("plattype"));
-            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
-            info.setPort(TextUtils.isEmpty(keyValueMap.get("port")) ? "" : keyValueMap.get("port"));
-            info.setDeviceid(TextUtils.isEmpty(keyValueMap.get("deviceid")) ? "" : keyValueMap.get("deviceid"));
-            info.setDevicekey(TextUtils.isEmpty(keyValueMap.get("devicekey")) ? "" : keyValueMap.get("devicekey"));
-            info.setHttpaddr(TextUtils.isEmpty(keyValueMap.get("httpaddr")) ? "" : keyValueMap.get("httpaddr"));
-            info.setHttpport(TextUtils.isEmpty(keyValueMap.get("httpport")) ? "" : keyValueMap.get("httpport"));
-            info.setProjid(TextUtils.isEmpty(keyValueMap.get("projid")) ? "" : keyValueMap.get("projid"));
-            info.setRegcode(TextUtils.isEmpty(keyValueMap.get("regcode")) ? "" : keyValueMap.get("regcode"));
+            info.setCenterid(keyValueMap.getOrDefault("centerid", "NullKey"));
+            info.setProtocol(keyValueMap.getOrDefault("protocol", "NullKey"));
+            info.setDatatype(keyValueMap.getOrDefault("datatype", "NullKey"));
+            info.setPlattype(keyValueMap.getOrDefault("plattype", "NullKey"));
+            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
+            info.setPort(keyValueMap.getOrDefault("port", "NullKey"));
+            info.setDeviceid(keyValueMap.getOrDefault("deviceid", "NullKey"));
+            info.setDevicekey(keyValueMap.getOrDefault("devicekey", "NullKey"));
+            info.setHttpaddr(keyValueMap.getOrDefault("httpaddr", "NullKey"));
+            info.setHttpport(keyValueMap.getOrDefault("httpport", "NullKey"));
+            info.setProjid(keyValueMap.getOrDefault("projid", "NullKey"));
+            info.setRegcode(keyValueMap.getOrDefault("regcode", "NullKey"));
 
             return info;
         } catch (Exception ex) {

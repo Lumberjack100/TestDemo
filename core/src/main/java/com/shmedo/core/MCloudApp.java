@@ -35,6 +35,8 @@ public class MCloudApp {
     private static int productID;
     private static String curDeviceToken;//设备名称
     private static List<UserPermissionInfo> userPermissionInfoList = new ArrayList<>();//用户在某公司某服务中的所有权限
+    private static List<String> permissionNameList = new ArrayList<>();//用户在某公司某服务中的所有权限名称
+
 
 
     /**
@@ -121,6 +123,17 @@ public class MCloudApp {
         if (userPermissionInfoList != null) {
             MCloudApp.userPermissionInfoList.clear();
             MCloudApp.userPermissionInfoList.addAll(userPermissionInfoList);
+        }
+    }
+
+    public static List<String> getPermissionNameList() {
+        return permissionNameList;
+    }
+
+    public static void setPermissionNameList(List<String> permissionNameList) {
+        if (permissionNameList != null) {
+            MCloudApp.permissionNameList.clear();
+            MCloudApp.permissionNameList.addAll(permissionNameList);
         }
     }
 

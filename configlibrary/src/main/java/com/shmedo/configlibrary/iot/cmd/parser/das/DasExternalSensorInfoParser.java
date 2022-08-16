@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.das;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
@@ -29,28 +27,28 @@ public class DasExternalSensorInfoParser implements IOTResultParser<DasExternalS
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setIndex(TextUtils.isEmpty(keyValueMap.get("index")) ? "" : keyValueMap.get("index"));
-            info.setType(TextUtils.isEmpty(keyValueMap.get("type")) ? "" : keyValueMap.get("type"));
-            info.setAddr(TextUtils.isEmpty(keyValueMap.get("addr")) ? "" : keyValueMap.get("addr"));
-            info.setThreshold(TextUtils.isEmpty(keyValueMap.get("threshold")) ? "" : keyValueMap.get("threshold"));
-            info.setCorrval(TextUtils.isEmpty(keyValueMap.get("corrval")) ? "" : keyValueMap.get("corrval"));
-            info.setSpacing(TextUtils.isEmpty(keyValueMap.get("spacing")) ? "" : keyValueMap.get("spacing"));
-            info.setHolenum(TextUtils.isEmpty(keyValueMap.get("holenum")) ? "" : keyValueMap.get("holenum"));
-            info.setTubealti(TextUtils.isEmpty(keyValueMap.get("tubealti")) ? "" : keyValueMap.get("tubealti"));
-            info.setRopelen(TextUtils.isEmpty(keyValueMap.get("ropelen")) ? "" : keyValueMap.get("ropelen"));
-            info.setPoly_a(TextUtils.isEmpty(keyValueMap.get("poly_a")) ? "" : keyValueMap.get("poly_a"));
-            info.setPoly_b(TextUtils.isEmpty(keyValueMap.get("poly_b")) ? "" : keyValueMap.get("poly_b"));
-            info.setPoly_c(TextUtils.isEmpty(keyValueMap.get("poly_c")) ? "" : keyValueMap.get("poly_c"));
-            info.setTemp_k(TextUtils.isEmpty(keyValueMap.get("temp_k")) ? "" : keyValueMap.get("temp_k"));
-            info.setTemp_t0(TextUtils.isEmpty(keyValueMap.get("temp_t0")) ? "" : keyValueMap.get("temp_t0"));
-            info.setSens_k(TextUtils.isEmpty(keyValueMap.get("sens_k")) ? "" : keyValueMap.get("sens_k"));
-            info.setTemp_b(TextUtils.isEmpty(keyValueMap.get("temp_b")) ? "" : keyValueMap.get("temp_b"));
-            info.setReferval_f(TextUtils.isEmpty(keyValueMap.get("referval_f")) ? "" : keyValueMap.get("referval_f"));
-            info.setElastic_mod(TextUtils.isEmpty(keyValueMap.get("elastic_mod")) ? "" : keyValueMap.get("elastic_mod"));
-            info.setLsycsds(TextUtils.isEmpty(keyValueMap.get("lsycsds")) ? "" : keyValueMap.get("lsycsds"));
-            info.setLsyysst(TextUtils.isEmpty(keyValueMap.get("lsyysst")) ? "" : keyValueMap.get("lsyysst"));
-            info.setInitvalx(TextUtils.isEmpty(keyValueMap.get("initvalx")) ? "" : keyValueMap.get("initvalx"));
-            info.setInitvaly(TextUtils.isEmpty(keyValueMap.get("initvaly")) ? "" : keyValueMap.get("initvaly"));
+            info.setIndex(keyValueMap.getOrDefault("index", "NullKey"));
+            info.setType(keyValueMap.getOrDefault("type", "NullKey"));
+            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
+            info.setThreshold(keyValueMap.getOrDefault("threshold", "NullKey"));
+            info.setCorrval(keyValueMap.getOrDefault("corrval", "NullKey"));
+            info.setSpacing(keyValueMap.getOrDefault("spacing", "NullKey"));
+            info.setHolenum(keyValueMap.getOrDefault("holenum", "NullKey"));
+            info.setTubealti(keyValueMap.getOrDefault("tubealti", "NullKey"));
+            info.setRopelen(keyValueMap.getOrDefault("ropelen", "NullKey"));
+            info.setPoly_a(keyValueMap.getOrDefault("poly_a", "NullKey"));
+            info.setPoly_b(keyValueMap.getOrDefault("poly_b", "NullKey"));
+            info.setPoly_c(keyValueMap.getOrDefault("poly_c", "NullKey"));
+            info.setTemp_k(keyValueMap.getOrDefault("temp_k", "NullKey"));
+            info.setTemp_t0(keyValueMap.getOrDefault("temp_t0", "NullKey"));
+            info.setSens_k(keyValueMap.getOrDefault("sens_k", "NullKey"));
+            info.setTemp_b(keyValueMap.getOrDefault("temp_b", "NullKey"));
+            info.setReferval_f(keyValueMap.getOrDefault("referval_f", "NullKey"));
+            info.setElastic_mod(keyValueMap.getOrDefault("elastic_mod", "NullKey"));
+            info.setLsycsds(keyValueMap.getOrDefault("lsycsds", "NullKey"));
+            info.setLsyysst(keyValueMap.getOrDefault("lsyysst", "NullKey"));
+            info.setInitvalx(keyValueMap.getOrDefault("initvalx", "NullKey"));
+            info.setInitvaly(keyValueMap.getOrDefault("initvaly", "NullKey"));
 
             return info;
         } catch (Exception ex) {

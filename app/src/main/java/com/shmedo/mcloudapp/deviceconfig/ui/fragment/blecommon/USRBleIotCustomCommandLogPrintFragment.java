@@ -201,9 +201,6 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
-            return;
-        }
         setResultData(cmdStr);
     }
 

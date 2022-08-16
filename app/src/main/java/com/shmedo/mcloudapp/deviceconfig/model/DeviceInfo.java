@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2020/8/18 <br/>
- * 描述：     设备信息
+ * 描述：     查询设备列表接口返回的设备信息实体
  */
 public class DeviceInfo implements Parcelable {
     private int id;

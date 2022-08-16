@@ -19,17 +19,10 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
  */
 public class AdmeStepperMotorActivity extends BaseConfigFragmentContainerActivity {
 
-    public static void startActivity(Context context, DeviceInfo deviceInfo) {
-        Intent intent = new Intent(context, AdmeStepperMotorActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
-    }
-
-
-    public static void startActivity(Context context, int connectWay) {
+    public static void startActivity(Context context, int connectWay, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, AdmeStepperMotorActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
+        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }

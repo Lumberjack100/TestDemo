@@ -328,7 +328,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", (String[]) dataCenterNameList.toArray(),
-                        null, dataCenterPos, true,
+                        null, dataCenterPos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

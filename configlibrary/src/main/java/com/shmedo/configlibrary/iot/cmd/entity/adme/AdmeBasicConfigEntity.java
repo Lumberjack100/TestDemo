@@ -15,7 +15,7 @@ public class AdmeBasicConfigEntity implements Validater {
     private String interdeep;//测斜管孔深
     private String downspeed;//下放速度
     private String downwaitetime;//下放等待时间
-    private String datatype;//数据结算方式（0:顶固定法，1底固定法）
+    private String datatype;//数据解算方式（0:顶部固定法，1底部固定法）
 
     public void setInctype(String inctype) {
         this.inctype = inctype;

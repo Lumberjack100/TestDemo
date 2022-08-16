@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/badNetworkRootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_bg_gray_f2f2f2"
+    android:background="@color/main_bg_gray"
     android:focusable="true"
-    android:foreground="?android:selectableItemBackground">
+    android:foreground="?android:selectableItemBackground"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:src="@drawable/ic_network_error" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_network_error" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/bad_network_view_tip"
+        android:textColor="@color/sub_title_text_color"
+        android:textSize="@dimen/text_size_15" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/bad_network_view_tip"
-            android:textColor="@color/sub_title_text_color"
-            android:textSize="@dimen/text_size_15" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

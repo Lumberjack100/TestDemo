@@ -17,8 +17,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:splitMotionEvents="false"
-        android:paddingStart="15dp"
-        android:paddingRight="15dp"
+        android:paddingStart="10dp"
+        android:paddingRight="10dp"
         android:paddingBottom="15dp" />
 
 </LinearLayout>

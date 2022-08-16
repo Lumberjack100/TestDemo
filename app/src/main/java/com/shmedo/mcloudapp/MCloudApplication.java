@@ -18,8 +18,7 @@ import com.hjq.toast.config.IToastInterceptor;
 import com.iflytek.cloud.SpeechUtility;
 import com.kongzue.dialogx.DialogX;
 import com.kongzue.dialogx.style.MaterialStyle;
-import com.pgyer.pgyersdk.PgyerSDKManager;
-import com.pgyer.pgyersdk.pgyerenum.Features;
+
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
@@ -52,19 +51,6 @@ import timber.log.Timber;
 public class MCloudApplication extends Application implements ViewModelStoreOwner {
     private ViewModelStore mAppViewModelStore;
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        try {
-            //在attachBaseContext方法中调用初始化sdk
-            new PgyerSDKManager.Init()
-                    .setContext(this) //设置上下文对象
-//                    .enable(Features.CHECK_UPDATE)//开启自动更新检测（不设置默认功能关闭 ，AndroidManifest中也可以设置该属性的开关）
-                    .start();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
     @Override
     public void onCreate() {
@@ -97,7 +83,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
 
         initUpdate();
 
-        initIFlySDK();
+//        initIFlySDK();
     }
 
     @NonNull

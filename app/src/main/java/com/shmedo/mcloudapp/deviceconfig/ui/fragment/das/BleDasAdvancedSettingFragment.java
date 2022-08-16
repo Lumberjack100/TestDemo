@@ -217,7 +217,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("选择数据中心", numbers,
-                        null, pos, true,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -237,7 +237,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             jsonObjectRequest.put("appKey", "b80dd379-5256-48c8-947a-2208872c8a8f");
             jsonObjectRequest.put("appSecret", "3dc8e0ec1f673325c6694b4da534dabe");
             jsonObjectRequest.put("deviceSn", MCloudApp.getCurDeviceToken());
-            jsonObjectRequest.put("deviceKey", bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null ? bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey() : "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9");
+            jsonObjectRequest.put("deviceKey", bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue() != null ? bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey() : "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9");
             jsonObjectRequest.put("reCreate", false);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -278,7 +278,8 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+        // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+        if (!isResumed()) {
             return;
         }
         setResultData(cmdStr);

@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.e40.E40BoardSolutionInfo;
@@ -29,12 +27,12 @@ public class E40BoardSolutionInfoParser implements IOTResultParser<E40BoardSolut
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setInittime(TextUtils.isEmpty(keyValueMap.get("inittime")) ? "" : keyValueMap.get("inittime"));
-            info.setCalcgap(TextUtils.isEmpty(keyValueMap.get("calcgap")) ? "" : keyValueMap.get("calcgap"));
-            info.setSmoothlevel(TextUtils.isEmpty(keyValueMap.get("smoothlevel")) ? "" : keyValueMap.get("smoothlevel"));
-            info.setReinit(TextUtils.isEmpty(keyValueMap.get("reinit")) ? "" : keyValueMap.get("reinit"));
-            info.setRtkdynamicmode(TextUtils.isEmpty(keyValueMap.get("rtkdynamicmode")) ? "" : keyValueMap.get("rtkdynamicmode"));
-            info.setCorrval(TextUtils.isEmpty(keyValueMap.get("corrval")) ? "" : keyValueMap.get("corrval"));
+            info.setInittime(keyValueMap.getOrDefault("inittime", "NullKey"));
+            info.setCalcgap(keyValueMap.getOrDefault("calcgap", "NullKey"));
+            info.setSmoothlevel(keyValueMap.getOrDefault("smoothlevel", "NullKey"));
+            info.setReinit(keyValueMap.getOrDefault("reinit", "NullKey"));
+            info.setRtkdynamicmode(keyValueMap.getOrDefault("rtkdynamicmode", "NullKey"));
+            info.setCorrval(keyValueMap.getOrDefault("corrval", "NullKey"));
 
             return info;
         } catch (Exception ex) {

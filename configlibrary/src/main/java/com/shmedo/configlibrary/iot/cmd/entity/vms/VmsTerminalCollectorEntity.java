@@ -83,9 +83,14 @@ public class VmsTerminalCollectorEntity implements Validater {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         try {
+            stringBuilder.append("sn");
+            stringBuilder.append("=");
+            stringBuilder.append(sn);
+            stringBuilder.append("&");
+
             for (Field f : getClass().getDeclaredFields()) {
                 Object value = f.get(this);
-                if (value != null && !value.equals("NullKey")) {
+                if (!f.getName().equals("sn") && value != null && !value.equals("NullKey")) {
                     stringBuilder.append(f.getName());
                     stringBuilder.append("=");
                     stringBuilder.append(value);

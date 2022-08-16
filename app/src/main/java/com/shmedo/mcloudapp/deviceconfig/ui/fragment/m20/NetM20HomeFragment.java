@@ -4,18 +4,14 @@ import android.os.Bundle;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
-import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
-import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
-import com.shmedo.configlibrary.iot.model.m20.M20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
-import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterHomeActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceCurrentStateActivity;
@@ -25,8 +21,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.UniversalNetConfi
 
 import java.util.Arrays;
 import java.util.List;
-
-import timber.log.Timber;
 
 /**
  * 创建者:   gonghe <br/>
@@ -71,9 +65,6 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                 break;
 
             case "状态":
-//                showWaitDialog("处理中...");
-//                String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS);
-//                doCommonDispatchRawCmd(command);
                 DeviceCurrentStateActivity.startActivity(mActivity, deviceInfo, ProductType.M20);
                 break;
 
@@ -139,10 +130,6 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                     setupWizardDialogFragment.updateDispatchCmdResult(false, null);
                 }
                 break;
-
-            case M20_MD_GET_BASE_INFO:
-                ToastUtils.show("下发指令失败");
-                break;
         }
     }
 
@@ -172,54 +159,8 @@ public class NetM20HomeFragment extends UniversalNetConfigHomeFragment {
                     setupWizardDialogFragment.updateDispatchCmdResult(true, msgIDList);
                 }
                 break;
-
-            case M20_MD_GET_BASE_INFO: {//获取设备基本信息
-                if (msgIDList != null && msgIDList.size() > 0) {
-                    startQueryCmdResponse();
-                }
-            }
-            break;
         }
         if (newFragment != null)
             newFragment.show(getChildFragmentManager(), "dialog");
-    }
-
-    @Override
-    protected void setResultData(QueryCmdResult queryCmdResult) {
-        String cmdStr = queryCmdResult.getResponseContent();
-        IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
-        switch (type) {
-            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
-                IOTCommandResult<M20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-//                m20BaseInfo = commandResult.getResult();
-                updateHeadInfo();
-            }
-            break;
-
-            default:
-                break;
-        }
-    }
-
-    /**
-     * 更新头部信息
-     */
-    private void updateHeadInfo() {
-//        try {
-//            if (m20BaseInfo != null) {
-//                mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
-//            } else {
-//                mTvFirmwareVersion.setText("固件版本：--");
-//            }
-//            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
     }
 }

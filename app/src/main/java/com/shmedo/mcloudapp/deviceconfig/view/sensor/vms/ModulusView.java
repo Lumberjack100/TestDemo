@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2021/4/16 <br/>
- * 描述：    Vms 终端接入的模数结算方式传感器参数
+ * 描述：    Vms 终端接入的模数解算方式传感器参数
  */
 public class ModulusView extends FrameLayout {
 

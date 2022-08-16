@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -43,6 +46,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.ConfigModuleAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AdvancedSettingActivity;
@@ -84,11 +88,14 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//产品型号
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvSubModel;//采集器型号
+    @BindView(R.id.tv_firmware_version)
+    TextView mTvFirmwareVersion;//固件版本
+
+    @BindView(R.id.tv_extended_field3)
+    TextView mTvExtendedField;//采集器型号
 
     @BindView(R.id.tv_platform_communication_state)
     TextView mTvPlatformCommunicationState;// 与平台通信状态
@@ -113,9 +120,9 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     private ConfigModule selectedConfigModule;
 
     private DiscoveredBluetoothDevice device;
+    private DeviceBaseInfo deviceInfo;
 
     private String collectorModel = "";//采集器类型
-    private BaseConfigInfo baseConfigInfo;
     private boolean isInitialSensorOpera = false;//是否初始化传感器操作
 
     private LocationViewModel locationViewModel;
@@ -149,12 +156,14 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeadInfo();
+        updateHeadInfo();
         initSwitchViewListener();
         initAdapter();
         initConfigModuleData();
         observerConnectionState();
         observerLocation();
+        observerApiKey();
+        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
 
         //建立蓝牙连接
         connectDevice(device.getDevice());
@@ -166,14 +175,28 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         onConnectionStateChanged(isConnected());
     }
 
-    private void setHeadInfo() {
-        mTvPlatformCommunicationState.setVisibility(View.GONE);
-        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mTvDeviceName.setText(type == ProductType.DAS ? "智能采集器" : "BHY");
-        mTvDeviceSn.setText(String.format("设备编号：%s", MCloudApp.getCurDeviceToken()));
-        mTvProductModel.setText(String.format("产品型号：%s", type == ProductType.DAS ? "DAS" : "BHY"));
-        mTvSubModel.setText("采集器型号：--");
+    /**
+     * 更新头部信息
+     */
+    private void updateHeadInfo() {
+        if (deviceInfo == null)
+            deviceInfo = new DeviceBaseInfo();
+        try {
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "DAS" : deviceInfo.getDeviceName());
+            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
+            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+            if (deviceInfo.isOnlineStatus()) {
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
+            } else {
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
+            }
+            mTvExtendedField.setVisibility(View.GONE);
+            mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+            mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -375,6 +398,19 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         WaitDialog.dismiss();
     }
 
+    /**
+     * 观察获取 ApiKey
+     */
+    private void observerApiKey() {
+        bleViewModel.deviceRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
+            @Override
+            public void onChanged(DeviceBaseInfo deviceBaseInfo) {
+                deviceInfo = deviceBaseInfo;
+                updateHeadInfo();
+            }
+        });
+    }
+
     private void onConnectionStateChanged(boolean isConnected) {
         if (isConnected) {
             mTvDeviceState.setText("已连接");
@@ -424,7 +460,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+        // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+        if (!isResumed()) {
             return;
         }
         setResultData(cmdStr);
@@ -439,8 +476,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     Timber.e("查询基础配置信息指令出错!");
                     return;
                 }
-                baseConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
-                initBaseConfigInfo();
+                initBaseConfigInfo(ResultParserUtil.getEntityObject(cmdStr));
                 locationViewModel.locationUtils.getPositionPermission(mActivity);
                 startHeart();
                 break;
@@ -535,21 +571,18 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     /**
      * 处理基础配置信息
      */
-    private void initBaseConfigInfo() {
+    private void initBaseConfigInfo(BaseConfigInfo baseConfigInfo) {
         if (baseConfigInfo == null) {
             Timber.e("基础配置信息为空!");
             return;
         }
-
         collectorModel = baseConfigInfo.getCollectorModel().getCode();
-
         //获取采集器类型
         if (!TextUtils.isEmpty(collectorModel)) {
             CollectorModel model = CollectorModel.value(collectorModel);
             String collectorName = model.getDescription();
-            mTvSubModel.setText(String.format("采集器型号：%s", TextUtils.isEmpty(collectorName) ? "" : collectorName));
+            mTvExtendedField.setText(String.format("采集器型号：%s", TextUtils.isEmpty(collectorName) ? "" : collectorName));
         }
-
         //设备状态
         switch (baseConfigInfo.getEquipmentStatus()) {
             case STANDBY:   //待机
@@ -594,6 +627,15 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
+    }
+
+    private CharSequence getPlatformStateMessage(String state) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(state);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(state.contains("在线") ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.insert(0, "米度平台连接状态：");
+
+        return builder;
     }
 
     @Override
@@ -659,10 +701,10 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
         locationViewModel.locationUtils.stopLocalService();
-        super.onStop();
     }
 
     @Override

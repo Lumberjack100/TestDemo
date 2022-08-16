@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.e40.E40NmeaTimeInfo;
@@ -29,11 +27,11 @@ public class E40NmeaTimeInfoParser implements IOTResultParser<E40NmeaTimeInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setGga(TextUtils.isEmpty(keyValueMap.get("gga")) ? "" : keyValueMap.get("gga"));
-            info.setRmc(TextUtils.isEmpty(keyValueMap.get("rmc")) ? "" : keyValueMap.get("rmc"));
-            info.setVtg(TextUtils.isEmpty(keyValueMap.get("vtg")) ? "" : keyValueMap.get("vtg"));
-            info.setGsv(TextUtils.isEmpty(keyValueMap.get("gsv")) ? "" : keyValueMap.get("gsv"));
-            info.setGsa(TextUtils.isEmpty(keyValueMap.get("gsa")) ? "" : keyValueMap.get("gsa"));
+            info.setGga(keyValueMap.getOrDefault("gga", "NullKey"));
+            info.setRmc(keyValueMap.getOrDefault("rmc", "NullKey"));
+            info.setVtg(keyValueMap.getOrDefault("vtg", "NullKey"));
+            info.setGsv(keyValueMap.getOrDefault("gsv", "NullKey"));
+            info.setGsa(keyValueMap.getOrDefault("gsa", "NullKey"));
 
             return info;
         } catch (Exception ex) {

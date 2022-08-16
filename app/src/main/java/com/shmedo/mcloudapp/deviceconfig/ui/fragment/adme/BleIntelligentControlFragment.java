@@ -42,6 +42,15 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
     @BindView(R.id.anthropomorphicEnableSBtn)
     SwitchButton anthropomorphicEnableSBtn;
 
+    @BindView(R.id.rl_positive_and_negative_test)
+    ViewGroup positiveAndNegativeTestLayout;
+
+    @BindView(R.id.rl_low_power)
+    ViewGroup lowPowerLayout;
+
+    @BindView(R.id.rl_anthropomorphic_movement)
+    ViewGroup anthropomorphicMovementLayout;
+
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
@@ -59,14 +68,15 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setSwitchViewListener();
-        queryPositiveAndNegativeParamInfo();
         //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
             configPageViewModel.configPageEditableChanged.setValue(true);
         } else {
             configPageViewModel.configPageEditableChanged.setValue(false);
         }
+        intQueryCommands();
     }
+
     private void setSwitchViewListener() {
         positiveAndNegativeEnableSBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -102,33 +112,28 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
             }
         });
     }
-    /**
-     * 获取设备的步进电机正反测使能信息
-     */
-    private void queryPositiveAndNegativeParamInfo() {
-        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+
+    private void intQueryCommands() {
+        commandItems.clear();
+
+        //获取设备的步进电机正反测使能信息
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
-        sendCommand(command);
+        commandItems.add(command);
+
+        //获取低功耗使能信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE);
+        commandItems.add(command);
+
+        //获取拟人运动使能信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE);
+        commandItems.add(command);
+
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+        sendCommandFromCmdList();
     }
 
     /**
-     * 获取低功耗使能信息
-     */
-    private void queryLowPowerParamInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE);
-        sendCommand(command);
-    }
-
-    /**
-     * 获取拟人运动使能信息
-     */
-    private void queryAnthropomorphicParamInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE);
-        sendCommand(command);
-    }
-
-    /**
-     * 正反测使能
+     * 步进电机正反测使能
      */
     private void enableOrDisableStepperMotorParam(boolean isOpen) {
         AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
@@ -162,6 +167,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE, entity);
         sendCommand(command);
     }
+
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         if (msg.what == AppContants.MsgWhat.MSG_DEFAULT) {
@@ -178,17 +184,19 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
+                sendCommandFromCmdList();
                 IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    if (!commandResult.getMessage().contains("unsupported"))
+                        ToastUtils.show(errMsg);
+                    positiveAndNegativeTestLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
                     return;
                 }
-                AdmeStepperMotorInfo  admeStepperMotorInfo = commandResult.getResult();
+                AdmeStepperMotorInfo admeStepperMotorInfo = commandResult.getResult();
                 if (admeStepperMotorInfo == null) {
-                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     Timber.e("AdmeStepperMotorInfo is Null!");
                     return;
                 }
@@ -197,22 +205,23 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
                 } else {
                     positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(true);
                 }
-                queryLowPowerParamInfo();
             }
             break;
 
             case ADME_MD_GET_LOW_ENERGY_MODE: {
+                sendCommandFromCmdList();
                 IOTCommandResult<AdmeLowEnergyModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询低功耗使能状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    if (!commandResult.getMessage().contains("unsupported"))
+                        ToastUtils.show(errMsg);
+                    lowPowerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
                     return;
                 }
                 AdmeLowEnergyModeInfo admeLowEnergyModeInfo = commandResult.getResult();
                 if (admeLowEnergyModeInfo == null) {
-                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     Timber.e("AdmeLowEnergyModeInfo is Null!");
                     return;
                 }
@@ -221,17 +230,19 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
                 } else {
                     lowPowerEnableSBtn.setCheckedImmediatelyNoEvent(true);
                 }
-                queryAnthropomorphicParamInfo();
             }
             break;
 
             case ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE: {
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                sendCommandFromCmdList();
                 IOTCommandResult<AdmeAnthropomorphicMovementInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "查询拟人运动使能状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    if (!commandResult.getMessage().contains("unsupported"))
+                        ToastUtils.show(errMsg);
+                    anthropomorphicMovementLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
                     return;
                 }
                 AdmeAnthropomorphicMovementInfo anthropomorphicMovementInfo = commandResult.getResult();
@@ -306,5 +317,4 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
     protected void onEditableChanged(boolean isEditable) {
         maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
     }
-
 }

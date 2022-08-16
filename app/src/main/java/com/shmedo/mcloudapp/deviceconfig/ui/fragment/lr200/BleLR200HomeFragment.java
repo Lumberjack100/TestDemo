@@ -3,7 +3,10 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.lr200;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -30,7 +33,6 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DeviceTimeInfo;
-import com.shmedo.configlibrary.iot.model.m20.M20BaseInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
@@ -69,21 +71,23 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     private static final int REBOOT = 0x0002;
 
-
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
 
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//产品型号
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
+    @BindView(R.id.tv_firmware_version)
     TextView mTvFirmwareVersion;//固件版本
 
+    @BindView(R.id.tv_extended_field3)
+    TextView mTvExtendedField;//
+
     @BindView(R.id.tv_platform_communication_state)
-    TextView mTvPlatformCommunicationState;//与米度平台连接状态
+    TextView mTvPlatformCommunicationState;//与平台通信状态(文字标识)
 
     @BindView(R.id.tv_device_state_flag)
     TextView mTvDeviceState;//蓝牙连接状态(已连接、已断开)
@@ -128,8 +132,8 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        updateHeadInfo(null);
         initAdapter();
+        updateHeadInfo();
         initConfigModuleData();
         observerApiKey();
         observerConnectionState();
@@ -218,7 +222,7 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
                         //查询设备 ApiKey
-                        bleViewModel.deviceApiKeyRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -249,13 +253,12 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 观察获取 ApiKey
      */
     private void observerApiKey() {
-        bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
+        bleViewModel.deviceRequest.getDeviceApiKeyLiveData().observe(getViewLifecycleOwner(), new Observer<DeviceBaseInfo>() {
             @Override
             public void onChanged(DeviceBaseInfo deviceBaseInfo) {
                 deviceInfo = deviceBaseInfo;
                 hideProgressBar();
-                updateHeadInfo(null);
-                queryBaseInfo();
+                updateHeadInfo();
             }
         });
     }
@@ -399,7 +402,8 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     protected void parseResponseMessage(String cmdStr) {
-        if (!isActive) {
+        // TODO #gh# 屏蔽从其他页面返回到当前页面时，接收到其他页面的最后接收到的指令数据(LiveData事件)
+        if (!isResumed()) {
             return;
         }
         setResultData(cmdStr);
@@ -408,18 +412,6 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
-            case M20_MD_GET_BASE_INFO: {//获取设备的基本信息
-                IOTCommandResult<M20BaseInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "获取设备的基本信息出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
-                    return;
-                }
-                updateHeadInfo(commandResult.getResult());
-            }
-            break;
-
             case QUERY_TERMINAL_TIME: {//获取终端时间
                 IOTCommandResult<DeviceTimeInfo> cmdResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!cmdResult.isSuccess()) {
@@ -469,28 +461,34 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
     /**
      * 更新头部信息
      */
-    private void updateHeadInfo(M20BaseInfo m20BaseInfo) {
+    private void updateHeadInfo() {
         if (deviceInfo == null)
             deviceInfo = new DeviceBaseInfo();
-
         try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "一体式裂缝计" : deviceInfo.getProductName());
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? sn : deviceInfo.getDeviceToken()));
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "LR200" : deviceInfo.getDeviceName());
+            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
+            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
-
-            if (m20BaseInfo != null) {
-                mTvProductModel.setText(String.format("产品型号：%s", !TextUtils.isEmpty(m20BaseInfo.getProductid()) ? m20BaseInfo.getProductid() : "M20"));
-                mTvFirmwareVersion.setText(String.format("固件版本：%s", m20BaseInfo.getFirversion()));
+            if (deviceInfo.isOnlineStatus()) {
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
             } else {
-                mTvProductModel.setText(String.format("产品型号：：%s", "LR200"));
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
             }
-
-            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            mTvExtendedField.setVisibility(View.GONE);
             mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
             mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private CharSequence getPlatformStateMessage(String state) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(state);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(state.contains("在线") ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
+        builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.insert(0, "米度平台连接状态：");
+
+        return builder;
     }
 
     @Override
@@ -512,9 +510,9 @@ public class BleLR200HomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        super.onStop();
     }
 
     @Override

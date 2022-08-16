@@ -63,7 +63,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
     }
 
     @Override
-    protected void setHeadInfo() {
+    protected void initHeadInfo() {
         if (vmsTerminalInfo != null) {
             if (vmsTerminalInfo.getSn().toUpperCase().endsWith("D")) {
                 mTvDeviceName.setText("振弦式采集器");
@@ -74,10 +74,9 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
             } else if (vmsTerminalInfo.getSn().toUpperCase().endsWith("W")) {
                 mTvDeviceName.setText("崩滑仪");
             }
-            mTvDeviceSn.setText(String.format("设备编号：%s", vmsTerminalInfo.getSn()));
-            mTvProductModel.setText(String.format("固件版本：%s", ""));
-            mTvFirmwareVersion.setText(String.format("接入时间：%s", vmsTerminalInfo.getLogintime()));
-            mTvDeviceState.setVisibility(View.VISIBLE);
+            mTvDeviceSn.setText(String.format("设备SN号：%s", vmsTerminalInfo.getSn()));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", ""));
+            mTvExtendedField3.setText(String.format("接入时间：%s", vmsTerminalInfo.getLogintime()));
             mTvDeviceState.setText(processTerminalState(vmsTerminalInfo.getLastpackagetime(), vmsTerminalInfo.getLogintime()));
             if (vmsTerminalInfo.getStatus() != 0) {
                 mTvDeviceState.setTextColor(ContextCompat.getColor(mActivity, R.color.text_color_50E9B9));
@@ -87,6 +86,7 @@ public class NetVmsTerminalHomeFragment extends UniversalNetConfigHomeFragment {
                 mTvDeviceState.setBackgroundResource(R.drawable.bg_device_offline_state_flag);
             }
         }
+        mTvProductName.setVisibility(View.GONE);
         mTvPlatformCommunicationState.setVisibility(View.GONE);
         mTvDeviceConnectOperate.setVisibility(View.GONE);
     }

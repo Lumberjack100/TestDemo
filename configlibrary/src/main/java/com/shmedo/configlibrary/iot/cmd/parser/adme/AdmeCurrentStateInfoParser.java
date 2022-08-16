@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.adme;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.adme.AdmeCurrentStateInfo;
@@ -29,24 +27,24 @@ public class AdmeCurrentStateInfoParser implements IOTResultParser<AdmeCurrentSt
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
-            info.setProductid(TextUtils.isEmpty(keyValueMap.get("productid")) ? "" : keyValueMap.get("productid"));
-            info.setSimid(TextUtils.isEmpty(keyValueMap.get("simid")) ? "" : keyValueMap.get("simid"));
-            info.setImeid(TextUtils.isEmpty(keyValueMap.get("imeid")) ? "" : keyValueMap.get("imeid"));
-            info.setFirversion(TextUtils.isEmpty(keyValueMap.get("firversion")) ? "" : keyValueMap.get("firversion"));
-            info.setCtrinputv(TextUtils.isEmpty(keyValueMap.get("ctrinputv")) ? "" : keyValueMap.get("ctrinputv"));
-            info.setDriveinputv(TextUtils.isEmpty(keyValueMap.get("driveinputv")) ? "" : keyValueMap.get("driveinputv"));
-            info.setInctype(TextUtils.isEmpty(keyValueMap.get("inctype")) ? "" : keyValueMap.get("inctype"));
-            info.setIncnum(TextUtils.isEmpty(keyValueMap.get("incnum")) ? "" : keyValueMap.get("incnum"));
-            info.setIncvoltage(TextUtils.isEmpty(keyValueMap.get("incvoltage")) ? "" : keyValueMap.get("incvoltage"));
-            info.setTemperature(TextUtils.isEmpty(keyValueMap.get("temperature")) ? "" : keyValueMap.get("temperature"));
-            info.setHumidity(TextUtils.isEmpty(keyValueMap.get("humidity")) ? "" : keyValueMap.get("humidity"));
-            info.setIntertempe(TextUtils.isEmpty(keyValueMap.get("intertempe")) ? "" : keyValueMap.get("intertempe"));
-            info.setSignalstr(TextUtils.isEmpty(keyValueMap.get("signalstr")) ? "" : keyValueMap.get("signalstr"));
-            info.setIncloc(TextUtils.isEmpty(keyValueMap.get("incloc")) ? "" : keyValueMap.get("incloc"));
-            info.setAbndiasis(TextUtils.isEmpty(keyValueMap.get("abndiasis")) ? "" : keyValueMap.get("abndiasis"));
-            info.setDownnum(TextUtils.isEmpty(keyValueMap.get("downnum")) ? "" : keyValueMap.get("downnum"));
-            info.setTestway(TextUtils.isEmpty(keyValueMap.get("testway")) ? "" : keyValueMap.get("testway"));
+            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
+            info.setProductid(keyValueMap.getOrDefault("productid", "NullKey"));
+            info.setSimid(keyValueMap.getOrDefault("simid", "NullKey"));
+            info.setImeid(keyValueMap.getOrDefault("imeid", "NullKey"));
+            info.setFirversion(keyValueMap.getOrDefault("firversion", "NullKey"));
+            info.setCtrinputv(keyValueMap.getOrDefault("ctrinputv", "NullKey"));
+            info.setDriveinputv(keyValueMap.getOrDefault("driveinputv", "NullKey"));
+            info.setInctype(keyValueMap.getOrDefault("inctype", "NullKey"));
+            info.setIncnum(keyValueMap.getOrDefault("incnum", "NullKey"));
+            info.setIncvoltage(keyValueMap.getOrDefault("incvoltage", "NullKey"));
+            info.setTemperature(keyValueMap.getOrDefault("temperature", "NullKey"));
+            info.setHumidity(keyValueMap.getOrDefault("humidity", "NullKey"));
+            info.setIntertempe(keyValueMap.getOrDefault("intertempe", "NullKey"));
+            info.setSignalstr(keyValueMap.getOrDefault("signalstr", "NullKey"));
+            info.setIncloc(keyValueMap.getOrDefault("incloc", "NullKey"));
+            info.setAbndiasis(keyValueMap.getOrDefault("abndiasis", "NullKey"));
+            info.setDownnum(keyValueMap.getOrDefault("downnum", "NullKey"));
+            info.setTestway(keyValueMap.getOrDefault("testway", "NullKey"));
 
             return info;
         } catch (Exception ex) {

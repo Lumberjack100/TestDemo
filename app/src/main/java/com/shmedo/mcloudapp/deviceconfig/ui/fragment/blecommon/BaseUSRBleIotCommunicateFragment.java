@@ -30,6 +30,7 @@ import com.umeng.analytics.MobclickAgent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -56,6 +57,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
 
     private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
 
+    protected LinkedList<String> commandItems = new LinkedList<>();
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
 
@@ -75,7 +77,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
 
     protected void startDefaultProgress(String dialogContent, int what, long delayMillis) {
         if (!TextUtils.isEmpty(dialogContent)) {
-            showProgressDialog(dialogContent, null, null);
+            showProgressDialog(dialogContent);
         }
         mDefaultHandler.sendEmptyMessageDelayed(what, delayMillis);
     }
@@ -91,8 +93,8 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         stopAllProgress();
     }
 
@@ -103,11 +105,12 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         bleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
-                if (!result.startsWith("$cmd=")) {
-                    if (bleViewModel.getLogOutputMode().getValue() == null || !bleViewModel.getLogOutputMode().getValue()) {
-                        return;
-                    }
-                }
+//                if (!result.startsWith("$cmd=")) {
+//                    if (bleViewModel.getLogOutputMode().getValue() == null || !bleViewModel.getLogOutputMode().getValue()) {
+//                        return;
+//                    }
+//                }
+
                 try {
                     parseResponseMessage(result);
 
@@ -195,8 +198,8 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
             return;
         }
         String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
-        if (bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue() != null && !TextUtils.isEmpty(bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
-            apiKey = bleViewModel.deviceApiKeyRequest.getDeviceApiKeyLiveData().getValue().getApikey();
+        if (bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue() != null && !TextUtils.isEmpty(bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+            apiKey = bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey();
         }
         if (!cmdStr.contains("&apikey")) {
             cmdStr += "&apikey=" + apiKey
@@ -204,6 +207,34 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         }
 
         bleViewModel.sendIOTProtocolCommand(cmdStr);
+    }
+
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList() {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            sendCommand(command);
+            commandItems.removeFirst();
+        } else {
+            stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+        }
+    }
+
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList(String dialogContent, int what, long delayMillis) {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            sendCommand(command);
+            commandItems.removeFirst();
+            if (TextUtils.isEmpty(dialogContent) && delayMillis != 0)
+                startDefaultProgress(dialogContent, what, delayMillis);
+        } else {
+            stopDefaultProgress(what);
+        }
     }
 
     protected void showDisconnectDialog(String content) {

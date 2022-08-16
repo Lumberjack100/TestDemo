@@ -43,6 +43,12 @@ import com.shmedo.configlibrary.iot.cmd.parser.e40.E40NmeaTimeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40RTKModeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40SatelitteInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.e40.E40SerialPortInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacExecutiveAgencyInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacMeasuringDataInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacMeasuringHoleDepthInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacMotionStateParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacMotorMotionDistanceInfoParser;
+import com.shmedo.configlibrary.iot.cmd.parser.hac.HacWarningValueParser;
 import com.shmedo.configlibrary.iot.cmd.parser.lr200.LR200PositionInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.m20.M20BaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.rn20.Rn20BaseInfoParser;
@@ -89,28 +95,27 @@ public class IOTParseManager {
 
     public <T> IOTCommandResult<T> parse(String result) {
         baseValidate(result);
-        IOTCommandResult commandResult = new IOTCommandResult();
-        String temp = result.replace("&&", "");
+        String tempCmd = result.replace("&&", "");
+        IOTCommandResult<T> commandResult = new IOTCommandResult<>();
+
         //失败的指令处理
-        if (temp.contains(IOTCommandResult.ERROR_FLAG)) {
+        if (tempCmd.contains(IOTCommandResult.ERROR_FLAG)) {
             CommonSettingCmdResult settingCmdResult = CommonSettingCmdResultParser.getInstance().parse(result);
             commandResult.setSuccess(false);
             commandResult.setMessage(settingCmdResult.getReason());
             return commandResult;
         }
-
-        IOTCommandType cmdType = IOTStringUtil.extractCommandType(temp);
+        IOTCommandType cmdType = IOTStringUtil.extractCommandType(tempCmd);
         IOTResultParser parser = parserMap.get(cmdType);
         if (parser == null) {
-//            throw new RuntimeException("未找到命令：" + cmdType + "的解析器");
             commandResult.setSuccess(false);
-            commandResult.setMessage("无法解析命令： " + temp);
+            commandResult.setMessage("未找到命令：" + cmdType.toString() + "的解析器");
             commandResult.setCommandType(cmdType);
             return commandResult;
         }
 
-        parser.validate(temp);
-        T data = (T) parser.parse(temp);
+        parser.validate(tempCmd);
+        T data = (T) parser.parse(tempCmd);
         commandResult.setSuccess(true);
         commandResult.setCommandType(cmdType);
         commandResult.setResult(data);
@@ -140,7 +145,7 @@ public class IOTParseManager {
     }
 
     /**
-     * 这个方式只执行初级的格式校验，具体的逻辑校验由Validater接口和StringValidater接口执行
+     * 这个方式只执行初级的格式校验，具体的逻辑校验由Validator接口和StringValidator接口执行
      *
      * @param result
      */
@@ -217,7 +222,13 @@ public class IOTParseManager {
                 LogOutputInfoParser.class,
                 LR200PositionInfoParser.class,
                 AudibleAlarmParser.class,
-                AlarmLevelParser.class
+                AlarmLevelParser.class,
+                HacMeasuringDataInfoParser.class,
+                HacMeasuringHoleDepthInfoParser.class,
+                HacMotionStateParser.class,
+                HacWarningValueParser.class,
+                HacMotorMotionDistanceInfoParser.class,
+                HacExecutiveAgencyInfoParser.class
         });
 
         registerWithClass(clazzes);

@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
@@ -29,10 +27,10 @@ public class VmsBasicInfoParser implements IOTResultParser<VmsBasicInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setSn(TextUtils.isEmpty(keyValueMap.get("sn")) ? "" : keyValueMap.get("sn"));
-            info.setOnline(TextUtils.isEmpty(keyValueMap.get("online")) ? "" : keyValueMap.get("online"));
-            info.setSwVersion(TextUtils.isEmpty(keyValueMap.get("sw")) ? "" : keyValueMap.get("sw"));
-            info.setVolt(TextUtils.isEmpty(keyValueMap.get("volt")) ? "" : keyValueMap.get("volt"));
+            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
+            info.setOnline(keyValueMap.getOrDefault("online", "NullKey"));
+            info.setSwVersion(keyValueMap.getOrDefault("sw", "NullKey"));
+            info.setVolt(keyValueMap.getOrDefault("volt", "NullKey"));
 
             return info;
         } catch (Exception ex) {

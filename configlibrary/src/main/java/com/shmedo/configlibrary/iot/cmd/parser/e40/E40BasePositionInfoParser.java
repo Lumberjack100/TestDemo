@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.e40;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.e40.E40BasePositionInfo;
@@ -29,10 +27,10 @@ public class E40BasePositionInfoParser implements IOTResultParser<E40BasePositio
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setMode(TextUtils.isEmpty(keyValueMap.get("mode")) ? "1" : keyValueMap.get("mode"));
-            info.setLon(TextUtils.isEmpty(keyValueMap.get("lon")) ? "" : keyValueMap.get("lon"));
-            info.setLat(TextUtils.isEmpty(keyValueMap.get("lat")) ? "" : keyValueMap.get("lat"));
-            info.setAlt(TextUtils.isEmpty(keyValueMap.get("alt")) ? "" : keyValueMap.get("alt"));
+            info.setMode(keyValueMap.getOrDefault("mode", "NullKey"));
+            info.setLon(keyValueMap.getOrDefault("lon", "NullKey"));
+            info.setLat(keyValueMap.getOrDefault("lat", "NullKey"));
+            info.setAlt(keyValueMap.getOrDefault("alt", "NullKey"));
 
             return info;
         } catch (Exception ex) {

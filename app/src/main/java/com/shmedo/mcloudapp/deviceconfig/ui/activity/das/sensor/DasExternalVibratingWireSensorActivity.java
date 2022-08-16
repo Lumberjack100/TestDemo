@@ -225,7 +225,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
         new XPopup.Builder(this)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", unUsedAisleList.toArray(new String[0]),
-                        null, sensorAislePos, true,
+                        null, sensorAislePos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
@@ -241,7 +241,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
         new XPopup.Builder(this)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", (String[]) sensorTypeList.toArray(),
-                        null, sensorTypePos, true,
+                        null, sensorTypePos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {

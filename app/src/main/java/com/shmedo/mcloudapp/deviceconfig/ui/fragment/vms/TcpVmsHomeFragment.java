@@ -82,11 +82,14 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    TextView mTvProductModel;//版本信息
+    @BindView(R.id.tv_product_name)
+    TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
-    TextView mTvSubModel;//网关电压
+    @BindView(R.id.tv_firmware_version)
+    TextView mTvFirmwareVersion;//固件版本
+
+    @BindView(R.id.tv_extended_field3)
+    TextView mTvVoltage;//网关电压
 
     @BindView(R.id.tv_platform_communication_state)
     TextView mTvPlatformCommunicationState;// 与数据平台的通信状态
@@ -449,26 +452,26 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
         if (vmsBasicInfo != null) {
             mTvDeviceName.setText("VMS网关");
             mTvDeviceSn.setText(String.format("设备SN号：%s", vmsBasicInfo.getSn()));
-            mTvProductModel.setText(String.format("版本信息：%s", vmsBasicInfo.getSwVersion()));
-            mTvSubModel.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", vmsBasicInfo.getSwVersion()));
+            mTvVoltage.setText(String.format("网关电压：%s", vmsBasicInfo.getVolt() + "V"));
             if (!TextUtils.isEmpty(vmsBasicInfo.getOnline()) && !vmsBasicInfo.getOnline().equals("0")) {
-                mTvPlatformCommunicationState.setText("米度平台连接状态：在线");
-
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
             } else if (vmsBasicInfo.getOnline().equals("0")) {
-                mTvPlatformCommunicationState.setText(getPlatformAbnormalMessage("离线"));
+                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
             }
         } else {
             mTvDeviceName.setText("VMS网关");
             mTvDeviceSn.setText("设备SN号：--");
-            mTvProductModel.setText("版本信息：--");
-            mTvSubModel.setText("网关电压：--");
+            mTvFirmwareVersion.setText("固件版本：--");
+            mTvVoltage.setText("网关电压：--");
             mTvPlatformCommunicationState.setText("米度平台连接状态：--");
         }
+        mTvProductName.setVisibility(View.GONE);
     }
 
-    private CharSequence getPlatformAbnormalMessage(String state) {
+    private CharSequence getPlatformStateMessage(String state) {
         SpannableStringBuilder builder = new SpannableStringBuilder(state);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(state.contains("在线") ? com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094) : com.blankj.utilcode.util.ColorUtils.getColor(R.color.red));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "米度平台连接状态：");
 

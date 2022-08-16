@@ -16,7 +16,7 @@ public abstract class IOTCommandDataCallback implements ProfileDataCallback, IOT
 
     @Override
     public void onDataReceived(@NonNull final BluetoothDevice device, @NonNull final Data data) {
-        if (data.size() < 1) {
+        if (data.size() < 2) {
             onInvalidDataReceived(device, data);
             return;
         }

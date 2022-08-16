@@ -28,9 +28,7 @@ import no.nordicsemi.android.ble.data.Data;
 import no.nordicsemi.android.ble.data.DataMerger;
 import no.nordicsemi.android.ble.data.DataStream;
 import no.nordicsemi.android.ble.livedata.ObservableBleManager;
-import no.nordicsemi.android.log.LogContract;
 import no.nordicsemi.android.log.LogSession;
-import no.nordicsemi.android.log.Logger;
 import timber.log.Timber;
 
 /**
@@ -117,7 +115,7 @@ public class CustomBleManager extends ObservableBleManager {
     @Override
     public void log(final int priority, @NonNull final String message) {
         // The priority is a Log.X constant, while the Logger accepts it's log levels.
-        Logger.log(logSession, LogContract.Log.Level.fromPriority(priority), message);
+//        Logger.log(logSession, LogContract.Log.Level.fromPriority(priority), message);
     }
 
     @Override
@@ -203,10 +201,14 @@ public class CustomBleManager extends ObservableBleManager {
                         public boolean merge(@NonNull DataStream output, @Nullable byte[] lastPacket, int index) {
                             Timber.e("merge: length=%s bytes;content: %s", lastPacket == null ? 0 : lastPacket.length, lastPacket == null ? "Null" : new String(lastPacket, StandardCharsets.UTF_8));
 //                            Timber.e("merge: length=%s bytes;content: %s", lastPacket == null ? 0 : lastPacket.length, lastPacket == null ? "Null" : Arrays.toString(lastPacket));
-
                             output.write(lastPacket);
+
                             //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
-                            return lastPacket == null || (lastPacket.length < 2) || (lastPacket[lastPacket.length - 1] == 38 && lastPacket[lastPacket.length - 2] == 38) || (lastPacket[lastPacket.length - 1] == 10 && lastPacket[lastPacket.length - 2] == 13);
+                            byte[] dataPacket = output.toByteArray();
+                            if (dataPacket.length < 2)
+                                return false;
+                            else
+                                return (dataPacket[dataPacket.length - 1] == 38 && dataPacket[dataPacket.length - 2] == 38) || (dataPacket[dataPacket.length - 1] == 10 && dataPacket[dataPacket.length - 2] == 13);
                         }
                     });
 
@@ -215,7 +217,7 @@ public class CustomBleManager extends ObservableBleManager {
                     // Method called after the data were sent (data will contain 0x0100 in this case)
                     .with((device, data) -> log(Log.DEBUG, "Data sent: " + data.toString()))
                     // Method called when the request finished successfully. This will be called after .with(..) callback
-                    .done(device -> log(LogContract.Log.Level.APPLICATION, "Notifications enabled successfully"))
+                    .done(device -> log(Log.VERBOSE, "Notifications enabled successfully"))
                     // Methods called in case of an error, for example when the characteristic does not have Notify property
                     .fail((device, status) -> log(Log.WARN, "Failed to enable notifications"))
                     .enqueue();
@@ -330,6 +332,6 @@ public class CustomBleManager extends ObservableBleManager {
                 })
                 .enqueue();
 
-        sleep(350).enqueue();
+        sleep(300).enqueue();
     }
 }

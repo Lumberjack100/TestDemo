@@ -39,17 +39,20 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     @BindView(R.id.tv_device_sn)
     protected TextView mTvDeviceSn;//设备SN号
 
-    @BindView(R.id.tv_product_model)
-    protected TextView mTvProductModel;//产品型号
+    @BindView(R.id.tv_product_name)
+    protected TextView mTvProductName;//所属产品
 
-    @BindView(R.id.tv_time_or_sub_model)
+    @BindView(R.id.tv_firmware_version)
     protected TextView mTvFirmwareVersion;//固件版本
 
+    @BindView(R.id.tv_extended_field3)
+    protected TextView mTvExtendedField3;//
+
     @BindView(R.id.tv_platform_communication_state)
-    protected TextView mTvPlatformCommunicationState;//与米度平台连接状态
+    protected TextView mTvPlatformCommunicationState;//与平台通信状态(文字标识),隐藏
 
     @BindView(R.id.tv_device_state_flag)
-    protected TextView mTvDeviceState;//(在线、离线)
+    protected TextView mTvDeviceState;//与平台通信状态(在线、离线图标)
 
     @BindView(R.id.tv_device_connect_operate)
     protected TextView mTvDeviceConnectOperate;//蓝牙连接操作(断开连接、重新连接)
@@ -80,22 +83,25 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeadInfo();
+        initHeadInfo();
         initAdapter();
         initConfigModuleData();
     }
 
-    protected void setHeadInfo() {
-        if (deviceInfo != null) {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName());
-            mTvDeviceSn.setText(String.format("设备编号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
-//            mTvProductModel.setText(String.format("产品型号：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
+    protected void initHeadInfo() {
+        try {
+            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? deviceInfo.getDeviceToken() : deviceInfo.getDeviceName());
+            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken()));
+            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
             mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
             setDeviceState(mTvDeviceState, deviceInfo.isOnlineStatus());
+            //TODO #gh# 暂时不展示运行状态处理，后期考虑优化
+            mTvExtendedField3.setVisibility(View.GONE);
+            mTvPlatformCommunicationState.setVisibility(View.GONE);
+            mTvDeviceConnectOperate.setVisibility(View.GONE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        mTvProductModel.setVisibility(View.GONE);
-        mTvPlatformCommunicationState.setVisibility(View.GONE);
-        mTvDeviceConnectOperate.setVisibility(View.GONE);
     }
 
     private void initAdapter() {

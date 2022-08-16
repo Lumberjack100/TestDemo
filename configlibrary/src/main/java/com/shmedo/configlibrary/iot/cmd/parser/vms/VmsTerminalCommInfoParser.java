@@ -1,7 +1,5 @@
 package com.shmedo.configlibrary.iot.cmd.parser.vms;
 
-import android.text.TextUtils;
-
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalCommInfo;
@@ -29,10 +27,10 @@ public class VmsTerminalCommInfoParser implements IOTResultParser<VmsTerminalCom
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setNetid(TextUtils.isEmpty(keyValueMap.get("netid")) ? "" : keyValueMap.get("netid"));
-            info.setDstaddr(TextUtils.isEmpty(keyValueMap.get("dstaddr")) ? "" : keyValueMap.get("dstaddr"));
-            info.setChannel(TextUtils.isEmpty(keyValueMap.get("channel")) ? "" : keyValueMap.get("channel"));
-            info.setAirbaud(TextUtils.isEmpty(keyValueMap.get("airbaud")) ? "" : keyValueMap.get("airbaud"));
+            info.setNetid(keyValueMap.getOrDefault("netid", "NullKey"));
+            info.setDstaddr(keyValueMap.getOrDefault("dstaddr", "NullKey"));
+            info.setChannel(keyValueMap.getOrDefault("channel", "NullKey"));
+            info.setAirbaud(keyValueMap.getOrDefault("airbaud", "NullKey"));
 
             return info;
         } catch (Exception ex) {
