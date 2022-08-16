@@ -121,14 +121,13 @@ public class NetDeviceListFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-//        if (companyID != MCloudApp.getCompanyID()) {
-        companyID = MCloudApp.getCompanyID();
-        loadAllData();
-//        }
+        if (!isHasListSuperInfoPermission && companyID != MCloudApp.getCompanyID()) {
+            companyID = MCloudApp.getCompanyID();
+            loadAllData();
+        }
     }
 
     private void loadAllData() {
-        clearAllData();
         startLoading();
         //查询设备在线统计信息
         getDeviceStatByCompanyID();
@@ -201,7 +200,7 @@ public class NetDeviceListFragment extends BaseFragment {
                 deviceInfoList.clear();
                 // 这里的作用是防止下拉刷新的时候还可以上拉加载
                 deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
-                // 下拉刷新，需要重置页数
+                //下拉刷新，需要重置页数
                 pageInfo.reset();
                 queryDeviceList();
             }
@@ -266,9 +265,13 @@ public class NetDeviceListFragment extends BaseFragment {
     }
 
     /**
-     * 查询产品列表
+     * 查询产品或者系统所有产品列表
      */
     private void queryProducts() {
+        productID = -1;
+        productList.clear();
+        mRecyclerViewProduct.scrollToPosition(0);
+
         JSONObject jsonObjectRequest = new JSONObject();
         try {
             if (!isHasListSuperInfoPermission)
@@ -295,6 +298,7 @@ public class NetDeviceListFragment extends BaseFragment {
                                     showNoContentView(StringUtils.getString(R.string.empty_no_data));
                                     return;
                                 }
+                                loadFinished();
                                 initProducts(data.getCurrentPageData());
 
                             } else {
@@ -346,7 +350,7 @@ public class NetDeviceListFragment extends BaseFragment {
     }
 
     /**
-     * 查询公司设备列表
+     * 查询公司或者系统所有设备列表
      */
     private void queryDeviceList() {
         JSONObject jsonObjectRequest = new JSONObject();
@@ -385,6 +389,7 @@ public class NetDeviceListFragment extends BaseFragment {
                                     }
                                     return;
                                 }
+                                loadFinished();
                                 filterDevices(data.getCurrentPageData());
 
                             } else { //Code!=0
@@ -453,15 +458,6 @@ public class NetDeviceListFragment extends BaseFragment {
         } else {
             showLoadErrorView(msg);
         }
-    }
-
-    private void clearAllData() {
-//        updateTopView(0, 0, "0%");
-        productID = -1;
-        productList.clear();
-//        productAdapter.notifyDataSetChanged();
-        deviceInfoList.clear();
-//        deviceInfoAdapter.notifyDataSetChanged();
     }
 
     private void updateTopView(int onlineCount, int offlineCount, String rate) {

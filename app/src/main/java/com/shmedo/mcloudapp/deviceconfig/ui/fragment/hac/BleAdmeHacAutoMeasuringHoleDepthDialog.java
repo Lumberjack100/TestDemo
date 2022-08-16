@@ -246,7 +246,7 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
             repeatNum++;
             Timber.d("updateMotionData: curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
             //轮询 N 次电机脉冲数据不变化时，停止轮询脉冲数并发送停止电机运动指令
-            if (repeatNum >= 8) {
+            if (repeatNum >= 6) {
                 stopQueryMotorStateProgress();
                 stopMotorMotion();
                 return;
