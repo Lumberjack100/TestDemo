@@ -96,7 +96,7 @@ public class HacMeasuringDataVerticalProgressBarView extends LinearLayout {
                 verticalBar.setProgress(0, true);
             else {
                 double value = Double.parseDouble(values[0]);
-                mTvCurDepth.setText(String.format("当前孔深深度 %s 米", decimalFormat.format(depth - value)));
+                mTvCurDepth.setText(String.format("当前测点位置 %s 米", decimalFormat.format(depth - value)));
                 verticalBar.setProgress((int) (value * 10), true);
             }
         } catch (Exception ex) {

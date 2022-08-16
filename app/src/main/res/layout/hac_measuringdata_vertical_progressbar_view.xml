@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimen_size_10"
         android:layout_marginTop="10dp"
-        android:text="当前孔深深度 -- 米"
+        android:text="当前测点位置 -- 米"
         android:textColor="@color/title_text_color"
         android:textSize="@dimen/text_size_14"
         android:textStyle="bold"

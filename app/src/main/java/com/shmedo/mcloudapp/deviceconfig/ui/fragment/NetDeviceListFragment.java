@@ -121,7 +121,7 @@ public class NetDeviceListFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (!isHasListSuperInfoPermission && companyID != MCloudApp.getCompanyID()) {
+        if (companyID != MCloudApp.getCompanyID()) {
             companyID = MCloudApp.getCompanyID();
             loadAllData();
         }
