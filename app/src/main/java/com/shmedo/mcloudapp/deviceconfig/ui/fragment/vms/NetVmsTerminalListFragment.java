@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -69,7 +68,7 @@ public class NetVmsTerminalListFragment extends BaseFragment {
         return R.layout.vms_terminal_list_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
@@ -79,7 +78,7 @@ public class NetVmsTerminalListFragment extends BaseFragment {
 
     private void initAdapter() {
         int spanCount = 2;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerView.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
@@ -134,9 +133,10 @@ public class NetVmsTerminalListFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
+                        int index = vmsTerminalInfoList.indexOf(vmsTerminalInfo);
                         vmsTerminalInfoList.remove(vmsTerminalInfo);
                         vmsViewModel.removeTerminal(vmsTerminalInfo.getSn());
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemRemoved(index);
                         vmsHomeFragment.removeTerminal(vmsTerminalInfo.getSn());
                     }
                 });

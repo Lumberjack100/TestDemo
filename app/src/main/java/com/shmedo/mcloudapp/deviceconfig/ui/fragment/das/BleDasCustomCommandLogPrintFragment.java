@@ -202,7 +202,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
             sendCommand(command + "\r\n");
             CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
             logDataList.add(cmdLogInfo);
-            cmdAdapter.notifyDataSetChanged();
+            cmdAdapter.notifyItemInserted(logDataList.size() - 1);
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
             Log4a.i(TAG, String.format("发送指令==%s", command));
         }
@@ -251,7 +251,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
 
         CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command.replace("\r\n", ""));
         logDataList.add(cmdLogInfo);
-        cmdAdapter.notifyDataSetChanged();
+        cmdAdapter.notifyItemInserted(logDataList.size() - 1);
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         Log4a.i(TAG, String.format("设置日志输出模式指令==%s", command.replace("\r\n", "")));
     }
@@ -263,7 +263,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
 
         CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command.replace("\r\n", ""));
         logDataList.add(cmdLogInfo);
-        cmdAdapter.notifyDataSetChanged();
+        cmdAdapter.notifyItemInserted(logDataList.size() - 1);
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         Log4a.i(TAG, String.format("设置调试模式指令==%s", command.replace("\r\n", "")));
     }
@@ -283,7 +283,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         } else {
             CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), cmdStr);
             logDataList.add(cmdLogInfo);
-            cmdAdapter.notifyDataSetChanged();
+            cmdAdapter.notifyItemInserted(logDataList.size() - 1);
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
         }
     }

@@ -117,8 +117,6 @@ public class DeviceSearchActivity extends BaseActivity {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         deviceInfoAdapter = new DeviceInfoAdapter(deviceInfoList);
-        deviceInfoAdapter.setAnimationEnable(true);
-        deviceInfoAdapter.setAnimationFirstOnly(false);
         deviceInfoAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -148,9 +146,6 @@ public class DeviceSearchActivity extends BaseActivity {
 
     @OnClick({R.id.iv_back, R.id.tv_search})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
-            return;
-        }
         int id = view.getId();
         if (id == R.id.iv_back) {//
             finish();
@@ -168,6 +163,7 @@ public class DeviceSearchActivity extends BaseActivity {
 
     private void refresh() {
         deviceInfoList.clear();
+        deviceInfoAdapter.notifyDataSetChanged();
         // 这里的作用是防止下拉刷新的时候还可以上拉加载
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
         // 下拉刷新，需要重置页数
@@ -220,16 +216,8 @@ public class DeviceSearchActivity extends BaseActivity {
                                     }
                                     return;
                                 }
-                                deviceInfoList.addAll(data.getCurrentPageData());
-                                deviceInfoAdapter.notifyDataSetChanged();
-                                if (data.getCurrentPageData().size() < PAGE_SIZE) {
-                                    //如果不够一页,显示没有更多数据布局
-                                    deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
-                                } else {
-                                    deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
-                                }
-                                // page加一
-                                pageInfo.nextPage();
+                                filterDevices(data.getCurrentPageData());
+
                             } else {
                                 deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
@@ -251,6 +239,19 @@ public class DeviceSearchActivity extends BaseActivity {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
+    }
+
+    private void filterDevices(List<DeviceInfo> tempList) {
+        deviceInfoList.addAll(tempList);
+        deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - tempList.size(), tempList.size());
+        if (tempList.size() < PAGE_SIZE) {
+            //如果不够一页,显示没有更多数据布局
+            deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+        } else {
+            deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
+        }
+        // page加一
+        pageInfo.nextPage();
     }
 
     private View getErrorView() {

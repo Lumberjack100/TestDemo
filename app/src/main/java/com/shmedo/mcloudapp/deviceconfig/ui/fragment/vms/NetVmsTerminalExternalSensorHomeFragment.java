@@ -105,7 +105,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         return R.layout.vms_terminal_sensor_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initSensorAdapter();
@@ -270,7 +270,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
             sensorItemList.add(sensorItem);
-            sensorAdapter.notifyDataSetChanged();
+            sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
         } else {
             sensorHashMap.remove(sensorInfo.getChannel());
             sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
@@ -278,7 +278,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             VmsTerminalSensorItem sensorItem = sensorItemList.get(curSensorIndex);
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
-            sensorAdapter.notifyDataSetChanged();
+            sensorAdapter.notifyItemChanged(curSensorIndex);
         }
     }
 

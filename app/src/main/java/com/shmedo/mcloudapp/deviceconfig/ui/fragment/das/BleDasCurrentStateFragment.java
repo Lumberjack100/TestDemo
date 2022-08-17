@@ -561,7 +561,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     case "2": {
                         DeviceNetStatus deviceNetStatus = ResultParserUtil.getEntityObject(cmdStr);
                         dataCenterStatusInfoList.add(deviceNetStatus);
-                        dataCenterAdapter.notifyDataSetChanged();
+                        dataCenterAdapter.notifyItemInserted(dataCenterStatusInfoList.size() - 1);
                         queryDataCenter(new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt()));
                     }
                     break;
@@ -569,7 +569,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     case "3": {
                         DeviceNetStatus deviceNetStatus = ResultParserUtil.getEntityObject(cmdStr);
                         dataCenterStatusInfoList.add(deviceNetStatus);
-                        dataCenterAdapter.notifyDataSetChanged();
+                        dataCenterAdapter.notifyItemInserted(dataCenterStatusInfoList.size() - 1);
                         //查询设备状态2
                         queryStatusTwo();
                     }

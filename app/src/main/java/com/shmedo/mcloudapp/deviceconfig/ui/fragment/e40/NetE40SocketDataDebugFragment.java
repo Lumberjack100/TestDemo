@@ -228,7 +228,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
             myHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mReceAdapter.notifyDataSetChanged();
+                    mReceAdapter.notifyItemInserted(logDataList.size() - 1);
                     mRecyclerView.scrollToPosition(mReceAdapter.getItemCount() - 1);
                 }
             });

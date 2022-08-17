@@ -276,7 +276,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
                         String rssi = addrRssi.substring(addrRssi.indexOf("RSSI:")).replace("RSSI:", "");
                         InclinometerMacInfo macInfo = new InclinometerMacInfo(no, addr, rssi);
                         macInfoList.add(macInfo);
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemInserted(macInfoList.size() - 1);
                     }
                 }
             }

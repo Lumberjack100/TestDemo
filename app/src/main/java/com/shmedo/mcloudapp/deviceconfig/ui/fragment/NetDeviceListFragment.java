@@ -128,6 +128,7 @@ public class NetDeviceListFragment extends BaseFragment {
     }
 
     private void loadAllData() {
+        productID = -1;
         startLoading();
         //查询设备在线统计信息
         getDeviceStatByCompanyID();
@@ -151,15 +152,25 @@ public class NetDeviceListFragment extends BaseFragment {
                 if (productInfo.isChecked()) {
                     return;
                 }
-                for (ProductInfo typeInfo : productList) {
-                    typeInfo.setChecked(false);
+                //清除上一次选中项目的状态
+                if (productID != -1) {
+                    for (int i = 0; i < productList.size(); i++) {
+                        ProductInfo info = productList.get(i);
+                        if (info.getId() == productID) {
+                            info.setChecked(false);
+                            productAdapter.notifyItemChanged(i);
+                            break;
+                        }
+                    }
                 }
+                //更新新选中项目的状态
                 productInfo.setChecked(true);
-                productAdapter.notifyDataSetChanged();
+                productAdapter.notifyItemChanged(position);
 
+                int lastVisibleItemPosition = ((LinearLayoutManager) mRecyclerViewProduct.getLayoutManager()).findLastVisibleItemPosition();
                 //点击选中最后一个 Item 时,使RecyclerView滚动到底
-                if (position == productList.size() - 1) {
-                    mRecyclerViewProduct.scrollToPosition(adapter.getItemCount() - 1);
+                if (position == lastVisibleItemPosition) {
+                    mRecyclerViewProduct.scrollToPosition(lastVisibleItemPosition);
                 }
                 productID = productInfo.getId();
                 mRefreshLayout.autoRefresh();
@@ -198,6 +209,7 @@ public class NetDeviceListFragment extends BaseFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 deviceInfoList.clear();
+                mRecyclerViewDevice.scrollToPosition(0);
                 // 这里的作用是防止下拉刷新的时候还可以上拉加载
                 deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
                 //下拉刷新，需要重置页数
@@ -268,10 +280,6 @@ public class NetDeviceListFragment extends BaseFragment {
      * 查询产品或者系统所有产品列表
      */
     private void queryProducts() {
-        productID = -1;
-        productList.clear();
-        mRecyclerViewProduct.scrollToPosition(0);
-
         JSONObject jsonObjectRequest = new JSONObject();
         try {
             if (!isHasListSuperInfoPermission)
@@ -327,6 +335,7 @@ public class NetDeviceListFragment extends BaseFragment {
             //过滤掉没有设备的产品
             if (info.getDeviceNum() == 0)
                 continue;
+
             ProductType type = ProductType.valueByPrefix(info.getProductToken().toUpperCase());
             if (type == ProductType.UnKnown) {
                 continue;
@@ -347,6 +356,7 @@ public class NetDeviceListFragment extends BaseFragment {
         productInfo.setChecked(true);
         productList.add(0, productInfo);
         productAdapter.notifyDataSetChanged();
+        mRecyclerViewProduct.scrollToPosition(0);
     }
 
     /**
@@ -381,8 +391,9 @@ public class NetDeviceListFragment extends BaseFragment {
                                     mRefreshLayout.finishRefresh();
 
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                                    if (pageInfo.isFirstPage()) {
+                                    if (deviceInfoList.size() == 0) {
                                         deviceInfoAdapter.setEmptyView(R.layout.empty_view);
+                                        deviceInfoAdapter.notifyDataSetChanged();
                                     } else {
                                         //显示没有更多数据布局
                                         deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
@@ -418,7 +429,7 @@ public class NetDeviceListFragment extends BaseFragment {
      */
     private void filterDevices(List<DeviceInfo> tempList) {
         deviceInfoList.addAll(tempList);
-        deviceInfoAdapter.notifyDataSetChanged();
+        deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - tempList.size(), tempList.size());
         if (tempList.size() < PAGE_SIZE) {
             //如果不够一页,显示没有更多数据布局
             deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();

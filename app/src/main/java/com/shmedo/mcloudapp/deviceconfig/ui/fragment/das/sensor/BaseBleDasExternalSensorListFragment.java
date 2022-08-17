@@ -213,7 +213,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                         String address = sensorItemList.get(position).getSensorAddress();
                         collectorSensorHashMap.remove(address);
                         sensorItemList.remove(position);
-                        sensorAdapter.notifyDataSetChanged();
+                        sensorAdapter.notifyItemRemoved(position);
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -429,7 +429,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, address);
         sensorItem.setVibratingWireSensor(isVibratingWireSensor);
         sensorItemList.add(sensorItem);
-        sensorAdapter.notifyDataSetChanged();
+        sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
     }
 
     protected void doAfterSetting() {

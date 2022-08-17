@@ -180,7 +180,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         initTimeAdapter(context);
         AdmeTimeItem item = new AdmeTimeItem(null, true);
         admeTimeItemList.add(item);
-        admeTimeAdapter.notifyDataSetChanged();
+        admeTimeAdapter.notifyItemInserted(admeTimeItemList.size()-1);
     }
 
     private void initView() {

@@ -129,11 +129,10 @@ public class QueryDeviceDataActivity extends BaseActivity {
     private void initAdapter() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new DeviceReportDataAdapter(queryCloudDataInfoList);
-        adapter.setAnimationEnable(true);
-        adapter.setAnimationFirstOnly(false);
+//        adapter.setAnimationEnable(true);
+//        adapter.setAnimationFirstOnly(false);
         mRecyclerView.setAdapter(adapter);
     }
-
 
     @OnClick({R.id.tv_start_time, R.id.tv_end_time, R.id.itemCountLayout, R.id.tv_search})
     public void onClick(View view) {
@@ -143,7 +142,6 @@ public class QueryDeviceDataActivity extends BaseActivity {
 //                timeDialog = new TimePickerDialog(this);
 //                timeDialog.setTimeLisinter(mTvStartTime);
 //                timeDialog.build();
-
                 MyDatePicker newFragment = new MyDatePicker(mTvStartTime.getText().toString(), "选择开始时间");
                 newFragment.setOnPositiveClickListener(new MyDatePicker.OnPositiveClickListener() {
                     @Override
@@ -187,10 +185,11 @@ public class QueryDeviceDataActivity extends BaseActivity {
                 if (!checkValue()) {
                     return;
                 }
-
                 startTime = startTime + " 00:00:00";
                 endTime = endTime + " 23:59:59";
                 itemCount = mTvItemCount.getText().toString();
+                queryCloudDataInfoList.clear();
+                adapter.notifyDataSetChanged();
                 queryCloudData();
                 break;
         }
@@ -224,10 +223,8 @@ public class QueryDeviceDataActivity extends BaseActivity {
             ToastUtils.show("开始时间必须小于等于结束时间");
             return false;
         }
-
         return true;
     }
-
 
     private void queryCloudData() {
         showWaitDialog("加载中...");
@@ -251,20 +248,15 @@ public class QueryDeviceDataActivity extends BaseActivity {
                     protected void onResponse(List<QueryCloudDataInfo> queryCloudDataInfos, ErrorInfo errorInfo) {
                         dismissWaitDialog();
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
-                            queryCloudDataInfoList.clear();
                             if (errorInfo.getCode() == 0) {
                                 if (queryCloudDataInfos == null || queryCloudDataInfos.size() == 0) {
                                     adapter.setEmptyView(R.layout.empty_view);
-                                    adapter.notifyDataSetChanged();
                                     return;
                                 }
-
                                 queryCloudDataInfoList.addAll(queryCloudDataInfos);
                                 adapter.notifyDataSetChanged();
                             } else {
                                 adapter.setEmptyView(getErrorView());
-                                adapter.notifyDataSetChanged();
-
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());
                                 }
@@ -275,9 +267,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         dismissWaitDialog();
-                        queryCloudDataInfoList.clear();
                         adapter.setEmptyView(getErrorView());
-                        adapter.notifyDataSetChanged();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });

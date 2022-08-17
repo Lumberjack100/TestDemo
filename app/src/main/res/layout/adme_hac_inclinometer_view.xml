@@ -10,6 +10,22 @@
         android:layout_height="10dp" />
 
     <LinearLayout
+        android:id="@+id/ll_low_power_mode"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="低功耗模式" />
+
+        <TextView
+            android:id="@+id/tv_low_power_mode"
+            style="@style/Common_ClickableItem_ValueStyle"
+            tools:text="开启" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_mac_address"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">

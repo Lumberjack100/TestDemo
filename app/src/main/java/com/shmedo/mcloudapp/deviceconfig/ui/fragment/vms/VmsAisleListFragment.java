@@ -35,7 +35,7 @@ public class VmsAisleListFragment extends BaseFragment {
         return R.layout.vms_aisle_list_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initAdapter();
@@ -43,7 +43,7 @@ public class VmsAisleListFragment extends BaseFragment {
 
     private void initAdapter() {
         int spanCount = 1;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 10);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(10);//每一个矩形的间距
         mRecyclerViewAisle.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
         //设置每个item间距
         mRecyclerViewAisle.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
@@ -60,6 +60,6 @@ public class VmsAisleListFragment extends BaseFragment {
 
     public void updateAisleListInfo(VmsAisleInfo vmsAisleInfo) {
         vmsAisleInfoList.add(vmsAisleInfo);
-        vmsAisleAdapter.notifyDataSetChanged();
+        vmsAisleAdapter.notifyItemInserted(vmsAisleInfoList.size() - 1);
     }
 }

@@ -673,6 +673,6 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorInfo.getAddr());
         sensorItem.setVibratingWireSensor(isVibratingWireSensor);
         sensorItemList.add(sensorItem);
-        sensorAdapter.notifyDataSetChanged();
+        sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
     }
 }
