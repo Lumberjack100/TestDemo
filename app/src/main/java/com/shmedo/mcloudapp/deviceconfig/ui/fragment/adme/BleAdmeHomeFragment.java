@@ -206,6 +206,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
             }
         });
         mRecyclerView.setAdapter(moduleAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     private void processItemClick() {

@@ -139,6 +139,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
             }
         });
         mRecyclerView.setAdapter(simpleInfoAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**

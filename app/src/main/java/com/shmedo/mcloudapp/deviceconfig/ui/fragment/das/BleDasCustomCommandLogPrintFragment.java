@@ -111,6 +111,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
             }
         };
         mRecyclerView.setAdapter(cmdAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**

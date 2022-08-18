@@ -180,6 +180,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         bleDeviceAdapter = new BleDeviceAdapter();
         mRecyclerView.setAdapter(bleDeviceAdapter);
+        mRecyclerView.setHasFixedSize(true);
         bleDeviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {

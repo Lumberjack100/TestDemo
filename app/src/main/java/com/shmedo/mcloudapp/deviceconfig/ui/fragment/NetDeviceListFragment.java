@@ -153,14 +153,12 @@ public class NetDeviceListFragment extends BaseFragment {
                     return;
                 }
                 //清除上一次选中项目的状态
-                if (productID != -1) {
-                    for (int i = 0; i < productList.size(); i++) {
-                        ProductInfo info = productList.get(i);
-                        if (info.getId() == productID) {
-                            info.setChecked(false);
-                            productAdapter.notifyItemChanged(i);
-                            break;
-                        }
+                for (int i = 0; i < productList.size(); i++) {
+                    ProductInfo info = productList.get(i);
+                    if (info.getId() == productID) {
+                        info.setChecked(false);
+                        productAdapter.notifyItemChanged(i);
+                        break;
                     }
                 }
                 //更新新选中项目的状态
@@ -199,6 +197,7 @@ public class NetDeviceListFragment extends BaseFragment {
             }
         });
         mRecyclerViewDevice.setAdapter(deviceInfoAdapter);
+        mRecyclerViewDevice.setHasFixedSize(true);
     }
 
     private void initRefreshLayout() {

@@ -99,6 +99,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
             }
         };
         mRecyclerView.setAdapter(cmdAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**

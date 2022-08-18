@@ -129,6 +129,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
             }
         };
         mRecyclerView.setAdapter(mReceAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     private void setSwitchViewListener() {

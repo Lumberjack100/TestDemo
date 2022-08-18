@@ -186,6 +186,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         commonLogAdapter = new CommonLogAdapter(logInfoList);
         mRecyclerView.setAdapter(commonLogAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**

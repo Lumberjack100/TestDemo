@@ -142,6 +142,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
             }
         });
         mRecyclerView.setAdapter(adpter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**

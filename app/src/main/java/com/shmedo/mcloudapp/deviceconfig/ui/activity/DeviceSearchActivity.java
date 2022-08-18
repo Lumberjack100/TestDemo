@@ -125,6 +125,7 @@ public class DeviceSearchActivity extends BaseActivity {
             }
         });
         mRecyclerView.setAdapter(deviceInfoAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**

@@ -120,6 +120,7 @@ public class ConfigLinkMacDialogFragment extends BaseDebugBoxDialogFragment {
             }
         });
         mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     @Override

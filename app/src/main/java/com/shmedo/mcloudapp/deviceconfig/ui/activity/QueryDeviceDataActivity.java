@@ -132,6 +132,7 @@ public class QueryDeviceDataActivity extends BaseActivity {
 //        adapter.setAnimationEnable(true);
 //        adapter.setAnimationFirstOnly(false);
         mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     @OnClick({R.id.tv_start_time, R.id.tv_end_time, R.id.itemCountLayout, R.id.tv_search})

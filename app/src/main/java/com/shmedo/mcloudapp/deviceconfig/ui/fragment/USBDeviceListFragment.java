@@ -111,6 +111,7 @@ public class USBDeviceListFragment extends BaseFragment {
 //        usbDeviceAdapter.setAnimationEnable(true);
 //        usbDeviceAdapter.setAnimationFirstOnly(false);
         mRecyclerView.setAdapter(usbDeviceAdapter);
+        mRecyclerView.setHasFixedSize(true);
         usbDeviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
