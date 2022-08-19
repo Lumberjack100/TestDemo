@@ -143,12 +143,12 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
     private void setView() {
         mEtDownSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDownSpeed.setHint("1-120");
+        mEtDownSpeed.setHint("1-100");
         mEtBottomSafeDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtBottomSafeDistance.setHint("0-10");
 
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtMovementSpeed.setHint("1-180");
+        mEtMovementSpeed.setHint("1-100");
         mEtGoalMovementDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
         //进入页面默认自动测孔深，需要打开堵转检测
@@ -369,7 +369,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                             public void onSelect(int position, String text) {
                                 mTvMovementWay.setText(text);
                                 if (position == 0) {
-                                    ToastUtils.show("触发磁开关最大安全速度为20");
+                                    ToastUtils.show("上拉触发磁开关最大速度为 10！");
                                     movementway = "0";
                                     loadManualLastHistoryData(true);
                                 } else {
@@ -412,7 +412,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             }
             try {
                 int port = Integer.parseInt(movementSpeed);
-                if (port < 1 || port > 180) {
+                if (port < 1 || port > 100) {
                     ToastUtils.show("请输入正确的电机运动速度!");
                     mEtMovementSpeed.requestFocus();
                     return false;
@@ -450,7 +450,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             }
             try {
                 int port = Integer.parseInt(downSpeed);
-                if (port < 1 || port > 120) {
+                if (port < 1 || port > 100) {
                     ToastUtils.show("请输入正确的下放速度!");
                     mEtDownSpeed.requestFocus();
                     return false;

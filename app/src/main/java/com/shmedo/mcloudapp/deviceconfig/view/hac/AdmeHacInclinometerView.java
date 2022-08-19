@@ -261,12 +261,12 @@ public class AdmeHacInclinometerView extends LinearLayout {
         correctionValue = admeInclinometerInfo.getInterupdate().trim();
 
         try {
-            if (lowPowerMode.equals("NullKey")) {
-                lowPowerModeLayout.setVisibility(View.GONE);
-            } else {
-                mTvLowPowerMode.setText(lowPowerMode.equals("0") ? powerModes[0] : powerModes[1]);
-            }
-
+//            if (lowPowerMode.equals("NullKey")) {
+//                lowPowerModeLayout.setVisibility(View.GONE);
+//            } else {
+//                mTvLowPowerMode.setText(lowPowerMode.equals("0") ? powerModes[0] : powerModes[1]);
+//            }
+            mTvLowPowerMode.setText(lowPowerMode.equals("0") ? powerModes[0] : powerModes[1]);
             mEtMacAddress.setText(address);
 
             if (collectionInterval.equals("NullKey")) {

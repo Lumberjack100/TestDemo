@@ -330,7 +330,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             } else if (motionState.getMotorinfo().equals("2") || motionState.getMotorinfo().equals("3")) {//测斜仪下放、管底等待
                 verticalProgressBarView.init(motionState.getMeaspoint());
                 waitingTimeLayout.setVisibility(View.VISIBLE);
-                mTvWaitingTimeTitle.setText(motionState.getMotorinfo().equals("2") ? "下放结束预计" : "管底等待中，距离开始测量预计");
+                mTvWaitingTimeTitle.setText(motionState.getMotorinfo().equals("2") ? "下放结束预计" : "距离开始测量预计");
                 mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
                 mTvKindTips.setText(motionState.getMotorinfo().equals("2") ? "测斜仪下放中，请耐心等待..." : "管底等待中，请耐心等待...");
 
@@ -347,6 +347,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             } else if (motionState.getMotorinfo().equals("6")) {//测斜仪配对,读取数据
                 horizontalProgressBarView.setVisibility(View.VISIBLE);
                 verticalProgressBarView.setVisibility(View.GONE);
+                horizontalProgressBarView.setProgressDrawable(true);
                 horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
                 waitingTimeLayout.setVisibility(View.VISIBLE);
                 mTvWaitingTimeTitle.setText("数据读取结束预计");
@@ -356,6 +357,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             } else if (motionState.getMotorinfo().equals("7")) {//数据上传
                 horizontalProgressBarView.setVisibility(View.VISIBLE);
                 verticalProgressBarView.setVisibility(View.GONE);
+                horizontalProgressBarView.setProgressDrawable(false);
                 horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
                 mTvWaitingTimeTitle.setText("数据上传结束预计");
                 mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));

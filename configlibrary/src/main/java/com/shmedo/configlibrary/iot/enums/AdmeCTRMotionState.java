@@ -10,23 +10,23 @@ import android.text.TextUtils;
 public enum AdmeCTRMotionState {
     NOZZLE_WAITING("0", "上拉至管口", "上拉至管口"),
 
-    PAIR_SETTING_PARAM("1", "测斜仪配对,设置参数", "配对,设置参数"),
+    PAIR_SETTING_PARAM("1", "测斜仪配对,设置参数", "测斜仪配对"),
 
-    DOWN("2", "测斜仪下放", "下放"),
+    DOWN("2", "测斜仪下放", "下放中"),
 
     BOTTOM_WAITING("3", "管底等待", "管底等待"),
 
-    POINT_MEASUREMENT("4", "测点测量", "测点测量"),
+    POINT_MEASUREMENT("4", "测点测量", "测量中"),
 
-    MEASUREMENT_OVER("5", "磁开关触发,测量结束", "测量结束"),
+    MEASUREMENT_OVER("5", "磁开关触发,测量结束", "测点结束"),
 
-    READ_DATA("6", "测斜仪配对,读取数据", "读取数据"),
+    READ_DATA("6", "测斜仪配对,读取数据", "数据读取中"),
 
-    UPLOAD_DATA("7", "数据上传", "数据上传"),
+    UPLOAD_DATA("7", "数据上传", "数据上传中"),
 
-    WAITING_NEXT_TESTING("8", "数据上传完成等待下次测量", "等待下次测量"),
+    WAITING_NEXT_TESTING("8", "数据上传完成等待下次测量", "等待测量"),
 
-    WAITING_BACK_TESTING("9", "等待反测", "等待反测"),
+    WAITING_BACK_TESTING("9", "等待反测", "等待反向测量"),
 
     UNKNOWN_ERROR("-100", "未知", "未知");
 

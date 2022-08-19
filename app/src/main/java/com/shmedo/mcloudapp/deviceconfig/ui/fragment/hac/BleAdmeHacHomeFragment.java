@@ -135,7 +135,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onResume() {
         super.onResume();
         onConnectionStateChanged(isConnected());
-        if (!isFirstCreate && !isConnected()) {
+        if (!isFirstCreate && isConnected()) {
             queryMotorState();
         }
     }
@@ -425,7 +425,11 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         if (ctrMotionState == AdmeCTRMotionState.UNKNOWN_ERROR)
             return;
 
-        mTvMotionState.setText("运行状态：" + ctrMotionState.getSimpleInfo());
+        mTvMotionState.setText(String.format("运行状态：%s", ctrMotionState.getSimpleInfo()));
+        if(ctrMotionState.getCode().equals("8")||ctrMotionState.getCode().equals("9"))
+            admeViewModel.deviceMode = 0;
+        else
+            admeViewModel.deviceMode = 1;
     }
 
     @Override
@@ -465,6 +469,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @Override
     public void onDestroy() {
+        admeViewModel.deviceMode = 0;
         MCloudApp.setCurDeviceToken(null);
         MCloudApp.setProductID(-1);
         clearDevice();
