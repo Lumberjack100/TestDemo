@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Spannable;
@@ -344,6 +346,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             } else if (motionState.getMotorinfo().equals("5")) {//磁开关触发,测量结束
                 verticalProgressBarView.setLastProgress();
                 mTvKindTips.setText("测量结束，等待读取数据...");
+
             } else if (motionState.getMotorinfo().equals("6")) {//测斜仪配对,读取数据
                 horizontalProgressBarView.setVisibility(View.VISIBLE);
                 verticalProgressBarView.setVisibility(View.GONE);
@@ -354,21 +357,22 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
                 mTvKindTips.setText("数据读取中，请耐心等待...");
                 btnAction.setVisibility(View.INVISIBLE);
+
             } else if (motionState.getMotorinfo().equals("7")) {//数据上传
                 horizontalProgressBarView.setVisibility(View.VISIBLE);
                 verticalProgressBarView.setVisibility(View.GONE);
                 horizontalProgressBarView.setProgressDrawable(false);
                 horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
-                mTvWaitingTimeTitle.setText("数据上传结束预计");
-                mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
                 mTvKindTips.setText("数据上传中，请耐心等待...");
                 btnAction.setVisibility(View.INVISIBLE);
+
             } else if (motionState.getMotorinfo().equals("8") || motionState.getMotorinfo().equals("9")) {//
                 stopQueryMotorStateProgress();
 
                 horizontalProgressBarView.setVisibility(View.VISIBLE);
                 verticalProgressBarView.setVisibility(View.GONE);
-                horizontalProgressBarView.setLastProgress();
+                horizontalProgressBarView.setProgressDrawable(false);
+                horizontalProgressBarView.setMaxProgress();
                 mTvKindTips.setText("测量完成");
                 btnAction.setVisibility(View.VISIBLE);
                 btnAction.setText("下一步");
@@ -382,13 +386,13 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     }
 
     private String getMinTime() {
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        DecimalFormat decimalFormat = new DecimalFormat("#");
 
         if (TextUtils.isEmpty(motionState.getWaittime()))
             return "--";
         try {
             int second = Integer.parseInt(motionState.getWaittime());
-            float min = (float) second / 60;
+            float min = (float) second / 60 + 1;
 
             return decimalFormat.format(min);
         } catch (Exception exception) {
@@ -455,6 +459,18 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    private void setResult() {
+        Intent intent = new Intent();
+        intent.putExtra(AppContants.Extras.MOTOR_INFO, motionState == null ? "8" : motionState.getMotorinfo());
+        mActivity.setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        setResult();
+        return false;
     }
 
 }

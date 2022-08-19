@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.InputFilter;
@@ -11,6 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
@@ -95,8 +101,33 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
+    private ActivityResultLauncher<Intent> resultLauncher;
+
     public static BleAdmeHacMeasuringDataFragment newInstance() {
         return new BleAdmeHacMeasuringDataFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent intent = result.getData();
+                            String motorinfo = intent.getStringExtra(AppContants.Extras.MOTOR_INFO);
+                            if (TextUtils.isEmpty(motorinfo))
+                                return;
+
+                            if (!motionState.getMotorinfo().equals("8") && !motionState.getMotorinfo().equals("9"))
+                                mBtnRun.setEnabled(false);
+                            else
+                                mBtnRun.setEnabled(true);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -326,7 +357,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
             }
             break;
         }
@@ -413,7 +444,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
          */
         if (equipmodel.equals("1")) {//表示在测量 然后根据 motorinfo 控制跳转页面
             if (!motionState.getMotorinfo().equals("8") && !motionState.getMotorinfo().equals("9")) {
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
             } else {
                 mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
             }

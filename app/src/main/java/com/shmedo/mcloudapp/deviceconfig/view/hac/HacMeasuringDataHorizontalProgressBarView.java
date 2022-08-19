@@ -77,7 +77,7 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
         }
     }
 
-    public void setLastProgress() {
+    public void setMaxProgress() {
         horizontalBar.setProgress(horizontalBar.getMax(), true);
     }
 
