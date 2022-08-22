@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.activity.result.ActivityResult;
@@ -111,7 +112,9 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         initSensorAdapter();
         sensorIndex = 0;
         sensorHashMap.clear();
+        int size = sensorItemList.size();
         sensorItemList.clear();
+        sensorAdapter.notifyItemRangeRemoved(0, size);
         showWaitDialog("处理中...");
         queryTerminalAisleParamInfo();
     }
@@ -126,6 +129,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
                 holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
+                holder.setText(R.id.tv_address, TextUtils.isEmpty(sensorItem.getChannel()) ? "" : sensorItem.getChannel());
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

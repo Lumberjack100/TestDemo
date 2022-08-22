@@ -55,6 +55,9 @@ import timber.log.Timber;
 public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommunicateFragment {
     protected static final String HOLE_DEPTH = "hole_depth";
 
+    @BindView(R.id.tv_measure_mode)
+    TextView mTvMeasureMode; //测量模式
+
     @BindView(R.id.verticalProgressBarView)
     HacMeasuringDataVerticalProgressBarView verticalProgressBarView;
 
@@ -95,6 +98,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
     private final QueryMotorStateHandler queryMotorStateHandler = new QueryMotorStateHandler(this);
     private boolean isStopQuery = false;
+    private boolean isFirstShowError = true;//是否第一次弹出异常信息框，当前页面生命周期内只谈出一次
 
     private static final class QueryMotorStateHandler extends WeakHandler<BleAdmeHacMeasuringDataProcedureFragment> {
         private QueryMotorStateHandler(BleAdmeHacMeasuringDataProcedureFragment fragment) {
@@ -237,6 +241,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 showStopWarnDialog();
 
             } else if (btnAction.getText().toString().equals("下一步")) {
+                setResult();
                 if (motionState.getMotorinfo().equals("8")) {//等待下次测量,进入测量结果展示页面
                     AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
                     mActivity.finish();
@@ -299,9 +304,11 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         if (motionState == null) {
             return;
         }
+        mTvMeasureMode.setText(motionState.getMeasmode().equals("0") ? "正向测量" : "反向测量");
+
         //异常时，停止轮询电机运动状态，展示异常原因
-        if (!motionState.getAbndiasis().equals("0")) {//表示异常
-            stopQueryMotorStateProgress();
+        if (!motionState.getAbndiasis().equals("0") && isFirstShowError) {//表示异常
+            isFirstShowError = false;
             showErrorProtectionTip(motionState.getAbndiasis());
         }
         try {

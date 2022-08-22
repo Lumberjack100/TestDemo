@@ -125,10 +125,17 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                                 mBtnRun.setEnabled(false);
                             else
                                 mBtnRun.setEnabled(true);
+
+                            if (mSbSingleWayTestEnable.isChecked()) {
+                                mBtnRun.setText("正向测量");
+                            } else {
+                                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+                            }
                         }
                     }
                 });
     }
+
 
     @Override
     protected int getLayoutId() {

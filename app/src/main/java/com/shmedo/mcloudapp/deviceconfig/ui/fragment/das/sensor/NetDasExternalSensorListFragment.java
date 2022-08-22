@@ -115,15 +115,20 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                             String sensorAddress = sensorInfo.getAddr();
                             if (isEnableNewSensor) {
                                 sensorHashMap.put(sensorAddress, sensorInfo);
-                                sensorItemList.remove(sensorItemList.size() - 1);
+                                int removeIndex = sensorItemList.size() - 1;
+                                sensorItemList.remove(removeIndex);
+                                sensorAdapter.notifyItemRemoved(removeIndex);
+
                                 DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorAddress);
                                 sensorItem.setVibratingWireSensor(isVibratingWireSensor);
                                 sensorItemList.add(sensorItem);
+                                sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
+
                                 if (sensorItemList.size() < 8) {
                                     sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
                                     sensorItemList.add(sensorItem);
+                                    sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
                                 }
-                                sensorAdapter.notifyItemRangeChanged(sensorItemList.size() - 2, 21);
                                 if (sensorItemList.size() > 1) {
                                     mBtnSave.setEnabled(true);
                                 }
@@ -151,7 +156,6 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         //是否在刷新的时候禁止内容的一切手势操作（默认false）
         mRefreshLayout.setDisableContentWhenRefresh(true);
         mRefreshLayout.autoRefresh();
-        initDefaultSensorItem();
     }
 
     private void initExtendSensorAdapter() {
@@ -242,16 +246,16 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     private void clear() {
         accessSum = 0;
         sensorIndex = 0;
-        sensorItemList.clear();
         curSensorItem = null;
         sensorHashMap.clear();
-        addressList.clear();
     }
 
     private void initRefreshLayout() {
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                clear();
+                initDefaultSensorItem();
                 queryCollectorInfo();
             }
         });
@@ -489,7 +493,6 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                     ToastUtils.show(errMsg);
                     return;
                 }
-                clear();
                 collectorInfo = commandResult.getResult();
                 initCollectorInfo();
             }
@@ -582,7 +585,13 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 sensorHashMap.remove(address);
                 sensorItemList.remove(curItemPosition);
                 sensorAdapter.notifyItemRemoved(curItemPosition);
-                if (sensorItemList.size() <= 1) {
+                DASSensorItem lastItem = sensorItemList.get(sensorItemList.size() - 1);
+                if (sensorItemList.size() < 8 && !lastItem.isAddButton()) {
+                    DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
+                    sensorItemList.add(sensorItem);
+                    sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
+                }
+                if (sensorItemList.size() <= 2) {
                     mBtnSave.setEnabled(false);
                 }
             }
@@ -622,11 +631,8 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(true);
             }
-            initDefaultSensorItem();
             return;
         }
-        sensorIndex = 0;
-        sensorItemList.clear();
         queryExtendSensorConfigInfo();
     }
 
@@ -651,10 +657,13 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     }
 
     private void initDefaultSensorItem() {
+        int size = sensorItemList.size();
         sensorItemList.clear();
+        sensorAdapter.notifyItemRangeRemoved(0, size);
+
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
         sensorItemList.add(sensorItem);
-        sensorAdapter.notifyDataSetChanged();
+        sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
 
         mBtnSave.setEnabled(false);
     }
@@ -668,6 +677,11 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         if (sensorInfo == null)
             return;
 
+        if (sensorIndex == 0) {
+            int size = sensorItemList.size();
+            sensorItemList.clear();
+            sensorAdapter.notifyItemRangeRemoved(0, size);
+        }
         sensorHashMap.put(sensorInfo.getAddr(), sensorInfo);
 
         DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorInfo.getAddr());

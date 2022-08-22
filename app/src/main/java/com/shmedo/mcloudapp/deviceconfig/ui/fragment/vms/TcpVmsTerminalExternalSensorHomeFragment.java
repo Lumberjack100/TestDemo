@@ -107,7 +107,9 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
         initSensorAdapter();
         sensorIndex = 0;
         sensorHashMap.clear();
+        int size = sensorItemList.size();
         sensorItemList.clear();
+        sensorAdapter.notifyItemRangeRemoved(0, size);
         queryTerminalAisleParamInfo();
     }
 

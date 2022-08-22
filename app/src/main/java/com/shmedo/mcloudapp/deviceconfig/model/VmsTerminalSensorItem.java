@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.model;
 
+import android.text.TextUtils;
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  11/23/20 <br/>
@@ -11,7 +13,7 @@ public class VmsTerminalSensorItem {
     private boolean isInsert = false;//接入判断，0：未接入，1：接入
 
     public String getChannel() {
-        return channel;
+        return TextUtils.isEmpty(channel) ? "" : channel;
     }
 
     public void setChannel(String channel) {

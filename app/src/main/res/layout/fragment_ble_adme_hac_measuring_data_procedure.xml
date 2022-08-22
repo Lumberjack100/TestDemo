@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -10,6 +11,15 @@
         android:background="@color/white"
         android:gravity="center_horizontal"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_measure_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="正向测量"
+            android:textColor="@color/colorPrimary"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
 
         <com.shmedo.mcloudapp.deviceconfig.view.hac.HacMeasuringDataVerticalProgressBarView
             android:id="@+id/verticalProgressBarView"

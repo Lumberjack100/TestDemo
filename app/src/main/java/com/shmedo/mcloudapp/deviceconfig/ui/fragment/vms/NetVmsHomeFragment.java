@@ -108,7 +108,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
     private VmsAisleListFragment vmsAisleListFragment;
     private NetVmsTerminalListFragment vmsTerminalListFragment;
-    public DeviceInfo deviceInfo;
     private VmsViewModel vmsViewModel;
     private VmsBasicInfo vmsBasicInfo;
     private VmsAisleInfo vmsAisleInfo1, vmsAisleInfo2;

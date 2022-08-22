@@ -52,7 +52,9 @@ public class VmsAisleListFragment extends BaseFragment {
     }
 
     public void clearAisleListInfo() {
+        int size = vmsAisleInfoList.size();
         vmsAisleInfoList.clear();
+        vmsAisleAdapter.notifyItemRangeRemoved(0, size);
     }
 
     public void updateAisleListInfo(VmsAisleInfo vmsAisleInfo) {
