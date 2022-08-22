@@ -129,7 +129,13 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                             if (mSbSingleWayTestEnable.isChecked()) {
                                 mBtnRun.setText("正向测量");
                             } else {
-                                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+                                //当 measmode =1，表示反测，需要判断反测是否完成，完成显示正测，否则还是反测
+                                if (motionState.getMeasmode().equals("1")) {
+                                    mBtnRun.setText(motionState.getMotorinfo().equals("7") || motionState.getMotorinfo().equals("8") ? "正向测量" : "反向测量");
+                                } else {
+                                    //当 measmode =0，表示正测，需要判断正测是否完成，完成显示反测，否则还是正测
+                                    mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+                                }
                             }
                         }
                     }
@@ -450,18 +456,20 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
          1.3 equipmodel =2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
          */
         if (equipmodel.equals("1")) {//表示在测量 然后根据 motorinfo 控制跳转页面
-            if (!motionState.getMotorinfo().equals("8") && !motionState.getMotorinfo().equals("9")) {
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
-            } else {
-                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
-            }
+            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
             return;
         }
         //停止或异常状态下,判断是否单测模式，单测模式下显示正向测量；正反测模式下，根据 motorinfo 处理操作按钮
         if (mSbSingleWayTestEnable.isChecked()) {
             mBtnRun.setText("正向测量");
         } else {
-            mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+            //当 measmode =1，表示反测，需要判断反测是否完成，完成显示正测，否则还是反测
+            if (motionState.getMeasmode().equals("1")) {
+                mBtnRun.setText(motionState.getMotorinfo().equals("7") || motionState.getMotorinfo().equals("8") ? "正向测量" : "反向测量");
+            } else {
+                //当 measmode =0，表示正测，需要判断反测是否完成，完成显示反测，否则还是正测
+                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+            }
         }
         if (equipmodel.equals("2") && !motionState.getAbndiasis().equals("0")) {//表示异常，展示异常原因
             showErrorProtectionTip(motionState.getAbndiasis());
