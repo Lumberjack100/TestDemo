@@ -455,8 +455,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 .setAudioAttributes(audioAttrs)
                 .build();
 
-        voiceMeasureFail = soundPool.load(this, R.raw.measure_fail, 1);
-        voiceMeasureSuccess = soundPool.load(this, R.raw.measure_success, 1);
+        voiceMeasureFail = soundPool.load(getContext(), R.raw.measure_fail, 1);
+        voiceMeasureSuccess = soundPool.load(getContext(), R.raw.measure_success, 1);
     }
 
     private String getMinTime() {
