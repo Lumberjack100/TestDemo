@@ -118,4 +118,17 @@ public class HacMotionState implements Parcelable {
     public void setDriveinputv(String driveinputv) {
         this.driveinputv = driveinputv;
     }
+
+    @Override
+    public String toString() {
+        return "HacMotionState{" +
+                "abndiasis='" + abndiasis + '\'' +
+                ", measmode='" + measmode + '\'' +
+                ", motorinfo='" + motorinfo + '\'' +
+                ", measpoint='" + measpoint + '\'' +
+                ", waittime='" + waittime + '\'' +
+                ", incvoltage='" + incvoltage + '\'' +
+                ", driveinputv='" + driveinputv + '\'' +
+                '}';
+    }
 }

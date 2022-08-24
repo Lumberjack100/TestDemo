@@ -10,23 +10,46 @@
     android:paddingEnd="@dimen/dimen_size_16">
 
     <TextView
-        android:id="@+id/tv_kind_tips"
+        android:id="@+id/tv_measure_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="正向测量中"
-        android:textColor="@color/app_color_theme_1"
-        android:textSize="15sp" />
+        tools:text="正向测量"
+        android:textColor="@color/text_color_51B4F8"
+        android:textSize="17sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dimen_size_10"
-        android:layout_marginBottom="@dimen/dimen_size_5"
+        android:layout_marginBottom="@dimen/dimen_size_10"
         android:background="@color/divider_line_bg_efefef" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备运行状态:"
+            android:textColor="@color/title_text_color"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_motorinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_size_10"
+            android:textColor="@color/orange_FF7502"
+            android:textSize="14sp"
+            tools:text="下放运动" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -48,7 +71,7 @@
                 android:id="@+id/tv_inclinometer_battery_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:text="测斜仪电量"
                 android:textColor="@color/title_text_color"
                 android:textSize="14sp" />
@@ -75,7 +98,7 @@
                 android:id="@+id/tv_device_battery_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:text="设备电量"
                 android:textColor="@color/title_text_color"
                 android:textSize="14sp" />
@@ -103,35 +126,12 @@
                 android:id="@+id/tv_waiting_time_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:text="测量结束倒计时"
                 android:textColor="@color/title_text_color"
                 android:textSize="14sp" />
 
         </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设备运行状态:"
-            android:textColor="@color/title_text_color"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_motorinfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimen_size_10"
-            android:textColor="@color/title_text_color"
-            android:textSize="14sp"
-            tools:text="下放运动" />
 
     </LinearLayout>
 

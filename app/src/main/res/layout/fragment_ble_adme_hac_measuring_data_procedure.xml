@@ -12,20 +12,10 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_measure_mode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="正向测量"
-            android:textColor="@color/colorPrimary"
-            android:textSize="17sp"
-            android:textStyle="bold"/>
-
         <com.shmedo.mcloudapp.deviceconfig.view.hac.HacMeasuringDataVerticalProgressBarView
             android:id="@+id/verticalProgressBarView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:visibility="visible" />
 
@@ -33,8 +23,8 @@
             android:id="@+id/horizontalProgressBarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
             android:visibility="gone" />
 
         <include layout="@layout/measuring_data_procedure_bottom" />

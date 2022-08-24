@@ -28,6 +28,8 @@ public enum AdmeCTRMotionState {
 
     WAITING_BACK_TESTING("9", "等待反测", "等待反向测量"),
 
+    FAILED("10", "测量失败", "测量失败"),
+
     UNKNOWN_ERROR("-100", "未知", "未知");
 
 

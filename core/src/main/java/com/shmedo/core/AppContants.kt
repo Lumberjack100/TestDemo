@@ -67,8 +67,8 @@ interface AppContants {
             const val USB_BAUD_RATE = "usb_baud_rate"
             const val USB_DEVICE_ID = "usb_device_id"
 
-            //ADME 电机运动信息
-            const val MOTOR_INFO = "motor_info"
+            //ADME 电机运动 状态信息
+            const val MOTOR_STATE = "motor_state"
 
             //蓝牙测斜仪测量间距
             const val INCLINOMETER_MEASURINGSPACING = "inclinometer_measuringSpacing"

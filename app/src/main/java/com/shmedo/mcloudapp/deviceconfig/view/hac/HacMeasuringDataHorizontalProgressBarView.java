@@ -81,6 +81,7 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
         horizontalBar.setProgress(horizontalBar.getMax(), true);
     }
 
+
     public void setProgressDrawable(boolean isReadData) {
         horizontalBar.setProgressDrawable(isReadData ? ResourceUtils.getDrawable(R.drawable.custom_progress_horizontal) : ResourceUtils.getDrawable(R.drawable.custom_progress_horizontal2));
     }
