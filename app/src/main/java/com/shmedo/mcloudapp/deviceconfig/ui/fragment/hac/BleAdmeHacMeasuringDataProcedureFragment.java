@@ -4,6 +4,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Spannable;
@@ -89,7 +92,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @BindView(R.id.ll_waiting_time)
     View waitingTimeLayout; //
 
-
     private CustomDialog customDialog;
 
     private HacMotionState motionState;
@@ -100,6 +102,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     private final QueryMotorStateHandler queryMotorStateHandler = new QueryMotorStateHandler(this);
     private boolean isStopQuery = false;
     private boolean isFirstComing = true;
+
+    private SoundPool soundPool;
+    private int voiceMeasureFail, voiceMeasureSuccess;
 
     private static final class QueryMotorStateHandler extends WeakHandler<BleAdmeHacMeasuringDataProcedureFragment> {
         private QueryMotorStateHandler(BleAdmeHacMeasuringDataProcedureFragment fragment) {
@@ -159,6 +164,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         if (getArguments() != null && getArguments().containsKey(HOLE_DEPTH)) {
             holeDepth = getArguments().getString(HOLE_DEPTH);
         }
+        initSoundPool();
     }
 
     @Override
@@ -396,7 +402,10 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                     btnAction.setVisibility(View.VISIBLE);
                     btnAction.setText("下一步");
                     btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
-                    VibrateUtils.vibrate(100);
+//                    VibrateUtils.vibrate(100);
+                    if(voiceMeasureSuccess != 0) {
+                        soundPool.play(voiceMeasureSuccess, 1.0f, 1.0f, 1, 0, 1.0f);
+                    }
                     loadButtonAnimator();
                     break;
 
@@ -406,7 +415,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                     btnAction.setVisibility(View.VISIBLE);
                     btnAction.setText("下一步");
                     btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
-                    VibrateUtils.vibrate(100);
+                    if(voiceMeasureFail != 0) {
+                        soundPool.play(voiceMeasureFail, 1.0f, 1.0f, 1, 0, 1.0f);
+                    }
                     loadButtonAnimator();
                     break;
             }
@@ -419,11 +430,33 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     private void loadButtonAnimator(){
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(btnAction, "scaleX", 0.6f, 1f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(btnAction, "scaleY", 0.6f, 1f);
+        scaleX.setRepeatCount(1);
+        scaleY.setRepeatCount(1);
+
         AnimatorSet animSet = new AnimatorSet();
         animSet.play(scaleX).with(scaleY);
-        animSet.setDuration(1000);
+        animSet.setDuration(600);
         animSet.setInterpolator(new BounceInterpolator());
         animSet.start();
+    }
+
+    /**
+     * 测量完成或失败后播放的提示音初始化
+     */
+    private void initSoundPool() {
+        //AudioAttributes是一个封装音频各种属性的方法
+        AudioAttributes audioAttrs = new AudioAttributes.Builder()
+                .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(1)
+                .setAudioAttributes(audioAttrs)
+                .build();
+
+        voiceMeasureFail = soundPool.load(this, R.raw.measure_fail, 1);
+        voiceMeasureSuccess = soundPool.load(this, R.raw.measure_success, 1);
     }
 
     private String getMinTime() {
