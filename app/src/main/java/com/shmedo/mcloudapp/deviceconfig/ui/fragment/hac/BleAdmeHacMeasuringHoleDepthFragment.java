@@ -163,6 +163,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         mTvMovementWay.setText("上拉");
         movementway = "0";
 
+        mEtHoleNum.setDatas(holeNumList);
         mEtHoleNum.addTextChangedListener(this);
         mEtHoleNum.setOnPopupItemClickListener(new KMPAutoComplTextView.OnPopupItemClickListener() {
             @Override
