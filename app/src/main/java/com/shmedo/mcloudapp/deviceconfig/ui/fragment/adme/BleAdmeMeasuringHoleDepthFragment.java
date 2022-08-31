@@ -210,6 +210,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      * ADME的电机运动堵转检测使能
      */
     private void setLockRotorInfo(boolean isChecked) {
+        if (lockedRotorDetectionInfo == null)
+            return;
         AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
         entity.setLowtbtss(isChecked ? "1" : "0");
         entity.setNumpput(lockedRotorDetectionInfo.getNumpput());
