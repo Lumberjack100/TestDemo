@@ -154,6 +154,7 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
             }
         });
         mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     @OnClick({R.id.iv_back, R.id.tv_search})

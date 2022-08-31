@@ -108,7 +108,6 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
 
     private VmsAisleListFragment vmsAisleListFragment;
     private NetVmsTerminalListFragment vmsTerminalListFragment;
-    public DeviceInfo deviceInfo;
     private VmsViewModel vmsViewModel;
     private VmsBasicInfo vmsBasicInfo;
     private VmsAisleInfo vmsAisleInfo1, vmsAisleInfo2;
@@ -154,7 +153,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 if (position == 0) {
                     View tabView = LayoutInflater.from(mActivity).inflate(R.layout.custom_tab_text, null);
                     TextView textView = tabView.findViewById(R.id.tabText);
-                    textView.setText("通道(0)");
+                    textView.setText("通道(3)");
                     textView.setTextColor(ContextCompat.getColor(mActivity, R.color.title_text_color));
                     textView.setTextSize(18);
                     tab.setCustomView(textView);

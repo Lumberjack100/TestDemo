@@ -177,7 +177,7 @@ public class BleAdmeHacThresholdConfigFragment extends BaseUSRBleIotCommunicateF
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "保存电压阈值参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    ToastUtils.show(cmdResult.getReason().contains("equimodel_err") ? "设备模式错误，无法配置参数" : errMsg);
                     return;
                 }
             }

@@ -99,6 +99,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
             }
         };
         mRecyclerView.setAdapter(cmdAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**
@@ -181,7 +182,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
 //            btnSend.setEnabled(false);
             CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
             logDataList.add(cmdLogInfo);
-            cmdAdapter.notifyDataSetChanged();
+            cmdAdapter.notifyItemInserted(logDataList.size() - 1);
             mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
             Log4a.i(TAG, String.format("发送指令==%s", command));
         }
@@ -195,7 +196,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
         sendCommand(command);
         CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
         logDataList.add(cmdLogInfo);
-        cmdAdapter.notifyDataSetChanged();
+        cmdAdapter.notifyItemInserted(logDataList.size() - 1);
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
     }
 
@@ -211,7 +212,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
 
         CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), cmdStr);
         logDataList.add(cmdLogInfo);
-        cmdAdapter.notifyDataSetChanged();
+        cmdAdapter.notifyItemInserted(logDataList.size() - 1);
         mRecyclerView.scrollToPosition(cmdAdapter.getItemCount() - 1);
     }
 

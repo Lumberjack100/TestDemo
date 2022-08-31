@@ -184,7 +184,8 @@ public class KMPAutoComplTextView extends androidx.appcompat.widget.AppCompatAut
         public KMPAdapter(Context context, List<String> list) {
             mContext = context;
             mList = new ArrayList<String>();
-            mList.addAll(list);
+            if (list != null && !list.isEmpty())
+                mList.addAll(list);
         }
 
         @Override

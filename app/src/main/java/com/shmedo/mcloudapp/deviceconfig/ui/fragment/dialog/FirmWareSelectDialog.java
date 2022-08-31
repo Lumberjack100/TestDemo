@@ -63,7 +63,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
 
     private List<FirmWareInfo> firmWareInfoList = new ArrayList<>();
     private FirmWareInfo firmWareInfo = null;
-
+    private int lastCheckedId = -1;
     private static final int PAGE_SIZE = 10;
     private PageInfo pageInfo;
     private int productID = -1;
@@ -97,6 +97,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("固件升级");
+        firmWareInfoList.clear();
         pageInfo = new PageInfo(1);
         initAdapter();
         initLoadMore();
@@ -112,15 +113,25 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
         adpter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                firmWareInfo = firmWareInfoList.get(position);
-                if (firmWareInfo.isChecked()) {
+                if (firmWareInfoList.get(position).isChecked()) {
                     return;
                 }
-                for (FirmWareInfo info : firmWareInfoList) {
-                    info.setChecked(false);
+                //清除上一次选中项目的状态
+                if (lastCheckedId != -1) {
+                    for (int i = 0; i < firmWareInfoList.size(); i++) {
+                        FirmWareInfo info = firmWareInfoList.get(i);
+                        if (info.getId() == lastCheckedId) {
+                            info.setChecked(false);
+                            adpter.notifyItemChanged(i);
+                            break;
+                        }
+                    }
                 }
+                firmWareInfo = firmWareInfoList.get(position);
+                lastCheckedId = firmWareInfo.getId();
+                //更新新选中项目的状态
                 firmWareInfo.setChecked(true);
-                adpter.notifyDataSetChanged();
+                adpter.notifyItemChanged(position);
             }
         });
         adpter.setOnItemChildClickListener(new OnItemChildClickListener() {
@@ -131,6 +142,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
             }
         });
         mRecyclerView.setAdapter(adpter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**
@@ -239,22 +251,7 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                                     }
                                     return;
                                 }
-
-                                if (pageInfo.isFirstPage()) {
-                                    //如果是加载的第一页数据，用setNew
-                                    firmWareInfoList.clear();
-                                }
-                                firmWareInfoList.addAll(data.getCurrentPageData());
-                                adpter.notifyDataSetChanged();
-                                if (data.getCurrentPageData().size() < PAGE_SIZE) {
-                                    //如果不够一页,显示没有更多数据布局
-                                    adpter.getLoadMoreModule().loadMoreEnd();
-                                } else {
-                                    adpter.getLoadMoreModule().loadMoreComplete();
-                                }
-                                // page加一
-                                pageInfo.nextPage();
-
+                                processDatas(data.getCurrentPageData());
                             } else {
                                 adpter.getLoadMoreModule().loadMoreFail();
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
@@ -271,6 +268,19 @@ public class FirmWareSelectDialog extends BaseDialogFragment {
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
+    }
+
+    private void processDatas(List<FirmWareInfo> tempList) {
+        firmWareInfoList.addAll(tempList);
+        adpter.notifyItemRangeInserted(firmWareInfoList.size() - tempList.size(), tempList.size());
+        if (tempList.size() < PAGE_SIZE) {
+            //如果不够一页,显示没有更多数据布局
+            adpter.getLoadMoreModule().loadMoreEnd();
+        } else {
+            adpter.getLoadMoreModule().loadMoreComplete();
+        }
+        // page加一
+        pageInfo.nextPage();
     }
 
     public void setDialogFragmentClickListener(DialogFragmentClickListener listener) {

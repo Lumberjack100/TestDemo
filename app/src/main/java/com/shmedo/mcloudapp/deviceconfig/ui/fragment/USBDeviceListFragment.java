@@ -81,6 +81,7 @@ public class USBDeviceListFragment extends BaseFragment {
                 usbDeviceItemList.clear();
                 usbDeviceAdapter.setList(usbDeviceItemList);
                 usbDeviceAdapter.setEmptyView(R.layout.empty_usb_device);
+                usbDeviceAdapter.notifyDataSetChanged();
             }
         }
     };
@@ -110,6 +111,7 @@ public class USBDeviceListFragment extends BaseFragment {
 //        usbDeviceAdapter.setAnimationEnable(true);
 //        usbDeviceAdapter.setAnimationFirstOnly(false);
         mRecyclerView.setAdapter(usbDeviceAdapter);
+        mRecyclerView.setHasFixedSize(true);
         usbDeviceAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
@@ -160,6 +162,7 @@ public class USBDeviceListFragment extends BaseFragment {
         usbDeviceAdapter.setList(usbDeviceItemList);
         if (usbDeviceItemList.size() == 0) {
             usbDeviceAdapter.setEmptyView(R.layout.empty_usb_device);
+            usbDeviceAdapter.notifyDataSetChanged();
         }
     }
 

@@ -226,7 +226,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         initTimeAdapter(context);
         AdmeTimeItem item = new AdmeTimeItem(null, true);
         admeTimeItemList.add(item);
-        admeTimeAdapter.notifyDataSetChanged();
+        admeTimeAdapter.notifyItemInserted(admeTimeItemList.size() - 1);
     }
 
     private void initView() {
@@ -247,7 +247,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtIntervalCompensation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtIntervalFitting.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtPointOffset.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        
+
         mTvMeasureMethod.setText("实时测量");
         measureMethodOld = "0";
 
@@ -495,8 +495,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 mEtWaitingIntervalPerRound.requestFocus();
                 return false;
             }
-        }
-        else {
+        } else {
 //            waitingIntervalPerRound = null;
         }
 

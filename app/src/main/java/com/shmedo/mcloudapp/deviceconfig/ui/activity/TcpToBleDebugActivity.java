@@ -186,6 +186,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         commonLogAdapter = new CommonLogAdapter(logInfoList);
         mRecyclerView.setAdapter(commonLogAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     /**
@@ -277,11 +278,10 @@ public class TcpToBleDebugActivity extends BaseActivity {
                         } else if (text.equals("打开debug模式")) {
                             handleReceiveMsgFromTCPServer("##2261\r\n");
                             handleReceiveMsgFromTCPServer("##0062\r\n");
-                        }else if (text.equals("打开info模式")) {
+                        } else if (text.equals("打开info模式")) {
                             handleReceiveMsgFromTCPServer("##2261\r\n");
                             handleReceiveMsgFromTCPServer("##0063\r\n");
-                        }
-                        else if (text.equals("测试")) {
+                        } else if (text.equals("测试")) {
                             handleReceiveMsgFromTCPServer("##000\r\n");
                         }
                         return false;
@@ -319,7 +319,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
     private void printLog(String msg, int color) {
         CommonLogInfo commonLogInfo = new CommonLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), msg, color);
         logInfoList.add(commonLogInfo);
-        commonLogAdapter.notifyDataSetChanged();
+        commonLogAdapter.notifyItemInserted(logInfoList.size() - 1);
         mRecyclerView.scrollToPosition(commonLogAdapter.getItemCount() - 1);
     }
 

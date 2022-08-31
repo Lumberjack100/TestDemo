@@ -109,6 +109,7 @@ public class AdmeAdvancedModuleConfigFragment extends BaseFragment {
             }
         });
         mRecyclerView.setAdapter(moduleAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     private void processItemClick() {

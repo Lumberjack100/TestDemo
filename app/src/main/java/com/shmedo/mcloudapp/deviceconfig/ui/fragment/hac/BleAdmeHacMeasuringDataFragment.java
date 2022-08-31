@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.InputFilter;
@@ -11,6 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
@@ -88,16 +94,60 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
 
     private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
 
-    private HacMotionState motionState;
     private HacMeasuringDataInfo measuringDataInfo;
     private final List<HacHoleAreaDepthInfo> holeAreaDepthInfoArrayList = new ArrayList<>();
     private List<String> holeNumList = new ArrayList<>();
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
+    private ActivityResultLauncher<Intent> resultLauncher;
+
     public static BleAdmeHacMeasuringDataFragment newInstance() {
         return new BleAdmeHacMeasuringDataFragment();
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent intent = result.getData();
+                            HacMotionState motionState = intent.getParcelableExtra(AppContants.Extras.MOTOR_STATE);
+                            if (motionState == null)
+                                return;
+
+                            Timber.d("onActivityResult %s", motionState.toString());
+                            if (motionState.getMotorinfo().equals("8") || motionState.getMotorinfo().equals("9") || motionState.getMotorinfo().equals("10")) {
+                                mBtnRun.setEnabled(true);
+                            } else
+                                mBtnRun.setEnabled(false);
+
+                            if (mSbSingleWayTestEnable.isChecked() || motionState.getMotorinfo().equals("8")) {
+                                mBtnRun.setText("正向测量");
+                                return;
+                            }
+//                            if (motionState.getMotorinfo().equals("9")) {
+//                                mBtnRun.setText("反向测量");
+//                                return;
+//                            }
+                            mBtnRun.setText(motionState.getMeasmode().equals("1") ? "反向测量" : "正向测量");
+
+                            //测量失败，继续此测量
+//                            if (motionState.getMotorinfo().equals("10")) {
+//                                mBtnRun.setText(motionState.getMeasmode().equals("1") ? "反向测量" : "正向测量");
+//                            } else {
+//                                //当 measmode =0，表示正测，需要判断正测是否完成，完成显示反测，否则还是正测
+//                                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+//                            }
+                        }
+                    }
+                });
+    }
+
 
     @Override
     protected int getLayoutId() {
@@ -311,8 +361,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
-                motionState = commandResult.getResult();
-                initMotionState();
+                initMotionState(commandResult.getResult());
                 sendCommandFromCmdList();
             }
             break;
@@ -326,7 +375,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
             }
             break;
         }
@@ -343,17 +392,14 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
         }
         try {
             equipmodel = measuringDataInfo.getEquipmodel();
-
             mEtMacAddress.setText(measuringDataInfo.getAddress());
             mEtDecentralizationWaitingTime.setText(measuringDataInfo.getDownwaitetime());
-
             dataSettlementMethod = measuringDataInfo.getDatatype();
             if (dataSettlementMethod.equals("0")) {
                 mTvDataSettlementMethod.setText(settlementMethods[0]);
             } else {
                 mTvDataSettlementMethod.setText(settlementMethods[1]);
             }
-
             mSbSingleWayTestEnable.setCheckedImmediatelyNoEvent(measuringDataInfo.getOnewaytest().equals("1"));
 
             holeAreaDepthInfoArrayList.clear();
@@ -396,10 +442,9 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     /**
      * 初始化电机运动状态
      */
-    private void initMotionState() {
+    private void initMotionState(HacMotionState motionState) {
         if (motionState == null) {
             Timber.e("HacMotionState is Null!");
-            motionState = new HacMotionState();
             return;
         }
         /**
@@ -412,18 +457,22 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
          1.3 equipmodel =2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
          */
         if (equipmodel.equals("1")) {//表示在测量 然后根据 motorinfo 控制跳转页面
-            if (!motionState.getMotorinfo().equals("8") && !motionState.getMotorinfo().equals("9")) {
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
-            } else {
-                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
-            }
+            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
             return;
         }
         //停止或异常状态下,判断是否单测模式，单测模式下显示正向测量；正反测模式下，根据 motorinfo 处理操作按钮
         if (mSbSingleWayTestEnable.isChecked()) {
             mBtnRun.setText("正向测量");
         } else {
-            mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+            //当 measmode =1，表示反测，需要判断反测是否完成，完成显示正测，否则还是反测
+//            if (motionState.getMeasmode().equals("1")) {
+//                mBtnRun.setText(motionState.getMotorinfo().equals("7") || motionState.getMotorinfo().equals("8") ? "正向测量" : "反向测量");
+//            } else {
+//                //当 measmode =0，表示正测，需要判断正测是否完成，完成显示反测，否则还是正测
+//                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
+//            }
+
+            mBtnRun.setText(motionState.getMeasmode().equals("1") ? "反向测量" : "正向测量");
         }
         if (equipmodel.equals("2") && !motionState.getAbndiasis().equals("0")) {//表示异常，展示异常原因
             showErrorProtectionTip(motionState.getAbndiasis());

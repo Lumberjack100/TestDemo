@@ -138,6 +138,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
             }
         });
         mRecyclerView.setAdapter(moduleAdapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     private void processItemClick() {

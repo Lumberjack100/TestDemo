@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.activity.result.ActivityResult;
@@ -105,13 +106,15 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         return R.layout.vms_terminal_sensor_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initSensorAdapter();
         sensorIndex = 0;
         sensorHashMap.clear();
+        int size = sensorItemList.size();
         sensorItemList.clear();
+        sensorAdapter.notifyItemRangeRemoved(0, size);
         showWaitDialog("处理中...");
         queryTerminalAisleParamInfo();
     }
@@ -126,6 +129,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
                 holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
+                holder.setText(R.id.tv_address, TextUtils.isEmpty(sensorItem.getChannel()) ? "" : sensorItem.getChannel());
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -270,7 +274,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
             sensorItemList.add(sensorItem);
-            sensorAdapter.notifyDataSetChanged();
+            sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
         } else {
             sensorHashMap.remove(sensorInfo.getChannel());
             sensorHashMap.put(sensorInfo.getChannel(), sensorInfo);
@@ -278,7 +282,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             VmsTerminalSensorItem sensorItem = sensorItemList.get(curSensorIndex);
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
-            sensorAdapter.notifyDataSetChanged();
+            sensorAdapter.notifyItemChanged(curSensorIndex);
         }
     }
 

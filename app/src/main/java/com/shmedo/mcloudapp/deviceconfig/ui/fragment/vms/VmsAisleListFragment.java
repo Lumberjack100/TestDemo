@@ -5,14 +5,14 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
-import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
+import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.adapter.VmsAisleAdapter;
 
 import java.util.ArrayList;
@@ -35,31 +35,30 @@ public class VmsAisleListFragment extends BaseFragment {
         return R.layout.vms_aisle_list_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initAdapter();
     }
 
     private void initAdapter() {
-        int spanCount = 1;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px( 10);//每一个矩形的间距
-        mRecyclerViewAisle.setLayoutManager(new GridLayoutManager(mActivity, spanCount));
-        //设置每个item间距
-        mRecyclerViewAisle.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerViewAisle.setLayoutManager(linearLayoutManager);
+        mRecyclerViewAisle.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(15f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.transparent)));
         vmsAisleAdapter = new VmsAisleAdapter(vmsAisleInfoList);
         vmsAisleAdapter.setAnimationEnable(false);
         vmsAisleAdapter.setAnimationFirstOnly(false);
         mRecyclerViewAisle.setAdapter(vmsAisleAdapter);
     }
 
-
     public void clearAisleListInfo() {
+        int size = vmsAisleInfoList.size();
         vmsAisleInfoList.clear();
+        vmsAisleAdapter.notifyItemRangeRemoved(0, size);
     }
 
     public void updateAisleListInfo(VmsAisleInfo vmsAisleInfo) {
         vmsAisleInfoList.add(vmsAisleInfo);
-        vmsAisleAdapter.notifyDataSetChanged();
+        vmsAisleAdapter.notifyItemInserted(vmsAisleInfoList.size() - 1);
     }
 }

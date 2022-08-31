@@ -556,7 +556,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    ToastUtils.show(cmdResult.getReason().contains("equimodel_err") ? "设备模式错误，无法配置参数" : errMsg);
                     mBtnSave.setEnabled(true);
                     return;
                 }

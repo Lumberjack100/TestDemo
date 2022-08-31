@@ -152,6 +152,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
             }
         });
         mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setHasFixedSize(true);
     }
 
     @OnClick({R.id.iv_back, R.id.tv_search})

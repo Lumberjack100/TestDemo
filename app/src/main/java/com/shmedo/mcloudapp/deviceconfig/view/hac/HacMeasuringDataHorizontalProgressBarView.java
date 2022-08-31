@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.ResourceUtils;
 import com.shmedo.mcloudapp.R;
 
 import java.text.DecimalFormat;
@@ -76,7 +77,12 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
         }
     }
 
-    public void setLastProgress() {
+    public void setMaxProgress() {
         horizontalBar.setProgress(horizontalBar.getMax(), true);
+    }
+
+
+    public void setProgressDrawable(boolean isReadData) {
+        horizontalBar.setProgressDrawable(isReadData ? ResourceUtils.getDrawable(R.drawable.custom_progress_horizontal) : ResourceUtils.getDrawable(R.drawable.custom_progress_horizontal2));
     }
 }

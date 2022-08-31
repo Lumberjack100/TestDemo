@@ -96,11 +96,11 @@ android {
             dimension "version"
             applicationId rootProject.android.applicationId
             resValue "string", "app_name", "米易通物联网"   // 设置默认的app_name
-            manifestPlaceholders = ["mapApikey"   : "61b252e0afae07eebf71fd8b519b511c",
+            manifestPlaceholders = ["mapApikey"  : "61b252e0afae07eebf71fd8b519b511c",
 //                                    "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
 //                                    "frontJSToken": "b90c635e2cc7113d03ee6a213a8e013d",
-                                    "buglyAppId"  : "09b15cd6a7",
-                                    "umengAppkey" : "6209cd80226836222738b72b"]
+                                    "buglyAppId" : "09b15cd6a7",
+                                    "umengAppkey": "6209cd80226836222738b72b"]
 
             buildConfigField "String", "Dingding_APP_ID", "\"dingoa6lbfnghbtn0xeju0\""
         }
@@ -220,6 +220,8 @@ dependencies {
 
 //    debugImplementation because LeakCanary should only run in debug builds
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+// 日志调试框架：https://github.com/getActivity/Logcat
+    debugImplementation 'com.github.getActivity:Logcat:10.6'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"
     androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"

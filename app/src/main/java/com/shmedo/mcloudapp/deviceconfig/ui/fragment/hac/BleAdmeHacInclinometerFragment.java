@@ -70,13 +70,16 @@ public class BleAdmeHacInclinometerFragment extends BaseUSRBleIotCommunicateFrag
         sendCommand(command);
     }
 
-    @OnClick({R.id.btn_confirm})
+    @OnClick({R.id.ll_low_power_mode, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
         }
         int id = view.getId();
-        if (id == R.id.btn_confirm) {
+        if (id == R.id.ll_low_power_mode) {
+            hacInclinometerView.showLowPowerModeDialog(mActivity);
+
+        } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
                 ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
@@ -130,7 +133,7 @@ public class BleAdmeHacInclinometerFragment extends BaseUSRBleIotCommunicateFrag
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     String errMsg = String.format("%s %s", "保存测斜仪参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    ToastUtils.show(cmdResult.getReason().contains("equimodel_err") ? "设备模式错误，无法配置参数" : errMsg);
                     return;
                 }
                 saveConfigInfo();

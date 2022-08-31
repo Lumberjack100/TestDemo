@@ -147,12 +147,12 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         mEtAreaNum.setHint("01-99");
 
         mEtDownSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtDownSpeed.setHint("1-120");
+        mEtDownSpeed.setHint("1-100");
         mEtBottomSafeDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtBottomSafeDistance.setHint("0-10");
 
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtMovementSpeed.setHint("1-180");
+        mEtMovementSpeed.setHint("1-100");
         mEtGoalMovementDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
 
         //默认自动测量模式
@@ -163,6 +163,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         mTvMovementWay.setText("上拉");
         movementway = "0";
 
+        mEtHoleNum.setDatas(holeNumList);
         mEtHoleNum.addTextChangedListener(this);
         mEtHoleNum.setOnPopupItemClickListener(new KMPAutoComplTextView.OnPopupItemClickListener() {
             @Override
@@ -317,7 +318,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                             public void onSelect(int position, String text) {
                                 mTvMovementWay.setText(text);
                                 if (position == 0) {
-                                    ToastUtils.show("触发磁开关最大安全速度为20");
+                                    ToastUtils.show("上拉触发磁开关最大速度为 10！");
                                     movementway = "0";
                                     loadManualLastHistoryData(true);
                                 } else {
@@ -387,8 +388,8 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                 return false;
             }
             try {
-                int port = Integer.parseInt(motorspeed);
-                if (port < 1 || port > 120) {
+                int value = Integer.parseInt(motorspeed);
+                if (value < 1 || value > 100) {
                     ToastUtils.show("请输入正确的下放速度!");
                     mEtDownSpeed.requestFocus();
                     return false;
@@ -423,8 +424,8 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                 return false;
             }
             try {
-                int port = Integer.parseInt(motorspeed);
-                if (port < 1 || port > 180) {
+                int value = Integer.parseInt(motorspeed);
+                if (value < 1 || value > 100) {
                     ToastUtils.show("请输入正确的电机速度!");
                     mEtMovementSpeed.requestFocus();
                     return false;

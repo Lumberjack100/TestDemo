@@ -551,9 +551,11 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                 switch (number) {
                     case "1": {
                         DeviceNetStatus deviceNetStatus = ResultParserUtil.getEntityObject(cmdStr);
+                        int size = dataCenterStatusInfoList.size();
                         dataCenterStatusInfoList.clear();
+                        dataCenterAdapter.notifyItemRangeRemoved(0, size);
                         dataCenterStatusInfoList.add(deviceNetStatus);
-                        dataCenterAdapter.notifyDataSetChanged();
+                        dataCenterAdapter.notifyItemInserted(dataCenterStatusInfoList.size() - 1);
                         queryDataCenter(new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt()));
                     }
                     break;
@@ -561,7 +563,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     case "2": {
                         DeviceNetStatus deviceNetStatus = ResultParserUtil.getEntityObject(cmdStr);
                         dataCenterStatusInfoList.add(deviceNetStatus);
-                        dataCenterAdapter.notifyDataSetChanged();
+                        dataCenterAdapter.notifyItemInserted(dataCenterStatusInfoList.size() - 1);
                         queryDataCenter(new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt()));
                     }
                     break;
@@ -569,7 +571,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     case "3": {
                         DeviceNetStatus deviceNetStatus = ResultParserUtil.getEntityObject(cmdStr);
                         dataCenterStatusInfoList.add(deviceNetStatus);
-                        dataCenterAdapter.notifyDataSetChanged();
+                        dataCenterAdapter.notifyItemInserted(dataCenterStatusInfoList.size() - 1);
                         //查询设备状态2
                         queryStatusTwo();
                     }

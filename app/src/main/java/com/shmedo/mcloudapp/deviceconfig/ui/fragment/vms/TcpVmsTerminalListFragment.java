@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -118,9 +117,10 @@ public class TcpVmsTerminalListFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
+                        int index = vmsTerminalInfoList.indexOf(vmsTerminalInfo);
                         vmsTerminalInfoList.remove(vmsTerminalInfo);
                         vmsViewModel.removeTerminal(vmsTerminalInfo.getSn());
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemRemoved(index);
                         vmsHomeFragment.removeTerminal(vmsTerminalInfo.getSn());
                     }
                 });

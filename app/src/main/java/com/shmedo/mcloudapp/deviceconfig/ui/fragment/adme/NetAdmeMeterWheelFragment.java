@@ -183,7 +183,7 @@ public class NetAdmeMeterWheelFragment extends BaseNetIotCommunicateFragment {
                     dismissWaitDialog();
                     String errMsg = String.format("%s %s", "保存计米轮配置参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    ToastUtils.show(cmdResult.getReason().contains("equimodel_err") ? "设备模式错误，无法配置参数" : errMsg);
                     return;
                 }
                 admeMeterWheelView.doAfterSetting();

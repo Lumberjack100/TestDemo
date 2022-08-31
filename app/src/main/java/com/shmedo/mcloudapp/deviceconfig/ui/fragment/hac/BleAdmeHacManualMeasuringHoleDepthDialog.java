@@ -106,12 +106,6 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
         stopQueryMotorStateProgress();
     }
 
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        stopAllProgress();
-//    }
-
     public static BleAdmeHacManualMeasuringHoleDepthDialog newInstance(String motionWay) {
         BleAdmeHacManualMeasuringHoleDepthDialog fragment = new BleAdmeHacManualMeasuringHoleDepthDialog();
         Bundle args = new Bundle();
@@ -283,17 +277,12 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
             Timber.e("HacMotorMotionDistanceInfo is Null!");
             return;
         }
-        if (!TextUtils.isEmpty(curPulse)) {
-            if (motorMotionDistanceInfo.getPulsenumber().equals(curPulse)) {
-                repeatNum++;
-                Timber.d("updateMotionData:curDistance=%s,curPulse=%s,repeatNum=%s", curDistance, curPulse, repeatNum);
-                //轮询 N 次电机脉冲数据不变化时，停留当前状态页面
-                if (repeatNum >= 10) {
-                    return;
-                }
-            } else {
-                repeatNum = 0;
-            }
+        //异常码 99 表示上拉到管口，测量结束，停止轮询脉冲数并发送停止电机运动指令
+        if (motorMotionDistanceInfo.getAbndiasis().contains("99")) {
+            isStopClick = true;
+            stopQueryMotorStateProgress();
+            stopMotorMotion();
+            return;
         }
         curPulse = motorMotionDistanceInfo.getPulsenumber();
         curDistance = motorMotionDistanceInfo.getRealmovedistance();
@@ -301,7 +290,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
         mTvMotionDistance.setText(curDistance);
 
         //CTR 工作异常
-        if (!motorMotionDistanceInfo.getAbndiasis().equals("0")) {
+        if (!motorMotionDistanceInfo.getAbndiasis().equals("0") && !motorMotionDistanceInfo.getAbndiasis().contains("99")) {
             //列出异常原因
             StringBuilder stringBuilder = new StringBuilder();
             String[] codes = motorMotionDistanceInfo.getAbndiasis().split("\\|");

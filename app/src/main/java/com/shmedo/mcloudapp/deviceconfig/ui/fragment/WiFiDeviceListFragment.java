@@ -202,6 +202,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         wiFiAdapter = new WiFiAdapter();
         mRecyclerView.setAdapter(wiFiAdapter);
+        mRecyclerView.setHasFixedSize(true);
         wiFiAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {

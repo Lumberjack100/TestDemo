@@ -1,5 +1,12 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.app.Activity;
+import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Spannable;
@@ -7,6 +14,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -15,6 +23,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.VibrateUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.CustomDialog;
 import com.kongzue.dialogx.interfaces.OnBindView;
@@ -59,8 +68,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @BindView(R.id.horizontalProgressBarView)
     HacMeasuringDataHorizontalProgressBarView horizontalProgressBarView;
 
-    @BindView(R.id.tv_kind_tips)
-    TextView mTvKindTips; // 温馨提示
+    @BindView(R.id.tv_measure_mode)
+    TextView mTvMeasureMode; //测量模式
 
     @BindView(R.id.tv_inclinometer_battery)
     TextView mTvInclinometerBattery; // 测斜仪电量
@@ -83,7 +92,6 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @BindView(R.id.ll_waiting_time)
     View waitingTimeLayout; //
 
-
     private CustomDialog customDialog;
 
     private HacMotionState motionState;
@@ -93,6 +101,10 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
     private final QueryMotorStateHandler queryMotorStateHandler = new QueryMotorStateHandler(this);
     private boolean isStopQuery = false;
+    private boolean isFirstComing = true;
+
+    private SoundPool soundPool;
+    private int voiceMeasureFail, voiceMeasureSuccess;
 
     private static final class QueryMotorStateHandler extends WeakHandler<BleAdmeHacMeasuringDataProcedureFragment> {
         private QueryMotorStateHandler(BleAdmeHacMeasuringDataProcedureFragment fragment) {
@@ -152,6 +164,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         if (getArguments() != null && getArguments().containsKey(HOLE_DEPTH)) {
             holeDepth = getArguments().getString(HOLE_DEPTH);
         }
+        initSoundPool();
     }
 
     @Override
@@ -235,12 +248,11 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 showStopWarnDialog();
 
             } else if (btnAction.getText().toString().equals("下一步")) {
+                setResult();
                 if (motionState.getMotorinfo().equals("8")) {//等待下次测量,进入测量结果展示页面
                     AdmeHacMeasuringDataResultsActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
-                    mActivity.finish();
-                } else if (motionState.getMotorinfo().equals("9")) {//等待反测,回到测量参数配置页面
-                    mActivity.finish();
                 }
+                mActivity.finish();
             }
         }
     }
@@ -277,7 +289,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                     ToastUtils.show(errMsg);
                     return;
                 }
-                mTvKindTips.setText(MessageFormat.format("本轮测量已停止,预计 {0} 分钟后可重新测量", getMinTime()));
+                mTvMotorInfo.setText(MessageFormat.format("本轮测量已停止,预计 {0} 分钟后可重新测量", getMinTime()));
                 btnAction.setVisibility(View.INVISIBLE);
             }
             break;
@@ -297,6 +309,11 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         if (motionState == null) {
             return;
         }
+        if (isFirstComing) {
+            isFirstComing = false;
+            mTvMeasureMode.setText(motionState.getMeasmode().equals("0") ? "正向测量" : "反向测量");
+        }
+
         //异常时，停止轮询电机运动状态，展示异常原因
         if (!motionState.getAbndiasis().equals("0")) {//表示异常
             stopQueryMotorStateProgress();
@@ -320,73 +337,136 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
             verticalProgressBarView.setVisibility(View.VISIBLE);
             horizontalProgressBarView.setVisibility(View.GONE);
             waitingTimeLayout.setVisibility(View.INVISIBLE);
-            if (motionState.getMotorinfo().equals("0")) {//上拉至管口
-                verticalProgressBarView.init(motionState.getMeaspoint());
+            switch (AdmeCTRMotionState.valueByCode(motionState.getMotorinfo())) {
+                case NOZZLE_WAITING://上拉至管口
+                    verticalProgressBarView.init(motionState.getMeaspoint());
+                    mTvMotorInfo.setText("上拉至管口...");
+                    break;
 
-            } else if (motionState.getMotorinfo().equals("1")) {//测斜仪配对,设置参数
-                verticalProgressBarView.init(motionState.getMeaspoint());
-                mTvKindTips.setText("测斜仪配对中，请耐心等待...");
+                case PAIR_SETTING_PARAM://测斜仪配对
+                    verticalProgressBarView.init(motionState.getMeaspoint());
+                    mTvMotorInfo.setText("测斜仪配对中...");
+                    break;
 
-            } else if (motionState.getMotorinfo().equals("2") || motionState.getMotorinfo().equals("3")) {//测斜仪下放、管底等待
-                verticalProgressBarView.init(motionState.getMeaspoint());
-                waitingTimeLayout.setVisibility(View.VISIBLE);
-                mTvWaitingTimeTitle.setText(motionState.getMotorinfo().equals("2") ? "下放结束预计" : "管底等待中，距离开始测量预计");
-                mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
-                mTvKindTips.setText(motionState.getMotorinfo().equals("2") ? "测斜仪下放中，请耐心等待..." : "管底等待中，请耐心等待...");
+                case DOWN://测斜仪下放
+                case BOTTOM_WAITING://管底等待
+                    verticalProgressBarView.init(motionState.getMeaspoint());
+                    waitingTimeLayout.setVisibility(View.VISIBLE);
+                    mTvWaitingTimeTitle.setText(motionState.getMotorinfo().equals("2") ? "下放结束预计" : "距离开始测量预计");
+                    mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
+                    mTvMotorInfo.setText(motionState.getMotorinfo().equals("2") ? "测斜仪下放中..." : "管底等待中...");
+                    break;
 
-            } else if (motionState.getMotorinfo().equals("4")) {//测点测量
-                verticalProgressBarView.updateProgress(motionState.getMeaspoint());
-                waitingTimeLayout.setVisibility(View.VISIBLE);
-                mTvWaitingTimeTitle.setText("测量结束预计");
-                mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
-                mTvKindTips.setText(String.format("%s测量中，请耐心等待...", motionState.getMeasmode().equals("0") ? "正向" : "反向"));
+                case POINT_MEASUREMENT://测点测量
+                    verticalProgressBarView.updateProgress(motionState.getMeaspoint());
+                    waitingTimeLayout.setVisibility(View.VISIBLE);
+                    mTvWaitingTimeTitle.setText("测量结束预计");
+                    mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
+                    mTvMotorInfo.setText("测点测量中...");
+                    break;
 
-            } else if (motionState.getMotorinfo().equals("5")) {//磁开关触发,测量结束
-                verticalProgressBarView.setLastProgress();
-                mTvKindTips.setText("测量结束，等待读取数据...");
-            } else if (motionState.getMotorinfo().equals("6")) {//测斜仪配对,读取数据
-                horizontalProgressBarView.setVisibility(View.VISIBLE);
-                verticalProgressBarView.setVisibility(View.GONE);
-                horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
-                waitingTimeLayout.setVisibility(View.VISIBLE);
-                mTvWaitingTimeTitle.setText("数据读取结束预计");
-                mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
-                mTvKindTips.setText("数据读取中，请耐心等待...");
-                btnAction.setVisibility(View.INVISIBLE);
-            } else if (motionState.getMotorinfo().equals("7")) {//数据上传
-                horizontalProgressBarView.setVisibility(View.VISIBLE);
-                verticalProgressBarView.setVisibility(View.GONE);
-                horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
-                mTvWaitingTimeTitle.setText("数据上传结束预计");
-                mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
-                mTvKindTips.setText("数据上传中，请耐心等待...");
-                btnAction.setVisibility(View.INVISIBLE);
-            } else if (motionState.getMotorinfo().equals("8") || motionState.getMotorinfo().equals("9")) {//
-                stopQueryMotorStateProgress();
+                case MEASUREMENT_OVER://测点结束
+                    verticalProgressBarView.setLastProgress();
+                    mTvMotorInfo.setText("准备读取数据...");
+                    break;
 
-                horizontalProgressBarView.setVisibility(View.VISIBLE);
-                verticalProgressBarView.setVisibility(View.GONE);
-                horizontalProgressBarView.setLastProgress();
-                mTvKindTips.setText("测量完成");
-                btnAction.setVisibility(View.VISIBLE);
-                btnAction.setText("下一步");
-                btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
+                case READ_DATA://数据读取中
+                    horizontalProgressBarView.setVisibility(View.VISIBLE);
+                    verticalProgressBarView.setVisibility(View.GONE);
+                    horizontalProgressBarView.setProgressDrawable(true);//读取数据进度条颜色
+                    horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
+                    waitingTimeLayout.setVisibility(View.VISIBLE);
+                    mTvWaitingTimeTitle.setText("数据读取结束预计");
+                    mTvWaitingTime.setText(String.format("%s分钟", getMinTime()));
+                    mTvMotorInfo.setText("数据读取中...");
+                    btnAction.setVisibility(View.INVISIBLE);
+                    break;
+
+                case UPLOAD_DATA://数据上传中
+                    horizontalProgressBarView.setVisibility(View.VISIBLE);
+                    verticalProgressBarView.setVisibility(View.GONE);
+                    horizontalProgressBarView.setProgressDrawable(false);//上传数据进度条颜色
+                    horizontalProgressBarView.updateProgress(motionState.getMeaspoint());
+                    mTvMotorInfo.setText("数据上传中...");
+                    btnAction.setVisibility(View.INVISIBLE);
+                    break;
+
+                case WAITING_NEXT_TESTING://等待下一次测量
+                case WAITING_BACK_TESTING://等待反测
+                    stopQueryMotorStateProgress();
+                    horizontalProgressBarView.setVisibility(View.VISIBLE);
+                    verticalProgressBarView.setVisibility(View.GONE);
+                    horizontalProgressBarView.setProgressDrawable(motionState.getMotorinfo().equals("9"));//正反测模式下，正测阶段只有读取数据过程，没有上传数据，所以不展示上传数据进度框
+                    horizontalProgressBarView.setMaxProgress();
+                    mTvMotorInfo.setText(motionState.getMotorinfo().equals("9") ? "测量完成,等待反向测量" : "测量完成");
+                    btnAction.setVisibility(View.VISIBLE);
+                    btnAction.setText("下一步");
+                    btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
+//                    VibrateUtils.vibrate(100);
+                    if(voiceMeasureSuccess != 0) {
+                        soundPool.play(voiceMeasureSuccess, 1.0f, 1.0f, 1, 0, 1.0f);
+                    }
+                    loadButtonAnimator();
+                    break;
+
+                case FAILED://测量失败
+                    stopQueryMotorStateProgress();
+                    mTvMotorInfo.setText("测量失败");
+                    btnAction.setVisibility(View.VISIBLE);
+                    btnAction.setText("下一步");
+                    btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
+                    if(voiceMeasureFail != 0) {
+                        soundPool.play(voiceMeasureFail, 1.0f, 1.0f, 1, 0, 1.0f);
+                    }
+                    loadButtonAnimator();
+                    break;
             }
 
-            mTvMotorInfo.setText(AdmeCTRMotionState.valueByCode(motionState.getMotorinfo()).getDescription());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
+    private void loadButtonAnimator(){
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(btnAction, "scaleX", 0.6f, 1f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(btnAction, "scaleY", 0.6f, 1f);
+        scaleX.setRepeatCount(1);
+        scaleY.setRepeatCount(1);
+
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.play(scaleX).with(scaleY);
+        animSet.setDuration(600);
+        animSet.setInterpolator(new BounceInterpolator());
+        animSet.start();
+    }
+
+    /**
+     * 测量完成或失败后播放的提示音初始化
+     */
+    private void initSoundPool() {
+        //AudioAttributes是一个封装音频各种属性的方法
+        AudioAttributes audioAttrs = new AudioAttributes.Builder()
+                .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(1)
+                .setAudioAttributes(audioAttrs)
+                .build();
+
+        voiceMeasureFail = soundPool.load(getContext(), R.raw.measure_fail, 1);
+        voiceMeasureSuccess = soundPool.load(getContext(), R.raw.measure_success, 1);
+    }
+
     private String getMinTime() {
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        DecimalFormat decimalFormat = new DecimalFormat("#");
 
         if (TextUtils.isEmpty(motionState.getWaittime()))
             return "--";
         try {
             int second = Integer.parseInt(motionState.getWaittime());
-            float min = (float) second / 60;
+            float min = (float) second / 60 + 1;
 
             return decimalFormat.format(min);
         } catch (Exception exception) {
@@ -453,6 +533,18 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    private void setResult() {
+        Intent intent = new Intent();
+        intent.putExtra(AppContants.Extras.MOTOR_STATE, motionState);
+        mActivity.setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        setResult();
+        return false;
     }
 
 }
