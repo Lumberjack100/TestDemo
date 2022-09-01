@@ -205,10 +205,10 @@ public class BleLR200CurrentStateFragment extends BaseUSRBleIotCommunicateFragme
                 mTvInstallLocation.setText(m20CurrentStateInfo.getLocation());
                 mTvInternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getInner_power_volt()));
                 mTvExternalVoltage.setText(String.format("%sV", m20CurrentStateInfo.getExt_power_volt()));
-                mTvInternalTemperature.setText(String.format("%sV", m20CurrentStateInfo.getTemp()));
-                mTvInternalHumidity.setText(String.format("%s℃", m20CurrentStateInfo.getHumidity()));
-                mTvExternalTemperature.setText(String.format("%s%%", m20CurrentStateInfo.getTemp_out()));
-                mTvExternalHumidity.setText(String.format("%sV", m20CurrentStateInfo.getHumidity_out()));
+                mTvInternalTemperature.setText(String.format("%s℃", m20CurrentStateInfo.getTemp()));
+                mTvInternalHumidity.setText(String.format("%s%%", m20CurrentStateInfo.getHumidity()));
+                mTvExternalTemperature.setText(String.format("%s℃", m20CurrentStateInfo.getTemp_out()));
+                mTvExternalHumidity.setText(String.format("%s%%", m20CurrentStateInfo.getHumidity_out()));
 
                 mTv4gSignalStrength.setText(String.format("%sdBm", m20CurrentStateInfo.get_$4g_signal()));
                 initLinkStatus(mTvLinkOneStatus, m20CurrentStateInfo.getDataCenter1());
