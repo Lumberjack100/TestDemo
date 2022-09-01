@@ -186,7 +186,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             public void onItemClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 processStopScan();
                 discoveredBluetoothDevice = bleDeviceAdapter.getItem(position);
-                String SN = discoveredBluetoothDevice.getDevice().getName().replace("MD-", "");
+                String SN = discoveredBluetoothDevice.getName().replaceFirst("(MD)(-?)", "");
                 MCloudApp.setCurDeviceToken(SN);
 
 //                showProgressDialog("处理中...");

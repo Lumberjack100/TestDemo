@@ -54,9 +54,13 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
      */
     public static void startActivity(Context context, DeviceInfo deviceInfo) {
         ProductType type = ProductType.valueByPrefix(deviceInfo.getProductToken().toUpperCase());
+        //双重判断设备产品类型，先根据设备产品标识判断所属产品类型，若未判断出再根据 SN 号判断，若还未判断出来，提示不支持
         if (type == ProductType.UnKnown) {
-            ToastUtils.show("暂不支持此设备类型!");
-            return;
+            type = ProductType.valueBySuffix(deviceInfo.getDeviceToken());
+            if (type == ProductType.UnKnown) {
+                ToastUtils.show("暂不支持此设备类型!");
+                return;
+            }
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
@@ -73,9 +77,13 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
      */
     public static void startActivity(Context context, DiscoveredBluetoothDevice device, String productToken) {
         ProductType type = TextUtils.isEmpty(productToken) ? ProductType.valueBySuffix(device.getDevice().getName()) : ProductType.valueByPrefix(productToken);
+        //双重判断设备产品类型，先根据设备产品标识判断所属产品类型，若未判断出再根据 SN 号判断，若还未判断出来，提示不支持
         if (type == ProductType.UnKnown) {
-            ToastUtils.show("暂不支持此设备类型!");
-            return;
+            type = ProductType.valueBySuffix(device.getDevice().getName());
+            if (type == ProductType.UnKnown) {
+                ToastUtils.show("暂不支持此设备类型!");
+                return;
+            }
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
         intent.putExtra(BLE_DEVICE, device);

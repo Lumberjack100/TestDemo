@@ -59,8 +59,6 @@ import no.nordicsemi.android.ble.observer.ConnectionObserver;
 import timber.log.Timber;
 
 public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
-
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
 
@@ -92,8 +90,9 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private List<ConfigModule> configModuleList = new ArrayList<>();
     private ConfigModule selectedConfigModule;
 
-    private DiscoveredBluetoothDevice bluetoothDevice;
+    private DiscoveredBluetoothDevice device;
     private DeviceBaseInfo deviceInfo;
+    private String sn;
 
     private boolean isFirstCreate = true;
 
@@ -109,7 +108,8 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bluetoothDevice = getArguments().getParcelable(EXTRA_DEVICE);
+            device = getArguments().getParcelable(EXTRA_DEVICE);
+            sn = device.getName().replaceFirst("(MD)(-?)", "");
         }
     }
 
@@ -128,7 +128,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         observerConnectionState();
 
         //建立蓝牙连接
-        connectDevice(bluetoothDevice.getDevice());
+        connectDevice(device.getDevice());
     }
 
     @Override
@@ -217,7 +217,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(bluetoothDevice.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(sn);
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -314,7 +314,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {
-                connectDevice(bluetoothDevice.getDevice());
+                connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
                 showDisconnectDialog(getResources().getString(R.string.disconnect_device));
@@ -357,24 +357,26 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo() {
-        if (deviceInfo == null)
-            deviceInfo = new DeviceBaseInfo();
-
-        try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "HAC10" : deviceInfo.getDeviceName());
-            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? bluetoothDevice.getName().substring(3) : deviceInfo.getDeviceToken()));
-            mTvDeviceModel.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
-            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        if (deviceInfo == null) {
+            mTvDeviceName.setText("HAC10");
+            mTvDeviceSn.setText(String.format("设备SN号：%s", sn));
+            mTvDeviceModel.setText(String.format("所属产品：%s", "--"));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", "--"));
             mTvMotionState.setText("运行状态：--");
-            if (deviceInfo.isOnlineStatus()) {
-                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
-            } else {
-                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
-            }
-            mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-            mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
+            return;
+        }
+        mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "HAC10" : deviceInfo.getDeviceName());
+        mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? sn : deviceInfo.getDeviceToken()));
+        mTvDeviceModel.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
+        mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+        mTvMotionState.setText("运行状态：--");
+        if (deviceInfo.isOnlineStatus()) {
+            mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
+        } else {
+            mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
         }
     }
 
@@ -426,7 +428,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
             return;
 
         mTvMotionState.setText(String.format("运行状态：%s", ctrMotionState.getSimpleInfo()));
-        if(ctrMotionState.getCode().equals("8")||ctrMotionState.getCode().equals("9"))
+        if (ctrMotionState.getCode().equals("8") || ctrMotionState.getCode().equals("9"))
             admeViewModel.deviceMode = 0;
         else
             admeViewModel.deviceMode = 1;

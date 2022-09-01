@@ -121,6 +121,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private DiscoveredBluetoothDevice device;
     private DeviceBaseInfo deviceInfo;
+    private String sn;
 
     private String collectorModel = "";//采集器类型
     private boolean isInitialSensorOpera = false;//是否初始化传感器操作
@@ -144,7 +145,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             device = getArguments().getParcelable(EXTRA_DEVICE);
-            type = ProductType.valueBySuffix(device.getDevice().getName());
+            sn = device.getName().replaceFirst("(MD)(-?)", "");
+            type = ProductType.valueBySuffix(device.getName());
         }
     }
 
@@ -163,7 +165,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         observerConnectionState();
         observerLocation();
         observerApiKey();
-        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(sn);
 
         //建立蓝牙连接
         connectDevice(device.getDevice());
@@ -179,23 +181,25 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo() {
-        if (deviceInfo == null)
-            deviceInfo = new DeviceBaseInfo();
-        try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "DAS" : deviceInfo.getDeviceName());
-            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
-            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
-            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
-            if (deviceInfo.isOnlineStatus()) {
-                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
-            } else {
-                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
-            }
-            mTvExtendedField.setVisibility(View.GONE);
-            mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-            mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        mTvExtendedField.setVisibility(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        if (deviceInfo == null) {
+            mTvDeviceName.setText("物联网终端采集器");
+            mTvDeviceSn.setText(String.format("设备SN号：%s", sn));
+            mTvProductName.setText(String.format("所属产品：%s", "--"));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", "--"));
+            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
+            return;
+        }
+        mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "物联网终端采集器" : deviceInfo.getDeviceName());
+        mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? sn : deviceInfo.getDeviceToken()));
+        mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
+        mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+        if (deviceInfo.isOnlineStatus()) {
+            mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
+        } else {
+            mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
         }
     }
 

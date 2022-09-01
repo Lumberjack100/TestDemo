@@ -71,7 +71,6 @@ import timber.log.Timber;
  * 描述：      ADME 蓝牙配置主页面
  */
 public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -110,6 +109,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     private DiscoveredBluetoothDevice device;
     private DeviceBaseInfo deviceInfo;
     private AdmeBaseInfo admeBaseInfo;
+    private String sn;
     private String equipModel = "0";//设备模式
     private String[] modes;
 
@@ -150,6 +150,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             device = getArguments().getParcelable(EXTRA_DEVICE);
+            sn = device.getName().replaceFirst("(MD)(-?)", "");
         }
     }
 
@@ -256,7 +257,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
-                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(sn);
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -492,24 +493,26 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo() {
-        if (deviceInfo == null)
-            deviceInfo = new DeviceBaseInfo();
-
-        try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "ADME" : deviceInfo.getDeviceName());
-            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
-            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
-            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        if (deviceInfo == null) {
+            mTvDeviceName.setText("ADME");
+            mTvDeviceSn.setText(String.format("设备SN号：%s", sn));
+            mTvProductName.setText(String.format("所属产品：%s", "--"));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", "--"));
             mTvMotionState.setText("运行状态：--");
-            if (deviceInfo.isOnlineStatus()) {
-                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
-            } else {
-                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
-            }
-            mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-            mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
+            return;
+        }
+        mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "ADME" : deviceInfo.getDeviceName());
+        mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? sn : deviceInfo.getDeviceToken()));
+        mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
+        mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+        mTvMotionState.setText("运行状态：--");
+        if (deviceInfo.isOnlineStatus()) {
+            mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
+        } else {
+            mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
         }
     }
 

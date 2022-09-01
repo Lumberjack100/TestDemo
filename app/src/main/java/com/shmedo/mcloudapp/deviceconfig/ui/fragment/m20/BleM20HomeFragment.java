@@ -58,7 +58,6 @@ import timber.log.Timber;
  * 描述：    M20 蓝牙配置主页面
  */
 public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -110,7 +109,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             device = getArguments().getParcelable(EXTRA_DEVICE);
-            sn = device.getName().substring(3);
+            sn = device.getName().replaceFirst("(MD)(-?)", "");
         }
     }
 
@@ -204,7 +203,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                     case READY://The initialization is complete, and the device is ready to use.
                         onConnectionStateChanged(true);
                         //查询设备 ApiKey
-                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(device.getDevice().getName().substring(3));
+                        bleViewModel.deviceRequest.queryDeviceApiKeyBySn(sn);
                         break;
 
                     case DISCONNECTED://The device disconnected or failed to connect.
@@ -352,23 +351,25 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
      * 更新头部信息
      */
     private void updateHeadInfo() {
-        if (deviceInfo == null)
-            deviceInfo = new DeviceBaseInfo();
-        try {
-            mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "M20" : deviceInfo.getDeviceName());
-            mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? device.getName().substring(3) : deviceInfo.getDeviceToken()));
-            mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
-            mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
-            if (deviceInfo.isOnlineStatus()) {
-                mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
-            } else {
-                mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
-            }
-            mTvExtendedField.setVisibility(View.GONE);
-            mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
-            mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        mTvExtendedField.setVisibility(View.GONE);
+        mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
+        mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        if (deviceInfo == null) {
+            mTvDeviceName.setText("M20");
+            mTvDeviceSn.setText(String.format("设备SN号：%s", sn));
+            mTvProductName.setText(String.format("所属产品：%s", "--"));
+            mTvFirmwareVersion.setText(String.format("固件版本：%s", "--"));
+            mTvPlatformCommunicationState.setText("米度平台连接状态：--");
+            return;
+        }
+        mTvDeviceName.setText(TextUtils.isEmpty(deviceInfo.getDeviceName()) ? "M20" : deviceInfo.getDeviceName());
+        mTvDeviceSn.setText(String.format("设备SN号：%s", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? sn : deviceInfo.getDeviceToken()));
+        mTvProductName.setText(String.format("所属产品：%s", TextUtils.isEmpty(deviceInfo.getProductName()) ? "--" : deviceInfo.getProductName()));
+        mTvFirmwareVersion.setText(String.format("固件版本：%s", TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) ? "--" : deviceInfo.getFirmwareVersion()));
+        if (deviceInfo.isOnlineStatus()) {
+            mTvPlatformCommunicationState.setText(getPlatformStateMessage("在线"));
+        } else {
+            mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
         }
     }
 
