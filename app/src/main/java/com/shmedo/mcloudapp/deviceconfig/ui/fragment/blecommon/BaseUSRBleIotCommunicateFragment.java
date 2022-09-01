@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.Message;
@@ -22,18 +24,32 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceDebugAddress;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.TcpToBleDebugActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.AdmeViewModel;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.ConfigPageViewModel;
+import com.shmedo.mcloudapp.network.BaseObserver;
+import com.shmedo.mcloudapp.network.ErrorInfo;
+import com.shmedo.mcloudapp.network.MDRetrofit;
+import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.profile.BleViewModel;
+import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import okhttp3.RequestBody;
 import timber.log.Timber;
 
 /**
@@ -287,5 +303,53 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
+    }
+
+    /**
+     * 查询设备远程调试连接地址信息
+     */
+    protected void getDeviceLogin() {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("appKey", "b80dd379-5256-48c8-947a-2208872c8a8f");
+            jsonObjectRequest.put("appSecret", "3dc8e0ec1f673325c6694b4da534dabe");
+            jsonObjectRequest.put("deviceSn", MCloudApp.getCurDeviceToken());
+            jsonObjectRequest.put("deviceKey", bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue() != null ? bleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey() : "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9");
+            jsonObjectRequest.put("reCreate", false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
+        MDRetrofit.getInstance()
+                .createService(ServiceAddressType.getCustomAddress("http://ams4.shmedo.com:22000/api/v1/"))
+                .DeviceLogin(body)
+                .doOnDispose(() -> Timber.i("Disposing subscription"))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
+                .subscribe(new BaseObserver<DeviceDebugAddress>() {
+                    @Override
+                    protected void onResponse(DeviceDebugAddress deviceDebugAddress, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
+                                if (deviceDebugAddress == null || deviceDebugAddress.getDeviceServerInfo() == null || TextUtils.isEmpty(deviceDebugAddress.getDeviceServerInfo().getServerAddr())) {
+                                    ToastUtils.show("未获取到远程服务器地址和端口信息");
+                                    return;
+                                }
+                                TcpToBleDebugActivity.startActivity(mActivity, deviceDebugAddress.getDeviceServerInfo().getServerAddr(), deviceDebugAddress.getDeviceServerInfo().getServerPort(),true);
+                            } else {
+                                if (!TextUtils.isEmpty(errorInfo.getMsg())) {
+                                    ToastUtils.show(errorInfo.getMsg());
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                    }
+                });
     }
 }

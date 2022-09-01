@@ -92,7 +92,7 @@ public class BleLR200AdvancedSettingFragment extends BaseUSRBleIotCommunicateFra
         sendCommand(command);
     }
 
-    @OnClick({R.id.syncInstallLocationLayout, R.id.firmwareUpgradeLayout, R.id.cmdDebugLogLayout, R.id.resetLayout})
+    @OnClick({R.id.syncInstallLocationLayout, R.id.firmwareUpgradeLayout, R.id.cmdDebugLogLayout, R.id.resetLayout, R.id.remoteDebuggingLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -115,6 +115,8 @@ public class BleLR200AdvancedSettingFragment extends BaseUSRBleIotCommunicateFra
 
         } else if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
+        } else if (id == R.id.remoteDebuggingLayout) {
+            getDeviceLogin();
         }
     }
 

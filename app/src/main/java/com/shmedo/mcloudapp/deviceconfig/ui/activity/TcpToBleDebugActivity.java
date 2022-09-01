@@ -49,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -60,6 +61,7 @@ import timber.log.Timber;
 public class TcpToBleDebugActivity extends BaseActivity {
     public static final String TCP_HOST = "com.shmedo.mcloudapp.TCP_HOST";
     public static final String TCP_PORT = "com.shmedo.mcloudapp.TCP_PORT";
+    public static final String IOT_CMD = "com.shmedo.mcloudapp.IOT_CMD";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -79,14 +81,18 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
     private String host;
     private int port;
+    private volatile boolean isIOTCmd = true;
 
     private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
     private volatile boolean isNeedReconnect = true;
+    private volatile boolean isConnecting = false;
 
-    public static void startActivity(Context context, String host, int port) {
+
+    public static void startActivity(Context context, String host, int port, boolean isIOTCmd) {
         Intent intent = new Intent(context, TcpToBleDebugActivity.class);
         intent.putExtra(TCP_HOST, host);
         intent.putExtra(TCP_PORT, port);
+        intent.putExtra(IOT_CMD, isIOTCmd);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -131,9 +137,6 @@ public class TcpToBleDebugActivity extends BaseActivity {
             @Override
             public void onChanged(String msg) {
                 Timber.d("onResponseMsg: %s", msg);
-                if (msg.startsWith("$$888")) {
-                    return;
-                }
                 handleResponseMsgFromDevice(msg);
             }
         });
@@ -142,6 +145,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
             public void onChanged(ConnectionState connectionState) {
                 switch (connectionState.getState()) {
                     case CONNECTING:
+                        isConnecting = true;
                         printLog("正在连接蓝牙...", R.color.title_text_color);
                         break;
 
@@ -149,9 +153,13 @@ public class TcpToBleDebugActivity extends BaseActivity {
                         break;
 
                     case READY:
-                        printLog("蓝牙连接成功", R.color.title_text_color);
-                        isNeedReconnect = true;
-                        usrBleViewModel.setAuthenticateWay();
+                        if (isConnecting) {
+                            isConnecting = false;
+                            isNeedReconnect = true;
+                            printLog("蓝牙连接成功", R.color.title_text_color);
+                            if (!isIOTCmd)
+                                usrBleViewModel.setAuthenticateWay();
+                        }
                         break;
 
                     case DISCONNECTED:
@@ -177,6 +185,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
         Intent intent = getIntent();
         if (intent.getExtras() == null)
             return;
+        isIOTCmd = intent.getBooleanExtra(IOT_CMD, true);
         host = intent.getStringExtra(TCP_HOST);
         port = intent.getIntExtra(TCP_PORT, 1088);
         mToolbar.setSubtitle(host + ":" + port);
@@ -202,14 +211,27 @@ public class TcpToBleDebugActivity extends BaseActivity {
      * @param msg
      */
     private void handleReceiveMsgFromTCPServer(String msg) {
-        printLog(msg, R.color.receive_data_color);
+        if (TextUtils.isEmpty(msg))
+            return;
+
+        printLog(msg.replace("\r\n", ""), R.color.receive_data_color);
         if (!usrBleViewModel.isConnected()) {
             ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
             return;
         }
-        if (!msg.endsWith("\r\n")) {
+        if (isIOTCmd) {
+            if (!msg.contains("&apikey")) {
+                String apiKey = "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9";
+                if (usrBleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue() != null && !TextUtils.isEmpty(usrBleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey())) {
+                    apiKey = usrBleViewModel.deviceRequest.getDeviceApiKeyLiveData().getValue().getApikey();
+                }
+                msg += "&apikey=" + apiKey
+                        + "&msgid=" + UUID.randomUUID().toString().substring(30);
+            }
+        } else if (!msg.endsWith("\r\n")) {
             msg += "\r\n";
         }
+
         usrBleViewModel.sendIOTProtocolCommand(msg);
     }
 
@@ -221,6 +243,14 @@ public class TcpToBleDebugActivity extends BaseActivity {
     private void handleResponseMsgFromDevice(String msg) {
         printLog(msg, R.color.response_data_color);
         try {
+            if (isIOTCmd) {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    return;
+                }
+                tcpViewModel.sendMsgToServer(msg);
+                return;
+            }
             String cmdArray[] = msg.replace("\r\n", "").split(",");
             if (msg.startsWith("$$224")) {//认证方式
                 if (msg.replace("\r\n", "").endsWith(CommandResult.ERROR_END)) {
@@ -276,13 +306,13 @@ public class TcpToBleDebugActivity extends BaseActivity {
                         } else if (text.equals("分享日志")) {
                             shareLogs();
                         } else if (text.equals("打开debug模式")) {
-                            handleReceiveMsgFromTCPServer("##2261\r\n");
-                            handleReceiveMsgFromTCPServer("##0062\r\n");
+                            handleReceiveMsgFromTCPServer(!isIOTCmd ? "##2261\r\n" : "");
+                            handleReceiveMsgFromTCPServer(!isIOTCmd ? "##0062\r\n" : "$cmd=md_setlogoutput&level=debug&type=bt");
                         } else if (text.equals("打开info模式")) {
-                            handleReceiveMsgFromTCPServer("##2261\r\n");
-                            handleReceiveMsgFromTCPServer("##0063\r\n");
+                            handleReceiveMsgFromTCPServer(!isIOTCmd ? "##2261\r\n" : "");
+                            handleReceiveMsgFromTCPServer(!isIOTCmd ? "##0063\r\n" : "$cmd=md_setlogoutput&level=info&type=bt");
                         } else if (text.equals("测试")) {
-                            handleReceiveMsgFromTCPServer("##000\r\n");
+                            handleReceiveMsgFromTCPServer(!isIOTCmd ? "##000\r\n" : "$cmd=sample");
                         }
                         return false;
                     }
@@ -447,8 +477,8 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
     @Override
     public void onDestroy() {
-        handleReceiveMsgFromTCPServer("##2260\r\n");
-        handleReceiveMsgFromTCPServer("##0061\r\n");
+        handleReceiveMsgFromTCPServer(!isIOTCmd ? "##2260\r\n" : "");
+        handleReceiveMsgFromTCPServer(!isIOTCmd ? "##0061\r\n" : "$cmd=md_setlogoutput&level=off&type=bt");
         super.onDestroy();
     }
 }

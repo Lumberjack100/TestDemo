@@ -260,7 +260,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
                                     ToastUtils.show("未获取到远程服务器地址和端口信息");
                                     return;
                                 }
-                                TcpToBleDebugActivity.startActivity(mActivity, deviceDebugAddress.getDeviceServerInfo().getServerAddr(), deviceDebugAddress.getDeviceServerInfo().getServerPort());
+                                TcpToBleDebugActivity.startActivity(mActivity, deviceDebugAddress.getDeviceServerInfo().getServerAddr(), deviceDebugAddress.getDeviceServerInfo().getServerPort(), false);
                             } else {
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());
