@@ -118,29 +118,6 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
      * https://github.com/getActivity/ToastUtils
      */
     private void initToastUtil() {
-        // 自定义 Toast 拦截器（用于追踪 Toast 调用的位置）
-        ToastUtils.setInterceptor(new IToastInterceptor() {
-            @Override
-            public boolean intercept(CharSequence text) {
-                if (BuildConfig.DEBUG) {
-                    // 获取调用的堆栈信息
-                    StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-                    // 跳过最前面两个堆栈
-                    for (int i = 2; stackTrace.length > 2 && i < stackTrace.length; i++) {
-                        // 获取代码行数
-                        int lineNumber = stackTrace[i].getLineNumber();
-                        // 获取类的全路径
-                        String className = stackTrace[i].getClassName();
-                        if (lineNumber <= 0 || className.startsWith(ToastUtils.class.getName())) {
-                            continue;
-                        }
-                        Timber.d("(" + stackTrace[i].getFileName() + ":" + lineNumber + ") " + text.toString());
-                        break;
-                    }
-                }
-                return false;
-            }
-        });
         // 初始化吐司工具类
         ToastUtils.init(this);
         ToastUtils.setStyle(new MyToastBlackStyle());
