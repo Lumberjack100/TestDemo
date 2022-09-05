@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.blankj.utilcode.util.VibrateUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.CustomDialog;
 import com.kongzue.dialogx.interfaces.OnBindView;

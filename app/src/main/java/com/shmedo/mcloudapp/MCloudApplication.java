@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelStore;
 import androidx.lifecycle.ViewModelStoreOwner;
 
+import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.MetaDataUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.SPUtils;
@@ -96,10 +97,17 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
      * 初始化异常上报
      */
     private void initCrashReport() {
-        //自己处理的异常
-        AppCrashHandler.getInstance(this);// crash handler
-        //初始化腾讯Bugly异常上报组件
-        CrashReport.initCrashReport(getApplicationContext());
+        try {
+            //自己处理的异常
+            AppCrashHandler.getInstance(this);// crash handler
+            //初始化腾讯Bugly异常上报组件
+            CrashReport.initCrashReport(getApplicationContext());
+            CrashReport.setDeviceId(this, DeviceUtils.getUniqueDeviceId());
+            // 也可以通过CrashReport类设置，适合无法在初始化sdk时获取到deviceModel的场景，context和deviceModel不能为空（或空字符串）
+            CrashReport.setDeviceModel(this, DeviceUtils.getModel());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**

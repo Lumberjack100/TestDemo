@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;

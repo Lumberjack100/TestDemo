@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -27,8 +28,8 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.model.VmsTerminalSensorItem;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.vms.VmsTerminalExternalSensorConfigActivity;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;

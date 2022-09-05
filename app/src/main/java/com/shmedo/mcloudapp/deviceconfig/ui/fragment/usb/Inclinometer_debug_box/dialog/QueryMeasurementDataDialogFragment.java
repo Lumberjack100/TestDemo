@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;

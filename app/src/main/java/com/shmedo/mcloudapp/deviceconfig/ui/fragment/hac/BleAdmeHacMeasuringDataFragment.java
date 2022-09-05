@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.CustomDialog;
 import com.kongzue.dialogx.interfaces.OnBindView;

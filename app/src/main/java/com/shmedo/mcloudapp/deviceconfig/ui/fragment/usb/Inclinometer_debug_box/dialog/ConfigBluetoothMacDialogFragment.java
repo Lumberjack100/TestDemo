@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
