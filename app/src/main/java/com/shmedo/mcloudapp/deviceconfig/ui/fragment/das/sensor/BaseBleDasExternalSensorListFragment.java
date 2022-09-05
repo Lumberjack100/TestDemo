@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
@@ -37,11 +38,11 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
+import com.shmedo.mcloudapp.deviceconfig.adapter.DASSensorAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DASSensorItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalDigitalSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalVibratingWireSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.adapter.DASSensorAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.DASSensorItem;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -133,7 +134,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 processItemClick(position);
@@ -143,7 +144,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return true;
                 }
                 DASSensorItem sensorItem = sensorItemList.get(position);
@@ -283,7 +284,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
     public void onClick(View v) {
         if (v.getId() == R.id.btn_confirm) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             sendInstruction();

@@ -86,7 +86,7 @@ public class BleAdmeInclinometerFragment extends BaseUSRBleIotCommunicateFragmen
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (!admeInclinometerView.checkValueIsValid()) {

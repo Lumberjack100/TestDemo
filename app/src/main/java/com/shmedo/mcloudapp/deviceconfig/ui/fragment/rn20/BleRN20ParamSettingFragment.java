@@ -132,7 +132,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                 return;
             }
             if (!checkValueIsValid()) {

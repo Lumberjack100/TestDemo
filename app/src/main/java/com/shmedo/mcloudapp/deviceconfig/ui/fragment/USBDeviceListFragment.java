@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -170,7 +171,7 @@ public class USBDeviceListFragment extends BaseFragment {
      * 选择波特率
      */
     private void showBaudDialog() {
-        final String[] baudRates = getResources().getStringArray(R.array.baud_rates);
+        final String[] baudRates =  StringUtils.getStringArray(R.array.baud_rates);
         int pos = Arrays.asList(baudRates).indexOf(String.valueOf(baudRate));
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
                 .title("选择波特率")

@@ -94,7 +94,7 @@ public class QueryBluetoothLinkStatusDialogFragment extends BaseDebugBoxDialogFr
 
         } else if (id == R.id.btn_query_link) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             stopProgressAll();

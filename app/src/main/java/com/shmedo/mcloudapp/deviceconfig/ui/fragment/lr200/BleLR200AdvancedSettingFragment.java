@@ -98,7 +98,7 @@ public class BleLR200AdvancedSettingFragment extends BaseUSRBleIotCommunicateFra
             return;
         }
         if (!isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+            ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
             return;
         }
         int id = v.getId();

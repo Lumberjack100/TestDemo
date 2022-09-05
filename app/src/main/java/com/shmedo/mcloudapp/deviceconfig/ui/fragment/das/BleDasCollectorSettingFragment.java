@@ -12,6 +12,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -135,7 +136,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    ToastUtils.show(StringUtils.getString(R.string.refresh_failed_while_device_disconnected));
                     mRefreshLayout.finishRefresh(false);
                     return;
                 }
@@ -164,7 +165,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (!checkValueIsValid()) {

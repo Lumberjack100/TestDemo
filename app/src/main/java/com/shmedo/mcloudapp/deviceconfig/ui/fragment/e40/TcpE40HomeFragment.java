@@ -135,7 +135,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
             @Override
             public void onRefresh() {
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    ToastUtils.show(StringUtils.getString(R.string.refresh_failed_while_device_disconnected));
                     swipeRefresh.setRefreshing(false);
                     return;
                 }
@@ -206,7 +206,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                     return;
                 }
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 selectedConfigModule = configModuleList.get(position);
@@ -306,7 +306,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
                 tcpViewModel.connect();
             } else {
                 isExitMode = false;
-                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+                showDisconnectDialog(StringUtils.getString(R.string.disconnect_device));
             }
         }
     }
@@ -425,7 +425,7 @@ public class TcpE40HomeFragment extends BaseTcpIotCommunicateFragment {
     public boolean onBackPressed() {
         if (tcpViewModel.getConnectStatus()) {
             isExitMode = true;
-            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_tcp_device));
+            showDisconnectDialog(StringUtils.getString(R.string.finish_activity_disconnect_tcp_device));
             return true;
         }
         return false;

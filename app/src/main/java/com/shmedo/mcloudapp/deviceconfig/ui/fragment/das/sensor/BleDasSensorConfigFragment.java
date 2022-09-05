@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -253,7 +254,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -286,7 +287,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    ToastUtils.show(StringUtils.getString(R.string.refresh_failed_while_device_disconnected));
                     mRefreshLayout.finishRefresh(false);
                     return;
                 }
@@ -355,12 +356,12 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
             return;
         }
         if (!isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+            ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
             return;
         }
         int id = view.getId();
         if (id == R.id.tvPrecision) {
-            String[] values = getResources().getStringArray(R.array.rain_value);
+            String[] values =  StringUtils.getStringArray(R.array.rain_value);
             int pos = Arrays.asList(values).indexOf(rainPrecision);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("雨量精度");

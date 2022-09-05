@@ -241,7 +241,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         }
         if (id == R.id.btn_action) {
             if (!bleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (btnAction.getText().toString().equals("停止")) {

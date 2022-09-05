@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -92,7 +93,7 @@ public class TcpE40GpsWorkParamFragment extends BaseTcpIotCommunicateFragment {
             return;
         }
         if (!tcpViewModel.getConnectStatus()) {
-            ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+            ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
             return;
         }
 

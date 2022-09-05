@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -140,7 +141,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
             return;
         }
         if (!isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+            ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
             return;
         }
         int id = view.getId();

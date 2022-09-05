@@ -175,7 +175,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
                     return;
                 }
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 selectedConfigModule = configModuleList.get(position);

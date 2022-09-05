@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.constant.RegexConstants;
 import com.blankj.utilcode.util.RegexUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -40,7 +41,6 @@ import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 
@@ -146,8 +146,8 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String cmdKeepAliveValue;//
     private String cmdPlatformParam;//手动/自动注册平台参数
 
-    private final String[] registProtocols = MCloudApp.getContext().getResources().getStringArray(R.array.register_protocol);
-    private final String[] platforms = MCloudApp.getContext().getResources().getStringArray(R.array.register_platform);
+    private final String[] registProtocols = StringUtils.getStringArray(R.array.register_protocol);
+    private final String[] platforms = StringUtils.getStringArray(R.array.register_platform);
 
     public static BleDasDataCenterServerConfigFragment newInstance(ServerNumber serverNumber) {
         BleDasDataCenterServerConfigFragment fragment = new BleDasDataCenterServerConfigFragment();
@@ -204,7 +204,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     mSbCenterEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -257,7 +257,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    ToastUtils.show(StringUtils.getString(R.string.refresh_failed_while_device_disconnected));
                     mRefreshLayout.finishRefresh(false);
                     return;
                 }
@@ -314,7 +314,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                 com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
 
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 if (!checkValueIsValid()) {

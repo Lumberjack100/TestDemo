@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserWrapperInfo;
@@ -130,7 +131,7 @@ public class MineFragment extends BaseFragment {
     private void exitApp() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getActivity())
                 .title("提示")
-                .content(getResources().getString(R.string.exit_login_tip))
+                .content(StringUtils.getString(R.string.exit_login_tip))
                 .canceledOnTouchOutside(false)
                 .negativeText("取消")
                 .positiveText("确定")

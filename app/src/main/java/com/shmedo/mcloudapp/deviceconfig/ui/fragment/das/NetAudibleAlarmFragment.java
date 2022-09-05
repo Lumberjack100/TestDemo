@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -162,7 +163,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        alarmTypes = getResources().getStringArray(R.array.alarm_type);
+        alarmTypes =  StringUtils.getStringArray(R.array.alarm_type);
         setFilter();
 
         showWaitDialog("加载中...");

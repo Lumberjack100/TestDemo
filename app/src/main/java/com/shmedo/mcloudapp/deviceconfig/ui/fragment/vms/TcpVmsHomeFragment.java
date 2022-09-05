@@ -25,6 +25,7 @@ import androidx.lifecycle.Observer;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.hjq.toast.ToastUtils;
@@ -189,7 +190,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    ToastUtils.show(StringUtils.getString(R.string.refresh_failed_while_device_disconnected));
                     mRefreshLayout.finishRefresh(false);
                     return;
                 }
@@ -274,7 +275,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 tcpViewModel.connect();
             } else {
                 isExitMode = false;
-                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+                showDisconnectDialog(StringUtils.getString(R.string.disconnect_device));
             }
         } else if (id == R.id.search_placeholder) {
             VmsTerminalSearchActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT);
@@ -633,7 +634,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     public boolean onBackPressed() {
         if (tcpViewModel.getConnectStatus()) {
             isExitMode = true;
-            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_tcp_device));
+            showDisconnectDialog(StringUtils.getString(R.string.finish_activity_disconnect_tcp_device));
             return true;
         }
         return false;

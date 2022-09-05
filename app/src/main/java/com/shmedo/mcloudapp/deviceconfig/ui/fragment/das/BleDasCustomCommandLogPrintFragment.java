@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -123,7 +124,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     logSwitchButton.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -191,7 +192,7 @@ public class BleDasCustomCommandLogPrintFragment extends BaseBleCommunicateFragm
         } else if (id == R.id.btn_send) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             //发送指令

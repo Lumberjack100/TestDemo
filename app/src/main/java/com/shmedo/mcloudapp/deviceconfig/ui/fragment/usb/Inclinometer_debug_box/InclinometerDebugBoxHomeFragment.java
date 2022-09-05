@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -160,7 +161,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                     return;
                 }
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                     return;
                 }
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
@@ -339,7 +340,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
                 connectDevice();
             } else {//断开连接处理
                 isExitMode = false;
-                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+                showDisconnectDialog( StringUtils.getString(R.string.disconnect_device));
             }
         }
     }
@@ -459,7 +460,7 @@ public class InclinometerDebugBoxHomeFragment extends BaseUSBSerialCommunicateFr
     public boolean onBackPressed() {
         if (isConnected()) {
             isExitMode = true;
-            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_usb_device));
+            showDisconnectDialog( StringUtils.getString(R.string.finish_activity_disconnect_usb_device));
             return true;
         }
         return false;

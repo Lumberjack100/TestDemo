@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -105,7 +106,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     admeBasicParamConfigView.mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -121,7 +122,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     admeBasicParamConfigView.positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -156,7 +157,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (!admeBasicParamConfigView.checkValueIsValid()) {

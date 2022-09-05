@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -123,7 +124,7 @@ public class TcpE40DataCenterHomeFragment extends BaseTcpIotCommunicateFragment 
             return;
         }
         if (!tcpViewModel.getConnectStatus()) {
-            ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+            ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
             return;
         }
         int id = view.getId();

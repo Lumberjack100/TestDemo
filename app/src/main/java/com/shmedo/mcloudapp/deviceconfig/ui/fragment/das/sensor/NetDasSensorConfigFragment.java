@@ -15,7 +15,7 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -32,11 +32,11 @@ import com.shmedo.configlibrary.iot.model.das.DasDigitalPiezometerInfo;
 import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasExternalSensorListNewActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -332,7 +332,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         }
         int id = view.getId();
         if (id == R.id.tvPrecision) {
-            String[] values = getResources().getStringArray(R.array.rain_value);
+            String[] values =  StringUtils.getStringArray(R.array.rain_value);
             int pos = Arrays.asList(values).indexOf(rainPrecision);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("雨量精度");

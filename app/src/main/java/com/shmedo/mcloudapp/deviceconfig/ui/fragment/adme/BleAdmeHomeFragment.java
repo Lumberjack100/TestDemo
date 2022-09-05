@@ -163,7 +163,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         isFirstCreate = true;
-        modes = getResources().getStringArray(R.array.adme_device_mode);
+        modes =  StringUtils.getStringArray(R.array.adme_device_mode);
         initAdapter();
         updateHeadInfo();
         updateDeviceMode();
@@ -199,7 +199,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                     return;
                 }
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 selectedConfigModule = configModuleList.get(position);
@@ -322,7 +322,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     }
 
     private void showProgressBar() {
-        WaitDialog.show(getString(R.string.ble_state_connecting))
+        WaitDialog.show(StringUtils.getString(R.string.ble_state_connecting))
                 .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
                     @Override
                     public boolean onBackPressed() {
@@ -365,11 +365,11 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
-                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+                showDisconnectDialog(StringUtils.getString(R.string.disconnect_device));
             }
         } else if (id == R.id.ll_switch_config_model) {//切换设备模式
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             showSwitchConfigModelDialog();
@@ -660,7 +660,7 @@ public class BleAdmeHomeFragment extends BaseUSRBleIotCommunicateFragment {
     public boolean onBackPressed() {
         if (isConnected()) {
             isExitMode = true;
-            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            showDisconnectDialog(StringUtils.getString(R.string.finish_activity_disconnect_bluetooth_device));
             return true;
         }
         return false;

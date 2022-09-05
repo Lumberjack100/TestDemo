@@ -185,7 +185,7 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
             }
         } else if (id == R.id.btn_stop) {
             if (!bleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             stopAllProgress();

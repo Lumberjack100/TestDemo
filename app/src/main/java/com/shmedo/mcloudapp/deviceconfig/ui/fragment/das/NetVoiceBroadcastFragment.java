@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -136,7 +137,7 @@ public class NetVoiceBroadcastFragment extends BaseNetIotCommunicateFragment {
      * 选择播报遍数
      */
     private void showBroadcastNumDialog() {
-        final String[] values = getResources().getStringArray(R.array.broadcast_num);
+        final String[] values =  StringUtils.getStringArray(R.array.broadcast_num);
         int pos = Arrays.asList(values).indexOf(String.valueOf(mTvBroadcastNum.getText()));
 
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));

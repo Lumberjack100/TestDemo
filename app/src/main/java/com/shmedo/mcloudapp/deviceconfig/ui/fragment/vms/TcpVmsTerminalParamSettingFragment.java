@@ -136,7 +136,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
 
             if (!tcpViewModel.getConnectStatus()) {
-                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                 return;
             }
             if (!checkValueIsValid()) {

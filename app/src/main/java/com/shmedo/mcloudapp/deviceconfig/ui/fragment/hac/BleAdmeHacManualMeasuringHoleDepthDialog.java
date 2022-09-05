@@ -209,7 +209,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
             }
         } else if (id == R.id.btn_stop) {
             if (!bleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             isStopClick = true;
@@ -219,7 +219,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
 
         } else if (id == R.id.btn_pause) {
             if (!bleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             isStopClick = false;

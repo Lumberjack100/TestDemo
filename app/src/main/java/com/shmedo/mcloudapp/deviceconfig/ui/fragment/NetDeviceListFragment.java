@@ -208,7 +208,7 @@ public class NetDeviceListFragment extends BaseFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 deviceInfoList.clear();
-                mRecyclerViewDevice.scrollToPosition(0);
+                deviceInfoAdapter.notifyDataSetChanged();
                 // 这里的作用是防止下拉刷新的时候还可以上拉加载
                 deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
                 //下拉刷新，需要重置页数
@@ -257,9 +257,11 @@ public class NetDeviceListFragment extends BaseFragment {
                     protected void onResponse(DeviceStatisticInfo data, ErrorInfo errorInfo) {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
-                                DecimalFormat df = new DecimalFormat("#.##");//格式化小数
-                                String rate = df.format(data.getOnlinePercent()) + "%";
-                                updateTopView(data.getOnlineCount(), data.getOfflineCount(), rate);
+                                if (data != null) {
+                                    DecimalFormat df = new DecimalFormat("#.##");//格式化小数
+                                    String rate = df.format(data.getOnlinePercent()) + "%";
+                                    updateTopView(data.getOnlineCount(), data.getOfflineCount(), rate);
+                                }
                             } else {
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());

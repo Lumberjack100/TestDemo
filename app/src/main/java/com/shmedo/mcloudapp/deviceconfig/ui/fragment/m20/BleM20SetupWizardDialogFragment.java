@@ -131,7 +131,7 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
 
         } else if (id == R.id.tv_right) {
             if (!baseUSRBleIotCommunicateFragment.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             mInnerHandler.sendEmptyMessageDelayed(1, 10000);

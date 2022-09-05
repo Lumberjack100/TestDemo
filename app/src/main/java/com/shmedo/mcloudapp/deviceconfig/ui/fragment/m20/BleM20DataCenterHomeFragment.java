@@ -155,7 +155,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             serverNumber = SERVER_NUMBER_ONE;
@@ -163,7 +163,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
 
         } else if (id == R.id.dataCenterTwoLayout) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             serverNumber = SERVER_NUMBER_TWO;
@@ -171,7 +171,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
 
         } else if (id == R.id.dataCenterThreeLayout) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             serverNumber = SERVER_NUMBER_THREE;
@@ -179,7 +179,7 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
 
         } else if (id == R.id.dataCenterFourLayout) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             serverNumber = SERVER_NUMBER_FOUR;

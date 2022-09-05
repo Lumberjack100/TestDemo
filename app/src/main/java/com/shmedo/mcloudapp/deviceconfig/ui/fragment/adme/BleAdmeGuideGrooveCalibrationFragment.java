@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -140,7 +141,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
         } else if (id == R.id.btn_run) {//运行
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (!checkValueIsValid()) {
@@ -152,7 +153,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
         } else if (id == R.id.ll_clear_motion_data) {//清空数据
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             showClearWarnDialog("确认清除设备运动记录数据吗？");

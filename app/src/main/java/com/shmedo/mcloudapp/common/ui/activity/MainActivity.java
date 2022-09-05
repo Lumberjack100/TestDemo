@@ -15,10 +15,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.gyf.immersionbar.ImmersionBar;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.MineFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.DeviceModuleMainFragment;
 import com.shmedo.mcloudapp.util.UpdataManagerUtil;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.List;
 
@@ -57,6 +59,8 @@ public class MainActivity extends BaseActivity {
         setCheckNetWork(true);
         initView(savedInstanceState);
         UpdataManagerUtil.checkNewVersion2(this, false);
+        if (MCloudApp.getCurrentUserInfo() != null && MCloudApp.getCurrentUserInfo().getUser() != null)
+            CrashReport.setUserId(MCloudApp.getCurrentUserInfo().getUser().getAccount());  //该用户本次启动后的异常日志用户account
     }
 
     private void initView(Bundle savedInstanceState) {
@@ -175,6 +179,7 @@ public class MainActivity extends BaseActivity {
 
     //声明一个long类型变量：用于存放上一点击“返回键”的时刻
     private long mExitTime = 0;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         //判断用户是否点击了“返回键”

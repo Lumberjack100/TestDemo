@@ -216,7 +216,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
         printLog(msg.replace("\r\n", ""), R.color.receive_data_color);
         if (!usrBleViewModel.isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+            ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
             return;
         }
         if (isIOTCmd) {
@@ -245,7 +245,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
         try {
             if (isIOTCmd) {
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 tcpViewModel.sendMsgToServer(msg);
@@ -268,7 +268,7 @@ public class TcpToBleDebugActivity extends BaseActivity {
 
             } else {
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 tcpViewModel.sendMsgToServer(msg);

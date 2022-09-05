@@ -144,7 +144,7 @@ public class TcpVmsAdvancedSettingsFragment extends BaseVmsTcpCommunicateFragmen
             return;
         }
         if (!tcpViewModel.getConnectStatus()) {
-            ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+            ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
             return;
         }
         int id = view.getId();

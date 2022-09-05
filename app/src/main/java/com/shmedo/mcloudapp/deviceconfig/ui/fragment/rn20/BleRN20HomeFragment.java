@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
@@ -170,7 +171,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                     return;
                 }
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
@@ -447,7 +448,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
-                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+                showDisconnectDialog( StringUtils.getString(R.string.disconnect_device));
             }
         }
     }
@@ -612,7 +613,7 @@ public class BleRN20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     public boolean onBackPressed() {
         if (isConnected()) {
             isExitMode = true;
-            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            showDisconnectDialog( StringUtils.getString(R.string.finish_activity_disconnect_bluetooth_device));
             return true;
         }
         return false;

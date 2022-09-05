@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -117,7 +118,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.refresh_failed_while_device_disconnected));
+                    ToastUtils.show(StringUtils.getString(R.string.refresh_failed_while_device_disconnected));
                     mRefreshLayout.finishRefresh(false);
                     return;
                 }
@@ -176,7 +177,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
 
             case R.id.dataCenterOneLayout:
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_ONE, "");
@@ -184,7 +185,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
 
             case R.id.dataCenterTwoLayout:
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_TWO, "");
@@ -192,7 +193,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
 
             case R.id.dataCenterThreeLayout:
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_THREE, "");
@@ -200,7 +201,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
 
             case R.id.btn_confirm:
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 processSave();

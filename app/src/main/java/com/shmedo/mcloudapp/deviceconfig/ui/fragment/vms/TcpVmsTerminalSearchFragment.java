@@ -120,7 +120,7 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
                     return;
                 }
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
@@ -131,7 +131,7 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                     return true;
                 }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
@@ -146,7 +146,7 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
                     return;
                 }
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                     return;
                 }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);

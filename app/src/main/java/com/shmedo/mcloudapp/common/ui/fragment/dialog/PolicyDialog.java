@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.WebViewActivity;
 
@@ -75,7 +76,7 @@ public class PolicyDialog extends DialogFragment {
 
 
     private void urlSpan() {
-        String text = getActivity().getResources().getString(R.string.privacy_agreement_desc);
+        String text = StringUtils.getString(R.string.privacy_agreement_desc);
         SpannableString spannableString = new SpannableString(text);
         int start1 = text.indexOf("《用户协议和免责条款》");
         int end1 = start1 + "《用户协议和免责条款》".length();
@@ -128,7 +129,7 @@ public class PolicyDialog extends DialogFragment {
         public void updateDrawState(TextPaint ds) {
             super.updateDrawState(ds);
             //设置文本的颜色
-            ds.setColor(context.getResources().getColor(R.color.colorPrimary));
+            ds.setColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.colorPrimary));
             //超链接形式的下划线，false 表示不显示下划线，true表示显示下划线
             ds.setUnderlineText(false);
         }

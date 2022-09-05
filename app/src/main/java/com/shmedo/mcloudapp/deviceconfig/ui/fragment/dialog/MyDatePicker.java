@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.util.DateUtil;
 
@@ -92,7 +92,7 @@ public class MyDatePicker extends BaseDialogFragment {
             mCurMonth = Integer.parseInt(str[1]) - 1;
             mCurDay = Integer.parseInt(str[2]) - 1;
         }
-        dateType = mActivity.getResources().getStringArray(R.array.date);
+        dateType =  StringUtils.getStringArray(R.array.date);
 
         // year
         yearAdapter = new DateNumericAdapter(mActivity, curYear - YEAR_MAX, curYear + 100);

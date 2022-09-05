@@ -272,7 +272,7 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
      */
     private void takePhoto() {
         if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            ToastUtils.show(getString(R.string.operation_failed_without_sdcard));
+            ToastUtils.show(StringUtils.getString(R.string.operation_failed_without_sdcard));
             return;
         }
         // 创建 File 对象，用于存储拍照后的图片

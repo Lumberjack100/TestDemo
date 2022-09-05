@@ -82,7 +82,7 @@ public class BleAdmeHacInclinometerFragment extends BaseUSRBleIotCommunicateFrag
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (!hacInclinometerView.checkValueIsValid()) {

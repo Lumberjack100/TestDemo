@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
-import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.at.ATCommand;
 import com.shmedo.configlibrary.at.WHBLE102CommandType;
@@ -115,7 +115,7 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
         hexWatcher = new TextUtil.HexWatcher(mEtHexValue);
         hexWatcher.enable(hexEnabled);
         mEtHexValue.addTextChangedListener(hexWatcher);
-        mEtHexValue.setHint(hexEnabled ? getResources().getString(R.string.hex_characters) : "");
+        mEtHexValue.setHint(hexEnabled ? StringUtils.getString(R.string.hex_characters) : "");
 
         chkHex.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -177,28 +177,28 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
         int id = v.getId();
         if (id == R.id.btnFirst) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             enterCommand();
 
         } else if (id == R.id.btnSecond) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             queryLink();
 
         } else if (id == R.id.btnThird) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             exitCommand();
 
         } else if (id == R.id.btnFourth) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             send("01 03 04 08 00 01 04 F8");
@@ -215,8 +215,8 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
                 ivExpand.setRotation(180f);
             }
         } else if (id == R.id.tvTailNewLine) {
-            String[] newlineNames = getResources().getStringArray(R.array.newline_names);
-            String[] newlineValues = getResources().getStringArray(R.array.newline_values);
+            String[] newlineNames =  StringUtils.getStringArray(R.array.newline_names);
+            String[] newlineValues =  StringUtils.getStringArray(R.array.newline_values);
             int pos = Arrays.asList(newlineValues).indexOf(newline);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Newline");
@@ -229,7 +229,7 @@ public class InclinometerDebugBoxLoggerFragment extends BaseUSBSerialCommunicate
 
         } else if (id == R.id.btnSend) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             send(mEtHexValue.getText().toString());

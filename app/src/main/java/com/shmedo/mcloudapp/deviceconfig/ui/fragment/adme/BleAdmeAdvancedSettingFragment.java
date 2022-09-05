@@ -109,7 +109,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
             return;
         }
         if (!isConnected()) {
-            ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+            ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
             return;
         }
         int id = v.getId();

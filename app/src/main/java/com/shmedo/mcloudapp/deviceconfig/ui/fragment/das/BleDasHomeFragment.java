@@ -212,7 +212,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     mSbActiveState.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -244,7 +244,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
                 selectedConfigModule = (ConfigModule) configModuleList.get(position);
@@ -386,7 +386,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private void showProgressBar() {
-        WaitDialog.show(getString(R.string.ble_state_connecting))
+        WaitDialog.show(StringUtils.getString(R.string.ble_state_connecting))
                 .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
                     @Override
                     public boolean onBackPressed() {
@@ -457,7 +457,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 connectDevice(device.getDevice());
             } else {//断开连接处理
                 isExitMode = false;
-                showDisconnectDialog(getResources().getString(R.string.disconnect_device));
+                showDisconnectDialog(StringUtils.getString(R.string.disconnect_device));
             }
         }
     }
@@ -715,7 +715,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     public boolean onBackPressed() {
         if (isConnected()) {
             isExitMode = true;
-            showDisconnectDialog(getResources().getString(R.string.finish_activity_disconnect_bluetooth_device));
+            showDisconnectDialog(StringUtils.getString(R.string.finish_activity_disconnect_bluetooth_device));
             return true;
         }
         return false;

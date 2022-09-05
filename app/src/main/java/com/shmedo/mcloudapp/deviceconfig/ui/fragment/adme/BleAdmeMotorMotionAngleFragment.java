@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeGuideGrooveCalibrationEntity;
@@ -246,7 +247,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
         } else if (id == R.id.btn_stop) {
             isStopClick = true;
             if (!bleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             stopAllProgress();
@@ -254,7 +255,7 @@ public class BleAdmeMotorMotionAngleFragment extends BaseDialogFragment {
 
         } else if (id == R.id.btn_pause) {
             if (!bleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             isStopClick = false;

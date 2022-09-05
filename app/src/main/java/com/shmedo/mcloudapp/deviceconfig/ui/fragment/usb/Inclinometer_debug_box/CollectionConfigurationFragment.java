@@ -144,7 +144,7 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
 
         } else if (id == R.id.btn_save) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(v);

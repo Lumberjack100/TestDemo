@@ -245,7 +245,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
         } else if (id == R.id.btn_run) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (!checkValueIsValid()) {

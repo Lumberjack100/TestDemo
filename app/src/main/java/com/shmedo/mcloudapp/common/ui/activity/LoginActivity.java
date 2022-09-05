@@ -142,7 +142,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
     }
 
     private void initLoginUserProtocol() {
-        String text = getResources().getString(R.string.login_protocol_desc);
+        String text = StringUtils.getString(R.string.login_protocol_desc);
         SpannableString spannableString = new SpannableString(text);
         int start1 = text.indexOf("《用户协议与免责条款》");
         int end1 = start1 + "《用户协议与免责条款》".length();

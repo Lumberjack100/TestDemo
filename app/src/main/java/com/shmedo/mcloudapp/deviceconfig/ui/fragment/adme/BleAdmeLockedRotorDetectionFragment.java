@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
@@ -172,7 +173,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -188,7 +189,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     mSbPullUpEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -343,7 +344,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
         if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             if (!checkValueIsValid()) {

@@ -9,6 +9,7 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -82,7 +83,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -93,7 +94,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     lowPowerEnableSBtn.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -104,7 +105,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isConnected()) {
-                    ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     anthropomorphicEnableSBtn.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }

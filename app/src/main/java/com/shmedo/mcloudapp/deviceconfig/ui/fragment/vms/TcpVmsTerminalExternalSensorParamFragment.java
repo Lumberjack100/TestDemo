@@ -234,7 +234,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                    ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                     mSbSensorEnable.setCheckedImmediatelyNoEvent(!isChecked);
                     return;
                 }
@@ -303,7 +303,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!tcpViewModel.getConnectStatus()) {
-                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                 return;
             }
             if (!checkValueIsValid()) {

@@ -59,7 +59,7 @@ public class DeviceCurrentRunStateUtils {
      */
     public static String setSensorDataStatus(TextView textView, String status, Context context) {
         if (status.equals("0")) {
-            textView.setTextColor(context.getResources().getColor(R.color.text_color_3AD094));
+            textView.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_3AD094));
             return "正常";
         } else if (status.equals("1")) {
             textView.setTextColor(Color.RED);

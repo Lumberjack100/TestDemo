@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.github.razir.progressbutton.DrawableButtonExtensionsKt;
 import com.github.razir.progressbutton.ProgressButtonHolderKt;
 import com.github.razir.progressbutton.ProgressParams;
@@ -188,7 +189,7 @@ public class BleAdmeHacAutoMeasuringHoleDepthDialog extends BaseDialogFragment {
             }
         } else if (id == R.id.btn_stop) {
             if (!bleViewModel.isConnected()) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             stopQueryMotorStateProgress();

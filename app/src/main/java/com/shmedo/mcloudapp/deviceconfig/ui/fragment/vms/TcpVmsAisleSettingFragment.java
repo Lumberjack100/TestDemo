@@ -89,7 +89,7 @@ public class TcpVmsAisleSettingFragment extends BaseVmsTcpCommunicateFragment {
         if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!tcpViewModel.getConnectStatus()) {
-                ToastUtils.show(getString(R.string.tcp_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.tcp_config_disconnect_warn));
                 return;
             }
             if (!vmsAisleSettingView.checkValueIsValid()) {

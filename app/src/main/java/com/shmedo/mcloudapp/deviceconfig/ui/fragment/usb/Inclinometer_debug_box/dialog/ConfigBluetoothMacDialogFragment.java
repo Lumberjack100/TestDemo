@@ -200,7 +200,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
 
         } else if (id == R.id.btn_link) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             if (mEtMacAddr.getText().toString().trim().length() != 12) {

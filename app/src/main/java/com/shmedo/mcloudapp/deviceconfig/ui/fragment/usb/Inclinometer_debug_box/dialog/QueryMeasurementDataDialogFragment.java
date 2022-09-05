@@ -187,11 +187,11 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
 
         } else if (id == R.id.btn_query_data) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             if (!isBluetoothConnected) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             stopProgressAll();
@@ -201,11 +201,11 @@ public class QueryMeasurementDataDialogFragment extends BaseDebugBoxDialogFragme
             queryData();
         } else if (id == R.id.btn_continuous_collection) {
             if (!isConnected()) {
-                ToastUtils.show(getString(R.string.usb_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
             if (!isBluetoothConnected) {
-                ToastUtils.show(getString(R.string.ble_config_disconnect_warn));
+                ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
             stopProgressAll();
