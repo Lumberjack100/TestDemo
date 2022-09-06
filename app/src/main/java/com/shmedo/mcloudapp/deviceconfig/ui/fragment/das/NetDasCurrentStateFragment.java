@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.google.gson.reflect.TypeToken;
@@ -325,10 +324,23 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         sensorAdapter = new CommonAdapter<DasSensorStatusInfo>(getActivity(), R.layout.item_sensor_status, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, DasSensorStatusInfo sensorStatusInfo, int position) {
-                String type = sensorStatusInfo.getType();
-                type = type.charAt(0) == '0' ? type.substring(1) : type;
                 try {
+                    String type = sensorStatusInfo.getType();
+                    type = type.charAt(0) == '0' ? type.substring(1) : type;
                     IOTSensorType sensorType = IOTSensorType.value(type);
+
+                    String sensorAisle = (sensorType == IOTSensorType.KANG_PERCOLATE ||
+                            sensorType == IOTSensorType.GUDAN_PERCOLATE ||
+                            sensorType == IOTSensorType.GUDAN_STRESS ||
+                            sensorType == IOTSensorType.JUNXING_ZLJ_300T) ? String.valueOf(sensorStatusInfo.getAddr() + 1) : String.valueOf(sensorStatusInfo.getAddr());
+                    holder.setText(R.id.tv_address, "通道" + sensorAisle);
+                    holder.setText(R.id.tv_status, SensorErrorType.getErrorMessageByCode(String.valueOf(sensorStatusInfo.getErrno())));
+                    if (sensorStatusInfo.getErrno() == 0) {
+                        holder.setTextColorRes(R.id.tv_status, R.color.text_color_3AD094);
+                    } else {
+                        holder.setTextColorRes(R.id.tv_status, R.color.red);
+                    }
+
                     switch (sensorType) {
                         case WIRE_SHIFT://拉绳式裂缝计
                             holder.setText(R.id.tv_sensor_name, IOTSensorType.WIRE_SHIFT.getDescription());
@@ -552,19 +564,8 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             holder.setText(R.id.tv_value1, sensorStatusInfo.getVal() + "");
                             break;
                     }
-                    String sensorAisle = (sensorType == IOTSensorType.KANG_PERCOLATE ||
-                            sensorType == IOTSensorType.GUDAN_PERCOLATE ||
-                            sensorType == IOTSensorType.GUDAN_STRESS ||
-                            sensorType == IOTSensorType.JUNXING_ZLJ_300T) ? String.valueOf(sensorStatusInfo.getAddr() + 1) : String.valueOf(sensorStatusInfo.getAddr());
-                    holder.setText(R.id.tv_address, "通道" + sensorAisle);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                }
-                holder.setText(R.id.tv_status, SensorErrorType.getErrorMessageByCode(String.valueOf(sensorStatusInfo.getErrno())));
-                if (sensorStatusInfo.getErrno() == 0) {
-                    holder.setTextColorRes(R.id.tv_status, R.color.text_color_3AD094);
-                } else {
-                    holder.setTextColorRes(R.id.tv_status, R.color.red);
                 }
             }
         };

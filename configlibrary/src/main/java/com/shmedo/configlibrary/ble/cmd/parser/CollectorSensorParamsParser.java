@@ -159,6 +159,19 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
             }
             break;
 
+            case INCLINOMETER: {//固定测斜仪
+                sensorParamsInfo = new CollectorSensorParamsInfo();
+                sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
+                sensorParamsInfo.setChannelNumber(strs[0].substring(7, 9));
+                sensorParamsInfo.setSensorAddress(strs[1]);
+                sensorParamsInfo.setSensorType(sensorType);
+                CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
+                commonDigitalSensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
+                commonDigitalSensorInfo.setCorrectionValue((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? "0" : strs[5]);
+                commonDigitalSensorInfo.setExValue1((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
+            }
+            break;
+
             default: {
 //                 RAIN_GAUGE://雨量计
 //                 WIRE_SHIFT://裂缝计
@@ -173,11 +186,11 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
 //                 STATIC_LEVEL://静力水准
 //                 WEATHER_STATION: //气象计
                 sensorParamsInfo = new CollectorSensorParamsInfo();
-                CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
                 sensorParamsInfo.setCollectorModel(CollectorModel.value(strs[0].substring(5, 7)));
                 sensorParamsInfo.setChannelNumber(strs[0].substring(7, 9));
                 sensorParamsInfo.setSensorAddress(strs[1]);
                 sensorParamsInfo.setSensorType(sensorType);
+                CommonDigitalSensorInfo commonDigitalSensorInfo = new CommonDigitalSensorInfo();
                 commonDigitalSensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
                 commonDigitalSensorInfo.setCorrectionValue((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
                 if (strs.length >= 6)
