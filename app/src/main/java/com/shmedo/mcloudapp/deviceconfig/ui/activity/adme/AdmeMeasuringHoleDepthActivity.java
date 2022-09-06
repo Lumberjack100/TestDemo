@@ -25,7 +25,7 @@ public class AdmeMeasuringHoleDepthActivity extends BaseConfigFragmentContainerA
         Intent intent = new Intent(context, AdmeMeasuringHoleDepthActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }

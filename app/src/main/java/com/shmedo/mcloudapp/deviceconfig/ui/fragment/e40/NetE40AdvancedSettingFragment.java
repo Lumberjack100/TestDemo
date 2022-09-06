@@ -11,7 +11,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40GpsWorkParamActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.e40.E40RtkParamActivity;
@@ -21,7 +23,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchC
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.CommonCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.DispatchCmdFailedDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +42,7 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     public static NetE40AdvancedSettingFragment newInstance(DeviceInfo deviceInfo) {
         NetE40AdvancedSettingFragment fragment = new NetE40AdvancedSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

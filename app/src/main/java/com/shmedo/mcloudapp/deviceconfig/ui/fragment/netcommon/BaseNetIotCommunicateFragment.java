@@ -64,7 +64,6 @@ import timber.log.Timber;
  * 描述：     TODO #gh#
  */
 public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
-    protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
     protected static final int DELAY_10000_MILLIS = 10000;
     protected static final int DELAY_15000_MILLIS = 15000;
     protected static final int DELAY_20000_MILLIS = 20000;
@@ -135,8 +134,8 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().containsKey(PRO_DEVICE_INFO)) {
-            deviceInfo = getArguments().getParcelable(PRO_DEVICE_INFO);
+        if (getArguments() != null && getArguments().containsKey(AppContants.Extras.DEVICE_INFO)) {
+            deviceInfo = getArguments().getParcelable(AppContants.Extras.DEVICE_INFO);
         }
     }
 

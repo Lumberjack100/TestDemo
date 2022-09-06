@@ -31,7 +31,6 @@ import butterknife.BindView;
  * 描述：    通用网络模式设备配置主页面
  */
 public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunicateFragment {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
 
     @BindView(R.id.tv_device_name)
     protected TextView mTvDeviceName;//设备名称
@@ -64,16 +63,6 @@ public abstract class UniversalNetConfigHomeFragment extends BaseNetIotCommunica
     protected List<ConfigModule> configModuleList = new ArrayList<>();
     protected ConfigModule selectedConfigModule;
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            if (getArguments().containsKey(EXTRA_DEVICE)) {
-                deviceInfo = getArguments().getParcelable(EXTRA_DEVICE);
-            }
-        }
-    }
 
     @Override
     protected int getLayoutId() {

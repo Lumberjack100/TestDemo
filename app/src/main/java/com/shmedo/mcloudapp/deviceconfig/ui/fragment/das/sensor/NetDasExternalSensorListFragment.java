@@ -96,7 +96,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
     public static NetDasExternalSensorListFragment newInstance(DeviceInfo deviceInfo) {
         NetDasExternalSensorListFragment fragment = new NetDasExternalSensorListFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

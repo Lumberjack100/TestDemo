@@ -19,11 +19,12 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.e40.E40SerialPortInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +61,7 @@ public class NetE40SerialPortParamFragment extends BaseNetIotCommunicateFragment
     public static NetE40SerialPortParamFragment newInstance(DeviceInfo deviceInfo) {
         NetE40SerialPortParamFragment fragment = new NetE40SerialPortParamFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

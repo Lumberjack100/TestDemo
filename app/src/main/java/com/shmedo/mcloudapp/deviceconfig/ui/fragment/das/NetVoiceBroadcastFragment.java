@@ -26,6 +26,7 @@ import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -63,7 +64,7 @@ public class NetVoiceBroadcastFragment extends BaseNetIotCommunicateFragment {
     public static NetVoiceBroadcastFragment newInstance(DeviceInfo deviceInfo) {
         NetVoiceBroadcastFragment fragment = new NetVoiceBroadcastFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

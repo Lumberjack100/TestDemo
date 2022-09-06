@@ -16,12 +16,13 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeExecutiveAgencyInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.adme.AdmeExecutiveAgencyView;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
     public static NetAdmeExecutiveAgencyFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeExecutiveAgencyFragment fragment = new NetAdmeExecutiveAgencyFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

@@ -26,7 +26,7 @@ public class VmsTerminalParamSettingActivity extends BaseConfigFragmentContainer
 
     public static void startActivity(Context context, DeviceInfo deviceInfo, VmsTerminalInfo vmsTerminalInfo) {
         Intent intent = new Intent(context, VmsTerminalParamSettingActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(TERMINAL_INFO, vmsTerminalInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);

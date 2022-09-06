@@ -31,6 +31,7 @@ import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.DataCenterStatus;
 import com.shmedo.configlibrary.iot.model.IotLogOutputInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -85,7 +86,7 @@ public class NetVmsAdvancedSettingsFragment extends BaseNetIotCommunicateFragmen
     public static NetVmsAdvancedSettingsFragment newInstance(DeviceInfo deviceInfo) {
         NetVmsAdvancedSettingsFragment fragment = new NetVmsAdvancedSettingsFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

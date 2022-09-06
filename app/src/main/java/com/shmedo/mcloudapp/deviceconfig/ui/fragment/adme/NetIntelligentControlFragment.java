@@ -22,6 +22,7 @@ import com.shmedo.configlibrary.iot.model.adme.AdmeAnthropomorphicMovementInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeLowEnergyModeInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -60,7 +61,7 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     public static NetIntelligentControlFragment newInstance(DeviceInfo deviceInfo) {
         NetIntelligentControlFragment fragment = new NetIntelligentControlFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

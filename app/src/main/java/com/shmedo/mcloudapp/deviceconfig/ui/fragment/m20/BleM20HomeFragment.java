@@ -100,7 +100,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     public static BleM20HomeFragment newInstance(DiscoveredBluetoothDevice device) {
         BleM20HomeFragment fragment = new BleM20HomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, device);
+        args.putParcelable(AppContants.Extras.BLE_DEVICE, device);
         fragment.setArguments(args);
         return fragment;
     }
@@ -109,7 +109,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            device = getArguments().getParcelable(EXTRA_DEVICE);
+            device = getArguments().getParcelable(AppContants.Extras.BLE_DEVICE);
             sn = device.getName().replaceFirst("(MD)(-?)", "");
         }
     }

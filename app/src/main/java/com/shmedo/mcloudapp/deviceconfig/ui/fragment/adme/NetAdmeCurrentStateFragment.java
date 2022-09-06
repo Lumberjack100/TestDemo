@@ -17,6 +17,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.adme.AdmeCurrentStateInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotionState;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
@@ -51,7 +52,7 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
     public static NetAdmeCurrentStateFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeCurrentStateFragment fragment = new NetAdmeCurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

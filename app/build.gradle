@@ -219,7 +219,7 @@ dependencies {
     implementation 'com.zhy:okhttputils:2.6.2'
 
 //    debugImplementation because LeakCanary should only run in debug builds
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 // 日志调试框架：https://github.com/getActivity/Logcat
     debugImplementation 'com.github.getActivity:Logcat:10.6'
 

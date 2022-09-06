@@ -77,8 +77,6 @@ import timber.log.Timber;
  * 描述：     DAS蓝牙配置主页面
  */
 public class BleDasHomeFragment extends BaseBleCommunicateFragment {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
-
     private static final int LOW_ENERGY_MODEL = 0x0001;
     private static final int REBOOT = 0x0002;
 
@@ -134,7 +132,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     public static BleDasHomeFragment newInstance(DiscoveredBluetoothDevice device) {
         BleDasHomeFragment fragment = new BleDasHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, device);
+        args.putParcelable(AppContants.Extras.BLE_DEVICE, device);
         fragment.setArguments(args);
         return fragment;
     }
@@ -144,7 +142,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            device = getArguments().getParcelable(EXTRA_DEVICE);
+            device = getArguments().getParcelable(AppContants.Extras.BLE_DEVICE);
             sn = device.getName().replaceFirst("(MD)(-?)", "");
             type = ProductType.valueBySuffix(device.getName());
         }

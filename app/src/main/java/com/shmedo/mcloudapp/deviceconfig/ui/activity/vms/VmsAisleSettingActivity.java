@@ -25,7 +25,7 @@ public class VmsAisleSettingActivity extends BaseConfigFragmentContainerActivity
 
     public static void startActivity(Context context, DeviceInfo deviceInfo, VmsAisleNumber vmsAisleNumber) {
         Intent intent = new Intent(context, VmsAisleSettingActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(VMS_AISLE_NUMBER, vmsAisleNumber);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);

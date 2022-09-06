@@ -24,8 +24,6 @@ import butterknife.OnClick;
  * 描述：     TODO #gh#
  */
 public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
-    protected static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
-
     @BindView(R.id.tv_title)
     protected TextView mToolbarTitle;
 
@@ -35,11 +33,11 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
     @BindView(R.id.tv_action)
     protected TextView mTvAction;
 
-    protected int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
-
     protected Fragment fragment;
 
     protected Intent intent;
+
+    protected int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
     protected DeviceInfo deviceInfo;
 
@@ -65,8 +63,8 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
         if (intent.getExtras().containsKey(AppContants.Extras.COMMUNICATION_WAY)) {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
-        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            deviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
+        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_INFO)) {
+            deviceInfo = intent.getParcelableExtra(AppContants.Extras.DEVICE_INFO);
         }
     }
 

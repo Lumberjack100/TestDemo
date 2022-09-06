@@ -119,7 +119,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     public static NetVmsTerminalExternalSensorParamFragment newInstance(DeviceInfo deviceInfo, VmsTerminalSensorInfo sensorInfo) {
         NetVmsTerminalExternalSensorParamFragment fragment = new NetVmsTerminalExternalSensorParamFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         args.putParcelable(AppContants.Extras.SENSOR_PARAM, sensorInfo);
         fragment.setArguments(args);
         return fragment;

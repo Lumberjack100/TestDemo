@@ -40,8 +40,6 @@ import java.util.List;
  * 描述：     Das设备配置页面
  */
 public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
-    private static final String BLE_DEVICE = "com.shmedo.mcloudapp.BLE_DEVICE";
-
     private ProductType productType = ProductType.UnKnown;
 
     private DiscoveredBluetoothDevice device;
@@ -63,7 +61,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             }
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, type);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
@@ -86,7 +84,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             }
         }
         Intent intent = new Intent(context, DeviceConfigActivity.class);
-        intent.putExtra(BLE_DEVICE, device);
+        intent.putExtra(AppContants.Extras.BLE_DEVICE, device);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.BLE_CONNECT);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, type);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -114,7 +112,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
             return;
 
         if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            device = intent.getParcelableExtra(BLE_DEVICE);
+            device = intent.getParcelableExtra(AppContants.Extras.BLE_DEVICE);
         }
         if (intent.getExtras().containsKey(AppContants.Extras.PRODUCT_TYPE)) {
             productType = (ProductType) intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE);

@@ -58,8 +58,6 @@ import timber.log.Timber;
  * 描述：    与有人物联网蓝牙模块通讯的页面基类
  */
 public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
-    public static final String EXTRA_DEVICE = "com.shmedo.mcloudapp.EXTRA_DEVICE";
-
     protected static final int DELAY_5000_MILLIS = 5000;
     protected static final int DELAY_10000_MILLIS = 10000;//发送指令超时时间
     protected static final int DELAY_15000_MILLIS = 15000;//蓝牙连接超时时间

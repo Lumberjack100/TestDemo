@@ -29,7 +29,7 @@ public class DataCenterConfigActivity extends BaseConfigFragmentContainerActivit
     public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, ProductType productType, DeviceInfo deviceInfo, ServerNumber serverNumber, String status) {
         Intent intent = new Intent(context, DataCenterConfigActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.DATA_CENTER_NUMBER, serverNumber);
         intent.putExtra(AppContants.Extras.DATA_CENTER_STATUS, status);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

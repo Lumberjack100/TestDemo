@@ -61,7 +61,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
         args.putSerializable(AppContants.Extras.PRODUCT_TYPE, productType);
         args.putSerializable(AppContants.Extras.DATA_CENTER_NUMBER, serverNumber);
         args.putSerializable(AppContants.Extras.DATA_CENTER_STATUS, status);
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

@@ -18,12 +18,13 @@ import com.shmedo.configlibrary.iot.enums.VmsAisleNumber;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.view.vms.VmsAisleSettingView;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +51,7 @@ public class NetVmsAisleSettingFragment extends BaseNetIotCommunicateFragment {
     public static NetVmsAisleSettingFragment newInstance(DeviceInfo deviceInfo, VmsAisleNumber vmsAisleNumber) {
         NetVmsAisleSettingFragment fragment = new NetVmsAisleSettingFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         args.putSerializable(VMS_AISLE_NUMBER, vmsAisleNumber);
         fragment.setArguments(args);
         return fragment;

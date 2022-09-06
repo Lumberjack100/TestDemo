@@ -32,7 +32,7 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
     public static void startActivity(Context context, ProductType productType, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -40,7 +40,7 @@ public class DataCenterHomeActivity extends BaseConfigFragmentContainerActivity 
     public static void startActivity(Context context, ProductType productType, DeviceInfo deviceInfo, boolean isLevelInit) {
         Intent intent = new Intent(context, DataCenterHomeActivity.class);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(LEVEL_INITIAL, isLevelInit);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);

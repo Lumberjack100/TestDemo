@@ -35,6 +35,7 @@ import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
@@ -255,7 +256,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     public static NetDasCurrentStateFragment newInstance(DeviceInfo deviceInfo) {
         NetDasCurrentStateFragment fragment = new NetDasCurrentStateFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

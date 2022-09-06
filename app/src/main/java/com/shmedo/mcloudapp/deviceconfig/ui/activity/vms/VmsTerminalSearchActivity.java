@@ -21,7 +21,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
  * 描述：     Vms网关挂载的终端设备搜索页面
  */
 public class VmsTerminalSearchActivity extends BaseActivity {
-    private static final String PRO_DEVICE_INFO = "com.shmedo.mcloudapp.PRO_DEVICE_INFO";
 
     private int connectWay = AppContants.CommunicationWay.NET_PLATFORM_CONNECT;
 
@@ -32,7 +31,7 @@ public class VmsTerminalSearchActivity extends BaseActivity {
 
     public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, VmsTerminalSearchActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -65,8 +64,8 @@ public class VmsTerminalSearchActivity extends BaseActivity {
             connectWay = intent.getIntExtra(AppContants.Extras.COMMUNICATION_WAY, AppContants.CommunicationWay.NET_PLATFORM_CONNECT);
         }
 
-        if (intent.getExtras().containsKey(PRO_DEVICE_INFO)) {
-            deviceInfo = intent.getParcelableExtra(PRO_DEVICE_INFO);
+        if (intent.getExtras().containsKey(AppContants.Extras.DEVICE_INFO)) {
+            deviceInfo = intent.getParcelableExtra(AppContants.Extras.DEVICE_INFO);
         }
     }
 

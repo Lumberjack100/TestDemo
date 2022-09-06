@@ -24,7 +24,7 @@ public class VmsTerminalExternalSensorConfigActivity extends BaseConfigFragmentC
 
     public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, DeviceInfo deviceInfo, VmsTerminalSensorInfo sensorInfo) {
         Intent intent = new Intent(context, VmsTerminalExternalSensorConfigActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, sensorInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         launcher.launch(intent);

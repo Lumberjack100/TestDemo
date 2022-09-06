@@ -10,8 +10,6 @@ package com.shmedo.core
 interface AppContants {
 
     companion object {
-        const val TOKEN_UPDATE_TIME = "token_update_time"
-
         //是否显示隐私协议
         const val PRIVACY_AGREEMENT = "privacy_agreement"
     }
@@ -46,9 +44,13 @@ interface AppContants {
             //产品类型
             const val PRODUCT_TYPE = "product_type"
 
-            //设备信息
+            //4G 设备信息
             const val DEVICE_INFO = "device_info"
+
+            const val BLE_DEVICE = "ble_device"
+
             const val DEVICE_SN = "device_sn"
+
             const val COLLECTOR_MODE = "collector_mode"
             const val SENSOR_TYPE = "sensor_type"
             const val SENSOR_ADDRESS_LIST = "sensor_address_list"
@@ -63,6 +65,7 @@ interface AppContants {
 
             //数据中心状态
             const val DATA_CENTER_STATUS = "data_center_status"
+
             const val USB_PORT_NUM = "usb_port_num"
             const val USB_BAUD_RATE = "usb_baud_rate"
             const val USB_DEVICE_ID = "usb_device_id"

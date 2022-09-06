@@ -98,7 +98,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
     public static NetAdmeHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetAdmeHomeFragment fragment = new NetAdmeHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(PRO_DEVICE_INFO, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

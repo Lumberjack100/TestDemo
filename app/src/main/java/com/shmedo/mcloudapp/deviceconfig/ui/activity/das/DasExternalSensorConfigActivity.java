@@ -34,7 +34,7 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
 
     public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, DeviceInfo deviceInfo, IOTSensorType sensorType, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
         Intent intent = new Intent(context, DasExternalSensorConfigActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         intent.putStringArrayListExtra(AppContants.Extras.SENSOR_ADDRESS_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);

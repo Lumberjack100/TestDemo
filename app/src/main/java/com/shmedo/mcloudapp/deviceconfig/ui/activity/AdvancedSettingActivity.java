@@ -33,7 +33,7 @@ public class AdvancedSettingActivity extends BaseConfigFragmentContainerActivity
 
     public static void startActivity(Context context, DeviceInfo deviceInfo, ProductType productType) {
         Intent intent = new Intent(context, AdvancedSettingActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.PRODUCT_TYPE, productType);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);

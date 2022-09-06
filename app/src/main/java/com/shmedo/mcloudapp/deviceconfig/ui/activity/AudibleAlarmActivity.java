@@ -18,7 +18,7 @@ public class AudibleAlarmActivity extends BaseConfigFragmentContainerActivity {
 
     public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, AudibleAlarmActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }

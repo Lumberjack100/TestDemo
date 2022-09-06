@@ -20,7 +20,7 @@ public class E40SocketDataDebugActivity extends BaseConfigFragmentContainerActiv
 
     public static void startActivity(Context context, DeviceInfo deviceInfo) {
         Intent intent = new Intent(context, E40SocketDataDebugActivity.class);
-        intent.putExtra(PRO_DEVICE_INFO, deviceInfo);
+        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }

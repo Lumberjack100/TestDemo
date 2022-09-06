@@ -16,6 +16,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
@@ -64,7 +65,7 @@ public class NetE40HomeFragment extends UniversalNetConfigHomeFragment {
     public static NetE40HomeFragment newInstance(DeviceInfo deviceInfo) {
         NetE40HomeFragment fragment = new NetE40HomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

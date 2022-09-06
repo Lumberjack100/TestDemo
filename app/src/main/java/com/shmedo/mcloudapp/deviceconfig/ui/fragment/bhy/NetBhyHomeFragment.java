@@ -10,6 +10,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
@@ -40,7 +41,7 @@ public class NetBhyHomeFragment extends UniversalNetConfigHomeFragment {
     public static NetBhyHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetBhyHomeFragment fragment = new NetBhyHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }

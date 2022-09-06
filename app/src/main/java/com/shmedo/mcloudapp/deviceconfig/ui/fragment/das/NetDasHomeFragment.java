@@ -14,6 +14,7 @@ import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
+import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.ConfigModule;
 import com.shmedo.mcloudapp.deviceconfig.model.DevcieCurrentState;
@@ -49,7 +50,7 @@ public class NetDasHomeFragment extends UniversalNetConfigHomeFragment {
     public static NetDasHomeFragment newInstance(DeviceInfo deviceInfo) {
         NetDasHomeFragment fragment = new NetDasHomeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DEVICE, deviceInfo);
+        args.putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo);
         fragment.setArguments(args);
         return fragment;
     }
