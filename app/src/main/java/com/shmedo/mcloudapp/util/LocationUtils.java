@@ -2,24 +2,21 @@ package com.shmedo.mcloudapp.util;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.location.LocationManager;
-import android.os.Build;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
-import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kunminx.architecture.ui.callback.ProtectedUnPeekLiveData;
 import com.kunminx.architecture.ui.callback.UnPeekLiveData;
 import com.shmedo.core.MCloudApp;
-import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
-
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -30,7 +27,7 @@ import timber.log.Timber;
  * 创建时间:  2019-12-25
  * 描述：
  */
-public class LocationUtils {
+public class LocationUtils implements DefaultLifecycleObserver {
     @SuppressLint("StaticFieldLeak")
     private static AMapLocationClient mLocationClient;
 
@@ -42,14 +39,6 @@ public class LocationUtils {
     private String[] locationNeedPermissions = {
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-
-//    private static class LocationHolder {
-//        private static final LocationUtils INSTANCE = new LocationUtils();
-//    }
-//
-//    public static LocationUtils getInstance() {
-//        return LocationHolder.INSTANCE;
-//    }
 
     private final UnPeekLiveData<SyncPositionInfo> syncPositionBeanLiveData = new UnPeekLiveData<>();
 
@@ -69,33 +58,6 @@ public class LocationUtils {
         // 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
         boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         return gps || network;
-    }
-
-    public void getPositionPermission(Activity activity) {
-        if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
-            locationNeedPermissions = new String[]{
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            };
-        }
-        XPermissionUtils.requestPermissionsResult(activity, 200, locationNeedPermissions,
-                new XPermissionUtils.OnPermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        startLocalService();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(activity, deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(activity, StringUtils.getString(R.string.message_permission_location_rationale));
-                        } else {
-                            ToastUtils.show(StringUtils.getString(R.string.message_permission_location_denied));
-                        }
-                    }
-                });
     }
 
     public void startLocalService() {
@@ -159,4 +121,8 @@ public class LocationUtils {
         return mOption;
     }
 
+    @Override
+    public void onStop(@NonNull LifecycleOwner owner) {
+        stopLocalService();
+    }
 }

@@ -1,7 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -23,12 +25,21 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.hjq.toast.ToastUtils;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.ExplainReasonCallbackWithBeforeParam;
+import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
+import com.permissionx.guolindev.callback.RequestCallback;
+import com.permissionx.guolindev.request.ExplainScope;
+import com.permissionx.guolindev.request.ForwardScope;
+import com.shmedo.core.MCloudApp;
 import com.shmedo.core.util.JZLocationConverter;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.deviceconfig.model.SyncPositionInfo;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -107,7 +118,8 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
                 }
             }
         });
-        initView();
+       getLifecycle().addObserver(locationViewModel.locationUtils);
+       initView();
     }
 
     private void initView() {
@@ -164,7 +176,7 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
             dismiss();
 
         } else if (id == R.id.iv_locate) {
-            locationViewModel.locationUtils.getPositionPermission(activity);
+          getPosition();
 
         } else if (id == R.id.tv_cancel) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtLatLong);
@@ -208,13 +220,42 @@ public class SyncInstallationLocationDialog extends BaseDialogFragment {
         return true;
     }
 
-    public void setDialogFragmentClickListener(DialogFragmentClickListener listener) {
-        mListener = listener;
+
+    private void getPosition() {
+        List<String> requestList = new ArrayList<>();
+        requestList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
+            requestList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        }
+        PermissionX.init(this)
+                .permissions(requestList)
+                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
+                    @Override
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
+                    }
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
+                    @Override
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            locationViewModel.locationUtils.startLocalService();
+
+                        } else {
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
+                        }
+                    }
+                });
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        locationViewModel.locationUtils.stopLocalService();
+    public void setDialogFragmentClickListener(DialogFragmentClickListener listener) {
+        mListener = listener;
     }
 }

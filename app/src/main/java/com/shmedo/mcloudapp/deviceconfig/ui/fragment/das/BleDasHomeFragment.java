@@ -1,7 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Spannable;
@@ -29,6 +31,12 @@ import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.ExplainReasonCallbackWithBeforeParam;
+import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
+import com.permissionx.guolindev.callback.RequestCallback;
+import com.permissionx.guolindev.request.ExplainScope;
+import com.permissionx.guolindev.request.ForwardScope;
 import com.shmedo.configlibrary.ble.cmd.CommandManager;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
 import com.shmedo.configlibrary.ble.cmd.entity.InstallLocationEntity;
@@ -381,6 +389,7 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 }
             }
         });
+        getLifecycle().addObserver(locationViewModel.locationUtils);
     }
 
     private void showProgressBar() {
@@ -479,7 +488,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 initBaseConfigInfo(ResultParserUtil.getEntityObject(cmdStr));
-                locationViewModel.locationUtils.getPositionPermission(mActivity);
+//                locationViewModel.locationUtils.getPositionPermission(mActivity);
+                getPosition();
                 startHeart();
                 break;
 
@@ -656,6 +666,40 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         }
     }
 
+    private void getPosition() {
+        List<String> requestList = new ArrayList<>();
+        requestList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (Build.VERSION.SDK_INT > 28 && MCloudApp.getContext().getApplicationInfo().targetSdkVersion > 28) {
+            requestList.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        }
+        PermissionX.init(this)
+                .permissions(requestList)
+                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
+                    @Override
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
+                    }
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
+                    @Override
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            locationViewModel.locationUtils.startLocalService();
+
+                        } else {
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
+                        }
+                    }
+                });
+    }
+
     /**
      * 危险操作前弹框提醒
      */
@@ -706,7 +750,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     public void onPause() {
         super.onPause();
         stopDefaultProgress(AppContants.MsgWhat.CONNECT_DEVICE);
-        locationViewModel.locationUtils.stopLocalService();
     }
 
     @Override
