@@ -23,6 +23,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.BaseDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
@@ -271,7 +272,7 @@ public class BleM20HomeFragment extends BaseUSRBleIotCommunicateFragment {
         WaitDialog.show(getString(R.string.ble_state_connecting))
                 .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
                     @Override
-                    public boolean onBackPressed() {
+                    public boolean onBackPressed(BaseDialog dialog) {
                         disconnectDevice();
                         WaitDialog.dismiss();
                         return false;

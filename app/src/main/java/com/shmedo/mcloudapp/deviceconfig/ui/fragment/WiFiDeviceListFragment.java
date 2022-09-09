@@ -40,6 +40,7 @@ import com.hacknife.wifimanager.OnWifiStateChangeListener;
 import com.hacknife.wifimanager.State;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.BaseDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.permissionx.guolindev.PermissionX;
 import com.permissionx.guolindev.callback.ExplainReasonCallbackWithBeforeParam;
@@ -195,7 +196,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
         WaitDialog.show("处理中...")
                 .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
                     @Override
-                    public boolean onBackPressed() {
+                    public boolean onBackPressed(BaseDialog dialog) {
                         WaitDialog.dismiss();
                         return false;
                     }
@@ -432,6 +433,10 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     public void onDestroy() {
         MCloudApp.getMainHandler().removeCallbacksAndMessages(null);
         deviceApiKeyViewModel.deviceRequest.clearDeviceApiKey();
+        if (hackWiFiManager != null) {
+            hackWiFiManager.destroy();
+            hackWiFiManager = null;
+        }
         super.onDestroy();
     }
 

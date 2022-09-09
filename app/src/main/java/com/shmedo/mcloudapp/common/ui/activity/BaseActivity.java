@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.BaseDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.event.ForceToLoginEvent;
@@ -177,7 +178,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         WaitDialog.show(message)
                 .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
                     @Override
-                    public boolean onBackPressed() {
+                    public boolean onBackPressed(BaseDialog dialog) {
                         WaitDialog.dismiss();
                         return false;
                     }

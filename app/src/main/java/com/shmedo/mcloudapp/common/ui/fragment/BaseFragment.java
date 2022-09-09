@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.BaseDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
@@ -284,7 +285,7 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         WaitDialog.show(message)
                 .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
                     @Override
-                    public boolean onBackPressed() {
+                    public boolean onBackPressed(BaseDialog dialog) {
                         WaitDialog.dismiss();
                         return false;
                     }

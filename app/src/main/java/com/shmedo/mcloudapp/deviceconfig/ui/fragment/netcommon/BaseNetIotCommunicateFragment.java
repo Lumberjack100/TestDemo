@@ -19,6 +19,7 @@ import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.BaseDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommand;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -354,7 +355,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         WaitDialog.show(message)
                 .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
                     @Override
-                    public boolean onBackPressed() {
+                    public boolean onBackPressed(BaseDialog dialog) {
                         cancelRequest();
                         WaitDialog.dismiss();
                         return false;

@@ -26,6 +26,7 @@ import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.BottomMenu;
 import com.kongzue.dialogx.dialogs.WaitDialog;
+import com.kongzue.dialogx.interfaces.BaseDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.kongzue.dialogx.interfaces.OnMenuItemClickListener;
 import com.shmedo.configlibrary.ble.cmd.CommandResult;
@@ -364,9 +365,9 @@ public class TcpToBleDebugActivity extends BaseActivity {
             return;
         }
         WaitDialog.show("处理中...")
-                .setOnBackPressedListener(new OnBackPressedListener() {//返回按键监听
+                .setOnBackPressedListener(new OnBackPressedListener() {
                     @Override
-                    public boolean onBackPressed() {
+                    public boolean onBackPressed(BaseDialog dialog) {
                         WaitDialog.dismiss();
                         return false;
                     }
