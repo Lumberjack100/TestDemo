@@ -83,8 +83,6 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         initOKHttpUtils();
 
         initUpdate();
-
-//        initIFlySDK();
     }
 
     @NonNull
@@ -219,13 +217,6 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
             //UMConfigure.init调用中appkey和channel参数请置为null）
             UMConfigure.init(this, appKey, "production", UMConfigure.DEVICE_TYPE_PHONE, "");
         }
-    }
-
-    /**
-     * 初始化科大讯飞语音识别 SDK
-     */
-    private void initIFlySDK() {
-        SpeechUtility.createUtility(this, "appid=2ad1229c");
     }
 
 }

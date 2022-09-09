@@ -67,7 +67,7 @@
         <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
-            android:value="true" />
+            android:value="false" />
         <meta-data
             android:name="UMENG_APP_KEY"
             android:value="${umengAppkey}" /> <!-- 适配华为（huawei）刘海屏 -->

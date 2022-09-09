@@ -28,6 +28,7 @@ import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.PopTip;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -64,7 +65,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActi
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.QueryTerminalTimeDialog;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.TelemetryDialog;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.LocationViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -547,8 +547,9 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show("遥测指令出错!");
                     return;
                 }
-                BaseDispatchCmdDialog newFragment = new TelemetryDialog("遥测", tempStr);
-                newFragment.show(getChildFragmentManager(), "dialog");
+                PopTip.show("遥测成功!").setMarginBottom(ConvertUtils.dp2px(300)).autoDismiss(3000).iconSuccess();
+//                BaseDispatchCmdDialog newFragment = new TelemetryDialog("遥测", tempStr);
+//                newFragment.show(getChildFragmentManager(), "dialog");
             }
             break;
 

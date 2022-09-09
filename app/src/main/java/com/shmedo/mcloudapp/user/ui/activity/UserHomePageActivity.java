@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.user.ui.activity;
 
+import static java.util.Arrays.asList;
 import static autodispose2.AutoDispose.autoDisposable;
 
 import android.Manifest;
@@ -31,6 +32,12 @@ import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.ExplainReasonCallbackWithBeforeParam;
+import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
+import com.permissionx.guolindev.callback.RequestCallback;
+import com.permissionx.guolindev.request.ExplainScope;
+import com.permissionx.guolindev.request.ForwardScope;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.model.UserWrapperInfo;
 import com.shmedo.mcloudapp.R;
@@ -42,7 +49,6 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zhihu.matisse.Matisse;
@@ -224,44 +230,59 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
     }
 
     private void checkTakePhotoPermission() {
-        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
-                        Manifest.permission.CAMERA},
-                new XPermissionUtils.OnPermissionListener() {
+        List<String> requestList = asList(Manifest.permission.CAMERA);
+        PermissionX.init(this)
+                .permissions(requestList)
+                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
                     @Override
-                    public void onPermissionGranted() {
-                        takePhoto();
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
                     }
-
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(UserHomePageActivity.this, deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(UserHomePageActivity.this, StringUtils.getString(R.string.message_permission_camera_rationale));
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            takePhoto();
+
                         } else {
-                            ToastUtils.show(StringUtils.getString(R.string.message_permission_camera_denied));
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
                         }
                     }
                 });
     }
 
     private void checkSDCardPermission() {
-        XPermissionUtils.requestPermissionsResult(this, 200, new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                new XPermissionUtils.OnPermissionListener() {
+        List<String> requestList = asList(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        PermissionX.init(this)
+                .permissions(requestList)
+                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
                     @Override
-                    public void onPermissionGranted() {
-                        chooseFromAlbum();
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
                     }
-
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(UserHomePageActivity.this, deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(UserHomePageActivity.this, StringUtils.getString(R.string.message_permission_storage_rationale));
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            chooseFromAlbum();
                         } else {
-                            ToastUtils.show(StringUtils.getString(R.string.message_permission_storage_denied));
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
                         }
                     }
                 });

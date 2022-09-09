@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment;
 
+import static java.util.Arrays.asList;
+
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -25,7 +27,8 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.ThreadUtils;
+import com.blankj.utilcode.util.Utils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.hacknife.wifimanager.HackWifiManager;
@@ -38,6 +41,12 @@ import com.hacknife.wifimanager.State;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.WaitDialog;
 import com.kongzue.dialogx.interfaces.OnBackPressedListener;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.ExplainReasonCallbackWithBeforeParam;
+import com.permissionx.guolindev.callback.ForwardToSettingsCallback;
+import com.permissionx.guolindev.callback.RequestCallback;
+import com.permissionx.guolindev.request.ExplainScope;
+import com.permissionx.guolindev.request.ForwardScope;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -47,7 +56,6 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.WiFiAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceBaseInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
@@ -132,7 +140,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 }
             }
         });
-        manager = (WifiManager) mActivity.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        manager = (WifiManager) Utils.getApp().getSystemService(Context.WIFI_SERVICE);
 
         initAdapter();
         initRefreshAnimation();
@@ -150,13 +158,13 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
                 DeviceConfigActivity.startActivity(getActivity(), ProductType.E40);
             }
         } else if (curWiFi.isSaved() || !curWiFi.isEncrypt()) {//已保存/未加密
-            WifiUtils.withContext(getContext().getApplicationContext())
+            WifiUtils.withContext(Utils.getApp())
                     .connectWith(curWiFi.name(), "")
                     .setTimeout(30000)
                     .onConnectionResult(successListener)
                     .start();
         } else {//加密
-            WifiUtils.withContext(getContext().getApplicationContext())
+            WifiUtils.withContext(Utils.getApp())
                     .connectWith(curWiFi.name(), "medo33923627")
                     .setTimeout(30000)
                     .onConnectionResult(successListener)
@@ -232,22 +240,29 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
      * 执行WiFi扫描前检查需要满足的权限
      */
     private void doConditionsCheckBeforeScan() {
-        XPermissionUtils.requestPermissionsResult(getActivity(), 200, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION},
-                new XPermissionUtils.OnPermissionListener() {
+        List<String> requestList = asList(Manifest.permission.ACCESS_FINE_LOCATION);
+        PermissionX.init(this)
+                .permissions(requestList)
+                .explainReasonBeforeRequest()
+                .onExplainRequestReason(new ExplainReasonCallbackWithBeforeParam() {
                     @Override
-                    public void onPermissionGranted() {
-                        refreshWifi();
+                    public void onExplainReason(ExplainScope scope, List<String> deniedList, boolean beforeRequest) {
+                        scope.showRequestReasonDialog(deniedList, "米易通需要以下权限继续", "允许", "拒绝");
                     }
-
+                })
+                .onForwardToSettings(new ForwardToSettingsCallback() {
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                        boolean allNeverAskAgain = XPermissionUtils.isAllNeverAskAgain(getActivity(), deniedPermissions);
-                        // 所有的权限都被勾上不再询问时，跳转到应用设置界面，引导用户手动打开权限
-                        if (allNeverAskAgain) {
-                            XPermissionUtils.showRefusePermissionDialog(getActivity(), StringUtils.getString(R.string.message_permission_wifi_location_rational));
+                    public void onForwardToSettings(ForwardScope scope, List<String> deniedList) {
+                        scope.showForwardToSettingsDialog(deniedList, "请前往设置页面授予权限", "去设置");
+                    }
+                })
+                .request(new RequestCallback() {
+                    @Override
+                    public void onResult(boolean allGranted, List<String> grantedList, List<String> deniedList) {
+                        if (allGranted) {
+                            refreshWifi();
                         } else {
-                            ToastUtils.show(StringUtils.getString(R.string.message_permission_location_denied));
+                            ToastUtils.show("下列权限被拒绝：" + deniedList);
                         }
                     }
                 });
@@ -258,7 +273,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
      */
     private void refreshWifi() {
         updateRefreshView(true);
-        WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
+        WifiUtils.withContext(Utils.getApp()).scanWifi(scanResultsListener).start();
         if (hackWiFiManager == null) {
             initThirdWiFiManager();
         }
@@ -267,7 +282,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     private final ScanResultsListener scanResultsListener = new ScanResultsListener() {
         @Override
         public void onScanResults(@NonNull List<ScanResult> scanResults) {
-            mActivity.runOnUiThread(new Runnable() {
+            ThreadUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     updateRefreshView(false);
@@ -295,7 +310,7 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
     }
 
     private void initThirdWiFiManager() {
-        hackWiFiManager = HackWifiManager.create(mActivity);
+        hackWiFiManager = HackWifiManager.create(Utils.getApp());
         hackWiFiManager.setOnWifiChangeListener(new OnWifiChangeListener() {
             @Override
             public void onWifiChanged(List<IWifi> wifiList) {
@@ -357,12 +372,12 @@ public class WiFiDeviceListFragment extends BaseFragment implements TextWatcher,
             Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
             startActivityForResult(panelIntent, REQUEST_CODE_INTERNET_CONNECTIVITY);
         } else {
-            WifiUtils.withContext(getContext().getApplicationContext()).enableWifi(new WifiStateListener() {
+            WifiUtils.withContext(Utils.getApp()).enableWifi(new WifiStateListener() {
                 @Override
                 public void isSuccess(boolean isSuccess) {
                     if (isSuccess) {
                         updateRefreshView(true);
-                        WifiUtils.withContext(getContext().getApplicationContext()).scanWifi(scanResultsListener).start();
+                        WifiUtils.withContext(Utils.getApp()).scanWifi(scanResultsListener).start();
                     } else {
                         ToastUtils.show("无法开启 WiFi");
                     }

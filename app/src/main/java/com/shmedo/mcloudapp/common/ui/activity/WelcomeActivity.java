@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.common.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -15,7 +14,6 @@ import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.dialog.PolicyDialog;
 import com.shmedo.mcloudapp.util.LoginManager;
-import com.shmedo.mcloudapp.util.permission.XPermissionUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 
@@ -178,13 +176,5 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
                 finish();
             }
         }, delayMillis);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == XPermissionUtils.REQUEST_CODE_OPEN_APPLICATION_SETTING) {
-            goToLogin();
-        }
     }
 }
