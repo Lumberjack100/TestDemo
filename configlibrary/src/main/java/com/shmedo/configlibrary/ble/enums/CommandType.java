@@ -22,10 +22,6 @@ public enum CommandType {
      */
     WORK_MODE("006"),
     /**
-     * 北斗电源开关
-     */
-    BD_POWER_SWITCH("007"),
-    /**
      * 重启设备
      */
     REBOOT_DEVICE("008"),
@@ -34,21 +30,9 @@ public enum CommandType {
      */
     LOCAL_TIME("010"),
     /**
-     * 设置心跳包发送间隔
-     */
-    HEARTBEAT_SEND_INTERVAL("013"),
-    /**
      * 系统运行状态
      */
     SYSTEM_RUN_STATE("014"),
-    /**
-     * 设置电池过放保护电压
-     */
-    CELL_PROTECTION_VOLTAGE("015"),
-    /**
-     * 设置GPS定位
-     */
-    SETTING_GPS_POSITION("016"),
     /**
      * 设置低功耗模式
      */
@@ -57,14 +41,6 @@ public enum CommandType {
      * 保存配置信息
      */
     SAVE_CONFIG_INFO("019"),
-    /**
-     * 设置传感器接口类型
-     */
-    SENSOR_INTERFACE_TYPE("020"),
-    /**
-     * 设置数据传输协议
-     */
-    DATA_TRANSFER_PROTOCOL("030"),
     /**
      * 获取版本信息
      */
@@ -86,11 +62,6 @@ public enum CommandType {
      */
     QUERY_NETWORK_STATUS("044"),
     /**
-     * 查询太阳能控制器信息
-     */
-    QUERY_SOLAR_CONTROLLER_INFO("045"),
-
-    /**
      * 查询倾角计信息
      */
     QUERY_INCLINOMETER_INFO("046"),
@@ -99,17 +70,10 @@ public enum CommandType {
      */
     INSTANT_COLLEACTOR("110"),
     /**
-     * 设置传感器接口波特率
-     */
-    SENSOR_BAUD_RATE("114"),
-    /**
      * 恢复出厂设置
      */
     RESTORE_FACTORY_SETTING("119"),
-    /**
-     * 设置远程升级
-     */
-    SETTING_REMOTE_UPGRADE("120"),
+
     /**
      * 查询/同步安装位置
      */
