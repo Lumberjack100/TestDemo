@@ -47,6 +47,7 @@ public interface ApiService {
     @POST("QueryAllPermissionInService")
     Observable<ResponseWrapper<List<UserPermissionInfo>>> queryAllPermissionInService(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
+
     /**
      * 登录模块
      */
@@ -97,6 +98,11 @@ public interface ApiService {
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("QueryUserInCompany")
     Observable<ResponseWrapper<PageResult<BasicCompanyInfo>>> queryUserInCompany(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
+
+    //查询用户所在的所有公司列表
+    @Headers({RequestHeader.HEADER_ACCESS_TYPE})
+    @POST("QueryUserInCompanyList")
+    Observable<ResponseWrapper<List<BasicCompanyInfo>>> queryUserInCompanyList(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
     //获取公司信息
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
@@ -156,9 +162,6 @@ public interface ApiService {
     @POST("BatchFirmwareUpgrade")
     Observable<ResponseWrapper<List<FirmwareCmdInfo>>> batchFirmwareUpgrade(@Header(RequestHeader.ACCESS_TOKEN) String token, @Body RequestBody parameter);
 
-    /**
-     * 指令交互
-     */
     //批量透明指令下发(限定同一产品)
     @Headers({RequestHeader.HEADER_ACCESS_TYPE})
     @POST("BatchDispatchRawCmd")
@@ -177,6 +180,9 @@ public interface ApiService {
     @POST("DeviceLogin")
     Observable<ResponseWrapper<DeviceDebugAddress>> DeviceLogin(@Body RequestBody parameter);
 
+    /**
+     * 其他
+     */
     //蒲公英接口 检测App是否有更新
     @POST("check")
     Observable<ResponseWrapper<CheckSoftModel>> checkVersionUpdate(@Body RequestBody parameter);

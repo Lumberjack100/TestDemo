@@ -114,7 +114,7 @@ public class NetDeviceListFragment extends BaseFragment {
         initDeviceInfoAdapter();
         initRefreshLayout();
         initLoadMore();
-        if (MCloudApp.getPermissionNameList().contains("ListSuperInfo"))
+        if (MCloudApp.getPermissionTokenList().contains("ListSuperInfo"))
             isHasListSuperInfoPermission = true;
     }
 

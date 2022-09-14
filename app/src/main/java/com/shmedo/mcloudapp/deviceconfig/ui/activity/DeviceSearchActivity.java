@@ -197,7 +197,7 @@ public class DeviceSearchActivity extends BaseActivity {
         }
         RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
         ApiService apiService = MDRetrofit.getInstance().createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS);
-        Observable<ResponseWrapper<PageResult<DeviceInfo>>> observable = MCloudApp.getPermissionNameList().contains("ListSuperInfo") ? apiService.listSuperDevice(MCloudApp.getAccessToken(), body) : apiService.getDeviceList(MCloudApp.getAccessToken(), body);
+        Observable<ResponseWrapper<PageResult<DeviceInfo>>> observable = MCloudApp.getPermissionTokenList().contains("ListSuperInfo") ? apiService.listSuperDevice(MCloudApp.getAccessToken(), body) : apiService.getDeviceList(MCloudApp.getAccessToken(), body);
         observable.doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

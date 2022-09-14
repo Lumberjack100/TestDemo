@@ -36,14 +36,14 @@ public class LoginManager implements DefaultLifecycleObserver {
     public static final int LOGIN_CODE_FAIL_BUSINESS = 0x0040;
     public static final int LOGIN_CODE_FAIL_EXCEPTION = 0x0041;
 
-    private static LoginManager instance = new LoginManager();
-
     private LoginCallback loginCallback = null;
 
+    private static LoginManager instance = new LoginManager();
 
     public static LoginManager getInstance() {
         return instance;
     }
+
 
     private LoginManager() {
 
@@ -186,7 +186,6 @@ public class LoginManager implements DefaultLifecycleObserver {
         JSONObject jsonObjectRequest = new JSONObject();
         try {
             jsonObjectRequest.put("companyID", companyID);
-            jsonObjectRequest.put("userID", userID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -234,8 +233,7 @@ public class LoginManager implements DefaultLifecycleObserver {
             tempList.add(permissionInfo.getPermissionToken());
         }
         //用户在某公司某服务中的所有权限
-        MCloudApp.setUserPermissionInfoList(permissionInfoList);
-        MCloudApp.setPermissionNameList(tempList);
+        MCloudApp.setPermissionTokenList(tempList);
 
         if (!tempList.contains("DescribeUser")) {
             if (loginCallback != null) {

@@ -22,13 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
-import com.shmedo.mcloudapp.common.model.PageResult;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
-import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
@@ -74,12 +71,9 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
     private CompanySimpleInfoAdapter simpleInfoAdapter;
 
     private List<BasicCompanyInfo> tempList = new ArrayList<>();
-
     private BasicCompanyInfo basicCompanyInfo = null;
     private int lastCheckedId = -1;
 
-    private static final int PAGE_SIZE = 300;
-    private PageInfo pageInfo;
     private String keyWords;// 要输入的搜索关键字
 
     private DialogFragmentClickListener mListener;
@@ -103,9 +97,7 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvTitle.setText("选择企业");
-        pageInfo = new PageInfo(1);
         initAdapter();
-//        initLoadMore();
         setEditTextListener();
         processQueryUserInCompany();
     }
@@ -140,23 +132,6 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         });
         mRecyclerView.setAdapter(simpleInfoAdapter);
         mRecyclerView.setHasFixedSize(true);
-    }
-
-    /**
-     * 初始化加载更多
-     */
-    private void initLoadMore() {
-        simpleInfoAdapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                loadMore();
-            }
-        });
-        simpleInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
-        // 是否自定加载下一页（默认为true）
-        simpleInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
-        // 当数据不满一页时，是否继续自动加载（默认为true）
-        simpleInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
 
     private void setEditTextListener() {
@@ -196,16 +171,17 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         searchProcess();
     }
 
-    private void resetCompanyInfo() {
-        for (BasicCompanyInfo simpleInfo : tempList) {
-            if (simpleInfo.isChecked()) {
-                simpleInfo.setChecked(false);
-            }
-        }
-    }
-
     @Override
     public void afterTextChanged(Editable s) {
+    }
+
+    private void searchProcess() {
+        simpleInfoAdapter.setList(new ArrayList<>());
+        for (BasicCompanyInfo simpleInfo : tempList) {
+            if (!TextUtils.isEmpty(simpleInfo.getCompanyName()) && simpleInfo.getCompanyName().contains(keyWords)) {
+                simpleInfoAdapter.addData(simpleInfo);
+            }
+        }
     }
 
     @OnClick({R.id.search_placeholder, R.id.tv_cancel_search, R.id.tv_cancel, R.id.tv_confirm})
@@ -230,11 +206,10 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         }
     }
 
-    private void searchProcess() {
-        simpleInfoAdapter.setList(new ArrayList<>());
+    private void resetCompanyInfo() {
         for (BasicCompanyInfo simpleInfo : tempList) {
-            if (!TextUtils.isEmpty(simpleInfo.getCompanyName()) && simpleInfo.getCompanyName().contains(keyWords)) {
-                simpleInfoAdapter.addData(simpleInfo);
+            if (simpleInfo.isChecked()) {
+                simpleInfo.setChecked(false);
             }
         }
     }
@@ -252,12 +227,6 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
         }
     }
 
-    /**
-     * 加载更多
-     */
-    private void loadMore() {
-        processQueryUserInCompany();
-    }
 
     /**
      * 查询用户在其中具有权限的公司，包括该公司的子公司(用于设备分配)
@@ -265,10 +234,8 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
     private void processQueryUserInCompany() {
         JSONObject jsonObjectRequest = new JSONObject();
         try {
-            jsonObjectRequest.put("pageSize", PAGE_SIZE);
-            jsonObjectRequest.put("currentPage", pageInfo.getPage());
-            jsonObjectRequest.put("companyName", null);
-            jsonObjectRequest.put("includeChild", false);
+            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -276,37 +243,22 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
 
         MDRetrofit.getInstance()
                 .createService()
-                .queryUserInCompany(MCloudApp.getAccessToken(), body)
+                .queryUserInCompanyList(MCloudApp.getAccessToken(), body)
                 .doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
-                .subscribe(new BaseObserver<PageResult<BasicCompanyInfo>>() {
+                .subscribe(new BaseObserver<List<BasicCompanyInfo>>() {
                     @Override
-                    protected void onResponse(PageResult<BasicCompanyInfo> data, ErrorInfo errorInfo) {
-//                        adpter.getLoadMoreModule().setEnableLoadMore(true);
+                    protected void onResponse(List<BasicCompanyInfo> data, ErrorInfo errorInfo) {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
-                                if (data == null || data.getCurrentPageData() == null) {
+                                if (data == null || data.size() == 0) {
                                     return;
                                 }
-                                if (pageInfo.isFirstPage()) {
-                                    //如果是加载的第一页数据，用setNew
-                                    tempList.clear();
-                                }
-                                tempList.addAll(data.getCurrentPageData());
+                                tempList.addAll(data);
                                 simpleInfoAdapter.setList(tempList);
-
-//                                if (data.getCurrentPageData().size() < PAGE_SIZE) {
-//                                    //如果不够一页,显示没有更多数据布局
-//                                    adpter.getLoadMoreModule().loadMoreEnd();
-//                                } else {
-//                                    adpter.getLoadMoreModule().loadMoreComplete();
-//                                }
-//                                // page加一
-//                                pageInfo.nextPage();
                             } else {
-//                                adpter.getLoadMoreModule().loadMoreFail();
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());
                                 }
@@ -316,8 +268,6 @@ public class CompanySwitchDialogFragment extends BaseDialogFragment implements T
 
                     @Override
                     public void onError(Throwable e) {
-//                        adpter.getLoadMoreModule().setEnableLoadMore(true);
-//                        adpter.getLoadMoreModule().loadMoreFail();
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });

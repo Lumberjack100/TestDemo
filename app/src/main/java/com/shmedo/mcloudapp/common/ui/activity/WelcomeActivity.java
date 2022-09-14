@@ -95,20 +95,19 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
             //当用户使用自有账号登录时，可以这样统计：
             MobclickAgent.onProfileSignIn(mAccount);
-//            String pwd = !TextUtils.isEmpty(Md5Password) ? Md5Password : EncryptUtils.encryptMD5ToString(mAccount + mPassword);
             LoginManager.getInstance().login(mAccount, mPassword, this);
         } else {
             redirectToLoginActivity(1000);
         }
     }
 
-    private void makeAutoLogin(String account, String password) {
+//    private void makeAutoLogin(String account, String password) {
 //        if (MCloudApp.isIsNetworkConnected()) {
 //            LoginManager.getInstance().login(account, password, this);
 //        } else {
 //            loginForOffline();
 //        }
-    }
+//    }
 
     /**
      * 离线登录
