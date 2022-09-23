@@ -187,7 +187,7 @@ public class DeviceSearchActivity extends BaseActivity {
         JSONObject jsonObjectRequest = new JSONObject();
         try {
             jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
-            jsonObjectRequest.put("deviceToken", keyWords);
+            jsonObjectRequest.put("deviceToken", keyWords.trim().toUpperCase());
             jsonObjectRequest.put("tokenAndVersion", false);
             jsonObjectRequest.put("deviceStatus", "启用");
             jsonObjectRequest.put("pageSize", PAGE_SIZE);
@@ -244,7 +244,10 @@ public class DeviceSearchActivity extends BaseActivity {
 
     private void filterDevices(List<DeviceInfo> tempList) {
         deviceInfoList.addAll(tempList);
-        deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - tempList.size(), tempList.size());
+        deviceInfoAdapter.notifyDataSetChanged();
+        //TODO 使用此方式局部刷新适配器，连续点击查询按钮时会造成崩溃 trying to unhide a view that was not hiddenandroid.widget.FrameLayout{12473d7 V.E...... ........ 41,-390-1060,1413}
+        //        at androidx.recyclerview.widget.ChildHelper.unhide(ChildHelper.java:355)
+//        deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - tempList.size(), tempList.size());
         if (tempList.size() < PAGE_SIZE) {
             //如果不够一页,显示没有更多数据布局
             deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();

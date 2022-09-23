@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -134,6 +135,18 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
     }
 
     private void initLastAccount() {
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!"_0123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM".contains(source.charAt(i) + "")) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+        mEtAccount.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15), filter});
         String uid = SPStaticUtils.getString(AppContants.User.UID);
         if (!TextUtils.isEmpty(uid)) {
             mEtAccount.setText(uid);
@@ -226,8 +239,8 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
             account = mEtAccount.getText().toString();
             pwd = mEtPwd.getText().toString();
             if (TextUtils.isEmpty(account)) {
-//                mEtAccount.setError("请输入用户名");
-                ToastUtils.show("请输入用户名");
+//                mEtAccount.setError("请输入账号");
+                ToastUtils.show("请输入账号");
                 mEtAccount.requestFocus();
                 return false;
             }
