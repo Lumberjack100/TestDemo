@@ -147,6 +147,9 @@ public class DeviceSearchActivity extends BaseActivity {
 
     @OnClick({R.id.iv_back, R.id.tv_search})
     public void onClick(View view) {
+        if (isDoubleClick(view)) {
+            return;
+        }
         int id = view.getId();
         if (id == R.id.iv_back) {//
             finish();

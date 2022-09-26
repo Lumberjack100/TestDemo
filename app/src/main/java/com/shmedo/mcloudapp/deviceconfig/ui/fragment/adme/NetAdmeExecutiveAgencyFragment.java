@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.MessageDialog;
+import com.kongzue.dialogx.dialogs.PopTip;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
@@ -180,9 +182,9 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
                 dismissWaitDialog();
                 IOTCommandResult<AdmeExecutiveAgencyInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    String errMsg = String.format("%s %s", "查询执行机构参数出错!", commandResult.getMessage());
+                    String errMsg = commandResult.getMessage().contains("unsupported") ? "设备版本不支持!" : String.format("%s %s", "获取参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
-                    ToastUtils.show(commandResult.getMessage().contains("unsupported") ? "设备版本不支持!" : errMsg);
+                    PopTip.show(errMsg).autoDismiss(4500).iconError();
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
@@ -197,7 +199,9 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
                     dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    if (errMsg.contains("time_err"))
+                        errMsg = errMsg.replaceFirst("(time_err)(:?)", "一轮测量时间不能少于").concat("小时");
+                    MessageDialog.show("提示", errMsg, "我已知晓");
                     return;
                 }
                 admeExecutiveAgencyView.doAfterSetting();

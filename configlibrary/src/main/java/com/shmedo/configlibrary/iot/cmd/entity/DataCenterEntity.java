@@ -17,12 +17,25 @@ public class DataCenterEntity implements Validater {
     private String plattype;//平台类型
     private String addr;//数据中心地址,addr和port设置为空时，关闭该数据中心
     private String port;//数据中心端口
+
+    /**
+     * MQTT 水文协议特有配置参数
+     */
     private String deviceid;//设备id（MQTT参数）,设备id、key设置为空时，设备通过自动注册的方式获取id、key
     private String devicekey;//设备key（MQTT参数）
     private String httpaddr;//设备注册HTTP地址，域名或者IP（MQTT参数）,MQTT协议下，设备通过自动注册的方式获取到设备id，key
     private String httpport;//设备注册HTTP端口（MQTT参数）
     private String projid;//产品ID(MQTT参数)
     private String regcode;//厂商设备注册码（MQTT参数）
+
+    /**
+     * SL651水文协议特有配置参数
+     */
+    private String type_code;//测站编码
+    private String co_address;//中心站地址
+    private String password;//密码
+    private String taddress;//遥测站地址
+
 
     public void setServerNumber(ServerNumber serverNumber) {
         this.serverNumber = serverNumber;
@@ -70,6 +83,22 @@ public class DataCenterEntity implements Validater {
 
     public void setRegcode(String regcode) {
         this.regcode = regcode;
+    }
+
+    public void setType_code(String type_code) {
+        this.type_code = type_code;
+    }
+
+    public void setCo_address(String co_address) {
+        this.co_address = co_address;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setTaddress(String taddress) {
+        this.taddress = taddress;
     }
 
     @Override
@@ -124,6 +153,23 @@ public class DataCenterEntity implements Validater {
         }
         if (regcode != null) {
             stringBuilder.append("regcode=" + regcode);
+            stringBuilder.append("&");
+        }
+
+        if (type_code != null) {
+            stringBuilder.append("type_code=" + type_code);
+            stringBuilder.append("&");
+        }
+        if (co_address != null) {
+            stringBuilder.append("co_address=" + co_address);
+            stringBuilder.append("&");
+        }
+        if (password != null) {
+            stringBuilder.append("password=" + password);
+            stringBuilder.append("&");
+        }
+        if (taddress != null) {
+            stringBuilder.append("taddress=" + taddress);
             stringBuilder.append("&");
         }
 

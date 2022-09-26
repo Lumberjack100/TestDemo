@@ -33,12 +33,18 @@ public class DataCenterInfoParser implements IOTResultParser<DataCenterInfo> {
             info.setPlattype(keyValueMap.getOrDefault("plattype", "NullKey"));
             info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
             info.setPort(keyValueMap.getOrDefault("port", "NullKey"));
+
             info.setDeviceid(keyValueMap.getOrDefault("deviceid", "NullKey"));
             info.setDevicekey(keyValueMap.getOrDefault("devicekey", "NullKey"));
             info.setHttpaddr(keyValueMap.getOrDefault("httpaddr", "NullKey"));
             info.setHttpport(keyValueMap.getOrDefault("httpport", "NullKey"));
             info.setProjid(keyValueMap.getOrDefault("projid", "NullKey"));
             info.setRegcode(keyValueMap.getOrDefault("regcode", "NullKey"));
+
+            info.setType_code(keyValueMap.getOrDefault("type_code", "NullKey"));
+            info.setCo_address(keyValueMap.getOrDefault("co_address", "NullKey"));
+            info.setPassword(keyValueMap.getOrDefault("password", "NullKey"));
+            info.setTaddress(keyValueMap.getOrDefault("taddress", "NullKey"));
 
             return info;
         } catch (Exception ex) {

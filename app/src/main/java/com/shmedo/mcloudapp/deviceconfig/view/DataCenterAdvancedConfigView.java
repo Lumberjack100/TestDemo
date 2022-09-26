@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.view;
 
 import android.content.Context;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.shmedo.configlibrary.iot.cmd.entity.DataCenterEntity;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.ProductType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
+import com.shmedo.configlibrary.iot.enums.StationCode;
 import com.shmedo.configlibrary.iot.model.DataCenterInfo;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
@@ -68,6 +70,9 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     @BindView(R.id.et_data_server_port)
     ClearEditText mEtDataServerPort;
 
+    /**
+     * MQTT 协议特有配置参数
+     */
     @BindView(R.id.et_device_id)
     ClearEditText mEtDeviceId;
 
@@ -86,6 +91,21 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     @BindView(R.id.et_device_register_code)
     ClearEditText mEtDeviceRegisterCode;
 
+    /**
+     * SL651水文协议特有配置参数
+     */
+    @BindView(R.id.tv_station_classification)
+    TextView mTvStationClassification;
+
+    @BindView(R.id.et_center_station_addr)
+    ClearEditText mEtCenterStationAddr;
+
+    @BindView(R.id.et_password)
+    ClearEditText mEtPassword;
+
+    @BindView(R.id.et_telemetry_station_addr)
+    ClearEditText mEtTelemetryStationAddr;
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
@@ -94,6 +114,12 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
 
     @BindView(R.id.ll_mqtt_child_items)
     ViewGroup mqttChildItemsLayout;
+
+    @BindView(R.id.ll_sl651_child_items)
+    ViewGroup sl651ChildItemsLayout;
+
+    @BindView(R.id.ll_station_code)
+    ViewGroup stationCodeLayout;
 
     private ProductType productType = ProductType.DAS;
     private ServerNumber serverNumber;
@@ -114,6 +140,13 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     private String registerPort;//注册端口
     private String productId;//产品 Id
     private String registerCode;//注册码
+    /**
+     * SL651水文协议特有配置参数
+     */
+    private String stationCode;//测站编码
+    private String centerStationAddr;//中心站地址
+    private String password;//密码
+    private String telemetryStationAddr;//遥测站地址
 
     private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     public boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
@@ -146,6 +179,26 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         mEtDeviceRegisterPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtProductId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
         mEtDeviceRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+
+        mTvStationClassification.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtCenterStationAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!"0123456789".contains(source.charAt(i) + "")) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+        mEtPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5), filter});
+        mEtTelemetryStationAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), filter});
+
+        mTvStationClassification.setText(StationCode.PRECIPITATION.getName());
+        stationCode = StationCode.PRECIPITATION.getCode();
     }
 
     public void initData(ProductType productType, ServerNumber serverNumber, String serverStatus) {
@@ -237,7 +290,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             dataCenterConfigListener.onCloseDataServer(command);
     }
 
-    @OnClick({R.id.ll_transfer_protocol, R.id.ll_data_protocol, R.id.ll_platform_type, R.id.btn_confirm})
+    @OnClick({R.id.ll_transfer_protocol, R.id.ll_data_protocol, R.id.ll_platform_type, R.id.ll_station_code, R.id.btn_confirm})
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_transfer_protocol) {
@@ -248,6 +301,9 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
 
         } else if (id == R.id.ll_platform_type) {
             showPlatformTypeDialog();
+
+        } else if (id == R.id.ll_station_code) {
+            showStationCodeDialog();
 
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
@@ -267,7 +323,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
 
     private void showTransferProtocolDialog() {
         final String[] protocols = (productType == ProductType.DAS || productType == ProductType.ADME) ?
-                new String[]{"TCP-C", "MQTT"} : new String[]{"TCP-C", "TCP-S", "MQTT"};
+                new String[]{"TCP-C", "MQTT", "SL651"} : new String[]{"TCP-C", "TCP-S", "MQTT"};
         int pos = Arrays.asList(protocols).indexOf(String.valueOf(transferProtocol));
         pos = (pos == -1) ? 0 : pos;
 
@@ -282,10 +338,15 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                                 transferProtocol = text;
                                 mTvTransferProtocol.setText(text);
 
-                                if (!text.contains("MQTT")) {
-                                    mqttChildItemsLayout.setVisibility(View.GONE);
-                                } else {
+                                if (text.contains("MQTT")) {
                                     mqttChildItemsLayout.setVisibility(View.VISIBLE);
+                                    sl651ChildItemsLayout.setVisibility(View.GONE);
+                                } else if (text.contains("SL651")) {
+                                    mqttChildItemsLayout.setVisibility(View.GONE);
+                                    sl651ChildItemsLayout.setVisibility(View.VISIBLE);
+                                } else {
+                                    mqttChildItemsLayout.setVisibility(View.GONE);
+                                    sl651ChildItemsLayout.setVisibility(View.GONE);
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
@@ -378,6 +439,29 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                 .show();
     }
 
+    /**
+     * 选择测站编码弹框
+     */
+    private void showStationCodeDialog() {
+        final String[] platforms = StationCode.getNames().toArray(new String[0]);
+        int pos = Arrays.asList(platforms).indexOf(mTvStationClassification.getText().toString());
+        pos = (pos == -1) ? 0 : pos;
+
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mContext)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", platforms,
+                        null, pos,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvStationClassification.setText(text);
+                                stationCode = StationCode.valueByName(text).getCode();
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
+    }
+
     private boolean checkValueIsValid() {
         dataServerAddress = mEtDataServerAddress.getText().toString().trim();
         dataServerPort = mEtDataServerPort.getText().toString().trim();
@@ -387,12 +471,10 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         registerPort = mEtDeviceRegisterPort.getText().toString().trim();
         productId = mEtProductId.getText().toString().trim();
         registerCode = mEtDeviceRegisterCode.getText().toString().trim();
+        centerStationAddr = mEtCenterStationAddr.getText().toString().trim();
+        password = mEtPassword.getText().toString().trim();
+        telemetryStationAddr = mEtTelemetryStationAddr.getText().toString().trim();
 
-//        if (TextUtils.isEmpty(dataServerAddress)) {
-//            ToastUtils.show("请输入数据中心地址!");
-//            mEtDataServerAddress.requestFocus();
-//            return false;
-//        }
         if (!TextUtils.isEmpty(dataServerPort)) {
             try {
                 int port = Integer.parseInt(dataServerPort);
@@ -471,6 +553,12 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             dataCenterEntity.setHttpport(registerPort);
             dataCenterEntity.setProjid(productId);
             dataCenterEntity.setRegcode(registerCode);
+        } else if (transferProtocol != null && transferProtocol.equals("SL651")) {
+            dataCenterEntity.setType_code(stationCode);
+            dataCenterEntity.setCo_address(centerStationAddr);
+            dataCenterEntity.setPassword(password);
+            dataCenterEntity.setTaddress(telemetryStationAddr);
+
         } else {
             dataCenterEntity.setDeviceid(null);
             dataCenterEntity.setDevicekey(null);
@@ -502,23 +590,31 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         platformTypeOld = dataCenterInfo.getPlattype().trim();
         platformType = dataCenterInfo.getPlattype().trim();
 
-        dataServerAddress = dataCenterInfo.getAddr().trim();
-        dataServerPort = dataCenterInfo.getPort().trim();
-        deviceId = dataCenterInfo.getDeviceid().trim();
-        deviceKey = dataCenterInfo.getDevicekey().trim();
-        registerAddress = dataCenterInfo.getHttpaddr().trim();
-        registerPort = dataCenterInfo.getHttpport().trim();
-        productId = dataCenterInfo.getProjid().trim();
-        registerCode = dataCenterInfo.getRegcode().trim();
+        dataServerAddress = dataCenterInfo.getAddr().trim().replace("NullKey", "");
+        dataServerPort = dataCenterInfo.getPort().trim().replace("NullKey", "");
+        deviceId = dataCenterInfo.getDeviceid().trim().replace("NullKey", "");
+        deviceKey = dataCenterInfo.getDevicekey().trim().replace("NullKey", "");
+        registerAddress = dataCenterInfo.getHttpaddr().trim().replace("NullKey", "");
+        registerPort = dataCenterInfo.getHttpport().trim().replace("NullKey", "");
+        productId = dataCenterInfo.getProjid().trim().replace("NullKey", "");
+        registerCode = dataCenterInfo.getRegcode().trim().replace("NullKey", "");
+
+        stationCode = dataCenterInfo.getType_code().trim().replace("NullKey", "");
+        centerStationAddr = dataCenterInfo.getCo_address().trim().replace("NullKey", "");
+        password = dataCenterInfo.getPassword().trim().replace("NullKey", "");
+        telemetryStationAddr = dataCenterInfo.getTaddress().trim().replace("NullKey", "");
 
         //传输协议
         mTvTransferProtocol.setText(transferProtocolOld);
-        if (transferProtocolOld.contains("TCP-C")) {
-            mqttChildItemsLayout.setVisibility(View.GONE);
-        } else if (transferProtocolOld.contains("TCP-S")) {
-            mqttChildItemsLayout.setVisibility(View.GONE);
-        } else if (transferProtocolOld.contains("MQTT")) {
+        if (transferProtocolOld.contains("MQTT")) {
             mqttChildItemsLayout.setVisibility(View.VISIBLE);
+            sl651ChildItemsLayout.setVisibility(View.GONE);
+        } else if (transferProtocolOld.contains("SL651")) {
+            mqttChildItemsLayout.setVisibility(View.GONE);
+            sl651ChildItemsLayout.setVisibility(View.VISIBLE);
+        } else {
+            mqttChildItemsLayout.setVisibility(View.GONE);
+            sl651ChildItemsLayout.setVisibility(View.GONE);
         }
 
         //数据协议
@@ -573,6 +669,12 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         mEtDeviceRegisterPort.setText(registerPort);
         mEtProductId.setText(productId);
         mEtDeviceRegisterCode.setText(registerCode);
+
+
+        mTvStationClassification.setText(StationCode.valueByCode(stationCode).getName());
+        mEtCenterStationAddr.setText(centerStationAddr);
+        mEtPassword.setText(password);
+        mEtTelemetryStationAddr.setText(telemetryStationAddr);
     }
 
     public void doAfterSetting() {

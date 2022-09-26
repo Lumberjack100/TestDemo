@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kongzue.dialogx.dialogs.PopTip;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -148,7 +149,8 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
                     Timber.e(errMsg);
                     if (errMsg.contains("time_err"))
                         errMsg = errMsg.replaceFirst("(time_err)(:?)", "一轮测量时间不能少于").concat("小时");
-                    PopTip.show(errMsg).autoDismiss(4500).iconError();
+//                    PopTip.show(errMsg).autoDismiss(4500).iconError();
+                    MessageDialog.show("提示", errMsg, "我已知晓");
                     return;
                 }
                 admeExecutiveAgencyView.doAfterSetting();

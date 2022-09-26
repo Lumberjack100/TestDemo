@@ -199,10 +199,10 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         mEtDecentralizationWaitingTime.setHint("1-32");
 
         mTvInclinometerType.setText(inclinometerTypes[0]);
-        inclinometerTypeOld = "0";
+        inclinometerType = "0";
 
         mTvDataSettlementMethod.setText(settlementMethods[0]);
-        dataSettlementMethodOld = "0";
+        dataSettlementMethod = "0";
 
         mTvMeasureMethod.setText(measureMethods[1]);
         measureMethod = "1";

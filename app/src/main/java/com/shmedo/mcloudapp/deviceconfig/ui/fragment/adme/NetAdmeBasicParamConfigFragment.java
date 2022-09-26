@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
@@ -333,7 +334,9 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置执行机构参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
-                    ToastUtils.show(errMsg);
+                    if (errMsg.contains("time_err"))
+                        errMsg = errMsg.replaceFirst("(time_err)(:?)", "一轮测量时间不能少于").concat("小时");
+                    MessageDialog.show("提示", errMsg, "我已知晓");
                     return;
                 }
                 saveConfigInfo();
