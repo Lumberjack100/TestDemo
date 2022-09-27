@@ -68,8 +68,8 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     @BindView(R.id.tv_area_num)
     TextView mTvAreaNum;//区号
 
-    @BindView(R.id.tv_hole_depth)
-    TextView mTvHoleDepth;//测斜管孔深
+    @BindView(R.id.et_hole_depth)
+    ClearEditText mEtHoleDepth;//测斜管孔深
 
     @BindView(R.id.et_decentralization_waiting_time)
     ClearEditText mEtDecentralizationWaitingTime;//下放等待时间(min)
@@ -168,6 +168,8 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
         mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
         mEtMacAddress.setHint("XXXXXXXXXXXX");
 
+        mEtHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
 
@@ -258,6 +260,12 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             return false;
         }
 
+        if (TextUtils.isEmpty(mEtHoleDepth.getText())) {
+            ToastUtils.show("请输入测斜管孔深!");
+            mEtHoleDepth.requestFocus();
+            return false;
+        }
+
         decentralizationWaitingTime = mEtDecentralizationWaitingTime.getText().toString().trim();
         if (TextUtils.isEmpty(decentralizationWaitingTime)) {
             ToastUtils.show("请输入下放等待时间!");
@@ -293,6 +301,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             entity.setDownwaitetime(decentralizationWaitingTime);
             entity.setDatatype(dataSettlementMethod);
             entity.setOnewaytest(mSbSingleWayTestEnable.isChecked() ? "1" : "0");
+            entity.setHoledepth(mEtHoleDepth.getText().toString());
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM, entity);
 
@@ -376,7 +385,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtHoleDepth.getText().toString());
             }
             break;
         }
@@ -417,7 +426,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             HacHoleAreaDepthInfo info = holeAreaDepthInfoArrayList.get(0);
             holeno = info.getHoleno();
             mTvAreaNum.setText(info.getAreano());
-            mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
+            mEtHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
 
             spinnerHoleNum.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, holeNumList));
             spinnerHoleNum.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -428,7 +437,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     mTvAreaNum.setText(info.getAreano());
                     //指定舍入方式为：RoundingMode.DOWN，直接舍去格式化以外的部分
                     decimalFormat.setRoundingMode(RoundingMode.DOWN);
-                    mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
+                    mEtHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
                 }
 
                 @Override
@@ -458,7 +467,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
          1.3 equipmodel =2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
          */
         if (equipmodel.equals("1")) {//表示在测量 然后根据 motorinfo 控制跳转页面
-            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mTvHoleDepth.getText().toString());
+            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtHoleDepth.getText().toString());
             return;
         }
         //停止或异常状态下,判断是否单测模式，单测模式下显示正向测量；正反测模式下，根据 motorinfo 处理操作按钮

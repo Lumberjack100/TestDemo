@@ -429,8 +429,17 @@ public class NetDeviceListFragment extends BaseFragment {
      * 在线、离线排序加载
      */
     private void filterDevices(List<DeviceInfo> tempList) {
-        deviceInfoList.addAll(tempList);
-        deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - tempList.size(), tempList.size());
+        for (DeviceInfo deviceInfo : tempList) {
+            if (!MCloudApp.getCompanyIdList().contains(deviceInfo.getCompanyID()))
+                continue;
+            if (deviceInfo.isOnlineStatus()) {
+                deviceInfoList.add(0, deviceInfo);
+                deviceInfoAdapter.notifyItemRangeInserted(0, 1);
+            } else {
+                deviceInfoList.add(deviceInfo);
+                deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() -1, 1);
+            }
+        }
         if (tempList.size() < PAGE_SIZE) {
             //如果不够一页,显示没有更多数据布局
             deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();

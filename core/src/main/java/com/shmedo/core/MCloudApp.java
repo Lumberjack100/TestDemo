@@ -35,6 +35,7 @@ public class MCloudApp {
     private static String curDeviceToken;//设备名称
     private static List<String> permissionTokenList = new ArrayList<>();//用户在某公司某服务中的所有权限名称
 
+    private static List<Integer> companyIdList = new ArrayList<>();//查询用户所在的所有公司Id列表
 
 
     /**
@@ -121,6 +122,17 @@ public class MCloudApp {
         if (permissionTokenList != null) {
             MCloudApp.permissionTokenList.clear();
             MCloudApp.permissionTokenList.addAll(permissionTokenList);
+        }
+    }
+
+    public static List<Integer> getCompanyIdList() {
+        return companyIdList;
+    }
+
+    public static void setCompanyIdList(List<Integer> companyIdList) {
+        if (companyIdList != null) {
+            MCloudApp.companyIdList.clear();
+            MCloudApp.companyIdList.addAll(companyIdList);
         }
     }
 

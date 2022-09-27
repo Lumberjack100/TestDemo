@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -94,9 +95,6 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
 
     @BindView(R.id.ll_auto_measure_mode)
     ViewGroup autoMeasureModeLayout;
-
-    @BindView(R.id.ll_hole_depth)
-    ViewGroup holeDepthLayout;
 
     @BindView(R.id.btn_run)
     Button mBtnRun;
@@ -204,7 +202,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
             entity.setAreano(areano);
             entity.setMotorspeed(motorspeed);
             entity.setMeasway(measway);
-            if (measway.equals("0")) {
+            if (measway.equals("0")) {//自动测孔深
                 //自动测孔深，默认打开下放堵转检测
                 entity.setLowtbtss("1");
                 entity.setSafedistance(safedistance);
@@ -294,7 +292,6 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                                 mTvMeasureMode.setText(text);
                                 autoMeasureModeLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
                                 manualMeasureModeLayout.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
-                                holeDepthLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
                                 if (position == 0)
                                     loadAutoLastHistoryData();
                                 else
@@ -319,7 +316,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                             public void onSelect(int position, String text) {
                                 mTvMovementWay.setText(text);
                                 if (position == 0) {
-                                    ToastUtils.show("上拉触发磁开关最大速度为 10！");
+                                    MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓");
                                     movementway = "0";
                                     loadManualLastHistoryData(true);
                                 } else {
@@ -382,7 +379,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
             return false;
         }
 
-        if (measway.equals("0")) {
+        if (measway.equals("0")) {//自动测量
             if (TextUtils.isEmpty(motorspeed)) {
                 ToastUtils.show("请输入下放速度!");
                 mEtDownSpeed.requestFocus();
@@ -418,7 +415,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                 mEtBottomSafeDistance.requestFocus();
                 return false;
             }
-        } else {
+        } else {//手动测量
             if (TextUtils.isEmpty(motorspeed)) {
                 ToastUtils.show("请输入电机速度!");
                 mEtMovementSpeed.requestFocus();

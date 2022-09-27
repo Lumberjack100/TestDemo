@@ -17,6 +17,7 @@ public class HacMeasuringDataInfoEntity implements Validater {
     private String onewaytest;//单向测量 0 :关闭 1:开启
     private String holeno;//孔号
     private String areano;//区号
+    private String holedepth;//测斜管孔深
 
     public void setEquipmodel(String equipmodel) {
         this.equipmodel = equipmodel;
@@ -44,6 +45,10 @@ public class HacMeasuringDataInfoEntity implements Validater {
 
     public void setAreano(String areano) {
         this.areano = areano;
+    }
+
+    public void setHoledepth(String holedepth) {
+        this.holedepth = holedepth;
     }
 
     @Override

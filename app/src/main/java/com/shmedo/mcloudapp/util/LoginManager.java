@@ -14,6 +14,7 @@ import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
+import com.shmedo.mcloudapp.user.model.BasicCompanyInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -294,12 +295,60 @@ public class LoginManager implements DefaultLifecycleObserver {
                             if (userWrapperInfo.getUser() != null) {
                                 MCloudApp.setCurrentUserInfo(userWrapperInfo);
                             }
-                            if (loginCallback != null) {
-                                loginCallback.callback(LOGIN_CODE_SUCCESS, "登录成功");
-                            }
+                            processQueryUserInCompany();
                         } else {
                             if (loginCallback != null) {
                                 loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errorInfo.getMsg());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ResponseHandler.getInstance().handleFailure((Exception) e);
+                        if (loginCallback != null) {
+                            loginCallback.callback(LOGIN_CODE_FAIL_EXCEPTION, e.getMessage());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 查询用户在其中具有权限的公司，包括该公司的子公司(用于设备分配)
+     */
+    private void processQueryUserInCompany() {
+        JSONObject jsonObjectRequest = new JSONObject();
+        try {
+            jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+
+        MDRetrofit.getInstance()
+                .createService()
+                .queryUserInCompanyList(MCloudApp.getAccessToken(), body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<List<BasicCompanyInfo>>() {
+                    @Override
+                    protected void onResponse(List<BasicCompanyInfo> data, ErrorInfo errorInfo) {
+                        if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
+                            if (errorInfo.getCode() == 0) {
+                                if (data != null && data.size() > 0) {
+                                    MCloudApp.getCompanyIdList().clear();
+                                    for (BasicCompanyInfo basicCompanyInfo : data) {
+                                        MCloudApp.getCompanyIdList().add(basicCompanyInfo.getCompanyID());
+                                    }
+                                }
+                                if (loginCallback != null) {
+                                    loginCallback.callback(LOGIN_CODE_SUCCESS, "登录成功");
+                                }
+                            } else {
+                                if (loginCallback != null) {
+                                    loginCallback.callback(LOGIN_CODE_FAIL_BUSINESS, errorInfo.getMsg());
+                                }
                             }
                         }
                     }

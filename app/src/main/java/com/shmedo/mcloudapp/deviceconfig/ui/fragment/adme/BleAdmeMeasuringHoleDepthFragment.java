@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -372,7 +373,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                             public void onSelect(int position, String text) {
                                 mTvMovementWay.setText(text);
                                 if (position == 0) {
-                                    ToastUtils.show("上拉触发磁开关最大速度为 10！");
+                                    MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓");
                                     movementway = "0";
                                     loadManualLastHistoryData(true);
                                 } else {
