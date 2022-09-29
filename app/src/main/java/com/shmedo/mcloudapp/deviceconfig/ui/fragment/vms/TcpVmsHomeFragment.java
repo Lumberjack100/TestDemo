@@ -117,8 +117,8 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
     private VmsBasicInfo vmsBasicInfo;
     private VmsAisleInfo vmsAisleInfo1, vmsAisleInfo2;
-    private int terminalIndex1 = 0;//通道一终端索引号
-    private int terminalIndex2 = 0;//通道二终端索引号
+    private int aisle1TerminalIndex = 0;//通道一终端索引号
+    private int aisle2TerminalIndex = 0;//通道二终端索引号
 
 
     public static TcpVmsHomeFragment newInstance() {
@@ -165,17 +165,14 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
         tabLayout.addOnTabSelectedListener(this);
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTvDeviceState.setVisibility(View.INVISIBLE);
         mTvDeviceConnectOperate.setVisibility(View.VISIBLE);
         mTvDeviceConnectOperate.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        mRefreshLayout.setEnableLoadMore(false);
-        //是否在刷新的时候禁止内容的一切手势操作（默认false）
-        mRefreshLayout.setDisableContentWhenRefresh(true);
-        initRefreshLayout();
         observerRefreshTerminal();
+        initRefreshLayout();
         setupTcpConnect();
     }
 
@@ -183,22 +180,6 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     public void onResume() {
         super.onResume();
         updateViewStateByConnectState(tcpViewModel.getConnectStatus());
-    }
-
-    private void initRefreshLayout() {
-        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                if (!tcpViewModel.getConnectStatus()) {
-                    ToastUtils.show(StringUtils.getString(R.string.refresh_failed_while_device_disconnected));
-                    mRefreshLayout.finishRefresh(false);
-                    return;
-                }
-                //查询网关基本信息
-                getGatewayBaseInfo();
-                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
-            }
-        });
     }
 
     /**
@@ -213,6 +194,25 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                     //查询网关基本信息
                     getGatewayBaseInfo();
                 }
+            }
+        });
+    }
+
+    private void initRefreshLayout() {
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                if (!tcpViewModel.getConnectStatus()) {
+                    ToastUtils.show(StringUtils.getString(R.string.refresh_failed_while_device_disconnected));
+                    mRefreshLayout.finishRefresh(false);
+                    return;
+                }
+                //查询网关基本信息
+                getGatewayBaseInfo();
+                startDefaultProgress(null, AppContants.MsgWhat.MSG_SMART_REFRESH, DELAY_10000_MILLIS);
             }
         });
     }
@@ -363,7 +363,7 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                     }
                     return;
                 }
-                vmsAisleListFragment.updateAisleListInfo(vmsAisleInfo);
+                vmsAisleListFragment.addAisleInfo(vmsAisleInfo);
                 if (vmsAisleInfo.getChannel() == 0) {
                     //获取网关通道2的控制参数
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
@@ -376,15 +376,14 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 } else if (vmsAisleInfo.getChannel() == 2) {
                     vmsAisleInfo2 = vmsAisleInfo;
 
-                    TextView textView = (TextView) tabLayout.getTabAt(1).getCustomView();
+                    //刷新 Tab 设备数量展示信息
                     int totalCount = Integer.parseInt(vmsAisleInfo1.getTerminalnum()) + Integer.parseInt(vmsAisleInfo2.getTerminalnum());
-                    textView.setText("设备(" + totalCount + ")");
-                    tabLayout.getTabAt(1).select();
+                    updateTerminalTabText(totalCount);
 
-                    terminalIndex1 = 0;
+                    aisle1TerminalIndex = 0;
                     vmsTerminalListFragment.clearTerminalList();
                     vmsViewModel.clearCacheTerminalList();
-                    getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
+                    getTerminalStatus(vmsAisleInfo1.getChannel(), aisle1TerminalIndex);
                 }
             }
             break;
@@ -402,21 +401,21 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
-                vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-                vmsTerminalListFragment.updateTerminalList(vmsAisleTerminalInfo.getTerminal());
+                vmsViewModel.addTerminalListToCache(vmsAisleTerminalInfo.getTerminal());
+                vmsTerminalListFragment.addTerminalList(vmsAisleTerminalInfo.getTerminal());
 
                 if (vmsAisleTerminalInfo.getChannel() == vmsAisleInfo1.getChannel()) {
-                    terminalIndex1++;
-                    if (terminalIndex1 < Integer.parseInt(vmsAisleInfo1.getTerminalnum())) {
-                        getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
+                    aisle1TerminalIndex++;
+                    if (aisle1TerminalIndex < Integer.parseInt(vmsAisleInfo1.getTerminalnum())) {
+                        getTerminalStatus(vmsAisleInfo1.getChannel(), aisle1TerminalIndex);
                     } else {
-                        terminalIndex2 = 0;
-                        getTerminalStatus(vmsAisleInfo2.getChannel(), terminalIndex2);
+                        aisle2TerminalIndex = 0;
+                        getTerminalStatus(vmsAisleInfo2.getChannel(), aisle2TerminalIndex);
                     }
                 } else if (vmsAisleTerminalInfo.getChannel() == vmsAisleInfo2.getChannel()) {
-                    terminalIndex2++;
-                    if (terminalIndex2 < Integer.parseInt(vmsAisleInfo2.getTerminalnum())) {
-                        getTerminalStatus(vmsAisleInfo2.getChannel(), terminalIndex2);
+                    aisle2TerminalIndex++;
+                    if (aisle2TerminalIndex < Integer.parseInt(vmsAisleInfo2.getTerminalnum())) {
+                        getTerminalStatus(vmsAisleInfo2.getChannel(), aisle2TerminalIndex);
                     } else {
                         mRefreshLayout.finishRefresh(true);
                     }
@@ -497,13 +496,14 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
 
     private void doAfterSetting() {
         ToastUtils.show("删除成功");
-        updateTerminalTabText();
+        int totalCount = vmsViewModel.getCacheVmsTerminalList().size();
+        updateTerminalTabText(totalCount);
     }
 
-    private void updateTerminalTabText() {
+    private void updateTerminalTabText(int totalCount) {
         TextView textView = (TextView) tabLayout.getTabAt(1).getCustomView();
-        int totalCount = vmsViewModel.getCacheVmsTerminalList().size();
         textView.setText("设备(" + totalCount + ")");
+        tabLayout.requestLayout();
         tabLayout.getTabAt(1).select();
     }
 

@@ -245,12 +245,38 @@ public class DeviceSearchActivity extends BaseActivity {
                 });
     }
 
+//    private void filterDevices(List<DeviceInfo> tempList) {
+//        deviceInfoList.addAll(tempList);
+//        deviceInfoAdapter.notifyDataSetChanged();
+//        //TODO 使用此方式局部刷新适配器，连续点击查询按钮时会造成崩溃 trying to unhide a view that was not hiddenandroid.widget.FrameLayout{12473d7 V.E...... ........ 41,-390-1060,1413}
+//        //        at androidx.recyclerview.widget.ChildHelper.unhide(ChildHelper.java:355)
+////        deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - tempList.size(), tempList.size());
+//        if (tempList.size() < PAGE_SIZE) {
+//            //如果不够一页,显示没有更多数据布局
+//            deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
+//        } else {
+//            deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
+//        }
+//        // page加一
+//        pageInfo.nextPage();
+//    }
+
+    /**
+     * 在线、离线排序加载
+     */
     private void filterDevices(List<DeviceInfo> tempList) {
-        deviceInfoList.addAll(tempList);
-        deviceInfoAdapter.notifyDataSetChanged();
-        //TODO 使用此方式局部刷新适配器，连续点击查询按钮时会造成崩溃 trying to unhide a view that was not hiddenandroid.widget.FrameLayout{12473d7 V.E...... ........ 41,-390-1060,1413}
-        //        at androidx.recyclerview.widget.ChildHelper.unhide(ChildHelper.java:355)
-//        deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - tempList.size(), tempList.size());
+        for (DeviceInfo deviceInfo : tempList) {
+            if (!MCloudApp.getCompanyIdList().contains(deviceInfo.getCompanyID()))
+                continue;
+
+            if (deviceInfo.isOnlineStatus()) {
+                deviceInfoList.add(0, deviceInfo);
+                deviceInfoAdapter.notifyItemRangeInserted(0, 1);
+            } else {
+                deviceInfoList.add(deviceInfo);
+                deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() -1, 1);
+            }
+        }
         if (tempList.size() < PAGE_SIZE) {
             //如果不够一页,显示没有更多数据布局
             deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();

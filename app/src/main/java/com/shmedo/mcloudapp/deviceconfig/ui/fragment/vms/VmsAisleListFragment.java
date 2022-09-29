@@ -42,7 +42,7 @@ public class VmsAisleListFragment extends BaseFragment {
     }
 
     private void initAdapter() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerViewAisle.setLayoutManager(linearLayoutManager);
         mRecyclerViewAisle.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(15f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.transparent)));
         vmsAisleAdapter = new VmsAisleAdapter(vmsAisleInfoList);
@@ -52,12 +52,11 @@ public class VmsAisleListFragment extends BaseFragment {
     }
 
     public void clearAisleListInfo() {
-        int size = vmsAisleInfoList.size();
         vmsAisleInfoList.clear();
-        vmsAisleAdapter.notifyItemRangeRemoved(0, size);
+        vmsAisleAdapter.notifyDataSetChanged();
     }
 
-    public void updateAisleListInfo(VmsAisleInfo vmsAisleInfo) {
+    public void addAisleInfo(VmsAisleInfo vmsAisleInfo) {
         vmsAisleInfoList.add(vmsAisleInfo);
         vmsAisleAdapter.notifyItemInserted(vmsAisleInfoList.size() - 1);
     }

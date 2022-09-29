@@ -18,6 +18,20 @@ public class VmsViewModel extends ViewModel {
     private UnPeekLiveData<Boolean> vmsRefreshTerminal;
     private List<VmsTerminalInfo> cacheVmsTerminalList;
 
+
+    public ProtectedUnPeekLiveData<Boolean> getVmsRefreshTerminal() {
+        if (vmsRefreshTerminal == null) {
+            vmsRefreshTerminal = new UnPeekLiveData<>();
+            vmsRefreshTerminal.setValue(false);
+        }
+        return vmsRefreshTerminal;
+    }
+
+    public void setVmsRefreshTerminal(boolean isRefresh) {
+        vmsRefreshTerminal.postValue(isRefresh);
+    }
+
+
     public List<VmsTerminalInfo> getCacheVmsTerminalList() {
         return cacheVmsTerminalList;
     }
@@ -27,7 +41,7 @@ public class VmsViewModel extends ViewModel {
      *
      * @param tempList
      */
-    public void addCacheTerminalList(List<VmsTerminalInfo> tempList) {
+    public void addTerminalListToCache(List<VmsTerminalInfo> tempList) {
         if (tempList == null || tempList.size() == 0)
             return;
 
@@ -48,32 +62,20 @@ public class VmsViewModel extends ViewModel {
         }
     }
 
-    public void removeTerminal(String sn) {
-        VmsTerminalInfo cacheInfo = null;
-        for (VmsTerminalInfo terminalInfo : cacheVmsTerminalList) {
-            if (terminalInfo.getSn().equals(sn)) {
-                cacheInfo = terminalInfo;
+    public void removeTerminalFromCacheList(String sn) {
+        int index = -1;
+        for (int i = 0; i < cacheVmsTerminalList.size(); i++) {
+            if (cacheVmsTerminalList.get(i).getSn().equals(sn)) {
+                index = i;
                 break;
             }
         }
-        if (cacheInfo != null)
-            cacheVmsTerminalList.remove(cacheInfo);
+        if (index != -1)
+            cacheVmsTerminalList.remove(index);
     }
 
     public void clearCacheTerminalList() {
         if (cacheVmsTerminalList != null)
             cacheVmsTerminalList.clear();
-    }
-
-    public ProtectedUnPeekLiveData<Boolean> getVmsRefreshTerminal() {
-        if (vmsRefreshTerminal == null) {
-            vmsRefreshTerminal = new UnPeekLiveData<>();
-            vmsRefreshTerminal.setValue(false);
-        }
-        return vmsRefreshTerminal;
-    }
-
-    public void setVmsRefreshTerminal(boolean isRefresh) {
-        vmsRefreshTerminal.postValue(isRefresh);
     }
 }

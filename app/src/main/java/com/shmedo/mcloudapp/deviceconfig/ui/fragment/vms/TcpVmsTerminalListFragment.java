@@ -44,7 +44,6 @@ public class TcpVmsTerminalListFragment extends BaseFragment {
 
     private VmsTerminalInfoAdapter adapter;
     private List<VmsTerminalInfo> vmsTerminalInfoList = new ArrayList<>();
-    private VmsTerminalInfo vmsTerminalInfo;
 
     private TcpVmsHomeFragment vmsHomeFragment;
     private VmsViewModel vmsViewModel;
@@ -78,22 +77,22 @@ public class TcpVmsTerminalListFragment extends BaseFragment {
                 if (isDoubleClick(view)) {
                     return;
                 }
-                vmsTerminalInfo = vmsTerminalInfoList.get(position);
+                VmsTerminalInfo  vmsTerminalInfo = vmsTerminalInfoList.get(position);
                 VmsTerminalHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
             }
         });
         adapter.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                vmsTerminalInfo = vmsTerminalInfoList.get(position);
-                showRemoveTerminalDialog();
+                VmsTerminalInfo vmsTerminalInfo = vmsTerminalInfoList.get(position);
+                showRemoveTerminalDialog(position, vmsTerminalInfo.getSn());
                 return true;
             }
         });
         adapter.setOnItemChildClickListener(new OnItemChildClickListener() {
             @Override
             public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                vmsTerminalInfo = vmsTerminalInfoList.get(position);
+                VmsTerminalInfo  vmsTerminalInfo = vmsTerminalInfoList.get(position);
                 VmsTerminalExternalSensorHomeActivity.startActivity(mActivity, AppContants.CommunicationWay.TCP_CONNECT, vmsTerminalInfo);
             }
         });
@@ -103,10 +102,10 @@ public class TcpVmsTerminalListFragment extends BaseFragment {
     /**
      * 删除终端警告
      */
-    private void showRemoveTerminalDialog() {
+    private void showRemoveTerminalDialog(final int position, final String sn) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")
-                .content(getWarnMessage())
+                .content(getWarnMessage(sn))
                 .contentColorRes(R.color.title_text_color)
                 .canceledOnTouchOutside(false)
                 .positiveText("确定")
@@ -117,19 +116,18 @@ public class TcpVmsTerminalListFragment extends BaseFragment {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        int index = vmsTerminalInfoList.indexOf(vmsTerminalInfo);
-                        vmsTerminalInfoList.remove(vmsTerminalInfo);
-                        vmsViewModel.removeTerminal(vmsTerminalInfo.getSn());
-                        adapter.notifyItemRemoved(index);
-                        vmsHomeFragment.removeTerminal(vmsTerminalInfo.getSn());
+                        vmsViewModel.removeTerminalFromCacheList(sn);
+//                        vmsTerminalInfoList.remove(position);
+                        adapter.removeAt(position);
+                        vmsHomeFragment.removeTerminal(sn);
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
 
-    private CharSequence getWarnMessage() {
-        SpannableStringBuilder builder = new SpannableStringBuilder(vmsTerminalInfo.getSn());
+    private CharSequence getWarnMessage(final String sn) {
+        SpannableStringBuilder builder = new SpannableStringBuilder(sn);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         builder.setSpan(colorSpan, 0, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.insert(0, "确认移除 ");
@@ -142,7 +140,7 @@ public class TcpVmsTerminalListFragment extends BaseFragment {
         vmsTerminalInfoList.clear();
     }
 
-    public void updateTerminalList(List<VmsTerminalInfo> dataList) {
+    public void addTerminalList(List<VmsTerminalInfo> dataList) {
         vmsTerminalInfoList.addAll(dataList);
         adapter.notifyDataSetChanged();
         mRecyclerView.scrollToPosition(adapter.getItemCount() - 1);

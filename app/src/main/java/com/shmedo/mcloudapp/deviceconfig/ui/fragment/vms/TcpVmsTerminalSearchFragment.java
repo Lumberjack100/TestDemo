@@ -209,7 +209,6 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
         List<VmsTerminalInfo> allTerminals = vmsViewModel.getCacheVmsTerminalList();
         if (allTerminals == null) {
             adapter.setEmptyView(R.layout.empty_view);
-            adapter.notifyDataSetChanged();
             return;
         }
 
@@ -297,6 +296,7 @@ public class TcpVmsTerminalSearchFragment extends BaseVmsTcpCommunicateFragment 
             adapter.setEmptyView(R.layout.empty_view);
         }
         adapter.notifyDataSetChanged();
+        //刷新 VMS 主页面
         vmsViewModel.setVmsRefreshTerminal(true);
     }
 }

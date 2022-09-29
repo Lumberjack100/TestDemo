@@ -206,7 +206,6 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
         List<VmsTerminalInfo> allTerminals = vmsViewModel.getCacheVmsTerminalList();
         if (allTerminals == null) {
             adapter.setEmptyView(R.layout.empty_view);
-            adapter.notifyDataSetChanged();
             return;
         }
         vmsTerminalInfoList.clear();
@@ -356,6 +355,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
             adapter.setEmptyView(R.layout.empty_view);
         }
         adapter.notifyDataSetChanged();
+        //刷新 VMS 主页面
         vmsViewModel.setVmsRefreshTerminal(true);
     }
 }

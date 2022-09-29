@@ -111,8 +111,8 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     private VmsViewModel vmsViewModel;
     private VmsBasicInfo vmsBasicInfo;
     private VmsAisleInfo vmsAisleInfo1, vmsAisleInfo2;
-    private int terminalIndex1 = 0;//通道一终端索引号
-    private int terminalIndex2 = 0;//通道二终端索引号
+    private int aisle1TerminalIndex = 0;//通道一终端索引号
+    private int aisle2TerminalIndex = 0;//通道二终端索引号
 
 
     public static NetVmsHomeFragment newInstance(DeviceInfo deviceInfo) {
@@ -174,21 +174,23 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
         observerRefreshTerminal();
         updateHeadInfo();
         initRefreshLayout();
-        mRefreshLayout.setEnableLoadMore(false);
-        //是否在刷新的时候禁止内容的一切手势操作（默认false）
-        mRefreshLayout.setDisableContentWhenRefresh(true);
-        mRefreshLayout.autoRefresh();
     }
 
-    private void initRefreshLayout() {
-        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+    /**
+     * 观察终端设备刷新<br>
+     * 因为终端列表页面移除了设备，网关主页面需要刷新数据
+     */
+    private void observerRefreshTerminal() {
+        vmsViewModel = getApplicationScopeViewModel(VmsViewModel.class);
+        vmsViewModel.getVmsRefreshTerminal().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                getGatewayBaseInfo();
+            public void onChanged(Boolean isRefresh) {
+                if (isRefresh) {
+                    getGatewayBaseInfo();
+                }
             }
         });
     }
@@ -211,19 +213,17 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
         }
     }
 
-    /**
-     * 观察终端设备刷新<br>
-     * 因为终端列表页面移除了设备，网关主页面需要刷新数据
-     */
-    private void observerRefreshTerminal() {
-        vmsViewModel.getVmsRefreshTerminal().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+    private void initRefreshLayout() {
+        mRefreshLayout.setEnableLoadMore(false);
+        //是否在刷新的时候禁止内容的一切手势操作（默认false）
+        mRefreshLayout.setDisableContentWhenRefresh(true);
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onChanged(Boolean isRefresh) {
-                if (isRefresh) {
-                    getGatewayBaseInfo();
-                }
+            public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
+                getGatewayBaseInfo();
             }
         });
+        mRefreshLayout.autoRefresh();
     }
 
     @OnClick({R.id.search_placeholder, R.id.ll_scan_add_device})
@@ -374,6 +374,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 }
                 vmsBasicInfo = commandResult.getResult();
                 updateHeadInfo();
+                //清除通道列表信息
                 vmsAisleListFragment.clearAisleListInfo();
                 //获取网关通道1的控制参数
                 getGatewayAisleInfo(VmsAisleNumber.NUMBER_ONE);
@@ -398,7 +399,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                     }
                     return;
                 }
-                vmsAisleListFragment.updateAisleListInfo(vmsAisleInfo);
+                vmsAisleListFragment.addAisleInfo(vmsAisleInfo);
                 if (vmsAisleInfo.getChannel() == 0) {
                     //获取网关通道2的控制参数
                     getGatewayAisleInfo(VmsAisleNumber.NUMBER_TWO);
@@ -411,13 +412,14 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 } else if (vmsAisleInfo.getChannel() == 2) {
                     vmsAisleInfo2 = vmsAisleInfo;
 
+                    //刷新 Tab 设备数量展示信息
                     int totalCount = Integer.parseInt(vmsAisleInfo1.getTerminalnum()) + Integer.parseInt(vmsAisleInfo2.getTerminalnum());
                     updateTerminalTabText(totalCount);
 
-                    terminalIndex1 = 0;
+                    aisle1TerminalIndex = 0;
                     vmsTerminalListFragment.clearTerminalList();
                     vmsViewModel.clearCacheTerminalList();
-                    getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
+                    getTerminalStatus(vmsAisleInfo1.getChannel(), aisle1TerminalIndex);
                 }
             }
             break;
@@ -435,21 +437,21 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                 }
                 VmsAisleTerminalInfo vmsAisleTerminalInfo = commandResult.getResult();
                 modifyAisleTerminalInfo(vmsAisleTerminalInfo);
-                vmsViewModel.addCacheTerminalList(vmsAisleTerminalInfo.getTerminal());
-                vmsTerminalListFragment.updateTerminalList(vmsAisleTerminalInfo.getTerminal());
+                vmsViewModel.addTerminalListToCache(vmsAisleTerminalInfo.getTerminal());
+                vmsTerminalListFragment.addTerminalList(vmsAisleTerminalInfo.getTerminal());
 
                 if (vmsAisleTerminalInfo.getChannel() == vmsAisleInfo1.getChannel()) {
-                    terminalIndex1++;
-                    if (terminalIndex1 < Integer.parseInt(vmsAisleInfo1.getTerminalnum())) {
-                        getTerminalStatus(vmsAisleInfo1.getChannel(), terminalIndex1);
+                    aisle1TerminalIndex++;
+                    if (aisle1TerminalIndex < Integer.parseInt(vmsAisleInfo1.getTerminalnum())) {
+                        getTerminalStatus(vmsAisleInfo1.getChannel(), aisle1TerminalIndex);
                     } else {
-                        terminalIndex2 = 0;
-                        getTerminalStatus(vmsAisleInfo2.getChannel(), terminalIndex2);
+                        aisle2TerminalIndex = 0;
+                        getTerminalStatus(vmsAisleInfo2.getChannel(), aisle2TerminalIndex);
                     }
                 } else if (vmsAisleTerminalInfo.getChannel() == vmsAisleInfo2.getChannel()) {
-                    terminalIndex2++;
-                    if (terminalIndex2 < Integer.parseInt(vmsAisleInfo2.getTerminalnum())) {
-                        getTerminalStatus(vmsAisleInfo2.getChannel(), terminalIndex2);
+                    aisle2TerminalIndex++;
+                    if (aisle2TerminalIndex < Integer.parseInt(vmsAisleInfo2.getTerminalnum())) {
+                        getTerminalStatus(vmsAisleInfo2.getChannel(), aisle2TerminalIndex);
                     } else {
                         mRefreshLayout.finishRefresh(true);
                     }
@@ -488,7 +490,7 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
                         terminalInfo.setSn(sn);
                         dataList.add(terminalInfo);
                     }
-                    vmsTerminalListFragment.updateTerminalList(dataList);
+                    vmsTerminalListFragment.addTerminalList(dataList);
                     updateTerminalTabText(vmsTerminalListFragment.getTerminalSize());
                 }
             }
