@@ -106,8 +106,6 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
 
     private Animator animator;
 
-    private boolean enableScan = false;
-
     private Handler mHandler;
 
     private final Runnable mStopScanRunnable = new Runnable() {
@@ -164,9 +162,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
             }
         });
         //进入页面刷新蓝牙设备列表
-        if (!scannerViewModel.isScanning()) {
-            processStartScan();
-        }
+        processStartScan();
     }
 
     @Override
@@ -238,7 +234,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
 
         } else if (id == R.id.ll_scan_refresh) {
             if (scannerViewModel.isScanning()) {
-                processStopScan();
+//                processStopScan();
             } else {
                 processStartScan();
             }
@@ -249,12 +245,13 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
     }
 
     private void processStartScan() {
-        enableScan = true;
+        if (scannerViewModel.isScanning())
+            return;
+
         clear();
     }
 
     private void processStopScan() {
-        enableScan = false;
         scannerViewModel.stopScan();
         mHandler.removeCallbacksAndMessages(null);
         updateRefreshView(false);
@@ -265,42 +262,6 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
      * <br>
      * BleScannerStateLiveData 实例每次更新值时，回调此方法
      */
-    private void startScan(final BleScannerStateLiveData state) {
-
-        //位置服务开关未开启
-        if (!BleScannerUtils.isLocationEnabled(mActivity)) {
-            PermissionHelper.showGPSSettingDialog(mActivity);
-            return;
-        }
-        //位置服务开关已经开启, 但缺少定位权限
-        if (!BleScannerUtils.isLocationPermissionGranted(mActivity)) {
-            checkPermissionForLocation();
-            return;
-        }
-        // Bluetooth must be enabled.
-        if (state.isBluetoothEnabled()) {
-            bluetoothOffView.setVisibility(View.GONE);
-            searchLayoutGroup.setVisibility(View.VISIBLE);
-            refreshLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-            if (enableScan && !scannerViewModel.isScanning()) {
-                // We are now OK to start scanning.
-                scannerViewModel.startScan();
-                updateRefreshView(true);
-                mHandler.postDelayed(mStopScanRunnable, SCAN_PERIOD);
-            }
-        } else {
-            bluetoothOffView.setVisibility(View.VISIBLE);
-            searchLayoutGroup.setVisibility(View.GONE);
-            refreshLayout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.GONE);
-            //emptyView.setVisibility(View.GONE);
-            if (bleDeviceAdapter.getItemCount() > 0) {
-                clear();
-            }
-        }
-    }
-
     private void startScanDevices(final BleScannerStateLiveData state) {
         // First, check the Location permission.
         // This is required since Marshmallow up until Android 11 in order to scan for Bluetooth LE devices.
@@ -320,7 +281,7 @@ public class BleScannerListFragment extends BaseFragment implements TextWatcher,
                     refreshLayout.setVisibility(View.VISIBLE);
                     mRecyclerView.setVisibility(View.VISIBLE);
 
-                    if (enableScan && !scannerViewModel.isScanning()) {
+                    if (!scannerViewModel.isScanning()) {
                         // We are now OK to start scanning.
                         scannerViewModel.startScan();
                         updateRefreshView(true);
