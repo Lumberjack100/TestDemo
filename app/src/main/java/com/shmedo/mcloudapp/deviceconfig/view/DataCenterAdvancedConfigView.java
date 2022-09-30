@@ -125,10 +125,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     private ServerNumber serverNumber;
     public DataCenterInfo dataCenterInfo;
 
-    private String transferProtocolOld;//
-    private String dataProtocolOld;//
-    private String platformTypeOld;//
-
     private String transferProtocol;// 传输协议
     private String dataProtocol;//数据协议
     private String platformType;//平台类型
@@ -196,6 +192,12 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         };
         mEtPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5), filter});
         mEtTelemetryStationAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), filter});
+
+        mTvTransferProtocol.setText("MQTT");
+        transferProtocol = "MQTT";
+
+        mTvPlatformType.setText("地灾一期");
+        platformType = "0";
 
         mTvStationClassification.setText(StationCode.PRECIPITATION.getName());
         stationCode = StationCode.PRECIPITATION.getCode();
@@ -581,13 +583,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             dataCenterInfo = new DataCenterInfo();
             return;
         }
-        transferProtocolOld = dataCenterInfo.getProtocol().trim();
         transferProtocol = dataCenterInfo.getProtocol().trim();
-
-        dataProtocolOld = dataCenterInfo.getDatatype().trim();
         dataProtocol = dataCenterInfo.getDatatype().trim();
-
-        platformTypeOld = dataCenterInfo.getPlattype().trim();
         platformType = dataCenterInfo.getPlattype().trim();
 
         dataServerAddress = dataCenterInfo.getAddr().trim().replace("NullKey", "");
@@ -605,11 +602,11 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         telemetryStationAddr = dataCenterInfo.getTaddress().trim().replace("NullKey", "");
 
         //传输协议
-        mTvTransferProtocol.setText(transferProtocolOld);
-        if (transferProtocolOld.contains("MQTT")) {
+        mTvTransferProtocol.setText(transferProtocol);
+        if (transferProtocol.contains("MQTT")) {
             mqttChildItemsLayout.setVisibility(View.VISIBLE);
             sl651ChildItemsLayout.setVisibility(View.GONE);
-        } else if (transferProtocolOld.contains("SL651")) {
+        } else if (transferProtocol.contains("SL651")) {
             mqttChildItemsLayout.setVisibility(View.GONE);
             sl651ChildItemsLayout.setVisibility(View.VISIBLE);
         } else {
@@ -618,7 +615,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         }
 
         //数据协议
-        switch (dataProtocolOld) {
+        switch (dataProtocol) {
             case "1":
                 mTvDataProtocol.setText("CMD");
                 break;
@@ -645,7 +642,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         }
 
         //平台
-        switch (platformTypeOld) {
+        switch (platformType) {
             case "0":
                 mTvPlatformType.setText("地灾一期");
                 break;
@@ -678,56 +675,53 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     }
 
     public void doAfterSetting() {
-        transferProtocolOld = transferProtocol;
-//        dataProtocolOld = dataProtocol;
-        platformTypeOld = platformType;
         isResultOK = true;
     }
 
     public boolean checkValueIsChange() {
-        if (!mSbCenterEnable.isChecked()) {
-            return false;
-        }
-        if (enableButtonOriginalState != mSbCenterEnable.isChecked()) {
-            return true;
-        }
-
-        if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
-            return true;
-        }
-        if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
-            return true;
-        }
-        if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
-            return true;
-        }
-//        if (dataProtocolOld != null && dataProtocol != null && !dataProtocolOld.equals(dataProtocol)) {
+//        if (!mSbCenterEnable.isChecked()) {
+//            return false;
+//        }
+//        if (enableButtonOriginalState != mSbCenterEnable.isChecked()) {
 //            return true;
 //        }
-        if (platformTypeOld != null && platformType != null && !platformTypeOld.equals(platformType)) {
-            return true;
-        }
-
-        if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
-            if (deviceId != null && !deviceId.equals(mEtDeviceId.getText().toString().trim())) {
-                return true;
-            }
-            if (deviceKey != null && !deviceKey.equals(mEtDeviceKey.getText().toString().trim())) {
-                return true;
-            }
-            if (registerAddress != null && !registerAddress.equals(mEtDeviceRegisterAddress.getText().toString().trim())) {
-                return true;
-            }
-            if (registerPort != null && !registerPort.equals(mEtDeviceRegisterPort.getText().toString().trim())) {
-                return true;
-            }
-            if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
-                return true;
-            }
-            if (registerCode != null && !registerCode.equals(mEtDeviceRegisterCode.getText().toString().trim())) {
-                return true;
-            }
-        }
+//
+//        if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
+//            return true;
+//        }
+////        if (dataProtocolOld != null && dataProtocol != null && !dataProtocolOld.equals(dataProtocol)) {
+////            return true;
+////        }
+//        if (platformTypeOld != null && platformType != null && !platformTypeOld.equals(platformType)) {
+//            return true;
+//        }
+//
+//        if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
+//            if (deviceId != null && !deviceId.equals(mEtDeviceId.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (deviceKey != null && !deviceKey.equals(mEtDeviceKey.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (registerAddress != null && !registerAddress.equals(mEtDeviceRegisterAddress.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (registerPort != null && !registerPort.equals(mEtDeviceRegisterPort.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (registerCode != null && !registerCode.equals(mEtDeviceRegisterCode.getText().toString().trim())) {
+//                return true;
+//            }
+//        }
         return false;
     }
 

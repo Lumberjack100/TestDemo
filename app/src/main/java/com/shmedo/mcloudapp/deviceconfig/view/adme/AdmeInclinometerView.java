@@ -88,9 +88,7 @@ public class AdmeInclinometerView extends LinearLayout {
     @BindView(R.id.ll_correction_value)
     ViewGroup correctionValueLayout;
 
-    private String inclinometerTypeOld;//测斜仪类型
     private String inclinometerType;// 测斜仪类型
-    private String lowPowerModeOld;//低功耗模式
     private String lowPowerMode;// 低功耗模式
     private String address;// 采集器地址/Mac 地址
     private String collectionInterval;//采集器采集间隔
@@ -132,6 +130,12 @@ public class AdmeInclinometerView extends LinearLayout {
         mEtSolvingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtSleepTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtCorrectionValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+
+        mTvInclinometerType.setText(inclinometerTypes[0]);
+        inclinometerType = "0";
+
+        mTvLowPowerMode.setText(powerModes[0]);
+        lowPowerMode = "0";
     }
 
     /**
@@ -320,9 +324,7 @@ public class AdmeInclinometerView extends LinearLayout {
             admeInclinometerInfo = new AdmeInclinometerInfo();
             return;
         }
-        inclinometerTypeOld = admeInclinometerInfo.getInctype().trim();
         inclinometerType = admeInclinometerInfo.getInctype().trim();
-        lowPowerModeOld = admeInclinometerInfo.getLowpower().trim();
         lowPowerMode = admeInclinometerInfo.getLowpower().trim();
         address = admeInclinometerInfo.getAddress().trim();
         collectionInterval = admeInclinometerInfo.getCollinval().trim();
@@ -330,10 +332,10 @@ public class AdmeInclinometerView extends LinearLayout {
         sleepTime = admeInclinometerInfo.getDormancytime().trim();
         correctionValue = admeInclinometerInfo.getInterupdate().trim();
 
-        if (inclinometerTypeOld.equals("NullKey")) {
+        if (inclinometerType.equals("NullKey")) {
             inclinometerTypeLayout.setVisibility(View.GONE);
         } else {
-            if (inclinometerTypeOld.equals("0")) {
+            if (inclinometerType.equals("0")) {
                 mTvInclinometerType.setText(inclinometerTypes[0]);
                 mEtCollectorAddress.setText(address);
                 collectorAddressLayout.setVisibility(View.VISIBLE);
@@ -346,10 +348,10 @@ public class AdmeInclinometerView extends LinearLayout {
                 macAddressLayout.setVisibility(View.VISIBLE);
             }
         }
-        if (lowPowerModeOld.equals("NullKey")) {
+        if (lowPowerMode.equals("NullKey")) {
             lowPowerModeLayout.setVisibility(View.GONE);
         } else {
-            if (lowPowerModeOld.equals("0")) {
+            if (lowPowerMode.equals("0")) {
                 mTvLowPowerMode.setText(powerModes[0]);
             } else {
                 mTvLowPowerMode.setText(powerModes[1]);
@@ -385,40 +387,40 @@ public class AdmeInclinometerView extends LinearLayout {
     }
 
     public void doAfterSetting() {
-        inclinometerTypeOld = inclinometerType;
-        lowPowerModeOld = lowPowerMode;
+//        inclinometerTypeOld = inclinometerType;
+//        lowPowerModeOld = lowPowerMode;
     }
 
     public boolean checkValueIsChange(boolean configPageEditableChanged) {
         if (!configPageEditableChanged)
             return false;
-
-        if (inclinometerTypeOld != null && !inclinometerTypeOld.equals("NullKey") && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
-            return true;
-        }
-        if (lowPowerModeOld != null && !lowPowerModeOld.equals("NullKey") && lowPowerMode != null && !lowPowerModeOld.equals(lowPowerMode)) {
-            return true;
-        }
-        if (address != null) {
-            if (inclinometerTypeOld.equals("0") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
-                return true;
-            }
-            if (inclinometerTypeOld.equals("1") && !address.equals(mEtMacAddress.getText().toString().trim())) {
-                return true;
-            }
-        }
-        if (collectionInterval != null && !collectionInterval.equals("NullKey") && !collectionInterval.equals(mEtCollectionInterval.getText().toString().trim())) {
-            return true;
-        }
-        if (solvingInterval != null && !solvingInterval.equals("NullKey") && !solvingInterval.equals(mEtSolvingInterval.getText().toString().trim())) {
-            return true;
-        }
-        if (sleepTime != null && !sleepTime.equals("NullKey") && !sleepTime.equals(mEtSleepTime.getText().toString().trim())) {
-            return true;
-        }
-        if (correctionValue != null && !correctionValue.equals("NullKey") && !correctionValue.equals(mEtCorrectionValue.getText().toString().trim())) {
-            return true;
-        }
+//
+//        if (inclinometerTypeOld != null && !inclinometerTypeOld.equals("NullKey") && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
+//            return true;
+//        }
+//        if (lowPowerModeOld != null && !lowPowerModeOld.equals("NullKey") && lowPowerMode != null && !lowPowerModeOld.equals(lowPowerMode)) {
+//            return true;
+//        }
+//        if (address != null) {
+//            if (inclinometerTypeOld.equals("0") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (inclinometerTypeOld.equals("1") && !address.equals(mEtMacAddress.getText().toString().trim())) {
+//                return true;
+//            }
+//        }
+//        if (collectionInterval != null && !collectionInterval.equals("NullKey") && !collectionInterval.equals(mEtCollectionInterval.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (solvingInterval != null && !solvingInterval.equals("NullKey") && !solvingInterval.equals(mEtSolvingInterval.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (sleepTime != null && !sleepTime.equals("NullKey") && !sleepTime.equals(mEtSleepTime.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (correctionValue != null && !correctionValue.equals("NullKey") && !correctionValue.equals(mEtCorrectionValue.getText().toString().trim())) {
+//            return true;
+//        }
         return false;
     }
 

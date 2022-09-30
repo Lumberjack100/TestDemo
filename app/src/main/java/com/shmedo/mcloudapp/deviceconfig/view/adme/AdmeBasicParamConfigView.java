@@ -25,6 +25,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -141,13 +142,11 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private String measurementIntervalPerRound;// 每轮测量间隔
     private String startTimePerRound;// 每轮测量开始时间
 
-    private String inclinometerTypeOld;//测斜仪类型
     private String inclinometerType;// 测斜仪类型
     private String address;// 采集器地址/Mac 地址
     private String inclinometerTubeHoleDepth;// 测斜管孔深(m)
     private String decentralizationSpeed;// 下放速度(r/min)
     private String decentralizationWaitingTime;//下放等待时间(min)
-    private String dataSettlementMethodOld;//数据解算方式
     private String dataSettlementMethod;// 数据解算方式
     private final String[] inclinometerTypes = new String[]{"433测斜仪", "蓝牙测斜仪"};
     private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
@@ -180,7 +179,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         initTimeAdapter(context);
         AdmeTimeItem item = new AdmeTimeItem(null, true);
         admeTimeItemList.add(item);
-        admeTimeAdapter.notifyItemInserted(admeTimeItemList.size()-1);
+        admeTimeAdapter.notifyItemInserted(admeTimeItemList.size() - 1);
     }
 
     private void initView() {
@@ -374,6 +373,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
     }
+
     /**
      * 选择数据解算方式
      */
@@ -423,6 +423,13 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             if (!ValidateUtil.isValidMacAddressNoColon(address)) {
                 ToastUtils.show("请输入正确的Mac地址!");
                 mEtMacAddress.requestFocus();
+                return false;
+            }
+        }
+
+        if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
+            if (admeTimeItemList.size() <= 1) {
+                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
                 return false;
             }
         }
@@ -519,7 +526,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             entity.setRoundwaitetime(admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") ? "NullKey" : waitingIntervalPerRound);
             entity.setRoundmeasinval(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
             //定时测量方式
-            if (!admeExecutiveAgencyInfo.getMeastype().equals("NullKey") && admeExecutiveAgencyInfo.getMeastype().equals("2")) {
+            if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
                 StringBuffer timeBuffer = new StringBuffer();
                 for (AdmeTimeItem admeTimeItem : admeTimeItemList) {
                     String time = admeTimeItem.getTime();
@@ -528,7 +535,8 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                         timeBuffer.append("|");
                     }
                 }
-                timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
+                if (timeBuffer.length() > 1)
+                    timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
                 entity.setRoundmeasstart(timeBuffer.toString());
             } else {
                 entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getRoundmeasstart());
@@ -606,19 +614,17 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             basicConfigParam = new AdmeBasicConfigInfo();
             return;
         }
-        inclinometerTypeOld = basicConfigParam.getInctype().trim();
         inclinometerType = basicConfigParam.getInctype().trim();
         address = basicConfigParam.getAddress().trim();
         inclinometerTubeHoleDepth = basicConfigParam.getInterdeep().trim();
         decentralizationSpeed = basicConfigParam.getDownspeed().trim();
         decentralizationWaitingTime = basicConfigParam.getDownwaitetime().trim();
-        dataSettlementMethodOld = basicConfigParam.getDatatype().trim();
         dataSettlementMethod = basicConfigParam.getDatatype().trim();
 
-        if (inclinometerTypeOld.equals("NullKey")) {
+        if (inclinometerType.equals("NullKey")) {
             inclinometerTypeLayout.setVisibility(View.GONE);
         } else {
-            if (inclinometerTypeOld.equals("0")) {
+            if (inclinometerType.equals("0")) {
                 mTvInclinometerType.setText(inclinometerTypes[0]);
                 mEtCollectorAddress.setText(address);
                 collectorAddressLayout.setVisibility(View.VISIBLE);
@@ -652,10 +658,10 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             ex.printStackTrace();
         }
 
-        if (dataSettlementMethodOld.equals("NullKey")) {
+        if (dataSettlementMethod.equals("NullKey")) {
             dataSettlementMethodLayout.setVisibility(View.GONE);
         } else {
-            if (dataSettlementMethodOld.equals("0")) {
+            if (dataSettlementMethod.equals("0")) {
                 mTvDataSettlementMethod.setText(settlementMethods[0]);
             } else {
                 mTvDataSettlementMethod.setText(settlementMethods[1]);
@@ -771,8 +777,8 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     }
 
     public void doAfterSetting() {
-        inclinometerTypeOld = inclinometerType;
-        dataSettlementMethodOld = dataSettlementMethod;
+//        inclinometerTypeOld = inclinometerType;
+//        dataSettlementMethodOld = dataSettlementMethod;
     }
 
     public boolean checkValueIsChange(boolean configPageEditableChanged) {

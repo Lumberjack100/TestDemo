@@ -120,7 +120,6 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
     @BindView(R.id.ll_point_offset)
     ViewGroup pointOffsetLayout;
 
-    private String dataSettlementMethodOld;//数据解算方式
     private String dataSettlementMethod;// 数据解算方式
     private String dataReadingInterval;// 数据读取间隔
     private String measurementCompensationTime;// 测量补偿时间
@@ -173,7 +172,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
         mEtPointOffset.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
         mTvDataSettlementMethod.setText("顶部固定法");
-        dataSettlementMethodOld = "0";
+        dataSettlementMethod = "0";
     }
 
     /**
@@ -501,8 +500,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
             admeExecutiveAgencyInfo = new HacExecutiveAgencyInfo();
             return;
         }
-        dataSettlementMethodOld = admeExecutiveAgencyInfo.getDatatype();
-        dataSettlementMethod = dataSettlementMethodOld;
+        dataSettlementMethod = admeExecutiveAgencyInfo.getDatatype();
 
         dataReadingInterval = admeExecutiveAgencyInfo.getDatainval();
         measurementCompensationTime = admeExecutiveAgencyInfo.getCompensatetime();
@@ -516,10 +514,10 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
         intervalFitting = admeExecutiveAgencyInfo.getInterval_fitting();
         pointOffset = admeExecutiveAgencyInfo.getPoint_offset();
 
-        if (dataSettlementMethodOld.equals("NullKey")) {
+        if (dataSettlementMethod.equals("NullKey")) {
             dataSettlementMethodLayout.setVisibility(View.GONE);
         } else {
-            if (dataSettlementMethodOld.equals("0")) {
+            if (dataSettlementMethod.equals("0")) {
                 mTvDataSettlementMethod.setText(settlementMethods[0]);
             } else {
                 mTvDataSettlementMethod.setText(settlementMethods[1]);
@@ -616,7 +614,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
     }
 
     public void doAfterSetting() {
-        dataSettlementMethodOld = dataSettlementMethod;
+//        dataSettlementMethodOld = dataSettlementMethod;
     }
 
     public void onEditableChanged(boolean isEditable) {

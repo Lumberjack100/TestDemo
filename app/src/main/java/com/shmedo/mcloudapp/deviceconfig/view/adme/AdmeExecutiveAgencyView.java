@@ -27,6 +27,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
+import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -173,13 +174,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     ViewGroup pointOffsetLayout;
 
 
-    private String measureMethodOld;//测量方式
     private String measureMethod;//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)
-    private String dataSettlementMethodOld;//数据解算方式
     private String dataSettlementMethod;// 数据解算方式
-    private String dataResponseOld;//数据应答（0:关闭，1:启用）
     private String dataResponse;// 数据应答（0:关闭，1:启用）
-    private String measurementIntervalPerRoundOld;// 每轮测量间隔
     private String measurementIntervalPerRound;// 每轮测量间隔
     private String waitingIntervalPerRound;// 每轮等待时间
     private String startTimePerRound;// 每轮测量开始时间
@@ -249,16 +246,16 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtPointOffset.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
         mTvMeasureMethod.setText("实时测量");
-        measureMethodOld = "0";
+        measureMethod = "0";
 
         mTvDataSettlementMethod.setText("顶部固定法");
-        dataSettlementMethodOld = "0";
+        dataSettlementMethod = "0";
 
         mTvDataResponse.setText("关闭");
-        dataResponseOld = "0";
+        dataResponse = "0";
 
         mTvMeasurementIntervalPerRound.setText("1");
-        measurementIntervalPerRoundOld = "1";
+        measurementIntervalPerRound = "1";
     }
 
     private void initTimeAdapter(Context context) {
@@ -461,21 +458,12 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         intervalFitting = mEtIntervalFitting.getText().toString();
         pointOffset = mEtPointOffset.getText().toString();
 
-//        if (admeExecutiveAgencyInfo.getMeastype().equals("NullKey") || admeExecutiveAgencyInfo.getMeastype().equals(measureMethod)) {
-//            measureMethod = null;
-//        }
-//
-//        if (admeExecutiveAgencyInfo.getDatatype().equals("NullKey") || admeExecutiveAgencyInfo.getDatatype().equals(dataSettlementMethod)) {
-//            dataSettlementMethod = null;
-//        }
-//
-//        if (admeExecutiveAgencyInfo.getDatareply().equals("NullKey") || admeExecutiveAgencyInfo.getDatareply().equals(dataResponse)) {
-//            dataResponse = null;
-//        }
-//
-//        if (admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") || admeExecutiveAgencyInfo.getRoundmeasinval().equals(measurementIntervalPerRound)) {
-//            measurementIntervalPerRound = null;
-//        }
+        if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
+            if (admeTimeItemList.size() <= 1) {
+                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
+                return false;
+            }
+        }
 
         if (!admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") && !admeExecutiveAgencyInfo.getRoundwaitetime().equals(waitingIntervalPerRound)) {
             if (TextUtils.isEmpty(waitingIntervalPerRound)) {
@@ -807,7 +795,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             entity.setRoundwaitetime(waitingIntervalPerRound);
             entity.setRoundmeasinval(measurementIntervalPerRound);
             //定时测量方式
-            if (!admeExecutiveAgencyInfo.getMeastype().equals("NullKey") && admeExecutiveAgencyInfo.getMeastype().equals("2")) {
+            if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
                 StringBuffer timeBuffer = new StringBuffer();
                 for (AdmeTimeItem admeTimeItem : admeTimeItemList) {
                     String time = admeTimeItem.getTime();
@@ -816,10 +804,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                         timeBuffer.append("|");
                     }
                 }
-                timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
+                if (timeBuffer.length() > 1)
+                    timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
                 entity.setRoundmeasstart(timeBuffer.toString());
             } else {
-                entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart());
+                entity.setRoundmeasstart(startTimePerRound);
             }
             entity.setDatainval(dataReadingInterval);
             entity.setCompensatetime(measurementCompensationTime);
@@ -849,14 +838,10 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             admeExecutiveAgencyInfo = new AdmeExecutiveAgencyInfo();
             return;
         }
-        measureMethodOld = admeExecutiveAgencyInfo.getMeastype();
-        measureMethod = measureMethodOld;
-        dataSettlementMethodOld = admeExecutiveAgencyInfo.getDatatype();
-        dataSettlementMethod = dataSettlementMethodOld;
-        dataResponseOld = admeExecutiveAgencyInfo.getDatareply();
-        dataResponse = dataResponseOld;
-        measurementIntervalPerRoundOld = admeExecutiveAgencyInfo.getRoundmeasinval();
-        measurementIntervalPerRound = measurementIntervalPerRoundOld;
+        measureMethod = admeExecutiveAgencyInfo.getMeastype();
+        dataSettlementMethod = admeExecutiveAgencyInfo.getDatatype();
+        dataResponse = admeExecutiveAgencyInfo.getDatareply();
+        measurementIntervalPerRound = admeExecutiveAgencyInfo.getRoundmeasinval();
         startTimePerRound = admeExecutiveAgencyInfo.getRoundmeasstart();
 
         waitingIntervalPerRound = admeExecutiveAgencyInfo.getRoundwaitetime();
@@ -874,14 +859,14 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         intervalFitting = admeExecutiveAgencyInfo.getInterval_fitting();
         pointOffset = admeExecutiveAgencyInfo.getPoint_offset();
 
-        if (measureMethodOld.equals("NullKey")) {
+        if (measureMethod.equals("NullKey")) {
             measureMethodLayout.setVisibility(View.GONE);
             measurementIntervalPerRoundLayout.setVisibility(View.GONE);
             startTimePerRoundLayout.setVisibility(View.GONE);
             mRecyclerViewTime.setVisibility(View.GONE);
 
         } else {
-            switch (measureMethodOld) {
+            switch (measureMethod) {
                 case "0":
                     mTvMeasureMethod.setText(measureMethods[0]);
                     waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
@@ -906,20 +891,20 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             }
         }
 
-        if (dataSettlementMethodOld.equals("NullKey")) {
+        if (dataSettlementMethod.equals("NullKey")) {
             dataSettlementMethodLayout.setVisibility(View.GONE);
         } else {
-            if (dataSettlementMethodOld.equals("0")) {
+            if (dataSettlementMethod.equals("0")) {
                 mTvDataSettlementMethod.setText(settlementMethods[0]);
             } else {
                 mTvDataSettlementMethod.setText(settlementMethods[1]);
             }
         }
 
-        if (dataResponseOld.equals("NullKey")) {
+        if (dataResponse.equals("NullKey")) {
             dataResponseLayout.setVisibility(View.GONE);
         } else {
-            if (dataResponseOld.equals("0")) {
+            if (dataResponse.equals("0")) {
                 mTvDataResponse.setText(dataResponseTypes[0]);
             } else {
                 mTvDataResponse.setText(dataResponseTypes[1]);
@@ -927,7 +912,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         }
 
         try {
-            mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRoundOld);
+            mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRound);
 
             if (!startTimePerRound.equals("NullKey")) {
                 AdmeTimeItem item;
@@ -1049,68 +1034,68 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     }
 
     public void doAfterSetting() {
-        dataSettlementMethodOld = dataSettlementMethod;
-        dataResponseOld = dataResponse;
+//        dataSettlementMethodOld = dataSettlementMethod;
+//        dataResponseOld = dataResponse;
     }
 
     public boolean checkValueIsChange(boolean configPageEditableChanged) {
-        if (!configPageEditableChanged)
-            return false;
-
-        if (measureMethodOld != null && !measureMethodOld.equals("NullKey") && measureMethod != null && !measureMethodOld.equals(measureMethod)) {
-            return true;
-        }
-        if (dataSettlementMethodOld != null && !dataSettlementMethodOld.equals("NullKey") && dataSettlementMethod != null && !dataSettlementMethodOld.equals(dataSettlementMethod)) {
-            return true;
-        }
-        if (dataResponseOld != null && !dataResponseOld.equals("NullKey") && dataResponse != null && !dataResponseOld.equals(dataResponse)) {
-            return true;
-        }
-        if (measurementIntervalPerRoundOld != null && !measurementIntervalPerRoundOld.equals("NullKey") && measurementIntervalPerRound != null && !measurementIntervalPerRoundOld.equals(measurementIntervalPerRound)) {
-            return true;
-        }
-        if (waitingIntervalPerRound != null && !waitingIntervalPerRound.equals("NullKey") && !waitingIntervalPerRound.equals(mEtWaitingIntervalPerRound.getText().toString().trim())) {
-            return true;
-        }
-        if (dataReadingInterval != null && !dataReadingInterval.equals("NullKey") && !dataReadingInterval.equals(mEtDataReadingInterval.getText().toString().trim())) {
-            return true;
-        }
-        if (measurementCompensationTime != null && !measurementCompensationTime.equals("NullKey") && !measurementCompensationTime.equals(mEtMeasurementCompensationTime.getText().toString().trim())) {
-            return true;
-        }
-        if (motorDriveAddress != null && !motorDriveAddress.equals("NullKey") && !motorDriveAddress.equals(mEtMotorDriveAddress.getText().toString().trim())) {
-            return true;
-        }
-        if (decentralizationSpeed != null && !decentralizationSpeed.equals("NullKey") && !decentralizationSpeed.equals(mEtDecentralizationSpeed.getText().toString().trim())) {
-            return true;
-        }
-        if (inclinometerTubeHoleDepth != null && !inclinometerTubeHoleDepth.equals("NullKey") && !inclinometerTubeHoleDepth.equals(mEtInclinometerTubeHoleDepth.getText().toString().trim())) {
-            return true;
-        }
-        if (decentralizationWaitingTime != null && !decentralizationWaitingTime.equals("NullKey") && !decentralizationWaitingTime.equals(mEtDecentralizationWaitingTime.getText().toString().trim())) {
-            return true;
-        }
-        if (pullUpSpeed != null && !pullUpSpeed.equals("NullKey") && !pullUpSpeed.equals(mEtPullUpSpeed.getText().toString().trim())) {
-            return true;
-        }
-        if (measuringDistance != null && !measuringDistance.equals("NullKey") && !measuringDistance.equals(mEtMeasuringDistance.getText().toString().trim())) {
-            return true;
-        }
-        if (measurementIntervalTime != null && !measurementIntervalTime.equals("NullKey") && !measurementIntervalTime.equals(mEtMeasurementIntervalTime.getText().toString().trim())) {
-            return true;
-        }
-        if (measuringReferenceDepth != null && !measuringReferenceDepth.equals("NullKey") && !measuringReferenceDepth.equals(mEtMeasuringReferenceDepth.getText().toString().trim())) {
-            return true;
-        }
-        if (intervalCompensation != null && !intervalCompensation.equals("NullKey") && !intervalCompensation.equals(mEtIntervalCompensation.getText().toString().trim())) {
-            return true;
-        }
-        if (intervalFitting != null && !intervalFitting.equals("NullKey") && !intervalFitting.equals(mEtIntervalFitting.getText().toString().trim())) {
-            return true;
-        }
-        if (pointOffset != null && !pointOffset.equals("NullKey") && !pointOffset.equals(mEtPointOffset.getText().toString().trim())) {
-            return true;
-        }
+//        if (!configPageEditableChanged)
+//            return false;
+//
+//        if (measureMethodOld != null && !measureMethodOld.equals("NullKey") && measureMethod != null && !measureMethodOld.equals(measureMethod)) {
+//            return true;
+//        }
+//        if (dataSettlementMethodOld != null && !dataSettlementMethodOld.equals("NullKey") && dataSettlementMethod != null && !dataSettlementMethodOld.equals(dataSettlementMethod)) {
+//            return true;
+//        }
+//        if (dataResponseOld != null && !dataResponseOld.equals("NullKey") && dataResponse != null && !dataResponseOld.equals(dataResponse)) {
+//            return true;
+//        }
+//        if (measurementIntervalPerRoundOld != null && !measurementIntervalPerRoundOld.equals("NullKey") && measurementIntervalPerRound != null && !measurementIntervalPerRoundOld.equals(measurementIntervalPerRound)) {
+//            return true;
+//        }
+//        if (waitingIntervalPerRound != null && !waitingIntervalPerRound.equals("NullKey") && !waitingIntervalPerRound.equals(mEtWaitingIntervalPerRound.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (dataReadingInterval != null && !dataReadingInterval.equals("NullKey") && !dataReadingInterval.equals(mEtDataReadingInterval.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (measurementCompensationTime != null && !measurementCompensationTime.equals("NullKey") && !measurementCompensationTime.equals(mEtMeasurementCompensationTime.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (motorDriveAddress != null && !motorDriveAddress.equals("NullKey") && !motorDriveAddress.equals(mEtMotorDriveAddress.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (decentralizationSpeed != null && !decentralizationSpeed.equals("NullKey") && !decentralizationSpeed.equals(mEtDecentralizationSpeed.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (inclinometerTubeHoleDepth != null && !inclinometerTubeHoleDepth.equals("NullKey") && !inclinometerTubeHoleDepth.equals(mEtInclinometerTubeHoleDepth.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (decentralizationWaitingTime != null && !decentralizationWaitingTime.equals("NullKey") && !decentralizationWaitingTime.equals(mEtDecentralizationWaitingTime.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (pullUpSpeed != null && !pullUpSpeed.equals("NullKey") && !pullUpSpeed.equals(mEtPullUpSpeed.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (measuringDistance != null && !measuringDistance.equals("NullKey") && !measuringDistance.equals(mEtMeasuringDistance.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (measurementIntervalTime != null && !measurementIntervalTime.equals("NullKey") && !measurementIntervalTime.equals(mEtMeasurementIntervalTime.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (measuringReferenceDepth != null && !measuringReferenceDepth.equals("NullKey") && !measuringReferenceDepth.equals(mEtMeasuringReferenceDepth.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (intervalCompensation != null && !intervalCompensation.equals("NullKey") && !intervalCompensation.equals(mEtIntervalCompensation.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (intervalFitting != null && !intervalFitting.equals("NullKey") && !intervalFitting.equals(mEtIntervalFitting.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (pointOffset != null && !pointOffset.equals("NullKey") && !pointOffset.equals(mEtPointOffset.getText().toString().trim())) {
+//            return true;
+//        }
 
         return false;
     }
