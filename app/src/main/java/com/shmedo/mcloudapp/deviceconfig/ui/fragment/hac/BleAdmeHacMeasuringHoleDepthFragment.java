@@ -179,6 +179,32 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                 }
             }
         });
+
+        mEtMovementSpeed.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence text, int start, int before, int count) {
+                if (!TextUtils.isEmpty(text) && !TextUtils.isEmpty(movementway) && movementway.equals("0")) {
+                    try {
+                        int port = Integer.parseInt(text.toString().trim());
+                        if (port > 10) {
+                            MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     /**
@@ -316,7 +342,7 @@ public class BleAdmeHacMeasuringHoleDepthFragment extends BaseUSRBleIotCommunica
                             public void onSelect(int position, String text) {
                                 mTvMovementWay.setText(text);
                                 if (position == 0) {
-                                    MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓");
+//                                    MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓");
                                     movementway = "0";
                                     loadManualLastHistoryData(true);
                                 } else {

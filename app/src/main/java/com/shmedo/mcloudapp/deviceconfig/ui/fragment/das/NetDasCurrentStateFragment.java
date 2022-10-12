@@ -352,17 +352,23 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                             break;
 
-                        case SOIL_MOISTURE://土壤含水率
+                        case SOIL_MOISTURE: {//土壤含水率
                             holder.setText(R.id.tv_sensor_name, IOTSensorType.SOIL_MOISTURE.getDescription());
-                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
-                            holder.setText(R.id.tv_title1, "含水率(%)");
-                            decimalFormat.applyPattern("#.#");
-                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
-                            break;
+                            holder.setText(R.id.tv_title1, "温度(℃)");
+                            holder.setText(R.id.tv_title2, "湿度(%RH)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
 
                         case INCLINOMETER: {//测斜仪
-                            holder.setText(R.id.tv_sensor_name,IOTSensorType.INCLINOMETER.getDescription());
+                            holder.setText(R.id.tv_sensor_name, IOTSensorType.INCLINOMETER.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "X轴(mm)");
@@ -428,7 +434,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case WEIR: {//量水堰
-                            holder.setText(R.id.tv_sensor_name,IOTSensorType.WEIR.getDescription());
+                            holder.setText(R.id.tv_sensor_name, IOTSensorType.WEIR.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "液位值(mm)");

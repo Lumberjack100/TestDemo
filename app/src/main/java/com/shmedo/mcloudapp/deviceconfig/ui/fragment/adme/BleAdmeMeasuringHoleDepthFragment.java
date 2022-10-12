@@ -2,8 +2,10 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -166,6 +168,32 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
         clearMotionDataLayout.setVisibility(View.VISIBLE);
         motionDataClearCompleteLayout.setVisibility(View.GONE);
+
+        mEtMovementSpeed.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence text, int start, int before, int count) {
+                if (!TextUtils.isEmpty(text) && !TextUtils.isEmpty(movementway) && movementway.equals("0")) {
+                    try {
+                        int port = Integer.parseInt(text.toString().trim());
+                        if (port > 10) {
+                            MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void setSwitchViewListener() {
@@ -373,7 +401,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                             public void onSelect(int position, String text) {
                                 mTvMovementWay.setText(text);
                                 if (position == 0) {
-                                    MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓");
+//                                    MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓");
                                     movementway = "0";
                                     loadManualLastHistoryData(true);
                                 } else {

@@ -345,7 +345,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                     }
 
                     if (collectorModelStr.equals("3")) {
-                        holder.setText(R.id.tv_value1, result[2] + "%rh");
+                        holder.setText(R.id.tv_value1, result[2] + "%RH");
                     } else if (collectorModelStr.equals("21")) {
                         holder.setText(R.id.tv_value1, result[2] + "Hz");
                     } else {

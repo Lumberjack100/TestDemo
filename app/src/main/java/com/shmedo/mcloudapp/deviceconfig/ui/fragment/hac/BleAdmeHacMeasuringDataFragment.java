@@ -68,8 +68,11 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     @BindView(R.id.tv_area_num)
     TextView mTvAreaNum;//区号
 
+    @BindView(R.id.tv_hole_depth)
+    TextView mTvHoleDepth;//测斜管孔深阈值
+
     @BindView(R.id.et_hole_depth)
-    ClearEditText mEtHoleDepth;//测斜管孔深
+    ClearEditText mEtHoleDepth;//本次测量孔深
 
     @BindView(R.id.et_decentralization_waiting_time)
     ClearEditText mEtDecentralizationWaitingTime;//下放等待时间(min)
@@ -426,6 +429,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             HacHoleAreaDepthInfo info = holeAreaDepthInfoArrayList.get(0);
             holeno = info.getHoleno();
             mTvAreaNum.setText(info.getAreano());
+            mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
             mEtHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
 
             spinnerHoleNum.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, holeNumList));
@@ -437,6 +441,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     mTvAreaNum.setText(info.getAreano());
                     //指定舍入方式为：RoundingMode.DOWN，直接舍去格式化以外的部分
                     decimalFormat.setRoundingMode(RoundingMode.DOWN);
+                    mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
                     mEtHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
                 }
 
