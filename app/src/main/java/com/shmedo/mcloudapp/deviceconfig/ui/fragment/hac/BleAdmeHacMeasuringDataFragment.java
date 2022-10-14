@@ -22,8 +22,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
 
 import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.VibrateUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.CustomDialog;
+import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kongzue.dialogx.interfaces.OnBindView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -71,8 +73,8 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     @BindView(R.id.tv_hole_depth)
     TextView mTvHoleDepth;//测斜管孔深阈值
 
-    @BindView(R.id.et_hole_depth)
-    ClearEditText mEtHoleDepth;//本次测量孔深
+    @BindView(R.id.et_meas_depth)
+    ClearEditText mEtMeasDepth;//本次测量孔深
 
     @BindView(R.id.et_decentralization_waiting_time)
     ClearEditText mEtDecentralizationWaitingTime;//下放等待时间(min)
@@ -134,19 +136,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                                 mBtnRun.setText("正向测量");
                                 return;
                             }
-//                            if (motionState.getMotorinfo().equals("9")) {
-//                                mBtnRun.setText("反向测量");
-//                                return;
-//                            }
                             mBtnRun.setText(motionState.getMeasmode().equals("1") ? "反向测量" : "正向测量");
-
-                            //测量失败，继续此测量
-//                            if (motionState.getMotorinfo().equals("10")) {
-//                                mBtnRun.setText(motionState.getMeasmode().equals("1") ? "反向测量" : "正向测量");
-//                            } else {
-//                                //当 measmode =0，表示正测，需要判断正测是否完成，完成显示反测，否则还是正测
-//                                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
-//                            }
                         }
                     }
                 });
@@ -171,7 +161,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
         mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
         mEtMacAddress.setHint("XXXXXXXXXXXX");
 
-        mEtHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
+        mEtMeasDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
 
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
@@ -209,6 +199,10 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             if (!isConnected()) {
                 ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
+            }
+            if (mBtnRun.getText().toString().contains("反向测量")) {
+                VibrateUtils.vibrate(300);
+                MessageDialog.show("提示", "请确认测斜仪是否反向旋转180°", "确认");
             }
             if (!checkValueIsValid()) {
                 Timber.w("配置参数错误!");
@@ -263,9 +257,9 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             return false;
         }
 
-        if (TextUtils.isEmpty(mEtHoleDepth.getText())) {
-            ToastUtils.show("请输入测斜管孔深!");
-            mEtHoleDepth.requestFocus();
+        if (TextUtils.isEmpty(mEtMeasDepth.getText())) {
+            ToastUtils.show("请输入测量孔深!");
+            mEtMeasDepth.requestFocus();
             return false;
         }
 
@@ -304,7 +298,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             entity.setDownwaitetime(decentralizationWaitingTime);
             entity.setDatatype(dataSettlementMethod);
             entity.setOnewaytest(mSbSingleWayTestEnable.isChecked() ? "1" : "0");
-            entity.setHoledepth(mEtHoleDepth.getText().toString());
+            entity.setHoledepth(mEtMeasDepth.getText().toString());
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM, entity);
 
@@ -388,7 +382,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtHoleDepth.getText().toString());
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtMeasDepth.getText().toString());
             }
             break;
         }
@@ -430,7 +424,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             holeno = info.getHoleno();
             mTvAreaNum.setText(info.getAreano());
             mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
-            mEtHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
+            mEtMeasDepth.setText(decimalFormat.format(Double.parseDouble(info.getMeasdepth())));
 
             spinnerHoleNum.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, holeNumList));
             spinnerHoleNum.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -442,7 +436,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     //指定舍入方式为：RoundingMode.DOWN，直接舍去格式化以外的部分
                     decimalFormat.setRoundingMode(RoundingMode.DOWN);
                     mTvHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
-                    mEtHoleDepth.setText(decimalFormat.format(Double.parseDouble(info.getHoledepth())));
+                    mEtMeasDepth.setText(decimalFormat.format(Double.parseDouble(info.getMeasdepth())));
                 }
 
                 @Override
@@ -472,7 +466,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
          1.3 equipmodel =2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
          */
         if (equipmodel.equals("1")) {//表示在测量 然后根据 motorinfo 控制跳转页面
-            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtHoleDepth.getText().toString());
+            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtMeasDepth.getText().toString());
             return;
         }
         //停止或异常状态下,判断是否单测模式，单测模式下显示正向测量；正反测模式下，根据 motorinfo 处理操作按钮

@@ -37,7 +37,11 @@ public enum AdmeModuleErrorType {
 
     XF_TIME_OUT("14", "下放超时"),
 
-    READ_DATA_FAIL("15", "测斜仪读数据失败");
+    READ_DATA_FAIL("15", "测斜仪读数据失败"),
+
+    CX_FALL("16", "测斜仪掉落"),
+
+    CX_NON_REVERSE("17", "测斜仪未反转");
 
 
     AdmeModuleErrorType(String code, String description) {

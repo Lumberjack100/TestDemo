@@ -11,6 +11,8 @@ public class HacHoleAreaDepthInfo {
     private String holeno;//孔号
     private String areano;//区号
     private String holedepth;// 孔深
+    private String measdepth;// 孔深
+
 
     public String getHoleno() {
         return TextUtils.isEmpty(holeno) ? "" : holeno;
@@ -34,5 +36,13 @@ public class HacHoleAreaDepthInfo {
 
     public void setHoledepth(String holedepth) {
         this.holedepth = holedepth;
+    }
+
+    public String getMeasdepth() {
+        return TextUtils.isEmpty(measdepth) ? "" : measdepth;
+    }
+
+    public void setMeasdepth(String measdepth) {
+        this.measdepth = measdepth;
     }
 }
