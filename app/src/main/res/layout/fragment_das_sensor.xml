@@ -110,6 +110,25 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ll_dumpMinTime"
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:paddingStart="43dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="翻斗翻转最小间隔(s)" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/dumpMinTimeEt"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
                 <RadioButton
                     android:id="@+id/radio_break_alarm"
                     android:layout_width="wrap_content"

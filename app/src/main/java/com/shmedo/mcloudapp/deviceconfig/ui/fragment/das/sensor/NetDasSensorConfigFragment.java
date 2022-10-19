@@ -71,6 +71,12 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.tvPrecision)
     RoundTextView mTvPrecision;
 
+    @BindView(R.id.dumpMinTimeEt)
+    EditText mEtDumpMinTime;//翻斗翻转最小间隔
+
+    @BindView(R.id.ll_dumpMinTime)
+    ViewGroup dumpMinTimeLayout;//翻斗翻转最小间隔
+
     @BindView(R.id.radio_break_alarm)
     RadioButton rbBreakAlarm;
 
@@ -149,6 +155,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     }
 
     private void setFilter() {
+        mEtDumpMinTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
         mEtOsmometerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtWaterAlarmValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtWaterRevised.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
@@ -196,11 +204,15 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     rbCloseSwitchSensor.setChecked(false);
                     rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_343434));
                     rainPrecisionLayout.setVisibility(View.VISIBLE);
+                    if (!ioSensorInfo.getMin_time().equals("NullKey")) {
+                        dumpMinTimeLayout.setVisibility(View.VISIBLE);
+                    }
                     rbBreakAlarm.setChecked(false);
                     btnConfirm.setVisibility(View.VISIBLE);
                 } else {
                     rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                     rainPrecisionLayout.setVisibility(View.GONE);
+                    dumpMinTimeLayout.setVisibility(View.GONE);
                 }
             } else if (id == R.id.radio_break_alarm) {  //断线报警器单选按钮
                 if (isChecked) {
@@ -333,7 +345,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         }
         int id = view.getId();
         if (id == R.id.tvPrecision) {
-            String[] values =  StringUtils.getStringArray(R.array.rain_value);
+            String[] values = StringUtils.getStringArray(R.array.rain_value);
             int pos = Arrays.asList(values).indexOf(rainPrecision);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("雨量精度");
@@ -465,6 +477,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             DasIOSensorEntity entity = new DasIOSensorEntity();
             entity.setType("1");
             entity.setValue(rainPrecision);
+            entity.setMin_time(ioSensorInfo.getMin_time().equals("NullKey") || TextUtils.isEmpty(mEtDumpMinTime.getText()) ? null : mEtDumpMinTime.getText().toString());
+
             setSwitchSensorInfo(entity);
         } else if (mSbDigitalOsmometerEnable.isChecked()) {
             setDigitalOsmometerParam();
@@ -607,6 +621,9 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
+    /**
+     * 初始化开关量参数
+     */
     private void initSwitchSensor() {
         if (ioSensorInfo == null) {
             Timber.e("DasIOSensorInfo 为空!");
@@ -620,6 +637,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 rbCloseSwitchSensor.setChecked(true);
                 rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rainPrecisionLayout.setVisibility(View.GONE);
+                dumpMinTimeLayout.setVisibility(View.GONE);
                 rbBreakAlarm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbCloseSwitchSensor.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -639,6 +657,14 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     decimalFormat.applyPattern("#.#");
                     rainPrecision = decimalFormat.format(Double.parseDouble(ioSensorInfo.getValue()));
                     mTvPrecision.setText(rainPrecision);
+
+                    //TODO #gh# 翻斗翻转最小间隔参数为指令新增加项，兼容旧版指令处理
+                    if (ioSensorInfo.getMin_time().equals("NullKey")) {
+                        dumpMinTimeLayout.setVisibility(View.GONE);
+                    } else {
+                        dumpMinTimeLayout.setVisibility(View.VISIBLE);
+                        mEtDumpMinTime.setText(ioSensorInfo.getMin_time());
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -654,6 +680,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 rbCloseSwitchSensor.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rainPrecisionLayout.setVisibility(View.GONE);
+                dumpMinTimeLayout.setVisibility(View.GONE);
                 if (ioSensorInfo.getValue().equals("0")) {
                     rbBreakAlarmOpen.setChecked(true);
                 } else if (ioSensorInfo.getValue().equals("1")) {
@@ -666,6 +693,9 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
+    /**
+     * 初始化数字式渗压计参数
+     */
     private void initDigitalPiezometerInfo() {
         if (digitalPiezometerInfo == null) {
             Timber.e("DasDigitalPiezometerInfo 为空!");

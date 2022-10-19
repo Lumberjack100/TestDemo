@@ -29,7 +29,7 @@ public class DasIOSensorInfoParser implements IOTResultParser<DasIOSensorInfo> {
             }
             info.setType(keyValueMap.getOrDefault("type", "NullKey"));
             info.setValue(keyValueMap.getOrDefault("value", "NullKey"));
-
+            info.setMin_time(keyValueMap.getOrDefault("min_time", "NullKey"));
             return info;
         } catch (Exception ex) {
             ex.printStackTrace();
