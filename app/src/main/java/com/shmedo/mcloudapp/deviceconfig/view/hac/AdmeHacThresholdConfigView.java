@@ -53,6 +53,10 @@ public class AdmeHacThresholdConfigView extends LinearLayout {
     ClearEditText mEtInclinometerUnderVoltageThreshold;//测斜仪欠压阈值
 
 
+    @BindView(R.id.et_wire_rope_length)
+    ClearEditText mEtWireRopeLength;//钢丝绳长度
+
+
     @BindView(R.id.et_first_level_x_axis_min)
     ClearEditText mEtFirstLevelXAxisMin;//X轴相对位移量(最小值)
 
@@ -118,6 +122,9 @@ public class AdmeHacThresholdConfigView extends LinearLayout {
     @BindView(R.id.ll_inclinometer_under_voltage_threshold)
     ViewGroup inclinometerUnderVoltageThresholdLayout;
 
+    @BindView(R.id.ll_wire_rope_length)
+    ViewGroup wireRopeLengthLayout;
+
     @BindView(R.id.ll_first_level_warning)
     public ViewGroup firstLevelWarningLayout;
 
@@ -133,6 +140,7 @@ public class AdmeHacThresholdConfigView extends LinearLayout {
     private String inclinometerStandardVoltageThreshold;
     private String inclinometerLowVoltageThreshold;
     private String inclinometerUnderVoltageThreshold;
+    private String wireRopeLength;
 
     private String firstLevelXAxisMin;
     private String firstLevelXAxisMax;
@@ -320,6 +328,28 @@ public class AdmeHacThresholdConfigView extends LinearLayout {
             }
         }
 
+        if (!wireRopeLength.equals("NullKey")) {
+            wireRopeLength = mEtWireRopeLength.getText().toString().trim();
+            if (TextUtils.isEmpty(wireRopeLength)) {
+                ToastUtils.show("请输入钢丝绳长度!");
+                mEtWireRopeLength.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(wireRopeLength);
+                if (value < 1) {
+                    ToastUtils.show("请输入正确的钢丝绳长度!");
+                    mEtWireRopeLength.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的钢丝绳长度!");
+                mEtWireRopeLength.requestFocus();
+                return false;
+            }
+        }
+
+
         /** 预警级别阈值处理 */
 //        if ((TextUtils.isEmpty(firstLevelXAxisMin) || firstLevelXAxisMin.equals("0")) && (TextUtils.isEmpty(firstLevelXAxisMax) || firstLevelXAxisMax.equals("0")))
 //            return true;
@@ -354,7 +384,7 @@ public class AdmeHacThresholdConfigView extends LinearLayout {
             entity.setVolt_sensor_standard(voltageConfigInfo.getVolt_sensor_standard().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerStandardVoltageThreshold)));
             entity.setVolt_sensor_low(voltageConfigInfo.getVolt_sensor_low().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerLowVoltageThreshold)));
             entity.setVolt_sensor_under(voltageConfigInfo.getVolt_sensor_under().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerUnderVoltageThreshold)));
-
+            entity.setRope_length(voltageConfigInfo.getRope_length().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(wireRopeLength)));
             command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_VOLTAGE, entity);
         } catch (Exception ex) {
             command = "";
@@ -409,6 +439,7 @@ public class AdmeHacThresholdConfigView extends LinearLayout {
         inclinometerStandardVoltageThreshold = voltageConfigInfo.getVolt_sensor_standard().trim();
         inclinometerLowVoltageThreshold = voltageConfigInfo.getVolt_sensor_low().trim();
         inclinometerUnderVoltageThreshold = voltageConfigInfo.getVolt_sensor_under().trim();
+        wireRopeLength = voltageConfigInfo.getRope_length().trim();
         try {
             if (driveStandardVoltageThreshold.equals("NullKey")) {
                 driveStandardVoltageThresholdLayout.setVisibility(View.GONE);
@@ -450,6 +481,13 @@ public class AdmeHacThresholdConfigView extends LinearLayout {
             } else {
                 inclinometerUnderVoltageThreshold = decimalFormat.format(Double.parseDouble(inclinometerUnderVoltageThreshold));
                 mEtInclinometerUnderVoltageThreshold.setText(inclinometerUnderVoltageThreshold);
+            }
+
+            if (wireRopeLength.equals("NullKey")) {
+                wireRopeLengthLayout.setVisibility(View.GONE);
+            } else {
+                wireRopeLength = decimalFormat.format(Double.parseDouble(wireRopeLength));
+                mEtWireRopeLength.setText(wireRopeLength);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

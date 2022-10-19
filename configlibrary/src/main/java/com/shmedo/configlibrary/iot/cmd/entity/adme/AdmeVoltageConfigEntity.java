@@ -17,6 +17,8 @@ public class AdmeVoltageConfigEntity implements Validater {
     private String volt_sensor_low;//测斜仪低压阈值
     private String volt_sensor_under;//测斜仪欠压阈值
 
+    private String rope_length;// 钢丝绳长
+
     public void setVolt_power_standard(String volt_power_standard) {
         this.volt_power_standard = volt_power_standard;
     }
@@ -39,6 +41,10 @@ public class AdmeVoltageConfigEntity implements Validater {
 
     public void setVolt_sensor_under(String volt_sensor_under) {
         this.volt_sensor_under = volt_sensor_under;
+    }
+
+    public void setRope_length(String rope_length) {
+        this.rope_length = rope_length;
     }
 
     @Override

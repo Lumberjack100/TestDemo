@@ -32,6 +32,7 @@ public class AdmeVoltageConfigParser implements IOTResultParser<AdmeVoltageConfi
             info.setVolt_sensor_standard(keyValueMap.getOrDefault("volt_sensor_standard", "NullKey"));
             info.setVolt_sensor_low(keyValueMap.getOrDefault("volt_sensor_low", "NullKey"));
             info.setVolt_sensor_under(keyValueMap.getOrDefault("volt_sensor_under", "NullKey"));
+            info.setRope_length(keyValueMap.getOrDefault("rope_length", "NullKey"));
 
             return info;
         } catch (Exception ex) {
