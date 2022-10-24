@@ -161,7 +161,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
         mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
         mEtMacAddress.setHint("XXXXXXXXXXXX");
 
-        mEtMeasDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
+        mEtMeasDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");

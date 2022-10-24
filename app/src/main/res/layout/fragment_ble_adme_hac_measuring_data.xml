@@ -105,7 +105,7 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_meas_depth"
                 style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+                android:inputType="numberDecimal" />
 
         </LinearLayout>
 
