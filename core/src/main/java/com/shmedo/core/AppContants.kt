@@ -88,7 +88,7 @@ interface AppContants {
         }
     }
 
-    enum class UsbSerialMsgWhat(private val code: Int) : INumberEnum {
+    enum class UsbSerialMsgWhat(private val code: Int) {
         USB_SERIAL_DEVICE_INITIAL(1),
         USB_SERIAL_AT_SCAN(2),
         USB_SERIAL_AT_CONNECT(3),
@@ -99,7 +99,7 @@ interface AppContants {
         USB_SERIAL_DATA_QUERY(8),
         USB_SERIAL_COLLECTION_CONFIGURATION(9);
 
-        override fun getCode(): Int {
+        fun getCode(): Int {
             return code
         }
     }
