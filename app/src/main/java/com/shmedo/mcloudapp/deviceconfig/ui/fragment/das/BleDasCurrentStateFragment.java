@@ -34,7 +34,7 @@ import com.shmedo.configlibrary.ble.model.SystemRunStateInfo;
 import com.shmedo.configlibrary.ble.model.VersionMessageInfo;
 import com.shmedo.configlibrary.ble.utils.ResultParserUtil;
 import com.shmedo.configlibrary.ble.utils.StringUtil;
-import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
+import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.enums.ServerNumber;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -329,12 +329,12 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
             @Override
             protected void convert(CommonViewHolder holder, String string, int position) {
                 try {
-                    IOTCollectorModel collectorModel = IOTCollectorModel.value(collectorModelStr);
-                    holder.setText(R.id.tv_sensor_name, collectorModel.getDescription());
+                    IOTSensorType sensorType = IOTSensorType.value(collectorModelStr);
+                    holder.setText(R.id.tv_sensor_name, sensorType.getDescription());
                     //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
                     String[] result = string.split(":");
 
-                    String sensorAisle = collectorModel == IOTCollectorModel.VW08 ? String.valueOf(Integer.parseInt(result[0]) + 1) : result[0];
+                    String sensorAisle = sensorType == IOTSensorType.VW08 ? String.valueOf(Integer.parseInt(result[0]) + 1) : result[0];
                     holder.setText(R.id.tv_address, "通道" + sensorAisle);
                     if (result[1].equals("0")) {
                         holder.setText(R.id.tv_status, "正常");

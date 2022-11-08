@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hjq.toast.ToastUtils;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.das.DasExternalSensorInfo;
@@ -23,6 +25,8 @@ import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -34,18 +38,38 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetDasExternalDigitalSensorFragment extends BaseFragment {
+    /**
+     * 传感器子类型
+     */
+    @BindView(R.id.tv_child_sensor_title)
+    TextView mTvChildSensorTitle;
 
+    @BindView(R.id.tv_child_sensor_type)
+    TextView mTvChildSensorType;
+
+    @BindView(R.id.childSensorTypeLayout)
+    ViewGroup childSensorTypeLayout;
+
+    /**
+     * 地址
+     */
+    @BindView(R.id.et_modbus_address)
+    EditText mEtModbusAddress;
+
+    /**
+     * 触发值
+     */
     @BindView(R.id.tv_triggerThreshold)
-    TextView mTvAlarmValue;//触发值
+    TextView mTvAlarmValue;
 
     @BindView(R.id.et_trigger_threshold)
     EditText mEtAlarmValue;
 
-    @BindView(R.id.et_modbus_address)
-    EditText mEtModbusAddress;
-
+    /**
+     * 修正值
+     */
     @BindView(R.id.tv_correctionValue)
-    TextView mTvCorrectValue;//修正值
+    TextView mTvCorrectValue;
 
     @BindView(R.id.et_revised)
     EditText mEtCorrectValue;
@@ -53,7 +77,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.correction_layout)
     ViewGroup correctionLayout;
 
-    //扩展字段
+    /**
+     * 扩展字段1
+     */
     @BindView(R.id.tv_extension1)
     TextView mTvExtension1;
 
@@ -63,7 +89,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.extension_layout1)
     ViewGroup extensionLayout1;
 
-    //扩展字段
+    /**
+     * 扩展字段2
+     */
     @BindView(R.id.tv_extension2)
     TextView mTvExtension2;
 
@@ -73,7 +101,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.extension_layout2)
     ViewGroup extensionLayout2;
 
-    //扩展字段
+    /**
+     * 扩展字段3
+     */
     @BindView(R.id.tv_extension3)
     TextView mTvExtension3;
 
@@ -88,8 +118,13 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     private IOTSensorType iotSensorType;//传感器类型
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
+    private String childRadarType;
     private String sensorAddress, triggerThreshold, correctValue;
     private String exValue1, exValue2, exValue3;
+
+    //子雷达类型
+    private List<String> childRadarTypeList = Arrays.asList("雷达物位计", "精波雷达");
+
 
     public static NetDasExternalDigitalSensorFragment newInstance(ArrayList<String> addressList, IOTSensorType sensorType, DasExternalSensorInfo externalSensorInfo) {
         NetDasExternalDigitalSensorFragment fragment = new NetDasExternalDigitalSensorFragment();
@@ -133,31 +168,6 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         mEtExtension1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtExtension2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         mEtExtension3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
-
-        if (iotSensorType == null)
-            return;
-
-        switch (iotSensorType) {
-            case INCLINOMETER://测斜仪
-            case STATIC_LEVEL://静力水准
-                extensionLayout1.setVisibility(View.VISIBLE);
-                break;
-
-            case LUYAN_INCLINOMETER://倾角仪
-                correctionLayout.setVisibility(View.GONE);
-                extensionLayout1.setVisibility(View.VISIBLE);
-                extensionLayout2.setVisibility(View.VISIBLE);
-                break;
-
-            case WEIR: //量水堰计
-            case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
-                extensionLayout1.setVisibility(View.VISIBLE);
-                extensionLayout2.setVisibility(View.VISIBLE);
-                break;
-
-            default:
-                break;
-        }
     }
 
     private void initValue() {
@@ -183,6 +193,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 case INCLINOMETER://测斜仪
                     mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:m)");
+                    extensionLayout1.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("测段长(单位:mm)");
                     exValue1 = externalSensorInfo.getSpacing();
                     if (!TextUtils.isEmpty(exValue1)) {
@@ -192,13 +203,29 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     break;
 
                 case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                case RADAR_LEVEL_GAUGE://雷达物位计
                     mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
                     break;
 
+                case RADAR_LEVEL_GAUGE://雷达物位计
+                    mTvAlarmValue.setText("触发值(单位:mm)");
+                    mTvCorrectValue.setText("安装高程(单位:m)");
+                    childRadarType = externalSensorInfo.getChild_type();
+                    if (!childRadarType.equals("NullKey")) {
+                        childSensorTypeLayout.setVisibility(View.VISIBLE);
+                        mTvChildSensorTitle.setText("雷达类型");
+                        if (childRadarType.equals("1"))
+                            mTvChildSensorType.setText(childRadarTypeList.get(0));
+                        else
+                            mTvChildSensorType.setText(childRadarTypeList.get(1));
+                    }
+                    break;
+
                 case LUYAN_INCLINOMETER://倾角仪
                     mTvAlarmValue.setText("触发值(单位:°)");
+                    correctionLayout.setVisibility(View.GONE);
+                    extensionLayout1.setVisibility(View.VISIBLE);
+                    extensionLayout2.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("X轴角度(°)");
                     mTvExtension2.setText("Y轴角度(°)");
                     exValue1 = externalSensorInfo.getInitvalx();
@@ -221,6 +248,8 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 case WEIR://量水堰计
                     mTvAlarmValue.setText("触发值(单位:m³/s)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
+                    extensionLayout1.setVisibility(View.VISIBLE);
+                    extensionLayout2.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("初始读数(单位:mm)");
                     mTvExtension2.setText("堰上水头(单位:mm)");
                     exValue1 = externalSensorInfo.getLsycsds();
@@ -238,6 +267,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 case STATIC_LEVEL://静力水准
                     mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
+                    extensionLayout1.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("高程(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
                     if (!TextUtils.isEmpty(exValue1)) {
@@ -255,6 +285,8 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
                     mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("修正值(单位:mm)");
+                    extensionLayout1.setVisibility(View.VISIBLE);
+                    extensionLayout2.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("安装高程(单位:m)");
                     mTvExtension2.setText("绳长(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
@@ -269,6 +301,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     }
                     break;
             }
+
             mEtModbusAddress.setText(sensorAddress);
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
@@ -283,13 +316,15 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.btn_confirm})
+    @OnClick({R.id.childSensorTypeLayout, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
         }
         int id = view.getId();
-        if (id == R.id.btn_confirm) {
+        if (id == R.id.childSensorTypeLayout) {
+            showChildRadarTypeListDialog();
+        } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
@@ -298,6 +333,32 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             processSave();
         }
     }
+
+    /**
+     * 选择子雷达传感器类型
+     */
+    private void showChildRadarTypeListDialog() {
+        int pos = childRadarTypeList.indexOf(String.valueOf(mTvChildSensorType.getText()));
+        pos = pos == -1 ? 0 : pos;
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", (String[]) childRadarTypeList.toArray(),
+                        null, pos,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvChildSensorType.setText(text);
+                                if (text.equals(childRadarTypeList.get(0))) {
+                                    childRadarType = "1";
+                                } else if (text.equals(childRadarTypeList.get(1))) {
+                                    childRadarType = "3";
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
+    }
+
 
     private boolean checkValueIsValid() {
         sensorAddress = mEtModbusAddress.getText().toString().trim();
@@ -513,6 +574,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
                 externalSensorInfo.setTubealti(exValue1);
                 externalSensorInfo.setRopelen(exValue2);
+                break;
+
+            case RADAR_LEVEL_GAUGE://雷达液(物)位计 设置子雷达传感器型号
+                if (!childRadarType.equals("NullKey"))
+                    externalSensorInfo.setChild_type(childRadarType);
                 break;
 
             default:

@@ -10,6 +10,7 @@ import java.util.List;
  * 创建时间:  2021/7/16 <br/>
  * 描述：     TODO
  */
+@Deprecated
 public enum IOTCollectorModel {
     /**
      * 振弦式采集器
@@ -100,6 +101,8 @@ public enum IOTCollectorModel {
      * 浊度仪传感器
      */
     SZSW("27","数字式水位计"),
+
+    WATER_QUALITY_METER("28", "多参数水质仪"),
 
     UNKNOWN_TYPE("-1", "未知类型");
 

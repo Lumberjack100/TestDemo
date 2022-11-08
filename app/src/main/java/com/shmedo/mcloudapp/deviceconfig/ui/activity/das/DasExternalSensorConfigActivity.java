@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity.das;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.sensor.NetDasExternalVi
 import com.shmedo.mcloudapp.util.permission.PermissionHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 创建者:   gonghe <br/>
@@ -84,19 +82,4 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
         PermissionHelper.requestScanPermissions(this);
     }
 
-    @SuppressLint("MissingSuperCall")
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        /**
-         * 1.使用getSupportFragmentManager().getFragments()获取到当前Activity中添加的Fragment集合
-         * 2.遍历Fragment集合，手动调用在当前Activity中的Fragment中的onActivityResult()方法。
-         */
-        if (getSupportFragmentManager().getFragments().size() > 0) {
-            List<Fragment> fragments = getSupportFragmentManager().getFragments();
-            for (Fragment mFragment : fragments) {
-                mFragment.onActivityResult(requestCode, resultCode, data);
-            }
-        }
-    }
 }

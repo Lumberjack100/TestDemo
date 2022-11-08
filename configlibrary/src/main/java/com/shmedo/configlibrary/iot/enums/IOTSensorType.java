@@ -13,6 +13,11 @@ import java.util.List;
  */
 public enum IOTSensorType {
     /**
+     * 振弦式采集器
+     */
+    VW08("0","振弦式采集器"),
+
+    /**
      * 压电式雨量计
      */
     RAIN_GAUGE("1", "雨量计"),
@@ -86,6 +91,7 @@ public enum IOTSensorType {
 
     DIGITAL_WATER_LEVEL_GAUGE("27", "数字式水位计"),
 
+    WATER_QUALITY_METER("28", "多参数水质仪"),
     /**
      * 基康渗压计 BGK-4500
      */
@@ -184,7 +190,7 @@ public enum IOTSensorType {
     }
 
     public static IOTSensorType getSensorTypeByCollectorCode(String code) {
-        if (IOTCollectorModel.value(code) == IOTCollectorModel.VW08) {
+        if (IOTSensorType.value(code) == IOTSensorType.VW08) {
             return IOTSensorType.KANG_PERCOLATE;
         } else {
             return IOTSensorType.value(code);

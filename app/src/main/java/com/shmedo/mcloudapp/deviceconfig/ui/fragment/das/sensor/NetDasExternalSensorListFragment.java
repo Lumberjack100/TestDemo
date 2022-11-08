@@ -32,7 +32,6 @@ import com.shmedo.configlibrary.iot.cmd.entity.das.DasCollectorEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasExternalSensorEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.IndexEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
-import com.shmedo.configlibrary.iot.enums.IOTCollectorModel;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.enums.IOTSensorType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
@@ -42,13 +41,13 @@ import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
+import com.shmedo.mcloudapp.deviceconfig.adapter.DASSensorAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.DASSensorItem;
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasExternalSensorConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
-import com.shmedo.mcloudapp.deviceconfig.adapter.DASSensorAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.DASSensorItem;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -387,6 +386,10 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 entity.setRopelen(externalSensorInfo.getRopelen());
                 break;
 
+            case RADAR_LEVEL_GAUGE://雷达液(物)位计 设置子雷达传感器型号
+                entity.setChild_type(externalSensorInfo.getChild_type());
+                break;
+
             default:
                 break;
         }
@@ -622,7 +625,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             collectorCloseWarn();
             return;
         }
-        if (IOTCollectorModel.value(collectorInfo.getType()) == IOTCollectorModel.VW08) {//振弦式传感器
+        if (IOTSensorType.value(collectorInfo.getType()) == IOTSensorType.VW08) {//振弦式传感器
             isVibratingWireSensor = true;
         }
         accessSum = Integer.parseInt(collectorInfo.getSensornum());

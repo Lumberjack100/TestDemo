@@ -42,6 +42,9 @@ public class DasExternalSensorInfo implements Serializable {
     private String initvalx;//X轴初始值
     private String initvaly;//Y轴初始值
 
+    private String child_type;//子传感器类型
+
+
 
     public String getIndex() {
         return TextUtils.isEmpty(index) ? "" : index;
@@ -217,5 +220,13 @@ public class DasExternalSensorInfo implements Serializable {
 
     public void setInitvaly(String initvaly) {
         this.initvaly = initvaly;
+    }
+
+    public String getChild_type() {
+        return TextUtils.isEmpty(child_type) ? "" : child_type;
+    }
+
+    public void setChild_type(String child_type) {
+        this.child_type = child_type;
     }
 }

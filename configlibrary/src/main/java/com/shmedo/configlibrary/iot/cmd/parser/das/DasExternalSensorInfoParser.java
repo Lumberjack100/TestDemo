@@ -49,6 +49,7 @@ public class DasExternalSensorInfoParser implements IOTResultParser<DasExternalS
             info.setLsyysst(keyValueMap.getOrDefault("lsyysst", "NullKey"));
             info.setInitvalx(keyValueMap.getOrDefault("initvalx", "NullKey"));
             info.setInitvaly(keyValueMap.getOrDefault("initvaly", "NullKey"));
+            info.setChild_type(keyValueMap.getOrDefault("child_type", "NullKey"));
 
             return info;
         } catch (Exception ex) {
