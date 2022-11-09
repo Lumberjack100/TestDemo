@@ -322,7 +322,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
     private void initSensorAdapter() {
         sensorRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         sensorRecyclerView.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(10f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.transparent)));
-        sensorAdapter = new CommonAdapter<DasSensorStatusInfo>(getActivity(), R.layout.item_sensor_status, sensorList) {
+        sensorAdapter = new CommonAdapter<DasSensorStatusInfo>(getActivity(), R.layout.item_vms_terminal_sensor_state, sensorList) {
             @Override
             protected void convert(CommonViewHolder holder, DasSensorStatusInfo sensorStatusInfo, int position) {
                 try {
@@ -464,13 +464,11 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             holder.setVisibleOrGone(R.id.value3Layout, true);
                             holder.setVisibleOrGone(R.id.value4Layout, true);
                             holder.setVisibleOrGone(R.id.value5Layout, true);
-
                             holder.setText(R.id.tv_title1, "风速(m/s)");
                             holder.setText(R.id.tv_title2, "风向(°)");
                             holder.setText(R.id.tv_title3, "湿度(%RH)");
                             holder.setText(R.id.tv_title4, "温度(℃)");
                             holder.setText(R.id.tv_title5, "气压(KPa)");
-
                             String[] values = sensorStatusInfo.getVal().split(",");
                             if (values.length >= 5) {
                                 decimalFormat.applyPattern("#.#");
@@ -563,6 +561,56 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                                 decimalFormat.applyPattern("#.#");
                                 holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
                                 holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case WATER_QUALITY_METER: {//多参数水质仪
+                            holder.setText(R.id.tv_sensor_name, IOTSensorType.WATER_QUALITY_METER.getDescription());
+                            holder.setText(R.id.tv_title1, "温度(°)");
+
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            decimalFormat.applyPattern("#.#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                            if (values.length >= 2) {
+                                holder.setVisibleOrGone(R.id.value2Layout, true);
+                                holder.setText(R.id.tv_title2, "酸碱度(pH)");
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                            if (values.length >= 3) {
+                                holder.setVisibleOrGone(R.id.value3Layout, true);
+                                holder.setText(R.id.tv_title3, "溶氧(mg/L)");
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                            }
+                            if (values.length >= 4) {
+                                holder.setVisibleOrGone(R.id.value4Layout, true);
+                                holder.setText(R.id.tv_title4, "电导率(uS/cm)");
+                                holder.setText(R.id.tv_value4, decimalFormat.format(Double.parseDouble(values[3])));
+                            }
+                            if (values.length >= 5) {
+                                holder.setVisibleOrGone(R.id.value5Layout, true);
+                                holder.setText(R.id.tv_title5, "浊度(NTU)");
+                                holder.setText(R.id.tv_value5, decimalFormat.format(Double.parseDouble(values[4])));
+                            }
+                            if (values.length >= 6) {
+                                holder.setVisibleOrGone(R.id.value6Layout, true);
+                                holder.setText(R.id.tv_title6, "叶绿素(ug)");
+                                holder.setText(R.id.tv_value6, decimalFormat.format(Double.parseDouble(values[5])));
+                            }
+                            if (values.length >= 7) {
+                                holder.setVisibleOrGone(R.id.value7Layout, true);
+                                holder.setText(R.id.tv_title7, "氧化还原电位(mV)");
+                                holder.setText(R.id.tv_value7, decimalFormat.format(Double.parseDouble(values[6])));
+                            }
+                            if (values.length >= 8) {
+                                holder.setVisibleOrGone(R.id.value8Layout, true);
+                                holder.setText(R.id.tv_title8, "盐度(%)");
+                                holder.setText(R.id.tv_value8, decimalFormat.format(Double.parseDouble(values[7])));
+                            }
+                            if (values.length >= 9) {
+                                holder.setVisibleOrGone(R.id.value9Layout, true);
+                                holder.setText(R.id.tv_title9, "藻蓝蛋白(Kcells/mL)");
+                                holder.setText(R.id.tv_value9, decimalFormat.format(Double.parseDouble(values[8])));
                             }
                         }
                         break;
