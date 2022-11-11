@@ -249,7 +249,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                 ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            if (btnAction.getText().toString().equals("停止")) {
+            if (btnAction.getText().toString().equals("中止测量")) {
                 showStopWarnDialog();
 
             } else if (btnAction.getText().toString().equals("下一步")) {
