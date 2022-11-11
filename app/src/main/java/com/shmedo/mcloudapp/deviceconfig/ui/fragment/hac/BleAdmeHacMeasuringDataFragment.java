@@ -27,6 +27,7 @@ import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.CustomDialog;
 import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kongzue.dialogx.interfaces.OnBindView;
+import com.kongzue.dialogx.interfaces.OnDialogButtonClickListener;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -202,13 +203,24 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             }
             if (mBtnRun.getText().toString().contains("反向测量")) {
                 VibrateUtils.vibrate(300);
-                MessageDialog.show("提示", "请确认测斜仪是否反向旋转180°", "确认");
+                MessageDialog.show("提示", "请确认测斜仪是否反向旋转180°", "确认").setOkButton(new OnDialogButtonClickListener<MessageDialog>() {
+                    @Override
+                    public boolean onClick(MessageDialog baseDialog, View v) {
+                        if (!checkValueIsValid()) {
+                            Timber.w("配置参数错误!");
+                            return false;
+                        }
+                        initRunCommands();
+                        return false;
+                    }
+                });
+            } else {
+                if (!checkValueIsValid()) {
+                    Timber.w("配置参数错误!");
+                    return;
+                }
+                initRunCommands();
             }
-            if (!checkValueIsValid()) {
-                Timber.w("配置参数错误!");
-                return;
-            }
-            initRunCommands();
         }
     }
 
