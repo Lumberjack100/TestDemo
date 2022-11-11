@@ -17,6 +17,8 @@ public class HacMeasuringDataInfo {
     private String datatype;//数据解算方式（0:顶部固定法，1底部固定法）
     private String onewaytest;//单向测量 0 :关闭 1:开启
     private List<HacHoleAreaDepthInfo> holelist;
+    private String checkreverse;//反转自检
+
 
     public String getEquipmodel() {
         return TextUtils.isEmpty(equipmodel) ? "" : equipmodel;
@@ -64,5 +66,13 @@ public class HacMeasuringDataInfo {
 
     public void setHolelist(List<HacHoleAreaDepthInfo> holelist) {
         this.holelist = holelist;
+    }
+
+    public String getCheckreverse() {
+        return TextUtils.isEmpty(checkreverse) ? "0" : checkreverse;
+    }
+
+    public void setCheckreverse(String checkreverse) {
+        this.checkreverse = checkreverse;
     }
 }

@@ -18,12 +18,16 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacMeasuringData
  */
 public class AdmeHacMeasuringDataProcedureActivity extends BaseConfigFragmentContainerActivity {
     protected static final String HOLE_DEPTH = "hole_depth";
-    private String holeDepth;
+    protected static final String CHECK_REVERSE = "check_reverse";
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, int connectWay, String holeDepth) {
+    private String holeDepth;
+    private boolean isCheckReverse;
+
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, int connectWay, String holeDepth, boolean isCheckReverse) {
         Intent intent = new Intent(context, AdmeHacMeasuringDataProcedureActivity.class);
         intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
         intent.putExtra(HOLE_DEPTH, holeDepth);
+        intent.putExtra(CHECK_REVERSE, isCheckReverse);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         launcher.launch(intent);
     }
@@ -43,6 +47,9 @@ public class AdmeHacMeasuringDataProcedureActivity extends BaseConfigFragmentCon
         if (intent.getExtras().containsKey(HOLE_DEPTH)) {
             holeDepth = intent.getStringExtra(HOLE_DEPTH);
         }
+        if (intent.getExtras().containsKey(CHECK_REVERSE)) {
+            isCheckReverse = intent.getBooleanExtra(CHECK_REVERSE, false);
+        }
     }
 
     @Override
@@ -50,7 +57,7 @@ public class AdmeHacMeasuringDataProcedureActivity extends BaseConfigFragmentCon
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
 
         } else {
-            fragment = BleAdmeHacMeasuringDataProcedureFragment.newInstance(holeDepth);
+            fragment = BleAdmeHacMeasuringDataProcedureFragment.newInstance(holeDepth, isCheckReverse);
         }
 
         return fragment;

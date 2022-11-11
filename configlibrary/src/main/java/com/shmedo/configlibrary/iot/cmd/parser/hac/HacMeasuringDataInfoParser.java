@@ -38,6 +38,7 @@ public class HacMeasuringDataInfoParser implements IOTResultParser<HacMeasuringD
             info.setDownwaitetime(keyValueMap.getOrDefault("downwaitetime", "NullKey"));
             info.setDatatype(keyValueMap.getOrDefault("datatype", "NullKey"));
             info.setOnewaytest(keyValueMap.getOrDefault("onewaytest", "NullKey"));
+            info.setCheckreverse(keyValueMap.getOrDefault("checkreverse", "NullKey"));
 
             String value = keyValueMap.get("holelist");
             List<HacHoleAreaDepthInfo> tempList = TextUtils.isEmpty(value) ? null : GsonUtils.fromJson(value, new TypeToken<List<HacHoleAreaDepthInfo>>() {

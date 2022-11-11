@@ -18,6 +18,8 @@ public class HacMeasuringDataInfoEntity implements Validater {
     private String holeno;//孔号
     private String areano;//区号
     private String holedepth;//测斜管孔深
+    private String checkreverse;//反转自检
+
 
     public void setEquipmodel(String equipmodel) {
         this.equipmodel = equipmodel;
@@ -49,6 +51,10 @@ public class HacMeasuringDataInfoEntity implements Validater {
 
     public void setHoledepth(String holedepth) {
         this.holedepth = holedepth;
+    }
+
+    public void setCheckreverse(String checkreverse) {
+        this.checkreverse = checkreverse;
     }
 
     @Override

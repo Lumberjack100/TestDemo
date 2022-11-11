@@ -61,6 +61,8 @@ import timber.log.Timber;
  */
 public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommunicateFragment {
     protected static final String HOLE_DEPTH = "hole_depth";
+    protected static final String CHECK_REVERSE = "check_reverse";
+
 
     @BindView(R.id.verticalProgressBarView)
     HacMeasuringDataVerticalProgressBarView verticalProgressBarView;
@@ -96,6 +98,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
     private HacMotionState motionState;
     private String holeDepth;
+    private boolean isCheckReverse;
 
     private IOTCommandType curCommandType = IOTCommandType.UNKNOWN_TYPE;
 
@@ -150,10 +153,11 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         }
     }
 
-    public static BleAdmeHacMeasuringDataProcedureFragment newInstance(String holeDepth) {
+    public static BleAdmeHacMeasuringDataProcedureFragment newInstance(String holeDepth, boolean isCheckReverse) {
         BleAdmeHacMeasuringDataProcedureFragment fragment = new BleAdmeHacMeasuringDataProcedureFragment();
         Bundle args = new Bundle();
         args.putString(HOLE_DEPTH, holeDepth);
+        args.putBoolean(CHECK_REVERSE, isCheckReverse);
         fragment.setArguments(args);
         return fragment;
     }
@@ -161,8 +165,9 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().containsKey(HOLE_DEPTH)) {
+        if (getArguments() != null) {
             holeDepth = getArguments().getString(HOLE_DEPTH);
+            isCheckReverse = getArguments().getBoolean(CHECK_REVERSE);
         }
         initSoundPool();
     }
@@ -200,7 +205,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
     }
 
     /**
-     * 数据测量配置参数
+     * 停止测量
      */
     private String setMeasuringDataParamCommand() {
         try {
@@ -345,7 +350,8 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
                 case PAIR_SETTING_PARAM://测斜仪配对
                     verticalProgressBarView.init(motionState.getMeaspoint());
-                    mTvMotorInfo.setText("测斜仪配对中...");
+                    String msg = motionState.getMeasmode().equals("1") && isCheckReverse ? "测斜仪配对,反转自检..." : "测斜仪配对中...";
+                    mTvMotorInfo.setText(msg);
                     break;
 
                 case DOWN://测斜仪下放
@@ -403,7 +409,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                     btnAction.setText("下一步");
                     btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
 //                    VibrateUtils.vibrate(100);
-                    if(voiceMeasureSuccess != 0) {
+                    if (voiceMeasureSuccess != 0) {
                         soundPool.play(voiceMeasureSuccess, 1.0f, 1.0f, 1, 0, 1.0f);
                     }
                     loadButtonAnimator();
@@ -415,7 +421,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
                     btnAction.setVisibility(View.VISIBLE);
                     btnAction.setText("下一步");
                     btnAction.setBackgroundResource(R.drawable.bg_btn_pause_motor_motion);
-                    if(voiceMeasureFail != 0) {
+                    if (voiceMeasureFail != 0) {
                         soundPool.play(voiceMeasureFail, 1.0f, 1.0f, 1, 0, 1.0f);
                     }
                     loadButtonAnimator();
@@ -427,7 +433,7 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
         }
     }
 
-    private void loadButtonAnimator(){
+    private void loadButtonAnimator() {
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(btnAction, "scaleX", 0.6f, 1f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(btnAction, "scaleY", 0.6f, 1f);
         scaleX.setRepeatCount(1);

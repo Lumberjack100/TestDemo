@@ -86,6 +86,9 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     @BindView(R.id.singleWayTestEnableSBtn)
     SwitchButton mSbSingleWayTestEnable;//单向测量
 
+    @BindView(R.id.checkReverseEnableSBtn)
+    SwitchButton mSbCheckReverseEnable;//测斜仪反转自检
+
     @BindView(R.id.btn_run)
     Button mBtnRun;
 
@@ -311,6 +314,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
             entity.setDatatype(dataSettlementMethod);
             entity.setOnewaytest(mSbSingleWayTestEnable.isChecked() ? "1" : "0");
             entity.setHoledepth(mEtMeasDepth.getText().toString());
+            entity.setCheckreverse(mSbCheckReverseEnable.isChecked() ? "1" : "0");
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM, entity);
 
@@ -394,7 +398,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
-                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtMeasDepth.getText().toString());
+                AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtMeasDepth.getText().toString(), mSbCheckReverseEnable.isChecked());
             }
             break;
         }
@@ -420,6 +424,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                 mTvDataSettlementMethod.setText(settlementMethods[1]);
             }
             mSbSingleWayTestEnable.setCheckedImmediatelyNoEvent(measuringDataInfo.getOnewaytest().equals("1"));
+            mSbCheckReverseEnable.setCheckedImmediatelyNoEvent(measuringDataInfo.getCheckreverse().equals("1"));
 
             holeAreaDepthInfoArrayList.clear();
             holeAreaDepthInfoArrayList.addAll(measuringDataInfo.getHolelist());
@@ -478,21 +483,13 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
          1.3 equipmodel =2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
          */
         if (equipmodel.equals("1")) {//表示在测量 然后根据 motorinfo 控制跳转页面
-            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtMeasDepth.getText().toString());
+            AdmeHacMeasuringDataProcedureActivity.startActivity(mActivity, resultLauncher, AppContants.CommunicationWay.BLE_CONNECT, mEtMeasDepth.getText().toString(), mSbCheckReverseEnable.isChecked());
             return;
         }
         //停止或异常状态下,判断是否单测模式，单测模式下显示正向测量；正反测模式下，根据 motorinfo 处理操作按钮
         if (mSbSingleWayTestEnable.isChecked()) {
             mBtnRun.setText("正向测量");
         } else {
-            //当 measmode =1，表示反测，需要判断反测是否完成，完成显示正测，否则还是反测
-//            if (motionState.getMeasmode().equals("1")) {
-//                mBtnRun.setText(motionState.getMotorinfo().equals("7") || motionState.getMotorinfo().equals("8") ? "正向测量" : "反向测量");
-//            } else {
-//                //当 measmode =0，表示正测，需要判断正测是否完成，完成显示反测，否则还是正测
-//                mBtnRun.setText(motionState.getMotorinfo().equals("9") ? "反向测量" : "正向测量");
-//            }
-
             mBtnRun.setText(motionState.getMeasmode().equals("1") ? "反向测量" : "正向测量");
         }
         if (equipmodel.equals("2") && !motionState.getAbndiasis().equals("0")) {//表示异常，展示异常原因

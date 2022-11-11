@@ -163,6 +163,28 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/ll_check_reverse"
+            style="@style/SwitchButton_LayoutStyle"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/SwitchButton_TitleStyle"
+                android:text="测斜仪反转自检" />
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/checkReverseEnableSBtn"
+                style="@style/SwitchButton_ButtonStyle"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
+
+        </RelativeLayout>
+
         <Button
             android:id="@+id/btn_run"
             style="@style/SubmitBordelessButtonStyle"
