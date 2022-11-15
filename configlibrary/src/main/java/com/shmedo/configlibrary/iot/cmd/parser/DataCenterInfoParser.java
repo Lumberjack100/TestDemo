@@ -27,24 +27,26 @@ public class DataCenterInfoParser implements IOTResultParser<DataCenterInfo> {
                     keyValueMap.put(strs[0], strs[1]);
                 }
             }
-            info.setCenterid(keyValueMap.getOrDefault("centerid", "NullKey"));
-            info.setProtocol(keyValueMap.getOrDefault("protocol", "NullKey"));
-            info.setDatatype(keyValueMap.getOrDefault("datatype", "NullKey"));
-            info.setPlattype(keyValueMap.getOrDefault("plattype", "NullKey"));
-            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
-            info.setPort(keyValueMap.getOrDefault("port", "NullKey"));
+            info.setCenterid(keyValueMap.getOrDefault("centerid", ""));
+            info.setProtocol(keyValueMap.getOrDefault("protocol", ""));
+            info.setDatatype(keyValueMap.getOrDefault("datatype", ""));
+            info.setPlattype(keyValueMap.getOrDefault("plattype", ""));
+            info.setAddr(keyValueMap.getOrDefault("addr", ""));
+            info.setPort(keyValueMap.getOrDefault("port", ""));
 
-            info.setDeviceid(keyValueMap.getOrDefault("deviceid", "NullKey"));
-            info.setDevicekey(keyValueMap.getOrDefault("devicekey", "NullKey"));
-            info.setHttpaddr(keyValueMap.getOrDefault("httpaddr", "NullKey"));
-            info.setHttpport(keyValueMap.getOrDefault("httpport", "NullKey"));
-            info.setProjid(keyValueMap.getOrDefault("projid", "NullKey"));
-            info.setRegcode(keyValueMap.getOrDefault("regcode", "NullKey"));
+            info.setDeviceid(keyValueMap.getOrDefault("deviceid", ""));
+            info.setDevicekey(keyValueMap.getOrDefault("devicekey", ""));
+            info.setHttpaddr(keyValueMap.getOrDefault("httpaddr", ""));
+            info.setHttpport(keyValueMap.getOrDefault("httpport", ""));
+            info.setProjid(keyValueMap.getOrDefault("projid", ""));
+            info.setRegcode(keyValueMap.getOrDefault("regcode", ""));
 
-            info.setType_code(keyValueMap.getOrDefault("type_code", "NullKey"));
-            info.setCo_address(keyValueMap.getOrDefault("co_address", "NullKey"));
-            info.setPassword(keyValueMap.getOrDefault("password", "NullKey"));
-            info.setTaddress(keyValueMap.getOrDefault("taddress", "NullKey"));
+            info.setType_code(keyValueMap.getOrDefault("type_code", ""));
+            info.setCo_address(keyValueMap.getOrDefault("co_address", ""));
+            info.setPassword(keyValueMap.getOrDefault("password", ""));
+            info.setTaddress(keyValueMap.getOrDefault("taddress", ""));
+            info.setHour_report(keyValueMap.getOrDefault("hour_report", ""));
+            info.setData_link(keyValueMap.getOrDefault("data_link", ""));
 
             return info;
         } catch (Exception ex) {

@@ -219,14 +219,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
             <LinearLayout
-                android:id="@+id/ll_station_code"
+                android:id="@+id/ll_station_classification"
                 style="@style/Common_ClickableItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -242,6 +243,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_center_station_addr"
                 style="@style/Common_EditItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -257,6 +259,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_password"
                 style="@style/Common_EditItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -272,6 +275,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_telemetry_station_addr"
                 style="@style/Common_EditItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -284,6 +288,43 @@
                     style="@style/Common_EditItem_EditText_Style" />
 
             </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_hourly_report"
+                style="@style/SwitchButton_LayoutStyle">
+
+                <TextView
+                    style="@style/SwitchButton_TitleStyle"
+                    android:text="小时报" />
+
+                <com.kyleduo.switchbutton.SwitchButton
+                    android:id="@+id/hourlyReportEnableSBtn"
+                    style="@style/SwitchButton_ButtonStyle"
+                    app:kswAnimationDuration="100"
+                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                    app:kswThumbHeight="28dp"
+                    app:kswThumbRangeRatio="2"
+                    app:kswThumbWidth="28dp" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_data_link_maintenance"
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <TextView
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="数据链路维持报(s)" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_data_link_maintenance"
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 

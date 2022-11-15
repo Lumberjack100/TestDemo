@@ -16,7 +16,7 @@ public class DataCenterInfo {
     private String port;//数据中心端口
 
     /**
-     * MQTT 水文协议特有配置参数
+     * MQTT 协议特有配置参数
      */
     private String deviceid;//设备id（MQTT参数）,设备id、key设置为空时，设备通过自动注册的方式获取id、key
     private String devicekey;//设备key（MQTT参数）
@@ -32,6 +32,8 @@ public class DataCenterInfo {
     private String co_address;//中心站地址
     private String password;//密码
     private String taddress;//遥测站地址
+    private String hour_report;//小时报开启标识  1:开启 0:关闭
+    private String data_link;//数据链路维持报  0|[10,40]   0:关闭
 
 
     public String getCenterid() {
@@ -76,7 +78,6 @@ public class DataCenterInfo {
 
     public String getPort() {
         return TextUtils.isEmpty(port) ? "" : port;
-
     }
 
     public void setPort(String port) {
@@ -131,7 +132,6 @@ public class DataCenterInfo {
         this.regcode = regcode;
     }
 
-
     public String getType_code() {
         return type_code;
     }
@@ -162,5 +162,21 @@ public class DataCenterInfo {
 
     public void setTaddress(String taddress) {
         this.taddress = taddress;
+    }
+
+    public String getHour_report() {
+        return TextUtils.isEmpty(hour_report) ? "" : hour_report;
+    }
+
+    public void setHour_report(String hour_report) {
+        this.hour_report = hour_report;
+    }
+
+    public String getData_link() {
+        return TextUtils.isEmpty(data_link) ? "" : data_link;
+    }
+
+    public void setData_link(String data_link) {
+        this.data_link = data_link;
     }
 }

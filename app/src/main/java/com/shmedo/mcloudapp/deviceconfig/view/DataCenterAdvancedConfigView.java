@@ -46,7 +46,6 @@ import timber.log.Timber;
  * 描述：     数据中心高级配置视图
  */
 public class DataCenterAdvancedConfigView extends LinearLayout {
-    private Context mContext;
     private DataCenterConfigListener dataCenterConfigListener;
 
     @BindView(R.id.contentLayout)
@@ -106,6 +105,12 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     @BindView(R.id.et_telemetry_station_addr)
     ClearEditText mEtTelemetryStationAddr;
 
+    @BindView(R.id.hourlyReportEnableSBtn)
+    SwitchButton mSbHourlyReportEnable;
+
+    @BindView(R.id.et_data_link_maintenance)
+    ClearEditText mEtDataLinkMaintenance;
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
@@ -118,8 +123,14 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     @BindView(R.id.ll_sl651_child_items)
     ViewGroup sl651ChildItemsLayout;
 
-    @BindView(R.id.ll_station_code)
-    ViewGroup stationCodeLayout;
+    @BindView(R.id.ll_station_classification)
+    ViewGroup stationClassificationLayout;
+
+    @BindView(R.id.rl_hourly_report)
+    ViewGroup hourlyReportLayout;
+
+    @BindView(R.id.ll_data_link_maintenance)
+    ViewGroup dataLinkMaintenanceLayout;
 
     private ProductType productType = ProductType.DAS;
     private ServerNumber serverNumber;
@@ -130,21 +141,24 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     private String platformType;//平台类型
     private String dataServerAddress;//数据服务器地址
     private String dataServerPort;//数据服务器端口
+    /**
+     * MQTT 协议特有配置参数
+     */
     private String deviceId;//设备 Id
     private String deviceKey;//设备Key
-    private String registerAddress;// 注册地址
+    private String registerAddress;//注册地址
     private String registerPort;//注册端口
     private String productId;//产品 Id
     private String registerCode;//注册码
     /**
-     * SL651水文协议特有配置参数
+     * SL651 水文协议特有配置参数
      */
     private String stationCode;//测站编码
     private String centerStationAddr;//中心站地址
     private String password;//密码
     private String telemetryStationAddr;//遥测站地址
+    private String dataLinkMaintenance;//数据链路维持报 0|[10,40]
 
-    private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     public boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     public boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
 
@@ -161,7 +175,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         //关联布局文件
         ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.data_center_advanced_config_view, this, true);
         ButterKnife.bind(this);
-        mContext = context;
         initView();
         setSwitchViewListener();
     }
@@ -178,7 +191,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
 
         mTvStationClassification.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtCenterStationAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-
         InputFilter filter = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
@@ -192,6 +204,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         };
         mEtPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5), filter});
         mEtTelemetryStationAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), filter});
+        mEtDataLinkMaintenance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2), filter});
+        mEtDataLinkMaintenance.setHint("0或者[10,40]");
 
         mTvTransferProtocol.setText("MQTT");
         transferProtocol = "MQTT";
@@ -199,6 +213,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         mTvPlatformType.setText("地灾一期");
         platformType = "0";
 
+        //SL651 水文协议测站分类默认编码
         mTvStationClassification.setText(StationCode.PRECIPITATION.getName());
         stationCode = StationCode.PRECIPITATION.getCode();
     }
@@ -208,11 +223,9 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         this.serverNumber = serverNumber;
         //数据中心地址为空表示数据中心未启用
         if (!TextUtils.isEmpty(serverStatus) && serverStatus.contains("未开启")) {
-            enableButtonOriginalState = false;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(false);
             contentLayout.setVisibility(View.GONE);
         } else {
-            enableButtonOriginalState = true;
             mSbCenterEnable.setCheckedImmediatelyNoEvent(true);
             contentLayout.setVisibility(View.VISIBLE);
         }
@@ -247,7 +260,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
      * 关闭SwitchButton
      */
     private void showCloseSwitchButtonDialog(String content) {
-        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mContext)
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(getContext())
                 .title("温馨提示：")
                 .content(content)
                 .contentColorRes(R.color.title_text_color)
@@ -261,7 +274,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         contentLayout.setVisibility(View.GONE);
-                        enableButtonOriginalState = mSbCenterEnable.isChecked();
                         //关闭服务器
                         closeDataServer();
                     }
@@ -292,7 +304,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             dataCenterConfigListener.onCloseDataServer(command);
     }
 
-    @OnClick({R.id.ll_transfer_protocol, R.id.ll_data_protocol, R.id.ll_platform_type, R.id.ll_station_code, R.id.btn_confirm})
+    @OnClick({R.id.ll_transfer_protocol, R.id.ll_data_protocol, R.id.ll_platform_type, R.id.ll_station_classification, R.id.btn_confirm})
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.ll_transfer_protocol) {
@@ -304,7 +316,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         } else if (id == R.id.ll_platform_type) {
             showPlatformTypeDialog();
 
-        } else if (id == R.id.ll_station_code) {
+        } else if (id == R.id.ll_station_classification) {
             showStationCodeDialog();
 
         } else if (id == R.id.btn_confirm) {
@@ -323,6 +335,9 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         }
     }
 
+    /**
+     * 选择传输协议弹框
+     */
     private void showTransferProtocolDialog() {
         final String[] protocols = (productType == ProductType.DAS || productType == ProductType.ADME) ?
                 new String[]{"TCP-C", "MQTT", "SL651"} : new String[]{"TCP-C", "TCP-S", "MQTT"};
@@ -330,7 +345,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         pos = (pos == -1) ? 0 : pos;
 
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
-        new XPopup.Builder(mContext)
+        new XPopup.Builder(getContext())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", protocols,
                         null, pos,
@@ -364,7 +379,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         pos = (pos == -1) ? 0 : pos;
 
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
-        new XPopup.Builder(mContext)
+        new XPopup.Builder(getContext())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", protocols,
                         null, pos,
@@ -411,7 +426,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         pos = (pos == -1) ? 0 : pos;
 
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
-        new XPopup.Builder(mContext)
+        new XPopup.Builder(getContext())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", platforms,
                         null, pos,
@@ -442,7 +457,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     }
 
     /**
-     * 选择测站编码弹框
+     * 选择测站分类编码弹框
      */
     private void showStationCodeDialog() {
         final String[] platforms = StationCode.getNames().toArray(new String[0]);
@@ -450,7 +465,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         pos = (pos == -1) ? 0 : pos;
 
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
-        new XPopup.Builder(mContext)
+        new XPopup.Builder(getContext())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .asBottomList("", platforms,
                         null, pos,
@@ -465,17 +480,20 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     }
 
     private boolean checkValueIsValid() {
-        dataServerAddress = mEtDataServerAddress.getText().toString().trim();
-        dataServerPort = mEtDataServerPort.getText().toString().trim();
-        deviceId = mEtDeviceId.getText().toString().trim();
-        deviceKey = mEtDeviceKey.getText().toString().trim();
-        registerAddress = mEtDeviceRegisterAddress.getText().toString().trim();
-        registerPort = mEtDeviceRegisterPort.getText().toString().trim();
-        productId = mEtProductId.getText().toString().trim();
-        registerCode = mEtDeviceRegisterCode.getText().toString().trim();
-        centerStationAddr = mEtCenterStationAddr.getText().toString().trim();
-        password = mEtPassword.getText().toString().trim();
-        telemetryStationAddr = mEtTelemetryStationAddr.getText().toString().trim();
+        dataServerAddress = mEtDataServerAddress.getText().toString();
+        dataServerPort = mEtDataServerPort.getText().toString();
+        //MQTT 协议参数
+        deviceId = mEtDeviceId.getText().toString();
+        deviceKey = mEtDeviceKey.getText().toString();
+        registerAddress = mEtDeviceRegisterAddress.getText().toString();
+        registerPort = mEtDeviceRegisterPort.getText().toString();
+        productId = mEtProductId.getText().toString();
+        registerCode = mEtDeviceRegisterCode.getText().toString();
+        //SL651 水文协议参数
+        centerStationAddr = mEtCenterStationAddr.getText().toString();
+        password = mEtPassword.getText().toString();
+        telemetryStationAddr = mEtTelemetryStationAddr.getText().toString();
+        dataLinkMaintenance = mEtDataLinkMaintenance.getText().toString();
 
         if (!TextUtils.isEmpty(dataServerPort)) {
             try {
@@ -491,32 +509,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                 return false;
             }
         }
-//        if (transferProtocol.equals("MQTT")) {
-//            if (TextUtils.isEmpty(productId)) {
-//                ToastUtils.show("产品ID!");
-//                mEtProductId.requestFocus();
-//                return false;
-//            }
-//            if (TextUtils.isEmpty(deviceId)) {
-//                ToastUtils.show("设备ID!");
-//                mEtDeviceId.requestFocus();
-//                return false;
-//            }
-//            if (TextUtils.isEmpty(deviceKey)) {
-//                ToastUtils.show("设备Key!");
-//                mEtDeviceKey.requestFocus();
-//                return false;
-//            }
-//            if (TextUtils.isEmpty(registerAddress)) {
-//                ToastUtils.show("设备注册地址!");
-//                mEtDeviceRegisterAddress.requestFocus();
-//                return false;
-//            }
-//            if (TextUtils.isEmpty(registerPort)) {
-//                ToastUtils.show("设备注册端口!");
-//                mEtDeviceRegisterPort.requestFocus();
-//                return false;
-//            }
+
         if (!TextUtils.isEmpty(registerPort)) {
             try {
                 int port = Integer.parseInt(registerPort);
@@ -531,15 +524,29 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                 return false;
             }
         }
-//            if (TextUtils.isEmpty(registerCode)) {
-//                ToastUtils.show("设备注册码!");
-//                mEtDeviceRegisterCode.requestFocus();
-//                return false;
-//            }
-//        }
+
+        if (!TextUtils.isEmpty(dataLinkMaintenance)) {
+            try {
+                int value = Integer.parseInt(dataLinkMaintenance);
+                if (value != 0 && (value < 10 || value > 40)) {
+                    ToastUtils.show("请输入正确的数据链路维持报!");
+                    mEtDataLinkMaintenance.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的数据链路维持报!");
+                mEtDataLinkMaintenance.requestFocus();
+                return false;
+            }
+        }
+
+
         return true;
     }
 
+    /**
+     * 配置参数指令
+     */
     private void processSave() {
         DataCenterEntity dataCenterEntity = new DataCenterEntity();
         dataCenterEntity.setServerNumber(serverNumber);
@@ -560,16 +567,9 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             dataCenterEntity.setCo_address(centerStationAddr);
             dataCenterEntity.setPassword(password);
             dataCenterEntity.setTaddress(telemetryStationAddr);
-
-        } else {
-            dataCenterEntity.setDeviceid(null);
-            dataCenterEntity.setDevicekey(null);
-            dataCenterEntity.setHttpaddr(null);
-            dataCenterEntity.setHttpport(null);
-            dataCenterEntity.setProjid(null);
-            dataCenterEntity.setRegcode(null);
+            dataCenterEntity.setHour_report(mSbHourlyReportEnable.isChecked() ? "1" : "0");
+            dataCenterEntity.setData_link(dataLinkMaintenance);
         }
-        enableButtonOriginalState = mSbCenterEnable.isChecked();
         isSaveParamOperation = true;
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_CENTER, dataCenterEntity);
@@ -583,23 +583,26 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             dataCenterInfo = new DataCenterInfo();
             return;
         }
-        transferProtocol = dataCenterInfo.getProtocol().trim();
-        dataProtocol = dataCenterInfo.getDatatype().trim();
-        platformType = dataCenterInfo.getPlattype().trim();
+        transferProtocol = dataCenterInfo.getProtocol();
+        dataProtocol = dataCenterInfo.getDatatype();
+        platformType = dataCenterInfo.getPlattype();
+        dataServerAddress = dataCenterInfo.getAddr();
+        dataServerPort = dataCenterInfo.getPort();
 
-        dataServerAddress = dataCenterInfo.getAddr().trim().replace("NullKey", "");
-        dataServerPort = dataCenterInfo.getPort().trim().replace("NullKey", "");
-        deviceId = dataCenterInfo.getDeviceid().trim().replace("NullKey", "");
-        deviceKey = dataCenterInfo.getDevicekey().trim().replace("NullKey", "");
-        registerAddress = dataCenterInfo.getHttpaddr().trim().replace("NullKey", "");
-        registerPort = dataCenterInfo.getHttpport().trim().replace("NullKey", "");
-        productId = dataCenterInfo.getProjid().trim().replace("NullKey", "");
-        registerCode = dataCenterInfo.getRegcode().trim().replace("NullKey", "");
+        //MQTT 协议参数
+        deviceId = dataCenterInfo.getDeviceid();
+        deviceKey = dataCenterInfo.getDevicekey();
+        registerAddress = dataCenterInfo.getHttpaddr();
+        registerPort = dataCenterInfo.getHttpport();
+        productId = dataCenterInfo.getProjid();
+        registerCode = dataCenterInfo.getRegcode();
 
-        stationCode = dataCenterInfo.getType_code().trim().replace("NullKey", "");
-        centerStationAddr = dataCenterInfo.getCo_address().trim().replace("NullKey", "");
-        password = dataCenterInfo.getPassword().trim().replace("NullKey", "");
-        telemetryStationAddr = dataCenterInfo.getTaddress().trim().replace("NullKey", "");
+        //SL651 水文协议参数
+        stationCode = dataCenterInfo.getType_code();
+        centerStationAddr = dataCenterInfo.getCo_address();
+        password = dataCenterInfo.getPassword();
+        telemetryStationAddr = dataCenterInfo.getTaddress();
+        dataLinkMaintenance = dataCenterInfo.getData_link();
 
         //传输协议
         mTvTransferProtocol.setText(transferProtocol);
@@ -613,7 +616,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             mqttChildItemsLayout.setVisibility(View.GONE);
             sl651ChildItemsLayout.setVisibility(View.GONE);
         }
-
         //数据协议
         switch (dataProtocol) {
             case "1":
@@ -640,7 +642,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                 mTvDataProtocol.setText("RES_OUT");
                 break;
         }
-
         //平台
         switch (platformType) {
             case "0":
@@ -660,6 +661,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         }
         mEtDataServerAddress.setText(dataServerAddress);
         mEtDataServerPort.setText(dataServerPort);
+
         mEtDeviceId.setText(deviceId);
         mEtDeviceKey.setText(deviceKey);
         mEtDeviceRegisterAddress.setText(registerAddress);
@@ -667,11 +669,12 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         mEtProductId.setText(productId);
         mEtDeviceRegisterCode.setText(registerCode);
 
-
         mTvStationClassification.setText(StationCode.valueByCode(stationCode).getName());
         mEtCenterStationAddr.setText(centerStationAddr);
         mEtPassword.setText(password);
         mEtTelemetryStationAddr.setText(telemetryStationAddr);
+        mSbHourlyReportEnable.setCheckedImmediatelyNoEvent(dataCenterInfo.getHour_report().equals("1"));
+        mEtDataLinkMaintenance.setText(dataLinkMaintenance);
     }
 
     public void doAfterSetting() {
@@ -679,49 +682,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     }
 
     public boolean checkValueIsChange() {
-//        if (!mSbCenterEnable.isChecked()) {
-//            return false;
-//        }
-//        if (enableButtonOriginalState != mSbCenterEnable.isChecked()) {
-//            return true;
-//        }
-//
-//        if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
-//            return true;
-//        }
-//        if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
-//            return true;
-//        }
-//        if (transferProtocolOld != null && transferProtocol != null && !transferProtocolOld.equals(transferProtocol)) {
-//            return true;
-//        }
-////        if (dataProtocolOld != null && dataProtocol != null && !dataProtocolOld.equals(dataProtocol)) {
-////            return true;
-////        }
-//        if (platformTypeOld != null && platformType != null && !platformTypeOld.equals(platformType)) {
-//            return true;
-//        }
-//
-//        if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
-//            if (deviceId != null && !deviceId.equals(mEtDeviceId.getText().toString().trim())) {
-//                return true;
-//            }
-//            if (deviceKey != null && !deviceKey.equals(mEtDeviceKey.getText().toString().trim())) {
-//                return true;
-//            }
-//            if (registerAddress != null && !registerAddress.equals(mEtDeviceRegisterAddress.getText().toString().trim())) {
-//                return true;
-//            }
-//            if (registerPort != null && !registerPort.equals(mEtDeviceRegisterPort.getText().toString().trim())) {
-//                return true;
-//            }
-//            if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
-//                return true;
-//            }
-//            if (registerCode != null && !registerCode.equals(mEtDeviceRegisterCode.getText().toString().trim())) {
-//                return true;
-//            }
-//        }
         return false;
     }
 
