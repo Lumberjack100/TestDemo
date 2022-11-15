@@ -61,7 +61,7 @@ public class DataCenterInfo {
     }
 
     public String getPlattype() {
-        return TextUtils.isEmpty(plattype) ? "" : plattype;
+        return TextUtils.isEmpty(plattype) ? "0" : plattype;
     }
 
     public void setPlattype(String plattype) {
