@@ -98,8 +98,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onChanged(NetworkChangeEvent networkChangeEvent) {
                 Timber.i("网络发生变化:%s", networkChangeEvent.toString());
-                mNetConnected = networkChangeEvent.isConnected;
-                netStateChangedUI(networkChangeEvent.isConnected);
+                mNetConnected = networkChangeEvent.isConnected();
+                netStateChangedUI(networkChangeEvent.isConnected());
             }
         });
         shareViewModel.getForceToLoginEvent().observe(this, new Observer<ForceToLoginEvent>() {
