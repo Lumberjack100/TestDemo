@@ -41,7 +41,7 @@ public class LogInit {
                 .addInterceptor(wrapInterceptor)
                 .create();
 
-        File logDir = LogFileUtil.getLogDir(context);
+        File logDir = LogFileUtil.INSTANCE.getLogDir(context);
         String buffer_path = logDir.getAbsolutePath() + File.separator + ".logCache";
         String log_path = logDir.getAbsolutePath() + File.separator + getCurrentDate() + ".txt";
         FileAppender fileAppender = new FileAppender.Builder(context)
