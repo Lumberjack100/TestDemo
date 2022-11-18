@@ -57,10 +57,10 @@
         tools:replace="android:name"
         tools:targetApi="p">
 
+
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
-
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${buglyAppId}" /> <!-- 配置APP版本号 -->
@@ -222,6 +222,14 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.das.FixedPointReportingActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
         <activity
             android:name=".deviceconfig.ui.activity.vms.VmsTerminalSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -413,21 +421,18 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataProcedureActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataResultsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

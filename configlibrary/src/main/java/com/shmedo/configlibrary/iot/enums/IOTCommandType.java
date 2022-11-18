@@ -204,6 +204,15 @@ public enum IOTCommandType {
      */
     DAS_MD_SET_AUDIBLE_ALARM_LEVEL("md_setalarmlevel"),
 
+    /**
+     * 查询定时上报参数
+     */
+    DAS_MD_GET_DATA_REPORT_TYPE("md_getdatareporttype"),
+    /**
+     * 设置定时上报参数
+     */
+    DAS_MD_SET_DATA_REPORT_TYPE("md_setdatareporttype"),
+
     /*　VMS-LoRa网关指令  */
     /**
      * 获取网关的基本信息

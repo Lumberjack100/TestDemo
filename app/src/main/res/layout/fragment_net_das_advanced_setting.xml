@@ -10,13 +10,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="10dp" />
-
         <LinearLayout
             android:id="@+id/firmwareUpgradeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -26,13 +24,11 @@
 
         </LinearLayout>
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/resetLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:layout_marginTop="@dimen/dimen_size_10">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -40,13 +36,24 @@
 
         </LinearLayout>
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="10dp" />
+        <LinearLayout
+            android:id="@+id/fixedPointReportingLayout"
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="定时定点上报设置" />
+
+            <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/voiceBroadcastLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:layout_marginTop="@dimen/dimen_size_10">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -56,13 +63,10 @@
 
         </LinearLayout>
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="10dp" />
-
         <LinearLayout
             android:id="@+id/audibleAlarmLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:layout_marginTop="@dimen/dimen_size_10">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -71,6 +75,7 @@
             <TextView style="@style/Common_ClickableItem_ValueStyle" />
 
         </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>

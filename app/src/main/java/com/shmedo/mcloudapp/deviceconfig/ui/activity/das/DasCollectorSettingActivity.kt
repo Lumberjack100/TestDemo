@@ -1,66 +1,59 @@
-package com.shmedo.mcloudapp.deviceconfig.ui.activity.das;
+package com.shmedo.mcloudapp.deviceconfig.ui.activity.das
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import com.shmedo.core.AppContants;
-import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCollectorSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCollectorSettingFragment;
-import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.shmedo.core.AppContants
+import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.DasCollectorSettingActivity
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasCollectorSettingFragment
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasCollectorSettingFragment
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/20<br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/11/20<br></br>
  * 描述：     Das 采集器配置主页面
  */
-public class DasCollectorSettingActivity extends BaseConfigFragmentContainerActivity {
-    private String collectorModel = "";//采集器类型
+class DasCollectorSettingActivity : BaseConfigFragmentContainerActivity() {
+    private lateinit var collectorModel: String //采集器类型
 
-
-    public static void startActivity(Context context, DeviceInfo deviceInfo) {
-        Intent intent = new Intent(context, DasCollectorSettingActivity.class);
-        intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mToolbarTitle.text = "采集器配置"
     }
 
-    public static void startActivity(Context context, int connectWay, String collectorModel) {
-        Intent intent = new Intent(context, DasCollectorSettingActivity.class);
-        intent.putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay);
-        intent.putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivity(intent);
+    override fun parseIntent() {
+        super.parseIntent()
+        collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE) ?: ""
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mToolbarTitle.setText("采集器配置");
-    }
-
-    @Override
-    protected void parseIntent() {
-        super.parseIntent();
-        if (intent.getExtras() == null)
-            return;
-
-        if (intent.getExtras().containsKey(AppContants.Extras.COLLECTOR_MODE)) {
-            collectorModel = intent.getStringExtra(AppContants.Extras.COLLECTOR_MODE);
-        }
-    }
-
-    @Override
-    protected Fragment initFragment() {
+    override fun initFragment(): Fragment =
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            fragment = NetDasCollectorSettingFragment.newInstance(deviceInfo);
-
-        } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
-            fragment = BleDasCollectorSettingFragment.newInstance(collectorModel);
+            NetDasCollectorSettingFragment.newInstance(deviceInfo)
+        } else {
+            BleDasCollectorSettingFragment.newInstance(collectorModel)
         }
-        return fragment;
+
+    companion object {
+        @JvmStatic
+        fun startActivity(context: Context, deviceInfo: DeviceInfo?) {
+            val intent = Intent(context, DasCollectorSettingActivity::class.java).apply {
+                putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo)
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
+            context.startActivity(intent)
+        }
+
+        @JvmStatic
+        fun startActivity(context: Context, connectWay: Int, collectorModel: String?) {
+            val intent = Intent(context, DasCollectorSettingActivity::class.java).apply {
+                putExtra(AppContants.Extras.COMMUNICATION_WAY, connectWay)
+                putExtra(AppContants.Extras.COLLECTOR_MODE, collectorModel)
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
+            context.startActivity(intent)
+        }
     }
 }

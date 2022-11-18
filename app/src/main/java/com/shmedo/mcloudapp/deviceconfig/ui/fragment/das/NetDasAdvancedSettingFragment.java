@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.FirmwareCmdInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.params.FirmwareCmdParam;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.AudibleAlarmActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.VoiceBroadcastActivity;
+import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.FixedPointReportingActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.BaseDialogFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.FirmWareSelectDialog;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dialog.netcmd.BaseDispatchCmdDialog;
@@ -73,7 +74,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.voiceBroadcastLayout, R.id.audibleAlarmLayout})
+    @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.fixedPointReportingLayout, R.id.voiceBroadcastLayout, R.id.audibleAlarmLayout})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -86,6 +87,9 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
 
         } else if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
+
+        } else if (id == R.id.fixedPointReportingLayout) {//定时定点上报
+            FixedPointReportingActivity.startActivity(mActivity, deviceInfo);
 
         } else if (id == R.id.voiceBroadcastLayout) {
             VoiceBroadcastActivity.startActivity(mActivity, deviceInfo);
