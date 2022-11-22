@@ -1,53 +1,44 @@
-package com.shmedo.configlibrary.iot.cmd.parser.das;
+package com.shmedo.configlibrary.iot.cmd.parser.das
 
-import com.blankj.utilcode.util.GsonUtils;
-import com.google.gson.reflect.TypeToken;
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.das.DasSensorStatusInfo;
-
-import java.util.HashMap;
-import java.util.List;
+import com.blankj.utilcode.util.GsonUtils
+import com.google.gson.reflect.TypeToken
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.das.DasSensorStatusInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/4/16 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/4/16 <br></br>
  * 描述：     解析DAS 状态页面主传感器状态参数
  */
-public class DasSensorStatusInfoParser implements IOTResultParser<List<DasSensorStatusInfo>> {
-    @Override
-    public List<DasSensorStatusInfo> parse(String result) {
-        List<DasSensorStatusInfo> sensorStatusInfoList = null;
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class DasSensorStatusInfoParser : IOTResultParser<List<DasSensorStatusInfo?>?> {
+    override fun parse(result: String): List<DasSensorStatusInfo?>? {
+        var sensorStatusInfoList: List<DasSensorStatusInfo?>? = null
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            String status = keyValueMap.get("status");
-            sensorStatusInfoList = GsonUtils.fromJson(status, new TypeToken<List<DasSensorStatusInfo>>() {
-            }.getType());
-
-            return sensorStatusInfoList;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            val status = keyValueMap["status"]
+            sensorStatusInfoList = GsonUtils.fromJson(
+                status,
+                object : TypeToken<List<DasSensorStatusInfo?>?>() {}.type
+            )
+            sensorStatusInfoList
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.DAS_MD_GET_SENSOR_STATUS;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.DAS_MD_GET_SENSOR_STATUS
     }
 }

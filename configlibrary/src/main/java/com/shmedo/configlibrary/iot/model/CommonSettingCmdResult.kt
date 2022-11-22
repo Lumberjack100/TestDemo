@@ -1,28 +1,11 @@
-package com.shmedo.configlibrary.iot.model;
+package com.shmedo.configlibrary.iot.model
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/9/2 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/9/2 <br></br>
  * 描述：     通用设置指令响应结果实体类
  */
-public class CommonSettingCmdResult {
-    private boolean isSucceed = false;
-
-    private String reason = "";
-
-    public boolean isSucceed() {
-        return isSucceed;
-    }
-
-    public void setSucceed(boolean succeed) {
-        isSucceed = succeed;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
+class CommonSettingCmdResult {
+    var isSucceed = false
+    var reason = ""
 }

@@ -1,12 +1,12 @@
-package com.shmedo.configlibrary.iot.enums;
+package com.shmedo.configlibrary.iot.enums
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/8/31 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/8/31 <br></br>
  * 描述：    米度物联网设备指令
  */
-public enum IOTCommandType {
-    /** 设备通用指令  **/
+enum class IOTCommandType(private val value: String) {
+    /** 设备通用指令   */
     /**
      * 获取设备终端时间
      */
@@ -56,6 +56,7 @@ public enum IOTCommandType {
      * 获取上报数据的间隔
      */
     MD_GET_DATA_REPORT_TIME("md_getreportdatatime"),
+
     /**
      * 设置上报数据的间隔
      */
@@ -99,33 +100,38 @@ public enum IOTCommandType {
     /**
      * 保存配置参数
      */
-    MD_SAVE_CONFIG_PARAM("md_saveconfig"),
+    MD_SAVE_CONFIG_PARAM("md_saveconfig"),  /*　DAS 指令  */
 
-    /*　DAS 指令  */
     /**
      * 获取基本信息
      */
     DAS_MD_GET_DEVICE_BASE("md_getdevicebase"),
+
     /**
      * 获取数据中心状态
      */
     DAS_MD_GET_NET_STATUS("md_getnetstatus"),
+
     /**
      * 获取太阳能控制器状态
      */
     DAS_MD_GET_SOLAR_STATUS("md_getsloarstatus"),
+
     /**
      * 获取温湿度状态
      */
     DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS("md_thmstatus"),
+
     /**
      * 获取主传感器状态
      */
     DAS_MD_GET_SENSOR_STATUS("md_getsensorstatus"),
+
     /**
      * 获取辅传感器状态
      */
     DAS_MD_GET_SUB_SENSOR_STATUS("md_getsubsensorstatus"),
+
     /**
      * 获取激活模式
      */
@@ -150,6 +156,7 @@ public enum IOTCommandType {
      * 获取开关量传感器信息
      */
     DAS_MD_GET_IO_SENSOR_INFO("md_getioctrl"),
+
     /**
      * 设置开关量传感器信息
      */
@@ -159,6 +166,7 @@ public enum IOTCommandType {
      * 获取数字水位计信息
      */
     DAS_MD_GET_DIGITAL_PIEZOMETER_INFO("md_getdigtalosm"),
+
     /**
      * 设置数字水位计信息
      */
@@ -168,6 +176,7 @@ public enum IOTCommandType {
      * 查询北斗数传终端
      */
     DAS_MD_GET_BD_TERMINAL("md_getbdterminal"),
+
     /**
      * 设置北斗数传终端
      */
@@ -177,10 +186,12 @@ public enum IOTCommandType {
      * 查询扩展传感器信息
      */
     DAS_MD_GET_EXTERNAL_SENSOR("md_getsensorctrl"),
+
     /**
      * 设置扩展传感器信息
      */
     DAS_MD_SET_EXTERNAL_SENSOR("md_setsensorctrl"),
+
     /**
      * 删除扩展传感器
      */
@@ -190,6 +201,7 @@ public enum IOTCommandType {
      * 查询声光报警器信息
      */
     DAS_MD_GET_AUDIBLE_ALARM("md_getgx909"),
+
     /**
      * 设置声光报警器信息
      */
@@ -199,6 +211,7 @@ public enum IOTCommandType {
      * 查询声光报警器级别
      */
     DAS_MD_GET_AUDIBLE_ALARM_LEVEL("md_getalarmlevel"),
+
     /**
      * 设置声光报警器级别
      */
@@ -208,12 +221,12 @@ public enum IOTCommandType {
      * 查询定时上报参数
      */
     DAS_MD_GET_DATA_REPORT_TYPE("md_getdatareporttype"),
+
     /**
      * 设置定时上报参数
      */
-    DAS_MD_SET_DATA_REPORT_TYPE("md_setdatareporttype"),
+    DAS_MD_SET_DATA_REPORT_TYPE("md_setdatareporttype"),  /*　VMS-LoRa网关指令  */
 
-    /*　VMS-LoRa网关指令  */
     /**
      * 获取网关的基本信息
      */
@@ -287,9 +300,8 @@ public enum IOTCommandType {
     /**
      * Vms终端遥测
      */
-    VMS_TERMINAL_QUERY_SAMPLE("md_sampleterminal"),
+    VMS_TERMINAL_QUERY_SAMPLE("md_sampleterminal"),  /*　 RN20 雨量采集器 指令  */
 
-    /*　 RN20 雨量采集器 指令  */
     /**
      * 获取终端基本信息
      */
@@ -308,9 +320,8 @@ public enum IOTCommandType {
     /**
      * 设置终端经纬度参数
      */
-    RN20_MD_SET_TERMINAL_LOCAL("md_setterminallocal"),
+    RN20_MD_SET_TERMINAL_LOCAL("md_setterminallocal"),  /*　 ADME 指令  */
 
-    /*　 ADME 指令  */
     /**
      * 获取ADME的基本信息
      */
@@ -484,9 +495,8 @@ public enum IOTCommandType {
     /**
      * 设置ADME的拟人运动使能参数
      */
-    ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE("md_setanthrmove"),
+    ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE("md_setanthrmove"),  /*　 ADME HAC 型号指令  */
 
-    /*　 ADME HAC 型号指令  */
     /**
      * 获取HAC的预警配置参数
      */
@@ -535,10 +545,8 @@ public enum IOTCommandType {
     /**
      * 查询电机当前运动状态
      */
-    ADME_HAC_MD_GET_MOTION_STATE("md_hac_getmotionstate"),
+    ADME_HAC_MD_GET_MOTION_STATE("md_hac_getmotionstate"),  /*　 M20 指令  */
 
-
-    /*　 M20 指令  */
     /**
      * 获取M20的基本信息
      */
@@ -547,9 +555,8 @@ public enum IOTCommandType {
     /**
      * M20水平初始化设置
      */
-    M20_MD_LEVEL_INITIAL("md_levelinit"),
+    M20_MD_LEVEL_INITIAL("md_levelinit"),  /*　 E40 指令  */
 
-    /*　 E40 指令  */
     /**
      * 获取设备卫星状态
      */
@@ -633,9 +640,8 @@ public enum IOTCommandType {
     /**
      * 设置E40 NMEA输出内容及输出频率
      */
-    E40_MD_SET_NMEA_TIME("md_setnmeatime"),
+    E40_MD_SET_NMEA_TIME("md_setnmeatime"),  /*　 LR200(一体式裂缝计) 指令  */
 
-    /*　 LR200(一体式裂缝计) 指令  */
     /**
      * 获取设备位置
      */
@@ -645,7 +651,6 @@ public enum IOTCommandType {
      * 设置设备位置
      */
     MD_SET_LOCATION("md_setloc"),
-
 
     /**
      * 语音播报
@@ -667,15 +672,7 @@ public enum IOTCommandType {
      */
     UNKNOWN_TYPE("unknown_type");
 
-
-    private String value;
-
-    IOTCommandType(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return this.value;
+    override fun toString(): String {
+        return value
     }
 }

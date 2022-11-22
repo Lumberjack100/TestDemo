@@ -1,52 +1,42 @@
-package com.shmedo.configlibrary.iot.cmd.parser.e40;
+package com.shmedo.configlibrary.iot.cmd.parser.e40
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.e40.E40EthernetInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.e40.E40EthernetInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  3/1/21 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  3/1/21 <br></br>
  * 描述：     解析 有线网络参数
  */
-public class E40EthernetInfoParser implements IOTResultParser<E40EthernetInfo> {
-    @Override
-    public E40EthernetInfo parse(String result) {
-        E40EthernetInfo info = new E40EthernetInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class E40EthernetInfoParser : IOTResultParser<E40EthernetInfo?> {
+    override fun parse(result: String): E40EthernetInfo? {
+        val info = E40EthernetInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setDhcp(keyValueMap.getOrDefault("dhcp", "NullKey"));
-            info.setIp(keyValueMap.getOrDefault("ip", "NullKey"));
-            info.setNetmask(keyValueMap.getOrDefault("netmask", "NullKey"));
-            info.setGateway(keyValueMap.getOrDefault("gateway", "NullKey"));
-            info.setDns(keyValueMap.getOrDefault("dns", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.dhcp = keyValueMap.getOrDefault("dhcp", "NullKey")
+            info.ip = keyValueMap.getOrDefault("ip", "NullKey")
+            info.netmask = keyValueMap.getOrDefault("netmask", "NullKey")
+            info.gateway = keyValueMap.getOrDefault("gateway", "NullKey")
+            info.dns = keyValueMap.getOrDefault("dns", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.E40_MD_GET_ETHERNET;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.E40_MD_GET_ETHERNET
     }
 }

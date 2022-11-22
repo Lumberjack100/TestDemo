@@ -1,59 +1,45 @@
-package com.shmedo.configlibrary.iot.cmd.parser;
+package com.shmedo.configlibrary.iot.cmd.parser
 
-import android.text.TextUtils;
-
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
+import android.text.TextUtils
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/9/2 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/9/2 <br></br>
  * 描述：     解析通用的设置指令响应结果
  */
-public class CommonSettingCmdResultParser implements IOTResultParser<CommonSettingCmdResult> {
-
-    private static final CommonSettingCmdResultParser ourInstance = new CommonSettingCmdResultParser();
-
-    public static CommonSettingCmdResultParser getInstance() {
-        return ourInstance;
-    }
-
-
-    @Override
-    public CommonSettingCmdResult parse(String result) {
-        CommonSettingCmdResult commonSettingCmdResult = new CommonSettingCmdResult();
-        String[] strs = result.split("&");
-
-        for (String ss : strs) {
+class CommonSettingCmdResultParser : IOTResultParser<CommonSettingCmdResult?> {
+    override fun parse(result: String): CommonSettingCmdResult? {
+        val commonSettingCmdResult = CommonSettingCmdResult()
+        val strs = result.split("&").toTypedArray()
+        for (ss in strs) {
             if (ss.endsWith("=succ")) {
-                commonSettingCmdResult.setSucceed(true);
-                continue;
+                commonSettingCmdResult.isSucceed = true
+                continue
             }
-
             if (ss.endsWith("=fail")) {
-                commonSettingCmdResult.setSucceed(false);
-                continue;
+                commonSettingCmdResult.isSucceed = false
+                continue
             }
-
             if (ss.startsWith("reason=")) {
-                String value = ss.replace("reason=", "");
+                val value = ss.replace("reason=", "")
                 if (!TextUtils.isEmpty(value)) {
-                    commonSettingCmdResult.setReason(value);
+                    commonSettingCmdResult.reason = value
                 }
             }
         }
-
-        return commonSettingCmdResult;
+        return commonSettingCmdResult
     }
 
-    @Override
-    public void validate(String result) {
-
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.UNKNOWN_TYPE
     }
 
-    @Override
-    public IOTCommandType commandType() {
-        return null;
+    companion object {
+        @JvmStatic
+        val instance = CommonSettingCmdResultParser()
     }
 }

@@ -1,52 +1,42 @@
-package com.shmedo.configlibrary.iot.cmd.parser.e40;
+package com.shmedo.configlibrary.iot.cmd.parser.e40
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.e40.E40SerialPortInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.e40.E40SerialPortInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/5/18 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/5/18 <br></br>
  * 描述：       解析串口参数
  */
-public class E40SerialPortInfoParser implements IOTResultParser<E40SerialPortInfo> {
-    @Override
-    public E40SerialPortInfo parse(String result) {
-        E40SerialPortInfo info = new E40SerialPortInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class E40SerialPortInfoParser : IOTResultParser<E40SerialPortInfo?> {
+    override fun parse(result: String): E40SerialPortInfo? {
+        val info = E40SerialPortInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setType(keyValueMap.getOrDefault("type", "NullKey"));
-            info.setBaud(keyValueMap.getOrDefault("baud", "NullKey"));
-            info.setDatabits(keyValueMap.getOrDefault("databits", "NullKey"));
-            info.setParity(keyValueMap.getOrDefault("parity", "NullKey"));
-            info.setStopbits(keyValueMap.getOrDefault("stopbits", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.type = keyValueMap.getOrDefault("type", "NullKey")
+            info.baud = keyValueMap.getOrDefault("baud", "NullKey")
+            info.databits = keyValueMap.getOrDefault("databits", "NullKey")
+            info.parity = keyValueMap.getOrDefault("parity", "NullKey")
+            info.stopbits = keyValueMap.getOrDefault("stopbits", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.E40_MD_GET_DB_GUART;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.E40_MD_GET_DB_GUART
     }
 }

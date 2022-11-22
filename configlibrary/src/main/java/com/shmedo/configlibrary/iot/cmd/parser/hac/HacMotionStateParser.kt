@@ -1,54 +1,44 @@
-package com.shmedo.configlibrary.iot.cmd.parser.hac;
+package com.shmedo.configlibrary.iot.cmd.parser.hac
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.hac.HacMotionState;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.hac.HacMotionState
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2022/7/15 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2022/7/15 <br></br>
  * 描述：     解析 HAC 电机运动状态
  */
-public class HacMotionStateParser implements IOTResultParser<HacMotionState> {
-    @Override
-    public HacMotionState parse(String result) {
-        HacMotionState info = new HacMotionState();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class HacMotionStateParser : IOTResultParser<HacMotionState?> {
+    override fun parse(result: String): HacMotionState? {
+        val info = HacMotionState()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setAbndiasis(keyValueMap.getOrDefault("abndiasis", "NullKey"));
-            info.setMeasmode(keyValueMap.getOrDefault("measmode", "NullKey"));
-            info.setMotorinfo(keyValueMap.getOrDefault("motorinfo", "NullKey"));
-            info.setMeaspoint(keyValueMap.getOrDefault("measpoint", "NullKey"));
-            info.setWaittime(keyValueMap.getOrDefault("waittime", "NullKey"));
-            info.setIncvoltage(keyValueMap.getOrDefault("incvoltage", "NullKey"));
-            info.setDriveinputv(keyValueMap.getOrDefault("driveinputv", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.abndiasis = keyValueMap.getOrDefault("abndiasis", "NullKey")
+            info.measmode = keyValueMap.getOrDefault("measmode", "NullKey")
+            info.motorinfo = keyValueMap.getOrDefault("motorinfo", "NullKey")
+            info.measpoint = keyValueMap.getOrDefault("measpoint", "NullKey")
+            info.waittime = keyValueMap.getOrDefault("waittime", "NullKey")
+            info.incvoltage = keyValueMap.getOrDefault("incvoltage", "NullKey")
+            info.driveinputv = keyValueMap.getOrDefault("driveinputv", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE
     }
 }

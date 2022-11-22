@@ -1,51 +1,41 @@
-package com.shmedo.configlibrary.iot.cmd.parser.adme;
+package com.shmedo.configlibrary.iot.cmd.parser.adme
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDistanceInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDistanceInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  1/7/21 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  1/7/21 <br></br>
  * 描述：       解析电机实时运动数据
  */
-public class AdmeMotorMotionDistanceInfoParser implements IOTResultParser<AdmeMotorMotionDistanceInfo> {
-    @Override
-    public AdmeMotorMotionDistanceInfo parse(String result) {
-        AdmeMotorMotionDistanceInfo info = new AdmeMotorMotionDistanceInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class AdmeMotorMotionDistanceInfoParser : IOTResultParser<AdmeMotorMotionDistanceInfo?> {
+    override fun parse(result: String): AdmeMotorMotionDistanceInfo? {
+        val info = AdmeMotorMotionDistanceInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setPulsenumber(keyValueMap.getOrDefault("pulsenumber", "NullKey"));
-            info.setRealmovedistance(keyValueMap.getOrDefault("realmovedistance", "NullKey"));
-            info.setRealholedepth(keyValueMap.getOrDefault("realholedepth", "NullKey"));
-            info.setRealmoveangle(keyValueMap.getOrDefault("realmoveangle", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.pulsenumber = keyValueMap.getOrDefault("pulsenumber", "NullKey")
+            info.realmovedistance = keyValueMap.getOrDefault("realmovedistance", "NullKey")
+            info.realholedepth = keyValueMap.getOrDefault("realholedepth", "NullKey")
+            info.realmoveangle = keyValueMap.getOrDefault("realmoveangle", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE
     }
 }

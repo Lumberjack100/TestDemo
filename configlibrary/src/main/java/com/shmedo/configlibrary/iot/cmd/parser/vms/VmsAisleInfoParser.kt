@@ -1,61 +1,50 @@
-package com.shmedo.configlibrary.iot.cmd.parser.vms;
+package com.shmedo.configlibrary.iot.cmd.parser.vms
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo;
-
-import java.util.HashMap;
-import java.util.Objects;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.vms.VmsAisleInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  11/15/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  11/15/20 <br></br>
  * 描述：    解析Vms网关通道参数
  */
-public class VmsAisleInfoParser implements IOTResultParser<VmsAisleInfo> {
-    @Override
-    public VmsAisleInfo parse(String result) {
-        VmsAisleInfo info = new VmsAisleInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class VmsAisleInfoParser : IOTResultParser<VmsAisleInfo?> {
+    override fun parse(result: String): VmsAisleInfo? {
+        val info = VmsAisleInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setChannel(Integer.parseInt(Objects.requireNonNull(keyValueMap.get("channel"))));
-            info.setNetid(keyValueMap.getOrDefault("netid", "NullKey"));
-            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
-            info.setChl(keyValueMap.getOrDefault("chl", "NullKey"));
-            info.setAirbaud(keyValueMap.getOrDefault("airbaud", "NullKey"));
-            info.setPpt(keyValueMap.getOrDefault("ppt", "NullKey"));
-            info.setTerminalmode(keyValueMap.getOrDefault("terminalmode", "NullKey"));
-            info.setSendgap(keyValueMap.getOrDefault("sendgap", "NullKey"));
-            info.setOffline(keyValueMap.getOrDefault("offline", "NullKey"));
-            info.setSleepgap(keyValueMap.getOrDefault("sleepgap", "NullKey"));
-            info.setWakeupgap(keyValueMap.getOrDefault("wakeupgap", "NullKey"));
-            info.setTerminalnum(keyValueMap.getOrDefault("terminalnum", "NullKey"));
-            info.setRssi(keyValueMap.getOrDefault("rssi", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.channel = keyValueMap["channel"]?.toInt() ?: 0
+            info.netid = keyValueMap.getOrDefault("netid", "NullKey")
+            info.addr = keyValueMap.getOrDefault("addr", "NullKey")
+            info.chl = keyValueMap.getOrDefault("chl", "NullKey")
+            info.airbaud = keyValueMap.getOrDefault("airbaud", "NullKey")
+            info.ppt = keyValueMap.getOrDefault("ppt", "NullKey")
+            info.terminalmode = keyValueMap.getOrDefault("terminalmode", "NullKey")
+            info.sendgap = keyValueMap.getOrDefault("sendgap", "NullKey")
+            info.offline = keyValueMap.getOrDefault("offline", "NullKey")
+            info.sleepgap = keyValueMap.getOrDefault("sleepgap", "NullKey")
+            info.wakeupgap = keyValueMap.getOrDefault("wakeupgap", "NullKey")
+            info.terminalnum = keyValueMap.getOrDefault("terminalnum", "NullKey")
+            info.rssi = keyValueMap.getOrDefault("rssi", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_GATEWAY_PARAM;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.VMS_MD_GET_GATEWAY_PARAM
     }
 }

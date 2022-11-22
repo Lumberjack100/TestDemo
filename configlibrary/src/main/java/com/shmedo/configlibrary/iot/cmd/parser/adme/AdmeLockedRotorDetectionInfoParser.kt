@@ -1,61 +1,51 @@
-package com.shmedo.configlibrary.iot.cmd.parser.adme;
+package com.shmedo.configlibrary.iot.cmd.parser.adme
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  3/2/21 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  3/2/21 <br></br>
  * 描述：      解析ADME 电机运动堵转缓停参数
  */
-public class AdmeLockedRotorDetectionInfoParser implements IOTResultParser<AdmeLockedRotorDetectionInfo> {
-    @Override
-    public AdmeLockedRotorDetectionInfo parse(String result) {
-        AdmeLockedRotorDetectionInfo info = new AdmeLockedRotorDetectionInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class AdmeLockedRotorDetectionInfoParser : IOTResultParser<AdmeLockedRotorDetectionInfo?> {
+    override fun parse(result: String): AdmeLockedRotorDetectionInfo? {
+        val info = AdmeLockedRotorDetectionInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setLowtbtss(keyValueMap.getOrDefault("lowtbtss", "NullKey"));
-            info.setNumpput(keyValueMap.getOrDefault("numpput", "NullKey"));
-            info.setPdajtime(keyValueMap.getOrDefault("pdajtime", "NullKey"));
-            info.setDetintiona(keyValueMap.getOrDefault("detintiona", "NullKey"));
-            info.setDetintionb(keyValueMap.getOrDefault("detintionb", "NullKey"));
-            info.setLowtorblothr(keyValueMap.getOrDefault("lowtorblothr", "NullKey"));
-            info.setLowtordetime(keyValueMap.getOrDefault("lowtordetime", "NullKey"));
-            info.setLowsusrana(keyValueMap.getOrDefault("lowsusrana", "NullKey"));
-            info.setLowsusranb(keyValueMap.getOrDefault("lowsusranb", "NullKey"));
-            info.setUptbtss(keyValueMap.getOrDefault("uptbtss", "NullKey"));
-            info.setUptorblothr(keyValueMap.getOrDefault("uptorblothr", "NullKey"));
-            info.setUptordetime(keyValueMap.getOrDefault("uptordetime", "NullKey"));
-            info.setUpsusrana(keyValueMap.getOrDefault("upsusrana", "NullKey"));
-            info.setUpsusranb(keyValueMap.getOrDefault("upsusranb", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.lowtbtss = keyValueMap.getOrDefault("lowtbtss", "NullKey")
+            info.numpput = keyValueMap.getOrDefault("numpput", "NullKey")
+            info.pdajtime = keyValueMap.getOrDefault("pdajtime", "NullKey")
+            info.detintiona = keyValueMap.getOrDefault("detintiona", "NullKey")
+            info.detintionb = keyValueMap.getOrDefault("detintionb", "NullKey")
+            info.lowtorblothr = keyValueMap.getOrDefault("lowtorblothr", "NullKey")
+            info.lowtordetime = keyValueMap.getOrDefault("lowtordetime", "NullKey")
+            info.lowsusrana = keyValueMap.getOrDefault("lowsusrana", "NullKey")
+            info.lowsusranb = keyValueMap.getOrDefault("lowsusranb", "NullKey")
+            info.uptbtss = keyValueMap.getOrDefault("uptbtss", "NullKey")
+            info.uptorblothr = keyValueMap.getOrDefault("uptorblothr", "NullKey")
+            info.uptordetime = keyValueMap.getOrDefault("uptordetime", "NullKey")
+            info.upsusrana = keyValueMap.getOrDefault("upsusrana", "NullKey")
+            info.upsusranb = keyValueMap.getOrDefault("upsusranb", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION
     }
 }

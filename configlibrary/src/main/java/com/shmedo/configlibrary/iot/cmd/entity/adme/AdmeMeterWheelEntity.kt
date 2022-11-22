@@ -1,91 +1,53 @@
-package com.shmedo.configlibrary.iot.cmd.entity.adme;
+package com.shmedo.configlibrary.iot.cmd.entity.adme
 
-import com.shmedo.configlibrary.ble.interfaces.Validater;
-
-import java.lang.reflect.Field;
+import com.shmedo.configlibrary.ble.interfaces.Validater
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  12/27/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  12/27/20 <br></br>
  * 描述：    生成ADME 计米轮配置参数拼接指令
  */
-public class AdmeMeterWheelEntity implements Validater {
-    private String enclinenum;//编码器线数
-    private String outline;//外径
-    private String uptiona;//上拉一次修正参数
-    private String uptionb;//上拉二次修正参数
-    private String upconstant;//上拉常数
-    private String upfilter;//上拉滤波器系数
-    private String downtiona;//下放一次修正参数
-    private String downtionb;//下放二次修正参数
-    private String downconstant;//下放常数
-    private String downfilter;//下放滤波器系数
+class AdmeMeterWheelEntity : Validater {
+    var enclinenum //编码器线数
+            : String? = null
+    var outline //外径
+            : String? = null
+    var uptiona //上拉一次修正参数
+            : String? = null
+    var uptionb //上拉二次修正参数
+            : String? = null
+    var upconstant //上拉常数
+            : String? = null
+    var upfilter //上拉滤波器系数
+            : String? = null
+    var downtiona //下放一次修正参数
+            : String? = null
+    var downtionb //下放二次修正参数
+            : String? = null
+    var downconstant //下放常数
+            : String? = null
+    var downfilter //下放滤波器系数
+            : String? = null
 
-    public void setEnclinenum(String enclinenum) {
-        this.enclinenum = enclinenum;
-    }
-
-    public void setOutline(String outline) {
-        this.outline = outline;
-    }
-
-    public void setUptiona(String uptiona) {
-        this.uptiona = uptiona;
-    }
-
-    public void setUptionb(String uptionb) {
-        this.uptionb = uptionb;
-    }
-
-    public void setUpconstant(String upconstant) {
-        this.upconstant = upconstant;
-    }
-
-    public void setUpfilter(String upfilter) {
-        this.upfilter = upfilter;
-    }
-
-    public void setDowntiona(String downtiona) {
-        this.downtiona = downtiona;
-    }
-
-    public void setDowntionb(String downtionb) {
-        this.downtionb = downtionb;
-    }
-
-    public void setDownconstant(String downconstant) {
-        this.downconstant = downconstant;
-    }
-
-    public void setDownfilter(String downfilter) {
-        this.downfilter = downfilter;
-    }
-
-    @Override
-    public void validate() {
-
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+    override fun validate() {}
+    override fun toString(): String {
+        val stringBuilder = StringBuilder()
         try {
-            for (Field f : getClass().getDeclaredFields()) {
-                Object value = f.get(this);
-                if (value != null && !value.equals("NullKey")) {
-                    stringBuilder.append(f.getName());
-                    stringBuilder.append("=");
-                    stringBuilder.append(value);
-                    stringBuilder.append("&");
+            for (f in javaClass.declaredFields) {
+                val value = f[this]
+                if (value != null && value != "NullKey") {
+                    stringBuilder.append(f.name)
+                    stringBuilder.append("=")
+                    stringBuilder.append(value)
+                    stringBuilder.append("&")
                 }
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
         }
         if (stringBuilder.toString().endsWith("&")) {
-            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+            stringBuilder.delete(stringBuilder.length - 1, stringBuilder.length)
         }
-
-        return stringBuilder.toString();
+        return stringBuilder.toString()
     }
 }

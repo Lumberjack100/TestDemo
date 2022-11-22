@@ -1,53 +1,43 @@
-package com.shmedo.configlibrary.iot.cmd.parser.das;
+package com.shmedo.configlibrary.iot.cmd.parser.das
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.das.DasDigitalPiezometerInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.das.DasDigitalPiezometerInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/4/19 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/4/19 <br></br>
  * 描述：      解析DAS 数字水位计参数
  */
-public class DasDigitalPiezometerInfoParser implements IOTResultParser<DasDigitalPiezometerInfo> {
-    @Override
-    public DasDigitalPiezometerInfo parse(String result) {
-        DasDigitalPiezometerInfo info = new DasDigitalPiezometerInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class DasDigitalPiezometerInfoParser : IOTResultParser<DasDigitalPiezometerInfo?> {
+    override fun parse(result: String): DasDigitalPiezometerInfo? {
+        val info = DasDigitalPiezometerInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
-            info.setSw(keyValueMap.getOrDefault("sw", "NullKey"));
-            info.setThreshold(keyValueMap.getOrDefault("threshold", "NullKey"));
-            info.setCorrval(keyValueMap.getOrDefault("corrval", "NullKey"));
-            info.setRopelen(keyValueMap.getOrDefault("ropelen", "NullKey"));
-            info.setTubealti(keyValueMap.getOrDefault("tubealti", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.addr = keyValueMap.getOrDefault("addr", "NullKey")
+            info.sw = keyValueMap.getOrDefault("sw", "NullKey")
+            info.threshold = keyValueMap.getOrDefault("threshold", "NullKey")
+            info.corrval = keyValueMap.getOrDefault("corrval", "NullKey")
+            info.ropelen = keyValueMap.getOrDefault("ropelen", "NullKey")
+            info.tubealti = keyValueMap.getOrDefault("tubealti", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO
     }
 }

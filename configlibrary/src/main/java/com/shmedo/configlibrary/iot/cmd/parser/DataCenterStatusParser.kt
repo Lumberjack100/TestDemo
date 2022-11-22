@@ -1,50 +1,39 @@
-package com.shmedo.configlibrary.iot.cmd.parser;
+package com.shmedo.configlibrary.iot.cmd.parser
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.DataCenterStatus;
-
-import java.util.HashMap;
-import java.util.Objects;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.DataCenterStatus
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  11/29/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  11/29/20 <br></br>
  * 描述：      解析数据中心状态
  */
-public class DataCenterStatusParser implements IOTResultParser<DataCenterStatus> {
-    @Override
-    public DataCenterStatus parse(String result) {
-        DataCenterStatus info = new DataCenterStatus();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class DataCenterStatusParser : IOTResultParser<DataCenterStatus?> {
+    override fun parse(result: String): DataCenterStatus? {
+        val info = DataCenterStatus()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setCenterid(Integer.parseInt(Objects.requireNonNull(keyValueMap.get("centerid"))));
-            info.setStatus(keyValueMap.getOrDefault("status", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.centerid = keyValueMap["centerid"]?.toInt() ?: 0
+            info.status = keyValueMap.getOrDefault("status", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.MD_GET_DATA_CENTER_STATUS;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.MD_GET_DATA_CENTER_STATUS
     }
 }

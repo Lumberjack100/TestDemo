@@ -214,7 +214,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         platformType = "0";
 
         //SL651 水文协议测站分类默认编码
-        mTvStationClassification.setText(StationCode.PRECIPITATION.getName());
+        mTvStationClassification.setText(StationCode.PRECIPITATION.getDescription());
         stationCode = StationCode.PRECIPITATION.getCode();
     }
 
@@ -460,7 +460,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
      * 选择测站分类编码弹框
      */
     private void showStationCodeDialog() {
-        final String[] platforms = StationCode.getNames().toArray(new String[0]);
+        final String[] platforms = StationCode.getDescriptions().toArray(new String[0]);
         int pos = Arrays.asList(platforms).indexOf(mTvStationClassification.getText().toString());
         pos = (pos == -1) ? 0 : pos;
 
@@ -669,7 +669,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         mEtProductId.setText(productId);
         mEtDeviceRegisterCode.setText(registerCode);
 
-        mTvStationClassification.setText(StationCode.valueByCode(stationCode).getName());
+        mTvStationClassification.setText(StationCode.valueByCode(stationCode).getDescription());
         mEtCenterStationAddr.setText(centerStationAddr);
         mEtPassword.setText(password);
         mEtTelemetryStationAddr.setText(telemetryStationAddr);

@@ -1,21 +1,16 @@
-package com.shmedo.configlibrary.iot.enums;
+package com.shmedo.configlibrary.iot.enums
 
-
-import android.text.TextUtils;
-
-
-import java.util.ArrayList;
-import java.util.List;
+import android.text.TextUtils
 
 /**
  * Created by adu on 2017/12/14.
  * 传感器类型
  */
-public enum IOTSensorType {
+enum class IOTSensorType(val code: String, val description: String) {
     /**
      * 振弦式采集器
      */
-    VW08("0","振弦式采集器"),
+    VW08("0", "振弦式采集器"),
 
     /**
      * 压电式雨量计
@@ -76,7 +71,6 @@ public enum IOTSensorType {
      * 量水堰传感器
      */
     WEIR("22", "量水堰计"),
-
     STATIC_LEVEL("24", "静力水准"),
 
     /**
@@ -88,10 +82,9 @@ public enum IOTSensorType {
      * 浊度仪传感器
      */
     TURBIDITY_METER("26", "浊度仪"),
-
     DIGITAL_WATER_LEVEL_GAUGE("27", "数字式水位计"),
-
     WATER_QUALITY_METER("28", "多参数水质仪"),
+
     /**
      * 基康渗压计 BGK-4500
      */
@@ -126,74 +119,42 @@ public enum IOTSensorType {
      * 轴力计 ZLJ-300T
      */
     JUNXING_ZLJ_300T("58", "轴力计"),
-
     UNKNOWN_TYPE("-1", "未知类型");
 
-    IOTSensorType(String code, String description) {
-        this.code = code;
-        this.description = description;
+    override fun toString(): String {
+        return code
     }
 
-    private String code;
-    private String description;
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public String toString() {
-        return code;
-    }
-
-    public static IOTSensorType value(String code) {
-        if (TextUtils.isEmpty(code))
-            return UNKNOWN_TYPE;
-
-        for (IOTSensorType sensorType : IOTSensorType.values()) {
-            if (sensorType.getCode().equals(code))
-                return sensorType;
+    companion object {
+        @JvmStatic
+        fun value(code: String): IOTSensorType {
+            if (TextUtils.isEmpty(code)) return UNKNOWN_TYPE
+            for (sensorType in values()) {
+                if (sensorType.code == code) return sensorType
+            }
+            return UNKNOWN_TYPE
         }
 
-        return UNKNOWN_TYPE;
-    }
+        fun isValidSensor(coll: String?): Boolean {
+            if (TextUtils.isEmpty(coll))
+                return false
 
-    public static boolean isValidSensor(String coll) {
-        if (TextUtils.isEmpty(coll))
-            return false;
-
-        List<String> allSensors = new ArrayList<>();
-        for (IOTSensorType type : IOTSensorType.values()) {
-            allSensors.add(type.getCode());
+            return values().any { it.code == coll }
         }
-        return allSensors.contains(coll);
-    }
 
-    public static boolean isVibratingWireSensor(IOTSensorType type) {
-        switch (type) {
-            case KANG_PERCOLATE:
-            case GUDAN_PERCOLATE:
-            case GUDAN_SOIL_PRESSURE:
-            case GUDAN_STRESS:
-            case GUDAN_NOT_STRESS:
-            case GUDAN_DISPLACEMENT_METER:
-            case JUNXING_ZLJ_300T:
-               return true;
-
-            default:
-                return false;
+        @JvmStatic
+        fun isVibratingWireSensor(type: IOTSensorType?): Boolean {
+            return when (type) {
+                KANG_PERCOLATE, GUDAN_PERCOLATE, GUDAN_SOIL_PRESSURE, GUDAN_STRESS, GUDAN_NOT_STRESS, GUDAN_DISPLACEMENT_METER, JUNXING_ZLJ_300T -> true
+                else -> false
+            }
         }
-    }
 
-    public static IOTSensorType getSensorTypeByCollectorCode(String code) {
-        if (IOTSensorType.value(code) == IOTSensorType.VW08) {
-            return IOTSensorType.KANG_PERCOLATE;
+        @JvmStatic
+        fun getSensorTypeByCollectorCode(code: String) = if (value(code) == VW08) {
+            KANG_PERCOLATE
         } else {
-            return IOTSensorType.value(code);
+            value(code)
         }
     }
 }

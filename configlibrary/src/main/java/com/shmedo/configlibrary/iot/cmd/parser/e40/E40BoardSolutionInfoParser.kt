@@ -1,53 +1,43 @@
-package com.shmedo.configlibrary.iot.cmd.parser.e40;
+package com.shmedo.configlibrary.iot.cmd.parser.e40
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.e40.E40BoardSolutionInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.e40.E40BoardSolutionInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  3/1/21 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  3/1/21 <br></br>
  * 描述：    解析板卡解算参数
  */
-public class E40BoardSolutionInfoParser implements IOTResultParser<E40BoardSolutionInfo> {
-    @Override
-    public E40BoardSolutionInfo parse(String result) {
-        E40BoardSolutionInfo info = new E40BoardSolutionInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class E40BoardSolutionInfoParser : IOTResultParser<E40BoardSolutionInfo?> {
+    override fun parse(result: String): E40BoardSolutionInfo? {
+        val info = E40BoardSolutionInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setInittime(keyValueMap.getOrDefault("inittime", "NullKey"));
-            info.setCalcgap(keyValueMap.getOrDefault("calcgap", "NullKey"));
-            info.setSmoothlevel(keyValueMap.getOrDefault("smoothlevel", "NullKey"));
-            info.setReinit(keyValueMap.getOrDefault("reinit", "NullKey"));
-            info.setRtkdynamicmode(keyValueMap.getOrDefault("rtkdynamicmode", "NullKey"));
-            info.setCorrval(keyValueMap.getOrDefault("corrval", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.inittime = keyValueMap.getOrDefault("inittime", "NullKey")
+            info.calcgap = keyValueMap.getOrDefault("calcgap", "NullKey")
+            info.smoothlevel = keyValueMap.getOrDefault("smoothlevel", "NullKey")
+            info.reinit = keyValueMap.getOrDefault("reinit", "NullKey")
+            info.rtkdynamicmode = keyValueMap.getOrDefault("rtkdynamicmode", "NullKey")
+            info.corrval = keyValueMap.getOrDefault("corrval", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.E40_MD_GET_BOARDSOLUTION;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.E40_MD_GET_BOARDSOLUTION
     }
 }

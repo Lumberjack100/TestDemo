@@ -1,51 +1,41 @@
-package com.shmedo.configlibrary.iot.cmd.parser.vms;
+package com.shmedo.configlibrary.iot.cmd.parser.vms
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.vms.VmsTerminalCommInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalCommInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  12/2/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  12/2/20 <br></br>
  * 描述：    解析Vms终端通信参数
  */
-public class VmsTerminalCommInfoParser implements IOTResultParser<VmsTerminalCommInfo> {
-    @Override
-    public VmsTerminalCommInfo parse(String result) {
-        VmsTerminalCommInfo info = new VmsTerminalCommInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class VmsTerminalCommInfoParser : IOTResultParser<VmsTerminalCommInfo?> {
+    override fun parse(result: String): VmsTerminalCommInfo? {
+        val info = VmsTerminalCommInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setNetid(keyValueMap.getOrDefault("netid", "NullKey"));
-            info.setDstaddr(keyValueMap.getOrDefault("dstaddr", "NullKey"));
-            info.setChannel(keyValueMap.getOrDefault("channel", "NullKey"));
-            info.setAirbaud(keyValueMap.getOrDefault("airbaud", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.netid = keyValueMap.getOrDefault("netid", "NullKey")
+            info.dstaddr = keyValueMap.getOrDefault("dstaddr", "NullKey")
+            info.channel = keyValueMap.getOrDefault("channel", "NullKey")
+            info.airbaud = keyValueMap.getOrDefault("airbaud", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_TERMINAL_COMMUNICATE;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.VMS_MD_GET_TERMINAL_COMMUNICATE
     }
 }

@@ -1,15 +1,11 @@
-package com.shmedo.configlibrary.iot.model.vms;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.shmedo.configlibrary.iot.model.vms
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/13 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/11/13 <br></br>
  * 描述：    Vms网关不同通道下，挂载终端的运行情况
  */
-public class VmsAisleTerminalInfo {
-
+class VmsAisleTerminalInfo {
     /**
      * mode : 1
      * netid : 2
@@ -19,77 +15,21 @@ public class VmsAisleTerminalInfo {
      * airbaud : 3
      * terminal : [{"sn":"253333D","addr":64,"uprssi":-74,"downrssi":-72,"tx":160,"rx":36,"volt":4.3,"status":1,"sensor_errno":[{"sensoraddr":0,"sensortype":58,"errno":-4,"sensorval":0},{"sensoraddr":1,"sensortype":58,"errno":-4,"sensorval":-0.448},{"sensoraddr":2,"sensortype":58,"errno":0,"sensorval":0.06},{"sensoraddr":3,"sensortype":58,"errno":0,"sensorval":0}],"logintime":"2020/09/28 11:23:24","lastpackagetime":"2020/09/28 11:23:24"}]
      */
-    private int channel;//通道号
-
-    private int mode;//通道工作模式 0：配置，1：数据
-    private int netid;//网络号
-    private int chl;//信道
-    private int addr;//地址
-    private int terminalnum;//终端接入数量
-    private int airbaud;//空中速率
-    private List<VmsTerminalInfo> terminal;//终端列表
-
-    public int getChannel() {
-        return channel;
-    }
-
-    public void setChannel(int channel) {
-        this.channel = channel;
-    }
-
-    public int getMode() {
-        return mode;
-    }
-
-    public void setMode(int mode) {
-        this.mode = mode;
-    }
-
-    public int getNetid() {
-        return netid;
-    }
-
-    public void setNetid(int netid) {
-        this.netid = netid;
-    }
-
-    public int getChl() {
-        return chl;
-    }
-
-    public void setChl(int chl) {
-        this.chl = chl;
-    }
-
-    public int getAddr() {
-        return addr;
-    }
-
-    public void setAddr(int addr) {
-        this.addr = addr;
-    }
-
-    public int getTerminalnum() {
-        return terminalnum;
-    }
-
-    public void setTerminalnum(int terminalnum) {
-        this.terminalnum = terminalnum;
-    }
-
-    public List<VmsTerminalInfo> getTerminal() {
-        return terminal == null ? new ArrayList<VmsTerminalInfo>() : terminal;
-    }
-
-    public void setTerminal(List<VmsTerminalInfo> terminal) {
-        this.terminal = terminal;
-    }
-
-    public int getAirbaud() {
-        return airbaud;
-    }
-
-    public void setAirbaud(int airbaud) {
-        this.airbaud = airbaud;
-    }
+    var channel //通道号
+            = 0
+    var mode //通道工作模式 0：配置，1：数据
+            = 0
+    var netid //网络号
+            = 0
+    var chl //信道
+            = 0
+    var addr //地址
+            = 0
+    var terminalnum //终端接入数量
+            = 0
+    var airbaud //空中速率
+            = 0
+    var terminal //终端列表
+            : List<VmsTerminalInfo>? = null
+        get() = if (field == null) ArrayList() else field
 }

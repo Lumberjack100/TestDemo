@@ -1,46 +1,22 @@
-package com.shmedo.configlibrary.iot.model.e40;
+package com.shmedo.configlibrary.iot.model.e40
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.annotations.SerializedName
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/5/24 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/5/24 <br></br>
  * 描述：     TODO
  */
-public class SatelitteBean {
+class SatelitteBean {
     @SerializedName("GPS")
-    private List<GPSBean> gpsBeanList;
+    var gpsBeanList: List<GPSBean>? = null
+        get() = if (field == null) ArrayList() else field
 
     @SerializedName("GLO")
-    private List<GLOBean> gloBeanList;
+    var gloBeanList: List<GLOBean>? = null
+        get() = if (field == null) ArrayList() else field
 
     @SerializedName("BDS")
-    private List<BDSBean> bdsBeanList;
-
-    public List<GPSBean> getGpsBeanList() {
-        return gpsBeanList == null ? new ArrayList<GPSBean>() : gpsBeanList;
-    }
-
-    public void setGpsBeanList(List<GPSBean> gpsBeanList) {
-        this.gpsBeanList = gpsBeanList;
-    }
-
-    public List<GLOBean> getGloBeanList() {
-        return gloBeanList == null ? new ArrayList<GLOBean>() : gloBeanList;
-    }
-
-    public void setGloBeanList(List<GLOBean> gloBeanList) {
-        this.gloBeanList = gloBeanList;
-    }
-
-    public List<BDSBean> getBdsBeanList() {
-        return bdsBeanList == null ? new ArrayList<BDSBean>() : bdsBeanList;
-    }
-
-    public void setBdsBeanList(List<BDSBean> bdsBeanList) {
-        this.bdsBeanList = bdsBeanList;
-    }
+    var bdsBeanList: List<BDSBean>? = null
+        get() = if (field == null) ArrayList() else field
 }

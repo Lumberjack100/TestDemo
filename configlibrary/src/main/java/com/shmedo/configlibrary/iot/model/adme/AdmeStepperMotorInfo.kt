@@ -1,48 +1,23 @@
-package com.shmedo.configlibrary.iot.model.adme;
+package com.shmedo.configlibrary.iot.model.adme
 
-import android.text.TextUtils;
+import android.text.TextUtils
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  12/28/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  12/28/20 <br></br>
  * 描述：    ADME 步进电机参数
  */
-public class AdmeStepperMotorInfo {
-    private String posnegtest;//正反测（0:关闭，1:开启）
-    private String absprsion;//绝对精度修正值
-    private String movspeed;//步进电机运动速度
-    private String movesm;//步进电机力矩
-
-
-    public String getPosnegtest() {
-        return TextUtils.isEmpty(posnegtest) ? "" : posnegtest;
-    }
-
-    public void setPosnegtest(String posnegtest) {
-        this.posnegtest = posnegtest;
-    }
-
-    public String getAbsprsion() {
-        return TextUtils.isEmpty(absprsion) ? "" : absprsion;
-    }
-
-    public void setAbsprsion(String absprsion) {
-        this.absprsion = absprsion;
-    }
-
-    public String getMovspeed() {
-        return TextUtils.isEmpty(movspeed) ? "" : movspeed;
-    }
-
-    public void setMovspeed(String movspeed) {
-        this.movspeed = movspeed;
-    }
-
-    public String getMovesm() {
-        return TextUtils.isEmpty(movesm) ? "" : movesm;
-    }
-
-    public void setMovesm(String movesm) {
-        this.movesm = movesm;
-    }
+class AdmeStepperMotorInfo {
+    var posnegtest //正反测（0:关闭，1:开启）
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var absprsion //绝对精度修正值
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var movspeed //步进电机运动速度
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var movesm //步进电机力矩
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
 }

@@ -1,64 +1,37 @@
-package com.shmedo.configlibrary.iot.cmd;
+package com.shmedo.configlibrary.iot.cmd
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/8/31 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/8/31 <br></br>
  * 描述：     TODO #gh#
  */
-public class IOTCommandResult<T> {
-    public static final String COMMAND_HEADER = "$cmd=";
-    public static final int RESULT_MIN_LENGTH = 5;
-    public static final String ERROR_FLAG = "result=fail";
+class IOTCommandResult<T> {
     /**
      * 命令执行是否成功
      */
-    private boolean success;
+    var isSuccess = false
+
     /**
      * 执行失败的错误信息
      */
-    private String message;
+    var message: String? = null
+
     /**
      * 命令类型
      */
-    private IOTCommandType commandType;
+    var commandType: IOTCommandType? = null
+
     /**
      * 解析结果数据
      */
-    private T result;
+    var result: T? = null
 
 
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public IOTCommandType getCommandType() {
-        return commandType;
-    }
-
-    public void setCommandType(IOTCommandType commandType) {
-        this.commandType = commandType;
-    }
-
-    public T getResult() {
-        return result;
-    }
-
-    public void setResult(T result) {
-        this.result = result;
+    companion object {
+        const val COMMAND_HEADER = "\$cmd="
+        const val RESULT_MIN_LENGTH = 5
+        const val ERROR_FLAG = "result=fail"
     }
 }

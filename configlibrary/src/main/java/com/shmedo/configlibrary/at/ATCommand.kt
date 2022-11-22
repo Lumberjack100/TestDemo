@@ -1,23 +1,18 @@
-package com.shmedo.configlibrary.at;
+package com.shmedo.configlibrary.at
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/8/11 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/8/11 <br></br>
  * 描述：     TODO
  */
-public class ATCommand {
-    public final static String NEWLINE_CRLF = "\r\n";
-    public final static String NEWLINE_CR = "\r";
-    public final static String NEWLINE_LF = "\n";
-
-    public static final String COMMAND_HEADER = "AT+";
-    public static final String COMMAND_RESULT_HEADER = "+";
-    public static final String DELIMITER_COLON = ":";
-
-
-    public static final String QUERY_FLAG = "?";
-    public static final String OK_FLAG = "\r\nOK\r\n";
-    public static final String ERROR_FLAG = "ERR";
-
-
+object ATCommand {
+    const val NEWLINE_CRLF = "\r\n"
+    const val NEWLINE_CR = "\r"
+    const val NEWLINE_LF = "\n"
+    const val COMMAND_HEADER = "AT+"
+    const val COMMAND_RESULT_HEADER = "+"
+    const val DELIMITER_COLON = ":"
+    const val QUERY_FLAG = "?"
+    const val OK_FLAG = "\r\nOK\r\n"
+    const val ERROR_FLAG = "ERR"
 }

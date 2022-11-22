@@ -1,49 +1,40 @@
-package com.shmedo.configlibrary.iot.cmd.parser.das;
+package com.shmedo.configlibrary.iot.cmd.parser.das
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/4/19 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/4/19 <br></br>
  * 描述：      解析DAS 开关量传感器参数
  */
-public class DasIOSensorInfoParser implements IOTResultParser<DasIOSensorInfo> {
-    @Override
-    public DasIOSensorInfo parse(String result) {
-        DasIOSensorInfo info = new DasIOSensorInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class DasIOSensorInfoParser : IOTResultParser<DasIOSensorInfo?> {
+    override fun parse(result: String): DasIOSensorInfo? {
+        val info = DasIOSensorInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setType(keyValueMap.getOrDefault("type", "NullKey"));
-            info.setValue(keyValueMap.getOrDefault("value", "NullKey"));
-            info.setMin_time(keyValueMap.getOrDefault("min_time", "NullKey"));
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.type = keyValueMap.getOrDefault("type", "NullKey")
+            info.value = keyValueMap.getOrDefault("value", "NullKey")
+            info.min_time = keyValueMap.getOrDefault("min_time", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO
     }
 }

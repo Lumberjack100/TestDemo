@@ -1,49 +1,39 @@
-package com.shmedo.configlibrary.iot.cmd.parser.rn20;
+package com.shmedo.configlibrary.iot.cmd.parser.rn20
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.rn20.Rn20PositionInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.rn20.Rn20PositionInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/8/4 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/8/4 <br></br>
  * 描述：     解析雨量采集器经纬度信息
  */
-public class Rn20PositionInfoParser implements IOTResultParser<Rn20PositionInfo> {
-    @Override
-    public Rn20PositionInfo parse(String result) {
-        Rn20PositionInfo info = new Rn20PositionInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class Rn20PositionInfoParser : IOTResultParser<Rn20PositionInfo?> {
+    override fun parse(result: String): Rn20PositionInfo? {
+        val info = Rn20PositionInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setLongitude(keyValueMap.getOrDefault("longitude", "NullKey"));
-            info.setLatitude(keyValueMap.getOrDefault("latitude", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.longitude = keyValueMap.getOrDefault("longitude", "NullKey")
+            info.latitude = keyValueMap.getOrDefault("latitude", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.RN20_MD_GET_TERMINAL_LOCAL;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.RN20_MD_GET_TERMINAL_LOCAL
     }
 }

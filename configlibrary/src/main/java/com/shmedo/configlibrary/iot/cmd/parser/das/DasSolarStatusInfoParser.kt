@@ -1,50 +1,40 @@
-package com.shmedo.configlibrary.iot.cmd.parser.das;
+package com.shmedo.configlibrary.iot.cmd.parser.das
 
-import com.blankj.utilcode.util.GsonUtils;
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo;
-
-import java.util.HashMap;
+import com.blankj.utilcode.util.GsonUtils
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.das.DasSolarStatusInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/4/16 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/4/16 <br></br>
  * 描述：      解析DAS 状态页面太阳能控制器状态参数
  */
-public class DasSolarStatusInfoParser implements IOTResultParser<DasSolarStatusInfo> {
-    @Override
-    public DasSolarStatusInfo parse(String result) {
-        DasSolarStatusInfo info = null;
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class DasSolarStatusInfoParser : IOTResultParser<DasSolarStatusInfo?> {
+    override fun parse(result: String): DasSolarStatusInfo? {
+        var info: DasSolarStatusInfo? = null
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            String status = keyValueMap.get("status");
-            info = GsonUtils.fromJson(status, DasSolarStatusInfo.class);
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            val status = keyValueMap["status"]
+            info = GsonUtils.fromJson(status, DasSolarStatusInfo::class.java)
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.DAS_MD_GET_SOLAR_STATUS;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.DAS_MD_GET_SOLAR_STATUS
     }
 }

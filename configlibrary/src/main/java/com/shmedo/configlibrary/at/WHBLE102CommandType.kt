@@ -1,12 +1,11 @@
-package com.shmedo.configlibrary.at;
+package com.shmedo.configlibrary.at
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/8/11 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/8/11 <br></br>
  * 描述：     TODO
  */
-public enum WHBLE102CommandType {
-
+enum class WHBLE102CommandType(private val value: String) {
     /**
      * 进入命令模式
      */
@@ -168,15 +167,7 @@ public enum WHBLE102CommandType {
      */
     UNKNOWN_TYPE("unknown_type");
 
-
-    private String value;
-
-    WHBLE102CommandType(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return this.value;
+    override fun toString(): String {
+        return value
     }
 }

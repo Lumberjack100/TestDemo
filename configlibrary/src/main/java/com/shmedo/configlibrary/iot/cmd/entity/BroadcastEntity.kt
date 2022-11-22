@@ -1,45 +1,30 @@
-package com.shmedo.configlibrary.iot.cmd.entity;
+package com.shmedo.configlibrary.iot.cmd.entity
 
-import android.text.TextUtils;
-
-import com.shmedo.configlibrary.ble.interfaces.Validater;
+import android.text.TextUtils
+import com.shmedo.configlibrary.ble.interfaces.Validater
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2022/3/3 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2022/3/3 <br></br>
  * 描述：     语音播报参数
  */
-public class BroadcastEntity implements Validater {
-    private int b_num;// 播报遍数
-    private int b_size;//播报内容大学
-    private String b_content;//播报内容 utf-8
+class BroadcastEntity : Validater {
+    var b_num = 0// 播报遍数
+    var b_size = 0//播报内容大学
+    var b_content: String? = null//播报内容 utf-8
 
-    public void setB_num(int b_num) {
-        this.b_num = b_num;
-    }
 
-    public void setB_size(int b_size) {
-        this.b_size = b_size;
-    }
+    override fun validate() {}
 
-    public void setB_content(String b_content) {
-        this.b_content = b_content;
-    }
+    override fun toString(): String {
+        val stringBuilder = StringBuilder().apply {
+            append("b_num=$b_num")
+            append("&")
+            append("b_size=$b_size")
+            append("&")
+            append("b_content=" + if (TextUtils.isEmpty(b_content)) "" else b_content)
+        }
 
-    @Override
-    public void validate() {
-
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("b_num=" + b_num);
-        stringBuilder.append("&");
-        stringBuilder.append("b_size=" + b_size);
-        stringBuilder.append("&");
-        stringBuilder.append("b_content=" + (TextUtils.isEmpty(b_content) ? "" : b_content));
-
-        return stringBuilder.toString();
+        return stringBuilder.toString()
     }
 }

@@ -1,53 +1,43 @@
-package com.shmedo.configlibrary.iot.cmd.parser.vms;
+package com.shmedo.configlibrary.iot.cmd.parser.vms
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.vms.VmsTerminalCollectorInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.vms.VmsTerminalCollectorInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  12/2/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  12/2/20 <br></br>
  * 描述：    解析Vms终端采集参数
  */
-public class VmsTerminalCollectorInfoParser implements IOTResultParser<VmsTerminalCollectorInfo> {
-    @Override
-    public VmsTerminalCollectorInfo parse(String result) {
-        VmsTerminalCollectorInfo info = new VmsTerminalCollectorInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class VmsTerminalCollectorInfoParser : IOTResultParser<VmsTerminalCollectorInfo?> {
+    override fun parse(result: String): VmsTerminalCollectorInfo? {
+        val info = VmsTerminalCollectorInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setReptgap(keyValueMap.getOrDefault("reptgap", "NullKey"));
-            info.setRepttype(keyValueMap.getOrDefault("repttype", "NullKey"));
-            info.setFiltertype(keyValueMap.getOrDefault("filtertype", "NullKey"));
-            info.setFilternum(keyValueMap.getOrDefault("filternum", "NullKey"));
-            info.setCollgap(keyValueMap.getOrDefault("collgap", "NullKey"));
-            info.setWaitgap(keyValueMap.getOrDefault("waitgap", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.reptgap = keyValueMap.getOrDefault("reptgap", "NullKey")
+            info.repttype = keyValueMap.getOrDefault("repttype", "NullKey")
+            info.filtertype = keyValueMap.getOrDefault("filtertype", "NullKey")
+            info.filternum = keyValueMap.getOrDefault("filternum", "NullKey")
+            info.collgap = keyValueMap.getOrDefault("collgap", "NullKey")
+            info.waitgap = keyValueMap.getOrDefault("waitgap", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_TERMINAL_COLLECTOR;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.VMS_MD_GET_TERMINAL_COLLECTOR
     }
 }

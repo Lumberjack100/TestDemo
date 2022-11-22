@@ -1,56 +1,39 @@
-package com.shmedo.configlibrary.iot.cmd.entity.e40;
+package com.shmedo.configlibrary.iot.cmd.entity.e40
 
-import com.shmedo.configlibrary.ble.interfaces.Validater;
-
-import java.lang.reflect.Field;
+import com.shmedo.configlibrary.ble.interfaces.Validater
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/6/18 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/6/18 <br></br>
  * 描述：       生成GPS 工作参数拼接指令
  */
-public class E40GpsWorkInfoEntity implements Validater {
-    private String cutoffangle;//卫星仰角截止角 范围0-90度
-    private String range;//观测范围  0或1
-    private String savefreq;//数据频率
+class E40GpsWorkInfoEntity : Validater {
+    var cutoffangle //卫星仰角截止角 范围0-90度
+            : String? = null
+    var range //观测范围  0或1
+            : String? = null
+    var savefreq //数据频率
+            : String? = null
 
-    public void setCutoffangle(String cutoffangle) {
-        this.cutoffangle = cutoffangle;
-    }
-
-    public void setRange(String range) {
-        this.range = range;
-    }
-
-    public void setSavefreq(String savefreq) {
-        this.savefreq = savefreq;
-    }
-
-    @Override
-    public void validate() {
-
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+    override fun validate() {}
+    override fun toString(): String {
+        val stringBuilder = StringBuilder()
         try {
-            for (Field f : getClass().getDeclaredFields()) {
-                Object value = f.get(this);
-                if (value != null && !value.equals("NullKey")) {
-                    stringBuilder.append(f.getName());
-                    stringBuilder.append("=");
-                    stringBuilder.append(value);
-                    stringBuilder.append("&");
+            for (f in javaClass.declaredFields) {
+                val value = f[this]
+                if (value != null && value != "NullKey") {
+                    stringBuilder.append(f.name)
+                    stringBuilder.append("=")
+                    stringBuilder.append(value)
+                    stringBuilder.append("&")
                 }
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
         }
         if (stringBuilder.toString().endsWith("&")) {
-            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+            stringBuilder.delete(stringBuilder.length - 1, stringBuilder.length)
         }
-
-        return stringBuilder.toString();
+        return stringBuilder.toString()
     }
 }

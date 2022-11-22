@@ -1,60 +1,49 @@
-package com.shmedo.configlibrary.iot.cmd.parser.rn20;
+package com.shmedo.configlibrary.iot.cmd.parser.rn20
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.rn20.Rn20BaseInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/8/3 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/8/3 <br></br>
  * 描述：     解析雨量采集器基本信息
  */
-public class Rn20BaseInfoParser implements IOTResultParser<Rn20BaseInfo> {
-    @Override
-    public Rn20BaseInfo parse(String result) {
-        Rn20BaseInfo info = new Rn20BaseInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class Rn20BaseInfoParser : IOTResultParser<Rn20BaseInfo?> {
+    override fun parse(result: String): Rn20BaseInfo? {
+        val info = Rn20BaseInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
-            info.setVer(keyValueMap.getOrDefault("ver", "NullKey"));
-            info.setLocal(keyValueMap.getOrDefault("local", "NullKey"));
-            info.setInvolt(keyValueMap.getOrDefault("involt", "NullKey"));
-            info.setSsi(keyValueMap.getOrDefault("ssi", "NullKey"));
-            info.setRecvbuf(keyValueMap.getOrDefault("recvbuf", "NullKey"));
-            info.setSendbuf(keyValueMap.getOrDefault("sendbuf", "NullKey"));
-            info.setNetid(keyValueMap.getOrDefault("netid", "NullKey"));
-            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
-            info.setChannel(keyValueMap.getOrDefault("channel", "NullKey"));
-            info.setFinaltime(keyValueMap.getOrDefault("finaltime", "NullKey"));
-            info.setLogintime(keyValueMap.getOrDefault("logintime", "NullKey"));
-
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.sn = keyValueMap.getOrDefault("sn", "NullKey")
+            info.ver = keyValueMap.getOrDefault("ver", "NullKey")
+            info.local = keyValueMap.getOrDefault("local", "NullKey")
+            info.involt = keyValueMap.getOrDefault("involt", "NullKey")
+            info.ssi = keyValueMap.getOrDefault("ssi", "NullKey")
+            info.recvbuf = keyValueMap.getOrDefault("recvbuf", "NullKey")
+            info.sendbuf = keyValueMap.getOrDefault("sendbuf", "NullKey")
+            info.netid = keyValueMap.getOrDefault("netid", "NullKey")
+            info.addr = keyValueMap.getOrDefault("addr", "NullKey")
+            info.channel = keyValueMap.getOrDefault("channel", "NullKey")
+            info.finaltime = keyValueMap.getOrDefault("finaltime", "NullKey")
+            info.logintime = keyValueMap.getOrDefault("logintime", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.RN20_MD_GET_TERMINAL_BASE;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.RN20_MD_GET_TERMINAL_BASE
     }
 }

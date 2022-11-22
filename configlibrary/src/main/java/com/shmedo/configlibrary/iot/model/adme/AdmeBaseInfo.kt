@@ -1,47 +1,22 @@
-package com.shmedo.configlibrary.iot.model.adme;
+package com.shmedo.configlibrary.iot.model.adme
 
-import android.text.TextUtils;
+import android.text.TextUtils
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  12/23/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  12/23/20 <br></br>
  * 描述：     ADME的基本信息
  */
-public class AdmeBaseInfo {
-    private String sn;
-    private String productid;//产品型号
-    private String equimodel;//设备模式（0：设备配置模式，1：自动检测模式）
-    private String online;//在线状态（0：离线，非0:在线)
-
-    public String getSn() {
-        return TextUtils.isEmpty(sn) ? "" : sn;
-    }
-
-    public void setSn(String sn) {
-        this.sn = sn;
-    }
-
-    public String getProductid() {
-        return TextUtils.isEmpty(productid) ? "" : productid;
-    }
-
-    public void setProductid(String productid) {
-        this.productid = productid;
-    }
-
-    public String getEquimodel() {
-        return TextUtils.isEmpty(equimodel) ? "0" : equimodel;
-    }
-
-    public void setEquimodel(String equimodel) {
-        this.equimodel = equimodel;
-    }
-
-    public String getOnline() {
-        return TextUtils.isEmpty(online) ? "0" : online;
-    }
-
-    public void setOnline(String online) {
-        this.online = online;
-    }
+class AdmeBaseInfo {
+    var sn: String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var productid //产品型号
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var equimodel //设备模式（0：设备配置模式，1：自动检测模式）
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "0" else field
+    var online //在线状态（0：离线，非0:在线)
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "0" else field
 }

@@ -1,47 +1,23 @@
-package com.shmedo.configlibrary.iot.model.hac;
+package com.shmedo.configlibrary.iot.model.hac
 
-import android.text.TextUtils;
+import android.text.TextUtils
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2022/7/25 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2022/7/25 <br></br>
  * 描述：     HAC 电机实时运动脉冲数据
  */
-public class HacMotorMotionDistanceInfo {
-    private String pulsenumber;//脉冲数
-    private String realmovedistance;//实时运动距离
-    private String realholedepth;// 实时测量孔深
-    private String abndiasis;// 设备异常诊断
-
-    public String getPulsenumber() {
-        return TextUtils.isEmpty(pulsenumber) ? "" : pulsenumber;
-    }
-
-    public void setPulsenumber(String pulsenumber) {
-        this.pulsenumber = pulsenumber;
-    }
-
-    public String getRealmovedistance() {
-        return TextUtils.isEmpty(realmovedistance) ? "" : realmovedistance;
-    }
-
-    public void setRealmovedistance(String realmovedistance) {
-        this.realmovedistance = realmovedistance;
-    }
-
-    public String getRealholedepth() {
-        return TextUtils.isEmpty(realholedepth) ? "" : realholedepth;
-    }
-
-    public void setRealholedepth(String realholedepth) {
-        this.realholedepth = realholedepth;
-    }
-
-    public String getAbndiasis() {
-        return TextUtils.isEmpty(abndiasis) ? "0" : abndiasis;
-    }
-
-    public void setAbndiasis(String abndiasis) {
-        this.abndiasis = abndiasis;
-    }
+class HacMotorMotionDistanceInfo {
+    var pulsenumber //脉冲数
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var realmovedistance //实时运动距离
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var realholedepth // 实时测量孔深
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var abndiasis // 设备异常诊断
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "0" else field
 }

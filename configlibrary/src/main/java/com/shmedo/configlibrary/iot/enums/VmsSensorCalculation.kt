@@ -1,11 +1,11 @@
-package com.shmedo.configlibrary.iot.enums;
+package com.shmedo.configlibrary.iot.enums
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  11/27/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  11/27/20 <br></br>
  * 描述：     Vms 终端接入的传感器计算方式
  */
-public enum VmsSensorCalculation {
+enum class VmsSensorCalculation(private val type: String) {
     /**
      * 直线式(振弦式传感器)
      */
@@ -31,35 +31,19 @@ public enum VmsSensorCalculation {
      */
     MAGNIFICATION("82");
 
-    private String type;
-
-    VmsSensorCalculation(String type) {
-        this.type = type;
+    override fun toString(): String {
+        return type
     }
 
-    public String toString() {
-        return type;
-    }
-
-    public static VmsSensorCalculation value(String type) {
-        switch (type) {
-            case "58":
-                return LINEAR;
-
-            case "55":
-                return POLYNOMIAL;
-
-            case "80":
-                return MEMS;
-
-            case "81":
-                return MODULUS;
-
-            case "82":
-                return MAGNIFICATION;
-
-            default:
-                return null;
+    companion object {
+        @JvmStatic
+        fun value(type: String?): VmsSensorCalculation? =when (type) {
+            "58" -> LINEAR
+            "55" -> POLYNOMIAL
+            "80" -> MEMS
+            "81" -> MODULUS
+            "82" -> MAGNIFICATION
+            else -> null
         }
     }
 }

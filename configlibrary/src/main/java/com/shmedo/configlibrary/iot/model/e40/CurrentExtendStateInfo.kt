@@ -1,76 +1,24 @@
-package com.shmedo.configlibrary.iot.model.e40;
+package com.shmedo.configlibrary.iot.model.e40
 
-import java.util.ArrayList;
-import java.util.List;
+import com.shmedo.configlibrary.iot.model.e40.BaseBean
+import com.shmedo.configlibrary.iot.model.e40.StorageBean
+import com.shmedo.configlibrary.iot.model.e40.NetBean
+import com.shmedo.configlibrary.iot.model.e40.SensorBean
+import com.shmedo.configlibrary.iot.model.e40.GnssBean
+import java.util.ArrayList
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/5/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/5/20 <br></br>
  * 描述：     TODO
  */
-public class CurrentExtendStateInfo {
-
-    private BaseBean base;
-    private StorageBean storage;
-    private NetBean net;
-    private SolarBean solar;
-    private MemsBean mems;
-    private List<SensorBean> sensor;
-    private GnssBean gnss;
-
-    public BaseBean getBase() {
-        return base;
-    }
-
-    public void setBase(BaseBean base) {
-        this.base = base;
-    }
-
-    public StorageBean getStorage() {
-        return storage;
-    }
-
-    public void setStorage(StorageBean storage) {
-        this.storage = storage;
-    }
-
-    public NetBean getNet() {
-        return net;
-    }
-
-    public void setNet(NetBean net) {
-        this.net = net;
-    }
-
-    public SolarBean getSolar() {
-        return solar;
-    }
-
-    public void setSolar(SolarBean solar) {
-        this.solar = solar;
-    }
-
-    public MemsBean getMems() {
-        return mems;
-    }
-
-    public void setMems(MemsBean mems) {
-        this.mems = mems;
-    }
-
-    public List<SensorBean> getSensor() {
-        return sensor == null ? new ArrayList<SensorBean>() : sensor;
-    }
-
-    public void setSensor(List<SensorBean> sensor) {
-        this.sensor = sensor;
-    }
-
-    public GnssBean getGnss() {
-        return gnss;
-    }
-
-    public void setGnss(GnssBean gnss) {
-        this.gnss = gnss;
-    }
+class CurrentExtendStateInfo {
+    var base: BaseBean? = null
+    var storage: StorageBean? = null
+    var net: NetBean? = null
+    var solar: SolarBean? = null
+    var mems: MemsBean? = null
+    var sensor: List<SensorBean>? = null
+        get() = if (field == null) ArrayList() else field
+    var gnss: GnssBean? = null
 }

@@ -1,66 +1,40 @@
-package com.shmedo.configlibrary.iot.cmd.entity.e40;
+package com.shmedo.configlibrary.iot.cmd.entity.e40
 
-import com.shmedo.configlibrary.ble.interfaces.Validater;
-
-import java.lang.reflect.Field;
+import com.shmedo.configlibrary.ble.interfaces.Validater
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/5/18 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/5/18 <br></br>
  * 描述：     生成 串口参数拼接指令
  */
-public class E40SerialPortEntity implements Validater {
-    private String type;//输出数据格式
-    private String baud;//波特率
-    private String databits;//
-    private String parity;
-    private String stopbits;
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setBaud(String baud) {
-        this.baud = baud;
-    }
-
-    public void setDatabits(String databits) {
-        this.databits = databits;
-    }
-
-    public void setParity(String parity) {
-        this.parity = parity;
-    }
-
-    public void setStopbits(String stopbits) {
-        this.stopbits = stopbits;
-    }
-
-    @Override
-    public void validate() {
-
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+class E40SerialPortEntity : Validater {
+    var type //输出数据格式
+            : String? = null
+    var baud //波特率
+            : String? = null
+    var databits //
+            : String? = null
+    var parity: String? = null
+    var stopbits: String? = null
+    override fun validate() {}
+    override fun toString(): String {
+        val stringBuilder = StringBuilder()
         try {
-            for (Field f : getClass().getDeclaredFields()) {
-                Object value = f.get(this);
-                if (value != null && !value.equals("NullKey")) {
-                    stringBuilder.append(f.getName());
-                    stringBuilder.append("=");
-                    stringBuilder.append(value);
-                    stringBuilder.append("&");
+            for (f in javaClass.declaredFields) {
+                val value = f[this]
+                if (value != null && value != "NullKey") {
+                    stringBuilder.append(f.name)
+                    stringBuilder.append("=")
+                    stringBuilder.append(value)
+                    stringBuilder.append("&")
                 }
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
         }
         if (stringBuilder.toString().endsWith("&")) {
-            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+            stringBuilder.delete(stringBuilder.length - 1, stringBuilder.length)
         }
-
-        return stringBuilder.toString();
+        return stringBuilder.toString()
     }
 }

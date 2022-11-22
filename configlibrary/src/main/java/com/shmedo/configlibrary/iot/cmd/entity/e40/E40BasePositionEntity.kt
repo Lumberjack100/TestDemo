@@ -1,61 +1,41 @@
-package com.shmedo.configlibrary.iot.cmd.entity.e40;
+package com.shmedo.configlibrary.iot.cmd.entity.e40
 
-import com.shmedo.configlibrary.ble.interfaces.Validater;
-
-import java.lang.reflect.Field;
+import com.shmedo.configlibrary.ble.interfaces.Validater
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/7/2 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/7/2 <br></br>
  * 描述：      生成 E40基站位置参数拼接指令
  */
-public class E40BasePositionEntity implements Validater {
-    private String mode;//1表示自动模式，2表示第一次自动获取以后采用第一次值，3表示手动模式，当为自动模式时，可不设置其他参数。
-    private String lon;//经度
-    private String lat;//纬度
-    private String alt;//高程
+class E40BasePositionEntity : Validater {
+    var mode //1表示自动模式，2表示第一次自动获取以后采用第一次值，3表示手动模式，当为自动模式时，可不设置其他参数。
+            : String? = null
+    var lon //经度
+            : String? = null
+    var lat //纬度
+            : String? = null
+    var alt //高程
+            : String? = null
 
-    public void setMode(String mode) {
-        this.mode = mode;
-    }
-
-    public void setLon(String lon) {
-        this.lon = lon;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
-
-    public void setAlt(String alt) {
-        this.alt = alt;
-    }
-
-    @Override
-    public void validate() {
-
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
+    override fun validate() {}
+    override fun toString(): String {
+        val stringBuilder = StringBuilder()
         try {
-            for (Field f : getClass().getDeclaredFields()) {
-                Object value = f.get(this);
-                if (value != null && !value.equals("NullKey")) {
-                    stringBuilder.append(f.getName());
-                    stringBuilder.append("=");
-                    stringBuilder.append(value);
-                    stringBuilder.append("&");
+            for (f in javaClass.declaredFields) {
+                val value = f[this]
+                if (value != null && value != "NullKey") {
+                    stringBuilder.append(f.name)
+                    stringBuilder.append("=")
+                    stringBuilder.append(value)
+                    stringBuilder.append("&")
                 }
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (e: IllegalAccessException) {
+            e.printStackTrace()
         }
         if (stringBuilder.toString().endsWith("&")) {
-            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+            stringBuilder.delete(stringBuilder.length - 1, stringBuilder.length)
         }
-
-        return stringBuilder.toString();
+        return stringBuilder.toString()
     }
 }

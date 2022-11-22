@@ -1,75 +1,32 @@
-package com.shmedo.configlibrary.iot.model.das;
+package com.shmedo.configlibrary.iot.model.das
 
-import android.text.TextUtils;
+import android.text.TextUtils
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  4/12/21 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  4/12/21 <br></br>
  * 描述：     DAS 采集器参数
  */
-public class DasCollectorInfo {
-    private String type;//采集器型号
-    private String addr;//采集器地址
-    private String collgap;//采集间隔
-    private String calcgap;//解算间隔
-    private String standbygap;//待机时长
-    private String sensornum;//接入传感器个数
-    private String sensitivity;//灵敏度
-
-
-    public String getType() {
-        return TextUtils.isEmpty(type) ? "" : type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getAddr() {
-        return TextUtils.isEmpty(addr) ? "" : addr;
-    }
-
-    public void setAddr(String addr) {
-        this.addr = addr;
-    }
-
-    public String getCollgap() {
-        return TextUtils.isEmpty(collgap) ? "" : collgap;
-    }
-
-    public void setCollgap(String collgap) {
-        this.collgap = collgap;
-    }
-
-    public String getCalcgap() {
-        return TextUtils.isEmpty(calcgap) ? "" : calcgap;
-    }
-
-    public void setCalcgap(String calcgap) {
-        this.calcgap = calcgap;
-    }
-
-    public String getStandbygap() {
-        return TextUtils.isEmpty(standbygap) ? "" : standbygap;
-    }
-
-    public void setStandbygap(String standbygap) {
-        this.standbygap = standbygap;
-    }
-
-    public String getSensornum() {
-        return TextUtils.isEmpty(sensornum) ? "0" : sensornum;
-    }
-
-    public void setSensornum(String sensornum) {
-        this.sensornum = sensornum;
-    }
-
-    public String getSensitivity() {
-        return TextUtils.isEmpty(sensitivity) ? "" : sensitivity;
-    }
-
-    public void setSensitivity(String sensitivity) {
-        this.sensitivity = sensitivity;
-    }
+class DasCollectorInfo {
+    var type //采集器型号
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var addr //采集器地址
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var collgap //采集间隔
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var calcgap //解算间隔
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var standbygap //待机时长
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var sensornum //接入传感器个数
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "0" else field
+    var sensitivity //灵敏度
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
 }

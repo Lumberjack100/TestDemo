@@ -1,46 +1,37 @@
-package com.shmedo.configlibrary.iot.cmd.parser.das;
+package com.shmedo.configlibrary.iot.cmd.parser.das
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/4/16 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/4/16 <br></br>
  * 描述：      解析DAS状态页面数据中心状态参数
  */
-public class DasNetStatusInfoParser implements IOTResultParser<String> {
-    @Override
-    public String parse(String result) {
-        String info;
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class DasNetStatusInfoParser : IOTResultParser<String?> {
+    override fun parse(result: String): String? {
+        val info: String
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info = keyValueMap.get("status");
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info = keyValueMap["status"]!!
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.DAS_MD_GET_NET_STATUS;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.DAS_MD_GET_NET_STATUS
     }
 }

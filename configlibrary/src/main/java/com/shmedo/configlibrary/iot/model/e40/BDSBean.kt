@@ -1,71 +1,28 @@
-package com.shmedo.configlibrary.iot.model.e40;
+package com.shmedo.configlibrary.iot.model.e40
 
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2021/5/24 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2021/5/24 <br></br>
  * 描述：     TODO
  */
-public class BDSBean {
+class BDSBean {
     @SerializedName("SAT")
-    private String sAT;
+    var sAT: String? = null
+
     @SerializedName("AZ")
-    private double aZ;
+    var aZ = 0.0
+
     @SerializedName("EL")
-    private double eL;
+    var eL = 0.0
+
     @SerializedName("L1")
-    private int l1;
+    var l1 = 0
+
     @SerializedName("L2")
-    private int l2;
+    var l2 = 0
+
     @SerializedName("L3")
-    private int l3;
-
-    public String getSAT() {
-        return sAT;
-    }
-
-    public void setSAT(String sAT) {
-        this.sAT = sAT;
-    }
-
-    public double getAZ() {
-        return aZ;
-    }
-
-    public void setAZ(double aZ) {
-        this.aZ = aZ;
-    }
-
-    public double getEL() {
-        return eL;
-    }
-
-    public void setEL(double eL) {
-        this.eL = eL;
-    }
-
-    public int getL1() {
-        return l1;
-    }
-
-    public void setL1(int l1) {
-        this.l1 = l1;
-    }
-
-    public int getL2() {
-        return l2;
-    }
-
-    public void setL2(int l2) {
-        this.l2 = l2;
-    }
-
-    public int getL3() {
-        return l3;
-    }
-
-    public void setL3(int l3) {
-        this.l3 = l3;
-    }
+    var l3 = 0
 }

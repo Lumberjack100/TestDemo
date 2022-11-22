@@ -1,53 +1,43 @@
-package com.shmedo.configlibrary.iot.cmd.parser.e40;
+package com.shmedo.configlibrary.iot.cmd.parser.e40
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.e40.E40CORSInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.e40.E40CORSInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2/26/21 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2/26/21 <br></br>
  * 描述：     解析 CORS 服务参数
  */
-public class E40CORSInfoParser implements IOTResultParser<E40CORSInfo> {
-    @Override
-    public E40CORSInfo parse(String result) {
-        E40CORSInfo info = new E40CORSInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class E40CORSInfoParser : IOTResultParser<E40CORSInfo?> {
+    override fun parse(result: String): E40CORSInfo? {
+        val info = E40CORSInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setSw(keyValueMap.getOrDefault("sw", "NullKey"));
-            info.setAddr(keyValueMap.getOrDefault("addr", "NullKey"));
-            info.setPort(keyValueMap.getOrDefault("port", "NullKey"));
-            info.setUser(keyValueMap.getOrDefault("user", "NullKey"));
-            info.setPswd(keyValueMap.getOrDefault("pswd", "NullKey"));
-            info.setSta(keyValueMap.getOrDefault("sta", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.sw = keyValueMap.getOrDefault("sw", "NullKey")
+            info.addr = keyValueMap.getOrDefault("addr", "NullKey")
+            info.port = keyValueMap.getOrDefault("port", "NullKey")
+            info.user = keyValueMap.getOrDefault("user", "NullKey")
+            info.pswd = keyValueMap.getOrDefault("pswd", "NullKey")
+            info.sta = keyValueMap.getOrDefault("sta", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.E40_MD_GET_CORS;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.E40_MD_GET_CORS
     }
 }

@@ -1,51 +1,41 @@
-package com.shmedo.configlibrary.iot.cmd.parser.vms;
+package com.shmedo.configlibrary.iot.cmd.parser.vms
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.vms.VmsBasicInfo
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2020/11/12 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/11/12 <br></br>
  * 描述：   解析Vms网关基础信息
  */
-public class VmsBasicInfoParser implements IOTResultParser<VmsBasicInfo> {
-    @Override
-    public VmsBasicInfo parse(String result) {
-        VmsBasicInfo info = new VmsBasicInfo();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class VmsBasicInfoParser : IOTResultParser<VmsBasicInfo?> {
+    override fun parse(result: String): VmsBasicInfo? {
+        val info = VmsBasicInfo()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setSn(keyValueMap.getOrDefault("sn", "NullKey"));
-            info.setOnline(keyValueMap.getOrDefault("online", "NullKey"));
-            info.setSwVersion(keyValueMap.getOrDefault("sw", "NullKey"));
-            info.setVolt(keyValueMap.getOrDefault("volt", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.sn = keyValueMap.getOrDefault("sn", "NullKey")
+            info.online = keyValueMap.getOrDefault("online", "NullKey")
+            info.swVersion = keyValueMap.getOrDefault("sw", "NullKey")
+            info.volt = keyValueMap.getOrDefault("volt", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.VMS_MD_GET_GATEWAY_BASE;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.VMS_MD_GET_GATEWAY_BASE
     }
 }

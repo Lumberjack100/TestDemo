@@ -1,59 +1,49 @@
-package com.shmedo.configlibrary.iot.cmd.parser.hac;
+package com.shmedo.configlibrary.iot.cmd.parser.hac
 
-import com.shmedo.configlibrary.iot.enums.IOTCommandType;
-import com.shmedo.configlibrary.iot.interfaces.IOTResultParser;
-import com.shmedo.configlibrary.iot.model.hac.HacWarningValue;
-
-import java.util.HashMap;
+import com.shmedo.configlibrary.iot.enums.IOTCommandType
+import com.shmedo.configlibrary.iot.interfaces.IOTResultParser
+import com.shmedo.configlibrary.iot.model.hac.HacWarningValue
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2022/7/20 <br/>
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2022/7/20 <br></br>
  * 描述：      解析 HAC 预警值参数
  */
-public class HacWarningValueParser implements IOTResultParser<HacWarningValue> {
-    @Override
-    public HacWarningValue parse(String result) {
-        HacWarningValue info = new HacWarningValue();
-        try {
-            String[] keyValues = result.split("&");
-            HashMap<String, String> keyValueMap = new HashMap<>();
-
-            for (String keyValue : keyValues) {
-                String[] strs = keyValue.split("=");
-                if (strs.length < 2) {
-                    keyValueMap.put(strs[0], "");
+class HacWarningValueParser : IOTResultParser<HacWarningValue?> {
+    override fun parse(result: String): HacWarningValue? {
+        val info = HacWarningValue()
+        return try {
+            val keyValues = result.split("&").toTypedArray()
+            val keyValueMap = HashMap<String, String>()
+            for (keyValue in keyValues) {
+                val strs = keyValue.split("=").toTypedArray()
+                if (strs.size < 2) {
+                    keyValueMap[strs[0]] = ""
                 } else {
-                    keyValueMap.put(strs[0], strs[1]);
+                    keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.setX1min(keyValueMap.getOrDefault("x1min", "NullKey"));
-            info.setX1max(keyValueMap.getOrDefault("x1max", "NullKey"));
-            info.setX1min(keyValueMap.getOrDefault("y1min", "NullKey"));
-            info.setY1max(keyValueMap.getOrDefault("y1max", "NullKey"));
-            info.setX2min(keyValueMap.getOrDefault("x2min", "NullKey"));
-            info.setX2max(keyValueMap.getOrDefault("x2max", "NullKey"));
-            info.setY3min(keyValueMap.getOrDefault("y2min", "NullKey"));
-            info.setY2max(keyValueMap.getOrDefault("y2max", "NullKey"));
-            info.setX3min(keyValueMap.getOrDefault("x3min", "NullKey"));
-            info.setX3max(keyValueMap.getOrDefault("x3max", "NullKey"));
-            info.setY3min(keyValueMap.getOrDefault("y3min", "NullKey"));
-            info.setY3max(keyValueMap.getOrDefault("y3max", "NullKey"));
-
-            return info;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            info.x1min = keyValueMap.getOrDefault("x1min", "NullKey")
+            info.x1max = keyValueMap.getOrDefault("x1max", "NullKey")
+            info.x1min = keyValueMap.getOrDefault("y1min", "NullKey")
+            info.y1max = keyValueMap.getOrDefault("y1max", "NullKey")
+            info.x2min = keyValueMap.getOrDefault("x2min", "NullKey")
+            info.x2max = keyValueMap.getOrDefault("x2max", "NullKey")
+            info.y3min = keyValueMap.getOrDefault("y2min", "NullKey")
+            info.y2max = keyValueMap.getOrDefault("y2max", "NullKey")
+            info.x3min = keyValueMap.getOrDefault("x3min", "NullKey")
+            info.x3max = keyValueMap.getOrDefault("x3max", "NullKey")
+            info.y3min = keyValueMap.getOrDefault("y3min", "NullKey")
+            info.y3max = keyValueMap.getOrDefault("y3max", "NullKey")
+            info
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
     }
 
-    @Override
-    public void validate(String result) {
-
-    }
-
-    @Override
-    public IOTCommandType commandType() {
-        return IOTCommandType.ADME_HAC_MD_GET_WARN;
+    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType {
+        return IOTCommandType.ADME_HAC_MD_GET_WARN
     }
 }
