@@ -57,7 +57,7 @@
             <TextView
                 android:id="@+id/tv_triggerThreshold"
                 style="@style/Common_ClickableItem_TitleStyle"
-                tools:text="触发值(mm)" />
+                android:text="触发值" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_trigger_threshold"
@@ -74,7 +74,7 @@
             <TextView
                 android:id="@+id/tv_correctionValue"
                 style="@style/Common_ClickableItem_TitleStyle"
-                tools:text="修正值" />
+                android:text="修正值" />
 
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_revised"

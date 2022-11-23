@@ -390,7 +390,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         }
 
         if (TextUtils.isEmpty(triggerThreshold)) {
-            ToastUtils.show("报警值不能为空!");
+            ToastUtils.show("触发值不能为空!");
             mEtAlarmValue.requestFocus();
             return false;
         }
@@ -398,7 +398,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             double value = Double.parseDouble(triggerThreshold);
 
         } catch (Exception ex) {
-            ToastUtils.show("请输入正确的报警值!");
+            ToastUtils.show("请输入正确的触发值!");
             mEtAlarmValue.requestFocus();
             return false;
         }

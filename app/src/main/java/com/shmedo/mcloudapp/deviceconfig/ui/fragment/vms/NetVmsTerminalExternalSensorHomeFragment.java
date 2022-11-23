@@ -125,7 +125,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
                 holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
-                holder.setText(R.id.tv_address, TextUtils.isEmpty(sensorItem.getChannel()) ? "" : sensorItem.getChannel());
+                holder.setText(R.id.tv_address, TextUtils.isEmpty(sensorItem.getNum()) ? "" : sensorItem.getNum());
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -268,6 +268,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
 
             VmsTerminalSensorItem sensorItem = new VmsTerminalSensorItem();
             sensorItem.setChannel(sensorInfo.getChannel());
+            sensorItem.setNum(strs[1]);
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
             sensorItemList.add(sensorItem);
             sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
@@ -277,6 +278,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
 
             VmsTerminalSensorItem sensorItem = sensorItemList.get(curSensorIndex);
             sensorItem.setChannel(sensorInfo.getChannel());
+            sensorItem.setNum(strs[1]);
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
             sensorAdapter.notifyItemChanged(curSensorIndex);
         }
