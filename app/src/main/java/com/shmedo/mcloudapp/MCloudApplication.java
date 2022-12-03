@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp;
 import static com.xuexiang.xupdate.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION;
 
 import android.app.Application;
-import android.content.Context;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -14,12 +13,10 @@ import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.MetaDataUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.Utils;
 import com.hjq.toast.ToastUtils;
-import com.hjq.toast.config.IToastInterceptor;
-import com.iflytek.cloud.SpeechUtility;
 import com.kongzue.dialogx.DialogX;
 import com.kongzue.dialogx.style.MaterialStyle;
-
 import com.shmedo.core.AppContants;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
@@ -57,9 +54,6 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
     public void onCreate() {
         super.onCreate();
         mAppViewModelStore = new ViewModelStore();
-
-        //管理Activity
-        new ActivityPool().init(this);
         MCloudApp.initialize(this);
 
         //友盟预初始化
