@@ -45,19 +45,28 @@ class DasExternalSensorEntity : Validater {
     var elastic_mod //膨胀系数(应力计)
             : String? = null
 
-    //量水堰计
+    //量水堰计特有
     var lsycsds //初始读数
             : String? = null
     var lsyysst //堰上水头
             : String? = null
 
-    //倾角仪
+    //倾角仪特有
     var initvalx //X轴初始值
             : String? = null
     var initvaly //Y轴初始值
             : String? = null
     var child_type //子传感器类型
             : String? = null
+
+    //阵列测斜仪特有
+    var datatype // 解算方式 0:顶部  1: 底部
+            : String? = null
+    var measinval // 测量间隔
+            : String? = null
+    var model_type // 模型切换 0:坐标模型  1: ADME 模型
+            : String? = null
+
 
     override fun validate() {}
     override fun toString(): String {

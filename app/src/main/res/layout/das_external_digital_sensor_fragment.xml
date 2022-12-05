@@ -15,6 +15,25 @@
             android:layout_height="10dp" />
 
         <LinearLayout
+            android:id="@+id/modelSwitchLayout"
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_model_switch_title"
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="模型切换" />
+
+            <TextView
+                android:id="@+id/tv_model_switch"
+                style="@style/Common_ClickableItem_ValueStyle"
+                tools:text="坐标模型" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/childSensorTypeLayout"
             style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider"

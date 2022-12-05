@@ -364,7 +364,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
 
             case INCLINOMETER://固定测斜仪
                 entity.setSpacing(externalSensorInfo.getSpacing());
-//                entity.setHolenum(externalSensorInfo.getHolenum());
+                entity.setModel_type(externalSensorInfo.getModel_type());
                 break;
 
             case LUYAN_INCLINOMETER://倾角仪

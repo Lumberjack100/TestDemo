@@ -39,6 +39,14 @@ import timber.log.Timber;
  */
 public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     /**
+     * 阵列测斜仪模型切换
+     */
+    @BindView(R.id.tv_model_switch)
+    TextView mTvModelSwitch;
+
+    @BindView(R.id.modelSwitchLayout)
+    ViewGroup modelSwitchLayout;
+    /**
      * 传感器子类型
      */
     @BindView(R.id.tv_child_sensor_title)
@@ -118,13 +126,15 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     private IOTSensorType iotSensorType;//传感器类型
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
-    private String childRadarType;
+    private String modelType;//阵列测斜仪物模型类型
+    private String childRadarType;//子雷达类型
     private String sensorAddress, triggerThreshold, correctValue;
     private String exValue1, exValue2, exValue3;
 
+    //阵列测斜仪物模型
+    private List<String> modelTypeList = Arrays.asList("坐标模型", "ADME 模型");
     //子雷达类型
     private List<String> childRadarTypeList = Arrays.asList("雷达物位计", "精波雷达");
-
 
     public static NetDasExternalDigitalSensorFragment newInstance(ArrayList<String> addressList, IOTSensorType sensorType, DasExternalSensorInfo externalSensorInfo) {
         NetDasExternalDigitalSensorFragment fragment = new NetDasExternalDigitalSensorFragment();
@@ -199,6 +209,23 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     if (!TextUtils.isEmpty(exValue1)) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
+                    }
+                    modelType = externalSensorInfo.getModel_type();
+                    if (!modelType.equals("NullKey")) {
+                        modelSwitchLayout.setVisibility(View.VISIBLE);
+                        mTvModelSwitch.setText(modelType.equals("0") ? modelTypeList.get(0) : modelTypeList.get(1));
+
+                        extensionLayout2.setVisibility(View.VISIBLE);
+                        mEtExtension2.setEnabled(false);
+                        mEtExtension2.setHint("");
+                        mTvExtension2.setText("解算方式");
+                        mEtExtension2.setText(externalSensorInfo.getDatatype().equals("0") ? "顶部" : "底部");
+
+                        extensionLayout3.setVisibility(View.VISIBLE);
+                        mEtExtension3.setEnabled(false);
+                        mEtExtension3.setHint("");
+                        mTvExtension3.setText("测量间隔(ms)");
+                        mEtExtension3.setText(externalSensorInfo.getMeasinval());
                     }
                     break;
 
@@ -316,13 +343,16 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.childSensorTypeLayout, R.id.btn_confirm})
+    @OnClick({R.id.modelSwitchLayout, R.id.childSensorTypeLayout, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
         }
         int id = view.getId();
-        if (id == R.id.childSensorTypeLayout) {
+        if (id == R.id.modelSwitchLayout) {
+            showModelSwitchDialog();
+
+        } else if (id == R.id.childSensorTypeLayout) {
             showChildRadarTypeListDialog();
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
@@ -332,6 +362,31 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             }
             processSave();
         }
+    }
+
+    /**
+     * 阵列测斜仪选择物模型
+     */
+    private void showModelSwitchDialog() {
+        int pos = modelTypeList.indexOf(String.valueOf(mTvModelSwitch.getText()));
+        pos = pos == -1 ? 0 : pos;
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", (String[]) modelTypeList.toArray(),
+                        null, pos,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvModelSwitch.setText(text);
+                                if (text.equals(modelTypeList.get(0))) {
+                                    modelType = "0";
+                                } else if (text.equals(modelTypeList.get(1))) {
+                                    modelType = "1";
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
     }
 
     /**
@@ -555,6 +610,8 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         switch (iotSensorType) {
             case INCLINOMETER:
                 externalSensorInfo.setSpacing(exValue1);//测斜仪
+                if (!modelType.equals("NullKey"))
+                    externalSensorInfo.setModel_type(modelType);
                 break;
 
             case LUYAN_INCLINOMETER://倾角仪

@@ -22,7 +22,6 @@ import com.shmedo.core.MCloudApp;
 import com.shmedo.core.log.AppCrashHandler;
 import com.shmedo.core.log.CrashReportingTree;
 import com.shmedo.core.log.log4a.LogInit;
-import com.shmedo.core.util.ActivityPool;
 import com.shmedo.mcloudapp.network.OKHttpUpdateHttpService;
 import com.shmedo.mcloudapp.util.MyToastBlackStyle;
 import com.tencent.bugly.crashreport.CrashReport;

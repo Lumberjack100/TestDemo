@@ -64,7 +64,7 @@ class DasExternalSensorInfo : Serializable {
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
 
-    //量水堰计
+    //量水堰计特有
     var lsycsds //初始读数
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
@@ -72,7 +72,7 @@ class DasExternalSensorInfo : Serializable {
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
 
-    //倾角仪
+    //倾角仪特有
     var initvalx //X轴初始值
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
@@ -80,6 +80,17 @@ class DasExternalSensorInfo : Serializable {
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
     var child_type //子传感器类型
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+
+    //阵列测斜仪特有
+    var datatype // 解算方式 0:顶部  1: 底部
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var measinval // 测量间隔
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var model_type // 模型切换 0:坐标模型  1: ADME 模型
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
 }
