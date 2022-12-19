@@ -4,7 +4,7 @@ ext {
             compileSdkVersion: 31,
             minSdkVersion    : 24,
             targetSdkVersion : 31,
-            appVersionName   : '3.1.11'
+            appVersionName   : '3.1.12'
     ]
     thirdLib = [
             appcompat                    : '1.4.1',

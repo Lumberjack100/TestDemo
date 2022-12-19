@@ -81,6 +81,31 @@
                 app:kswThumbWidth="28dp" />
 
         </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_stepper_motor_relay"
+            style="@style/SwitchButton_LayoutStyle"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/rl_low_power"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                style="@style/SwitchButton_TitleStyle"
+                android:text="步进电机使能" />
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/stepperMotorRelayEnableSBtn"
+                style="@style/SwitchButton_ButtonStyle"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
+
+        </RelativeLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout

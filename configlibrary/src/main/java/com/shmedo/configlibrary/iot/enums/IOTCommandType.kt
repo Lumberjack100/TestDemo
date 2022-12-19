@@ -468,7 +468,7 @@ enum class IOTCommandType(private val value: String) {
     ADME_MD_SET_WORK_MODE("md_setworkmode"),
 
     /**
-     * 获取ADME的低功耗状态
+     * 获取ADME的力矩电机继电器低功耗使能
      */
     ADME_MD_GET_LOW_ENERGY_MODE("md_getlowenergy"),
 
@@ -496,6 +496,16 @@ enum class IOTCommandType(private val value: String) {
      * 设置ADME的拟人运动使能参数
      */
     ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE("md_setanthrmove"),  /*　 ADME HAC 型号指令  */
+
+    /**
+     * 获取ADME的步进电机继电器使能状态
+     */
+    ADME_MD_GET_STEPPER_MOTOR_RELAY_MODE("md_getsteppermotorrelay"),
+
+    /**
+     * 设置ADME的步进电机继电器使能状态
+     */
+    ADME_MD_SET_STEPPER_MOTOR_RELAY_MODE("md_setsteppermotorrelay"),
 
     /**
      * 获取HAC的预警配置参数
