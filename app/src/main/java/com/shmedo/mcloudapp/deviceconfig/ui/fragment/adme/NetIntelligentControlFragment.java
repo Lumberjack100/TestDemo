@@ -8,6 +8,9 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -15,14 +18,12 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeAnthropomorphicMovementEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeLowEnergyModelEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeStepperMotorEntity;
-import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeStepperMotorRelayModeEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeAnthropomorphicMovementInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeLowEnergyModeInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorInfo;
-import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorRelayModeInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -35,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment {
@@ -47,9 +49,6 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     @BindView(R.id.anthropomorphicEnableSBtn)
     SwitchButton anthropomorphicEnableSBtn;//拟人运动使能
 
-    @BindView(R.id.stepperMotorRelayEnableSBtn)
-    SwitchButton stepperMotorRelayEnableSBtn;//步进电机继电器使能
-
     @BindView(R.id.rl_positive_and_negative_test)
     ViewGroup positiveAndNegativeTestLayout;
 
@@ -58,9 +57,6 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
 
     @BindView(R.id.rl_anthropomorphic_movement)
     ViewGroup anthropomorphicMovementLayout;
-
-    @BindView(R.id.rl_stepper_motor_relay)
-    ViewGroup stepperMotorRelayLayout;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
@@ -111,12 +107,6 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
                 enableOrDisableAnthropomorphicMovement(isChecked);
             }
         });
-        stepperMotorRelayEnableSBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                enableOrDisableStepperMotorRelay(isChecked);
-            }
-        });
     }
 
     private void intQueryCommands() {
@@ -132,10 +122,6 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
 
         //获取拟人运动使能信息
         command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE);
-        commandItems.add(command);
-
-        //获取步进电机继电器使能信息
-        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR_RELAY_MODE);
         commandItems.add(command);
 
         showWaitDialog("加载中...");
@@ -179,15 +165,44 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     }
 
     /**
-     * 步进电机继电器使能</br>
+     * 力矩电机断电重启指令
      */
-    private void enableOrDisableStepperMotorRelay(boolean isOpen) {
-        AdmeStepperMotorRelayModeEntity entity = new AdmeStepperMotorRelayModeEntity();
-        entity.setMode(isOpen ? "1" : "0");
-
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR_RELAY_MODE, entity);
+    private void torqueMotorReboot() {
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.TORQUE_MOTOR_REBOOT);
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
         showWaitDialog("处理中...");
+    }
+
+    private void showWarnDialog() {
+        MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
+                .title("温馨提示")
+                .content("确定重启力矩电机吗?")
+                .contentColorRes(R.color.title_text_color)
+                .canceledOnTouchOutside(false)
+                .positiveText("确定")
+                .negativeText("取消")
+                .positiveColorRes(R.color.blue_52B4F8)
+                .negativeColorRes(R.color.sub_title_text_color)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        torqueMotorReboot();
+                    }
+                });
+        MaterialDialog mMaterialDialog = mBuilder.build();
+        mMaterialDialog.show();
+    }
+
+    @OnClick({R.id.iv_reboot})
+    public void onClick(View v) {
+        if (isDoubleClick(v)) {
+            return;
+        }
+        int id = v.getId();
+        if (id == R.id.iv_reboot) {
+            showWarnDialog();
+        }
     }
 
     /**
@@ -328,29 +343,6 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
             }
             break;
 
-            case ADME_MD_GET_STEPPER_MOTOR_RELAY_MODE: {
-                sendCommandFromCmdList();
-                IOTCommandResult<AdmeStepperMotorRelayModeInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
-                if (!commandResult.isSuccess()) {
-                    dismissWaitDialog();
-                    String errMsg = String.format("%s %s", "查询步进电机使能状态出错!", commandResult.getMessage());
-                    Timber.e(errMsg);
-                    if (!commandResult.getMessage().contains("unsupported"))
-                        ToastUtils.show(errMsg);
-                    stepperMotorRelayLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
-                    return;
-                }
-                AdmeStepperMotorRelayModeInfo admeStepperMotorRelayModeInfo = commandResult.getResult();
-                if (admeStepperMotorRelayModeInfo != null) {
-                    if (admeStepperMotorRelayModeInfo.getMode().trim().equals("0")) {
-                        stepperMotorRelayEnableSBtn.setCheckedImmediatelyNoEvent(false);
-                    } else {
-                        stepperMotorRelayEnableSBtn.setCheckedImmediatelyNoEvent(true);
-                    }
-                }
-            }
-            break;
-
             case ADME_MD_SET_STEPPER_MOTOR: {//设置ADME的步进电机配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -390,16 +382,16 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
             }
             break;
 
-            case ADME_MD_SET_STEPPER_MOTOR_RELAY_MODE: {
+            case TORQUE_MOTOR_REBOOT: {//力矩电机断电重启
+                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
-                    dismissWaitDialog();
-                    String errMsg = String.format("%s %s", "设置步进电机使能出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", StringUtils.getString(R.string.reboot_failed), cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                saveConfigInfo();
+                ToastUtils.show("力矩电机即将重启");
             }
             break;
 

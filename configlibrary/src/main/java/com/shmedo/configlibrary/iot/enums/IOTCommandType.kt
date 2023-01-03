@@ -498,14 +498,9 @@ enum class IOTCommandType(private val value: String) {
     ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE("md_setanthrmove"),  /*　 ADME HAC 型号指令  */
 
     /**
-     * 获取ADME的步进电机继电器使能状态
+     * 力矩电机断电重启
      */
-    ADME_MD_GET_STEPPER_MOTOR_RELAY_MODE("md_getsteppermotorrelay"),
-
-    /**
-     * 设置ADME的步进电机继电器使能状态
-     */
-    ADME_MD_SET_STEPPER_MOTOR_RELAY_MODE("md_setsteppermotorrelay"),
+    TORQUE_MOTOR_REBOOT("md_torquemotorreboot"),
 
     /**
      * 获取HAC的预警配置参数

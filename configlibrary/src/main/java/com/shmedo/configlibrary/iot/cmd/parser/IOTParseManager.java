@@ -18,7 +18,6 @@ import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotionStateParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionAngleInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionDistanceInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorInfoParser;
-import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorRelayModeInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeVoltageConfigParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeWorkModeParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.AlarmLevelParser;
@@ -196,7 +195,6 @@ public class IOTParseManager {
                 AdmeLockedRotorDetectionInfoParser.class,
                 AdmeVoltageConfigParser.class,
                 AdmeAnthropomorphicMovementInfoParser.class,
-                AdmeStepperMotorRelayModeInfoParser.class,
                 M20BaseInfoParser.class,
                 E40SatelitteInfoParser.class,
                 E40RTKModeInfoParser.class,
