@@ -178,7 +178,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
     private void torqueMotorReboot() {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.TORQUE_MOTOR_REBOOT);
         sendCommand(command);
-        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_5000_MILLIS);
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
     }
 
     private void showWarnDialog() {
