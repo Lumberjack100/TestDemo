@@ -434,6 +434,26 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             }
         }
 
+        if (!waitingIntervalPerRound.equals("NullKey")) {
+            waitingIntervalPerRound = mEtWaitingIntervalPerRound.getText().toString().trim();
+            if (TextUtils.isEmpty(waitingIntervalPerRound)) {
+                ToastUtils.show("请输入每轮等待时间!");
+                mEtWaitingIntervalPerRound.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(waitingIntervalPerRound);
+                if (value < 1) {
+                    ToastUtils.show("请输入正确的每轮等待时间!");
+                    mEtWaitingIntervalPerRound.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的每轮等待时间!");
+                mEtWaitingIntervalPerRound.requestFocus();
+                return false;
+            }
+        }
         if (!inclinometerTubeHoleDepth.equals("NullKey")) {
             inclinometerTubeHoleDepth = mEtInclinometerTubeHoleDepth.getText().toString().trim();
             if (TextUtils.isEmpty(inclinometerTubeHoleDepth)) {

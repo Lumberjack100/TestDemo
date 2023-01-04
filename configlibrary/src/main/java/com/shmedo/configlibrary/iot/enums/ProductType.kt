@@ -22,6 +22,7 @@ enum class ProductType(// 产品类型前缀
     RN20("RN20", "Y", "轴力计"),
     BHY("BHY", "H", "崩滑仪"),
     LR200("LR200", "Z", "一体式裂缝计"),
+    DMS("DMS", "F", "数字式采集仪"),
     INCLINOMETER_DEBUG_BOX("INCLINOMETER", "#", "蓝牙测斜仪调试盒子"),
 
     UnKnown("UnKnown", "#", "未知类型");

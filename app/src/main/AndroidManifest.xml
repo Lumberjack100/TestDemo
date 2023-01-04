@@ -56,7 +56,13 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
-
+        <activity
+            android:name=".CommonSensorDetailActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -222,14 +228,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.das.FixedPointReportingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
-
         <activity
             android:name=".deviceconfig.ui.activity.vms.VmsTerminalSearchActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -435,6 +439,20 @@
             android:theme="@style/LightStatusBarActivity" />
         <activity
             android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataResultsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.CommonSensorListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name=".deviceconfig.ui.activity.CommonSensorHomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"

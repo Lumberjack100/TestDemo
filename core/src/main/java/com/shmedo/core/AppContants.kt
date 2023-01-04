@@ -66,6 +66,9 @@ interface AppContants {
             //数据中心状态
             const val DATA_CENTER_STATUS = "data_center_status"
 
+            // 传感器通道编号
+            const val SENSOR_CHANNEL_NUMBER = "sensor_channel_number"
+
             const val USB_PORT_NUM = "usb_port_num"
             const val USB_BAUD_RATE = "usb_baud_rate"
             const val USB_DEVICE_ID = "usb_device_id"

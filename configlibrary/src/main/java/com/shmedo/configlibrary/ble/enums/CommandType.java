@@ -286,6 +286,11 @@ public enum CommandType {
     SET_COLLECTOR_SENSITIVITY("923"),
 
     /**
+     * 设置最长工作时间，超过时间进入低功耗
+     */
+    SET_MAXIMUM_WORKING_PERIOD("916x"),
+
+    /**
      * 自定义心跳包指令
      */
     HEARTBEAT("888"),

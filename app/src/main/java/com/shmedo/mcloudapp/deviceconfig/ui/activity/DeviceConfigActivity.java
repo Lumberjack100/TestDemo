@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.bhy.NetBhyHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dms.BleDmsHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.NetE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.e40.TcpE40HomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacHomeFragment;
@@ -181,6 +182,7 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                     break;
 
                 case ADME:
+//                    fragment = BleDmsHomeFragment.newInstance(device);
                     fragment = BleAdmeHomeFragment.newInstance(device);
                     break;
 
@@ -198,6 +200,10 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
 
                 case LR200:
                     fragment = BleLR200HomeFragment.newInstance(device);
+                    break;
+
+                case DMS:
+                    fragment = BleDmsHomeFragment.newInstance(device);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {

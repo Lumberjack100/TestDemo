@@ -88,6 +88,8 @@ import timber.log.Timber;
 public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     private static final int LOW_ENERGY_MODEL = 0x0001;
     private static final int REBOOT = 0x0002;
+    private static final int REPAIR = 0x0003;
+
 
     @BindView(R.id.tv_device_name)
     TextView mTvDeviceName;//设备名称
@@ -208,6 +210,11 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         } else {
             mTvPlatformCommunicationState.setText(getPlatformStateMessage("离线"));
         }
+        if (!TextUtils.isEmpty(deviceInfo.getFirmwareVersion()) && deviceInfo.getFirmwareVersion().contains("5.1.5")) {
+            ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, "一键修复", "设备自动修复");
+            configModuleList.add(configModule);
+            moduleAdapter.notifyItemInserted(configModuleList.size() - 1);
+        }
     }
 
     /**
@@ -242,8 +249,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         //设置每个item间距
         mRecyclerView.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, true));
         moduleAdapter = new ConfigModuleAdapter(configModuleList);
-//        moduleAdapter.setAnimationEnable(true);
-//        moduleAdapter.setAnimationFirstOnly(false);
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -301,6 +306,10 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             case "设置":
                 AdvancedSettingActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.DAS);
                 break;
+
+            case "一键修复":
+                showWarnDialog("温馨提示", "确定一键修复设备吗？", REPAIR);
+                break;
         }
     }
 
@@ -318,6 +327,18 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         String command = CommandManager.getInstance().getCommand(CommandType.INSTANT_COLLEACTOR, null);
         sendCommand(command);
         Timber.d("遥测设备指令===%s", command);
+    }
+
+    /**
+     * 一键修复
+     */
+    private void oneClickRepair() {
+        commandItems.clear();
+        commandItems.add("##916x11800\r\n");
+        commandItems.add("##916x2300\r\n");
+
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
+        sendCommand(commandItems.getFirst());
     }
 
     /**
@@ -481,6 +502,22 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
     private void setResultData(final String cmdStr) {
         String tempStr = cmdStr.replace("$$", "").replace("\r\n", "");
+        // TODO 一键修复指令特殊处理 916x(与 INSTALL_LOCATION 指令前缀冲突)
+        if (cmdStr.startsWith("$$916x")) {
+            if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                ToastUtils.show("设置出错!");
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                return;
+            }
+            commandItems.removeFirst();
+            if (commandItems.size() > 0) {
+                sendCommand(commandItems.getFirst());
+            } else {
+                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                saveConfigInfo();
+            }
+            return;
+        }
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case BASE_CONFIG://基础配置信息 000
@@ -489,7 +526,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 initBaseConfigInfo(ResultParserUtil.getEntityObject(cmdStr));
-//                locationViewModel.locationUtils.getPositionPermission(mActivity);
                 getPosition();
                 startHeart();
                 break;
@@ -728,6 +764,10 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                             case REBOOT:
                                 saveConfigInfo();
                                 break;
+
+                            case REPAIR:
+                                oneClickRepair();
+                                break;
                         }
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -737,9 +777,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                         switch (operateType) {
                             case LOW_ENERGY_MODEL:
                                 mSbActiveState.setCheckedImmediatelyNoEvent(true);
-                                break;
-
-                            case REBOOT:
                                 break;
                         }
                     }
