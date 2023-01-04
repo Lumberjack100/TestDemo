@@ -3,15 +3,12 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.dms;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -144,7 +141,7 @@ public class BleCommonSensorListFragment extends BaseUSRBleIotCommunicateFragmen
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        removeSensor();
+//                        removeSensor();
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -162,8 +159,8 @@ public class BleCommonSensorListFragment extends BaseUSRBleIotCommunicateFragmen
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
                 clear();
-                initDefaultSensorItem();
-                queryCollectorInfo();
+//                initDefaultSensorItem();
+//                queryCollectorInfo();
             }
         });
     }

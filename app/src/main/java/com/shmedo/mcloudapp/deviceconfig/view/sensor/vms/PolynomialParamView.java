@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,15 @@ import butterknife.ButterKnife;
  * 描述：     Vms 终端接入的多项式传感器参数
  */
 public class PolynomialParamView extends FrameLayout {
+    /**
+     * 触发值
+     */
+    @BindView(R.id.tv_trigger_threshold)
+    TextView mTvThreshold;
+
+    @BindView(R.id.et_trigger_threshold)
+    EditText mEtThreshold;
+
     @BindView(R.id.polynomialRatioA)
     EditText mEtPolynomialRatioA;//多项式系数A
 
@@ -43,6 +53,7 @@ public class PolynomialParamView extends FrameLayout {
     @BindView(R.id.correctValue)
     EditText mEtCorrectValue;//修正值M
 
+    private String threshold;
     private String polynomialRatioA;
     private String polynomialRatioB;
     private String polynomialRatioC;
@@ -67,6 +78,7 @@ public class PolynomialParamView extends FrameLayout {
     }
 
     private void initView() {
+        mEtThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtPolynomialRatioA.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtPolynomialRatioB.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtPolynomialRatioC.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
@@ -79,7 +91,7 @@ public class PolynomialParamView extends FrameLayout {
         if (sensorInfo == null) {
             return;
         }
-
+        threshold = sensorInfo.getGateval();
         polynomialRatioA = sensorInfo.getParama();
         polynomialRatioB = sensorInfo.getParamb();
         polynomialRatioC = sensorInfo.getParamc();
@@ -87,6 +99,7 @@ public class PolynomialParamView extends FrameLayout {
         initialTemperature = sensorInfo.getParamt();
         correctValue = sensorInfo.getParamm();
 
+        mEtThreshold.setText(threshold);
         mEtPolynomialRatioA.setText(polynomialRatioA);
         mEtPolynomialRatioB.setText(polynomialRatioB);
         mEtPolynomialRatioC.setText(polynomialRatioC);
@@ -99,7 +112,7 @@ public class PolynomialParamView extends FrameLayout {
         if (!checkValueValid()) {
             return false;
         }
-
+        sensorParamsEntity.setGateval(threshold);
         sensorParamsEntity.setParama(polynomialRatioA);
         sensorParamsEntity.setParamb(polynomialRatioB);
         sensorParamsEntity.setParamc(polynomialRatioC);
@@ -111,6 +124,7 @@ public class PolynomialParamView extends FrameLayout {
     }
 
     private boolean checkValueValid() {
+        threshold = mEtThreshold.getText().toString().trim();
         polynomialRatioA = mEtPolynomialRatioA.getText().toString().trim();
         polynomialRatioB = mEtPolynomialRatioB.getText().toString().trim();
         polynomialRatioC = mEtPolynomialRatioC.getText().toString().trim();
@@ -118,6 +132,18 @@ public class PolynomialParamView extends FrameLayout {
         initialTemperature = mEtInitialTemperature.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
 
+        if (TextUtils.isEmpty(threshold)) {
+            ToastUtils.show("请输入触发值!");
+            mEtThreshold.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(threshold);
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的触阈值!");
+            mEtThreshold.requestFocus();
+            return false;
+        }
         if (!TextUtils.isEmpty(polynomialRatioA)) {
             try {
                 double value = Double.parseDouble(polynomialRatioA);
@@ -176,31 +202,31 @@ public class PolynomialParamView extends FrameLayout {
         return true;
     }
 
-    public boolean checkValueIsChange() {
-        if (polynomialRatioA != null && !polynomialRatioA.equals(mEtPolynomialRatioA.getText().toString().trim())) {
-            return true;
-        }
-
-        if (polynomialRatioB != null && !polynomialRatioB.equals(mEtPolynomialRatioB.getText().toString().trim())) {
-            return true;
-        }
-
-        if (polynomialRatioC != null && !polynomialRatioC.equals(mEtPolynomialRatioC.getText().toString().trim())) {
-            return true;
-        }
-
-        if (temperatureCoefficient != null && !temperatureCoefficient.equals(mEtTemperatureCoefficient.getText().toString().trim())) {
-            return true;
-        }
-
-        if (initialTemperature != null && !initialTemperature.equals(mEtInitialTemperature.getText().toString().trim())) {
-            return true;
-        }
-
-        if (correctValue != null && !correctValue.equals(mEtCorrectValue.getText().toString().trim())) {
-            return true;
-        }
-        return false;
-    }
+//    public boolean checkValueIsChange() {
+//        if (polynomialRatioA != null && !polynomialRatioA.equals(mEtPolynomialRatioA.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (polynomialRatioB != null && !polynomialRatioB.equals(mEtPolynomialRatioB.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (polynomialRatioC != null && !polynomialRatioC.equals(mEtPolynomialRatioC.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (temperatureCoefficient != null && !temperatureCoefficient.equals(mEtTemperatureCoefficient.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (initialTemperature != null && !initialTemperature.equals(mEtInitialTemperature.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (correctValue != null && !correctValue.equals(mEtCorrectValue.getText().toString().trim())) {
+//            return true;
+//        }
+//        return false;
+//    }
 
 }

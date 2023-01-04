@@ -133,7 +133,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
     private String sn;
 
     private String collectorModel = "";//采集器类型
-    private boolean isInitialSensorOpera = false;//是否初始化传感器操作
 
     private LocationViewModel locationViewModel;
 
@@ -272,13 +271,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 DeviceCurrentStateActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT, ProductType.DAS);
                 break;
 
-            case "传感器初始化":
-                isInitialSensorOpera = true;
-                startDefaultProgress("指令下发中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
-                //发送激活DAS命令
-                setLowEnergyModel(true);
-                break;
-
             case "时间":
                 doQueryTimeCmd();
                 break;
@@ -336,9 +328,11 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         commandItems.clear();
         commandItems.add("##916x11800\r\n");
         commandItems.add("##916x2300\r\n");
+        commandItems.add("##0191\r\n");//TODO 保存并重启(不会立即重启)
+        commandItems.add("##0081\r\n");//立即重启
 
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
-        sendCommand(commandItems.getFirst());
+        sendCommand(commandItems.removeFirst());
     }
 
     /**
@@ -509,12 +503,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 return;
             }
-            commandItems.removeFirst();
             if (commandItems.size() > 0) {
-                sendCommand(commandItems.getFirst());
-            } else {
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                saveConfigInfo();
+                sendCommand(commandItems.removeFirst());
             }
             return;
         }
@@ -533,16 +523,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
             case LOW_ENERGY:
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    if (isInitialSensorOpera) {
-                        isInitialSensorOpera = false;
-                        ToastUtils.show("传感器初始化失败!");
-                    }
                     Timber.e("激活/待机指令出错!");
                     return;
-                }
-                if (isInitialSensorOpera) {
-                    isInitialSensorOpera = false;
-                    ToastUtils.show("传感器已初始化,设备即将重启!");
                 }
                 break;
 
@@ -607,8 +589,12 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show("保存参数指令错误!");
                     return;
                 }
-                if (tempStr.contains("0191")) {
-                    ToastUtils.show("设备即将重启!");
+                if (commandItems.size() > 0) {
+                    sendCommand(commandItems.removeFirst());
+                } else {
+                    if (tempStr.contains("0191")) {
+                        ToastUtils.show("设备即将重启!");
+                    }
                 }
                 break;
 
@@ -650,9 +636,6 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
         configModuleList.clear();
         ConfigModule configModule = new ConfigModule(R.drawable.ic_device_current_state, StringUtils.getString(R.string.device_config_module_current_state), "获取当前设备状态");
         configModuleList.add(configModule);
-
-//        configModule = new ConfigModule(R.drawable.ic_device_reboot, "传感器初始化", "传感器初始化");
-//        configModuleList.add(configModule);
 
         configModule = new ConfigModule(R.drawable.ic_device_current_time, "时间", "获取当前设备时间");
         configModuleList.add(configModule);

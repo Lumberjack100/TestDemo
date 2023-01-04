@@ -70,12 +70,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
     @BindView(R.id.sensorSerialNumber)
     EditText mEtSensorSerialNumber;//传感器序号
 
-    @BindView(R.id.tv_threshold_title)
-    TextView mTvThresholdTitle;//触发阈值
-
-    @BindView(R.id.et_trigger_threshold)
-    EditText mEtThreshold;//触发阈值
-
     @BindView(R.id.linearParamView)
     LinearParamView linearParamView;//直线式参数
 
@@ -106,7 +100,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
     private VmsSensorCalculation sensorCalculation;
     private String sensorSerialNumber;//传感器序号
-    private String threshold;
 
     private boolean enableButtonOriginalState;//数据中心开关初始状态，用于判断开关是否有打开后没有设置参数就返回
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
@@ -144,7 +137,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
     private void setView() {
         mEtSensorSerialNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
     }
 
     private void initData() {
@@ -199,7 +191,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             polynomialParamView.setVisibility(View.GONE);
             modulusView.setVisibility(View.GONE);
             magnificationView.setVisibility(View.VISIBLE);
-            magnificationView.initData(sensorInfo);
+            magnificationView.initData(sensorInfo, MonitoringType.valueByCode(sensorInfo.getName()));
 
             monitorTypeList.clear();
             monitorTypeList.addAll(magnificationMonitorTypeList);
@@ -214,9 +206,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             sensorSerialNumber = strs.length > 1 ? strs[1] : "";
             mEtSensorSerialNumber.setText(sensorSerialNumber);
         }
-
-        threshold = sensorInfo.getGateval();
-        mEtThreshold.setText(threshold);
 
         //为0表示未接入传感器
         if (sensorInfo.getInsert().trim().equals("0")) {
@@ -406,7 +395,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
                                 } else if (mTvSensorCalculation.getText().toString().contains("模数")) {
 
                                 } else if (mTvSensorCalculation.getText().toString().contains("倍率")) {
-                                    magnificationView.setVisibilityBySensorType(text);
+                                    magnificationView.initData(sensorInfo,MonitoringType.valueByDesc(text));
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
@@ -415,7 +404,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
 
     private boolean checkValueIsValid() {
         sensorSerialNumber = mEtSensorSerialNumber.getText().toString().trim();
-        threshold = mEtThreshold.getText().toString().trim();
         if (TextUtils.isEmpty(mTvMonitorType.getText())) {
             ToastUtils.show("请选择监测类型!");
             return false;
@@ -430,20 +418,7 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
             mEtSensorSerialNumber.requestFocus();
             return false;
         }
-        if (TextUtils.isEmpty(threshold)) {
-            ToastUtils.show("请输入触发阈值!");
-            mEtThreshold.requestFocus();
-            return false;
-        }
-        if (!TextUtils.isEmpty(threshold)) {
-            try {
-                double value = Double.parseDouble(threshold);
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的触发阈值!");
-                mEtThreshold.requestFocus();
-                return false;
-            }
-        }
+
         return true;
     }
 
@@ -477,7 +452,6 @@ public class TcpVmsTerminalExternalSensorParamFragment extends BaseVmsTcpCommuni
         entity.setType(sensorCalculation.toString());
         String sensorNameNo = MonitoringType.valueByDesc(mTvMonitorType.getText().toString()).getCode() + "_" + sensorSerialNumber;
         entity.setName(sensorNameNo);
-        entity.setGateval(threshold);
 
         enableButtonOriginalState = mSbSensorEnable.isChecked();
         isSaveParamOperation = true;

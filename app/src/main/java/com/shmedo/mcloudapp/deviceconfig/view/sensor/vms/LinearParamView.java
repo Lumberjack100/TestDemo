@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,15 @@ import butterknife.ButterKnife;
  * 描述：    Vms 终端接入的直线式传感器参数
  */
 public class LinearParamView extends FrameLayout {
+    /**
+     * 触发值
+     */
+    @BindView(R.id.tv_trigger_threshold)
+    TextView mTvThreshold;
+
+    @BindView(R.id.et_trigger_threshold)
+    EditText mEtThreshold;
+
     @BindView(R.id.temperatureCoefficient)
     EditText mEtTemperatureCoefficient;//温度修正系数B
 
@@ -40,6 +50,7 @@ public class LinearParamView extends FrameLayout {
     @BindView(R.id.correctValue)
     EditText mEtCorrectValue;//修正值
 
+    private String threshold;
     private String temperatureCoefficient;
     private String sensitivityCoefficient;
     private String initialTemperature;
@@ -63,6 +74,7 @@ public class LinearParamView extends FrameLayout {
     }
 
     private void initView() {
+        mEtThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
         mEtTemperatureCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtSensitivityCoefficient.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         mEtInitialTemperature.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
@@ -74,12 +86,14 @@ public class LinearParamView extends FrameLayout {
         if (sensorInfo == null) {
             return;
         }
+        threshold = sensorInfo.getGateval();
         temperatureCoefficient = sensorInfo.getParamb();
         sensitivityCoefficient = sensorInfo.getParamk();
         initialTemperature = sensorInfo.getParamt();
         initialModulus = sensorInfo.getParamf();
         correctValue = sensorInfo.getParamm();
 
+        mEtThreshold.setText(threshold);
         mEtTemperatureCoefficient.setText(temperatureCoefficient);
         mEtSensitivityCoefficient.setText(sensitivityCoefficient);
         mEtInitialTemperature.setText(initialTemperature);
@@ -91,7 +105,7 @@ public class LinearParamView extends FrameLayout {
         if (!checkValueValid()) {
             return false;
         }
-
+        sensorParamsEntity.setGateval(threshold);
         sensorParamsEntity.setParamb(temperatureCoefficient);
         sensorParamsEntity.setParamk(sensitivityCoefficient);
         sensorParamsEntity.setParamt(initialTemperature);
@@ -101,12 +115,25 @@ public class LinearParamView extends FrameLayout {
     }
 
     private boolean checkValueValid() {
+        threshold = mEtThreshold.getText().toString().trim();
         temperatureCoefficient = mEtTemperatureCoefficient.getText().toString().trim();
         sensitivityCoefficient = mEtSensitivityCoefficient.getText().toString().trim();
         initialTemperature = mEtInitialTemperature.getText().toString().trim();
         initialModulus = mEtInitModulus.getText().toString().trim();
         correctValue = mEtCorrectValue.getText().toString().trim();
 
+        if (TextUtils.isEmpty(threshold)) {
+            ToastUtils.show("请输入触发值!");
+            mEtThreshold.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(threshold);
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的触阈值!");
+            mEtThreshold.requestFocus();
+            return false;
+        }
         if (!TextUtils.isEmpty(temperatureCoefficient)) {
             try {
                 double value = Double.parseDouble(temperatureCoefficient);
@@ -155,26 +182,26 @@ public class LinearParamView extends FrameLayout {
         return true;
     }
 
-    public boolean checkValueIsChange() {
-        if (temperatureCoefficient != null && !temperatureCoefficient.equals(mEtTemperatureCoefficient.getText().toString().trim())) {
-            return true;
-        }
-
-        if (sensitivityCoefficient != null && !sensitivityCoefficient.equals(mEtSensitivityCoefficient.getText().toString().trim())) {
-            return true;
-        }
-
-        if (initialTemperature != null && !initialTemperature.equals(mEtInitialTemperature.getText().toString().trim())) {
-            return true;
-        }
-
-        if (initialModulus != null && !initialModulus.equals(mEtInitModulus.getText().toString().trim())) {
-            return true;
-        }
-
-        if (correctValue != null && !correctValue.equals(mEtCorrectValue.getText().toString().trim())) {
-            return true;
-        }
-        return false;
-    }
+//    public boolean checkValueIsChange() {
+//        if (temperatureCoefficient != null && !temperatureCoefficient.equals(mEtTemperatureCoefficient.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (sensitivityCoefficient != null && !sensitivityCoefficient.equals(mEtSensitivityCoefficient.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (initialTemperature != null && !initialTemperature.equals(mEtInitialTemperature.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (initialModulus != null && !initialModulus.equals(mEtInitModulus.getText().toString().trim())) {
+//            return true;
+//        }
+//
+//        if (correctValue != null && !correctValue.equals(mEtCorrectValue.getText().toString().trim())) {
+//            return true;
+//        }
+//        return false;
+//    }
 }
