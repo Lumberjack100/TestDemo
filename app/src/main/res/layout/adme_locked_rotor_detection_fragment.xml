@@ -19,15 +19,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <RelativeLayout style="@style/SwitchButton_LayoutStyle">
+            <RelativeLayout
+                style="@style/SwitchButton_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     style="@style/SwitchButton_TitleStyle"
-                    android:text="下放堵转检测"
+                    android:text="下放计米堵转检测"
                     android:textStyle="bold" />
 
                 <com.kyleduo.switchbutton.SwitchButton
-                    android:id="@+id/decentralizedEnableSBtn"
+                    android:id="@+id/downEnableSBtn"
                     style="@style/SwitchButton_ButtonStyle"
                     app:kswAnimationDuration="100"
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
@@ -38,167 +40,228 @@
 
             </RelativeLayout>
 
-            <FrameLayout
+            <LinearLayout
+                android:id="@+id/downMeterChildLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <LinearLayout
-                    android:id="@+id/decentralizedChildLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:orientation="vertical">
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <LinearLayout
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="单位时间脉冲数(p/s)" />
 
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="单位时间脉冲数(p/s)" />
-
-                        <com.shmedo.mcloudapp.common.view.ClearEditText
-                            android:id="@+id/et_decentralized_pulses_per_unit_time"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:inputType="number" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="检测判断时间(s)" />
-
-                        <com.shmedo.mcloudapp.common.view.ClearEditText
-                            android:id="@+id/et_decentralized_pulse_detection_time"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:inputType="numberDecimal" />
-
-                    </LinearLayout>
-
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="堵转检测区间(%)" />
-
-                        <TextView
-                            android:id="@+id/tv_decentralized_stall_detection_interval"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:hint=""
-                            android:textColor="@color/text_color_51B4F8"
-                            tools:text="17%-55%" />
-
-                    </LinearLayout>
-
-                    <com.jaygoo.widget.RangeSeekBar
-                        android:id="@+id/seekBar_decentralized_stall_detection_interval"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        app:rsb_gravity="center"
-                        app:rsb_max="100"
-                        app:rsb_min="0"
-                        app:rsb_mode="range"
-                        app:rsb_progress_color="@color/text_color_51B4F8"
-                        app:rsb_progress_default_color="#EDEDED"
-                        app:rsb_thumb_drawable="@drawable/rsb_thumb_blue_stroke" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/divider_line_bg_efefef" />
-
-                    <LinearLayout
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="力矩堵转阈值(A)" />
-
-                        <com.shmedo.mcloudapp.common.view.ClearEditText
-                            android:id="@+id/et_decentralized_torque_stall_threshold"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:inputType="numberDecimal" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="力矩检测判断时间(s)" />
-
-                        <com.shmedo.mcloudapp.common.view.ClearEditText
-                            android:id="@+id/et_decentralized_torque_detection_time"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:inputType="numberDecimal" />
-
-                    </LinearLayout>
-
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="下放缓停区间(%)"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_decentralized_slow_stop_interval"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:hint=""
-                            android:textColor="@color/text_color_51B4F8"
-                            tools:text="17%-55%" />
-
-                    </LinearLayout>
-
-                    <com.jaygoo.widget.RangeSeekBar
-                        android:id="@+id/seekBar_decentralized_slow_stop_interval"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        app:rsb_gravity="center"
-                        app:rsb_max="100"
-                        app:rsb_min="0"
-                        app:rsb_mode="single"
-                        app:rsb_progress_color="#EDEDED"
-                        app:rsb_progress_default_color="@color/text_color_51B4F8"
-                        app:rsb_thumb_drawable="@drawable/rsb_thumb_blue_stroke" />
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_down_pulses_per_unit_time"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="number" />
 
                 </LinearLayout>
 
-                <RelativeLayout
-                    android:id="@+id/decentralizedChildMaskLayer"
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="检测判断时间(s)" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_down_pulse_detection_time"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="numberDecimal" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="下放缓起区间(%)" />
+
+                    <TextView
+                        android:id="@+id/tv_down_slow_start_interval"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint=""
+                        tools:text="17%-55%" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="下放缓停区间(%)" />
+
+                    <TextView
+                        android:id="@+id/tv_down_slow_stop_interval"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint=""
+                        tools:text="17%-55%" />
+
+                </LinearLayout>
+
+                <com.jaygoo.widget.RangeSeekBar
+                    android:id="@+id/seekBar_down_slow_stop_interval"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#66ffffff"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:visibility="gone">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:rsb_gravity="bottom"
+                    app:rsb_indicator_background_color="@color/text_color_51B4F8"
+                    app:rsb_indicator_height="wrap_content"
+                    app:rsb_indicator_padding_bottom="5dp"
+                    app:rsb_indicator_padding_left="10dp"
+                    app:rsb_indicator_padding_right="10dp"
+                    app:rsb_indicator_padding_top="5dp"
+                    app:rsb_indicator_radius="3dp"
+                    app:rsb_indicator_show_mode="alwaysShow"
+                    app:rsb_indicator_width="wrap_content"
+                    app:rsb_max="100"
+                    app:rsb_min="0"
+                    app:rsb_mode="range"
+                    app:rsb_progress_color="#EDEDED"
+                    app:rsb_progress_default_color="@color/text_color_51B4F8"
+                    app:rsb_thumb_drawable="@drawable/thumb_default"
+                    app:rsb_thumb_height="30dp"
+                    app:rsb_thumb_width="30dp"
+                    app:rsb_tick_mark_mode="number"
+                    app:rsb_tick_mark_text_array="@array/seekBar_array" />
 
-                </RelativeLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
 
-            </FrameLayout>
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="堵转检测区间(%)" />
+
+                    <TextView
+                        android:id="@+id/tv_down_stall_detection_interval"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint=""
+                        tools:text="17%-55%" />
+
+                </LinearLayout>
+
+                <com.jaygoo.widget.RangeSeekBar
+                    android:id="@+id/seekBar_down_stall_detection_interval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:rsb_gravity="bottom"
+                    app:rsb_indicator_background_color="@color/text_color_51B4F8"
+                    app:rsb_indicator_height="wrap_content"
+                    app:rsb_indicator_padding_bottom="5dp"
+                    app:rsb_indicator_padding_left="10dp"
+                    app:rsb_indicator_padding_right="10dp"
+                    app:rsb_indicator_padding_top="5dp"
+                    app:rsb_indicator_radius="3dp"
+                    app:rsb_indicator_show_mode="alwaysShow"
+                    app:rsb_indicator_width="wrap_content"
+                    app:rsb_max="100"
+                    app:rsb_min="0"
+                    app:rsb_mode="range"
+                    app:rsb_progress_color="#EDEDED"
+                    app:rsb_progress_default_color="@color/text_color_51B4F8"
+                    app:rsb_thumb_drawable="@drawable/thumb_default"
+                    app:rsb_thumb_height="30dp"
+                    app:rsb_thumb_width="30dp"
+                    app:rsb_tick_mark_mode="number"
+                    app:rsb_tick_mark_text_array="@array/seekBar_array" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                android:layout_height="5dp" />
 
-            <RelativeLayout style="@style/SwitchButton_LayoutStyle">
+            <RelativeLayout
+                style="@style/SwitchButton_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     style="@style/SwitchButton_TitleStyle"
-                    android:text="上拉堵转检测"
+                    android:text="下放力矩堵转检测"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/downTorqueChildLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="力矩堵转阈值(A)" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_down_torque_stall_threshold"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="numberDecimal" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="力矩检测判断时间(s)" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_down_torque_detection_time"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="numberDecimal" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                style="@style/SwitchButton_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <TextView
+                    style="@style/SwitchButton_TitleStyle"
+                    android:text="上拉计米堵转检测"
                     android:textStyle="bold" />
 
                 <com.kyleduo.switchbutton.SwitchButton
@@ -213,99 +276,136 @@
 
             </RelativeLayout>
 
-            <FrameLayout
+            <LinearLayout
+                android:id="@+id/pullUpMeterChildLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <LinearLayout
-                    android:id="@+id/pullUpChildLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:orientation="vertical">
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@color/divider_line_bg_efefef" />
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="上拉缓起区间(%)" />
 
-                    <LinearLayout
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="力矩堵转阈值(A)" />
-
-                        <com.shmedo.mcloudapp.common.view.ClearEditText
-                            android:id="@+id/et_pull_up_torque_stall_threshold"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:inputType="numberDecimal" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="力矩检测判断时间(s)" />
-
-                        <com.shmedo.mcloudapp.common.view.ClearEditText
-                            android:id="@+id/et_pull_up_torque_detection_time"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:inputType="numberDecimal" />
-
-                    </LinearLayout>
-
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="上拉缓停区间(%)"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_pull_up_slow_stop_interval"
-                            style="@style/Common_EditItem_EditText_Style"
-                            android:hint=""
-                            android:textColor="@color/text_color_51B4F8"
-                            tools:text="17%-55%" />
-
-                    </LinearLayout>
-
-                    <com.jaygoo.widget.RangeSeekBar
-                        android:id="@+id/seekBar_pull_up_slow_stop_interval"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        app:rsb_gravity="center"
-                        app:rsb_max="100"
-                        app:rsb_min="0"
-                        app:rsb_mode="single"
-                        app:rsb_progress_color="#EDEDED"
-                        app:rsb_progress_default_color="@color/text_color_51B4F8"
-                        app:rsb_thumb_drawable="@drawable/rsb_thumb_blue_stroke" />
+                    <TextView
+                        android:id="@+id/tv_pull_up_slow_start_interval"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint=""
+                        tools:text="17%-55%" />
 
                 </LinearLayout>
 
-                <RelativeLayout
-                    android:id="@+id/pullUpChildMaskLayer"
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="上拉缓停区间(%)" />
+
+                    <TextView
+                        android:id="@+id/tv_pull_up_slow_stop_interval"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint=""
+                        tools:text="17%-55%" />
+
+                </LinearLayout>
+
+                <com.jaygoo.widget.RangeSeekBar
+                    android:id="@+id/seekBar_pull_up_slow_stop_interval"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#66ffffff"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:visibility="gone"
-                    tools:visibility="visible">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:rsb_gravity="bottom"
+                    app:rsb_indicator_background_color="@color/text_color_51B4F8"
+                    app:rsb_indicator_height="wrap_content"
+                    app:rsb_indicator_padding_bottom="5dp"
+                    app:rsb_indicator_padding_left="10dp"
+                    app:rsb_indicator_padding_right="10dp"
+                    app:rsb_indicator_padding_top="5dp"
+                    app:rsb_indicator_radius="3dp"
+                    app:rsb_indicator_show_mode="alwaysShow"
+                    app:rsb_indicator_width="wrap_content"
+                    app:rsb_max="100"
+                    app:rsb_min="0"
+                    app:rsb_mode="range"
+                    app:rsb_progress_color="#EDEDED"
+                    app:rsb_progress_default_color="@color/text_color_51B4F8"
+                    app:rsb_thumb_drawable="@drawable/thumb_default"
+                    app:rsb_thumb_height="30dp"
+                    app:rsb_thumb_width="30dp"
+                    app:rsb_tick_mark_mode="number"
+                    app:rsb_tick_mark_text_array="@array/seekBar_array" />
 
-                </RelativeLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/divider_line_bg_efefef" />
 
-            </FrameLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp" />
+
+            <RelativeLayout
+                style="@style/SwitchButton_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <TextView
+                    style="@style/SwitchButton_TitleStyle"
+                    android:text="上拉力矩堵转检测"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/pullUpTorqueChildLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="力矩堵转阈值(A)" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_pull_up_torque_stall_threshold"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="numberDecimal" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="力矩检测判断时间(s)" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_pull_up_torque_detection_time"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="numberDecimal" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

@@ -48,80 +48,86 @@ import timber.log.Timber;
  * 描述：      ADME 4g模式下电机运动堵转缓停参数配置页面
  */
 public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFragment {
-    public static final int DECENTRALIZED_OPERATOR = 0x0001;
+    public static final int DOWN_OPERATOR = 0x0001;
     public static final int PULLUP_OPERATOR = 0x0002;
 
-    @BindView(R.id.decentralizedEnableSBtn)
-    SwitchButton mSbDecentralizedEnable;
+    @BindView(R.id.downEnableSBtn)
+    SwitchButton mSbDownEnable;
 
-    @BindView(R.id.et_decentralized_pulses_per_unit_time)
-    ClearEditText mEtDecentralizedPulsesPerUnitTime;//单位时间脉冲数
+    @BindView(R.id.et_down_pulses_per_unit_time)
+    ClearEditText mEtDownPulsesPerUnitTime;//单位时间脉冲数
 
-    @BindView(R.id.et_decentralized_pulse_detection_time)
-    ClearEditText mEtDecentralizedPulseDetectionTime;//检测判断时间
+    @BindView(R.id.et_down_pulse_detection_time)
+    ClearEditText mEtDownPulseDetectionTime;//检测判断时间
 
-    @BindView(R.id.tv_decentralized_stall_detection_interval)
-    TextView mTvDecentralizedStallDetectionInterval;
+    @BindView(R.id.tv_down_slow_start_interval)
+    TextView mTvDownSlowStartInterval;//下放缓起区间
 
-    @BindView(R.id.seekBar_decentralized_stall_detection_interval)
-    RangeSeekBar seekBarDecentralizedStallDetectionInterval;
+    @BindView(R.id.tv_down_slow_stop_interval)
+    TextView mTvDownSlowStopInterval;//下放缓停区间
 
-    @BindView(R.id.et_decentralized_torque_stall_threshold)
-    ClearEditText mEtDecentralizedTorqueStallThreshold;
+    @BindView(R.id.seekBar_down_slow_stop_interval)
+    RangeSeekBar seekBarDownSlowStartStopInterval;//下放缓起缓停区间
 
-    @BindView(R.id.et_decentralized_torque_detection_time)
-    ClearEditText mEtDecentralizedTorqueDetectionTime;
+    @BindView(R.id.tv_down_stall_detection_interval)
+    TextView mTvDownStallDetectionInterval;//下放堵转检测区间
 
-    @BindView(R.id.tv_decentralized_slow_stop_interval)
-    TextView mTvDecentralizedSlowStopInterval;
+    @BindView(R.id.seekBar_down_stall_detection_interval)
+    RangeSeekBar seekBarDownStallDetectionInterval;//下放堵转检测区间
 
-    @BindView(R.id.seekBar_decentralized_slow_stop_interval)
-    RangeSeekBar seekBarDecentralizedSlowStopInterval;
+    @BindView(R.id.et_down_torque_stall_threshold)
+    ClearEditText mEtDownTorqueStallThreshold;//下放力矩堵转阈值
+
+    @BindView(R.id.et_down_torque_detection_time)
+    ClearEditText mEtDownTorqueDetectionTime;//下放力矩检测判断时间
+
 
     @BindView(R.id.pullUpEnableSBtn)
     SwitchButton mSbPullUpEnable;
 
-    @BindView(R.id.et_pull_up_torque_stall_threshold)
-    ClearEditText mEtPullUpTorqueStallThreshold;
-
-    @BindView(R.id.et_pull_up_torque_detection_time)
-    ClearEditText mEtPullUpTorqueDetectionTime;
+    @BindView(R.id.tv_pull_up_slow_start_interval)
+    TextView mTvPullUpSlowStartInterval;//上拉缓起区间
 
     @BindView(R.id.tv_pull_up_slow_stop_interval)
-    TextView mTvPullUpSlowStopInterval;
+    TextView mTvPullUpSlowStopInterval;//上拉缓停区间
 
     @BindView(R.id.seekBar_pull_up_slow_stop_interval)
-    RangeSeekBar seekBarPullUpSlowStopInterval;
+    RangeSeekBar seekBarPullUpSlowStartStopInterval;//上拉缓起缓停区间
+
+    @BindView(R.id.et_pull_up_torque_stall_threshold)
+    ClearEditText mEtPullUpTorqueStallThreshold;//上拉力矩堵转阈值
+
+    @BindView(R.id.et_pull_up_torque_detection_time)
+    ClearEditText mEtPullUpTorqueDetectionTime;//上拉力矩检测判断时间
 
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.decentralizedChildMaskLayer)
-    ViewGroup decentralizedChildMaskLayer;
+    @BindView(R.id.downMeterChildLayout)
+    ViewGroup downMeterChildLayout;
 
-    @BindView(R.id.pullUpChildMaskLayer)
-    ViewGroup pullUpChildMaskLayer;
+    @BindView(R.id.pullUpMeterChildLayout)
+    ViewGroup pullUpMeterChildLayout;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
     private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
 
-    private String decentralizedPulsesPerUnitTime;//下放单位时间脉冲数
-    private String decentralizedPulseDetectionTime;//下放脉冲检测判断时间
-    private String decentralizedPulseDetectionStart;//堵转检测起点
-    private String decentralizedPulseDetectionEnd;//堵转检测终点
-    private String decentralizedTorqueStallThreshold;//下放力矩堵转阈值
-    private String decentralizedTorqueDetectionTime;//下放力矩检测判断时间
-    private String decentralizedTorqueDetectionStart;//下放缓停区间起始值
-    private String decentralizedTorqueDetectionEnd;//下放缓停区间终值
+    private String downPulsesPerUnitTime;//下放单位时间脉冲数
+    private String downPulseDetectionTime;//下放脉冲检测判断时间
+    private String downSlowStartIntervalEndValue;//下放缓起区间终值(加速阶段)
+    private String downSlowStopIntervalStartValue;//下放缓停区间起始值(减速阶段)
+    private String downStallDetectionIntervalStartValue;//堵转检测区间起始值
+    private String downStallDetectionIntervalEndValue;//堵转检测区间终值
+    private String downTorqueStallThreshold;//下放力矩堵转阈值
+    private String downTorqueDetectionTime;//下放力矩检测判断时间
+
+    private String pullUpSlowStartIntervalEndValue;//上拉缓起区间终值(加速阶段)
+    private String pullUpSlowStopIntervalStartValue;//上拉缓停区间起始值(减速阶段)
     private String pullUpTorqueStallThreshold;//上拉力矩堵转阈值
     private String pullUpTorqueDetectionTime;//上拉力矩检测判断时间
-    private String pullUpTorqueDetectionStart;//上拉缓停区间起始值
-    private String pullUpTorqueDetectionEnd;//上拉缓停区间终值
 
-    private boolean paramEnableInitial;//开关初始状态，用于判断开关是否有打开后没有设置参数就返回
-    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭开关操作
     private DecimalFormat decimalFormat = new DecimalFormat();
 
     public static NetAdmeLockedRotorDetectionFragment newInstance(DeviceInfo deviceInfo) {
@@ -154,17 +160,17 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     }
 
     private void setView() {
-        mEtDecentralizedPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtDecentralizedPulsesPerUnitTime.setHint("[1,10000]");
+        mEtDownPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtDownPulsesPerUnitTime.setHint("[1,10000]");
 
-        mEtDecentralizedPulseDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-        mEtDecentralizedPulseDetectionTime.setHint("[0.1,10.0]");
+        mEtDownPulseDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtDownPulseDetectionTime.setHint("[0.1,10.0]");
 
-        mEtDecentralizedTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtDecentralizedTorqueStallThreshold.setHint("[0.00,2.00]");
+        mEtDownTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtDownTorqueStallThreshold.setHint("[0.00,2.00]");
 
-        mEtDecentralizedTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-        mEtDecentralizedTorqueDetectionTime.setHint("[0.01,5.00]");
+        mEtDownTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        mEtDownTorqueDetectionTime.setHint("[0.01,5.00]");
 
         mEtPullUpTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtPullUpTorqueStallThreshold.setHint("[1.00,6.00]");
@@ -174,14 +180,13 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     }
 
     private void setSwitchViewListener() {
-        mSbDecentralizedEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSbDownEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-                    showCloseSwitchButtonDialog("确定使下放堵转检测不生效？", DECENTRALIZED_OPERATOR);
+                    showCloseSwitchButtonDialog("确定使下放计米堵转检测不生效？", DOWN_OPERATOR);
                 } else {
-                    decentralizedChildMaskLayer.setVisibility(View.GONE);
-                    mBtnSave.setVisibility(View.VISIBLE);
+                    downMeterChildLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -189,22 +194,24 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-                    showCloseSwitchButtonDialog("确定使上拉堵转检测不生效？", PULLUP_OPERATOR);
+                    showCloseSwitchButtonDialog("确定使上拉计米堵转检测不生效？", PULLUP_OPERATOR);
                 } else {
-                    pullUpChildMaskLayer.setVisibility(View.GONE);
-                    mBtnSave.setVisibility(View.VISIBLE);
+                    pullUpMeterChildLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
     private void setSeekBarListener() {
-        seekBarDecentralizedStallDetectionInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
+        //下放缓起缓停区间
+        seekBarDownSlowStartStopInterval.setIndicatorTextDecimalFormat("0");
+        seekBarDownSlowStartStopInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
             @Override
             public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
                 DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
-                decentralizedPulseDetectionStart = indicatorTextDecimalFormat.format(leftValue);
-                decentralizedPulseDetectionEnd = indicatorTextDecimalFormat.format(rightValue);
-                mTvDecentralizedStallDetectionInterval.setText(String.format("%s%%-%s%%", indicatorTextDecimalFormat.format(leftValue), indicatorTextDecimalFormat.format(rightValue)));
+                downSlowStartIntervalEndValue = indicatorTextDecimalFormat.format(leftValue);
+                downSlowStopIntervalStartValue = indicatorTextDecimalFormat.format(rightValue);
+                mTvDownSlowStartInterval.setText(String.format("0%%-%s%%", downSlowStartIntervalEndValue));
+                mTvDownSlowStopInterval.setText(String.format("%s%%-100%%", downSlowStopIntervalStartValue));
             }
 
             @Override
@@ -214,22 +221,27 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
             @Override
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                //stop tracking touch
+                float leftValue = view.getLeftSeekBar().getProgress();
                 float rightValue = view.getRightSeekBar().getProgress();
-                float torqueLeftValue = seekBarDecentralizedSlowStopInterval.getLeftSeekBar().getProgress();
-                if (rightValue >= torqueLeftValue) {
-                    seekBarDecentralizedSlowStopInterval.setProgress(rightValue + 1);
+                if (leftValue >= 50) {
+                    ToastUtils.show("下放缓起区间终值不能大于50%");
+                    view.setProgress(49);
+                }
+                if (rightValue < 50) {
+                    ToastUtils.show("下放缓停区间起始值不能小于50%");
+                    view.setProgress(leftValue, 50);
                 }
             }
         });
-
-        seekBarDecentralizedSlowStopInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
+        //堵转检测区间
+        seekBarDownStallDetectionInterval.setIndicatorTextDecimalFormat("0");
+        seekBarDownStallDetectionInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
             @Override
             public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
                 DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
-                decentralizedTorqueDetectionStart = indicatorTextDecimalFormat.format(leftValue);
-                decentralizedTorqueDetectionEnd = "100";
-                mTvDecentralizedSlowStopInterval.setText(String.format("%s%%-100%%", indicatorTextDecimalFormat.format(leftValue)));
+                downStallDetectionIntervalStartValue = indicatorTextDecimalFormat.format(leftValue);
+                downStallDetectionIntervalEndValue = indicatorTextDecimalFormat.format(rightValue);
+                mTvDownStallDetectionInterval.setText(String.format("%s%%-%s%%", indicatorTextDecimalFormat.format(leftValue), indicatorTextDecimalFormat.format(rightValue)));
             }
 
             @Override
@@ -239,27 +251,30 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
             @Override
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                //stop tracking touch
-                float torqueLeftValue = view.getLeftSeekBar().getProgress();
-                float leftValue = seekBarDecentralizedStallDetectionInterval.getLeftSeekBar().getProgress();
-                float rightValue = seekBarDecentralizedStallDetectionInterval.getRightSeekBar().getProgress();
-                if (torqueLeftValue <= rightValue) {
-                    if (torqueLeftValue <= 1) {
-                        seekBarDecentralizedStallDetectionInterval.setProgress(0, 0);
-                    } else {
-                        seekBarDecentralizedStallDetectionInterval.setProgress(0, torqueLeftValue - 1);
-                    }
+                float leftValue = view.getLeftSeekBar().getProgress();
+                float rightValue = view.getRightSeekBar().getProgress();
+                if (leftValue >= 50) {
+                    ToastUtils.show("下放堵转检测区间起始值不能大于50%");
+                    view.setProgress(49);
+                }
+                if (rightValue < 50) {
+                    ToastUtils.show("下放堵转检测区间终值不能小于50%");
+                    view.setProgress(leftValue, 50);
                 }
             }
         });
-
-        seekBarPullUpSlowStopInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
+        //上拉缓起缓停区间
+        seekBarPullUpSlowStartStopInterval.setIndicatorTextDecimalFormat("0");
+        seekBarPullUpSlowStartStopInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
             @Override
             public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
                 DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
-                pullUpTorqueDetectionStart = indicatorTextDecimalFormat.format(leftValue);
-                pullUpTorqueDetectionEnd = String.valueOf(100);
-                mTvPullUpSlowStopInterval.setText(String.format("%s%%-100%%", indicatorTextDecimalFormat.format(leftValue)));
+                //leftValue 表示上拉缓起区间终值(加速阶段)
+                pullUpSlowStartIntervalEndValue = indicatorTextDecimalFormat.format(leftValue);
+                //rightValue 表示上拉缓停区间起始值(减速阶段)
+                pullUpSlowStopIntervalStartValue = indicatorTextDecimalFormat.format(rightValue);
+                mTvPullUpSlowStartInterval.setText(String.format("0%%-%s%%", pullUpSlowStartIntervalEndValue));
+                mTvPullUpSlowStopInterval.setText(String.format("%s%%-100%%", pullUpSlowStopIntervalStartValue));
             }
 
             @Override
@@ -269,7 +284,16 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
             @Override
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                //stop tracking touch
+                float leftValue = view.getLeftSeekBar().getProgress();
+                float rightValue = view.getRightSeekBar().getProgress();
+                if (leftValue >= 50) {
+                    ToastUtils.show("上拉缓起区间终值不能大于50%");
+                    view.setProgress(49);
+                }
+                if (rightValue < 50) {
+                    ToastUtils.show("上拉缓停区间起始值不能小于50%");
+                    view.setProgress(leftValue, 50);
+                }
             }
         });
     }
@@ -290,26 +314,20 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        if (type == DECENTRALIZED_OPERATOR) {
+                        if (type == DOWN_OPERATOR) {
                             processSave();
-                            decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
-                            if (!mSbPullUpEnable.isChecked()) {
-                                mBtnSave.setVisibility(View.GONE);
-                            }
+                            downMeterChildLayout.setVisibility(View.GONE);
                         } else if (type == PULLUP_OPERATOR) {
                             processSave();
-                            pullUpChildMaskLayer.setVisibility(View.VISIBLE);
-                            if (!mSbDecentralizedEnable.isChecked()) {
-                                mBtnSave.setVisibility(View.GONE);
-                            }
+                            pullUpMeterChildLayout.setVisibility(View.GONE);
                         }
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        if (type == DECENTRALIZED_OPERATOR) {
-                            mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
+                        if (type == DOWN_OPERATOR) {
+                            mSbDownEnable.setCheckedImmediatelyNoEvent(true);
                         } else if (type == PULLUP_OPERATOR) {
                             mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
                         }
@@ -344,141 +362,121 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     }
 
     private boolean checkValueIsValid() {
-        decentralizedPulsesPerUnitTime = mEtDecentralizedPulsesPerUnitTime.getText().toString().trim();
-        decentralizedPulseDetectionTime = mEtDecentralizedPulseDetectionTime.getText().toString().trim();
-        decentralizedTorqueStallThreshold = mEtDecentralizedTorqueStallThreshold.getText().toString().trim();
-        decentralizedTorqueDetectionTime = mEtDecentralizedTorqueDetectionTime.getText().toString().trim();
+        downPulsesPerUnitTime = mEtDownPulsesPerUnitTime.getText().toString().trim();
+        downPulseDetectionTime = mEtDownPulseDetectionTime.getText().toString().trim();
+        downTorqueStallThreshold = mEtDownTorqueStallThreshold.getText().toString().trim();
+        downTorqueDetectionTime = mEtDownTorqueDetectionTime.getText().toString().trim();
         pullUpTorqueStallThreshold = mEtPullUpTorqueStallThreshold.getText().toString().trim();
         pullUpTorqueDetectionTime = mEtPullUpTorqueDetectionTime.getText().toString().trim();
 
-        if (mSbDecentralizedEnable.isChecked()) {
-            if (TextUtils.isEmpty(decentralizedPulsesPerUnitTime)) {
+        if (mSbDownEnable.isChecked()) {
+            if (TextUtils.isEmpty(downPulsesPerUnitTime)) {
                 ToastUtils.show("请输入下放单位时间脉冲数!");
-                mEtDecentralizedPulsesPerUnitTime.requestFocus();
+                mEtDownPulsesPerUnitTime.requestFocus();
                 return false;
             }
             try {
-                int value = Integer.parseInt(decentralizedPulsesPerUnitTime);
+                int value = Integer.parseInt(downPulsesPerUnitTime);
                 if (value < 1 || value > 10000) {
                     ToastUtils.show("请输入正确的下放单位时间脉冲数!");
-                    mEtDecentralizedPulsesPerUnitTime.requestFocus();
+                    mEtDownPulsesPerUnitTime.requestFocus();
                     return false;
                 }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的下放单位时间脉冲数!");
-                mEtDecentralizedPulsesPerUnitTime.requestFocus();
+                mEtDownPulsesPerUnitTime.requestFocus();
                 return false;
             }
 
-            if (TextUtils.isEmpty(decentralizedPulseDetectionTime)) {
+            if (TextUtils.isEmpty(downPulseDetectionTime)) {
                 ToastUtils.show("请输入下放脉冲检测判断时间!");
-                mEtDecentralizedPulseDetectionTime.requestFocus();
+                mEtDownPulseDetectionTime.requestFocus();
                 return false;
             }
             try {
-                double value = Double.parseDouble(decentralizedPulseDetectionTime);
+                double value = Double.parseDouble(downPulseDetectionTime);
                 if (value < 0.1 || value > 10.0) {
                     ToastUtils.show("请输入正确的下放脉冲检测判断时间!");
-                    mEtDecentralizedPulseDetectionTime.requestFocus();
+                    mEtDownPulseDetectionTime.requestFocus();
                     return false;
                 }
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的下放脉冲检测判断时间!");
-                mEtDecentralizedPulseDetectionTime.requestFocus();
-                return false;
-            }
-
-            float leftValue = seekBarDecentralizedStallDetectionInterval.getLeftSeekBar().getProgress();
-            if (leftValue > 50) {
-                ToastUtils.show("下放堵转检测区间起始值不能大于50%!");
-                return false;
-            }
-
-            float rightValue = seekBarDecentralizedStallDetectionInterval.getRightSeekBar().getProgress();
-            if (rightValue <= 50) {
-                ToastUtils.show("下放堵转检测区间终值不能小于50%!");
-                return false;
-            }
-
-            if (TextUtils.isEmpty(decentralizedTorqueStallThreshold)) {
-                ToastUtils.show("请输入下放力矩堵转阈值!");
-                mEtDecentralizedTorqueStallThreshold.requestFocus();
-                return false;
-            }
-            try {
-                double value = Double.parseDouble(decentralizedTorqueStallThreshold);
-                if (value < 0.00 || value > 2.00) {
-                    ToastUtils.show("请输入正确的下放力矩堵转阈值!");
-                    mEtDecentralizedTorqueStallThreshold.requestFocus();
-                    return false;
-                }
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的下放力矩堵转阈值!");
-                mEtDecentralizedTorqueStallThreshold.requestFocus();
-                return false;
-            }
-
-            if (TextUtils.isEmpty(decentralizedTorqueDetectionTime)) {
-                ToastUtils.show("请输入下放力矩检测判断时间!");
-                mEtDecentralizedTorqueDetectionTime.requestFocus();
-                return false;
-            }
-            try {
-                double value = Double.parseDouble(decentralizedTorqueDetectionTime);
-                if (value < 0.01 || value > 5.00) {
-                    ToastUtils.show("请输入正确的下放力矩检测判断时间!");
-                    mEtDecentralizedTorqueDetectionTime.requestFocus();
-                    return false;
-                }
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的下放力矩检测判断时间!");
-                mEtDecentralizedTorqueDetectionTime.requestFocus();
-                return false;
-            }
-
-            float torqueLeftValue = seekBarDecentralizedSlowStopInterval.getLeftSeekBar().getProgress();
-            if (torqueLeftValue < rightValue) {
-                ToastUtils.show("下放缓停区间起始值不能小于堵转检测区间终值！");
+                mEtDownPulseDetectionTime.requestFocus();
                 return false;
             }
         }
 
-        if (mSbPullUpEnable.isChecked()) {
-            if (TextUtils.isEmpty(pullUpTorqueStallThreshold)) {
-                ToastUtils.show("请输入上拉力矩堵转阈值!");
-                mEtPullUpTorqueStallThreshold.requestFocus();
+        if (TextUtils.isEmpty(downTorqueStallThreshold)) {
+            ToastUtils.show("请输入下放力矩堵转阈值!");
+            mEtDownTorqueStallThreshold.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(downTorqueStallThreshold);
+            if (value < 0.00 || value > 2.00) {
+                ToastUtils.show("请输入正确的下放力矩堵转阈值!");
+                mEtDownTorqueStallThreshold.requestFocus();
                 return false;
             }
-            try {
-                double value = Double.parseDouble(pullUpTorqueStallThreshold);
-                if (value < 1.00 || value > 6.00) {
-                    ToastUtils.show("请输入正确的上拉力矩堵转阈值!");
-                    mEtPullUpTorqueStallThreshold.requestFocus();
-                    return false;
-                }
-            } catch (Exception ex) {
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的下放力矩堵转阈值!");
+            mEtDownTorqueStallThreshold.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(downTorqueDetectionTime)) {
+            ToastUtils.show("请输入下放力矩检测判断时间!");
+            mEtDownTorqueDetectionTime.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(downTorqueDetectionTime);
+            if (value < 0.01 || value > 5.00) {
+                ToastUtils.show("请输入正确的下放力矩检测判断时间!");
+                mEtDownTorqueDetectionTime.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的下放力矩检测判断时间!");
+            mEtDownTorqueDetectionTime.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(pullUpTorqueStallThreshold)) {
+            ToastUtils.show("请输入上拉力矩堵转阈值!");
+            mEtPullUpTorqueStallThreshold.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(pullUpTorqueStallThreshold);
+            if (value < 1.00 || value > 6.00) {
                 ToastUtils.show("请输入正确的上拉力矩堵转阈值!");
                 mEtPullUpTorqueStallThreshold.requestFocus();
                 return false;
             }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的上拉力矩堵转阈值!");
+            mEtPullUpTorqueStallThreshold.requestFocus();
+            return false;
+        }
 
-            if (TextUtils.isEmpty(pullUpTorqueDetectionTime)) {
-                ToastUtils.show("请输入上拉力矩检测判断时间!");
-                mEtPullUpTorqueDetectionTime.requestFocus();
-                return false;
-            }
-            try {
-                double value = Double.parseDouble(pullUpTorqueDetectionTime);
-                if (value < 0.01 || value > 5.00) {
-                    ToastUtils.show("请输入正确的上拉力矩检测判断时间!");
-                    mEtPullUpTorqueDetectionTime.requestFocus();
-                    return false;
-                }
-            } catch (Exception ex) {
+        if (TextUtils.isEmpty(pullUpTorqueDetectionTime)) {
+            ToastUtils.show("请输入上拉力矩检测判断时间!");
+            mEtPullUpTorqueDetectionTime.requestFocus();
+            return false;
+        }
+        try {
+            double value = Double.parseDouble(pullUpTorqueDetectionTime);
+            if (value < 0.01 || value > 5.00) {
                 ToastUtils.show("请输入正确的上拉力矩检测判断时间!");
                 mEtPullUpTorqueDetectionTime.requestFocus();
                 return false;
             }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的上拉力矩检测判断时间!");
+            mEtPullUpTorqueDetectionTime.requestFocus();
+            return false;
         }
         return true;
     }
@@ -486,21 +484,21 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     private void processSave() {
         try {
             AdmeLockedRotorDetectionEntity entity = new AdmeLockedRotorDetectionEntity();
-            entity.setLowtbtss(mSbDecentralizedEnable.isChecked() ? "1" : "0");
-            entity.setNumpput(decentralizedPulsesPerUnitTime);
-            entity.setPdajtime(decentralizedPulseDetectionTime);
-            entity.setDetintiona(decentralizedPulseDetectionStart);
-            entity.setDetintionb(decentralizedPulseDetectionEnd);
-            entity.setLowtorblothr(decentralizedTorqueStallThreshold);
-            entity.setLowtordetime(decentralizedTorqueDetectionTime);
-            entity.setLowsusrana(decentralizedTorqueDetectionStart);
-            entity.setLowsusranb(decentralizedTorqueDetectionEnd);
+            entity.setLowtbtss(mSbDownEnable.isChecked() ? "1" : "0");
+            entity.setNumpput(downPulsesPerUnitTime);//下放单位时间脉冲数
+            entity.setPdajtime(downPulseDetectionTime);//下放脉冲检测判断时间
+            entity.setLowsusranb(downSlowStartIntervalEndValue);//下放缓起区间终值
+            entity.setLowsusrana(downSlowStopIntervalStartValue);//下放缓停区间起始值
+            entity.setDetintiona(downStallDetectionIntervalStartValue);//堵转检测区间起始值
+            entity.setDetintionb(downStallDetectionIntervalEndValue);//堵转检测区间终值
+            entity.setLowtorblothr(downTorqueStallThreshold);//下放力矩堵转阈值
+            entity.setLowtordetime(downTorqueDetectionTime);//下放力矩检测判断时间
 
             entity.setUptbtss(mSbPullUpEnable.isChecked() ? "1" : "0");
-            entity.setUptorblothr(pullUpTorqueStallThreshold);
-            entity.setUptordetime(pullUpTorqueDetectionTime);
-            entity.setUpsusrana(pullUpTorqueDetectionStart);
-            entity.setUpsusranb(pullUpTorqueDetectionEnd);
+            entity.setUpsusranb(pullUpSlowStartIntervalEndValue);//上拉缓起区间终值
+            entity.setUpsusrana(pullUpSlowStopIntervalStartValue);//上拉缓停区间起始值
+            entity.setUptorblothr(pullUpTorqueStallThreshold);//上拉力矩堵转阈值
+            entity.setUptordetime(pullUpTorqueDetectionTime);//上拉力矩检测判断时间
 
             mBtnSave.setEnabled(false);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
@@ -628,67 +626,62 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             lockedRotorDetectionInfo = new AdmeLockedRotorDetectionInfo();
             return;
         }
-        decentralizedPulsesPerUnitTime = lockedRotorDetectionInfo.getNumpput().trim();
-        decentralizedPulseDetectionTime = lockedRotorDetectionInfo.getPdajtime().trim();
-        decentralizedPulseDetectionStart = lockedRotorDetectionInfo.getDetintiona().trim();
-        decentralizedPulseDetectionEnd = lockedRotorDetectionInfo.getDetintionb().trim();
+        downPulsesPerUnitTime = lockedRotorDetectionInfo.getNumpput().trim();//下放单位时间脉冲数
+        downPulseDetectionTime = lockedRotorDetectionInfo.getPdajtime().trim();//下放脉冲检测判断时间
+        downSlowStartIntervalEndValue = lockedRotorDetectionInfo.getLowsusranb().trim();//下放缓起区间终值(加速阶段)
+        downSlowStopIntervalStartValue = lockedRotorDetectionInfo.getLowsusrana().trim();//下放缓停区间起始值(减速阶段)
+        downStallDetectionIntervalStartValue = lockedRotorDetectionInfo.getDetintiona().trim();//堵转检测区间起始值
+        downStallDetectionIntervalEndValue = lockedRotorDetectionInfo.getDetintionb().trim();//堵转检测区间终值
+        downTorqueStallThreshold = lockedRotorDetectionInfo.getLowtorblothr().trim();//下放力矩堵转阈值
+        downTorqueDetectionTime = lockedRotorDetectionInfo.getLowtordetime().trim();//下放力矩检测判断时间
 
-        decentralizedTorqueStallThreshold = lockedRotorDetectionInfo.getLowtorblothr().trim();
-        decentralizedTorqueDetectionTime = lockedRotorDetectionInfo.getLowtordetime().trim();
-        decentralizedTorqueDetectionStart = lockedRotorDetectionInfo.getLowsusrana().trim();
-        decentralizedTorqueDetectionEnd = lockedRotorDetectionInfo.getLowsusranb().trim();
-
-        pullUpTorqueStallThreshold = lockedRotorDetectionInfo.getUptorblothr().trim();
-        pullUpTorqueDetectionTime = lockedRotorDetectionInfo.getUptordetime().trim();
-        pullUpTorqueDetectionStart = lockedRotorDetectionInfo.getUpsusrana().trim();
-        pullUpTorqueDetectionEnd = lockedRotorDetectionInfo.getUpsusranb().trim();
+        pullUpSlowStartIntervalEndValue = lockedRotorDetectionInfo.getUpsusranb().trim();//上拉缓起区间终值(加速阶段)
+        pullUpSlowStopIntervalStartValue = lockedRotorDetectionInfo.getUpsusrana().trim();//上拉缓停区间起始值(减速阶段)
+        pullUpTorqueStallThreshold = lockedRotorDetectionInfo.getUptorblothr().trim();//上拉力矩堵转阈值
+        pullUpTorqueDetectionTime = lockedRotorDetectionInfo.getUptordetime().trim();//上拉力矩检测判断时间
 
         if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
-            mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(false);
-            decentralizedChildMaskLayer.setVisibility(View.VISIBLE);
+            mSbDownEnable.setCheckedImmediatelyNoEvent(false);
+            downMeterChildLayout.setVisibility(View.GONE);
         } else {
-            mSbDecentralizedEnable.setCheckedImmediatelyNoEvent(true);
-            decentralizedChildMaskLayer.setVisibility(View.GONE);
+            mSbDownEnable.setCheckedImmediatelyNoEvent(true);
+            downMeterChildLayout.setVisibility(View.VISIBLE);
         }
-
         if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
-            pullUpChildMaskLayer.setVisibility(View.VISIBLE);
-            if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
-                mBtnSave.setVisibility(View.GONE);
-            }
+            pullUpMeterChildLayout.setVisibility(View.GONE);
         } else {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
-            pullUpChildMaskLayer.setVisibility(View.GONE);
+            pullUpMeterChildLayout.setVisibility(View.VISIBLE);
         }
 
         try {
-            mEtDecentralizedPulsesPerUnitTime.setText(decentralizedPulsesPerUnitTime);
+            mEtDownPulsesPerUnitTime.setText(downPulsesPerUnitTime);
 
-            decimalFormat.applyPattern("#.#");
-            decentralizedPulseDetectionTime = decimalFormat.format(Double.parseDouble(decentralizedPulseDetectionTime));
-            mEtDecentralizedPulseDetectionTime.setText(decentralizedPulseDetectionTime);
+            decimalFormat.applyPattern("#");
+            downPulseDetectionTime = decimalFormat.format(Double.parseDouble(downPulseDetectionTime));
+            mEtDownPulseDetectionTime.setText(downPulseDetectionTime);
+
+            seekBarDownSlowStartStopInterval.setProgress(Integer.parseInt(downSlowStartIntervalEndValue), Integer.parseInt(downSlowStopIntervalStartValue));
+            seekBarDownStallDetectionInterval.setProgress(Integer.parseInt(downStallDetectionIntervalStartValue), Integer.parseInt(downStallDetectionIntervalEndValue));
 
             decimalFormat.applyPattern("#.##");
-            decentralizedTorqueStallThreshold = decimalFormat.format(Double.parseDouble(decentralizedTorqueStallThreshold));
-            mEtDecentralizedTorqueStallThreshold.setText(decentralizedTorqueStallThreshold);
+            downTorqueStallThreshold = decimalFormat.format(Double.parseDouble(downTorqueStallThreshold));
+            mEtDownTorqueStallThreshold.setText(downTorqueStallThreshold);
 
-            decimalFormat.applyPattern("#.##");
-            decentralizedTorqueDetectionTime = decimalFormat.format(Double.parseDouble(decentralizedTorqueDetectionTime));
-            mEtDecentralizedTorqueDetectionTime.setText(decentralizedTorqueDetectionTime);
+            decimalFormat.applyPattern("#");
+            downTorqueDetectionTime = decimalFormat.format(Double.parseDouble(downTorqueDetectionTime));
+            mEtDownTorqueDetectionTime.setText(downTorqueDetectionTime);
+
+            seekBarPullUpSlowStartStopInterval.setProgress(Integer.parseInt(pullUpSlowStartIntervalEndValue), Integer.parseInt(pullUpSlowStopIntervalStartValue));
 
             decimalFormat.applyPattern("#.##");
             pullUpTorqueStallThreshold = decimalFormat.format(Double.parseDouble(pullUpTorqueStallThreshold));
             mEtPullUpTorqueStallThreshold.setText(pullUpTorqueStallThreshold);
 
-            decimalFormat.applyPattern("#.##");
+            decimalFormat.applyPattern("#");
             pullUpTorqueDetectionTime = decimalFormat.format(Double.parseDouble(pullUpTorqueDetectionTime));
             mEtPullUpTorqueDetectionTime.setText(pullUpTorqueDetectionTime);
-
-            seekBarDecentralizedStallDetectionInterval.setProgress(Integer.parseInt(decentralizedPulseDetectionStart), Integer.parseInt(decentralizedPulseDetectionEnd));
-            seekBarDecentralizedSlowStopInterval.setProgress(Integer.parseInt(decentralizedTorqueDetectionStart));
-            seekBarPullUpSlowStopInterval.setProgress(Integer.parseInt(pullUpTorqueDetectionStart));
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -696,58 +689,56 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
     private void doAfterSetting() {
         if (lockedRotorDetectionInfo != null) {
-            if (!mSbDecentralizedEnable.isChecked()) {
+            if (!mSbDownEnable.isChecked()) {
                 lockedRotorDetectionInfo.setLowtbtss("0");
             } else {
                 lockedRotorDetectionInfo.setLowtbtss("1");
-                lockedRotorDetectionInfo.setNumpput(decentralizedPulsesPerUnitTime);
-                lockedRotorDetectionInfo.setPdajtime(decentralizedPulseDetectionTime);
-                lockedRotorDetectionInfo.setDetintiona(decentralizedPulseDetectionStart);
-                lockedRotorDetectionInfo.setDetintionb(decentralizedPulseDetectionEnd);
-                lockedRotorDetectionInfo.setLowtorblothr(decentralizedTorqueStallThreshold);
-                lockedRotorDetectionInfo.setLowtordetime(decentralizedTorqueDetectionTime);
-                lockedRotorDetectionInfo.setLowsusrana(decentralizedTorqueDetectionStart);
-                lockedRotorDetectionInfo.setLowsusranb(decentralizedTorqueDetectionEnd);
+                lockedRotorDetectionInfo.setNumpput(downPulsesPerUnitTime);
+                lockedRotorDetectionInfo.setPdajtime(downPulseDetectionTime);
+                lockedRotorDetectionInfo.setDetintionb(downStallDetectionIntervalEndValue);
+                lockedRotorDetectionInfo.setDetintiona(downStallDetectionIntervalStartValue);
+                lockedRotorDetectionInfo.setLowsusrana(downSlowStopIntervalStartValue);
+                lockedRotorDetectionInfo.setLowsusranb(downSlowStartIntervalEndValue);
+                lockedRotorDetectionInfo.setLowtorblothr(downTorqueStallThreshold);
+                lockedRotorDetectionInfo.setLowtordetime(downTorqueDetectionTime);
             }
-
             if (!mSbPullUpEnable.isChecked()) {
                 lockedRotorDetectionInfo.setUptbtss("0");
             } else {
                 lockedRotorDetectionInfo.setUptbtss("1");
+                lockedRotorDetectionInfo.setUpsusranb(pullUpSlowStartIntervalEndValue);
+                lockedRotorDetectionInfo.setUpsusrana(pullUpSlowStopIntervalStartValue);
                 lockedRotorDetectionInfo.setUptorblothr(pullUpTorqueStallThreshold);
                 lockedRotorDetectionInfo.setUptordetime(pullUpTorqueDetectionTime);
-                lockedRotorDetectionInfo.setUpsusrana(pullUpTorqueDetectionStart);
-                lockedRotorDetectionInfo.setUpsusranb(pullUpTorqueDetectionEnd);
             }
         }
         mBtnSave.setEnabled(true);
         //TODO  打开注释，设置为浏览模式
 //        configPageViewModel.configPageEditableChanged.setValue(false);
-
         saveConfigInfo();
     }
 
     @Override
     protected void onEditableChanged(boolean isEditable) {
         if (isEditable) {
-            mEtDecentralizedPulsesPerUnitTime.setHint("请输入");
-            mEtDecentralizedPulseDetectionTime.setHint("请输入");
-            mEtDecentralizedTorqueStallThreshold.setHint("请输入");
-            mEtDecentralizedTorqueDetectionTime.setHint("请输入");
+            mEtDownPulsesPerUnitTime.setHint("请输入");
+            mEtDownPulseDetectionTime.setHint("请输入");
+            mEtDownTorqueStallThreshold.setHint("请输入");
+            mEtDownTorqueDetectionTime.setHint("请输入");
             mEtPullUpTorqueStallThreshold.setHint("请输入");
             mEtPullUpTorqueDetectionTime.setHint("请输入");
         } else {
-            mEtDecentralizedPulsesPerUnitTime.setHint("");
-            mEtDecentralizedPulseDetectionTime.setHint("");
-            mEtDecentralizedTorqueStallThreshold.setHint("");
-            mEtDecentralizedTorqueDetectionTime.setHint("");
+            mEtDownPulsesPerUnitTime.setHint("");
+            mEtDownPulseDetectionTime.setHint("");
+            mEtDownTorqueStallThreshold.setHint("");
+            mEtDownTorqueDetectionTime.setHint("");
             mEtPullUpTorqueStallThreshold.setHint("");
             mEtPullUpTorqueDetectionTime.setHint("");
 
-            mEtDecentralizedPulsesPerUnitTime.clearFocus();
-            mEtDecentralizedPulseDetectionTime.clearFocus();
-            mEtDecentralizedTorqueStallThreshold.clearFocus();
-            mEtDecentralizedTorqueDetectionTime.clearFocus();
+            mEtDownPulsesPerUnitTime.clearFocus();
+            mEtDownPulseDetectionTime.clearFocus();
+            mEtDownTorqueStallThreshold.clearFocus();
+            mEtDownTorqueDetectionTime.clearFocus();
             mEtPullUpTorqueStallThreshold.clearFocus();
             mEtPullUpTorqueDetectionTime.clearFocus();
 
