@@ -62,12 +62,6 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class AdmeBasicParamConfigView extends LinearLayout {
-    @BindView(R.id.tv_inclinometer_type)
-    TextView mTvInclinometerType;
-
-    @BindView(R.id.et_collector_address)
-    ClearEditText mEtCollectorAddress;//采集器地址
-
     @BindView(R.id.et_mac_address)
     ClearEditText mEtMacAddress;//Mac 地址
 
@@ -104,12 +98,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.ll_inclinometer_type)
-    ViewGroup inclinometerTypeLayout;
-
-    @BindView(R.id.ll_collector_address)
-    ViewGroup collectorAddressLayout;
-
     @BindView(R.id.ll_mac_address)
     ViewGroup macAddressLayout;
 
@@ -142,13 +130,11 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private String measurementIntervalPerRound;// 每轮测量间隔
     private String startTimePerRound;// 每轮测量开始时间
 
-    private String inclinometerType;// 测斜仪类型
     private String address;// 采集器地址/Mac 地址
     private String inclinometerTubeHoleDepth;// 测斜管孔深(m)
     private String decentralizationSpeed;// 下放速度(r/min)
     private String decentralizationWaitingTime;//下放等待时间(min)
     private String dataSettlementMethod;// 数据解算方式
-    private final String[] inclinometerTypes = new String[]{"433测斜仪", "蓝牙测斜仪"};
     private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
     private final String[] measIntervalPerRounds = new String[]{"1", "2", "3", "4", "6", "8", "12", "24"};
     private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
@@ -183,9 +169,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     }
 
     private void initView() {
-        mEtCollectorAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
-        mEtCollectorAddress.setHint("0-32");
-
         mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
         mEtMacAddress.setHint("XXXXXXXXXXXX");
 
@@ -196,9 +179,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
 
         mEtDecentralizationWaitingTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
         mEtDecentralizationWaitingTime.setHint("1-32");
-
-        mTvInclinometerType.setText(inclinometerTypes[0]);
-        inclinometerType = "0";
 
         mTvDataSettlementMethod.setText(settlementMethods[0]);
         dataSettlementMethod = "0";
@@ -291,34 +271,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     }
 
     /**
-     * 选择测斜仪类型
-     */
-    public void showInclinometerTypeDialog(Context context) {
-        int pos = Arrays.asList(inclinometerTypes).indexOf(String.valueOf(mTvInclinometerType.getText()));
-        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
-        new XPopup.Builder(context)
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", inclinometerTypes,
-                        null, pos,
-                        new OnSelectListener() {
-                            @Override
-                            public void onSelect(int position, String text) {
-                                mTvInclinometerType.setText(text);
-                                if (position == 0) {
-                                    inclinometerType = "0";
-                                    collectorAddressLayout.setVisibility(View.VISIBLE);
-                                    macAddressLayout.setVisibility(View.GONE);
-                                } else {
-                                    inclinometerType = "1";
-                                    collectorAddressLayout.setVisibility(View.GONE);
-                                    macAddressLayout.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
-                .show();
-    }
-
-    /**
      * 选择测量方式
      */
     public void showMeasureMethodDialog(Context context) {
@@ -399,32 +351,16 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     }
 
     public boolean checkValueIsValid() {
-        if (inclinometerType.equals("0")) {
-            address = mEtCollectorAddress.getText().toString().trim();
-
-            if (TextUtils.isEmpty(address)) {
-                ToastUtils.show("请输入采集器地址!");
-                mEtMacAddress.requestFocus();
-                return false;
-            }
-            if (Integer.parseInt(address) < 0 || Integer.parseInt(address) > 32) {
-                ToastUtils.show("请输入正确的采集器地址!");
-                mEtCollectorAddress.requestFocus();
-                return false;
-            }
-        } else {
-            address = mEtMacAddress.getText().toString().trim();
-
-            if (TextUtils.isEmpty(address)) {
-                ToastUtils.show("请输入Mac地址!");
-                mEtMacAddress.requestFocus();
-                return false;
-            }
-            if (!ValidateUtil.isValidMacAddressNoColon(address)) {
-                ToastUtils.show("请输入正确的Mac地址!");
-                mEtMacAddress.requestFocus();
-                return false;
-            }
+        address = mEtMacAddress.getText().toString().trim();
+        if (TextUtils.isEmpty(address)) {
+            ToastUtils.show("请输入Mac地址!");
+            mEtMacAddress.requestFocus();
+            return false;
+        }
+        if (!ValidateUtil.isValidMacAddressNoColon(address)) {
+            ToastUtils.show("请输入正确的Mac地址!");
+            mEtMacAddress.requestFocus();
+            return false;
         }
 
         if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
@@ -520,7 +456,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         String command = "";
         try {
             AdmeBasicConfigEntity entity = new AdmeBasicConfigEntity();
-            entity.setInctype(basicConfigParam.getInctype().equals("NullKey") ? "NullKey" : inclinometerType);
+            entity.setInctype(basicConfigParam.getInctype().equals("NullKey") ? "NullKey" : basicConfigParam.getInctype());
             entity.setAddress(basicConfigParam.getAddress().equals("NullKey") ? "NullKey" : address);
             decimalFormat.applyPattern("#.##");
             entity.setInterdeep(basicConfigParam.getInterdeep().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth)));
@@ -634,28 +570,14 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             basicConfigParam = new AdmeBasicConfigInfo();
             return;
         }
-        inclinometerType = basicConfigParam.getInctype().trim();
         address = basicConfigParam.getAddress().trim();
         inclinometerTubeHoleDepth = basicConfigParam.getInterdeep().trim();
         decentralizationSpeed = basicConfigParam.getDownspeed().trim();
         decentralizationWaitingTime = basicConfigParam.getDownwaitetime().trim();
         dataSettlementMethod = basicConfigParam.getDatatype().trim();
 
-        if (inclinometerType.equals("NullKey")) {
-            inclinometerTypeLayout.setVisibility(View.GONE);
-        } else {
-            if (inclinometerType.equals("0")) {
-                mTvInclinometerType.setText(inclinometerTypes[0]);
-                mEtCollectorAddress.setText(address);
-                collectorAddressLayout.setVisibility(View.VISIBLE);
-                macAddressLayout.setVisibility(View.GONE);
-            } else {
-                mTvInclinometerType.setText(inclinometerTypes[1]);
-                mEtMacAddress.setText(address);
-                collectorAddressLayout.setVisibility(View.GONE);
-                macAddressLayout.setVisibility(View.VISIBLE);
-            }
-        }
+        mEtMacAddress.setText(address);
+        macAddressLayout.setVisibility(View.VISIBLE);
         try {
             if (inclinometerTubeHoleDepth.equals("NullKey")) {
                 inclinometerTubeHoleDepthLayout.setVisibility(View.GONE);
@@ -832,8 +754,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     }
 
     public void onEditableChanged(boolean isEditable) {
-        inclinometerTypeLayout.setEnabled(isEditable);
-        mEtCollectorAddress.setEnabled(isEditable);
         mEtMacAddress.setEnabled(isEditable);
         mEtWaitingIntervalPerRound.setEnabled(isEditable);
         mEtInclinometerTubeHoleDepth.setEnabled(isEditable);
@@ -842,8 +762,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         dataSettlementMethodLayout.setEnabled(isEditable);
         mSbDecentralizedEnable.setEnabled(isEditable);
         if (isEditable) {
-            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
-            mEtCollectorAddress.setHint("0-32");
             mEtMacAddress.setHint("XXXXXXXXXXXX");
             mTvMeasureMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
             mEtWaitingIntervalPerRound.setHint("请输入");
@@ -852,8 +770,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             mEtDecentralizationWaitingTime.setHint("1-32");
             mTvDataSettlementMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
         } else {
-            mTvInclinometerType.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            mEtCollectorAddress.setHint("");
             mEtMacAddress.setHint("");
             mTvMeasureMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mEtWaitingIntervalPerRound.setHint("");

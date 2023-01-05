@@ -78,16 +78,13 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
-    @OnClick({R.id.ll_inclinometer_type, R.id.ll_low_power_mode, R.id.btn_confirm})
+    @OnClick({R.id.ll_low_power_mode, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
         }
         int id = view.getId();
-        if (id == R.id.ll_inclinometer_type) {
-            admeInclinometerView.showInclinometerTypeDialog(mActivity);
-
-        } else if (id == R.id.ll_low_power_mode) {
+        if (id == R.id.ll_low_power_mode) {
             admeInclinometerView.showLowPowerModeDialog(mActivity);
 
         } else if (id == R.id.btn_confirm) {

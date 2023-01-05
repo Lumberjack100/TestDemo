@@ -25,7 +25,7 @@
     <!--  ADME 执行结构日志输出方式-->
     <string-array name="adme_device_mode">
         <item>设备配置模式</item>
-        <item>自动检测模式</item>
+        <item>自动监测模式</item>
         <item>异常保护模式</item>
     </string-array>
 
