@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hjq.toast.ToastUtils;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
+import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -223,6 +224,8 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
                 float leftValue = view.getLeftSeekBar().getProgress();
                 float rightValue = view.getRightSeekBar().getProgress();
+                float downStallDetectionEndValue = seekBarDownStallDetectionInterval.getRightSeekBar().getProgress();
+
                 if (leftValue >= 50) {
                     ToastUtils.show("下放缓起区间终值不能大于50%");
                     view.setProgress(49);
@@ -230,6 +233,9 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                 if (rightValue < 50) {
                     ToastUtils.show("下放缓停区间起始值不能小于50%");
                     view.setProgress(leftValue, 50);
+                }
+                if (downStallDetectionEndValue >= rightValue) {
+                    seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightValue - 1);
                 }
             }
         });
@@ -253,6 +259,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
                 float leftValue = view.getLeftSeekBar().getProgress();
                 float rightValue = view.getRightSeekBar().getProgress();
+                float downSlowStopStartValue = seekBarDownSlowStartStopInterval.getRightSeekBar().getProgress();
                 if (leftValue >= 50) {
                     ToastUtils.show("下放堵转检测区间起始值不能大于50%");
                     view.setProgress(49);
@@ -260,6 +267,9 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                 if (rightValue < 50) {
                     ToastUtils.show("下放堵转检测区间终值不能小于50%");
                     view.setProgress(leftValue, 50);
+                }
+                if (rightValue >= downSlowStopStartValue) {
+                    seekBarDownSlowStartStopInterval.setProgress(seekBarDownSlowStartStopInterval.getLeftSeekBar().getProgress(), rightValue >= 100 ? 100 : rightValue + 1);
                 }
             }
         });
@@ -378,7 +388,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             try {
                 int value = Integer.parseInt(downPulsesPerUnitTime);
                 if (value < 1 || value > 10000) {
-                    ToastUtils.show("请输入正确的下放单位时间脉冲数!");
+                    MessageDialog.show("提示", "下放单位时间脉冲数不能小于1或大于10000!", "我已知晓");
                     mEtDownPulsesPerUnitTime.requestFocus();
                     return false;
                 }
@@ -396,7 +406,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             try {
                 double value = Double.parseDouble(downPulseDetectionTime);
                 if (value < 0.1 || value > 10.0) {
-                    ToastUtils.show("请输入正确的下放脉冲检测判断时间!");
+                    MessageDialog.show("提示", "下放脉冲检测判断时间不能小于0.1或大于10!", "我已知晓");
                     mEtDownPulseDetectionTime.requestFocus();
                     return false;
                 }
@@ -415,7 +425,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         try {
             double value = Double.parseDouble(downTorqueStallThreshold);
             if (value < 0.00 || value > 2.00) {
-                ToastUtils.show("请输入正确的下放力矩堵转阈值!");
+                MessageDialog.show("提示", "下放力矩堵转阈值不能小于0或大于2!", "我已知晓");
                 mEtDownTorqueStallThreshold.requestFocus();
                 return false;
             }
@@ -433,7 +443,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         try {
             double value = Double.parseDouble(downTorqueDetectionTime);
             if (value < 0.01 || value > 5.00) {
-                ToastUtils.show("请输入正确的下放力矩检测判断时间!");
+                MessageDialog.show("提示", "下放力矩检测判断时间不能小于0.01或大于5!", "我已知晓");
                 mEtDownTorqueDetectionTime.requestFocus();
                 return false;
             }
@@ -451,7 +461,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         try {
             double value = Double.parseDouble(pullUpTorqueStallThreshold);
             if (value < 1.00 || value > 6.00) {
-                ToastUtils.show("请输入正确的上拉力矩堵转阈值!");
+                MessageDialog.show("提示", "上拉力矩堵转阈值不能小于1或大于6!", "我已知晓");
                 mEtPullUpTorqueStallThreshold.requestFocus();
                 return false;
             }
@@ -469,7 +479,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         try {
             double value = Double.parseDouble(pullUpTorqueDetectionTime);
             if (value < 0.01 || value > 5.00) {
-                ToastUtils.show("请输入正确的上拉力矩检测判断时间!");
+                MessageDialog.show("提示", "上拉力矩检测判断时间不能小于0.01或大于5!", "我已知晓");
                 mEtPullUpTorqueDetectionTime.requestFocus();
                 return false;
             }
@@ -598,7 +608,8 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                     mBtnSave.setEnabled(true);
                     return;
                 }
-                doAfterSetting();
+                mBtnSave.setEnabled(true);
+                saveConfigInfo();
             }
             break;
 
@@ -658,7 +669,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         try {
             mEtDownPulsesPerUnitTime.setText(downPulsesPerUnitTime);
 
-            decimalFormat.applyPattern("#");
+            decimalFormat.applyPattern("#.#");
             downPulseDetectionTime = decimalFormat.format(Double.parseDouble(downPulseDetectionTime));
             mEtDownPulseDetectionTime.setText(downPulseDetectionTime);
 
@@ -669,7 +680,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             downTorqueStallThreshold = decimalFormat.format(Double.parseDouble(downTorqueStallThreshold));
             mEtDownTorqueStallThreshold.setText(downTorqueStallThreshold);
 
-            decimalFormat.applyPattern("#");
+            decimalFormat.applyPattern("#.#");
             downTorqueDetectionTime = decimalFormat.format(Double.parseDouble(downTorqueDetectionTime));
             mEtDownTorqueDetectionTime.setText(downTorqueDetectionTime);
 
@@ -679,43 +690,12 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             pullUpTorqueStallThreshold = decimalFormat.format(Double.parseDouble(pullUpTorqueStallThreshold));
             mEtPullUpTorqueStallThreshold.setText(pullUpTorqueStallThreshold);
 
-            decimalFormat.applyPattern("#");
+            decimalFormat.applyPattern("#.#");
             pullUpTorqueDetectionTime = decimalFormat.format(Double.parseDouble(pullUpTorqueDetectionTime));
             mEtPullUpTorqueDetectionTime.setText(pullUpTorqueDetectionTime);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    private void doAfterSetting() {
-        if (lockedRotorDetectionInfo != null) {
-            if (!mSbDownEnable.isChecked()) {
-                lockedRotorDetectionInfo.setLowtbtss("0");
-            } else {
-                lockedRotorDetectionInfo.setLowtbtss("1");
-                lockedRotorDetectionInfo.setNumpput(downPulsesPerUnitTime);
-                lockedRotorDetectionInfo.setPdajtime(downPulseDetectionTime);
-                lockedRotorDetectionInfo.setDetintionb(downStallDetectionIntervalEndValue);
-                lockedRotorDetectionInfo.setDetintiona(downStallDetectionIntervalStartValue);
-                lockedRotorDetectionInfo.setLowsusrana(downSlowStopIntervalStartValue);
-                lockedRotorDetectionInfo.setLowsusranb(downSlowStartIntervalEndValue);
-                lockedRotorDetectionInfo.setLowtorblothr(downTorqueStallThreshold);
-                lockedRotorDetectionInfo.setLowtordetime(downTorqueDetectionTime);
-            }
-            if (!mSbPullUpEnable.isChecked()) {
-                lockedRotorDetectionInfo.setUptbtss("0");
-            } else {
-                lockedRotorDetectionInfo.setUptbtss("1");
-                lockedRotorDetectionInfo.setUpsusranb(pullUpSlowStartIntervalEndValue);
-                lockedRotorDetectionInfo.setUpsusrana(pullUpSlowStopIntervalStartValue);
-                lockedRotorDetectionInfo.setUptorblothr(pullUpTorqueStallThreshold);
-                lockedRotorDetectionInfo.setUptordetime(pullUpTorqueDetectionTime);
-            }
-        }
-        mBtnSave.setEnabled(true);
-        //TODO  打开注释，设置为浏览模式
-//        configPageViewModel.configPageEditableChanged.setValue(false);
-        saveConfigInfo();
     }
 
     @Override

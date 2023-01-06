@@ -25,7 +25,7 @@
 
                 <TextView
                     style="@style/SwitchButton_TitleStyle"
-                    android:text="下放计米堵转检测"
+                    android:text="下放堵转计米检测"
                     android:textStyle="bold" />
 
                 <com.kyleduo.switchbutton.SwitchButton
@@ -207,7 +207,7 @@
 
                 <TextView
                     style="@style/SwitchButton_TitleStyle"
-                    android:text="下放力矩堵转检测"
+                    android:text="下放堵转力矩检测"
                     android:textStyle="bold" />
 
             </RelativeLayout>
@@ -261,7 +261,7 @@
 
                 <TextView
                     style="@style/SwitchButton_TitleStyle"
-                    android:text="上拉计米堵转检测"
+                    android:text="上拉堵转计米检测"
                     android:textStyle="bold" />
 
                 <com.kyleduo.switchbutton.SwitchButton
@@ -363,7 +363,7 @@
 
                 <TextView
                     style="@style/SwitchButton_TitleStyle"
-                    android:text="上拉力矩堵转检测"
+                    android:text="上拉堵转力矩检测"
                     android:textStyle="bold" />
 
             </RelativeLayout>

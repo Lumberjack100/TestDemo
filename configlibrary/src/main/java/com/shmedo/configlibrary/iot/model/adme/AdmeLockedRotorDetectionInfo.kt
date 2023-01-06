@@ -32,7 +32,7 @@ class AdmeLockedRotorDetectionInfo {
     var lowsusrana //下放缓停区间起始值
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
-    var lowsusranb //下放缓停区间终值
+    var lowsusranb //下放缓起区间终值
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
     var uptbtss //上拉堵转缓停（0:关闭，1:开启）
@@ -47,7 +47,7 @@ class AdmeLockedRotorDetectionInfo {
     var upsusrana //上拉缓停区间起始值
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
-    var upsusranb //上拉缓停区间终值
+    var upsusranb //上拉缓起区间终值
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
 }
