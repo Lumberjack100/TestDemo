@@ -339,7 +339,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
                     ToastUtils.show(errMsg);
                     return;
                 }
-                doAfterSetting();
+                ToastUtils.show("保存成功");
             }
             break;
 
@@ -365,7 +365,6 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         mEtCalculatingTime.setText(calculatTime);
         mEtStandbyTime.setText(standbyTime);
         mEtCollectTime.setText(collectTime);
-
         try {
             if (sensitivity.equals("NullKey")) {
                 sensitivityLayout.setVisibility(View.GONE);
@@ -377,16 +376,6 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    private void doAfterSetting() {
-        collectorAddress = mEtCollectorAddress.getText().toString().trim();
-        calculatTime = mEtCalculatingTime.getText().toString().trim();
-        standbyTime = mEtStandbyTime.getText().toString().trim();
-        collectTime = mEtCollectTime.getText().toString().trim();
-        sensitivity = mEtSensitivity.getText().toString().trim();
-
-        ToastUtils.show("保存成功");
     }
 
     @Override
