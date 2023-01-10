@@ -56,6 +56,8 @@ interface AppContants {
             const val SENSOR_ADDRESS_LIST = "sensor_address_list"
             const val SENSOR_ADDRESS = "sensor_address"
             const val SENSOR_PARAM = "sensor_param"
+            const val IS_VIBRATING_WIRE_SENSOR = "is_vibrating_wire_sensor"
+
 
             //数据中心配置方式
             const val DATA_CENTER_CONFIG_METHOD = "data_center_config_method"

@@ -8,9 +8,9 @@ import android.text.TextUtils
  */
 enum class IOTSensorType(val code: String, val description: String) {
     /**
-     * 振弦式采集器
+     * 振弦传感器
      */
-    VW08("0", "振弦式采集器"),
+    VW08("0", "振弦传感器"),
 
     /**
      * 压电式雨量计
@@ -71,6 +71,7 @@ enum class IOTSensorType(val code: String, val description: String) {
      * 量水堰传感器
      */
     WEIR("22", "量水堰计"),
+
     STATIC_LEVEL("24", "静力水准"),
 
     /**
@@ -140,14 +141,6 @@ enum class IOTSensorType(val code: String, val description: String) {
                 return false
 
             return values().any { it.code == coll }
-        }
-
-        @JvmStatic
-        fun isVibratingWireSensor(type: IOTSensorType?): Boolean {
-            return when (type) {
-                KANG_PERCOLATE, GUDAN_PERCOLATE, GUDAN_SOIL_PRESSURE, GUDAN_STRESS, GUDAN_NOT_STRESS, GUDAN_DISPLACEMENT_METER, JUNXING_ZLJ_300T -> true
-                else -> false
-            }
         }
 
         @JvmStatic

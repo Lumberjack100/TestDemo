@@ -28,14 +28,16 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
     private IOTSensorType sensorType;
     private ArrayList<String> addressList = new ArrayList<>();
     private DasExternalSensorInfo externalSensorInfo;
+    private boolean isVibratingWireSensor = false;//是否振弦式传感器
 
 
-    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, DeviceInfo deviceInfo, IOTSensorType sensorType, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo) {
+    public static void startActivity(Context context, ActivityResultLauncher<Intent> launcher, DeviceInfo deviceInfo, IOTSensorType sensorType, ArrayList<String> addressList, DasExternalSensorInfo externalSensorInfo, boolean isVibratingWireSensor) {
         Intent intent = new Intent(context, DasExternalSensorConfigActivity.class);
         intent.putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         intent.putStringArrayListExtra(AppContants.Extras.SENSOR_ADDRESS_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, externalSensorInfo);
+        intent.putExtra(AppContants.Extras.IS_VIBRATING_WIRE_SENSOR, isVibratingWireSensor);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         launcher.launch(intent);
     }
@@ -55,13 +57,16 @@ public class DasExternalSensorConfigActivity extends BaseConfigFragmentContainer
         if (intent.getExtras().containsKey(AppContants.Extras.SENSOR_PARAM)) {
             externalSensorInfo = (DasExternalSensorInfo) intent.getSerializableExtra(AppContants.Extras.SENSOR_PARAM);
         }
+        if (intent.getExtras().containsKey(AppContants.Extras.IS_VIBRATING_WIRE_SENSOR)) {
+            isVibratingWireSensor = intent.getBooleanExtra(AppContants.Extras.IS_VIBRATING_WIRE_SENSOR, false);
+        }
         mToolbarTitle.setText(sensorType.getDescription());
     }
 
     @Override
     protected Fragment initFragment() {
         if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
-            if (IOTSensorType.isVibratingWireSensor(sensorType)) {
+            if (isVibratingWireSensor) {
                 mIvAction.setVisibility(View.VISIBLE);
                 mIvAction.setImageResource(R.drawable.ic_scan_device_code);
                 fragment = NetDasExternalVibratingWireSensorFragment.newInstance(addressList, sensorType, externalSensorInfo);

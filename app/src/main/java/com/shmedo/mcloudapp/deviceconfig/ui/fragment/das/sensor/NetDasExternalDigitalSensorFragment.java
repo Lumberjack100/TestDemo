@@ -373,7 +373,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", (String[]) modelTypeList.toArray(),
+                .asBottomList("", modelTypeList.toArray(new String[0]),
                         null, pos,
                         new OnSelectListener() {
                             @Override
@@ -398,7 +398,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", (String[]) childRadarTypeList.toArray(),
+                .asBottomList("",  childRadarTypeList.toArray(new String[0]),
                         null, pos,
                         new OnSelectListener() {
                             @Override

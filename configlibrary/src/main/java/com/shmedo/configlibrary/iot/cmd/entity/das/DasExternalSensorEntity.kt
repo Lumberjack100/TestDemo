@@ -76,9 +76,17 @@ class DasExternalSensorEntity : Validater {
             stringBuilder.append("=")
             stringBuilder.append(index)
             stringBuilder.append("&")
+            stringBuilder.append("type")
+            stringBuilder.append("=")
+            stringBuilder.append(type)
+            stringBuilder.append("&")
+            stringBuilder.append("addr")
+            stringBuilder.append("=")
+            stringBuilder.append(addr)
+            stringBuilder.append("&")
             for (f in javaClass.declaredFields) {
                 val value = f[this]
-                if (value != null && f.name != "index" && value != "NullKey") {
+                if (value != null && f.name != "index" && f.name != "type" && f.name != "addr" && value != "NullKey") {
                     stringBuilder.append(f.name)
                     stringBuilder.append("=")
                     stringBuilder.append(value)

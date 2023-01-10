@@ -240,7 +240,7 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(this)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", (String[]) sensorTypeList.toArray(),
+                .asBottomList("", sensorTypeList.toArray(new String[0]),
                         null, sensorTypePos,
                         new OnSelectListener() {
                             @Override
