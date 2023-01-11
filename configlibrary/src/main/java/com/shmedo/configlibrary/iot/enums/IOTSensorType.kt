@@ -144,10 +144,6 @@ enum class IOTSensorType(val code: String, val description: String) {
         }
 
         @JvmStatic
-        fun getSensorTypeByCollectorCode(code: String) = if (value(code) == VW08) {
-            KANG_PERCOLATE
-        } else {
-            value(code)
-        }
+        fun getSensorTypeByCollectorCode(code: String) =  value(code)
     }
 }

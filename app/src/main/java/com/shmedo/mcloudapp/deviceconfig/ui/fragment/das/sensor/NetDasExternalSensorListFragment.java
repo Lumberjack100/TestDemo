@@ -165,7 +165,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                     }
                 }
                 DasExternalSensorInfo dasExternalSensorInfo = sensorHashMap.get(curItem.getSensorAddress());
-                IOTSensorType sensorType = dasExternalSensorInfo.getType().equals("0") ? IOTSensorType.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(dasExternalSensorInfo.getType());
+                IOTSensorType sensorType =IOTSensorType.value(dasExternalSensorInfo.getType());
                 DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, deviceInfo, sensorType, addressList, dasExternalSensorInfo, isVibratingWireSensor);
             }
 
@@ -183,7 +183,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                     sensorType = IOTSensorType.getSensorTypeByCollectorCode(collectorInfo.getType());
                 } else {
                     DasExternalSensorInfo sensorInfo = (DasExternalSensorInfo) sensorHashMap.values().toArray()[0];
-                    sensorType = sensorInfo.getType().equals("0") ? IOTSensorType.getSensorTypeByCollectorCode(collectorInfo.getType()) : IOTSensorType.value(sensorInfo.getType());
+                    sensorType = IOTSensorType.value(sensorInfo.getType());
                 }
                 DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, deviceInfo, sensorType, addressList, null, isVibratingWireSensor);
             }
