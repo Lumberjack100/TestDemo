@@ -35,9 +35,13 @@ class VmsAisleParamEntity : Validater {
     override fun toString(): String {
         val stringBuilder = StringBuilder()
         try {
+            stringBuilder.append("channel")
+            stringBuilder.append("=")
+            vmsAisleNumber?.let { stringBuilder.append(it.toInt()) }
+            stringBuilder.append("&")
             for (f in javaClass.declaredFields) {
                 val value = f[this]
-                if (value != null && value != "NullKey") {
+                if (value != null && f.name != "vmsAisleNumber" && value != "NullKey") {
                     stringBuilder.append(f.name)
                     stringBuilder.append("=")
                     stringBuilder.append(value)
