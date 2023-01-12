@@ -42,6 +42,7 @@ enum class MonitoringType(val code: String, val description: String) {
     TURBIDITY_METER("10003", "浊度计"),
     HUMIDITY_METER("10004", "湿度计"),
     AXIAL_FORCE_METER("10005", "轴力计"),
+    AXIAL_FORCE_METER_MODULUS("10066", "轴力计(模数)"),
     PH_METER("10006", "PH计"),
     AVALANCHE_METER("10008", "崩滑仪"),
     DEVICE_LOG("20001", "设备日志"),

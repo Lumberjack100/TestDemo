@@ -96,7 +96,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     //MEMS计算方式下支持的传感器
     private List<String> digitalMonitorTypeList = Arrays.asList(MonitoringType.ACCELEROMETER.getDescription(), MonitoringType.INCLINOMETER_METER.getDescription(), MonitoringType.AVALANCHE_METER.getDescription());
     //模数计算方式下支持的传感器
-    private List<String> modulusMonitorTypeList = Arrays.asList(MonitoringType.AXIAL_FORCE_METER.getDescription());
+    private List<String> modulusMonitorTypeList = Arrays.asList(MonitoringType.AXIAL_FORCE_METER_MODULUS.getDescription());
     //倍率计算方式下支持的传感器
     private List<String> magnificationMonitorTypeList = Arrays.asList(MonitoringType.RAIN_METER.getDescription(), MonitoringType.BOREHOLE_INCLINOMETER.getDescription(), MonitoringType.CRACK_METER.getDescription(), MonitoringType.MUD_LEVEL_METER.getDescription(), MonitoringType.SOIL_MOISTURE_METER.getDescription(), MonitoringType.WATER_LEVEL_METER.getDescription());
 
