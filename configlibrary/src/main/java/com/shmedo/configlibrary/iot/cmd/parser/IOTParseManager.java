@@ -6,6 +6,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeAnthropomorphicMovementInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBasicConfigParamParser;
+import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeBrakePadControlInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeCurrentStateInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeExecutiveAgencyInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeGuideGrooveCalibrationInfoParser;
@@ -195,6 +196,7 @@ public class IOTParseManager {
                 AdmeLockedRotorDetectionInfoParser.class,
                 AdmeVoltageConfigParser.class,
                 AdmeAnthropomorphicMovementInfoParser.class,
+                AdmeBrakePadControlInfoParser.class,
                 M20BaseInfoParser.class,
                 E40SatelitteInfoParser.class,
                 E40RTKModeInfoParser.class,

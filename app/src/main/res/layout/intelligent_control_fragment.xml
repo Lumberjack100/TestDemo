@@ -104,6 +104,26 @@
 
         </RelativeLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_brake_pad_control"
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rl_torque_motor_reboot"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="刹车片控制方式" />
+
+            <TextView
+                android:id="@+id/tv_brake_pad_control"
+                style="@style/Common_ClickableItem_ValueStyle"
+                tools:text="自动" />
+
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout

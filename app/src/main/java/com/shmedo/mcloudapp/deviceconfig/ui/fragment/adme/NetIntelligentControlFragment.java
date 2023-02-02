@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,15 +14,19 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.interfaces.OnSelectListener;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeAnthropomorphicMovementEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeBrakePadControlEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeLowEnergyModelEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeStepperMotorEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeAnthropomorphicMovementInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeBrakePadControlInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeLowEnergyModeInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -49,6 +54,9 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     @BindView(R.id.anthropomorphicEnableSBtn)
     SwitchButton anthropomorphicEnableSBtn;//拟人运动使能
 
+    @BindView(R.id.tv_brake_pad_control)
+    TextView mTvBrakePadControl;//刹车片控制
+
     @BindView(R.id.rl_positive_and_negative_test)
     ViewGroup positiveAndNegativeTestLayout;
 
@@ -58,9 +66,13 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     @BindView(R.id.rl_anthropomorphic_movement)
     ViewGroup anthropomorphicMovementLayout;
 
+    @BindView(R.id.ll_brake_pad_control)
+    ViewGroup brakePadControlLayout;
+
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
+    private final String[] brakePadControls = new String[]{"手动", "自动"};
 
     public static NetIntelligentControlFragment newInstance(DeviceInfo deviceInfo) {
         NetIntelligentControlFragment fragment = new NetIntelligentControlFragment();
@@ -79,6 +91,7 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setSwitchViewListener();
+        mTvBrakePadControl.setText(brakePadControls[1]);
         //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
             configPageViewModel.configPageEditableChanged.setValue(true);
@@ -122,6 +135,10 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
 
         //获取拟人运动使能信息
         command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE);
+        commandItems.add(command);
+
+        //获取刹车片控制方式信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BRAKE_PAD_CONTROL);
         commandItems.add(command);
 
         showWaitDialog("加载中...");
@@ -173,6 +190,18 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
         showWaitDialog("处理中...");
     }
 
+    /**
+     * 刹车片控制</br>
+     */
+    private void setBrakePadControl(String mode) {
+        AdmeBrakePadControlEntity entity = new AdmeBrakePadControlEntity();
+        entity.setMode(mode);
+
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_BRAKE_PAD_CONTROL, entity);
+        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        showWaitDialog("处理中...");
+    }
+
     private void showWarnDialog() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(mActivity)
                 .title("温馨提示")
@@ -194,7 +223,7 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
         mMaterialDialog.show();
     }
 
-    @OnClick({R.id.iv_reboot})
+    @OnClick({R.id.iv_reboot, R.id.ll_brake_pad_control})
     public void onClick(View v) {
         if (isDoubleClick(v)) {
             return;
@@ -202,7 +231,29 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
         int id = v.getId();
         if (id == R.id.iv_reboot) {
             showWarnDialog();
+        } else if (id == R.id.ll_brake_pad_control) {
+            showBrakePadControlDialog();
         }
+    }
+
+    /**
+     * 选择刹车片控制方式
+     */
+    public void showBrakePadControlDialog() {
+        int pos = Arrays.asList(brakePadControls).indexOf(String.valueOf(mTvBrakePadControl.getText()));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", brakePadControls,
+                        null, pos,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvBrakePadControl.setText(text);
+                                setBrakePadControl(String.valueOf(position));
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
     }
 
     /**
@@ -282,7 +333,7 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
                     positiveAndNegativeTestLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
                     return;
                 }
-                AdmeStepperMotorInfo  admeStepperMotorInfo = commandResult.getResult();
+                AdmeStepperMotorInfo admeStepperMotorInfo = commandResult.getResult();
                 if (admeStepperMotorInfo == null) {
                     Timber.e("AdmeStepperMotorInfo is Null!");
                     return;
@@ -343,6 +394,30 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
             }
             break;
 
+            case ADME_MD_GET_BRAKE_PAD_CONTROL: {
+                sendCommandFromCmdList();
+                IOTCommandResult<AdmeBrakePadControlInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    dismissWaitDialog();
+                    String errMsg = String.format("%s %s", "查询刹车片控制方式出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    if (!commandResult.getMessage().contains("unsupported"))
+                        ToastUtils.show(errMsg);
+                    brakePadControlLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.GONE : View.VISIBLE);
+                    return;
+                }
+                brakePadControlLayout.setVisibility(View.VISIBLE);
+                AdmeBrakePadControlInfo padControlInfo = commandResult.getResult();
+                if (padControlInfo != null) {
+                    if (padControlInfo.getMode().trim().equals("0")) {
+                        mTvBrakePadControl.setText(brakePadControls[0]);
+                    } else {
+                        mTvBrakePadControl.setText(brakePadControls[1]);
+                    }
+                }
+            }
+            break;
+
             case ADME_MD_SET_STEPPER_MOTOR: {//设置ADME的步进电机配置参数
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -395,6 +470,19 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
             }
             break;
 
+            case ADME_MD_SET_BRAKE_PAD_CONTROL: {
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    dismissWaitDialog();
+                    String errMsg = String.format("%s %s", "设置刹车片控制方式出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                saveConfigInfo();
+            }
+            break;
+
             case MD_SAVE_CONFIG_PARAM: {
                 dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
@@ -416,5 +504,4 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     protected void onEditableChanged(boolean isEditable) {
         maskLayerLayout.setVisibility(isEditable ? View.GONE : View.VISIBLE);
     }
-
 }

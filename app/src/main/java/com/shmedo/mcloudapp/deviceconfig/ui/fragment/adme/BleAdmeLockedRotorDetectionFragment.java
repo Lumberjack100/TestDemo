@@ -103,11 +103,11 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.downMeterChildLayout)
-    ViewGroup downMeterChildLayout;
+    @BindView(R.id.downMeterChildMaskLayer)
+    ViewGroup downMeterChildMaskLayer;
 
-    @BindView(R.id.pullUpMeterChildLayout)
-    ViewGroup pullUpMeterChildLayout;
+    @BindView(R.id.pullUpMeterChildMaskLayer)
+    ViewGroup pullUpMeterChildMaskLayer;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
@@ -187,7 +187,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定使下放计米堵转检测不生效？", DOWN_OPERATOR);
                 } else {
-                    downMeterChildLayout.setVisibility(View.VISIBLE);
+                    downMeterChildMaskLayer.setVisibility(View.GONE);
                 }
             }
         });
@@ -202,7 +202,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定使上拉计米堵转检测不生效？", PULLUP_OPERATOR);
                 } else {
-                    pullUpMeterChildLayout.setVisibility(View.VISIBLE);
+                    pullUpMeterChildMaskLayer.setVisibility(View.GONE);
                 }
             }
         });
@@ -241,7 +241,7 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                     view.setProgress(leftValue, 50);
                 }
                 if (downStallDetectionEndValue >= rightValue) {
-                    seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightValue - 1);
+                    seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightValue < 50 ? 50 : rightValue - 1);
                 }
             }
         });
@@ -333,10 +333,10 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                         dialog.dismiss();
                         if (type == DOWN_OPERATOR) {
                             processSave();
-                            downMeterChildLayout.setVisibility(View.GONE);
+                            downMeterChildMaskLayer.setVisibility(View.VISIBLE);
                         } else if (type == PULLUP_OPERATOR) {
                             processSave();
-                            pullUpMeterChildLayout.setVisibility(View.GONE);
+                            pullUpMeterChildMaskLayer.setVisibility(View.VISIBLE);
                         }
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -616,17 +616,17 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
 
         if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
             mSbDownEnable.setCheckedImmediatelyNoEvent(false);
-            downMeterChildLayout.setVisibility(View.GONE);
+            downMeterChildMaskLayer.setVisibility(View.VISIBLE);
         } else {
             mSbDownEnable.setCheckedImmediatelyNoEvent(true);
-            downMeterChildLayout.setVisibility(View.VISIBLE);
+            downMeterChildMaskLayer.setVisibility(View.GONE);
         }
         if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
-            pullUpMeterChildLayout.setVisibility(View.GONE);
+            pullUpMeterChildMaskLayer.setVisibility(View.VISIBLE);
         } else {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
-            pullUpMeterChildLayout.setVisibility(View.VISIBLE);
+            pullUpMeterChildMaskLayer.setVisibility(View.GONE);
         }
 
         try {

@@ -104,11 +104,11 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    @BindView(R.id.downMeterChildLayout)
-    ViewGroup downMeterChildLayout;
+    @BindView(R.id.downMeterChildMaskLayer)
+    ViewGroup downMeterChildMaskLayer;
 
-    @BindView(R.id.pullUpMeterChildLayout)
-    ViewGroup pullUpMeterChildLayout;
+    @BindView(R.id.pullUpMeterChildMaskLayer)
+    ViewGroup pullUpMeterChildMaskLayer;
 
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
@@ -187,7 +187,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定使下放计米堵转检测不生效？", DOWN_OPERATOR);
                 } else {
-                    downMeterChildLayout.setVisibility(View.VISIBLE);
+                    downMeterChildMaskLayer.setVisibility(View.GONE);
                 }
             }
         });
@@ -197,11 +197,12 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                 if (!isChecked) {
                     showCloseSwitchButtonDialog("确定使上拉计米堵转检测不生效？", PULLUP_OPERATOR);
                 } else {
-                    pullUpMeterChildLayout.setVisibility(View.VISIBLE);
+                    pullUpMeterChildMaskLayer.setVisibility(View.GONE);
                 }
             }
         });
     }
+
     private void setSeekBarListener() {
         //下放缓起缓停区间
         seekBarDownSlowStartStopInterval.setIndicatorTextDecimalFormat("0");
@@ -232,10 +233,10 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                 }
                 if (rightValue < 50) {
                     ToastUtils.show("下放缓停区间起始值不能小于50%");
-                    view.setProgress(leftValue, 50);
+                    view.setProgress(leftValue, 51);
                 }
                 if (downStallDetectionEndValue >= rightValue) {
-                    seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightValue - 1);
+                    seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightValue < 50 ? 50 : rightValue - 1);
                 }
             }
         });
@@ -307,6 +308,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             }
         });
     }
+
     /**
      * 关闭SwitchButton
      */
@@ -326,10 +328,10 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                         dialog.dismiss();
                         if (type == DOWN_OPERATOR) {
                             processSave();
-                            downMeterChildLayout.setVisibility(View.GONE);
+                            downMeterChildMaskLayer.setVisibility(View.VISIBLE);
                         } else if (type == PULLUP_OPERATOR) {
                             processSave();
-                            pullUpMeterChildLayout.setVisibility(View.GONE);
+                            pullUpMeterChildMaskLayer.setVisibility(View.VISIBLE);
                         }
                     }
                 }).onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -346,6 +348,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
     }
+
     /**
      * 获取参数
      */
@@ -653,17 +656,17 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
         if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
             mSbDownEnable.setCheckedImmediatelyNoEvent(false);
-            downMeterChildLayout.setVisibility(View.GONE);
+            downMeterChildMaskLayer.setVisibility(View.VISIBLE);
         } else {
             mSbDownEnable.setCheckedImmediatelyNoEvent(true);
-            downMeterChildLayout.setVisibility(View.VISIBLE);
+            downMeterChildMaskLayer.setVisibility(View.GONE);
         }
         if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
-            pullUpMeterChildLayout.setVisibility(View.GONE);
+            pullUpMeterChildMaskLayer.setVisibility(View.VISIBLE);
         } else {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(true);
-            pullUpMeterChildLayout.setVisibility(View.VISIBLE);
+            pullUpMeterChildMaskLayer.setVisibility(View.GONE);
         }
 
         try {
