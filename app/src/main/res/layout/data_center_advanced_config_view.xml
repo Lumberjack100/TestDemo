@@ -325,6 +325,36 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_reissuing_data_valid_days"
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <TextView
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="补发数据有效天数" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_reissuing_data_valid_days"
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:inputType="number" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_reissuing_data_interval"
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <TextView
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="数据补发间隔(min)" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_reissuing_data_interval"
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:inputType="number" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

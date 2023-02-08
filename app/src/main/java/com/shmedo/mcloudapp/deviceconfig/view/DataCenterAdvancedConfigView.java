@@ -111,6 +111,12 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     @BindView(R.id.et_data_link_maintenance)
     ClearEditText mEtDataLinkMaintenance;
 
+    @BindView(R.id.et_reissuing_data_valid_days)
+    ClearEditText mEtReissuingDataValidDays;
+
+    @BindView(R.id.et_reissuing_data_interval)
+    ClearEditText mEtReissuingDataInterval;
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
@@ -131,6 +137,12 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
 
     @BindView(R.id.ll_data_link_maintenance)
     ViewGroup dataLinkMaintenanceLayout;
+
+    @BindView(R.id.ll_reissuing_data_valid_days)
+    ViewGroup reissuingDataValidDaysLayout;
+
+    @BindView(R.id.ll_reissuing_data_interval)
+    ViewGroup reissuingDataIntervalLayout;
 
     private ProductType productType = ProductType.DAS;
     private ServerNumber serverNumber;
@@ -158,6 +170,9 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     private String password;//密码
     private String telemetryStationAddr;//遥测站地址
     private String dataLinkMaintenance;//数据链路维持报 0|[10,40]
+    private String reissuingDataValidDays;//补发数据有效天数
+    private String reissuingDataInterval;//数据补发间隔
+
 
     public boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     public boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
@@ -494,6 +509,9 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         password = mEtPassword.getText().toString();
         telemetryStationAddr = mEtTelemetryStationAddr.getText().toString();
         dataLinkMaintenance = mEtDataLinkMaintenance.getText().toString();
+        reissuingDataValidDays = mEtReissuingDataValidDays.getText().toString();
+        reissuingDataInterval = mEtReissuingDataInterval.getText().toString();
+
 
         if (!TextUtils.isEmpty(dataServerPort)) {
             try {
@@ -539,7 +557,30 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                 return false;
             }
         }
+        if (!TextUtils.isEmpty(reissuingDataValidDays)) {
+            try {
+                int value = Integer.parseInt(reissuingDataValidDays);
 
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的补发数据有效天数!");
+                mEtReissuingDataValidDays.requestFocus();
+                return false;
+            }
+        }
+        if (!TextUtils.isEmpty(reissuingDataInterval)) {
+            try {
+                int value = Integer.parseInt(reissuingDataInterval);
+                if (value != 0 && (value < 10 || value > 40)) {
+                    ToastUtils.show("请输入正确的数据补发间隔!");
+                    mEtReissuingDataInterval.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的数据补发间隔!");
+                mEtReissuingDataInterval.requestFocus();
+                return false;
+            }
+        }
 
         return true;
     }
@@ -569,6 +610,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             dataCenterEntity.setTaddress(telemetryStationAddr);
             dataCenterEntity.setHour_report(mSbHourlyReportEnable.isChecked() ? "1" : "0");
             dataCenterEntity.setData_link(dataLinkMaintenance);
+            dataCenterEntity.setVaild_day(reissuingDataValidDays);
+            dataCenterEntity.setReissue_time(reissuingDataInterval);
         }
         isSaveParamOperation = true;
 
@@ -603,6 +646,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         password = dataCenterInfo.getPassword();
         telemetryStationAddr = dataCenterInfo.getTaddress();
         dataLinkMaintenance = dataCenterInfo.getData_link();
+        reissuingDataValidDays=dataCenterInfo.getVaild_day();
+        reissuingDataInterval=dataCenterInfo.getReissue_time();
 
         //传输协议
         mTvTransferProtocol.setText(transferProtocol);
@@ -675,6 +720,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         mEtTelemetryStationAddr.setText(telemetryStationAddr);
         mSbHourlyReportEnable.setCheckedImmediatelyNoEvent(dataCenterInfo.getHour_report().equals("1"));
         mEtDataLinkMaintenance.setText(dataLinkMaintenance);
+        mEtReissuingDataValidDays.setText(reissuingDataValidDays);
+        mEtReissuingDataInterval.setText(reissuingDataInterval);
     }
 
     public void doAfterSetting() {

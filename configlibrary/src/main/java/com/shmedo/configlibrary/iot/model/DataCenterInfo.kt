@@ -65,4 +65,10 @@ class DataCenterInfo {
     var data_link //数据链路维持报  0|[10,40]   0:关闭
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
+    var vaild_day //补发数据有效天数
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+    var reissue_time //数据补发间隔
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
 }
