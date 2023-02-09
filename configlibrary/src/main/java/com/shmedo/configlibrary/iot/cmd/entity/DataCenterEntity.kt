@@ -53,7 +53,7 @@ class DataCenterEntity : Validater {
             : String? = null
      var data_link //数据链路维持报  0|[10,40]   0:关闭
             : String? = null
-    var vaild_day //补发数据有效天数
+    var valid_day //补发数据有效天数
             : String? = null
     var reissue_time //数据补发间隔
             : String? = null
@@ -132,8 +132,8 @@ class DataCenterEntity : Validater {
                 append("data_link=$data_link")
                 append("&")
             }
-            if (vaild_day != null) {
-                append("vaild_day=$vaild_day")
+            if (valid_day != null) {
+                append("valid_day=$valid_day")
                 append("&")
             }
             if (reissue_time != null) {

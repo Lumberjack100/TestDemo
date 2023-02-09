@@ -610,7 +610,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             dataCenterEntity.setTaddress(telemetryStationAddr);
             dataCenterEntity.setHour_report(mSbHourlyReportEnable.isChecked() ? "1" : "0");
             dataCenterEntity.setData_link(dataLinkMaintenance);
-            dataCenterEntity.setVaild_day(reissuingDataValidDays);
+            dataCenterEntity.setValid_day(reissuingDataValidDays);
             dataCenterEntity.setReissue_time(reissuingDataInterval);
         }
         isSaveParamOperation = true;
@@ -646,7 +646,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         password = dataCenterInfo.getPassword();
         telemetryStationAddr = dataCenterInfo.getTaddress();
         dataLinkMaintenance = dataCenterInfo.getData_link();
-        reissuingDataValidDays=dataCenterInfo.getVaild_day();
+        reissuingDataValidDays=dataCenterInfo.getValid_day();
         reissuingDataInterval=dataCenterInfo.getReissue_time();
 
         //传输协议

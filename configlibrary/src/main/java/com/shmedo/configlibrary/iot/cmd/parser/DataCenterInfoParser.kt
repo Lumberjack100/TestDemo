@@ -41,7 +41,7 @@ class DataCenterInfoParser : IOTResultParser<DataCenterInfo?> {
             info.taddress = keyValueMap.getOrDefault("taddress", "")
             info.hour_report = keyValueMap.getOrDefault("hour_report", "")
             info.data_link = keyValueMap.getOrDefault("data_link", "")
-            info.vaild_day = keyValueMap.getOrDefault("vaild_day", "")
+            info.valid_day = keyValueMap.getOrDefault("valid_day", "")
             info.reissue_time = keyValueMap.getOrDefault("reissue_time", "")
 
             info
