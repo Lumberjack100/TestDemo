@@ -22,6 +22,7 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.vms.GetVmsTerminalSensorParamsEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
+import com.shmedo.configlibrary.iot.enums.MonitoringType;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo;
 import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -117,15 +118,16 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
 
     private void initSensorAdapter() {
         int spanCount = 4;//跟布局里面的spanCount属性是一致的
-        int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
+        int spacing = ConvertUtils.dp2px(10);//每一个矩形的间距
         mRecyclerViewSensor.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewSensor.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
         sensorAdapter = new CommonAdapter<VmsTerminalSensorItem>(mActivity, R.layout.item_vms_terminal_sensor, sensorItemList) {
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
-                holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
-                holder.setText(R.id.tv_address, TextUtils.isEmpty(sensorItem.getNum()) ? "" : sensorItem.getNum());
+                holder.setBackgroundRes(R.id.ll_item, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
+                holder.setText(R.id.tv_address, TextUtils.isEmpty(sensorItem.getChannel()) ? "" : String.valueOf(Integer.parseInt(sensorItem.getChannel()) + 1));
+                holder.setText(R.id.tv_monitor_type, TextUtils.isEmpty(sensorItem.getMonitorType()) ? "" : sensorItem.getMonitorType());
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
@@ -270,6 +272,9 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setNum(strs[1]);
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+            String monitorType = MonitoringType.valueByCode(sensorInfo.getName()).getDescription();
+            sensorItem.setMonitorType(monitorType);
+
             sensorItemList.add(sensorItem);
             sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
         } else {
@@ -280,6 +285,9 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setNum(strs[1]);
             sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+            String monitorType = MonitoringType.valueByCode(sensorInfo.getName()).getDescription();
+            sensorItem.setMonitorType(monitorType);
+
             sensorAdapter.notifyItemChanged(curSensorIndex);
         }
     }

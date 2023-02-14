@@ -125,7 +125,8 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
 
     private void addSensorView(LayoutInflater inflater, LinearLayout sensorContainer, SensorErrnoInfo errnoInfo) {
         TextView tvSensor = (TextView) inflater.inflate(R.layout.item_sensor_insert_state, null);
-        tvSensor.setText(errnoInfo.getNum().equals("0") ? "" : errnoInfo.getNum());
+//        tvSensor.setText(errnoInfo.getNum().equals("0") ? "" : errnoInfo.getNum());
+        tvSensor.setText(String.valueOf(errnoInfo.getId() + 1));
         tvSensor.setBackgroundResource(errnoInfo.getIn().equals("0") ? R.drawable.bg_sensor_uninsert : R.drawable.bg_sensor_insert);
         // 定义LayoutParam
 

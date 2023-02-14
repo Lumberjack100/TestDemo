@@ -183,7 +183,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
             mTvSensorCalculation.setText(calculationList.get(3));
             linearParamView.setVisibility(View.GONE);
             polynomialParamView.setVisibility(View.GONE);
-            modulusView.setVisibility(View.VISIBLE);
+            modulusView.setVisibility(View.GONE);
             magnificationView.setVisibility(View.GONE);
             modulusView.initData(sensorInfo);
 
@@ -194,7 +194,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
             linearParamView.setVisibility(View.GONE);
             polynomialParamView.setVisibility(View.GONE);
             modulusView.setVisibility(View.GONE);
-            magnificationView.setVisibility(View.VISIBLE);
+            magnificationView.setVisibility(View.GONE);
             magnificationView.initData(sensorInfo, MonitoringType.valueByCode(sensorInfo.getName()));
 
             monitorTypeList.clear();
@@ -340,7 +340,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                                     sensorCalculation = VmsSensorCalculation.MODULUS;
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.GONE);
-                                    modulusView.setVisibility(View.VISIBLE);
+                                    modulusView.setVisibility(View.GONE);
                                     magnificationView.setVisibility(View.GONE);
                                     monitorTypeList.clear();
                                     monitorTypeList.addAll(modulusMonitorTypeList);
@@ -349,7 +349,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                                     linearParamView.setVisibility(View.GONE);
                                     polynomialParamView.setVisibility(View.GONE);
                                     modulusView.setVisibility(View.GONE);
-                                    magnificationView.setVisibility(View.VISIBLE);
+                                    magnificationView.setVisibility(View.GONE);
                                     monitorTypeList.clear();
                                     monitorTypeList.addAll(magnificationMonitorTypeList);
                                 }
@@ -427,11 +427,11 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
                 break;
 
             case MODULUS:
-                updateDataSuccess = modulusView.updateSensorData(entity);
+//                updateDataSuccess = modulusView.updateSensorData(entity);
                 break;
 
             case MAGNIFICATION:
-                updateDataSuccess = magnificationView.updateSensorData(entity);
+//                updateDataSuccess = magnificationView.updateSensorData(entity);
                 break;
         }
         if (!updateDataSuccess) {

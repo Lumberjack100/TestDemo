@@ -124,8 +124,9 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
         sensorAdapter = new CommonAdapter<VmsTerminalSensorItem>(mActivity, R.layout.item_vms_terminal_sensor, sensorItemList) {
             @Override
             protected void convert(CommonViewHolder holder, VmsTerminalSensorItem sensorItem, int position) {
-                holder.setImageResource(R.id.iv_vms_terminal_sensor, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
-                holder.setText(R.id.tv_address, TextUtils.isEmpty(sensorItem.getNum()) ? "" : sensorItem.getNum());
+                holder.setBackgroundRes(R.id.ll_item, sensorItem.isInsert() ? R.drawable.ic_sensor_holder_bright : R.drawable.ic_sensor_holder_gray);
+                holder.setText(R.id.tv_address, TextUtils.isEmpty(sensorItem.getChannel()) ? "" : String.valueOf(Integer.parseInt(sensorItem.getChannel()) + 1));
+                holder.setText(R.id.tv_monitor_type, TextUtils.isEmpty(sensorItem.getMonitorType()) ? "" : sensorItem.getMonitorType());
             }
         };
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

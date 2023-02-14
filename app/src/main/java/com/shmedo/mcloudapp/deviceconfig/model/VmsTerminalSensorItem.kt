@@ -19,4 +19,8 @@ class VmsTerminalSensorItem {
     var resId = 0
 
     var isInsert = false //接入判断，0：未接入，1：接入
+
+    var monitorType //监测类型
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
 }

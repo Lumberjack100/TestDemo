@@ -195,17 +195,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     }
 
     private void initView() {
-        mEtDataServerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
-        mEtDataServerPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtDeviceId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
-        mEtDeviceKey.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
-        mEtDeviceRegisterAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
-        mEtDeviceRegisterPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
-        mEtProductId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
-        mEtDeviceRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
-
-        mTvStationClassification.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtCenterStationAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         InputFilter filter = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {
@@ -217,10 +206,22 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                 return null;
             }
         };
+        mEtDataServerAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtDataServerPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtDeviceId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtDeviceKey.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtDeviceRegisterAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtDeviceRegisterPort.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtProductId.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+        mEtDeviceRegisterCode.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
+
+        mEtCenterStationAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtPassword.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5), filter});
         mEtTelemetryStationAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), filter});
         mEtDataLinkMaintenance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2), filter});
         mEtDataLinkMaintenance.setHint("0或者[10,40]");
+        mEtReissuingDataValidDays.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), filter});
+        mEtReissuingDataInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4), filter});
 
         mTvTransferProtocol.setText("MQTT");
         transferProtocol = "MQTT";
@@ -570,11 +571,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         if (!TextUtils.isEmpty(reissuingDataInterval)) {
             try {
                 int value = Integer.parseInt(reissuingDataInterval);
-                if (value != 0 && (value < 10 || value > 40)) {
-                    ToastUtils.show("请输入正确的数据补发间隔!");
-                    mEtReissuingDataInterval.requestFocus();
-                    return false;
-                }
+
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的数据补发间隔!");
                 mEtReissuingDataInterval.requestFocus();

@@ -44,6 +44,37 @@
                 android:layout_height="10dp" />
 
             <LinearLayout
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <TextView
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="传感器序号" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/sensorSerialNumber"
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sensorNameLayout"
+                style="@style/Common_ClickableItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <TextView
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="传感器类型" />
+
+                <TextView
+                    android:id="@+id/tv_monitor_type"
+                    style="@style/Common_ClickableItem_ValueStyle"
+                    tools:text="轴力计" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/calculationLayout"
                 style="@style/Common_ClickableItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
@@ -56,37 +87,6 @@
                     android:id="@+id/tv_sensor_calculation"
                     style="@style/Common_ClickableItem_ValueStyle"
                     tools:text="多项式" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/sensorNameLayout"
-                style="@style/Common_ClickableItem_LayoutStyle"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="监测类型" />
-
-                <TextView
-                    android:id="@+id/tv_monitor_type"
-                    style="@style/Common_ClickableItem_ValueStyle"
-                    tools:text="轴力计" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/Common_EditItem_LayoutStyle"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="传感器序号" />
-
-                <com.shmedo.mcloudapp.common.view.ClearEditText
-                    android:id="@+id/sensorSerialNumber"
-                    style="@style/Common_EditItem_EditText_Style"
-                    android:inputType="number" />
 
             </LinearLayout>
 

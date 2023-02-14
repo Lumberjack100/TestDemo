@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_bg_gray"
@@ -9,12 +10,12 @@
         android:id="@+id/recyclerview_sensor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:clipToPadding="false"
         android:splitMotionEvents="false"
-        android:background="@color/white"
-        android:paddingStart="16dp"
-        android:paddingTop="20dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="28dp" />
+        tools:itemCount="4"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/item_vms_terminal_sensor"
+        tools:spanCount="4"/>
 
 </LinearLayout>
