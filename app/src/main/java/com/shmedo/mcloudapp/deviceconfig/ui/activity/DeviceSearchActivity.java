@@ -5,20 +5,27 @@ import static autodispose2.AutoDispose.autoDisposable;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.GsonUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.listener.OnLoadMoreListener;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
@@ -27,8 +34,10 @@ import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
 import com.shmedo.mcloudapp.common.view.ClearEditText;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
 import com.shmedo.mcloudapp.deviceconfig.adapter.DeviceInfoAdapter;
+import com.shmedo.mcloudapp.deviceconfig.adapter.SearchHistoryAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.PageInfo;
+import com.shmedo.mcloudapp.deviceconfig.viewmodels.SearchViewModel;
 import com.shmedo.mcloudapp.network.BaseObserver;
 import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
@@ -36,6 +45,7 @@ import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ResponseWrapper;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.network.api.ApiService;
+import com.shmedo.mcloudapp.util.CacheUtil;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 
 import org.json.JSONException;
@@ -54,18 +64,29 @@ import okhttp3.RequestBody;
 import timber.log.Timber;
 
 public class DeviceSearchActivity extends BaseActivity {
-
     @BindView(R.id.et_keywords)
     ClearEditText mEtKeyWords;
 
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.search_historyRv)
+    RecyclerView mRvSearchHistory;
+
+    @BindView(R.id.scrollView)
+    NestedScrollView scrollViewHistory;
+
+    private SearchHistoryAdapter searchHistoryAdapter;
+    private List<String> historyList = new ArrayList<>();
+
     private DeviceInfoAdapter deviceInfoAdapter;
     private List<DeviceInfo> deviceInfoList = new ArrayList<>();
 
+    private SearchViewModel searchViewModel;
+
+
     private static final int PAGE_SIZE = 10;
-    private PageInfo pageInfo;
+    private PageInfo pageInfo = new PageInfo(1);
     private String keyWords;// 要输入的搜索关键字
 
     public static void startActivity(Context context) {
@@ -82,13 +103,15 @@ public class DeviceSearchActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initView();
+        initSearchView();
+        initHistoryAdapter();
         initDeviceInfoAdapter();
         initLoadMore();
-        pageInfo = new PageInfo(1);
+        initViewModel();
+        setHistoryKeyWordsVisibility(true);
     }
 
-    private void initView() {
+    private void initSearchView() {
         mEtKeyWords.setHint("设备SN搜索");
         mEtKeyWords.requestFocus();
         mEtKeyWords.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -99,8 +122,9 @@ public class DeviceSearchActivity extends BaseActivity {
                         ToastUtils.show("请输入搜索内容");
                     } else {
                         keyWords = textView.getText().toString();
-                        // 当按了搜索之后关闭软键盘
+                        //当按了搜索之后关闭软键盘
                         com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
+                        updateKey();
                         refresh();
                     }
                     return true;
@@ -108,6 +132,50 @@ public class DeviceSearchActivity extends BaseActivity {
                 return false;
             }
         });
+        mEtKeyWords.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null || TextUtils.isEmpty(s.toString())) {
+                    setHistoryKeyWordsVisibility(true);
+                    return;
+                }
+            }
+        });
+    }
+
+    private void initHistoryAdapter() {
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
+        //方向 主轴为水平方向，起点在左端
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        //左对齐
+        layoutManager.setJustifyContent(JustifyContent.FLEX_START);
+        mRvSearchHistory.setLayoutManager(layoutManager);
+        mRvSearchHistory.setHasFixedSize(true);
+        mRvSearchHistory.setNestedScrollingEnabled(false);
+        searchHistoryAdapter = new SearchHistoryAdapter(historyList);
+        searchHistoryAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                keyWords = historyList.get(position);
+                mEtKeyWords.setText(keyWords);
+                mEtKeyWords.setSelection(keyWords.length());
+                //关闭软键盘
+                com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
+                updateKey();
+                refresh();
+            }
+        });
+        mRvSearchHistory.setAdapter(searchHistoryAdapter);
     }
 
     private void initDeviceInfoAdapter() {
@@ -145,7 +213,47 @@ public class DeviceSearchActivity extends BaseActivity {
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
     }
 
-    @OnClick({R.id.iv_back, R.id.tv_search})
+    private void initViewModel() {
+        searchViewModel = getActivityScopeViewModel(SearchViewModel.class);
+        searchViewModel.getHistoryData().observe(this, strings -> {
+            historyList.clear();
+            historyList.addAll(strings);
+            searchHistoryAdapter.notifyDataSetChanged();
+            CacheUtil.INSTANCE.setSearchHistoryData(GsonUtils.toJson(strings));
+        });
+        searchViewModel.requestHistoryData();
+    }
+
+    /**
+     * 更新搜索词
+     */
+    private void updateKey() {
+        ArrayList<String> tempList = searchViewModel.getHistoryData().getValue();
+        if (tempList != null) {
+            //当搜索历史中包含该数据时 删除
+            if (tempList.contains(keyWords))
+                tempList.remove(keyWords);
+            //如果集合的size 有15个以上了，删除最后一个
+            if (tempList.size() > 15)
+                tempList.remove(tempList.size() - 1);
+
+            //添加新数据到第一条
+            tempList.add(0, keyWords);
+            searchViewModel.setHistoryData(tempList);
+        }
+    }
+
+    private void setHistoryKeyWordsVisibility(boolean isShow) {
+        if (isShow) {
+            mRecyclerView.setVisibility(View.GONE);
+            scrollViewHistory.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            scrollViewHistory.setVisibility(View.GONE);
+        }
+    }
+
+    @OnClick({R.id.iv_back, R.id.search_clear, R.id.tv_search})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
             return;
@@ -153,7 +261,10 @@ public class DeviceSearchActivity extends BaseActivity {
         int id = view.getId();
         if (id == R.id.iv_back) {//
             finish();
-        } else if (id == R.id.tv_search) {//
+        } else if (id == R.id.search_clear) {//
+            searchViewModel.setHistoryData(new ArrayList<>());
+
+        } else if (id == R.id.tv_search) {
             if (TextUtils.isEmpty(mEtKeyWords.getText().toString().trim())) {
                 ToastUtils.show("请输入搜索内容");
                 return;
@@ -161,11 +272,13 @@ public class DeviceSearchActivity extends BaseActivity {
             keyWords = mEtKeyWords.getText().toString();
             // 当按了搜索之后关闭软键盘
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(mEtKeyWords);
+            updateKey();
             refresh();
         }
     }
 
     private void refresh() {
+        setHistoryKeyWordsVisibility(false);
         deviceInfoList.clear();
         deviceInfoAdapter.notifyDataSetChanged();
         // 这里的作用是防止下拉刷新的时候还可以上拉加载
@@ -182,11 +295,9 @@ public class DeviceSearchActivity extends BaseActivity {
         queryDeviceList();
     }
 
-
     private void queryDeviceList() {
         // 方式一：直接传入 layout id
         deviceInfoAdapter.setEmptyView(R.layout.loading_view);
-
         JSONObject jsonObjectRequest = new JSONObject();
         try {
             jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
@@ -245,22 +356,6 @@ public class DeviceSearchActivity extends BaseActivity {
                 });
     }
 
-//    private void filterDevices(List<DeviceInfo> tempList) {
-//        deviceInfoList.addAll(tempList);
-//        deviceInfoAdapter.notifyDataSetChanged();
-//        //TODO 使用此方式局部刷新适配器，连续点击查询按钮时会造成崩溃 trying to unhide a view that was not hiddenandroid.widget.FrameLayout{12473d7 V.E...... ........ 41,-390-1060,1413}
-//        //        at androidx.recyclerview.widget.ChildHelper.unhide(ChildHelper.java:355)
-////        deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - tempList.size(), tempList.size());
-//        if (tempList.size() < PAGE_SIZE) {
-//            //如果不够一页,显示没有更多数据布局
-//            deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
-//        } else {
-//            deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
-//        }
-//        // page加一
-//        pageInfo.nextPage();
-//    }
-
     /**
      * 在线、离线排序加载
      */
@@ -274,7 +369,7 @@ public class DeviceSearchActivity extends BaseActivity {
                 deviceInfoAdapter.notifyItemRangeInserted(0, 1);
             } else {
                 deviceInfoList.add(deviceInfo);
-                deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() -1, 1);
+                deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - 1, 1);
             }
         }
         if (tempList.size() < PAGE_SIZE) {

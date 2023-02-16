@@ -25,6 +25,7 @@ import com.shmedo.core.log.log4a.LogInit;
 import com.shmedo.mcloudapp.network.OKHttpUpdateHttpService;
 import com.shmedo.mcloudapp.util.MyToastBlackStyle;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.mmkv.MMKV;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.xuexiang.xupdate.XUpdate;
@@ -66,6 +67,8 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
 
         //初始化日志输出
         initTimber();
+
+        initMMKV();
 
         //初始化基于 mmap, 高性能、高可用的 Android 日志收集框架
         LogInit.init(this);
@@ -110,6 +113,11 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         } else {
             Timber.plant(new CrashReportingTree());
         }
+    }
+
+    private void initMMKV() {
+        String rootDir = MMKV.initialize(this);
+        Timber.d("mmkv root: %s", rootDir);
     }
 
     /**

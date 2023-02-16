@@ -67,7 +67,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     TextView mTvSensorCalculation;//计算方式
 
     @BindView(R.id.tv_monitor_type)
-    TextView mTvMonitorType;//监测类型
+    TextView mTvMonitorType;//传感器类型
 
     @BindView(R.id.sensorSerialNumber)
     EditText mEtSensorSerialNumber;//传感器序号
@@ -391,7 +391,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     private boolean checkValueIsValid() {
         sensorSerialNumber = mEtSensorSerialNumber.getText().toString().trim();
         if (TextUtils.isEmpty(mTvMonitorType.getText())) {
-            ToastUtils.show("请选择监测类型!");
+            ToastUtils.show("请选择传感器类型!");
             return false;
         }
         if (TextUtils.isEmpty(sensorSerialNumber)) {
