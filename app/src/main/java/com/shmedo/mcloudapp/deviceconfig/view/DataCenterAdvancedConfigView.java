@@ -496,22 +496,22 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     }
 
     private boolean checkValueIsValid() {
-        dataServerAddress = mEtDataServerAddress.getText().toString();
-        dataServerPort = mEtDataServerPort.getText().toString();
+        dataServerAddress = mEtDataServerAddress.getText().toString().trim();
+        dataServerPort = mEtDataServerPort.getText().toString().trim();
         //MQTT 协议参数
-        deviceId = mEtDeviceId.getText().toString();
-        deviceKey = mEtDeviceKey.getText().toString();
-        registerAddress = mEtDeviceRegisterAddress.getText().toString();
-        registerPort = mEtDeviceRegisterPort.getText().toString();
-        productId = mEtProductId.getText().toString();
-        registerCode = mEtDeviceRegisterCode.getText().toString();
+        deviceId = mEtDeviceId.getText().toString().trim();
+        deviceKey = mEtDeviceKey.getText().toString().trim();
+        registerAddress = mEtDeviceRegisterAddress.getText().toString().trim();
+        registerPort = mEtDeviceRegisterPort.getText().toString().trim();
+        productId = mEtProductId.getText().toString().trim();
+        registerCode = mEtDeviceRegisterCode.getText().toString().trim();
         //SL651 水文协议参数
-        centerStationAddr = mEtCenterStationAddr.getText().toString();
-        password = mEtPassword.getText().toString();
-        telemetryStationAddr = mEtTelemetryStationAddr.getText().toString();
-        dataLinkMaintenance = mEtDataLinkMaintenance.getText().toString();
-        reissuingDataValidDays = mEtReissuingDataValidDays.getText().toString();
-        reissuingDataInterval = mEtReissuingDataInterval.getText().toString();
+        centerStationAddr = mEtCenterStationAddr.getText().toString().trim();
+        password = mEtPassword.getText().toString().trim();
+        telemetryStationAddr = mEtTelemetryStationAddr.getText().toString().trim();
+        dataLinkMaintenance = mEtDataLinkMaintenance.getText().toString().trim();
+        reissuingDataValidDays = mEtReissuingDataValidDays.getText().toString().trim();
+        reissuingDataInterval = mEtReissuingDataInterval.getText().toString().trim();
 
 
         if (!TextUtils.isEmpty(dataServerPort)) {

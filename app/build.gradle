@@ -200,6 +200,9 @@ dependencies {
     // 透明系统栏设置基础依赖包，必须要依赖
     implementation "com.geyifeng.immersionbar:immersionbar:$rootProject.thirdLib.immersionbar"
 
+    //StateView is an invisible, zero-sized View that can be used to lazily inflate loadingView/emptyView/retryView/anyView at runtime.
+    implementation 'com.github.nukc:StateView:v3.0.2'
+
     //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
     implementation "no.nordicsemi.android.support.v18:scanner:$rootProject.thirdLib.nordicsemiScanner"
     // Log Bluetooth LE events in nRF Logger APP

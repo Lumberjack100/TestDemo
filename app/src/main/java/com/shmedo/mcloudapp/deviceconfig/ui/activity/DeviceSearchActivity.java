@@ -147,7 +147,6 @@ public class DeviceSearchActivity extends BaseActivity {
             public void afterTextChanged(Editable s) {
                 if (s == null || TextUtils.isEmpty(s.toString())) {
                     setHistoryKeyWordsVisibility(true);
-                    return;
                 }
             }
         });
@@ -206,11 +205,10 @@ public class DeviceSearchActivity extends BaseActivity {
                 loadMore();
             }
         });
-        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
-        // 是否自定加载下一页（默认为true）
+        //是否自动加载下一页（默认为true）
         deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
-        // 当数据不满一页时，是否继续自动加载（默认为true）
-        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
+        //当自动加载开启，同时数据不满一屏时，是否继续执行自动加载更多(默认为true)）
+        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(true);
     }
 
     private void initViewModel() {
@@ -221,6 +219,7 @@ public class DeviceSearchActivity extends BaseActivity {
             searchHistoryAdapter.notifyDataSetChanged();
             CacheUtil.INSTANCE.setSearchHistoryData(GsonUtils.toJson(strings));
         });
+        //加载搜索历史数据
         searchViewModel.requestHistoryData();
     }
 
@@ -281,10 +280,11 @@ public class DeviceSearchActivity extends BaseActivity {
         setHistoryKeyWordsVisibility(false);
         deviceInfoList.clear();
         deviceInfoAdapter.notifyDataSetChanged();
-        // 这里的作用是防止下拉刷新的时候还可以上拉加载
+        //这里的作用是防止下拉刷新的时候还可以上拉加载
         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(false);
-        // 下拉刷新，需要重置页数
+        //下拉刷新，需要重置页数
         pageInfo.reset();
+        deviceInfoAdapter.setEmptyView(R.layout.loading_view);
         queryDeviceList();
     }
 
@@ -296,8 +296,6 @@ public class DeviceSearchActivity extends BaseActivity {
     }
 
     private void queryDeviceList() {
-        // 方式一：直接传入 layout id
-        deviceInfoAdapter.setEmptyView(R.layout.loading_view);
         JSONObject jsonObjectRequest = new JSONObject();
         try {
             jsonObjectRequest.put("companyID", MCloudApp.getCompanyID());
@@ -323,24 +321,19 @@ public class DeviceSearchActivity extends BaseActivity {
                         if (!ResponseHandler.getInstance().handleResponse(errorInfo)) {
                             if (errorInfo.getCode() == 0) {
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                                    if (deviceInfoList.size() == 0) {
+                                    if (pageInfo.isFirstPage())
                                         deviceInfoAdapter.setEmptyView(R.layout.empty_view);
-                                    } else {
-                                        //显示没有更多数据布局
-                                        deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
-                                    }
                                     return;
                                 }
-                                filterDevices(data.getCurrentPageData());
-
+                                filterDevices(data.getCurrentPageData(), data.getTotalPage());
                             } else {
-                                deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());
                                 }
+                                deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
+                                if (pageInfo.isFirstPage())
+                                    deviceInfoAdapter.setEmptyView(getErrorView());
                             }
-                        } else {
-                            deviceInfoAdapter.setEmptyView(getErrorView());
                         }
                     }
 
@@ -348,9 +341,8 @@ public class DeviceSearchActivity extends BaseActivity {
                     public void onError(Throwable e) {
                         deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
                         deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
-                        if (deviceInfoList.size() == 0) {
+                        if (pageInfo.isFirstPage())
                             deviceInfoAdapter.setEmptyView(getErrorView());
-                        }
                         ResponseHandler.getInstance().handleFailure((Exception) e);
                     }
                 });
@@ -359,25 +351,23 @@ public class DeviceSearchActivity extends BaseActivity {
     /**
      * 在线、离线排序加载
      */
-    private void filterDevices(List<DeviceInfo> tempList) {
+    private void filterDevices(List<DeviceInfo> tempList, int totalPage) {
         for (DeviceInfo deviceInfo : tempList) {
             if (!MCloudApp.getCompanyIdList().contains(deviceInfo.getCompanyID()))
                 continue;
 
             if (deviceInfo.isOnlineStatus()) {
                 deviceInfoList.add(0, deviceInfo);
-                deviceInfoAdapter.notifyItemRangeInserted(0, 1);
             } else {
                 deviceInfoList.add(deviceInfo);
-                deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - 1, 1);
             }
         }
-        if (tempList.size() < PAGE_SIZE) {
-            //如果不够一页,显示没有更多数据布局
+        deviceInfoAdapter.notifyDataSetChanged();
+        if (pageInfo.getPage() == totalPage)
             deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
-        } else {
+        else
             deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
-        }
+
         // page加一
         pageInfo.nextPage();
     }
