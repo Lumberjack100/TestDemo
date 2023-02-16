@@ -228,11 +228,10 @@ public class NetDeviceListFragment extends BaseFragment {
                 queryDeviceList();
             }
         });
-        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMore(true);
         // 是否自定加载下一页（默认为true）
         deviceInfoAdapter.getLoadMoreModule().setAutoLoadMore(true);
         // 当数据不满一页时，是否继续自动加载（默认为true）
-        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
+        deviceInfoAdapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(true);
     }
 
     /**
@@ -390,27 +389,24 @@ public class NetDeviceListFragment extends BaseFragment {
                             if (errorInfo.getCode() == 0) {
                                 if (mRefreshLayout.isRefreshing())
                                     mRefreshLayout.finishRefresh();
-
                                 if (data == null || data.getCurrentPageData() == null || data.getCurrentPageData().size() == 0) {
-                                    if (deviceInfoList.size() == 0) {
+                                    if (pageInfo.isFirstPage()) {
                                         deviceInfoAdapter.setEmptyView(R.layout.empty_view);
                                         deviceInfoAdapter.notifyDataSetChanged();
-                                    } else {
-                                        //显示没有更多数据布局
-                                        deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
                                     }
                                     return;
                                 }
                                 loadFinished();
-                                filterDevices(data.getCurrentPageData());
+                                filterDevices(data.getCurrentPageData(), data.getTotalPage());
 
                             } else { //Code!=0
-                                if (mRefreshLayout.isRefreshing())
-                                    mRefreshLayout.finishRefresh(false);
-                                deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
                                 if (!TextUtils.isEmpty(errorInfo.getMsg())) {
                                     ToastUtils.show(errorInfo.getMsg());
                                 }
+                                if (mRefreshLayout.isRefreshing())
+                                    mRefreshLayout.finishRefresh(false);
+
+                                deviceInfoAdapter.getLoadMoreModule().loadMoreFail();
                             }
                         } else {
                             loadFailed(StringUtils.getString(R.string.unknown_error) + ": " + errorInfo.getCode());
@@ -428,7 +424,7 @@ public class NetDeviceListFragment extends BaseFragment {
     /**
      * 在线、离线排序加载
      */
-    private void filterDevices(List<DeviceInfo> tempList) {
+    private void filterDevices(List<DeviceInfo> tempList, int totalPage) {
         for (DeviceInfo deviceInfo : tempList) {
             if (!MCloudApp.getCompanyIdList().contains(deviceInfo.getCompanyID()))
                 continue;
@@ -437,15 +433,13 @@ public class NetDeviceListFragment extends BaseFragment {
                 deviceInfoAdapter.notifyItemRangeInserted(0, 1);
             } else {
                 deviceInfoList.add(deviceInfo);
-                deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() -1, 1);
+                deviceInfoAdapter.notifyItemRangeInserted(deviceInfoList.size() - 1, 1);
             }
         }
-        if (tempList.size() < PAGE_SIZE) {
-            //如果不够一页,显示没有更多数据布局
+        if (pageInfo.getPage() == totalPage)
             deviceInfoAdapter.getLoadMoreModule().loadMoreEnd();
-        } else {
+        else
             deviceInfoAdapter.getLoadMoreModule().loadMoreComplete();
-        }
         // page加一
         pageInfo.nextPage();
     }

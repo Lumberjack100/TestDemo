@@ -233,7 +233,7 @@ public class DeviceSearchActivity extends BaseActivity {
             if (tempList.contains(keyWords))
                 tempList.remove(keyWords);
             //如果集合的size 有15个以上了，删除最后一个
-            if (tempList.size() > 15)
+            if (tempList.size() > 25)
                 tempList.remove(tempList.size() - 1);
 
             //添加新数据到第一条
