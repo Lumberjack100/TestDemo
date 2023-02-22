@@ -60,10 +60,8 @@
 
     <!-- 声光报警器报警类型-->
     <string-array name="alarm_type">
-        <item>暴雨警报</item>
-        <item>滑坡警报</item>
-        <item>崩塌警报</item>
-        <item>泥石流警报</item>
+        <item>降雨量</item>
+        <item>水位</item>
     </string-array>
 
     <string-array name="seekBar_array">

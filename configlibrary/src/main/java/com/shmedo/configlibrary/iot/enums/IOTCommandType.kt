@@ -202,22 +202,12 @@ enum class IOTCommandType(private val value: String) {
     /**
      * 查询声光报警器信息
      */
-    DAS_MD_GET_AUDIBLE_ALARM("md_getgx909"),
+    DAS_MD_GET_AUDIBLE_ALARM("md_getalarm"),
 
     /**
      * 设置声光报警器信息
      */
-    DAS_MD_SET_AUDIBLE_ALARM("md_setgx909"),
-
-    /**
-     * 查询声光报警器级别
-     */
-    DAS_MD_GET_AUDIBLE_ALARM_LEVEL("md_getalarmlevel"),
-
-    /**
-     * 设置声光报警器级别
-     */
-    DAS_MD_SET_AUDIBLE_ALARM_LEVEL("md_setalarmlevel"),
+    DAS_MD_SET_AUDIBLE_ALARM("md_setalarm"),
 
     /**
      * 查询定时上报参数

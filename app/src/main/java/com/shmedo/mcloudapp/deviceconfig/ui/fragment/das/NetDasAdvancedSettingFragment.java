@@ -5,6 +5,7 @@ import static autodispose2.AutoDispose.autoDisposable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +45,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
+import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -55,6 +57,9 @@ import timber.log.Timber;
  */
 public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment {
     private static final int RESET = 0x1003;
+
+    @BindView(R.id.audibleAlarmLayout)
+    ViewGroup audibleAlarmLayout;//声光报警器
 
     public static NetDasAdvancedSettingFragment newInstance(DeviceInfo deviceInfo) {
         NetDasAdvancedSettingFragment fragment = new NetDasAdvancedSettingFragment();
@@ -72,6 +77,7 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        audibleAlarmLayout.setVisibility(deviceInfo != null && deviceInfo.getProductName().contains("MR701") ? View.VISIBLE : View.GONE);
     }
 
     @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.fixedPointReportingLayout, R.id.voiceBroadcastLayout, R.id.audibleAlarmLayout})

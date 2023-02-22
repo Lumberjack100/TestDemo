@@ -83,9 +83,12 @@ enum class IOTSensorType(val code: String, val description: String) {
      * 浊度仪传感器
      */
     TURBIDITY_METER("26", "浊度仪"),
+
     DIGITAL_WATER_LEVEL_GAUGE("27", "数字式水位计"),
+
     WATER_QUALITY_METER("28", "多参数水质仪"),
 
+    WATER_LEVEL_GAUGE("29", "水位(液位)计"),
     /**
      * 基康渗压计 BGK-4500
      */

@@ -11,359 +11,277 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/ll_channel_number"
-            style="@style/Common_EditItem_LayoutStyle">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="通信信道" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_channel_number"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_network_number"
-            style="@style/Common_EditItem_LayoutStyle"
+        <RelativeLayout
+            style="@style/SwitchButton_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="网络编号" />
+                style="@style/SwitchButton_TitleStyle"
+                android:text="声光报警器"
+                android:textStyle="bold" />
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_network_number"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/alarmEnableSBtn"
+                style="@style/SwitchButton_ButtonStyle"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_target_address"
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="目标地址" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_target_address"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_alarm_type"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="报警类型" />
-
-            <TextView
-                android:id="@+id/tv_alarm_type"
-                style="@style/Common_ClickableItem_ValueStyle"
-                tools:text="泥石流警报" />
-
-        </LinearLayout>
-
-        <TextView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:text="报警等级"
-            android:textColor="@color/sub_title_text_color"
-            android:textSize="@dimen/text_size_15" />
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/rainGaugeLayout"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            <LinearLayout
+                android:id="@+id/alarmChildLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="传感器类型" />
+                <LinearLayout
+                    android:id="@+id/ll_alarm_type"
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-            <TextView
-                style="@style/Common_ClickableItem_ValueStyle"
-                android:drawableEnd="@null"
-                android:text="雨量计" />
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="监测要素" />
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_alarm_type"
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        tools:text="降雨量" />
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+                </LinearLayout>
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="无报警" />
+                <RelativeLayout style="@style/SwitchButton_LayoutStyle">
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_rain_gauge_level1"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+                    <TextView
+                        style="@style/SwitchButton_TitleStyle"
+                        android:text="阈值设置"
+                        android:textStyle="bold" />
 
-        </LinearLayout>
+                </RelativeLayout>
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="蓝色一级" />
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="一级报警(mm)" />
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_rain_gauge_level2"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_level1"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="[0,1000]"
+                        android:inputType="number" />
 
-        </LinearLayout>
+                </LinearLayout>
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="黄色二级" />
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="二级报警(mm)" />
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_rain_gauge_level3"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_level2"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="[0,1000]"
+                        android:inputType="number" />
 
-        </LinearLayout>
+                </LinearLayout>
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="橙色三级" />
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="三级报警(mm)" />
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_rain_gauge_level4"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_level3"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入0~1000之间数值"
+                        android:inputType="number" />
 
-        </LinearLayout>
+                </LinearLayout>
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+                <RelativeLayout style="@style/SwitchButton_LayoutStyle">
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="红色四级" />
+                    <TextView
+                        style="@style/SwitchButton_TitleStyle"
+                        android:text="报警设置"
+                        android:textStyle="bold" />
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_rain_gauge_level5"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+                </RelativeLayout>
 
-        </LinearLayout>
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="地址" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_alarm_addr"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="播放时长(s)" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_play_time"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入10~300之间数值"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="切换间隙(s)" />
+
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_play_gap"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入小于播放时长之间数值"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/alarmChildMaskLayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#66ffffff"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone">
+
+            </RelativeLayout>
+
+        </FrameLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="10dp" />
 
-        <LinearLayout
-            android:id="@+id/inclinometerLayout"
-            style="@style/Common_ClickableItem_LayoutStyle"
+        <RelativeLayout
+            style="@style/SwitchButton_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="传感器类型" />
+                style="@style/SwitchButton_TitleStyle"
+                android:text="电子点阵屏"
+                android:textStyle="bold" />
 
-            <TextView
-                style="@style/Common_ClickableItem_ValueStyle"
-                android:drawableEnd="@null"
-                android:text="倾角计" />
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/screenEnableSBtn"
+                style="@style/SwitchButton_ButtonStyle"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="28dp"
+                app:kswThumbRangeRatio="2"
+                app:kswThumbWidth="28dp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="无报警" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_inclinometer_level1"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="蓝色一级" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_inclinometer_level2"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="黄色二级" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_inclinometer_level3"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="橙色三级" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_inclinometer_level4"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="红色四级" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_inclinometer_level5"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <View
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="10dp" />
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/externalSensorLayout"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            <LinearLayout
+                android:id="@+id/screenChildLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="传感器类型" />
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-            <TextView
-                android:id="@+id/tv_external_sensor_name"
-                style="@style/Common_ClickableItem_ValueStyle"
-                android:drawableEnd="@null"
-                android:text="倾角计" />
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="地址" />
 
-        </LinearLayout>
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_screen_addr"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="number" />
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+                </LinearLayout>
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="无报警" />
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_external_sensor_level1"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="显示时长(s)" />
 
-        </LinearLayout>
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_show_time"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="number" />
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+                </LinearLayout>
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="蓝色一级" />
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_external_sensor_level2"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="显示间隙(s)" />
 
-        </LinearLayout>
+                    <com.shmedo.mcloudapp.common.view.ClearEditText
+                        android:id="@+id/et_show_gap"
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:inputType="number" />
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+                </LinearLayout>
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="黄色二级" />
+            </LinearLayout>
 
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_external_sensor_level3"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
+            <RelativeLayout
+                android:id="@+id/screenChildMaskLayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#66ffffff"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone">
 
-        </LinearLayout>
+            </RelativeLayout>
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="橙色三级" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_external_sensor_level4"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="红色四级" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_external_sensor_level5"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="number" />
-
-        </LinearLayout>
+        </FrameLayout>
 
         <Button
             android:id="@+id/btn_confirm"

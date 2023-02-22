@@ -23,10 +23,19 @@ class AudibleAlarmParser : IOTResultParser<AudibleAlarm?> {
                     keyValueMap[strs[0]] = strs[1]
                 }
             }
-            info.channel = keyValueMap.getOrDefault("channel", "NullKey")
-            info.panid = keyValueMap.getOrDefault("panid", "NullKey")
-            info.groupid = keyValueMap.getOrDefault("groupid", "NullKey")
+            info.alarmstatus = keyValueMap.getOrDefault("alarmstatus", "NullKey")
+            info.screenstatus = keyValueMap.getOrDefault("screenstatus", "NullKey")
             info.alarmtype = keyValueMap.getOrDefault("alarmtype", "NullKey")
+            info.alarmaddr = keyValueMap.getOrDefault("alarmaddr", "NullKey")
+            info.level1 = keyValueMap.getOrDefault("level1", "NullKey")
+            info.level2 = keyValueMap.getOrDefault("level2", "NullKey")
+            info.level3 = keyValueMap.getOrDefault("level3", "NullKey")
+            info.playtime = keyValueMap.getOrDefault("playtime", "NullKey")
+            info.playgap = keyValueMap.getOrDefault("playgap", "NullKey")
+            info.screenaddr = keyValueMap.getOrDefault("screenaddr", "NullKey")
+            info.showtime = keyValueMap.getOrDefault("showtime", "NullKey")
+            info.showgap = keyValueMap.getOrDefault("showgap", "NullKey")
+
             info
         } catch (ex: Exception) {
             ex.printStackTrace()

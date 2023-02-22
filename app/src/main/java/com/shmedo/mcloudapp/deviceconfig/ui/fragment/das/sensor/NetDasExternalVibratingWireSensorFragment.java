@@ -67,7 +67,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
 
     private List<String> sensorTypeList = Arrays.asList(IOTSensorType.KANG_PERCOLATE.getDescription(), IOTSensorType.GUDAN_PERCOLATE.getDescription(),
             IOTSensorType.JUNXING_ZLJ_300T.getDescription(), IOTSensorType.GUDAN_STRESS.getDescription(),
-            MCU_PREFIX + IOTSensorType.VW08.getDescription(), MCU_PREFIX + IOTSensorType.WEIR.getDescription());
+            MCU_PREFIX + IOTSensorType.VW08.getDescription(), MCU_PREFIX + IOTSensorType.WEIR.getDescription(), MCU_PREFIX + IOTSensorType.WATER_LEVEL_GAUGE.getDescription());
 
     private List<String> allAisleList = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16");//所有通道
     private ArrayList<String> usedAisleList = new ArrayList<>();//已占用的通道
@@ -174,6 +174,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
 
             case VW08://MCU 振弦传感器
             case WEIR://MCU 量水堰计
+            case WATER_LEVEL_GAUGE://MCU 水位(液位)计
                 mTvSensorType.setText(String.format("%s%s", MCU_PREFIX, iotSensorType.getDescription()));
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);
@@ -221,6 +222,9 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                                     iotSensorType = IOTSensorType.VW08;
                                 } else if (text.contains(IOTSensorType.WEIR.getDescription())) {
                                     iotSensorType = IOTSensorType.WEIR;
+                                }
+                                else if (text.contains(IOTSensorType.WATER_LEVEL_GAUGE.getDescription())) {
+                                    iotSensorType = IOTSensorType.WATER_LEVEL_GAUGE;
                                 }
                                 switchSensorType();
                             }
@@ -280,6 +284,11 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 externalSensorInfo.setCorrval("NullKey");
                 externalSensorInfo.setLsycsds("NullKey");
                 externalSensorInfo.setLsyysst("NullKey");
+                break;
+
+            case WATER_LEVEL_GAUGE://MCU 振弦传感器
+                externalSensorInfo.setThreshold("NullKey");
+                externalSensorInfo.setCorrval("NullKey");
                 break;
         }
         if (!updateDataSuccess) {

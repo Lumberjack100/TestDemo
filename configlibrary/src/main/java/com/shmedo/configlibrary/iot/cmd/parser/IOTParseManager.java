@@ -21,7 +21,6 @@ import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeMotorMotionDistanceInfoP
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeStepperMotorInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeVoltageConfigParser;
 import com.shmedo.configlibrary.iot.cmd.parser.adme.AdmeWorkModeParser;
-import com.shmedo.configlibrary.iot.cmd.parser.das.AlarmLevelParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.AudibleAlarmParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasBaseInfoParser;
 import com.shmedo.configlibrary.iot.cmd.parser.das.DasBdTerminalInfoParser;
@@ -226,7 +225,6 @@ public class IOTParseManager {
                 LogOutputInfoParser.class,
                 LR200PositionInfoParser.class,
                 AudibleAlarmParser.class,
-                AlarmLevelParser.class,
                 HacMeasuringDataInfoParser.class,
                 HacMeasuringHoleDepthInfoParser.class,
                 HacMotionStateParser.class,

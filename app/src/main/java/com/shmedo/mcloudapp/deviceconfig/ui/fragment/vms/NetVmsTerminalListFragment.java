@@ -133,7 +133,6 @@ public class NetVmsTerminalListFragment extends BaseFragment {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                         vmsViewModel.removeTerminalFromCacheList(sn);
-//                        vmsTerminalInfoList.remove(position);
                         adapter.removeAt(position);
                         vmsHomeFragment.removeTerminal(sn);
                     }
@@ -154,6 +153,7 @@ public class NetVmsTerminalListFragment extends BaseFragment {
 
     public void clearTerminalList() {
         vmsTerminalInfoList.clear();
+        adapter.notifyDataSetChanged();
     }
 
     public void addTerminalList(List<VmsTerminalInfo> dataList) {

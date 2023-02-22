@@ -91,4 +91,15 @@
     <string name="speech_network_error">网络连接失败</string>
     <string name="no_speech_detected">未检测到语音，请点击麦克风重试</string>
 
+    <!-- 声光报警器 -->
+    <string name="rain_level1_hint">请输入0~1000之间数值</string>
+    <string name="rain_level2_hint">请输入0~1000之间数值</string>
+    <string name="rain_level3_hint">请输入0~1000之间数值</string>
+    <string name="water_level1_hint">请输入0~100000之间数值</string>
+    <string name="water_level2_hint">请输入0~100000之间数值</string>
+    <string name="water_level3_hint">请输入0~100000之间数值</string>
+    <string name="alarm_play_time_hint">请输入10~300之间数值</string>
+    <string name="alarm_play_gap_hint">请输入5~300之间数值</string>
+
+
 </resources>
