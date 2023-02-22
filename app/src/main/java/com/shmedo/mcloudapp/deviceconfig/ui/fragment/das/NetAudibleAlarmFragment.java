@@ -104,7 +104,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     private String showTime;
     private String showGap;
 
-    private AudibleAlarm audibleAlarm;
+    private AudibleAlarm audibleAlarm = new AudibleAlarm();
 
     private String[] alarmTypes;
 
@@ -144,7 +144,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         mEtPlayGap.setHint(StringUtils.getString(R.string.alarm_play_gap_hint));
 
         mTvAlarmType.setText(alarmTypes[0]);
-        alarmType = "1";
+        alarmType = "0";
     }
 
     private void resetHint() {
@@ -231,8 +231,9 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
                             public void onSelect(int position, String text) {
                                 mTvAlarmType.setText(text);
                                 alarmType = String.valueOf(position);
-                                mBtnSave.setVisibility(audibleAlarm.getAlarmtype().equals(alarmType) ? View.VISIBLE : View.GONE);
                                 resetHint();
+                                showWaitDialog("加载中...");
+                                queryAlarmControl();
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
                 .show();
@@ -411,8 +412,8 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     private void processSave() {
         try {
             AudibleAlarmEntity entity = new AudibleAlarmEntity();
-            entity.setAlarmstatus(mSbAlarmEnable.isChecked() ? "1" : "0");
-            entity.setScreenstatus(mSbAlarmEnable.isChecked() ? "1" : "0");
+            entity.setAlarmstatus(mSbAlarmEnable.isChecked() ? "0" : "1");
+            entity.setScreenstatus(mSbScreenEnable.isChecked() ? "0" : "1");
             entity.setAlarmtype(alarmType);
             entity.setLevel1(level1);
             entity.setLevel2(level2);
@@ -424,7 +425,6 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
             entity.setShowtime(showTime);
             entity.setShowgap(showGap);
 
-            mBtnSave.setEnabled(false);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_AUDIBLE_ALARM, entity);
             showWaitDialog("处理中...");
             doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
@@ -546,10 +546,10 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         showTime = audibleAlarm.getShowtime();
         showGap = audibleAlarm.getShowgap();
 
-        alarmChildMaskLayer.setVisibility(audibleAlarm.getAlarmstatus().equals("1") ? View.GONE : View.VISIBLE);
-        mSbAlarmEnable.setCheckedImmediatelyNoEvent(audibleAlarm.getAlarmstatus().equals("1"));
-        screenChildMaskLayer.setVisibility(audibleAlarm.getScreenstatus().equals("1") ? View.GONE : View.VISIBLE);
-        mSbScreenEnable.setCheckedImmediatelyNoEvent(audibleAlarm.getScreenstatus().equals("1"));
+        alarmChildMaskLayer.setVisibility(audibleAlarm.getAlarmstatus().equals("0") ? View.GONE : View.VISIBLE);
+        mSbAlarmEnable.setCheckedImmediatelyNoEvent(audibleAlarm.getAlarmstatus().equals("0"));
+        screenChildMaskLayer.setVisibility(audibleAlarm.getScreenstatus().equals("0") ? View.GONE : View.VISIBLE);
+        mSbScreenEnable.setCheckedImmediatelyNoEvent(audibleAlarm.getScreenstatus().equals("0"));
         switch (alarmType) {
             case "0":
                 mTvAlarmType.setText(alarmTypes[0]);

@@ -181,7 +181,7 @@
                 android:background="#66ffffff"
                 android:clickable="true"
                 android:focusable="true"
-                android:visibility="gone">
+                android:visibility="visible">
 
             </RelativeLayout>
 
@@ -277,7 +277,7 @@
                 android:background="#66ffffff"
                 android:clickable="true"
                 android:focusable="true"
-                android:visibility="gone">
+                android:visibility="visible">
 
             </RelativeLayout>
 
