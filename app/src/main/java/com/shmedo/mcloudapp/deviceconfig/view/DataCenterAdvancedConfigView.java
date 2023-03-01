@@ -529,7 +529,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             }
         }
 
-        if (!TextUtils.isEmpty(registerPort)) {
+        if (!TextUtils.isEmpty(registerPort) && mTvTransferProtocol.getText().toString().contains("MQTT")) {
             try {
                 int port = Integer.parseInt(registerPort);
                 if (port < 0 || port > 65535) {
@@ -544,7 +544,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
             }
         }
 
-        if (!TextUtils.isEmpty(dataLinkMaintenance)) {
+        if (!TextUtils.isEmpty(dataLinkMaintenance) && mTvTransferProtocol.getText().toString().contains("SL651")) {
             try {
                 int value = Integer.parseInt(dataLinkMaintenance);
                 if (value != 0 && (value < 10 || value > 40)) {
@@ -558,7 +558,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                 return false;
             }
         }
-        if (!TextUtils.isEmpty(reissuingDataValidDays)) {
+        if (!TextUtils.isEmpty(reissuingDataValidDays) && mTvTransferProtocol.getText().toString().contains("SL651")) {
             try {
                 int value = Integer.parseInt(reissuingDataValidDays);
 
@@ -568,7 +568,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                 return false;
             }
         }
-        if (!TextUtils.isEmpty(reissuingDataInterval)) {
+        if (!TextUtils.isEmpty(reissuingDataInterval) && mTvTransferProtocol.getText().toString().contains("SL651")) {
             try {
                 int value = Integer.parseInt(reissuingDataInterval);
 
@@ -643,8 +643,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         password = dataCenterInfo.getPassword();
         telemetryStationAddr = dataCenterInfo.getTaddress();
         dataLinkMaintenance = dataCenterInfo.getData_link();
-        reissuingDataValidDays=dataCenterInfo.getValid_day();
-        reissuingDataInterval=dataCenterInfo.getReissue_time();
+        reissuingDataValidDays = dataCenterInfo.getValid_day();
+        reissuingDataInterval = dataCenterInfo.getReissue_time();
 
         //传输协议
         mTvTransferProtocol.setText(transferProtocol);
