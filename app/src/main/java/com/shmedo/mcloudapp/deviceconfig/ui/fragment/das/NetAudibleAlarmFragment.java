@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
+import com.jaygoo.widget.OnRangeChangedListener;
+import com.jaygoo.widget.RangeSeekBar;
 import com.kongzue.dialogx.dialogs.PopTip;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lxj.xpopup.XPopup;
@@ -35,6 +37,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,6 +75,9 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.et_play_gap)
     EditText mEtPlayGap;//切换间隙
 
+    @BindView(R.id.seekBar_volume)
+    RangeSeekBar seekBarVolume;//
+
     @BindView(R.id.screenEnableSBtn)
     SwitchButton mSbScreenEnable;
 
@@ -100,6 +106,8 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     private String alarmAddr;
     private String playTime;
     private String playGap;
+    private String volume = "0";
+
     private String screenAddr;
     private String showTime;
     private String showGap;
@@ -184,6 +192,25 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
                 } else {
                     screenChildMaskLayer.setVisibility(View.GONE);
                 }
+            }
+        });
+        //音量控制滑块
+        seekBarVolume.setIndicatorTextDecimalFormat("0");
+        seekBarVolume.setOnRangeChangedListener(new OnRangeChangedListener() {
+            @Override
+            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
+                DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
+                volume = indicatorTextDecimalFormat.format(leftValue);
+            }
+
+            @Override
+            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
+                //start tracking touch
+            }
+
+            @Override
+            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
+
             }
         });
     }
@@ -421,6 +448,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
             entity.setAlarmaddr(alarmAddr);
             entity.setPlaytime(playTime);
             entity.setPlaygap(playGap);
+            entity.setVolume(volume);
             entity.setScreenaddr(screenAddr);
             entity.setShowtime(showTime);
             entity.setShowgap(showGap);
@@ -542,6 +570,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         alarmAddr = audibleAlarm.getAlarmaddr();
         playTime = audibleAlarm.getPlaytime();
         playGap = audibleAlarm.getPlaygap();
+        volume = audibleAlarm.getVolume();
         screenAddr = audibleAlarm.getScreenaddr();
         showTime = audibleAlarm.getShowtime();
         showGap = audibleAlarm.getShowgap();
@@ -565,6 +594,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         mEtAlarmAddr.setText(alarmAddr);
         mEtPlayTime.setText(playTime);
         mEtPlayGap.setText(playGap);
+        seekBarVolume.setProgress(Integer.parseInt(volume));
         mEtScreenAddr.setText(screenAddr);
         mEtShowTime.setText(showTime);
         mEtShowGap.setText(showGap);

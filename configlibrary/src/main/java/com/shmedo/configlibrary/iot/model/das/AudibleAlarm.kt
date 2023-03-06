@@ -44,6 +44,11 @@ class AudibleAlarm {
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
 
+    var volume //音量大小
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "0" else field
+
+
     var screenaddr //电子屏地址
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field

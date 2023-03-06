@@ -26,6 +26,8 @@ class AudibleAlarmEntity : Validater {
             : String? = null
     var playgap //播放间隙
             : String? = null
+    var volume //音量大小
+            : String? = null
 
     var screenaddr //电子屏地址
             : String? = null

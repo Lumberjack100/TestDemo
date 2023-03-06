@@ -32,6 +32,7 @@ class AudibleAlarmParser : IOTResultParser<AudibleAlarm?> {
             info.level3 = keyValueMap.getOrDefault("level3", "NullKey")
             info.playtime = keyValueMap.getOrDefault("playtime", "NullKey")
             info.playgap = keyValueMap.getOrDefault("playgap", "NullKey")
+            info.volume= keyValueMap.getOrDefault("volume", "NullKey")
             info.screenaddr = keyValueMap.getOrDefault("screenaddr", "NullKey")
             info.showtime = keyValueMap.getOrDefault("showtime", "NullKey")
             info.showgap = keyValueMap.getOrDefault("showgap", "NullKey")
