@@ -1,8 +1,11 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +21,7 @@ import com.hjq.toast.ToastUtils;
 import com.jaygoo.widget.OnRangeChangedListener;
 import com.jaygoo.widget.RangeSeekBar;
 import com.kongzue.dialogx.dialogs.MessageDialog;
+import com.kongzue.dialogx.dialogs.PopTip;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -38,6 +42,7 @@ import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommuni
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -61,11 +66,11 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     @BindView(R.id.et_down_pulse_detection_time)
     ClearEditText mEtDownPulseDetectionTime;//检测判断时间
 
-    @BindView(R.id.tv_down_slow_start_interval)
-    TextView mTvDownSlowStartInterval;//下放缓起区间
+    @BindView(R.id.et_down_slow_start_interval)
+    ClearEditText mEtDownSlowStartInterval;//下放缓起区间
 
-    @BindView(R.id.tv_down_slow_stop_interval)
-    TextView mTvDownSlowStopInterval;//下放缓停区间
+    @BindView(R.id.et_down_slow_stop_interval)
+    ClearEditText mEtDownSlowStopInterval;//下放缓停区间
 
     @BindView(R.id.seekBar_down_slow_stop_interval)
     RangeSeekBar seekBarDownSlowStartStopInterval;//下放缓起缓停区间
@@ -86,11 +91,11 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     @BindView(R.id.pullUpEnableSBtn)
     SwitchButton mSbPullUpEnable;
 
-    @BindView(R.id.tv_pull_up_slow_start_interval)
-    TextView mTvPullUpSlowStartInterval;//上拉缓起区间
+    @BindView(R.id.et_pull_up_slow_start_interval)
+    ClearEditText mEtPullUpSlowStartInterval;//上拉缓起区间
 
-    @BindView(R.id.tv_pull_up_slow_stop_interval)
-    TextView mTvPullUpSlowStopInterval;//上拉缓停区间
+    @BindView(R.id.et_pull_up_slow_stop_interval)
+    ClearEditText mEtPullUpSlowStopInterval;//上拉缓停区间
 
     @BindView(R.id.seekBar_pull_up_slow_stop_interval)
     RangeSeekBar seekBarPullUpSlowStartStopInterval;//上拉缓起缓停区间
@@ -128,6 +133,8 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     private String pullUpSlowStopIntervalStartValue;//上拉缓停区间起始值(减速阶段)
     private String pullUpTorqueStallThreshold;//上拉力矩堵转阈值
     private String pullUpTorqueDetectionTime;//上拉力矩检测判断时间
+    private int holedepth = 0;//下放距离
+    private int measpacing = 0;//上拉测量间距
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
@@ -150,7 +157,8 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         super.onViewCreated(view, savedInstanceState);
         setView();
         setSwitchViewListener();
-        setSeekBarListener();
+        initTextChangedListener();
+        initSeekBarListener();
         queryParamInfo();
         //TODO 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
@@ -161,17 +169,33 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     }
 
     private void setView() {
-        mEtDownPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        InputFilter numberFilter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!"0123456789".contains(source.charAt(i) + "")) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+        mEtDownPulsesPerUnitTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5), numberFilter});
         mEtDownPulsesPerUnitTime.setHint("[1,10000]");
 
         mEtDownPulseDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
         mEtDownPulseDetectionTime.setHint("[0.1,10.0]");
+
+        mEtDownSlowStartInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6), numberFilter});
+        mEtDownSlowStopInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6), numberFilter});
 
         mEtDownTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtDownTorqueStallThreshold.setHint("[0.00,2.00]");
 
         mEtDownTorqueDetectionTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
         mEtDownTorqueDetectionTime.setHint("[0.01,5.00]");
+
+        mEtPullUpSlowStartInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), numberFilter});
+        mEtPullUpSlowStopInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), numberFilter});
 
         mEtPullUpTorqueStallThreshold.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtPullUpTorqueStallThreshold.setHint("[1.00,6.00]");
@@ -203,43 +227,142 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         });
     }
 
-    private void setSeekBarListener() {
-        //下放缓起缓停区间
-        seekBarDownSlowStartStopInterval.setIndicatorTextDecimalFormat("0");
-        seekBarDownSlowStartStopInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
+    private void initTextChangedListener() {
+        mEtDownSlowStartInterval.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
-                DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
-                downSlowStartIntervalEndValue = indicatorTextDecimalFormat.format(leftValue);
-                downSlowStopIntervalStartValue = indicatorTextDecimalFormat.format(rightValue);
-                mTvDownSlowStartInterval.setText(String.format("0%%-%s%%", downSlowStartIntervalEndValue));
-                mTvDownSlowStopInterval.setText(String.format("%s%%-100%%", downSlowStopIntervalStartValue));
-            }
-
-            @Override
-            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                //start tracking touch
-            }
-
-            @Override
-            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                float leftValue = view.getLeftSeekBar().getProgress();
-                float rightValue = view.getRightSeekBar().getProgress();
-                float downStallDetectionEndValue = seekBarDownStallDetectionInterval.getRightSeekBar().getProgress();
-
-                if (leftValue >= 50) {
-                    ToastUtils.show("下放缓起区间终值不能大于50%");
-                    view.setProgress(49);
-                }
-                if (rightValue < 50) {
-                    ToastUtils.show("下放缓停区间起始值不能小于50%");
-                    view.setProgress(leftValue, 51);
-                }
-                if (downStallDetectionEndValue >= rightValue) {
-                    seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightValue < 50 ? 50 : rightValue - 1);
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String ss = "";
                 }
             }
         });
+//        mEtDownSlowStartInterval.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                if (!TextUtils.isEmpty(s.toString()) && mEtDownSlowStartInterval.hasFocus()) {
+//                    try {
+//                        int left = Integer.parseInt(s.toString());
+//                        int right = TextUtils.isEmpty(mEtDownSlowStopInterval.getText()) ? 0 : Integer.parseInt(mEtDownSlowStopInterval.getText().toString());
+//                        if (left + right > holedepth) {
+//                            PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离 " + holedepth + "mm").autoDismiss(4500).iconError();
+//                            return;
+//                        }
+//                        float leftPercent = ((float) left / holedepth) * 100;
+//                        seekBarDownSlowStartStopInterval.setProgress(leftPercent, seekBarDownSlowStartStopInterval.getRightSeekBar().getProgress());
+//                    } catch (Exception ex) {
+//                        ex.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
+        mEtDownSlowStopInterval.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextUtils.isEmpty(s.toString()) && mEtDownSlowStopInterval.hasFocus()) {
+                    try {
+                        int right = Integer.parseInt(s.toString());
+                        int left = TextUtils.isEmpty(mEtDownSlowStartInterval.getText()) ? 0 : Integer.parseInt(mEtDownSlowStartInterval.getText().toString());
+                        if (left + right > holedepth) {
+                            PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离 " + holedepth + "mm").autoDismiss(4500).iconError();
+                        }
+                        float rightPercent = ((float) right / holedepth) * 100;
+                        seekBarDownSlowStartStopInterval.setProgress(seekBarDownSlowStartStopInterval.getLeftSeekBar().getProgress(), rightPercent);
+
+                        float downStallDetectionEndValue = seekBarDownStallDetectionInterval.getRightSeekBar().getProgress();
+                        if (downStallDetectionEndValue >= rightPercent) {
+                            seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightPercent < 50 ? 50 : rightPercent - 1);
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        mEtPullUpSlowStartInterval.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextUtils.isEmpty(s.toString()) && mEtPullUpSlowStartInterval.hasFocus()) {
+                    try {
+                        int left = Integer.parseInt(s.toString());
+                        int right = TextUtils.isEmpty(mEtPullUpSlowStopInterval.getText()) ? 0 : Integer.parseInt(mEtPullUpSlowStopInterval.getText().toString());
+                        if (left + right > measpacing) {
+                            PopTip.show("上拉加速距离与上拉减速距离之和不能超过测量间距 " + measpacing + "mm").autoDismiss(4500).iconError();
+                            return;
+                        }
+                        float leftPercent = ((float) left / measpacing) * 100;
+                        seekBarPullUpSlowStartStopInterval.setProgress(leftPercent, seekBarPullUpSlowStartStopInterval.getRightSeekBar().getProgress());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        mEtPullUpSlowStopInterval.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextUtils.isEmpty(s.toString()) && mEtPullUpSlowStopInterval.hasFocus()) {
+                    try {
+                        int right = Integer.parseInt(s.toString());
+                        int left = TextUtils.isEmpty(mEtPullUpSlowStartInterval.getText()) ? 0 : Integer.parseInt(mEtPullUpSlowStartInterval.getText().toString());
+                        if (left + right > measpacing) {
+                            PopTip.show("上拉加速距离与上拉减速距离之和不能超过测量间距 " + measpacing + "mm").autoDismiss(4500).iconError();
+                            return;
+                        }
+                        float rightPercent = ((float) right / measpacing) * 100;
+                        seekBarPullUpSlowStartStopInterval.setProgress(seekBarPullUpSlowStartStopInterval.getLeftSeekBar().getProgress(), rightPercent);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void initSeekBarListener() {
+        //下放缓起缓停区间
+        seekBarDownSlowStartStopInterval.setIndicatorTextDecimalFormat("0");
+        seekBarDownSlowStartStopInterval.setEnabled(false);
+
         //堵转检测区间
         seekBarDownStallDetectionInterval.setIndicatorTextDecimalFormat("0");
         seekBarDownStallDetectionInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
@@ -269,44 +392,14 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                     ToastUtils.show("下放堵转检测区间终值不能小于50%");
                     view.setProgress(leftValue, 50);
                 }
-                if (rightValue >= downSlowStopStartValue) {
-                    seekBarDownSlowStartStopInterval.setProgress(seekBarDownSlowStartStopInterval.getLeftSeekBar().getProgress(), rightValue >= 100 ? 100 : rightValue + 1);
-                }
+//                if (rightValue >= downSlowStopStartValue) {
+//                    seekBarDownSlowStartStopInterval.setProgress(seekBarDownSlowStartStopInterval.getLeftSeekBar().getProgress(), rightValue >= 100 ? 100 : rightValue + 1);
+//                }
             }
         });
         //上拉缓起缓停区间
         seekBarPullUpSlowStartStopInterval.setIndicatorTextDecimalFormat("0");
-        seekBarPullUpSlowStartStopInterval.setOnRangeChangedListener(new OnRangeChangedListener() {
-            @Override
-            public void onRangeChanged(RangeSeekBar view, float leftValue, float rightValue, boolean isFromUser) {
-                DecimalFormat indicatorTextDecimalFormat = new DecimalFormat("0");
-                //leftValue 表示上拉缓起区间终值(加速阶段)
-                pullUpSlowStartIntervalEndValue = indicatorTextDecimalFormat.format(leftValue);
-                //rightValue 表示上拉缓停区间起始值(减速阶段)
-                pullUpSlowStopIntervalStartValue = indicatorTextDecimalFormat.format(rightValue);
-                mTvPullUpSlowStartInterval.setText(String.format("0%%-%s%%", pullUpSlowStartIntervalEndValue));
-                mTvPullUpSlowStopInterval.setText(String.format("%s%%-100%%", pullUpSlowStopIntervalStartValue));
-            }
-
-            @Override
-            public void onStartTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                //start tracking touch
-            }
-
-            @Override
-            public void onStopTrackingTouch(RangeSeekBar view, boolean isLeft) {
-                float leftValue = view.getLeftSeekBar().getProgress();
-                float rightValue = view.getRightSeekBar().getProgress();
-                if (leftValue >= 50) {
-                    ToastUtils.show("上拉缓起区间终值不能大于50%");
-                    view.setProgress(49);
-                }
-                if (rightValue < 50) {
-                    ToastUtils.show("上拉缓停区间起始值不能小于50%");
-                    view.setProgress(leftValue, 50);
-                }
-            }
-        });
+        seekBarPullUpSlowStartStopInterval.setEnabled(false);
     }
 
     /**
@@ -377,8 +470,13 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     private boolean checkValueIsValid() {
         downPulsesPerUnitTime = mEtDownPulsesPerUnitTime.getText().toString().trim();
         downPulseDetectionTime = mEtDownPulseDetectionTime.getText().toString().trim();
+        downSlowStartIntervalEndValue = mEtDownSlowStartInterval.getText().toString().trim();
+        downSlowStopIntervalStartValue = mEtDownSlowStopInterval.getText().toString().trim();
         downTorqueStallThreshold = mEtDownTorqueStallThreshold.getText().toString().trim();
         downTorqueDetectionTime = mEtDownTorqueDetectionTime.getText().toString().trim();
+
+        pullUpSlowStartIntervalEndValue = mEtPullUpSlowStartInterval.getText().toString().trim();
+        pullUpSlowStopIntervalStartValue = mEtPullUpSlowStopInterval.getText().toString().trim();
         pullUpTorqueStallThreshold = mEtPullUpTorqueStallThreshold.getText().toString().trim();
         pullUpTorqueDetectionTime = mEtPullUpTorqueDetectionTime.getText().toString().trim();
 
@@ -420,6 +518,17 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             }
         }
 
+        if (TextUtils.isEmpty(downSlowStartIntervalEndValue)) {
+            ToastUtils.show("请输入下放加速距离!");
+            mEtDownSlowStartInterval.requestFocus();
+            return false;
+        }
+        if (TextUtils.isEmpty(downSlowStopIntervalStartValue)) {
+            ToastUtils.show("请输入下放减速距离!");
+            mEtDownSlowStopInterval.requestFocus();
+            return false;
+        }
+
         if (TextUtils.isEmpty(downTorqueStallThreshold)) {
             ToastUtils.show("请输入下放力矩堵转阈值!");
             mEtDownTorqueStallThreshold.requestFocus();
@@ -453,6 +562,17 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         } catch (Exception ex) {
             ToastUtils.show("请输入正确的下放力矩检测判断时间!");
             mEtDownTorqueDetectionTime.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(pullUpSlowStartIntervalEndValue)) {
+            ToastUtils.show("请输入上拉加速距离!");
+            mEtPullUpSlowStartInterval.requestFocus();
+            return false;
+        }
+        if (TextUtils.isEmpty(pullUpSlowStopIntervalStartValue)) {
+            ToastUtils.show("请输入上拉减速距离!");
+            mEtPullUpSlowStopInterval.requestFocus();
             return false;
         }
 
@@ -642,15 +762,15 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         }
         downPulsesPerUnitTime = lockedRotorDetectionInfo.getNumpput().trim();//下放单位时间脉冲数
         downPulseDetectionTime = lockedRotorDetectionInfo.getPdajtime().trim();//下放脉冲检测判断时间
-        downSlowStartIntervalEndValue = lockedRotorDetectionInfo.getLowsusranb().trim();//下放缓起区间终值(加速阶段)
-        downSlowStopIntervalStartValue = lockedRotorDetectionInfo.getLowsusrana().trim();//下放缓停区间起始值(减速阶段)
+        downSlowStartIntervalEndValue = lockedRotorDetectionInfo.getLowsusranb().trim().replace("-", "");//下放缓起区间终值(加速阶段)
+        downSlowStopIntervalStartValue = lockedRotorDetectionInfo.getLowsusrana().trim().replace("-", "");//下放缓停区间起始值(减速阶段)
         downStallDetectionIntervalStartValue = lockedRotorDetectionInfo.getDetintiona().trim();//堵转检测区间起始值
         downStallDetectionIntervalEndValue = lockedRotorDetectionInfo.getDetintionb().trim();//堵转检测区间终值
         downTorqueStallThreshold = lockedRotorDetectionInfo.getLowtorblothr().trim();//下放力矩堵转阈值
         downTorqueDetectionTime = lockedRotorDetectionInfo.getLowtordetime().trim();//下放力矩检测判断时间
 
-        pullUpSlowStartIntervalEndValue = lockedRotorDetectionInfo.getUpsusranb().trim();//上拉缓起区间终值(加速阶段)
-        pullUpSlowStopIntervalStartValue = lockedRotorDetectionInfo.getUpsusrana().trim();//上拉缓停区间起始值(减速阶段)
+        pullUpSlowStartIntervalEndValue = lockedRotorDetectionInfo.getUpsusranb().trim().replace("-", "");//上拉缓起区间终值(加速阶段)
+        pullUpSlowStopIntervalStartValue = lockedRotorDetectionInfo.getUpsusrana().trim().replace("-", "");//上拉缓停区间起始值(减速阶段)
         pullUpTorqueStallThreshold = lockedRotorDetectionInfo.getUptorblothr().trim();//上拉力矩堵转阈值
         pullUpTorqueDetectionTime = lockedRotorDetectionInfo.getUptordetime().trim();//上拉力矩检测判断时间
 
@@ -671,12 +791,13 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
         try {
             mEtDownPulsesPerUnitTime.setText(downPulsesPerUnitTime);
-
             decimalFormat.applyPattern("#.#");
             downPulseDetectionTime = decimalFormat.format(Double.parseDouble(downPulseDetectionTime));
             mEtDownPulseDetectionTime.setText(downPulseDetectionTime);
 
-            seekBarDownSlowStartStopInterval.setProgress(Integer.parseInt(downSlowStartIntervalEndValue), Integer.parseInt(downSlowStopIntervalStartValue));
+            mEtDownSlowStartInterval.setText(downSlowStartIntervalEndValue);
+            mEtDownSlowStopInterval.setText(downSlowStopIntervalStartValue);
+
             seekBarDownStallDetectionInterval.setProgress(Integer.parseInt(downStallDetectionIntervalStartValue), Integer.parseInt(downStallDetectionIntervalEndValue));
 
             decimalFormat.applyPattern("#.##");
@@ -687,7 +808,8 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             downTorqueDetectionTime = decimalFormat.format(Double.parseDouble(downTorqueDetectionTime));
             mEtDownTorqueDetectionTime.setText(downTorqueDetectionTime);
 
-            seekBarPullUpSlowStartStopInterval.setProgress(Integer.parseInt(pullUpSlowStartIntervalEndValue), Integer.parseInt(pullUpSlowStopIntervalStartValue));
+            mEtPullUpSlowStartInterval.setText(pullUpSlowStartIntervalEndValue);
+            mEtPullUpSlowStopInterval.setText(pullUpSlowStopIntervalStartValue);
 
             decimalFormat.applyPattern("#.##");
             pullUpTorqueStallThreshold = decimalFormat.format(Double.parseDouble(pullUpTorqueStallThreshold));
@@ -696,6 +818,24 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
             decimalFormat.applyPattern("#.#");
             pullUpTorqueDetectionTime = decimalFormat.format(Double.parseDouble(pullUpTorqueDetectionTime));
             mEtPullUpTorqueDetectionTime.setText(pullUpTorqueDetectionTime);
+
+            holedepth = Integer.parseInt(Objects.requireNonNull(lockedRotorDetectionInfo.getHoledepth()));
+            measpacing = Integer.parseInt(Objects.requireNonNull(lockedRotorDetectionInfo.getMeaspacing()));
+            float leftValue = holedepth == 0 ? 0 : (Integer.parseInt(downSlowStartIntervalEndValue) / (float) holedepth) * 100;
+            float rightValue = holedepth == 0 ? 0 : (Integer.parseInt(downSlowStopIntervalStartValue) / (float) holedepth) * 100;
+            leftValue = leftValue > 100 ? 100 : leftValue;
+            rightValue = rightValue > 100 ? 100 : rightValue;
+            if (leftValue > rightValue)
+                leftValue = rightValue;
+            seekBarDownSlowStartStopInterval.setProgress(leftValue, rightValue);
+
+            leftValue = measpacing == 0 ? 0 : (Integer.parseInt(pullUpSlowStartIntervalEndValue) / (float) measpacing) * 100;
+            rightValue = measpacing == 0 ? 0 : (Integer.parseInt(pullUpSlowStopIntervalStartValue) / (float) measpacing) * 100;
+            leftValue = leftValue > 100 ? 100 : leftValue;
+            rightValue = rightValue > 100 ? 100 : rightValue;
+            if (leftValue > rightValue)
+                leftValue = rightValue;
+            seekBarPullUpSlowStartStopInterval.setProgress(leftValue, rightValue);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

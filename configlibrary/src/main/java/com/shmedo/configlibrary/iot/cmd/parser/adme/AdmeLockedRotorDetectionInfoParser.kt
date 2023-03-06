@@ -37,6 +37,9 @@ class AdmeLockedRotorDetectionInfoParser : IOTResultParser<AdmeLockedRotorDetect
             info.uptordetime = keyValueMap.getOrDefault("uptordetime", "NullKey")
             info.upsusrana = keyValueMap.getOrDefault("upsusrana", "NullKey")
             info.upsusranb = keyValueMap.getOrDefault("upsusranb", "NullKey")
+            info.holedepth = keyValueMap.getOrDefault("holedepth", "NullKey")
+            info.measpacing = keyValueMap.getOrDefault("measpacing", "NullKey")
+
             info
         } catch (ex: Exception) {
             ex.printStackTrace()

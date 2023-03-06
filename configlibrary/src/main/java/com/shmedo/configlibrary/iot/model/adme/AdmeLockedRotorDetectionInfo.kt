@@ -50,4 +50,12 @@ class AdmeLockedRotorDetectionInfo {
     var upsusranb //上拉缓起区间终值
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
+
+    var holedepth //下放距离
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "0" else field
+
+    var measpacing //上拉测量间距
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "0" else field
 }

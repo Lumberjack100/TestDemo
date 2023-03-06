@@ -39,7 +39,7 @@ import timber.log.Timber;
 public class AdmeInclinometerView extends LinearLayout {
 
     @BindView(R.id.tv_low_power_mode)
-    TextView mTvLowPowerMode;
+    TextView mTvMode;
 
     @BindView(R.id.et_mac_address)
     ClearEditText mEtMacAddress;//Mac 地址
@@ -60,7 +60,7 @@ public class AdmeInclinometerView extends LinearLayout {
     Button mBtnSave;
 
     @BindView(R.id.ll_low_power_mode)
-    ViewGroup lowPowerModeLayout;
+    ViewGroup lowModeLayout;
 
     @BindView(R.id.ll_mac_address)
     ViewGroup macAddressLayout;
@@ -77,14 +77,14 @@ public class AdmeInclinometerView extends LinearLayout {
     @BindView(R.id.ll_correction_value)
     ViewGroup correctionValueLayout;
 
-    private String lowPowerMode;// 低功耗模式
+    private String mode;// 测量工作模式
     private String address;// 采集器地址/Mac 地址
     private String collectionInterval;//采集器采集间隔
     private String solvingInterval;//采集器解算间隔
     private String sleepTime;//休眠时间
     private String correctionValue;//测斜仪修正值
 
-    private final String[] powerModes = new String[]{"关闭", "开启"};
+    private final String[] modes = new String[]{"蓝牙关测量关", "蓝牙开测量关", "蓝牙关测量开", "蓝牙开测量开"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
     public AdmeInclinometerInfo admeInclinometerInfo;
@@ -114,28 +114,32 @@ public class AdmeInclinometerView extends LinearLayout {
         mEtSleepTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtCorrectionValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
-        mTvLowPowerMode.setText(powerModes[0]);
-        lowPowerMode = "0";
+        mTvMode.setText(modes[0]);
+        mode = "5";
     }
 
     /**
      * 选择低功耗模式
      */
     public void showLowPowerModeDialog(Context context) {
-        int pos = Arrays.asList(powerModes).indexOf(String.valueOf(mTvLowPowerMode.getText()));
+        int pos = Arrays.asList(modes).indexOf(String.valueOf(mTvMode.getText()));
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(context)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", powerModes,
+                .asBottomList("", modes,
                         null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                mTvLowPowerMode.setText(text);
+                                mTvMode.setText(text);
                                 if (position == 0) {
-                                    lowPowerMode = "0";
+                                    mode = "5";
+                                } else if (position == 1) {
+                                    mode = "7";
+                                } else if (position == 2) {
+                                    mode = "8";
                                 } else {
-                                    lowPowerMode = "1";
+                                    mode = "9";
                                 }
                             }
                         }, 0, R.layout.custom_xpopup_adapter_text_with_check)
@@ -239,7 +243,7 @@ public class AdmeInclinometerView extends LinearLayout {
         try {
             AdmeInclinometerEntity entity = new AdmeInclinometerEntity();
             entity.setInctype(admeInclinometerInfo.getInctype().equals("NullKey") ? "NullKey" : admeInclinometerInfo.getInctype());
-            entity.setLowpower(admeInclinometerInfo.getLowpower().equals("NullKey") ? "NullKey" : lowPowerMode);
+            entity.setLowpower(admeInclinometerInfo.getMode().equals("NullKey") ? "NullKey" : mode);
             entity.setAddress(admeInclinometerInfo.getAddress().equals("NullKey") ? "NullKey" : address);
             entity.setCollinval(admeInclinometerInfo.getCollinval().equals("NullKey") ? "NullKey" : collectionInterval);
             entity.setCalcinval(admeInclinometerInfo.getCalcinval().equals("NullKey") ? "NullKey" : solvingInterval);
@@ -261,7 +265,7 @@ public class AdmeInclinometerView extends LinearLayout {
             admeInclinometerInfo = new AdmeInclinometerInfo();
             return;
         }
-        lowPowerMode = admeInclinometerInfo.getLowpower().trim();
+        mode = admeInclinometerInfo.getMode().trim();
         address = admeInclinometerInfo.getAddress().trim();
         collectionInterval = admeInclinometerInfo.getCollinval().trim();
         solvingInterval = admeInclinometerInfo.getCalcinval().trim();
@@ -271,13 +275,17 @@ public class AdmeInclinometerView extends LinearLayout {
         mEtMacAddress.setText(address);
         macAddressLayout.setVisibility(View.VISIBLE);
 
-        if (lowPowerMode.equals("NullKey")) {
-            lowPowerModeLayout.setVisibility(View.GONE);
+        if (mode.equals("NullKey")) {
+            lowModeLayout.setVisibility(View.GONE);
         } else {
-            if (lowPowerMode.equals("0")) {
-                mTvLowPowerMode.setText(powerModes[0]);
+            if (mode.equals("5")) {
+                mTvMode.setText(modes[0]);
+            } else if (mode.equals("7")) {
+                mTvMode.setText(modes[1]);
+            } else if (mode.equals("8")) {
+                mTvMode.setText(modes[2]);
             } else {
-                mTvLowPowerMode.setText(powerModes[1]);
+                mTvMode.setText(modes[3]);
             }
         }
 
@@ -348,7 +356,7 @@ public class AdmeInclinometerView extends LinearLayout {
     }
 
     public void onEditableChanged(boolean isEditable) {
-        lowPowerModeLayout.setEnabled(isEditable);
+        lowModeLayout.setEnabled(isEditable);
         mEtMacAddress.setEnabled(isEditable);
         mEtCollectionInterval.setEnabled(isEditable);
         mEtSolvingInterval.setEnabled(isEditable);
@@ -356,14 +364,14 @@ public class AdmeInclinometerView extends LinearLayout {
         mEtCorrectionValue.setEnabled(isEditable);
 
         if (isEditable) {
-            mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
+            mTvMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
             mEtMacAddress.setHint("XXXXXXXXXXXX");
             mEtCollectionInterval.setHint("请输入");
             mEtSolvingInterval.setHint("请输入");
             mEtSleepTime.setHint("请输入");
             mEtCorrectionValue.setHint("请输入");
         } else {
-            mTvLowPowerMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mTvMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mEtMacAddress.setHint("");
             mEtCollectionInterval.setHint("");
             mEtSolvingInterval.setHint("");

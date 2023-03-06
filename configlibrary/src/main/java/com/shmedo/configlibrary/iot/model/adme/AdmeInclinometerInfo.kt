@@ -11,6 +11,7 @@ class AdmeInclinometerInfo {
     var inctype //测斜仪类型（0：433测斜仪，1：蓝牙测斜仪）
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
+    @Deprecated("此字段已废弃，没有实际业务意义", replaceWith = ReplaceWith("用 mode 表示测量工作模式"))
     var lowpower //低功耗模式(0:关闭，1:开启)
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
@@ -29,4 +30,7 @@ class AdmeInclinometerInfo {
     var interupdate //测斜仪修正值
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
+    var mode //测量工作模式(5:蓝牙关测量关，7:蓝牙开测量关，8:蓝牙关测量开，9:蓝牙开测量开)
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "5" else field
 }

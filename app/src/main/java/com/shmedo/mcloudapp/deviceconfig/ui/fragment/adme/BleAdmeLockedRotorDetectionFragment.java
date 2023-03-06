@@ -60,10 +60,10 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     @BindView(R.id.et_down_pulse_detection_time)
     ClearEditText mEtDownPulseDetectionTime;//检测判断时间
 
-    @BindView(R.id.tv_down_slow_start_interval)
+    @BindView(R.id.et_down_slow_start_interval)
     TextView mTvDownSlowStartInterval;//下放缓起区间
 
-    @BindView(R.id.tv_down_slow_stop_interval)
+    @BindView(R.id.et_down_slow_stop_interval)
     TextView mTvDownSlowStopInterval;//下放缓停区间
 
     @BindView(R.id.seekBar_down_slow_stop_interval)
@@ -85,10 +85,10 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
     @BindView(R.id.pullUpEnableSBtn)
     SwitchButton mSbPullUpEnable;
 
-    @BindView(R.id.tv_pull_up_slow_start_interval)
+    @BindView(R.id.et_pull_up_slow_start_interval)
     TextView mTvPullUpSlowStartInterval;//上拉缓起区间
 
-    @BindView(R.id.tv_pull_up_slow_stop_interval)
+    @BindView(R.id.et_pull_up_slow_stop_interval)
     TextView mTvPullUpSlowStopInterval;//上拉缓停区间
 
     @BindView(R.id.seekBar_pull_up_slow_stop_interval)

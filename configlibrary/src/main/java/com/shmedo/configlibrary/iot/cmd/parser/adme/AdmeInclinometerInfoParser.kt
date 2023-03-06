@@ -30,6 +30,8 @@ class AdmeInclinometerInfoParser : IOTResultParser<AdmeInclinometerInfo?> {
             info.calcinval = keyValueMap.getOrDefault("calcinval", "NullKey")
             info.dormancytime = keyValueMap.getOrDefault("dormancytime", "NullKey")
             info.interupdate = keyValueMap.getOrDefault("interupdate", "NullKey")
+            info.mode = keyValueMap.getOrDefault("mode", "NullKey")
+
             info
         } catch (ex: Exception) {
             ex.printStackTrace()

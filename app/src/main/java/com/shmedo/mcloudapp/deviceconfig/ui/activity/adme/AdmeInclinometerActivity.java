@@ -12,7 +12,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.BaseConfigFragmentContainerActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeInclinometerFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeInclinometerFragment;
-import com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac.BleAdmeHacInclinometerFragment;
 
 /**
  * 创建者:   gonghe <br/>
@@ -54,7 +53,7 @@ public class AdmeInclinometerActivity extends BaseConfigFragmentContainerActivit
             fragment = NetAdmeInclinometerFragment.newInstance(deviceInfo);
 
         } else {
-            fragment = (productType == ProductType.ADME) ? BleAdmeInclinometerFragment.newInstance() : BleAdmeHacInclinometerFragment.newInstance();
+            fragment = BleAdmeInclinometerFragment.newInstance();
         }
 
         return fragment;
