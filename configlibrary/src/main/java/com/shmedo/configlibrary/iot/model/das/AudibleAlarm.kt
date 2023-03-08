@@ -60,4 +60,8 @@ class AudibleAlarm {
     var showgap //电子屏熄屏时长 秒
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
+
+    var mcuaddr //MCU 地址
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
 }

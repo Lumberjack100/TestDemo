@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Space
+        <android.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="10dp" />
 
@@ -26,7 +26,7 @@
 
         </LinearLayout>
 
-        <Space
+        <android.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="10dp" />
 
@@ -42,7 +42,7 @@
 
         </LinearLayout>
 
-        <Space
+        <android.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="10dp" />
 
@@ -81,13 +81,15 @@
 
         </LinearLayout>
 
-        <Space
+        <android.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="10dp" />
 
         <LinearLayout
             android:id="@+id/chongQingTestLayout"
-            style="@style/Common_ClickableItem_LayoutStyle">
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -97,7 +99,7 @@
 
         </LinearLayout>
 
-        <Space
+        <android.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="10dp" />
 
@@ -113,7 +115,7 @@
 
         </LinearLayout>
 
-        <Space
+        <android.widget.Space
             android:layout_width="wrap_content"
             android:layout_height="50dp" />
 

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.das;
 
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,6 +91,9 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.et_show_gap)
     EditText mEtShowGap;//显示间隙
 
+    @BindView(R.id.et_mcu_addr)
+    EditText mEtMcuAddr;//MCU 地址
+
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
@@ -111,10 +115,22 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     private String screenAddr;
     private String showTime;
     private String showGap;
+    private String mcuAddr;
 
     private AudibleAlarm audibleAlarm = new AudibleAlarm();
 
     private String[] alarmTypes;
+
+    private InputFilter numberFilter = new InputFilter() {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            for (int i = start; i < end; i++) {
+                if (!"0123456789".contains(source.charAt(i) + "")) {
+                    return "";
+                }
+            }
+            return null;
+        }
+    };
 
     public static NetAudibleAlarmFragment newInstance(DeviceInfo deviceInfo) {
         NetAudibleAlarmFragment fragment = new NetAudibleAlarmFragment();
@@ -141,12 +157,14 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
     }
 
     private void setFilter() {
-        mEtAlarmAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtPlayTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtPlayGap.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtShowTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtShowGap.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtScreenAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+
+        mEtAlarmAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), numberFilter});
+        mEtPlayTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), numberFilter});
+        mEtPlayGap.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), numberFilter});
+        mEtScreenAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), numberFilter});
+        mEtShowTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), numberFilter});
+        mEtShowGap.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3), numberFilter});
+        mEtMcuAddr.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5), numberFilter});
 
         mEtPlayTime.setHint(StringUtils.getString(R.string.alarm_play_time_hint));
         mEtPlayGap.setHint(StringUtils.getString(R.string.alarm_play_gap_hint));
@@ -157,16 +175,16 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
 
     private void resetHint() {
         if (alarmType.equals("0")) {
-            mEtLevel1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
-            mEtLevel2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
-            mEtLevel3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+            mEtLevel1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4), numberFilter});
+            mEtLevel2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4), numberFilter});
+            mEtLevel3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4), numberFilter});
             mEtLevel1.setHint(StringUtils.getString(R.string.rain_level1_hint));
             mEtLevel2.setHint(StringUtils.getString(R.string.rain_level1_hint));
             mEtLevel3.setHint(StringUtils.getString(R.string.rain_level1_hint));
         } else {
-            mEtLevel1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-            mEtLevel2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-            mEtLevel3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+            mEtLevel1.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6), numberFilter});
+            mEtLevel2.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6), numberFilter});
+            mEtLevel3.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6), numberFilter});
             mEtLevel1.setHint(StringUtils.getString(R.string.water_level1_hint));
             mEtLevel2.setHint(StringUtils.getString(R.string.water_level2_hint));
             mEtLevel3.setHint(StringUtils.getString(R.string.water_level3_hint));
@@ -276,7 +294,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         screenAddr = mEtScreenAddr.getText().toString().trim();
         showTime = mEtShowTime.getText().toString().trim();
         showGap = mEtShowGap.getText().toString().trim();
-
+        mcuAddr = mEtMcuAddr.getText().toString().trim();
 
         if (TextUtils.isEmpty(mEtLevel1.getText().toString())) {
             PopTip.show("请输入一级报警值!").autoDismiss(3500).iconError();
@@ -433,6 +451,23 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
 //            showGap = null;
 //        }
 
+        if (TextUtils.isEmpty(mEtMcuAddr.getText().toString())) {
+            PopTip.show("请输入 MCU 地址!").autoDismiss(3500).iconError();
+            mEtMcuAddr.requestFocus();
+            return false;
+        }
+        try {
+            int value = Integer.parseInt(mEtMcuAddr.getText().toString());
+            if (value > 65535) {
+                PopTip.show("MCU 地址不能大于 65535，并且不能超过播放时长!").autoDismiss(3500).iconError();
+                return false;
+            }
+        } catch (Exception ex) {
+            PopTip.show("MCU 地址必须为整数值!").autoDismiss(3500).iconError();
+            mEtMcuAddr.requestFocus();
+            return false;
+        }
+
         return true;
     }
 
@@ -452,11 +487,11 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
             entity.setScreenaddr(screenAddr);
             entity.setShowtime(showTime);
             entity.setShowgap(showGap);
+            entity.setMcuaddr(mcuAddr);
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_AUDIBLE_ALARM, entity);
             showWaitDialog("处理中...");
             doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -574,6 +609,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         screenAddr = audibleAlarm.getScreenaddr();
         showTime = audibleAlarm.getShowtime();
         showGap = audibleAlarm.getShowgap();
+        mcuAddr = audibleAlarm.getMcuaddr();
 
         alarmChildMaskLayer.setVisibility(audibleAlarm.getAlarmstatus().equals("0") ? View.GONE : View.VISIBLE);
         mSbAlarmEnable.setCheckedImmediatelyNoEvent(audibleAlarm.getAlarmstatus().equals("0"));
@@ -598,5 +634,6 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         mEtScreenAddr.setText(screenAddr);
         mEtShowTime.setText(showTime);
         mEtShowGap.setText(showGap);
+        mEtMcuAddr.setText(mcuAddr);
     }
 }

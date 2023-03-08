@@ -53,7 +53,9 @@
         <LinearLayout
             android:id="@+id/voiceBroadcastLayout"
             style="@style/Common_ClickableItem_LayoutStyle"
-            android:layout_marginTop="@dimen/dimen_size_10">
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"

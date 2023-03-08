@@ -1,11 +1,9 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -38,6 +36,9 @@ import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
 import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -228,131 +229,147 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     }
 
     private void initTextChangedListener() {
+        KeyboardVisibilityEvent.setEventListener(
+                getActivity(),
+                getViewLifecycleOwner(),
+                new KeyboardVisibilityEventListener() {
+                    @Override
+                    public void onVisibilityChanged(boolean isOpen) {
+                        // some code depending on keyboard visiblity status
+                        if (!isOpen) {
+                            mEtDownSlowStartInterval.clearFocus();
+                            mEtDownSlowStopInterval.clearFocus();
+                            mEtPullUpSlowStartInterval.clearFocus();
+                            mEtPullUpSlowStopInterval.clearFocus();
+                        }
+                    }
+                });
         mEtDownSlowStartInterval.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                //失去焦点时
                 if (!hasFocus) {
-                    String ss = "";
+                    if (TextUtils.isEmpty(mEtDownSlowStartInterval.getText())) {
+                        ToastUtils.show("请输入下放加速距离");
+//                        mEtDownSlowStartInterval.requestFocus();
+                        return;
+                    }
+                    try {
+                        int left = Integer.parseInt(mEtDownSlowStartInterval.getText().toString());
+                        int right = TextUtils.isEmpty(mEtDownSlowStopInterval.getText()) ? 0 : Integer.parseInt(mEtDownSlowStopInterval.getText().toString());
+                        if (left + right > holedepth) {
+                            PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "mm)").autoDismiss(4000).iconWarning();
+                            return;
+                        }
+                        if (left > holedepth / 2) {
+                            PopTip.show("下放加速距离不能超过下放总距离(" + holedepth + "mm) 的 50%").autoDismiss(4000).iconWarning();
+                            return;
+                        }
+                        float leftProgress = ((float) left / holedepth) * 100;
+                        seekBarDownSlowStartStopInterval.setProgress(leftProgress, seekBarDownSlowStartStopInterval.getRightSeekBar().getProgress());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                } else {
+                    Timber.d("获得焦点");
                 }
             }
         });
-//        mEtDownSlowStartInterval.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if (!TextUtils.isEmpty(s.toString()) && mEtDownSlowStartInterval.hasFocus()) {
-//                    try {
-//                        int left = Integer.parseInt(s.toString());
-//                        int right = TextUtils.isEmpty(mEtDownSlowStopInterval.getText()) ? 0 : Integer.parseInt(mEtDownSlowStopInterval.getText().toString());
-//                        if (left + right > holedepth) {
-//                            PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离 " + holedepth + "mm").autoDismiss(4500).iconError();
-//                            return;
-//                        }
-//                        float leftPercent = ((float) left / holedepth) * 100;
-//                        seekBarDownSlowStartStopInterval.setProgress(leftPercent, seekBarDownSlowStartStopInterval.getRightSeekBar().getProgress());
-//                    } catch (Exception ex) {
-//                        ex.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-        mEtDownSlowStopInterval.addTextChangedListener(new TextWatcher() {
+        mEtDownSlowStopInterval.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!TextUtils.isEmpty(s.toString()) && mEtDownSlowStopInterval.hasFocus()) {
+            public void onFocusChange(View v, boolean hasFocus) {
+                //失去焦点时
+                if (!hasFocus) {
+                    if (TextUtils.isEmpty(mEtDownSlowStopInterval.getText())) {
+                        ToastUtils.show("请输入下放减速距离");
+                        return;
+                    }
                     try {
-                        int right = Integer.parseInt(s.toString());
                         int left = TextUtils.isEmpty(mEtDownSlowStartInterval.getText()) ? 0 : Integer.parseInt(mEtDownSlowStartInterval.getText().toString());
+                        int right = Integer.parseInt(mEtDownSlowStopInterval.getText().toString());
                         if (left + right > holedepth) {
-                            PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离 " + holedepth + "mm").autoDismiss(4500).iconError();
+                            PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "mm)").autoDismiss(4000).iconWarning();
+                            return;
                         }
-                        float rightPercent = ((float) right / holedepth) * 100;
-                        seekBarDownSlowStartStopInterval.setProgress(seekBarDownSlowStartStopInterval.getLeftSeekBar().getProgress(), rightPercent);
+                        if (right > holedepth / 2) {
+                            PopTip.show("下放减速距离不能超过下放总距离(" + holedepth + "mm) 的 50%").autoDismiss(4000).iconWarning();
+                            return;
+                        }
+                        float rightProgress = (1 - (float) right / holedepth) * 100;
+                        seekBarDownSlowStartStopInterval.setProgress(seekBarDownSlowStartStopInterval.getLeftSeekBar().getProgress(), rightProgress);
 
                         float downStallDetectionEndValue = seekBarDownStallDetectionInterval.getRightSeekBar().getProgress();
-                        if (downStallDetectionEndValue >= rightPercent) {
-                            seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightPercent < 50 ? 50 : rightPercent - 1);
+                        if (downStallDetectionEndValue >= rightProgress) {
+                            seekBarDownStallDetectionInterval.setProgress(seekBarDownStallDetectionInterval.getLeftSeekBar().getProgress(), rightProgress < 50 ? 50 : rightProgress - 1);
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+
+                } else {
+                    Timber.d("获得焦点");
                 }
             }
         });
-        mEtPullUpSlowStartInterval.addTextChangedListener(new TextWatcher() {
+        mEtPullUpSlowStartInterval.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!TextUtils.isEmpty(s.toString()) && mEtPullUpSlowStartInterval.hasFocus()) {
+            public void onFocusChange(View v, boolean hasFocus) {
+                //失去焦点时
+                if (!hasFocus) {
+                    if (TextUtils.isEmpty(mEtPullUpSlowStartInterval.getText())) {
+                        ToastUtils.show("请输入上拉加速距离");
+                        return;
+                    }
                     try {
-                        int left = Integer.parseInt(s.toString());
+                        int left = Integer.parseInt(mEtPullUpSlowStartInterval.getText().toString());
                         int right = TextUtils.isEmpty(mEtPullUpSlowStopInterval.getText()) ? 0 : Integer.parseInt(mEtPullUpSlowStopInterval.getText().toString());
                         if (left + right > measpacing) {
-                            PopTip.show("上拉加速距离与上拉减速距离之和不能超过测量间距 " + measpacing + "mm").autoDismiss(4500).iconError();
+                            PopTip.show("上拉加速距离与上拉减速距离之和不能超过测量间距(" + measpacing + "mm)").autoDismiss(4000).iconWarning();
                             return;
                         }
-                        float leftPercent = ((float) left / measpacing) * 100;
-                        seekBarPullUpSlowStartStopInterval.setProgress(leftPercent, seekBarPullUpSlowStartStopInterval.getRightSeekBar().getProgress());
+                        if (left > measpacing / 2) {
+                            PopTip.show("上拉加速距离不能超过测量间距(" + measpacing + "mm) 的 50%").autoDismiss(4000).iconWarning();
+                            return;
+                        }
+                        float leftProgress = ((float) left / measpacing) * 100;
+                        seekBarPullUpSlowStartStopInterval.setProgress(leftProgress, seekBarPullUpSlowStartStopInterval.getRightSeekBar().getProgress());
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+
+                } else {
+                    Timber.d("获得焦点");
                 }
             }
         });
-        mEtPullUpSlowStopInterval.addTextChangedListener(new TextWatcher() {
+        mEtPullUpSlowStopInterval.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!TextUtils.isEmpty(s.toString()) && mEtPullUpSlowStopInterval.hasFocus()) {
+            public void onFocusChange(View v, boolean hasFocus) {
+                //失去焦点时
+                if (!hasFocus) {
+                    if (TextUtils.isEmpty(mEtPullUpSlowStopInterval.getText())) {
+                        ToastUtils.show("请输入下放减速距离");
+                        return;
+                    }
                     try {
-                        int right = Integer.parseInt(s.toString());
                         int left = TextUtils.isEmpty(mEtPullUpSlowStartInterval.getText()) ? 0 : Integer.parseInt(mEtPullUpSlowStartInterval.getText().toString());
+                        int right = Integer.parseInt(mEtPullUpSlowStopInterval.getText().toString());
                         if (left + right > measpacing) {
-                            PopTip.show("上拉加速距离与上拉减速距离之和不能超过测量间距 " + measpacing + "mm").autoDismiss(4500).iconError();
+                            PopTip.show("上拉加速距离与上拉减速距离之和不能超过测量间距(" + measpacing + "mm)").autoDismiss(4000).iconWarning();
                             return;
                         }
-                        float rightPercent = ((float) right / measpacing) * 100;
-                        seekBarPullUpSlowStartStopInterval.setProgress(seekBarPullUpSlowStartStopInterval.getLeftSeekBar().getProgress(), rightPercent);
+                        if (right > measpacing / 2) {
+                            PopTip.show("上拉减速距离不能超过测量间距(" + measpacing + "mm) 的 50%").autoDismiss(4000).iconWarning();
+                            return;
+                        }
+                        float rightProgress = (1 - (float) right / measpacing) * 100;
+                        seekBarPullUpSlowStartStopInterval.setProgress(seekBarPullUpSlowStartStopInterval.getLeftSeekBar().getProgress(), rightProgress);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+                } else {
+                    Timber.d("获得焦点");
                 }
             }
         });
@@ -386,15 +403,15 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
                 float downSlowStopStartValue = seekBarDownSlowStartStopInterval.getRightSeekBar().getProgress();
                 if (leftValue >= 50) {
                     ToastUtils.show("下放堵转检测区间起始值不能大于50%");
-                    view.setProgress(49);
+                    view.setProgress(49, rightValue);
                 }
                 if (rightValue < 50) {
                     ToastUtils.show("下放堵转检测区间终值不能小于50%");
                     view.setProgress(leftValue, 50);
                 }
-//                if (rightValue >= downSlowStopStartValue) {
-//                    seekBarDownSlowStartStopInterval.setProgress(seekBarDownSlowStartStopInterval.getLeftSeekBar().getProgress(), rightValue >= 100 ? 100 : rightValue + 1);
-//                }
+                if (rightValue >= downSlowStopStartValue) {
+                    view.setProgress(leftValue, seekBarDownSlowStartStopInterval.getRightSeekBar().getProgress() - 1 < 50 ? 50 : seekBarDownSlowStartStopInterval.getRightSeekBar().getProgress() - 1);
+                }
             }
         });
         //上拉缓起缓停区间
@@ -821,21 +838,17 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
 
             holedepth = Integer.parseInt(Objects.requireNonNull(lockedRotorDetectionInfo.getHoledepth()));
             measpacing = Integer.parseInt(Objects.requireNonNull(lockedRotorDetectionInfo.getMeaspacing()));
-            float leftValue = holedepth == 0 ? 0 : (Integer.parseInt(downSlowStartIntervalEndValue) / (float) holedepth) * 100;
-            float rightValue = holedepth == 0 ? 0 : (Integer.parseInt(downSlowStopIntervalStartValue) / (float) holedepth) * 100;
-            leftValue = leftValue > 100 ? 100 : leftValue;
-            rightValue = rightValue > 100 ? 100 : rightValue;
-            if (leftValue > rightValue)
-                leftValue = rightValue;
-            seekBarDownSlowStartStopInterval.setProgress(leftValue, rightValue);
+            float leftProgress = holedepth == 0 ? 0 : (Integer.parseInt(downSlowStartIntervalEndValue) / (float) holedepth) * 100;
+            float rightProgress = holedepth == 0 ? 0 : (1 - Integer.parseInt(downSlowStopIntervalStartValue) / (float) holedepth) * 100;
+            leftProgress = leftProgress >= 50 ? 49 : leftProgress;
+            rightProgress = rightProgress < 50 ? 50 : rightProgress;
+            seekBarDownSlowStartStopInterval.setProgress(leftProgress, rightProgress);
 
-            leftValue = measpacing == 0 ? 0 : (Integer.parseInt(pullUpSlowStartIntervalEndValue) / (float) measpacing) * 100;
-            rightValue = measpacing == 0 ? 0 : (Integer.parseInt(pullUpSlowStopIntervalStartValue) / (float) measpacing) * 100;
-            leftValue = leftValue > 100 ? 100 : leftValue;
-            rightValue = rightValue > 100 ? 100 : rightValue;
-            if (leftValue > rightValue)
-                leftValue = rightValue;
-            seekBarPullUpSlowStartStopInterval.setProgress(leftValue, rightValue);
+            leftProgress = measpacing == 0 ? 0 : (Integer.parseInt(pullUpSlowStartIntervalEndValue) / (float) measpacing) * 100;
+            rightProgress = measpacing == 0 ? 100 : (1 - Integer.parseInt(pullUpSlowStopIntervalStartValue) / (float) measpacing) * 100;
+            leftProgress = leftProgress >= 50 ? 49 : leftProgress;
+            rightProgress = rightProgress < 50 ? 50 : rightProgress;
+            seekBarPullUpSlowStartStopInterval.setProgress(leftProgress, rightProgress);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

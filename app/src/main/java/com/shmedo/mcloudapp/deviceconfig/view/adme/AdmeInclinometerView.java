@@ -243,13 +243,13 @@ public class AdmeInclinometerView extends LinearLayout {
         try {
             AdmeInclinometerEntity entity = new AdmeInclinometerEntity();
             entity.setInctype(admeInclinometerInfo.getInctype().equals("NullKey") ? "NullKey" : admeInclinometerInfo.getInctype());
-            entity.setLowpower(admeInclinometerInfo.getMode().equals("NullKey") ? "NullKey" : mode);
             entity.setAddress(admeInclinometerInfo.getAddress().equals("NullKey") ? "NullKey" : address);
             entity.setCollinval(admeInclinometerInfo.getCollinval().equals("NullKey") ? "NullKey" : collectionInterval);
             entity.setCalcinval(admeInclinometerInfo.getCalcinval().equals("NullKey") ? "NullKey" : solvingInterval);
             entity.setDormancytime(admeInclinometerInfo.getDormancytime().equals("NullKey") ? "NullKey" : sleepTime);
             decimalFormat.applyPattern("#.####");
             entity.setInterupdate(admeInclinometerInfo.getInterupdate().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(correctionValue)));
+            entity.setMode(admeInclinometerInfo.getMode().equals("NullKey") ? "NullKey" : mode);
 
             command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_INCLINOMETER, entity);
         } catch (Exception ex) {
@@ -284,8 +284,11 @@ public class AdmeInclinometerView extends LinearLayout {
                 mTvMode.setText(modes[1]);
             } else if (mode.equals("8")) {
                 mTvMode.setText(modes[2]);
-            } else {
+            } else if (mode.equals("9")) {
                 mTvMode.setText(modes[3]);
+            } else {
+                mode = "0";
+                mTvMode.setText(modes[0]);
             }
         }
 

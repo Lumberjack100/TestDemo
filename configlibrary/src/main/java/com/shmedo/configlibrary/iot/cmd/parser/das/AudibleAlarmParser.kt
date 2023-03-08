@@ -10,7 +10,7 @@ import com.shmedo.configlibrary.iot.model.das.AudibleAlarm
  * 描述：    解析声光报警参数
  */
 class AudibleAlarmParser : IOTResultParser<AudibleAlarm?> {
-    override fun parse(result: String): AudibleAlarm ?{
+    override fun parse(result: String): AudibleAlarm? {
         val info = AudibleAlarm()
         return try {
             val keyValues = result.split("&").toTypedArray()
@@ -32,11 +32,11 @@ class AudibleAlarmParser : IOTResultParser<AudibleAlarm?> {
             info.level3 = keyValueMap.getOrDefault("level3", "NullKey")
             info.playtime = keyValueMap.getOrDefault("playtime", "NullKey")
             info.playgap = keyValueMap.getOrDefault("playgap", "NullKey")
-            info.volume= keyValueMap.getOrDefault("volume", "NullKey")
+            info.volume = keyValueMap.getOrDefault("volume", "NullKey")
             info.screenaddr = keyValueMap.getOrDefault("screenaddr", "NullKey")
             info.showtime = keyValueMap.getOrDefault("showtime", "NullKey")
             info.showgap = keyValueMap.getOrDefault("showgap", "NullKey")
-
+            info.mcuaddr = keyValueMap.getOrDefault("mcuaddr", "NullKey")
             info
         } catch (ex: Exception) {
             ex.printStackTrace()

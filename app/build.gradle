@@ -165,8 +165,6 @@ dependencies {
     //Add progress to any button by few lines of code without layout changes
     implementation "com.github.razir.progressbutton:progressbutton:$rootProject.thirdLib.progressbutton"
 
-    //蒲公英SDk
-//    implementation "com.pgyer:analytics:$rootProject.thirdLib.pgyerSdk"
     //异常信息上报组件
     implementation "com.tencent.bugly:crashreport:$rootProject.thirdLib.buglyCrashReport"
 
@@ -203,6 +201,9 @@ dependencies {
     //StateView is an invisible, zero-sized View that can be used to lazily inflate loadingView/emptyView/retryView/anyView at runtime.
     implementation 'com.github.nukc:StateView:v3.0.2'
 
+    //Android Library to handle software keyboard visibility change event.
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3'
+
     //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
     implementation "no.nordicsemi.android.support.v18:scanner:$rootProject.thirdLib.nordicsemiScanner"
     // Log Bluetooth LE events in nRF Logger APP
@@ -222,9 +223,10 @@ dependencies {
     implementation 'com.github.xuexiangjys:XUpdate:2.1.2'
     implementation 'com.zhy:okhttputils:2.6.2'
 
-//    debugImplementation because LeakCanary should only run in debug builds
+    //debugImplementation because LeakCanary should only run in debug builds
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
-// 日志调试框架：https://github.com/getActivity/Logcat
+
+    //日志调试框架：https://github.com/getActivity/Logcat
     debugImplementation 'com.github.getActivity:Logcat:10.6'
 
     testImplementation "junit:junit:$rootProject.thirdLib.junit"

@@ -341,6 +341,32 @@
 
         </FrameLayout>
 
+        <RelativeLayout
+            style="@style/SwitchButton_LayoutStyle"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                style="@style/SwitchButton_TitleStyle"
+                android:text="MCU设置"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="MCU地址" />
+
+            <com.shmedo.mcloudapp.common.view.ClearEditText
+                android:id="@+id/et_mcu_addr"
+                style="@style/Common_EditItem_EditText_Style"
+                android:inputType="number" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/btn_confirm"
             style="@style/SubmitBordelessButtonStyle"

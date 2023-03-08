@@ -114,7 +114,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                                 ExternalSensorItem item = new ExternalSensorItem(sensorAddress);
                                 item.setVibratingWireSensor(isVibratingWireSensor);
                                 mAdapter.getData().add(item);
-                                mAdapter.notifyItemInserted(mAdapter.getData().size() - 1);
+                                mAdapter.notifyItemInserted(mAdapter.getData().size());
                                 mBtnSave.setEnabled(true);
                             } else {
                                 sensorHashMap.remove(curItem.getSensorAddress());
@@ -165,7 +165,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                     }
                 }
                 DasExternalSensorInfo dasExternalSensorInfo = sensorHashMap.get(curItem.getSensorAddress());
-                IOTSensorType sensorType =IOTSensorType.value(dasExternalSensorInfo.getType());
+                IOTSensorType sensorType = IOTSensorType.value(dasExternalSensorInfo.getType());
                 DasExternalSensorConfigActivity.startActivity(mActivity, resultLauncher, deviceInfo, sensorType, addressList, dasExternalSensorInfo, isVibratingWireSensor);
             }
 
@@ -227,9 +227,8 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         sensorIndex = 0;
         curItem = null;
         sensorHashMap.clear();
-        int size = mAdapter.getData().size();
         mAdapter.getData().clear();
-        mAdapter.notifyItemRangeRemoved(0, size);
+        mAdapter.notifyDataSetChanged();
         mBtnSave.setEnabled(false);
     }
 
@@ -566,6 +565,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 sensorHashMap.remove(address);
                 mAdapter.getData().remove(deleteItemIndex);
                 mAdapter.notifyItemRangeRemoved(deleteItemIndex, 1);
+                mAdapter.notifyItemRangeChanged(deleteItemIndex, mAdapter.getData().size() - deleteItemIndex);
             }
             break;
 

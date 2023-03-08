@@ -36,6 +36,9 @@ class AudibleAlarmEntity : Validater {
     var showgap //电子屏熄屏时长
             : String? = null
 
+    var mcuaddr //MCU 地址
+            : String? = null
+
     override fun validate() {}
     override fun toString(): String {
         val stringBuilder = StringBuilder()
