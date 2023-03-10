@@ -215,6 +215,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                         collectorSensorHashMap.remove(address);
                         sensorItemList.remove(position);
                         sensorAdapter.notifyItemRemoved(position);
+                        sensorAdapter.notifyItemRangeChanged(position, sensorItemList.size() - position);
                         DASSensorItem lastItem = sensorItemList.get(sensorItemList.size() - 1);
                         if (sensorItemList.size() < 8 && !lastItem.isAddButton()) {
                             DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);

@@ -564,7 +564,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 String address = mAdapter.getData().get(deleteItemIndex).getSensorAddress();
                 sensorHashMap.remove(address);
                 mAdapter.getData().remove(deleteItemIndex);
-                mAdapter.notifyItemRangeRemoved(deleteItemIndex, 1);
+                mAdapter.notifyItemRemoved(deleteItemIndex);
                 mAdapter.notifyItemRangeChanged(deleteItemIndex, mAdapter.getData().size() - deleteItemIndex);
             }
             break;
@@ -642,6 +642,6 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
         ExternalSensorItem item = new ExternalSensorItem(sensorInfo.getAddr());
         item.setVibratingWireSensor(isVibratingWireSensor);
         mAdapter.getData().add(item);
-        mAdapter.notifyItemInserted(mAdapter.getData().size() - 1);
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 }

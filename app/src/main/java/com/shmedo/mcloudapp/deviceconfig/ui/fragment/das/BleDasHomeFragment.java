@@ -660,6 +660,8 @@ public class BleDasHomeFragment extends BaseBleCommunicateFragment {
 
         configModule = new ConfigModule(R.drawable.ic_device_setting, "设置", "高级设置");
         configModuleList.add(configModule);
+
+        moduleAdapter.notifyDataSetChanged();
     }
 
     private CharSequence getPlatformStateMessage(String state) {

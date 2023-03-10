@@ -553,9 +553,8 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                 switch (number) {
                     case "1": {
                         DeviceNetStatus deviceNetStatus = ResultParserUtil.getEntityObject(cmdStr);
-                        int size = dataCenterStatusInfoList.size();
                         dataCenterStatusInfoList.clear();
-                        dataCenterAdapter.notifyItemRangeRemoved(0, size);
+                        dataCenterAdapter.notifyDataSetChanged();
                         dataCenterStatusInfoList.add(deviceNetStatus);
                         dataCenterAdapter.notifyItemInserted(dataCenterStatusInfoList.size() - 1);
                         queryDataCenter(new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt()));
