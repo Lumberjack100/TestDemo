@@ -198,6 +198,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 warnDeleteSensorItem();
             }
         });
+        mAdapter.setItemMax(maxSensorSum);
         mRecyclerViewSensor.setAdapter(mAdapter);
     }
 
