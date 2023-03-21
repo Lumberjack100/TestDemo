@@ -10,10 +10,13 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.constant.RegexConstants;
+import com.blankj.utilcode.util.RegexUtils;
 import com.blankj.utilcode.util.ResourceUtils;
 import com.shmedo.mcloudapp.R;
 
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +36,7 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
     @BindView(R.id.horizontalBar)
     ProgressBar horizontalBar;//
 
-    private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private DecimalFormat decimalFormat = new DecimalFormat("#");
 
 
     public HacMeasuringDataHorizontalProgressBarView(Context context) {
@@ -55,22 +58,19 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
         if (TextUtils.isEmpty(measurePoint) || !measurePoint.contains("|"))
             return;
 
-        int maxValue = 0;
         int progress = 0;
         try {
             String[] values = measurePoint.split("\\|");
-            if (!TextUtils.isEmpty(values[1])) {
-                maxValue = Integer.parseInt(values[1]);
-                horizontalBar.setMax(maxValue);
+            if (!TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(RegexConstants.REGEX_INTEGER, values[1])) {
+                horizontalBar.setMax(Integer.parseInt(values[1]));
             }
             if (!TextUtils.isEmpty(values[0])) {
                 progress = Integer.parseInt(values[0]);
                 horizontalBar.setProgress(progress, true);
             }
             mTvDataNum.setText(String.format("(%s/%s)", values[0], values[1]));
-            float result = maxValue == 0 ? 0 : (float) progress / maxValue;
-            result = result * 100;
-            mTvDataPercent.setText(String.format("%s%%", decimalFormat.format(result)));
+            float result = (horizontalBar.getMax() == 0) ? 0 : (float) progress / horizontalBar.getMax();
+            mTvDataPercent.setText(String.format("%s%%", decimalFormat.format(result * 100)));
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -79,10 +79,11 @@ public class HacMeasuringDataHorizontalProgressBarView extends LinearLayout {
 
     public void setMaxProgress() {
         horizontalBar.setProgress(horizontalBar.getMax(), true);
+        mTvDataNum.setText(String.format(Locale.getDefault(), "(%d/%d)", horizontalBar.getMax(), horizontalBar.getMax()));
+        mTvDataPercent.setText("100%");
     }
 
-
     public void setProgressDrawable(boolean isReadData) {
-        horizontalBar.setProgressDrawable(isReadData ? ResourceUtils.getDrawable(R.drawable.custom_progress_horizontal) : ResourceUtils.getDrawable(R.drawable.custom_progress_horizontal2));
+        horizontalBar.setProgressDrawable(isReadData ? ResourceUtils.getDrawable(R.drawable.custom_progress_horizontal_blue) : ResourceUtils.getDrawable(R.drawable.custom_progress_horizontal_green));
     }
 }

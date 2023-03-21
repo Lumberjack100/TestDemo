@@ -159,7 +159,7 @@ public class DeviceSearchActivity extends BaseActivity {
         //左对齐
         layoutManager.setJustifyContent(JustifyContent.FLEX_START);
         mRvSearchHistory.setLayoutManager(layoutManager);
-        mRvSearchHistory.setHasFixedSize(true);
+        mRvSearchHistory.setHasFixedSize(false);
         mRvSearchHistory.setNestedScrollingEnabled(false);
         searchHistoryAdapter = new SearchHistoryAdapter(historyList);
         searchHistoryAdapter.setOnItemClickListener(new OnItemClickListener() {

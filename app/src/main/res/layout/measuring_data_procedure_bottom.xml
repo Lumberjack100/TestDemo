@@ -144,7 +144,7 @@
         android:background="@drawable/bg_btn_stop_measuring_data"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
-        android:text="中止测量"
+        android:text="结束测量"
         android:textColor="@color/white"
         android:textSize="17sp"
         android:textStyle="bold" />
