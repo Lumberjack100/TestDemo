@@ -56,7 +56,7 @@ public class BleAdmeStepperMotorFragment extends BaseUSRBleIotCommunicateFragmen
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
-    private AdmeStepperMotorInfo admeStepperMotorInfo;
+    private AdmeStepperMotorInfo admeStepperMotorInfo=new AdmeStepperMotorInfo();
 
     private String accuracyCorrectionValue;//绝对精度修正值
     private String movementSpeed;//步进电机运动速度(r/min)

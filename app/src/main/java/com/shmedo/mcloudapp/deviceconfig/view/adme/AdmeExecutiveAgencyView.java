@@ -203,7 +203,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     private List<AdmeTimeItem> admeTimeItemList = new ArrayList<>();
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-    public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo;
+    public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo=new AdmeExecutiveAgencyInfo();
 
 
     public AdmeExecutiveAgencyView(Context context) {

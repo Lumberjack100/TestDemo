@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.tcpcommon;
 
+import static androidx.lifecycle.Lifecycle.State.DESTROYED;
+
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
@@ -7,6 +9,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -64,6 +67,10 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
         @Override
         protected void handleMessage(Message msg, BaseTcpIotCommunicateFragment fragment) {
             fragment.dismissProgressDialog();
+            Lifecycle.State currentState = fragment.getLifecycle().getCurrentState();
+            if (currentState == DESTROYED) {
+                return;
+            }
             fragment.customHandleMessage(msg);
         }
     }

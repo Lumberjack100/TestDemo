@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -86,6 +87,10 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
 
         @Override
         protected void handleMessage(Message msg, BleAdmeHacManualMeasuringHoleDepthDialog fragment) {
+            Lifecycle.State currentState = fragment.getLifecycle().getCurrentState();
+            if (currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                return;
+            }
             fragment.getMotorMotionData();
         }
     }

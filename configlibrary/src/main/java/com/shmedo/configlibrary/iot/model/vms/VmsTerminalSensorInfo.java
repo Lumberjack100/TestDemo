@@ -103,7 +103,7 @@ public class VmsTerminalSensorInfo implements Parcelable {
     };
 
     public String getSn() {
-        return sn;
+        return TextUtils.isEmpty(sn) ? "" : sn;
     }
 
     public void setSn(String sn) {

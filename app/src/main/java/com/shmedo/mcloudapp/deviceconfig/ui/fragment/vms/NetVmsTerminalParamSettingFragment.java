@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
+import static com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo.NORMAL_DEVICE;
+
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -66,7 +68,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private VmsTerminalInfo vmsTerminalInfo;
+    private VmsTerminalInfo vmsTerminalInfo = new VmsTerminalInfo(NORMAL_DEVICE);
     private VmsTerminalCommInfo vmsTerminalCommInfo;
     private VmsTerminalCollectorInfo vmsTerminalCollectorInfo;
 
@@ -100,7 +102,7 @@ public class NetVmsTerminalParamSettingFragment extends BaseNetIotCommunicateFra
         return R.layout.vms_terminal_param_setting_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setView();

@@ -87,7 +87,7 @@ public class AdmeInclinometerView extends LinearLayout {
     private final String[] modes = new String[]{"蓝牙关测量关", "蓝牙开测量关", "蓝牙关测量开", "蓝牙开测量开"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-    public AdmeInclinometerInfo admeInclinometerInfo;
+    public AdmeInclinometerInfo admeInclinometerInfo=new AdmeInclinometerInfo();
 
     public AdmeInclinometerView(Context context) {
         this(context, null);

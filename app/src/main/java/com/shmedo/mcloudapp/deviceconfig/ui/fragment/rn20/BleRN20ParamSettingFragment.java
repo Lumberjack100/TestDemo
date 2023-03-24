@@ -63,8 +63,8 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private VmsTerminalCommInfo vmsTerminalCommInfo;
-    private VmsTerminalCollectorInfo vmsTerminalCollectorInfo;
+    private VmsTerminalCommInfo vmsTerminalCommInfo = new VmsTerminalCommInfo();
+    private VmsTerminalCollectorInfo vmsTerminalCollectorInfo = new VmsTerminalCollectorInfo();
 
     private int reportingMethodPos;
     private String reportingMethodOld;//
@@ -83,7 +83,7 @@ public class BleRN20ParamSettingFragment extends BaseUSRBleIotCommunicateFragmen
         return R.layout.vms_terminal_param_setting_fragment;
     }
 
-   @Override
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setView();

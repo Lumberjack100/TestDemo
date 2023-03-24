@@ -106,7 +106,7 @@ public class VmsAisleSettingView extends LinearLayout {
     private String terminalWakeTime;//终端唤醒时间
 
     public VmsAisleNumber vmsAisleNumber;
-    public VmsAisleInfo vmsAisleInfo;
+    public VmsAisleInfo vmsAisleInfo = new VmsAisleInfo();
 
     public VmsAisleSettingView(Context context) {
         this(context, null);

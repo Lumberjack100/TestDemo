@@ -119,7 +119,7 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
     @BindView(R.id.maskLayerLayout)
     ViewGroup maskLayerLayout;
 
-    private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
+    private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo=new AdmeLockedRotorDetectionInfo();
 
     private String downPulsesPerUnitTime;//下放单位时间脉冲数
     private String downPulseDetectionTime;//下放脉冲检测判断时间

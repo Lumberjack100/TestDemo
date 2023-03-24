@@ -136,7 +136,7 @@ public class AdmeHacExecutiveAgencyView extends LinearLayout {
     private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-    public HacExecutiveAgencyInfo admeExecutiveAgencyInfo;
+    public HacExecutiveAgencyInfo admeExecutiveAgencyInfo = new HacExecutiveAgencyInfo();
 
 
     public AdmeHacExecutiveAgencyView(Context context) {

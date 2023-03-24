@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity;
 
+import static androidx.lifecycle.Lifecycle.State.DESTROYED;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -443,8 +446,12 @@ public class TcpToBleDebugActivity extends BaseActivity {
         }
 
         @Override
-        protected void handleMessage(Message msg, TcpToBleDebugActivity context) {
-            context.customHandleMessage(msg);
+        protected void handleMessage(Message msg, TcpToBleDebugActivity activity) {
+            Lifecycle.State currentState = activity.getLifecycle().getCurrentState();
+            if (currentState == DESTROYED) {
+                return;
+            }
+            activity.customHandleMessage(msg);
         }
     }
 

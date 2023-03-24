@@ -107,7 +107,7 @@ public class AdmeMeterWheelView extends LinearLayout {
     private String downFilterCoefficient;//下放滤波器系数
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-    public AdmeMeterWheelInfo admeMeterWheelInfo;
+    public AdmeMeterWheelInfo admeMeterWheelInfo=new AdmeMeterWheelInfo();
 
 
     public AdmeMeterWheelView(Context context) {

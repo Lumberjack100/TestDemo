@@ -124,7 +124,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     private final String[] measureWays = new String[]{"自动测孔深", "手动测孔深"};
     private final String[] movementWays = new String[]{"上拉", "下放"};
 
-    private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
+    private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo=new AdmeLockedRotorDetectionInfo();
 
     public static BleAdmeMeasuringHoleDepthFragment newInstance() {
         return new BleAdmeMeasuringHoleDepthFragment();

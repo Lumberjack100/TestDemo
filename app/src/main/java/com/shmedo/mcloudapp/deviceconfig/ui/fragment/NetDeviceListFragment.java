@@ -250,7 +250,7 @@ public class NetDeviceListFragment extends BaseFragment {
         observable.doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(mActivity)))
                 .subscribe(new BaseObserver<DeviceStatisticInfo>() {
                     @Override
                     protected void onResponse(DeviceStatisticInfo data, ErrorInfo errorInfo) {
@@ -295,7 +295,7 @@ public class NetDeviceListFragment extends BaseFragment {
         observable.doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(mActivity)))
                 .subscribe(new BaseObserver<PageResult<ProductInfo>>() {
                     @Override
                     protected void onResponse(PageResult<ProductInfo> data, ErrorInfo errorInfo) {
@@ -380,7 +380,7 @@ public class NetDeviceListFragment extends BaseFragment {
         observable.doOnDispose(() -> Timber.i("Disposing subscription"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .to(autoDisposable(AndroidLifecycleScopeProvider.from(getViewLifecycleOwner())))
+                .to(autoDisposable(AndroidLifecycleScopeProvider.from(mActivity)))
                 .subscribe(new BaseObserver<PageResult<DeviceInfo>>() {
                     @Override
                     protected void onResponse(PageResult<DeviceInfo> data, ErrorInfo errorInfo) {

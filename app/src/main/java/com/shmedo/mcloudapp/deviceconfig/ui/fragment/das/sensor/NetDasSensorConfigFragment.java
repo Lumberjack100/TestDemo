@@ -114,11 +114,10 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     Button btnConfirm;
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-
-    private DasIOSensorInfo ioSensorInfo;
+    private DasIOSensorInfo ioSensorInfo = new DasIOSensorInfo();
     private String rainPrecision;
 
-    private DasDigitalPiezometerInfo digitalPiezometerInfo;
+    private DasDigitalPiezometerInfo digitalPiezometerInfo = new DasDigitalPiezometerInfo();
     private String osmometerAddress;
     private String depthTriggerValue;
     private String depthCorrection;

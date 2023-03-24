@@ -80,7 +80,7 @@ public class AdmeVoltageConfigView extends LinearLayout {
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-    public AdmeVoltageConfigInfo voltageConfigInfo;
+    public AdmeVoltageConfigInfo voltageConfigInfo = new AdmeVoltageConfigInfo();
 
 
     public AdmeVoltageConfigView(Context context) {
@@ -356,7 +356,7 @@ public class AdmeVoltageConfigView extends LinearLayout {
             mEtInclinometerLowVoltageThreshold.setHint("请输入");
             mEtInclinometerUnderVoltageThreshold.setHint("请输入");
 
-        }else {
+        } else {
             mEtDriveStandardVoltageThreshold.setHint("");
             mEtDriveLowVoltageThreshold.setHint("");
             mEtDriveUnderVoltageThreshold.setHint("");

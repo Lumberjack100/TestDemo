@@ -159,7 +159,7 @@ public class AdmeHacThresholdConfigView extends LinearLayout {
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-    public AdmeVoltageConfigInfo voltageConfigInfo;
+    public AdmeVoltageConfigInfo voltageConfigInfo = new AdmeVoltageConfigInfo();
     public HacWarningValue warningValue;
 
 

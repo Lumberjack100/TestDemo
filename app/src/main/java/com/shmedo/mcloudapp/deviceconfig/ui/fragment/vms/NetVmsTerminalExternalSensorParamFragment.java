@@ -87,7 +87,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private VmsTerminalSensorInfo sensorInfo;
+    private VmsTerminalSensorInfo sensorInfo=new VmsTerminalSensorInfo();
 
     private List<String> calculationList = Arrays.asList("直线式", "多项式", "MEMS", "模数", "倍率");
     private List<String> monitorTypeList = new ArrayList<>();

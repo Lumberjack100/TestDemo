@@ -141,9 +141,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
-    public AdmeBasicConfigInfo basicConfigParam;
-    public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo;
-    public AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo;
+    public AdmeBasicConfigInfo basicConfigParam=new AdmeBasicConfigInfo();
+    public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo=new AdmeExecutiveAgencyInfo();
+    public AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo=new AdmeLockedRotorDetectionInfo();
 
     private AdmeTimeAdapter admeTimeAdapter;
     private List<AdmeTimeItem> admeTimeItemList = new ArrayList<>();

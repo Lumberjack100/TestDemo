@@ -66,7 +66,7 @@ public class NetFixedPointReportingFragment extends BaseNetIotCommunicateFragmen
 
     private final String[] reportingMethods = new String[]{"定时上报", "定时定点上报"};
 
-    private DasFixedPointReportInfo dasFixedPointReportInfo;
+    private DasFixedPointReportInfo dasFixedPointReportInfo = new DasFixedPointReportInfo();
 
     public static NetFixedPointReportingFragment newInstance(DeviceInfo deviceInfo) {
         NetFixedPointReportingFragment fragment = new NetFixedPointReportingFragment();

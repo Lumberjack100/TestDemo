@@ -353,6 +353,9 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                         if (paramMap == null) {
                             return;
                         }
+                        if (externalSensorInfo == null)
+                            externalSensorInfo = new DasExternalSensorInfo();
+
                         if (sensorScanResult.getSensortype().equals("50")) {
                             if (!TextUtils.isEmpty(paramMap.get("poly_a"))) {
                                 externalSensorInfo.setPoly_a(paramMap.get("poly_a"));

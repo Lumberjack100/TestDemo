@@ -30,7 +30,7 @@ public class QueryOsmometerParameterInfo {
 
 
     public String getOsmometerAddress() {
-        return TextUtils.isEmpty(osmometerAddress) ? "" : osmometerAddress;
+        return TextUtils.isEmpty(osmometerAddress) ? "0" : osmometerAddress;
     }
 
 
@@ -39,7 +39,7 @@ public class QueryOsmometerParameterInfo {
     }
 
     public String getDepthTrigger() {
-        return TextUtils.isEmpty(depthTrigger) ? "" : depthTrigger;
+        return TextUtils.isEmpty(depthTrigger) ? "0" : depthTrigger;
     }
 
     public void setDepthTrigger(String depthTrigger) {
@@ -47,7 +47,7 @@ public class QueryOsmometerParameterInfo {
     }
 
     public String getTemperatureTrigger() {
-        return TextUtils.isEmpty(temperatureTrigger) ? "" : temperatureTrigger;
+        return TextUtils.isEmpty(temperatureTrigger) ? "0" : temperatureTrigger;
     }
 
     public void setTemperatureTrigger(String temperatureTrigger) {
@@ -55,7 +55,7 @@ public class QueryOsmometerParameterInfo {
     }
 
     public String getDepthCorrect() {
-        return TextUtils.isEmpty(depthCorrect) ? "" : depthCorrect;
+        return TextUtils.isEmpty(depthCorrect) ? "0" : depthCorrect;
     }
 
     public void setDepthCorrect(String depthCorrect) {
@@ -63,7 +63,7 @@ public class QueryOsmometerParameterInfo {
     }
 
     public String getTemperatureCorrect() {
-        return TextUtils.isEmpty(temperatureCorrect) ? "" : temperatureCorrect;
+        return TextUtils.isEmpty(temperatureCorrect) ? "0" : temperatureCorrect;
     }
 
     public void setTemperatureCorrect(String temperatureCorrect) {
@@ -71,7 +71,7 @@ public class QueryOsmometerParameterInfo {
     }
 
     public String getCordLenght() {
-        return TextUtils.isEmpty(cordLenght) ? "" : cordLenght;
+        return TextUtils.isEmpty(cordLenght) ? "0" : cordLenght;
     }
 
     public void setCordLenght(String cordLenght) {
@@ -79,7 +79,7 @@ public class QueryOsmometerParameterInfo {
     }
 
     public String getInstallHeight() {
-        return TextUtils.isEmpty(installHeight) ? "" : installHeight;
+        return TextUtils.isEmpty(installHeight) ? "0" : installHeight;
     }
 
     public void setInstallHeight(String installHeight) {

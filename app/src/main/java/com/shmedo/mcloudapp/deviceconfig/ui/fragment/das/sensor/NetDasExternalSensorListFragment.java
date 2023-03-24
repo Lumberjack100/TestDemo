@@ -153,7 +153,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             @Override
             public void onItemClick(View v, int position) {
                 if (collectorInfo == null || TextUtils.isEmpty(collectorInfo.getType())) {
-                    ToastUtils.show("未获取到采集器信息，请先刷新");
+                    ToastUtils.show("未获取到采集器信息，请先刷新完成后再试!");
                     return;
                 }
                 isAddSensor = false;
@@ -171,6 +171,10 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
 
             @Override
             public void addItem() {
+                if (collectorInfo == null || TextUtils.isEmpty(collectorInfo.getType())) {
+                    ToastUtils.show("未获取到采集器信息，请先刷新完成后再试!");
+                    return;
+                }
                 isAddSensor = true;
                 addressList.clear();
                 for (ExternalSensorItem item : mAdapter.getData()) {

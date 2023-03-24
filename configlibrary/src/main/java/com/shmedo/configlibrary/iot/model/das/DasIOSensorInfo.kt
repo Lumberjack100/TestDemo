@@ -10,11 +10,11 @@ import android.text.TextUtils
 class DasIOSensorInfo {
     var type //0：关闭开关量功能 1：雨量站模式 2：断线报警器模式
             : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
+        get() = if (TextUtils.isEmpty(field)) "0" else field
     var value //当type取1时，value代表雨量计精度  当type取2时，value代表断线报警器状态，0：常开，1：常关
             : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
+        get() = if (TextUtils.isEmpty(field)) "0" else field
     var min_time //雨量计翻斗翻转最小间隔
             : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
+        get() = if (TextUtils.isEmpty(field)) "0" else field
 }

@@ -91,13 +91,13 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
     private String reportingInterval;
 
-    private int baudRatePos;
     private String targetAddr;
-    private String baudRateOld;
     private String baudRate;
 
     private DasDataReportInfo dataReportInfo;
     private DasBdTerminalInfo bdTerminalInfo;
+    private final String[] baudRates = new String[]{"9600", "115200"};
+
 
     private boolean isBdTerminalParamChange = false;//判断有没有修改北斗数传终端参数
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭北斗数传终端操作
@@ -171,6 +171,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private void setFilter() {
         mEtReportingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtTargetAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+
+        mTvBaudRate.setText(baudRates[0]);
+        baudRate = baudRates[0];
     }
 
     /**
@@ -275,15 +278,15 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
      * 选择波特率弹框
      */
     private void showBaudRateDialog() {
+        int pos = Arrays.asList(baudRates).indexOf(String.valueOf(mTvBaudRate.getText()));
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("", new String[]{"9600", "115200"},
-                        null, baudRatePos,
+                .asBottomList("", baudRates,
+                        null, pos,
                         new OnSelectListener() {
                             @Override
                             public void onSelect(int position, String text) {
-                                baudRatePos = position;
                                 mTvBaudRate.setText(text);
                                 baudRate = text;
                             }
@@ -322,7 +325,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             return false;
         }
         if (!ValidateUtil.isNumberSix(targetAddr)) {
-            ToastUtils.show("请输入正确的北斗目标地址!");
+            ToastUtils.show("请输入六位数字的北斗目标地址!");
             mEtTargetAddress.requestFocus();
             return false;
         }
@@ -517,7 +520,6 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                 }
                 if (isSaveParamOperation) {
                     ToastUtils.show("保存成功");
-                    baudRateOld = baudRate;
                 }
             }
             break;
@@ -556,18 +558,8 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         }
         targetAddr = bdTerminalInfo.getDstaddr();
         baudRate = bdTerminalInfo.getBaud();
-        baudRateOld = bdTerminalInfo.getBaud();
-        switch (baudRate) {
-            case "9600":
-                baudRatePos = 0;
-                mTvBaudRate.setText("9600");
-                break;
-            case "115200":
-                baudRatePos = 1;
-                mTvBaudRate.setText("115200");
-                break;
-        }
         mEtTargetAddress.setText(targetAddr);
+        mTvBaudRate.setText(baudRate);
     }
 
     private String getStatusTextById(String statusId) {
@@ -605,18 +597,20 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     }
 
     private boolean checkValueIsChange() {
-        if (reportingInterval != null && !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())) {
-            return true;
-        }
-        if (!mSbBeiDouEnable.isChecked()) {
-            return false;
-        }
-        if (targetAddr != null && !targetAddr.equals(mEtTargetAddress.getText().toString().trim())) {
-            return true;
-        }
-        if (baudRateOld != null && baudRate != null && !baudRateOld.equals(baudRate)) {
-            return true;
-        }
+//        if (reportingInterval != null && !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (!mSbBeiDouEnable.isChecked()) {
+//            return false;
+//        }
+//        if (targetAddr != null && !targetAddr.equals(mEtTargetAddress.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (baudRateOld != null && baudRate != null && !baudRateOld.equals(baudRate)) {
+//            return true;
+//        }
+//        return false;
+
         return false;
     }
 }

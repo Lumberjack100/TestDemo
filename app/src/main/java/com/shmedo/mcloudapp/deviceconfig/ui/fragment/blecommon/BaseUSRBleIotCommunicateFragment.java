@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon;
 
+import static androidx.lifecycle.Lifecycle.State.DESTROYED;
 import static autodispose2.AutoDispose.autoDisposable;
 
 import android.bluetooth.BluetoothDevice;
@@ -10,6 +11,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -87,6 +89,10 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         @Override
         protected void handleMessage(Message msg, BaseUSRBleIotCommunicateFragment fragment) {
             fragment.dismissProgressDialog();
+            Lifecycle.State currentState = fragment.getLifecycle().getCurrentState();
+            if (currentState == DESTROYED) {
+                return;
+            }
             fragment.customHandleMessage(msg);
         }
     }

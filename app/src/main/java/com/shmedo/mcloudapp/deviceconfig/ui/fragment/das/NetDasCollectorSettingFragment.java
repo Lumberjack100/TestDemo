@@ -76,7 +76,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
 
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-    private DasCollectorInfo collectorInfo;
+    private DasCollectorInfo collectorInfo = new DasCollectorInfo();
 
     public static NetDasCollectorSettingFragment newInstance(DeviceInfo deviceInfo) {
         NetDasCollectorSettingFragment fragment = new NetDasCollectorSettingFragment();
@@ -135,6 +135,10 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         int id = view.getId();
         if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
+            if (collectorInfo == null || TextUtils.isEmpty(collectorInfo.getType())) {
+                ToastUtils.show("未获取到采集器信息，请先刷新完成后再试!");
+                return;
+            }
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;

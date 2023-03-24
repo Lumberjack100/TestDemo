@@ -119,7 +119,7 @@ public class BleDasSensorConfigFragment extends BaseBleCommunicateFragment {
     private String collectorModel = "";//采集器类型
     private BaseConfigInfo baseConfigInfo;
     private BreakAlarmStatusInfo breakAlarmStatusInfo;
-    private QueryOsmometerParameterInfo queryOsmometerParameterInfo;//数字水位计参数
+    private QueryOsmometerParameterInfo queryOsmometerParameterInfo=new QueryOsmometerParameterInfo();//数字水位计参数
 
     private String rainPrecision;
     private String osmometerAddress;

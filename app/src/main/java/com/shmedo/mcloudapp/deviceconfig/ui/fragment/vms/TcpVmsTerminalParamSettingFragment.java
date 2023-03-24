@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.fragment.vms;
 
+import static com.shmedo.configlibrary.iot.model.vms.VmsTerminalInfo.NORMAL_DEVICE;
+
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -56,7 +58,7 @@ public class TcpVmsTerminalParamSettingFragment extends BaseVmsTcpCommunicateFra
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
-    private VmsTerminalInfo vmsTerminalInfo;
+    private VmsTerminalInfo vmsTerminalInfo=new VmsTerminalInfo(NORMAL_DEVICE);
     private VmsTerminalCommInfo vmsTerminalCommInfo;
     private VmsTerminalCollectorInfo vmsTerminalCollectorInfo;
 
