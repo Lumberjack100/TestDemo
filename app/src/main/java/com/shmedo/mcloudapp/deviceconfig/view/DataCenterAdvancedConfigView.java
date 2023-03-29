@@ -173,6 +173,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
     private String reissuingDataValidDays;//补发数据有效天数
     private String reissuingDataInterval;//数据补发间隔
 
+    private final String[] platforms = new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期", "河南水利"};
+    private final String[] protocols = new String[]{"CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT"};
 
     public boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭数据中心操作
     public boolean isResultOK = false;//返回的结果是否是 Activity.RESULT_OK
@@ -402,10 +404,8 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
      * 选择数据协议弹框
      */
     private void showDataProtocolDialog() {
-        final String[] protocols = new String[]{"CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT"};
         int pos = Arrays.asList(protocols).indexOf(mTvDataProtocol.getText().toString());
         pos = (pos == -1) ? 0 : pos;
-
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(getContext())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
@@ -449,7 +449,6 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
      * 选择平台类型弹框
      */
     private void showPlatformTypeDialog() {
-        final String[] platforms = new String[]{"地灾一期", "成都理工平台", "MDNET", "地灾二期"};
         int pos = Arrays.asList(platforms).indexOf(mTvPlatformType.getText().toString());
         pos = (pos == -1) ? 0 : pos;
 
@@ -462,21 +461,25 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
                             @Override
                             public void onSelect(int position, String text) {
                                 mTvPlatformType.setText(text);
-                                switch (text) {
-                                    case "地灾一期":
+                                switch (position) {
+                                    case 0:
                                         platformType = "0";
                                         break;
 
-                                    case "成都理工平台":
+                                    case 1:
                                         platformType = "1";
                                         break;
 
-                                    case "MDNET":
+                                    case 2:
                                         platformType = "2";
                                         break;
 
-                                    case "地灾二期":
+                                    case 3:
                                         platformType = "3";
+                                        break;
+
+                                    case 4:
+                                        platformType = "4";
                                         break;
                                 }
                             }
@@ -673,44 +676,48 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         //数据协议
         switch (dataProtocol) {
             case "1":
-                mTvDataProtocol.setText("CMD");
+                mTvDataProtocol.setText(protocols[0]);
                 break;
 
             case "2":
-                mTvDataProtocol.setText("NMEA");
+                mTvDataProtocol.setText(protocols[1]);
                 break;
 
             case "3":
-                mTvDataProtocol.setText("DIFF_IN");
+                mTvDataProtocol.setText(protocols[2]);
                 break;
 
             case "4":
-                mTvDataProtocol.setText("DIFF_OUT");
+                mTvDataProtocol.setText(protocols[3]);
                 break;
 
             case "5":
-                mTvDataProtocol.setText("RAW_OUT");
+                mTvDataProtocol.setText(protocols[4]);
                 break;
 
             case "6":
-                mTvDataProtocol.setText("RES_OUT");
+                mTvDataProtocol.setText(protocols[5]);
                 break;
         }
         //平台
         switch (platformType) {
             case "0":
-                mTvPlatformType.setText("地灾一期");
+                mTvPlatformType.setText(platforms[0]);
                 break;
             case "1":
-                mTvPlatformType.setText("成都理工平台");
+                mTvPlatformType.setText(platforms[1]);
                 break;
 
             case "2":
-                mTvPlatformType.setText("MDNET");
+                mTvPlatformType.setText(platforms[2]);
                 break;
 
             case "3":
-                mTvPlatformType.setText("地灾二期");
+                mTvPlatformType.setText(platforms[3]);
+                break;
+
+            case "4":
+                mTvPlatformType.setText(platforms[4]);
                 break;
         }
         mEtDataServerAddress.setText(dataServerAddress);
