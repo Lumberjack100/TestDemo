@@ -23,7 +23,7 @@ enum class AdmeModuleErrorType(val code: String, val description: String) {
     INSUFFICIENT_BASE_PULSE_JMQ("13", "计米器基数脉冲不足"),
     XF_TIME_OUT("14", "下放超时"),
     READ_DATA_FAIL("15", "测斜仪读数据失败"),
-    CX_FALL("16", "测斜仪掉落"),
+    CX_FALL("16", "钢丝绳断裂"),
     CX_NON_REVERSE("17", "测斜仪未反转");
 
     companion object {
