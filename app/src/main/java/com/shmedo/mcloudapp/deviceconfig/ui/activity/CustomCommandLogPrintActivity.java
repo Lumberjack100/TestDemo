@@ -69,10 +69,7 @@ public class CustomCommandLogPrintActivity extends BaseConfigFragmentContainerAc
                     fragment = new BleDasCustomCommandLogPrintFragment();
                     break;
 
-                case ADME:
-                case RN20:
-                case M20:
-                case LR200:
+                default:
                     fragment = USRBleIotCustomCommandLogPrintFragment.newInstance();
                     break;
             }

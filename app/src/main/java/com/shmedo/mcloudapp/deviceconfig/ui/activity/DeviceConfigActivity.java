@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.deviceconfig.model.DiscoveredBluetoothDevice;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.BleAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.adme.NetAdmeHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.bhy.NetBhyHomeFragment;
+import com.shmedo.mcloudapp.deviceconfig.ui.fragment.blecommon.BleIotDefaultHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BleDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.NetDasHomeFragment;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.dms.BleDmsHomeFragment;
@@ -182,7 +183,6 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
                     break;
 
                 case ADME:
-//                    fragment = BleDmsHomeFragment.newInstance(device);
                     fragment = BleAdmeHomeFragment.newInstance(device);
                     break;
 
@@ -204,6 +204,10 @@ public class DeviceConfigActivity extends BaseConfigFragmentContainerActivity {
 
                 case DMS:
                     fragment = BleDmsHomeFragment.newInstance(device);
+                    break;
+
+                default:
+                    fragment = BleIotDefaultHomeFragment.newInstance(device);
                     break;
             }
         } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {

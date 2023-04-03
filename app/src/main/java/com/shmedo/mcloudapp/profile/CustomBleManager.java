@@ -67,6 +67,13 @@ public class CustomBleManager extends ObservableBleManager {
     private static final UUID NOTIFY_CHARACTERISTIC_UUID_GOC_THRID = UUID.fromString("0000fff1-0000-1000-8000-00805f9b34fb");
     private static final UUID WRITABLE_CHARACTERISTIC_UUID_GOC_THRID = UUID.fromString("0000fff3-0000-1000-8000-00805f9b34fb");
 
+    /**
+     * 乐鑫蓝牙芯片--The service UUID.<br>
+     */
+    public static final UUID SERVICE_UUID_ESP_THRID = UUID.fromString("0000a002-0000-1000-8000-00805f9b34fb");
+    private static final UUID NOTIFY_CHARACTERISTIC_UUID_ESP_THRID = UUID.fromString("0000c305-0000-1000-8000-00805f9b34fb");
+    private static final UUID WRITABLE_CHARACTERISTIC_UUID_ESP_THRID = UUID.fromString("0000c303-0000-1000-8000-00805f9b34fb");
+
     private final UnPeekLiveData<String> responseMsg = new UnPeekLiveData<>();
     private final UnPeekLiveData<Boolean> logOutputModeLiveData = new UnPeekLiveData<>();
 
@@ -215,11 +222,20 @@ public class CustomBleManager extends ObservableBleManager {
             // Enable notifications
             enableNotifications(notifyCharacteristic)
                     // Method called after the data were sent (data will contain 0x0100 in this case)
-                    .with((device, data) -> log(Log.DEBUG, "Data sent: " + data.toString()))
+                    .with((device, data) -> {
+                        log(Log.DEBUG, "Data sent: " + data.toString());
+                        Timber.d("Data sent: %s", data.toString());
+                    })
                     // Method called when the request finished successfully. This will be called after .with(..) callback
-                    .done(device -> log(Log.VERBOSE, "Notifications enabled successfully"))
+                    .done(device -> {
+                        log(Log.VERBOSE, "Notifications enabled successfully");
+                        Timber.d("Notifications enabled successfully");
+                    })
                     // Methods called in case of an error, for example when the characteristic does not have Notify property
-                    .fail((device, status) -> log(Log.WARN, "Failed to enable notifications"))
+                    .fail((device, status) -> {
+                        log(Log.WARN, "Failed to enable notifications");
+                        Timber.d("Failed to enable notifications");
+                    })
                     .enqueue();
         }
 
@@ -260,6 +276,16 @@ public class CustomBleManager extends ObservableBleManager {
                     if (service.getCharacteristics() != null && service.getCharacteristics().size() >= 2) {
                         notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_GOC_THRID);
                         writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_GOC_THRID);
+                        break;
+                    }
+                }
+
+                //乐鑫蓝牙模块
+                if (service.getUuid().equals(SERVICE_UUID_ESP_THRID)) {
+                    Timber.d("SERVICE_UUID_ESP_THRID");
+                    if (service.getCharacteristics() != null && service.getCharacteristics().size() >= 2) {
+                        notifyCharacteristic = service.getCharacteristic(NOTIFY_CHARACTERISTIC_UUID_ESP_THRID);
+                        writeCharacteristic = service.getCharacteristic(WRITABLE_CHARACTERISTIC_UUID_ESP_THRID);
                         break;
                     }
                 }
