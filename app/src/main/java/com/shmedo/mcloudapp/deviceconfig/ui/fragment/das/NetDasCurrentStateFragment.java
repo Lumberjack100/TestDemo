@@ -327,9 +327,8 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
             protected void convert(CommonViewHolder holder, DasSensorStatusInfo sensorStatusInfo, int position) {
                 try {
                     String type = sensorStatusInfo.getType();
-                    type = type.charAt(0) == '0' ? type.substring(1) : type;
+                    type = (type.charAt(0) == '0' && type.length() == 2) ? type.substring(1) : type;
                     IOTSensorType sensorType = IOTSensorType.value(type);
-
                     String sensorAisle = (sensorType == IOTSensorType.KANG_PERCOLATE ||
                             sensorType == IOTSensorType.GUDAN_PERCOLATE ||
                             sensorType == IOTSensorType.GUDAN_STRESS ||
@@ -341,10 +340,33 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     } else {
                         holder.setTextColorRes(R.id.tv_status, R.color.red);
                     }
+                    holder.setText(R.id.tv_sensor_name, sensorType.getDescription());
 
                     switch (sensorType) {
+                        case VW08: {//振弦传感器
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "温度(℃)");
+                            holder.setText(R.id.tv_title2, "模数");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case RAIN_GAUGE://雨量计
+                            holder.setVisibleOrGone(R.id.value2Layout, false);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "雨量(mm)");
+                            decimalFormat.applyPattern("#");
+                            holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
+                            break;
+
                         case WIRE_SHIFT://拉绳式裂缝计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.WIRE_SHIFT.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "裂缝值(mm)");
@@ -353,7 +375,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case SOIL_MOISTURE: {//土壤含水率
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.SOIL_MOISTURE.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "温度(℃)");
@@ -368,7 +389,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case INCLINOMETER: {//测斜仪
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.INCLINOMETER.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "X轴(mm)");
@@ -383,7 +403,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case ULTRASONIC_LEVEL_GAUGE://超声波物位计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.ULTRASONIC_LEVEL_GAUGE.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "空高值(mm)");
@@ -392,7 +411,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case RADAR_LEVEL_GAUGE://雷达物位计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.RADAR_LEVEL_GAUGE.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "空高值(mm)");
@@ -401,7 +419,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case UPLIFT_PRESSURE_GAUGE: {//扬压力计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.UPLIFT_PRESSURE_GAUGE.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, true);
                             holder.setText(R.id.tv_title1, "水深(m)");
@@ -419,7 +436,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case LUYAN_INCLINOMETER: {//倾角仪
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.LUYAN_INCLINOMETER.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "X轴角度(°)");
@@ -434,7 +450,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case WEIR: {//量水堰
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.WEIR.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "液位值(mm)");
@@ -444,12 +459,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                                 holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
                                 decimalFormat.applyPattern("#.###");
                                 holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            } else {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setVisibleOrGone(R.id.value2Layout, false);
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                             }
                         }
                         break;
 
                         case STATIC_LEVEL: {//静力水准
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.STATIC_LEVEL.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "沉降值(mm)");
@@ -459,7 +477,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case WEATHER_STATION: {//气象站
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.WEATHER_STATION.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, true);
                             holder.setVisibleOrGone(R.id.value3Layout, true);
                             holder.setVisibleOrGone(R.id.value4Layout, true);
@@ -482,7 +499,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                         break;
 
                         case TURBIDITY_METER://浊度仪传感器
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.TURBIDITY_METER.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "浊度(NTU)");
@@ -491,7 +507,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             break;
 
                         case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE.getDescription());
                             holder.setVisibleOrGone(R.id.value2Layout, false);
                             holder.setVisibleOrGone(R.id.value3Layout, false);
                             holder.setText(R.id.tv_title1, "水深(mm)");
@@ -499,74 +514,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                             holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(sensorStatusInfo.getVal())));
                             break;
 
-                        case KANG_PERCOLATE: {//基康渗压计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.KANG_PERCOLATE.getDescription());
-                            holder.setVisibleOrGone(R.id.value2Layout, true);
-                            holder.setVisibleOrGone(R.id.value3Layout, true);
-                            holder.setText(R.id.tv_title1, "水深(m)");
-                            holder.setText(R.id.tv_title2, "空管(m)");
-                            holder.setText(R.id.tv_title3, "水温(℃)");
-                            String[] values = sensorStatusInfo.getVal().split(",");
-                            if (values.length >= 3) {
-                                decimalFormat.applyPattern("#.###");
-                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                                decimalFormat.applyPattern("#.#");
-                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
-                            }
-                        }
-                        break;
-
-                        case GUDAN_PERCOLATE: {//葛南渗压计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.GUDAN_PERCOLATE.getDescription());
-                            holder.setVisibleOrGone(R.id.value2Layout, true);
-                            holder.setVisibleOrGone(R.id.value3Layout, true);
-                            holder.setText(R.id.tv_title1, "水深(m)");
-                            holder.setText(R.id.tv_title2, "空管(m)");
-                            holder.setText(R.id.tv_title3, "水温(℃)");
-                            String[] values = sensorStatusInfo.getVal().split(",");
-                            if (values.length >= 3) {
-                                decimalFormat.applyPattern("#.###");
-                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                                decimalFormat.applyPattern("#.#");
-                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
-                            }
-                        }
-                        break;
-
-                        case GUDAN_STRESS: {//葛南应变计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.GUDAN_STRESS.getDescription());
-                            holder.setVisibleOrGone(R.id.value2Layout, true);
-                            holder.setVisibleOrGone(R.id.value3Layout, false);
-                            holder.setText(R.id.tv_title1, "应变(μ)");
-                            holder.setText(R.id.tv_title2, "温度(℃)");
-                            String[] values = sensorStatusInfo.getVal().split(",");
-                            if (values.length >= 2) {
-                                decimalFormat.applyPattern("#.#");
-                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                            }
-                        }
-                        break;
-
-                        case JUNXING_ZLJ_300T: {//轴力计
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.JUNXING_ZLJ_300T.getDescription());
-                            holder.setVisibleOrGone(R.id.value2Layout, true);
-                            holder.setVisibleOrGone(R.id.value3Layout, false);
-                            holder.setText(R.id.tv_title1, "轴力(KN)");
-                            holder.setText(R.id.tv_title2, "温度(℃)");
-                            String[] values = sensorStatusInfo.getVal().split(",");
-                            if (values.length >= 2) {
-                                decimalFormat.applyPattern("#.#");
-                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
-                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
-                            }
-                        }
-                        break;
-
                         case WATER_QUALITY_METER: {//多参数水质仪
-                            holder.setText(R.id.tv_sensor_name, IOTSensorType.WATER_QUALITY_METER.getDescription());
                             holder.setText(R.id.tv_title1, "溶氧率(mg/L)");
 
                             String[] values = sensorStatusInfo.getVal().split(",");
@@ -610,6 +558,83 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                                 holder.setVisibleOrGone(R.id.value9Layout, true);
                                 holder.setText(R.id.tv_title9, "盐度(%)");
                                 holder.setText(R.id.tv_value9, values[8]);
+                            }
+                        }
+                        break;
+
+                        case WATER_LEVEL_GAUGE: {//水位(液位)计
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "水位(m)");
+                            holder.setText(R.id.tv_title2, "温度(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case KANG_PERCOLATE: {//基康渗压计
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, true);
+                            holder.setText(R.id.tv_title1, "水深(m)");
+                            holder.setText(R.id.tv_title2, "空管(m)");
+                            holder.setText(R.id.tv_title3, "水温(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 3) {
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                            }
+                        }
+                        break;
+
+                        case GUDAN_PERCOLATE: {//葛南渗压计
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, true);
+                            holder.setText(R.id.tv_title1, "水深(m)");
+                            holder.setText(R.id.tv_title2, "空管(m)");
+                            holder.setText(R.id.tv_title3, "水温(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 3) {
+                                decimalFormat.applyPattern("#.###");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value3, decimalFormat.format(Double.parseDouble(values[2])));
+                            }
+                        }
+                        break;
+
+                        case GUDAN_STRESS: {//葛南应变计
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "应变(μ)");
+                            holder.setText(R.id.tv_title2, "温度(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
+                            }
+                        }
+                        break;
+
+                        case JUNXING_ZLJ_300T: {//轴力计
+                            holder.setVisibleOrGone(R.id.value2Layout, true);
+                            holder.setVisibleOrGone(R.id.value3Layout, false);
+                            holder.setText(R.id.tv_title1, "轴力(KN)");
+                            holder.setText(R.id.tv_title2, "温度(℃)");
+                            String[] values = sensorStatusInfo.getVal().split(",");
+                            if (values.length >= 2) {
+                                decimalFormat.applyPattern("#.#");
+                                holder.setText(R.id.tv_value1, decimalFormat.format(Double.parseDouble(values[0])));
+                                holder.setText(R.id.tv_value2, decimalFormat.format(Double.parseDouble(values[1])));
                             }
                         }
                         break;

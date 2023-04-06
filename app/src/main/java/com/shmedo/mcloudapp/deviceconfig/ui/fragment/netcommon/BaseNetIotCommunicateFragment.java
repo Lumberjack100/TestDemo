@@ -312,7 +312,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             if (queryNum == 0)
                 return;
             //延迟1秒后再次查询响应结果
-            startQueryCmdResponseDelayed(1000);
+            startQueryCmdResponseDelayed(400);
         }
     }
 

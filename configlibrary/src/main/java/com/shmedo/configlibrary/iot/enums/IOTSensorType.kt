@@ -123,6 +123,7 @@ enum class IOTSensorType(val code: String, val description: String) {
      * 轴力计 ZLJ-300T
      */
     JUNXING_ZLJ_300T("58", "轴力计"),
+
     UNKNOWN_TYPE("-1", "未知类型");
 
     override fun toString(): String {
