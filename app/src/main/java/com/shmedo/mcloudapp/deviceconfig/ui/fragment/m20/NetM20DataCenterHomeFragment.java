@@ -32,7 +32,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -64,11 +63,6 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
 
     private boolean isLevelInit = false;
 
-    private static final int SERVER_NUMBER_ONE = 0x1001;
-    private static final int SERVER_NUMBER_TWO = 0x1002;
-    private static final int SERVER_NUMBER_THREE = 0x1003;
-    private static final int SERVER_NUMBER_FOUR = 0x1004;
-    private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
     public static NetM20DataCenterHomeFragment newInstance(boolean isLevelInit, DeviceInfo deviceInfo) {
@@ -92,36 +86,22 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
-                            refreshSpecifiedServerStatus();
+                            Intent intent = result.getData();
+                            if (intent == null)
+                                return;
+
+                            commandItems.clear();
+                            ServerNumber serverNumber = (ServerNumber) intent.getSerializableExtra(AppContants.Extras.DATA_CENTER_NUMBER);
+                            ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+                            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+                            commandItems.add(command);
+
+                            showWaitDialog("加载中...");
+                            sendCommandFromCmdList();
                         }
                     }
                 });
     }
-
-    /**
-     * 刷新指定的数据中心状态
-     */
-    private void refreshSpecifiedServerStatus() {
-        showWaitDialog("加载中...");
-        switch (serverNumber) {
-            case SERVER_NUMBER_ONE:
-                getDataCenterStatus(ServerNumber.NUMBER_ONE);
-                break;
-
-            case SERVER_NUMBER_TWO:
-                getDataCenterStatus(ServerNumber.NUMBER_TWO);
-                break;
-
-            case SERVER_NUMBER_THREE:
-                getDataCenterStatus(ServerNumber.NUMBER_THREE);
-                break;
-
-            case SERVER_NUMBER_FOUR:
-                getDataCenterStatus(ServerNumber.NUMBER_FOUR);
-                break;
-        }
-    }
-
 
     @Override
     protected int getLayoutId() {
@@ -136,9 +116,31 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         } else {
             mBtnComplete.setVisibility(View.GONE);
         }
-
         showWaitDialog("加载中...");
-        getDataCenterStatus(ServerNumber.NUMBER_ONE);
+        queryData();
+    }
+
+    private void queryData() {
+        commandItems.clear();
+
+        //获取数据中心状态
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        commandItems.add(command);
+
+        serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        commandItems.add(command);
+
+        serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt());
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        commandItems.add(command);
+
+        serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_FOUR.toInt());
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        commandItems.add(command);
+
+        sendCommandFromCmdList();
     }
 
     @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.btn_confirm})
@@ -148,33 +150,20 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         }
         int id = view.getId();
         if (id == R.id.dataCenterOneLayout) {
-            serverNumber = SERVER_NUMBER_ONE;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            serverNumber = SERVER_NUMBER_TWO;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
-            serverNumber = SERVER_NUMBER_THREE;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
-            serverNumber = SERVER_NUMBER_FOUR;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, deviceInfo, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.btn_confirm) {
             mActivity.finish();
         }
-    }
-
-    /**
-     * 获取数据中心状态
-     */
-    private void getDataCenterStatus(ServerNumber serverNumber) {
-        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
     /**
@@ -244,39 +233,18 @@ public class NetM20DataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     ToastUtils.show(errMsg);
                     return;
                 }
+                sendCommandFromCmdList();
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    //表示首次进入页面，需要逐个刷新所有的数据中心
-                    if (serverNumber == -1) {
-                        getDataCenterStatus(ServerNumber.NUMBER_TWO);
-                    } else {
-                        //表示刷新指定的数据中心
-                        dismissWaitDialog();
-                    }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    //表示首次进入页面，需要逐个刷新所有的数据中心
-                    if (serverNumber == -1) {
-                        getDataCenterStatus(ServerNumber.NUMBER_THREE);
-                    } else {
-                        //表示刷新指定的数据中心
-                        dismissWaitDialog();
-                    }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterThree.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    //表示首次进入页面，需要逐个刷新所有的数据中心
-                    if (serverNumber == -1) {
-                        getDataCenterStatus(ServerNumber.NUMBER_FOUR);
-                    } else {
-                        //表示刷新指定的数据中心
-                        dismissWaitDialog();
-                    }
                 } else if (centerStatus.getCenterid() == 4) {
-                    dismissWaitDialog();
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }

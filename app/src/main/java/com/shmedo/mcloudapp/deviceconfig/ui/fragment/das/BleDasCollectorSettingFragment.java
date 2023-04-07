@@ -298,7 +298,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             commandItems.add(command);
         }
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
-        sendCommand(commandItems.getFirst());
+        sendCommandFromCmdList(true);
     }
 
     @Override
@@ -326,12 +326,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(true);
                 break;
 
             case COLLECTOR_SOLUTION_FREQUENCY:
@@ -340,12 +335,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(true);
                 break;
 
             case COLLECTOR_STANDBY_TIME:
@@ -354,40 +344,25 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(true);
                 break;
 
             case COLLECTOR_FREQUENCY:
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器采集频度配置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(true);
                 break;
 
             case SET_COLLECTOR_SENSITIVITY:
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("采集器灵敏度配置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(true);
                 break;
 
             case SAVE_CONFIG_INFO:
@@ -395,12 +370,6 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     ToastUtils.show("保存参数指令错误!");
                     return;
                 }
-                collectorAddress = mEtCollectorAddress.getText().toString().trim();
-                calculatTime = mEtCalculatingTime.getText().toString().trim();
-                standbyTime = mEtStandbyTime.getText().toString().trim();
-                collectTime = mEtCollectTime.getText().toString().trim();
-                sensitivity = mEtSensitivity.getText().toString().trim();
-
                 ToastUtils.show("保存成功");
                 break;
 
@@ -439,11 +408,6 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
         }
     }
 
-    private void doAfterSetting() {
-        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-        saveConfigInfoNoReboot();
-    }
-
     @Override
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
         switch (msg.what) {
@@ -474,21 +438,21 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (collectorAddress != null && !collectorAddress.equals(mEtCollectorAddress.getText().toString().trim())) {
-            return true;
-        }
-        if (calculatTime != null && !calculatTime.equals(mEtCalculatingTime.getText().toString().trim())) {
-            return true;
-        }
-        if (standbyTime != null && !standbyTime.equals(mEtStandbyTime.getText().toString().trim())) {
-            return true;
-        }
-        if (collectTime != null && !collectTime.equals(mEtCollectTime.getText().toString().trim())) {
-            return true;
-        }
-        if (sensitivity != null && !sensitivity.equals("NullKey") && !sensitivity.equals(mEtSensitivity.getText().toString().trim())) {
-            return true;
-        }
+//        if (collectorAddress != null && !collectorAddress.equals(mEtCollectorAddress.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (calculatTime != null && !calculatTime.equals(mEtCalculatingTime.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (standbyTime != null && !standbyTime.equals(mEtStandbyTime.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (collectTime != null && !collectTime.equals(mEtCollectTime.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (sensitivity != null && !sensitivity.equals("NullKey") && !sensitivity.equals(mEtSensitivity.getText().toString().trim())) {
+//            return true;
+//        }
         return false;
     }
 }

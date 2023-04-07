@@ -53,7 +53,6 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -282,7 +281,7 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                queryDeviceBaseInfo();
+                queryData();
             }
         });
     }
@@ -651,54 +650,36 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
         sensorRecyclerView.setAdapter(sensorAdapter);
     }
 
-    /**
-     * 获取基本信息
-     */
-    private void queryDeviceBaseInfo() {
+    private void queryData() {
+        commandItems.clear();
+
+        //获取设备基本信息
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DEVICE_BASE);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
+        commandItems.add(command);
 
-    /**
-     * 获取数据中心状态
-     */
-    private void queryNetStatus(int index) {
-        IndexEntity entity = new IndexEntity(index);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_NET_STATUS, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
+        //获取数据中心状态
+        IndexEntity entity = new IndexEntity(0);
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_NET_STATUS, entity);
+        commandItems.add(command);
 
-    /**
-     * 获取太阳能控制器状态
-     */
-    private void querySolarStatus() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SOLAR_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
+        //获取太阳能控制器状态
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SOLAR_STATUS);
+        commandItems.add(command);
 
-    /**
-     * 获取温湿度状态
-     */
-    private void queryTemperatureAndHumidityStatus() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
+        //获取温湿度状态
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_TEMPERATURE_AND_HUMIDITY_STATUS);
+        commandItems.add(command);
 
-    /**
-     * 获取主传感器状态
-     */
-    private void querySensorStatus(int index) {
-        IndexEntity entity = new IndexEntity(index);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SENSOR_STATUS, entity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
+        //获取辅传感器状态
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS);
+        commandItems.add(command);
 
-    /**
-     * 获取辅传感器状态
-     */
-    private void querySubSensorStatus() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        //获取主传感器状态
+        entity = new IndexEntity(0);
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_SENSOR_STATUS, entity);
+        commandItems.add(command);
+
+        sendCommandFromCmdList();
     }
 
     /**
@@ -778,9 +759,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 DasBaseInfo dasBaseInfo = commandResult.getResult();
                 initBaseInfo(dasBaseInfo);
-                queryNetStatus(0);
             }
             break;
 
@@ -795,6 +782,13 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 if (!TextUtils.isEmpty(commandResult.getResult())) {
                     List<DasNetStatusInfo> tempList = GsonUtils.fromJson(commandResult.getResult(), new TypeToken<List<DasNetStatusInfo>>() {
                     }.getType());
@@ -802,7 +796,6 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     netStatusInfoList.addAll(tempList);
                     dataCenterAdapter.notifyDataSetChanged();
                 }
-                querySolarStatus();
             }
             break;
 
@@ -817,9 +810,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 DasSolarStatusInfo dasSolarStatusInfo = commandResult.getResult();
                 initSolarStatus(dasSolarStatusInfo);
-                queryTemperatureAndHumidityStatus();
             }
             break;
 
@@ -834,9 +833,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 DasTemperatureAndHumidityStatusinfo dasTemperatureAndHumidityStatusinfo = commandResult.getResult();
                 initTemperatureAndHumidityStatus(dasTemperatureAndHumidityStatusinfo);
-                querySubSensorStatus();
             }
             break;
 
@@ -851,9 +856,15 @@ public class NetDasCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 DasSubSensorStatusInfo dasSubSensorStatusInfo = commandResult.getResult();
                 initSubSensorStatus(dasSubSensorStatusInfo);
-                querySensorStatus(0);
             }
             break;
 

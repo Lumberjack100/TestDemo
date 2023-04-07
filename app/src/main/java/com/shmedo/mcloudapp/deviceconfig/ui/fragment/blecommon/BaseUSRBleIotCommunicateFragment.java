@@ -252,7 +252,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
             String command = commandItems.getFirst();
             sendCommand(command);
             commandItems.removeFirst();
-            if (TextUtils.isEmpty(dialogContent) && delayMillis != 0)
+            if (!TextUtils.isEmpty(dialogContent) && delayMillis != 0)
                 startDefaultProgress(dialogContent, what, delayMillis);
         } else {
             stopDefaultProgress(what);

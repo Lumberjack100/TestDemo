@@ -42,6 +42,8 @@ import com.shmedo.mcloudapp.deviceconfig.ui.activity.DataCenterConfigActivity;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -65,14 +67,10 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
     @BindView(R.id.ll_bd_card_number)
     View bdCardNumberLayout;
 
-    private int pos = 1;
-    private String dataCommunicationModeOld;
     private String dataCommunicationMode;
     private String reportingInterval;
     private String bdCardNumber;
-
-    private String cmdDataReport;//数据上报间隔
-    private String cmdBDCardNumber;//北斗卡号
+    private final String[] communicatModes = new String[]{"4G", "SMS", "BD", "BD+4G"};
 
     private ActivityResultLauncher<Intent> resultLauncher;
 
@@ -111,6 +109,9 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
     private void setFilter() {
         mEtReportingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtBdCardNumber.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+
+        mTvCommunicationMethod.setText(communicatModes[0]);
+        dataCommunicationMode = "1";
     }
 
     private void initRefreshLayout() {
@@ -138,41 +139,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.communicationMethodLayout:
-                XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
-                new XPopup.Builder(mActivity)
-                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                        .asBottomList("", new String[]{"4G", "SMS", "BD", "BD+4G"},
-                                null, pos,
-                                new OnSelectListener() {
-                                    @Override
-                                    public void onSelect(int position, String text) {
-                                        pos = position;
-                                        mTvCommunicationMethod.setText(text);
-
-                                        switch (text) {
-                                            case "4G":
-                                                dataCommunicationMode = "1";
-                                                bdCardNumberLayout.setVisibility(View.GONE);
-                                                break;
-
-                                            case "SMS":
-                                                dataCommunicationMode = "2";
-                                                bdCardNumberLayout.setVisibility(View.GONE);
-                                                break;
-
-                                            case "BD":
-                                                dataCommunicationMode = "3";
-                                                bdCardNumberLayout.setVisibility(View.VISIBLE);
-                                                break;
-
-                                            case "BD+4G":
-                                                dataCommunicationMode = "4";
-                                                bdCardNumberLayout.setVisibility(View.VISIBLE);
-                                                break;
-                                        }
-                                    }
-                                }, 0, R.layout.custom_xpopup_adapter_text_with_check)
-                        .show();
+                showCommunicateModeDialog();
                 break;
 
             case R.id.dataCenterOneLayout:
@@ -211,9 +178,40 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
         }
     }
 
-    private void processSave() {
-        reportingInterval = mEtReportingInterval.getText().toString().trim();
+    /**
+     * 选择 通讯方式
+     */
+    private void showCommunicateModeDialog() {
+        int pos = Arrays.asList(communicatModes).indexOf(String.valueOf(mTvCommunicationMethod.getText()));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(mActivity)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", communicatModes,
+                        null, pos,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvCommunicationMethod.setText(text);
+                                dataCommunicationMode = String.valueOf(position + 1);
+                                if (position == 0 || position == 1) {
+                                    bdCardNumberLayout.setVisibility(View.GONE);
+                                } else {
+                                    bdCardNumberLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
 
+    }
+
+    private void processSave() {
+        commandItems.clear();
+        DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
+        String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
+        Timber.d("设置数据通讯模式===%s", cmd);
+        commandItems.add(cmd);
+
+        reportingInterval = mEtReportingInterval.getText().toString().trim();
         if (TextUtils.isEmpty(reportingInterval)) {
             ToastUtils.show("数据上报间隔参数不能为空");
             mEtReportingInterval.requestFocus();
@@ -229,6 +227,11 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
             mEtReportingInterval.requestFocus();
             return;
         }
+        DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(Integer.parseInt(reportingInterval));
+        cmd = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
+        Timber.d("设置数据上报间隔===%s", cmd);
+        commandItems.add(cmd);
+
         if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
             bdCardNumber = mEtBdCardNumber.getText().toString().trim();
             if (TextUtils.isEmpty(bdCardNumber)) {
@@ -243,16 +246,13 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
             }
             //设置六位目标北斗卡号
             SixTargerBDNumberEntity bdNumberEntity = new SixTargerBDNumberEntity(bdCardNumber);
-            cmdBDCardNumber = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
+            cmd = CommandManager.getInstance().getCommand(CommandType.SIX_TARGER_BD_NUMBER, bdNumberEntity);
+            Timber.d("北斗配置参数===%s", cmd);
+            commandItems.add(cmd);
         }
-        DataReportIntervalEntity intervalEntity = new DataReportIntervalEntity(Integer.parseInt(reportingInterval));
-        cmdDataReport = CommandManager.getInstance().getCommand(CommandType.DATA_REPORT_INTERVAL, intervalEntity);
 
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
-        DataCommunicateModeEntity communicateModeEntity = new DataCommunicateModeEntity(Integer.parseInt(dataCommunicationMode));
-        String cmd = CommandManager.getInstance().getCommand(CommandType.DATA_MASSAGE_MODEL, communicateModeEntity);
-        sendCommand(cmd);
-        Timber.d("设置数据通讯模式===%s", cmd);
+        sendCommandFromCmdList(true);
     }
 
     @Override
@@ -283,32 +283,12 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                 }
                 BaseConfigInfo baseConfigInfo = bean.getResult();
                 int communicateMode = baseConfigInfo.getDataCommunicateMode().toInt();
-                pos = communicateMode - 1;
-                switch (communicateMode) {
-                    case 1:
-                        mTvCommunicationMethod.setText("4G");
-                        dataCommunicationModeOld = "1";
-                        dataCommunicationMode = "1";
-                        bdCardNumberLayout.setVisibility(View.GONE);
-                        break;
-                    case 2:
-                        mTvCommunicationMethod.setText("SMS");
-                        dataCommunicationModeOld = "2";
-                        dataCommunicationMode = "2";
-                        bdCardNumberLayout.setVisibility(View.GONE);
-                        break;
-                    case 3:
-                        mTvCommunicationMethod.setText("BD");
-                        dataCommunicationModeOld = "3";
-                        dataCommunicationMode = "3";
-                        bdCardNumberLayout.setVisibility(View.VISIBLE);
-                        break;
-                    case 4:
-                        mTvCommunicationMethod.setText("BD+4G");
-                        dataCommunicationModeOld = "4";
-                        dataCommunicationMode = "4";
-                        bdCardNumberLayout.setVisibility(View.VISIBLE);
-                        break;
+                mTvCommunicationMethod.setText(communicatModes[communicateMode - 1]);
+                dataCommunicationMode = String.valueOf(communicateMode);
+                if (communicateMode == 3 || communicateMode == 4) {
+                    bdCardNumberLayout.setVisibility(View.VISIBLE);
+                } else {
+                    bdCardNumberLayout.setVisibility(View.GONE);
                 }
                 int reportInterval = baseConfigInfo.getDataReportInterval();
                 reportingInterval = String.valueOf(reportInterval);
@@ -323,8 +303,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommand(cmdDataReport);
-                Timber.d("设置数据上报间隔===%s", cmdDataReport);
+                sendCommandFromCmdList(true);
                 break;
 
             case DATA_REPORT_INTERVAL://设置数据上报间隔
@@ -333,21 +312,16 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                if (dataCommunicationMode.equals("3") || dataCommunicationMode.equals("4")) {
-                    sendCommand(cmdBDCardNumber);
-                    Timber.d("北斗配置参数===%s", cmdBDCardNumber);
-                    return;
-                }
-                doAfterSetting();
+                sendCommandFromCmdList(true);
                 break;
 
             case SIX_TARGER_BD_NUMBER://北斗配置
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("北斗配置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                doAfterSetting();
+                sendCommandFromCmdList(true);
                 break;
 
             case SAVE_CONFIG_INFO:
@@ -356,18 +330,12 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     return;
                 }
                 ToastUtils.show("保存成功");
-                dataCommunicationModeOld = dataCommunicationMode;
                 break;
 
             default:
                 super.parseResponseMessage(cmdStr);
                 break;
         }
-    }
-
-    private void doAfterSetting() {
-        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-        saveConfigInfoNoReboot();
     }
 
     @Override
@@ -400,15 +368,15 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (dataCommunicationModeOld != null && dataCommunicationMode != null && !dataCommunicationModeOld.equals(dataCommunicationMode)) {
-            return true;
-        }
-        if (reportingInterval != null && !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())) {
-            return true;
-        }
-        if (bdCardNumber != null && !bdCardNumber.equals(mEtBdCardNumber.getText().toString().trim())) {
-            return true;
-        }
+//        if (dataCommunicationModeOld != null && dataCommunicationMode != null && !dataCommunicationModeOld.equals(dataCommunicationMode)) {
+//            return true;
+//        }
+//        if (reportingInterval != null && !reportingInterval.equals(mEtReportingInterval.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (bdCardNumber != null && !bdCardNumber.equals(mEtBdCardNumber.getText().toString().trim())) {
+//            return true;
+//        }
         return false;
     }
 }

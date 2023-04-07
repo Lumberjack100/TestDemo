@@ -322,6 +322,36 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
         bleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList(boolean isSave) {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            sendCommand(command);
+            commandItems.removeFirst();
+        } else {
+            stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+            if (isSave)
+                saveConfigInfoNoReboot();
+        }
+    }
+
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList(String dialogContent, int what, long delayMillis) {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            sendCommand(command);
+            commandItems.removeFirst();
+            if (!TextUtils.isEmpty(dialogContent) && delayMillis != 0)
+                startDefaultProgress(dialogContent, what, delayMillis);
+        } else {
+            stopDefaultProgress(what);
+        }
+    }
+
     protected void showDisconnectDialog(String content) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")

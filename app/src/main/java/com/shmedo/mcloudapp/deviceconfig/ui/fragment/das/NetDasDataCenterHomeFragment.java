@@ -98,14 +98,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private DasBdTerminalInfo bdTerminalInfo;
     private final String[] baudRates = new String[]{"9600", "115200"};
 
-
     private boolean isBdTerminalParamChange = false;//判断有没有修改北斗数传终端参数
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭北斗数传终端操作
 
-    private static final int SERVER_NUMBER_ONE = 0x1001;
-    private static final int SERVER_NUMBER_TWO = 0x1002;
-    private static final int SERVER_NUMBER_THREE = 0x1003;
-    private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
     public static NetDasDataCenterHomeFragment newInstance(DeviceInfo deviceInfo) {
@@ -125,30 +120,21 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
-                            refreshSpecifiedServerStatus();
+                            Intent intent = result.getData();
+                            if (intent == null)
+                                return;
+
+                            commandItems.clear();
+                            ServerNumber serverNumber = (ServerNumber) intent.getSerializableExtra(AppContants.Extras.DATA_CENTER_NUMBER);
+                            ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+                            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+                            commandItems.add(command);
+
+                            mRefreshLayout.autoRefreshAnimationOnly();//自动刷新，只显示动画不执行刷新
+                            sendCommandFromCmdList();
                         }
                     }
                 });
-    }
-
-    /**
-     * 刷新指定的数据中心状态
-     */
-    private void refreshSpecifiedServerStatus() {
-        mRefreshLayout.autoRefreshAnimationOnly();//自动刷新，只显示动画不执行刷新
-        switch (serverNumber) {
-            case SERVER_NUMBER_ONE:
-                getDataCenterStatus(ServerNumber.NUMBER_ONE);
-                break;
-
-            case SERVER_NUMBER_TWO:
-                getDataCenterStatus(ServerNumber.NUMBER_TWO);
-                break;
-
-            case SERVER_NUMBER_THREE:
-                getDataCenterStatus(ServerNumber.NUMBER_THREE);
-                break;
-        }
     }
 
     @Override
@@ -200,26 +186,36 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                serverNumber = -1;
-                getReportingTimeInfo();
+                queryData();
             }
         });
     }
 
-    /**
-     * 获取上报时间信息
-     */
-    private void getReportingTimeInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
+    private void queryData() {
+        commandItems.clear();
 
-    /**
-     * 获取北斗数传终端信息
-     */
-    private void getBdTerminalInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_BD_TERMINAL);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        //获取上报时间信息
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME);
+        commandItems.add(command);
+
+        //获取北斗数传终端信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_BD_TERMINAL);
+        commandItems.add(command);
+
+        //获取数据中心状态
+        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt());
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        commandItems.add(command);
+
+        serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt());
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        commandItems.add(command);
+
+        serverNumberEntity = new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt());
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+        commandItems.add(command);
+
+        sendCommandFromCmdList();
     }
 
     /**
@@ -235,15 +231,6 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
-    /**
-     * 获取数据中心状态
-     */
-    private void getDataCenterStatus(ServerNumber serverNumber) {
-        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
-
     @OnClick({R.id.ll_baudRate, R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.btn_confirm})
     public void onClick(View view) {
         if (isDoubleClick(view)) {
@@ -254,15 +241,12 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             showBaudRateDialog();
 
         } else if (id == R.id.dataCenterOneLayout) {
-            serverNumber = SERVER_NUMBER_ONE;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, deviceInfo, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
-            serverNumber = SERVER_NUMBER_TWO;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, deviceInfo, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
-            serverNumber = SERVER_NUMBER_THREE;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.DAS, deviceInfo, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
@@ -420,9 +404,15 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 dataReportInfo = commandResult.getResult();
                 initDataReportTime();
-                getBdTerminalInfo();
             }
             break;
 
@@ -437,9 +427,15 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 bdTerminalInfo = commandResult.getResult();
                 initBdTerminalInfo();
-                getDataCenterStatus(ServerNumber.NUMBER_ONE);
             }
             break;
 
@@ -454,29 +450,21 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    //表示首次进入页面，需要逐个刷新所有的数据中心
-                    if (serverNumber == -1) {
-                        getDataCenterStatus(ServerNumber.NUMBER_TWO);
-                    } else {
-                        //表示刷新指定的数据中心
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    //表示首次进入页面，需要逐个刷新所有的数据中心
-                    if (serverNumber == -1) {
-                        getDataCenterStatus(ServerNumber.NUMBER_THREE);
-                    } else {
-                        //表示刷新指定的数据中心
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 } else if (centerStatus.getCenterid() == 3) {
-                    mRefreshLayout.finishRefresh(true);
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterThree.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }

@@ -231,6 +231,7 @@ public class UniversalNetDataCenterAdvancedConfigFragment extends BaseNetIotComm
 
     private void setResult() {
         Intent intent = new Intent();
+        intent.putExtra(AppContants.Extras.DATA_CENTER_NUMBER, serverNumber);
         mActivity.setResult(dataCenterAdvancedConfigView.isResultOK ? Activity.RESULT_OK : Activity.RESULT_CANCELED, intent);
     }
 

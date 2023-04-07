@@ -30,6 +30,7 @@ import com.umeng.analytics.MobclickAgent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -46,13 +47,15 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
     protected static final int DELAY_10000_MILLIS = 10000;//发送指令超时时间
     protected static final int DELAY_15000_MILLIS = 15000;
 
-    protected boolean isExitMode = false;
+    protected boolean isExitMode = false;//是否退出页面标志
 
     protected TcpViewModel tcpViewModel;
 
     protected DeviceApiKeyViewModel deviceApiKeyViewModel;
 
     private final DefaultHandler mDefaultHandler = new DefaultHandler(this);
+
+    protected LinkedList<String> commandItems = new LinkedList<>();
 
 
     protected void customHandleMessage(@NonNull @NotNull Message msg) {
@@ -187,7 +190,33 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
             }
         });
     }
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList() {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            sendCommand(command);
+            commandItems.removeFirst();
+        } else {
+            stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+        }
+    }
 
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList(String dialogContent, int what, long delayMillis) {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            sendCommand(command);
+            commandItems.removeFirst();
+            if (!TextUtils.isEmpty(dialogContent) && delayMillis != 0)
+                startDefaultProgress(dialogContent, what, delayMillis);
+        } else {
+            stopDefaultProgress(what);
+        }
+    }
     /**
      * 断开 Tcp 连接警告
      *

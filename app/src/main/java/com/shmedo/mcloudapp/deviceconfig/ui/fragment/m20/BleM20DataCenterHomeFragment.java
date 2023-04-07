@@ -62,11 +62,6 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
 
     private boolean isLevelInit = false;
 
-    private static final int SERVER_NUMBER_ONE = 0x1001;
-    private static final int SERVER_NUMBER_TWO = 0x1002;
-    private static final int SERVER_NUMBER_THREE = 0x1003;
-    private static final int SERVER_NUMBER_FOUR = 0x1004;
-    private int serverNumber = -1;
     private ActivityResultLauncher<Intent> resultLauncher;
 
 
@@ -90,35 +85,21 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
-                            refreshSpecifiedServerStatus();
+                            Intent intent = result.getData();
+                            if (intent == null)
+                                return;
+
+                            commandItems.clear();
+                            ServerNumber serverNumber = (ServerNumber) intent.getSerializableExtra(AppContants.Extras.DATA_CENTER_NUMBER);
+                            ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
+                            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
+                            commandItems.add(command);
+
+                            startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+                            sendCommandFromCmdList();
                         }
                     }
                 });
-    }
-
-    /**
-     * 刷新指定的数据中心状态
-     */
-    private void refreshSpecifiedServerStatus() {
-        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
-
-        switch (serverNumber) {
-            case SERVER_NUMBER_ONE:
-                getDataCenterStatus(ServerNumber.NUMBER_ONE);
-                break;
-
-            case SERVER_NUMBER_TWO:
-                getDataCenterStatus(ServerNumber.NUMBER_TWO);
-                break;
-
-            case SERVER_NUMBER_THREE:
-                getDataCenterStatus(ServerNumber.NUMBER_THREE);
-                break;
-
-            case SERVER_NUMBER_FOUR:
-                getDataCenterStatus(ServerNumber.NUMBER_FOUR);
-                break;
-        }
     }
 
     @Override
@@ -135,16 +116,16 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
             mBtnComplete.setVisibility(View.GONE);
         }
         startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
-        getDataCenterStatus(ServerNumber.NUMBER_ONE);
+        queryData();
     }
 
-    /**
-     * 获取数据中心状态
-     */
-    private void getDataCenterStatus(ServerNumber serverNumber) {
-        ServerNumberEntity serverNumberEntity = new ServerNumberEntity(serverNumber.toInt());
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, serverNumberEntity);
-        sendCommand(command);
+    private void queryData() {
+        commandItems.clear();
+        commandItems.add(IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, new ServerNumberEntity(ServerNumber.NUMBER_ONE.toInt())));
+        commandItems.add(IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, new ServerNumberEntity(ServerNumber.NUMBER_TWO.toInt())));
+        commandItems.add(IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, new ServerNumberEntity(ServerNumber.NUMBER_THREE.toInt())));
+        commandItems.add(IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, new ServerNumberEntity(ServerNumber.NUMBER_FOUR.toInt())));
+        sendCommandFromCmdList();
     }
 
     @OnClick({R.id.dataCenterOneLayout, R.id.dataCenterTwoLayout, R.id.dataCenterThreeLayout, R.id.dataCenterFourLayout, R.id.btn_confirm})
@@ -159,7 +140,6 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                 ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            serverNumber = SERVER_NUMBER_ONE;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_ONE, mTvDataCenterOne.getText().toString());
 
         } else if (id == R.id.dataCenterTwoLayout) {
@@ -167,7 +147,6 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                 ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            serverNumber = SERVER_NUMBER_TWO;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_TWO, mTvDataCenterTwo.getText().toString());
 
         } else if (id == R.id.dataCenterThreeLayout) {
@@ -175,7 +154,6 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                 ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            serverNumber = SERVER_NUMBER_THREE;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_THREE, mTvDataCenterThree.getText().toString());
 
         } else if (id == R.id.dataCenterFourLayout) {
@@ -183,7 +161,6 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                 ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                 return;
             }
-            serverNumber = SERVER_NUMBER_FOUR;
             DataCenterConfigActivity.startActivity(mActivity, resultLauncher, ProductType.M20, AppContants.CommunicationWay.BLE_CONNECT, ServerNumber.NUMBER_FOUR, mTvDataCenterFour.getText().toString());
 
         } else if (id == R.id.btn_confirm) {
@@ -217,35 +194,18 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
                     ToastUtils.show(errMsg);
                     return;
                 }
+                sendCommandFromCmdList();
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
                     mTvDataCenterOne.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterOne.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    //表示首次进入页面，需要逐个刷新所有的数据中心
-                    if (serverNumber == -1) {
-                        getDataCenterStatus(ServerNumber.NUMBER_TWO);
-                    } else {
-                        //表示刷新指定的数据中心
-                        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    }
                 } else if (centerStatus.getCenterid() == 2) {
                     mTvDataCenterTwo.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterTwo.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    if (serverNumber == -1) {
-                        getDataCenterStatus(ServerNumber.NUMBER_THREE);
-                    } else {
-                        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    }
                 } else if (centerStatus.getCenterid() == 3) {
                     mTvDataCenterThree.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterThree.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
-                    if (serverNumber == -1) {
-                        getDataCenterStatus(ServerNumber.NUMBER_FOUR);
-                    } else {
-                        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    }
                 } else if (centerStatus.getCenterid() == 4) {
-                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     mTvDataCenterFour.setText(getStatusTextById(centerStatus.getStatus()));
                     mTvDataCenterFour.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(getStatusColorResId(centerStatus.getStatus())));
                 }
@@ -286,6 +246,5 @@ public class BleM20DataCenterHomeFragment extends BaseUSRBleIotCommunicateFragme
     @Override
     public void onDestroy() {
         super.onDestroy();
-        serverNumber = -1;
     }
 }
