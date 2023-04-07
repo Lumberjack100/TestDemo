@@ -304,7 +304,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
                     Timber.e("AdmeStepperMotorInfo is Null!");
                     return;
                 }
-                if (admeStepperMotorInfo.getPosnegtest().trim().equals("0")) {
+                if ("0".equals(admeStepperMotorInfo.getPosnegtest())) {
                     positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(false);
                 } else {
                     positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(true);
@@ -329,7 +329,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
                     Timber.e("AdmeLowEnergyModeInfo is Null!");
                     return;
                 }
-                if (admeLowEnergyModeInfo.getMode().trim().equals("0")) {
+                if ("0".equals(admeLowEnergyModeInfo.getMode())) {
                     lowPowerEnableSBtn.setCheckedImmediatelyNoEvent(false);
                 } else {
                     lowPowerEnableSBtn.setCheckedImmediatelyNoEvent(true);
@@ -351,7 +351,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
                 }
                 AdmeAnthropomorphicMovementInfo anthropomorphicMovementInfo = commandResult.getResult();
                 if (anthropomorphicMovementInfo != null) {
-                    if (anthropomorphicMovementInfo.getMode().trim().equals("0")) {
+                    if ("0".equals(anthropomorphicMovementInfo.getMode())) {
                         anthropomorphicEnableSBtn.setCheckedImmediatelyNoEvent(false);
                     } else {
                         anthropomorphicEnableSBtn.setCheckedImmediatelyNoEvent(true);
@@ -375,7 +375,7 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
                 brakePadControlLayout.setVisibility(View.VISIBLE);
                 AdmeBrakePadControlInfo padControlInfo = commandResult.getResult();
                 if (padControlInfo != null) {
-                    if (padControlInfo.getMode().trim().equals("0")) {
+                    if ("0".equals(padControlInfo.getMode())) {
                         mTvBrakePadControl.setText(brakePadControls[0]);
                     } else {
                         mTvBrakePadControl.setText(brakePadControls[1]);

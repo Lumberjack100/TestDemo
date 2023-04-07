@@ -592,7 +592,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             return;
         }
         //采集器地址为 0 时，表示采集器未启用，不允许配置传感器，退出页面
-        if (collectorInfo.getAddr().equals("0")) {
+        if ("0".equals(collectorInfo.getAddr())) {
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(true);
             }

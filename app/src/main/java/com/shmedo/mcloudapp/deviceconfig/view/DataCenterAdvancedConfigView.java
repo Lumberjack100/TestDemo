@@ -608,14 +608,14 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         dataCenterEntity.setPlattype(platformType);
         dataCenterEntity.setAddr(dataServerAddress);
         dataCenterEntity.setPort(dataServerPort);
-        if (transferProtocol != null && transferProtocol.equals("MQTT")) {//MQTT自动注册
+        if ("MQTT".equals(transferProtocol)) {//MQTT自动注册
             dataCenterEntity.setDeviceid(deviceId);
             dataCenterEntity.setDevicekey(deviceKey);
             dataCenterEntity.setHttpaddr(registerAddress);
             dataCenterEntity.setHttpport(registerPort);
             dataCenterEntity.setProjid(productId);
             dataCenterEntity.setRegcode(registerCode);
-        } else if (transferProtocol != null && transferProtocol.equals("SL651")) {
+        } else if ("SL651".equals(transferProtocol)) {
             dataCenterEntity.setType_code(stationCode);
             dataCenterEntity.setCo_address(centerStationAddr);
             dataCenterEntity.setPassword(password);
@@ -734,7 +734,7 @@ public class DataCenterAdvancedConfigView extends LinearLayout {
         mEtCenterStationAddr.setText(centerStationAddr);
         mEtPassword.setText(password);
         mEtTelemetryStationAddr.setText(telemetryStationAddr);
-        mSbHourlyReportEnable.setCheckedImmediatelyNoEvent(dataCenterInfo.getHour_report().equals("1"));
+        mSbHourlyReportEnable.setCheckedImmediatelyNoEvent("1".equals(dataCenterInfo.getHour_report()));
         mEtDataLinkMaintenance.setText(dataLinkMaintenance);
         mEtReissuingDataValidDays.setText(reissuingDataValidDays);
         mEtReissuingDataInterval.setText(reissuingDataInterval);

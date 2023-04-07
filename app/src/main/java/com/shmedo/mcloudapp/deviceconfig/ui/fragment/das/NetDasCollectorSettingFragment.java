@@ -171,7 +171,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             return false;
         }
 
-        if (!collectorInfo.getCalcgap().equals(calculatTime)) {
+        if (!calculatTime.equals(collectorInfo.getCalcgap())) {
             if (TextUtils.isEmpty(calculatTime)) {
                 ToastUtils.show("请输入解算时间!");
                 mEtCalculatingTime.requestFocus();
@@ -188,7 +188,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             calculatTime = null;
         }
 
-        if (!collectorInfo.getStandbygap().equals(standbyTime)) {
+        if (!standbyTime.equals(collectorInfo.getStandbygap())) {
             if (TextUtils.isEmpty(standbyTime)) {
                 ToastUtils.show("请输入待机时间!");
                 mEtStandbyTime.requestFocus();
@@ -205,7 +205,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             standbyTime = null;
         }
 
-        if (!collectorInfo.getCollgap().equals(collectTime)) {
+        if (!collectTime.equals(collectorInfo.getCollgap())) {
             if (TextUtils.isEmpty(collectTime)) {
                 ToastUtils.show("请输入采集时间!");
                 mEtCollectTime.requestFocus();
@@ -222,7 +222,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
             collectTime = null;
         }
 
-        if (!sensitivity.equals("NullKey")) {
+        if (!"NullKey".equals(sensitivity)) {
             sensitivity = mEtSensitivity.getText().toString().trim();
             try {
                 double value = Double.parseDouble(sensitivity);
@@ -247,7 +247,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         entity.setCalcgap(calculatTime);
         entity.setStandbygap(standbyTime);
         entity.setCollgap(collectTime);
-        entity.setSensitivity(collectorInfo.getSensitivity().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(sensitivity)));
+        entity.setSensitivity("NullKey".equals(collectorInfo.getSensitivity()) ? "NullKey" : decimalFormat.format(Double.parseDouble(sensitivity)));
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL, entity);
         showWaitDialog("处理中...");
@@ -370,7 +370,7 @@ public class NetDasCollectorSettingFragment extends BaseNetIotCommunicateFragmen
         mEtStandbyTime.setText(standbyTime);
         mEtCollectTime.setText(collectTime);
         try {
-            if (sensitivity.equals("NullKey")) {
+            if ("NullKey".equals(sensitivity)) {
                 sensitivityLayout.setVisibility(View.GONE);
             } else {
                 sensitivityLayout.setVisibility(View.VISIBLE);

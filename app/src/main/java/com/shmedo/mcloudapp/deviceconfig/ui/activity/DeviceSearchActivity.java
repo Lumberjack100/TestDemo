@@ -145,7 +145,7 @@ public class DeviceSearchActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s == null || TextUtils.isEmpty(s.toString())) {
+                if (s == null || TextUtils.isEmpty(String.valueOf(s))) {
                     setHistoryKeyWordsVisibility(true);
                 }
             }
@@ -264,7 +264,7 @@ public class DeviceSearchActivity extends BaseActivity {
             searchViewModel.setHistoryData(new ArrayList<>());
 
         } else if (id == R.id.tv_search) {
-            if (TextUtils.isEmpty(mEtKeyWords.getText().toString().trim())) {
+            if (TextUtils.isEmpty(String.valueOf(mEtKeyWords.getText()).trim())) {
                 ToastUtils.show("请输入搜索内容");
                 return;
             }
@@ -307,7 +307,7 @@ public class DeviceSearchActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestBody body = RequestBody.create(jsonObjectRequest.toString(), RequestHeader.JSON_TYPE);
+        RequestBody body = RequestBody.create(String.valueOf(jsonObjectRequest), RequestHeader.JSON_TYPE);
         ApiService apiService = MDRetrofit.getInstance().createService(ServiceAddressType.IOT_MANAGER_SERVICE_ADDRESS);
         Observable<ResponseWrapper<PageResult<DeviceInfo>>> observable = MCloudApp.getPermissionTokenList().contains("ListSuperInfo") ? apiService.listSuperDevice(MCloudApp.getAccessToken(), body) : apiService.getDeviceList(MCloudApp.getAccessToken(), body);
         observable.doOnDispose(() -> Timber.i("Disposing subscription"))

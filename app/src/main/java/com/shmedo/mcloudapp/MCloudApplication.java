@@ -174,7 +174,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
                         error.printStackTrace();
                         //对不同错误进行处理
                         if (error.getCode() != CHECK_NO_NEW_VERSION) {
-                            ToastUtils.show(error.toString());
+                            ToastUtils.show(String.valueOf(error));
                         }
                     }
                 })

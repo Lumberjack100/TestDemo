@@ -261,7 +261,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         //解析出传感器编号
         String[] strs = sensorInfo.getName().split("_");
         String sensorSerialNumber = strs.length > 1 ? strs[0] : "";
-        if (sensorSerialNumber.equals("201")) {
+        if ("201".equals(sensorSerialNumber)) {
             accessSum = 1;
         }
 
@@ -271,7 +271,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             VmsTerminalSensorItem sensorItem = new VmsTerminalSensorItem();
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setNum(strs[1]);
-            sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+            sensorItem.setInsert("1".equals(sensorInfo.getInsert()));
             String monitorType = MonitoringType.valueByCode(sensorInfo.getName()).getDescription();
             sensorItem.setMonitorType(monitorType);
 
@@ -284,7 +284,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
             VmsTerminalSensorItem sensorItem = sensorItemList.get(curSensorIndex);
             sensorItem.setChannel(sensorInfo.getChannel());
             sensorItem.setNum(strs[1]);
-            sensorItem.setInsert(sensorInfo.getInsert().trim().equals("1"));
+            sensorItem.setInsert("1".equals(sensorInfo.getInsert()));
             String monitorType = MonitoringType.valueByCode(sensorInfo.getName()).getDescription();
             sensorItem.setMonitorType(monitorType);
 

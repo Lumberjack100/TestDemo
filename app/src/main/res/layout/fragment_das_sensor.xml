@@ -291,8 +291,27 @@
                 android:layout_height="10dp" />
 
             <LinearLayout
+                android:id="@+id/mcuAddrLayout"
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    style="@style/Common_ClickableItem_TitleStyle"
+                    android:text="MCU地址" />
+
+                <com.shmedo.mcloudapp.common.view.ClearEditText
+                    android:id="@+id/et_mcu_addr"
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/extendSensorLayout"
-                style="@style/Common_ClickableItem_LayoutStyle">
+                style="@style/Common_ClickableItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <TextView
                     style="@style/Common_ClickableItem_TitleStyle"

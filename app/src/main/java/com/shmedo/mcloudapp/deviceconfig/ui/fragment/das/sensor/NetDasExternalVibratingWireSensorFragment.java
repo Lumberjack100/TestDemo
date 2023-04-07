@@ -356,7 +356,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                         if (externalSensorInfo == null)
                             externalSensorInfo = new DasExternalSensorInfo();
 
-                        if (sensorScanResult.getSensortype().equals("50")) {
+                        if ("50".equals(sensorScanResult.getSensortype())) {
                             if (!TextUtils.isEmpty(paramMap.get("poly_a"))) {
                                 externalSensorInfo.setPoly_a(paramMap.get("poly_a"));
                             }
@@ -375,7 +375,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                             iotSensorType = IOTSensorType.KANG_PERCOLATE;
                             switchSensorType();
 
-                        } else if (sensorScanResult.getSensortype().equals("51")) {
+                        } else if ("51".equals(sensorScanResult.getSensortype())) {
                             if (!TextUtils.isEmpty(paramMap.get("sens_k"))) {
                                 externalSensorInfo.setSens_k(paramMap.get("sens_k"));
                             }

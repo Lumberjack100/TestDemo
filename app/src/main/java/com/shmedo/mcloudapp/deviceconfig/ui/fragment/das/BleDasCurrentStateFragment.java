@@ -59,6 +59,7 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
+    @NonNull
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 

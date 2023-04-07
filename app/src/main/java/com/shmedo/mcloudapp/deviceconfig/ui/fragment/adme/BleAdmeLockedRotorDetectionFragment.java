@@ -260,8 +260,8 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                         return;
                     }
                     try {
-                        int left = Integer.parseInt(mEtDownSlowStartInterval.getText().toString());
-                        int right = TextUtils.isEmpty(mEtDownSlowStopInterval.getText()) ? 0 : Integer.parseInt(mEtDownSlowStopInterval.getText().toString());
+                        int left = Integer.parseInt(String.valueOf(mEtDownSlowStartInterval.getText()));
+                        int right = TextUtils.isEmpty(mEtDownSlowStopInterval.getText()) ? 0 : Integer.parseInt(String.valueOf(mEtDownSlowStopInterval.getText()));
                         if (left + right > holedepth) {
                             PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "mm)").autoDismiss(4000).iconWarning();
                             return;
@@ -291,8 +291,8 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                         return;
                     }
                     try {
-                        int left = TextUtils.isEmpty(mEtDownSlowStartInterval.getText()) ? 0 : Integer.parseInt(mEtDownSlowStartInterval.getText().toString());
-                        int right = Integer.parseInt(mEtDownSlowStopInterval.getText().toString());
+                        int left = TextUtils.isEmpty(mEtDownSlowStartInterval.getText()) ? 0 : Integer.parseInt(String.valueOf(mEtDownSlowStartInterval.getText()));
+                        int right = Integer.parseInt(String.valueOf(mEtDownSlowStopInterval.getText()));
                         if (left + right > holedepth) {
                             PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "mm)").autoDismiss(4000).iconWarning();
                             return;
@@ -327,8 +327,8 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                         return;
                     }
                     try {
-                        int left = Integer.parseInt(mEtPullUpSlowStartInterval.getText().toString());
-                        int right = TextUtils.isEmpty(mEtPullUpSlowStopInterval.getText()) ? 0 : Integer.parseInt(mEtPullUpSlowStopInterval.getText().toString());
+                        int left = Integer.parseInt(String.valueOf(mEtPullUpSlowStartInterval.getText()));
+                        int right = TextUtils.isEmpty(mEtPullUpSlowStopInterval.getText()) ? 0 : Integer.parseInt(String.valueOf(mEtPullUpSlowStopInterval.getText()));
                         if (left + right > measpacing) {
                             PopTip.show("上拉加速距离与上拉减速距离之和不能超过测量间距(" + measpacing + "mm)").autoDismiss(4000).iconWarning();
                             return;
@@ -358,8 +358,8 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
                         return;
                     }
                     try {
-                        int left = TextUtils.isEmpty(mEtPullUpSlowStartInterval.getText()) ? 0 : Integer.parseInt(mEtPullUpSlowStartInterval.getText().toString());
-                        int right = Integer.parseInt(mEtPullUpSlowStopInterval.getText().toString());
+                        int left = TextUtils.isEmpty(mEtPullUpSlowStartInterval.getText()) ? 0 : Integer.parseInt(String.valueOf(mEtPullUpSlowStartInterval.getText()));
+                        int right = Integer.parseInt(String.valueOf(mEtPullUpSlowStopInterval.getText()));
                         if (left + right > measpacing) {
                             PopTip.show("上拉加速距离与上拉减速距离之和不能超过测量间距(" + measpacing + "mm)").autoDismiss(4000).iconWarning();
                             return;
@@ -751,14 +751,14 @@ public class BleAdmeLockedRotorDetectionFragment extends BaseUSRBleIotCommunicat
         pullUpTorqueStallThreshold = lockedRotorDetectionInfo.getUptorblothr().trim();//上拉力矩堵转阈值
         pullUpTorqueDetectionTime = lockedRotorDetectionInfo.getUptordetime().trim();//上拉力矩检测判断时间
 
-        if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
+        if ("0".equals(lockedRotorDetectionInfo.getLowtbtss())) {
             mSbDownEnable.setCheckedImmediatelyNoEvent(false);
             downMeterChildMaskLayer.setVisibility(View.VISIBLE);
         } else {
             mSbDownEnable.setCheckedImmediatelyNoEvent(true);
             downMeterChildMaskLayer.setVisibility(View.GONE);
         }
-        if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
+        if ("0".equals(lockedRotorDetectionInfo.getUptbtss())) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
             pullUpMeterChildMaskLayer.setVisibility(View.VISIBLE);
         } else {

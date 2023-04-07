@@ -14,9 +14,9 @@ public class DASSendAuthenticResultParser implements ResultParser<Boolean> {
     public Boolean parse(String result) {
         String [] strs = result.split(",");
         String authenticResult = strs[1].replace("\r\n","");
-        if (authenticResult.equals("0")) {
+        if ("0".equals(authenticResult)) {
             return false;
-        } else if(authenticResult.equals("1")) {
+        } else if("1".equals(authenticResult)) {
             return true;
         }
         return null;

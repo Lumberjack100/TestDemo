@@ -88,7 +88,7 @@ public class BleAdmeHacManualMeasuringHoleDepthDialog extends BaseDialogFragment
         @Override
         protected void handleMessage(Message msg, BleAdmeHacManualMeasuringHoleDepthDialog fragment) {
             Lifecycle.State currentState = fragment.getLifecycle().getCurrentState();
-            if (currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            if (!currentState.isAtLeast(Lifecycle.State.STARTED)) {
                 return;
             }
             fragment.getMotorMotionData();

@@ -185,6 +185,16 @@ enum class IOTCommandType(private val value: String) {
     DAS_MD_SET_BD_TERMINAL("md_setbdterminal"),
 
     /**
+     * 查询 MCU 地址
+     */
+    DAS_MD_GET_MCU_ADDRESS("md_getmcuaddr"),
+
+    /**
+     * 设置 MCU 地址
+     */
+    DAS_MD_SET_MCU_ADDRESS("md_setmcuaddr"),
+
+    /**
      * 查询扩展传感器信息
      */
     DAS_MD_GET_EXTERNAL_SENSOR("md_getsensorctrl"),

@@ -27,7 +27,7 @@ public class ProductAdapter extends BaseQuickAdapter<ProductInfo, BaseViewHolder
     @Override
     protected void convert(@NotNull BaseViewHolder holder, ProductInfo productInfo) {
         holder.setText(R.id.tv_name, productInfo.getProductName());
-        if (productInfo.getProductName().equals("全部")) {
+        if ("全部".equals(productInfo.getProductName())) {
             holder.setGone(R.id.tv_num, true);
         } else {
             holder.setGone(R.id.tv_num, true);

@@ -72,7 +72,7 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
         } else {
 //            holder.setImageResource(R.id.iv_signal, R.drawable.ic_device_signal_offline);
             holder.setText(R.id.tv_terminal_state, processTerminalState(vmsTerminalInfo.getLastpackagetime(), vmsTerminalInfo.getLogintime()));
-            if (vmsTerminalInfo.getLastpackagetime().equals("离线")) {
+            if ("离线".equals(vmsTerminalInfo.getLastpackagetime())) {
                 holder.setTextColorRes(R.id.tv_terminal_sn, R.color.text_color_b3b3b3);
                 holder.setImageResource(R.id.iv_battery, R.drawable.ic_battery_full_offline);
                 holder.setTextColorRes(R.id.tv_terminal_state, R.color.text_color_b3b3b3);
@@ -127,7 +127,7 @@ public class VmsTerminalInfoAdapter extends BaseQuickAdapter<VmsTerminalInfo, Ba
         TextView tvSensor = (TextView) inflater.inflate(R.layout.item_sensor_insert_state, null);
 //        tvSensor.setText(errnoInfo.getNum().equals("0") ? "" : errnoInfo.getNum());
         tvSensor.setText(String.valueOf(errnoInfo.getId() + 1));
-        tvSensor.setBackgroundResource(errnoInfo.getIn().equals("0") ? R.drawable.bg_sensor_uninsert : R.drawable.bg_sensor_insert);
+        tvSensor.setBackgroundResource("0".equals(errnoInfo.getIn()) ? R.drawable.bg_sensor_uninsert : R.drawable.bg_sensor_insert);
         // 定义LayoutParam
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ConvertUtils.dp2px(28), ViewGroup.LayoutParams.WRAP_CONTENT);

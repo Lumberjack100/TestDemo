@@ -112,8 +112,8 @@ public class QueryDeviceDataActivity extends BaseActivity {
                 mEtSn.setEnabled(false);
                 mEtSn.setText(snNubmer);
                 mEtSn.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.sub_title_text_color));
-                startTime = mTvStartTime.getText().toString() + " 00:00:00";
-                endTime = mTvEndTime.getText().toString() + " 23:59:59";
+                startTime = mTvStartTime.getText() + " 00:00:00";
+                endTime = mTvEndTime.getText() + " 23:59:59";
                 queryCloudData();
             }
         }

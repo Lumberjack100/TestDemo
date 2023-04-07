@@ -212,7 +212,7 @@ public class NetVmsTerminalExternalSensorParamFragment extends BaseNetIotCommuni
         }
 
         //为0表示未接入传感器
-        if (sensorInfo.getInsert().trim().equals("0")) {
+        if ("0".equals(sensorInfo.getInsert())) {
             mSbSensorEnable.setCheckedImmediatelyNoEvent(false);
             contentLayout.setVisibility(View.GONE);
         } else {

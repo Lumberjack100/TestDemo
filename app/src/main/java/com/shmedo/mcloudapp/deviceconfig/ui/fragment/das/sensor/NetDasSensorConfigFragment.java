@@ -25,11 +25,13 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasDigitalPiezometerEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.das.DasIOSensorEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.das.DasMcuAddressEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.das.DasDigitalPiezometerInfo;
 import com.shmedo.configlibrary.iot.model.das.DasIOSensorInfo;
+import com.shmedo.configlibrary.iot.model.das.McuAddressInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -110,6 +112,12 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     @BindView(R.id.nozzelHeightEt)
     EditText mEtNozzelHeight;//安装高程
 
+    @BindView(R.id.mcuAddrLayout)
+    ViewGroup mcuAddrLayout;//MCU 地址
+
+    @BindView(R.id.et_mcu_addr)
+    EditText mEtMcuAddress;//MCU 地址
+
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
 
@@ -124,7 +132,9 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     private String osmometerLength;
     private String nozzelHeight;
 
-    private boolean isDigitalPiezometerChange = false;
+    private McuAddressInfo mcuAddressInfo = new McuAddressInfo();
+    private String mcuAddress;
+
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭北斗数传终端操作
 
     public static NetDasSensorConfigFragment newInstance(DeviceInfo deviceInfo) {
@@ -164,6 +174,12 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
 
         rainPrecision = "0.1";
         mTvPrecision.setText(rainPrecision);
+
+        if (deviceInfo.getProductName().contains("MR701")) {
+            mcuAddrLayout.setVisibility(View.VISIBLE);
+        } else {
+            mcuAddrLayout.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -277,17 +293,28 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull @NotNull RefreshLayout refreshLayout) {
-                querySwitchSensorInfo();
+                queryParam();
             }
         });
     }
 
-    /**
-     * 查询开关量传感器信息
-     */
-    private void querySwitchSensorInfo() {
+    private void queryParam() {
+        commandItems.clear();
+
+        //查询开关量传感器信息
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        commandItems.add(command);
+
+        //查询数字水位计信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO);
+        commandItems.add(command);
+
+        //查询 MCU 地址
+        if (deviceInfo.getProductName().contains("MR701")) {
+            command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_MCU_ADDRESS);
+            commandItems.add(command);
+        }
+        sendCommandFromCmdList();
     }
 
     /**
@@ -296,14 +323,6 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     private void setSwitchSensorInfo(DasIOSensorEntity entity) {
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
-
-    /**
-     * 查询水位计信息
-     */
-    private void queryDigitalPiezometerInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO);
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
@@ -317,23 +336,6 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
-
-    /**
-     * 设置水位计参数
-     */
-    private void setDigitalOsmometerParam() {
-        DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
-        entity.setSw("1");
-        entity.setAddr(osmometerAddress);
-        entity.setThreshold(depthTriggerValue);
-        entity.setCorrval(depthCorrection);
-        entity.setRopelen(osmometerLength);
-        entity.setTubealti(nozzelHeight);
-
-        isSaveParamOperation = true;
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
@@ -360,7 +362,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         } else if (id == R.id.btn_confirm) {
             try {
                 com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
-                if (!checkDigitalOsmometerParam()) {
+                if (!checkDigitalOsmometerParam() && !checkMcuAddressParam()) {
                     Timber.w("参数存在错误!");
                     return;
                 }
@@ -467,22 +469,65 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         } else {
             nozzelHeight = null;
         }
-        isDigitalPiezometerChange = true;
         return true;
     }
 
+    private boolean checkMcuAddressParam() {
+        mcuAddress = mEtMcuAddress.getText().toString().trim();
+        if (TextUtils.isEmpty(mcuAddress)) {
+            ToastUtils.show("请输入MCU地址");
+            mEtMcuAddress.requestFocus();
+            return false;
+        }
+        try {
+            int value = Integer.parseInt(mcuAddress);
+            if (value < 0 || value > 255) {
+                ToastUtils.show("请输入正确的MCU地址!");
+                mEtMcuAddress.requestFocus();
+                return false;
+            }
+        } catch (Exception ex) {
+            ToastUtils.show("请输入正确的MCU地址!");
+            mEtMcuAddress.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+
     private void processSave() {
+        commandItems.clear();
+        //设置开关量传感器信息
         if (rbRainGauge.isChecked()) {
             DasIOSensorEntity entity = new DasIOSensorEntity();
             entity.setType("1");
             entity.setValue(rainPrecision);
             entity.setMin_time(ioSensorInfo.getMin_time().equals("NullKey") || TextUtils.isEmpty(mEtDumpMinTime.getText()) ? null : mEtDumpMinTime.getText().toString());
-
-            setSwitchSensorInfo(entity);
-        } else if (mSbDigitalOsmometerEnable.isChecked()) {
-            setDigitalOsmometerParam();
-            showWaitDialog("处理中...");
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO, entity);
+            commandItems.add(command);
         }
+        //设置水位计参数
+        if (mSbDigitalOsmometerEnable.isChecked()) {
+            DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
+            entity.setSw("1");
+            entity.setAddr(osmometerAddress);
+            entity.setThreshold(depthTriggerValue);
+            entity.setCorrval(depthCorrection);
+            entity.setRopelen(osmometerLength);
+            entity.setTubealti(nozzelHeight);
+
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
+            commandItems.add(command);
+        }
+        //设置 MCU 地址
+        if (deviceInfo.getProductName().contains("MR701")) {
+            DasMcuAddressEntity entity = new DasMcuAddressEntity();
+            entity.setMcuaddr(mcuAddress);
+            String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_MCU_ADDRESS, entity);
+            commandItems.add(command);
+        }
+        showWaitDialog("处理中...");
+        sendCommandFromCmdList();
     }
 
     /**
@@ -491,7 +536,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
      * @param dispatchCmdItemList
      */
     @Override
-    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String cmdStr) {
+    protected void onDispatchCmdResult(List<DispatchCmdItem> dispatchCmdItemList, String
+            cmdStr) {
         if (dispatchCmdItemList == null || dispatchCmdItemList.size() == 0) {
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
@@ -563,23 +609,61 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 ioSensorInfo = commandResult.getResult();
                 initSwitchSensor();
-                queryDigitalPiezometerInfo();
             }
             break;
 
             case DAS_MD_GET_DIGITAL_PIEZOMETER_INFO: {//查询数字水位计参数
-                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<DasDigitalPiezometerInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
                     String errMsg = String.format("%s %s", "查询数字水位计参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
                 digitalPiezometerInfo = commandResult.getResult();
                 initDigitalPiezometerInfo();
+            }
+            break;
+
+            case DAS_MD_GET_MCU_ADDRESS: {//查询 MCU 地址
+                IOTCommandResult<McuAddressInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(false);
+                    }
+                    String errMsg = String.format("%s %s", "查询 MCU 地址出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                }
+                mcuAddressInfo = commandResult.getResult();
+                initMcuAddress();
             }
             break;
 
@@ -592,28 +676,49 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-
-                if (mSbDigitalOsmometerEnable.isChecked() && isDigitalPiezometerChange) {
-                    setDigitalOsmometerParam();
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
                 } else {
                     dismissWaitDialog();
-                    ToastUtils.show("设置成功");
+                    ToastUtils.show("保存成功");
                 }
             }
             break;
 
             case DAS_MD_SET_DIGITAL_PIEZOMETER_INFO: {//设置数字水位计
-                dismissWaitDialog();
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
+                    dismissWaitDialog();
                     String errMsg = String.format("%s %s", "设置数字水位计参数出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
                 }
-                doAfterSetting();
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    dismissWaitDialog();
+                    ToastUtils.show("保存成功");
+                }
             }
             break;
+
+            case DAS_MD_SET_MCU_ADDRESS: {//设置 MCU 地址
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    dismissWaitDialog();
+                    String errMsg = String.format("%s %s", "设置 MCU 地址出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                if (commandItems.size() > 0) {
+                    sendCommandFromCmdList();
+                } else {
+                    dismissWaitDialog();
+                    ToastUtils.show("保存成功");
+                }
+            }
 
             default:
                 break;
@@ -736,15 +841,19 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         }
     }
 
+    private void initMcuAddress() {
+        if (mcuAddressInfo == null) {
+            Timber.e("McuAddressInfo 为空!");
+            mcuAddressInfo = new McuAddressInfo();
+            return;
+        }
+        mcuAddress = mcuAddressInfo.getMcuaddr();
+        mEtMcuAddress.setText(mcuAddress);
+    }
+
     private void doAfterSetting() {
         if (isSaveParamOperation) {
             ToastUtils.show("保存成功");
-            isDigitalPiezometerChange = false;
-            osmometerAddress = mEtOsmometerAddress.getText().toString().trim();
-            depthTriggerValue = mEtWaterAlarmValue.getText().toString().trim();
-            depthCorrection = mEtWaterRevised.getText().toString().trim();
-            osmometerLength = mEtOsmometerCord.getText().toString().trim();
-            nozzelHeight = mEtNozzelHeight.getText().toString().trim();
         }
     }
 
@@ -759,24 +868,24 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     }
 
     private boolean checkValueIsChange() {
-        if (!mSbDigitalOsmometerEnable.isChecked()) {
-            return false;
-        }
-        if (osmometerAddress != null && !osmometerAddress.equals(mEtOsmometerAddress.getText().toString().trim())) {
-            return true;
-        }
-        if (depthTriggerValue != null && !depthTriggerValue.equals(mEtWaterAlarmValue.getText().toString().trim())) {
-            return true;
-        }
-        if (depthCorrection != null && !depthCorrection.equals(mEtWaterRevised.getText().toString().trim())) {
-            return true;
-        }
-        if (osmometerLength != null && !osmometerLength.equals(mEtOsmometerCord.getText().toString().trim())) {
-            return true;
-        }
-        if (nozzelHeight != null && !nozzelHeight.equals(mEtNozzelHeight.getText().toString().trim())) {
-            return true;
-        }
+//        if (!mSbDigitalOsmometerEnable.isChecked()) {
+//            return false;
+//        }
+//        if (osmometerAddress != null && !osmometerAddress.equals(mEtOsmometerAddress.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (depthTriggerValue != null && !depthTriggerValue.equals(mEtWaterAlarmValue.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (depthCorrection != null && !depthCorrection.equals(mEtWaterRevised.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (osmometerLength != null && !osmometerLength.equals(mEtOsmometerCord.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (nozzelHeight != null && !nozzelHeight.equals(mEtNozzelHeight.getText().toString().trim())) {
+//            return true;
+//        }
         return false;
     }
 }

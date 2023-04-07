@@ -48,6 +48,9 @@ public class AdmeHacCurrentStateView extends LinearLayout {
     @BindView(R.id.tv_device_sn)
     TextView mTvDeviceSn;
 
+    @BindView(R.id.tv_product_number)
+    TextView mTvProductNumber;
+
     @BindView(R.id.tv_sim_card_number)
     TextView mTVSimCardNumber;
 
@@ -148,8 +151,6 @@ public class AdmeHacCurrentStateView extends LinearLayout {
         String measurePoint = hacMotionState.getMeaspoint();
         String msg;
         AdmeCTRMotionState ctrMotionState = AdmeCTRMotionState.valueByCode(hacMotionState.getMotorinfo());
-        if (ctrMotionState == null)
-            return;
 
         switch (ctrMotionState) {
             case BOTTOM_WAITING://管底等待
@@ -178,6 +179,7 @@ public class AdmeHacCurrentStateView extends LinearLayout {
         }
         try {
             mTvDeviceSn.setText(currentStateInfo.getSn());
+            mTvProductNumber.setText(currentStateInfo.getProductid());
             mTVSimCardNumber.setText(currentStateInfo.getSimid());
             mTvImeiNumber.setText(currentStateInfo.getImeid());
             mTvFirmwareVersion.setText(currentStateInfo.getFirversion());

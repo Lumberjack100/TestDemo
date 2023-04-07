@@ -791,14 +791,14 @@ public class NetAdmeLockedRotorDetectionFragment extends BaseNetIotCommunicateFr
         pullUpTorqueStallThreshold = lockedRotorDetectionInfo.getUptorblothr().trim();//上拉力矩堵转阈值
         pullUpTorqueDetectionTime = lockedRotorDetectionInfo.getUptordetime().trim();//上拉力矩检测判断时间
 
-        if (lockedRotorDetectionInfo.getLowtbtss().equals("0")) {
+        if ("0".equals(lockedRotorDetectionInfo.getLowtbtss())) {
             mSbDownEnable.setCheckedImmediatelyNoEvent(false);
             downMeterChildMaskLayer.setVisibility(View.VISIBLE);
         } else {
             mSbDownEnable.setCheckedImmediatelyNoEvent(true);
             downMeterChildMaskLayer.setVisibility(View.GONE);
         }
-        if (lockedRotorDetectionInfo.getUptbtss().equals("0")) {
+        if ("0".equals(lockedRotorDetectionInfo.getUptbtss())) {
             mSbPullUpEnable.setCheckedImmediatelyNoEvent(false);
             pullUpMeterChildMaskLayer.setVisibility(View.VISIBLE);
         } else {

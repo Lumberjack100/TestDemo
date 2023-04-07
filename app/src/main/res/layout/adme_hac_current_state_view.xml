@@ -72,6 +72,19 @@
 
         <TextView
             style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text="设备型号" />
+
+        <TextView
+            android:id="@+id/tv_product_number"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            tools:text="19902102313" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
             android:text="SIM卡号(ICCID)" />
 
         <TextView
