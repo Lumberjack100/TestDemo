@@ -110,8 +110,8 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             }
         }
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_30000_MILLIS);
-        sendCommand(commandItems.getFirst());
         Timber.d("设置 %s 接入的传感器指令===%s", collectorName, commandItems.getFirst());
+        sendCommandFromCmdList(this::saveConfigInfoNoReboot);
     }
 
     /**
@@ -239,12 +239,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case COLLECTOR_SENSOR_THRESHOLD_SOLI://传感器触发阈值(单传感器设置) 168
@@ -254,12 +249,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case COLLECTOR_SENSOR_REVISED: //传感器修正值 165
@@ -268,12 +258,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SET_INCLINOMETER_LONG: //设置测斜仪测段长 166
@@ -282,12 +267,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case STATIC_LEVEL_ELEVATION: //设置静力水准高程
@@ -296,12 +276,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                commandItems.removeFirst();
-                if (commandItems.size() > 0) {
-                    sendCommand(commandItems.getFirst());
-                } else {
-                    doAfterSetting();
-                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             default:

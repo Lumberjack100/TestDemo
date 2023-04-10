@@ -252,7 +252,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
         }
 
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
-        sendCommandFromCmdList(true);
+        sendCommandFromCmdList(this::saveConfigInfoNoReboot);
     }
 
     @Override
@@ -303,7 +303,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommandFromCmdList(true);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case DATA_REPORT_INTERVAL://设置数据上报间隔
@@ -312,7 +312,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommandFromCmdList(true);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SIX_TARGER_BD_NUMBER://北斗配置
@@ -321,7 +321,7 @@ public class BleDasDataCenterHomeFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommandFromCmdList(true);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SAVE_CONFIG_INFO:

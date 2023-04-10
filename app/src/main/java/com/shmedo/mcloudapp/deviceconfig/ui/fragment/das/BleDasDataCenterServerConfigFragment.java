@@ -123,9 +123,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private ServerNumber serverNumber;
     private MqttConfigInfo mqttConfigInfo = new MqttConfigInfo();
 
-    private String communicationProtocolOld;//网络中心通讯协议
-    private String registerPlatformOld;//网络中心通讯协议
-
     private String communicationProtocol;//网络中心通讯协议
     private String dataServerAddress;//数据服务器地址
     private String dataServerPort;//数据服务器端口
@@ -138,13 +135,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     private String mqttDeviceId;
     private String mqttUsername;
     private String mqttPassword;
-
-    private String cmdCommunicationProtocol;//网络中心通讯协议
-    private String cmdDataServerAddress;//设置数据服务器地址、端口
-    private String cmdRegistrationPlatform;//自动注册选择平台
-    private String cmdRegistrationPlatformAddress;// 自动注册平台地址、端口
-    private String cmdKeepAliveValue;//
-    private String cmdPlatformParam;//手动/自动注册平台参数
 
     private final String[] registProtocols = StringUtils.getStringArray(R.array.register_protocol);
     private final String[] platforms = StringUtils.getStringArray(R.array.register_platform);
@@ -543,48 +533,68 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     }
 
     private void processSave() {
+        commandItems.clear();
+
         //网络中心通讯协议
         DataCenterCommunicateProtoclEntity communicateProtoclEntity = new DataCenterCommunicateProtoclEntity(serverNumber.toInt(), Integer.parseInt(communicationProtocol));
-        cmdCommunicationProtocol = CommandManager.getInstance().getCommand(CommandType.NET_LINK_COMMUN_PROTOCOL, communicateProtoclEntity);
+        String command = CommandManager.getInstance().getCommand(CommandType.NET_LINK_COMMUN_PROTOCOL, communicateProtoclEntity);
+        Timber.d("设置网络中心通讯协议===%s", command);
+        commandItems.add(command);
 
         //数据服务器地址、端口
         ServerAddressInfoEntity addressInfoEntity = new ServerAddressInfoEntity(serverNumber.toInt(), dataServerAddress, Integer.parseInt(dataServerPort));
-        cmdDataServerAddress = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, addressInfoEntity);
+        command = CommandManager.getInstance().getCommand(CommandType.SET_SERVER_ADDRESS_PORT, addressInfoEntity);
+        Timber.d("数据服务器地址、端口配置===%s", command);
+        commandItems.add(command);
 
         if (communicationProtocol.equals("4")) {//MQTT自动注册
             //选择注册平台
             RegistrationPlatformSelectionEntity platformSelectionEntity = new RegistrationPlatformSelectionEntity(serverNumber.toInt(), Integer.parseInt(registerPlatform));
-            cmdRegistrationPlatform = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
+            command = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
+            Timber.d("选择平台配置===%s", command);
+            commandItems.add(command);
 
             //自动注册平台地址端口
             String[] strs = registerPlatformAddress.trim().split(" ");
             addressInfoEntity = new ServerAddressInfoEntity(serverNumber.toInt(), strs[0], Integer.parseInt(strs[1]));
-            cmdRegistrationPlatformAddress = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT, addressInfoEntity);
+            command = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT, addressInfoEntity);
+            Timber.d("自动注册平台地址配置===%s", command);
+            commandItems.add(command);
 
             //MQTT KeepAlive值
             MQTTKeepAliveEntity keepAliveEntity = new MQTTKeepAliveEntity(serverNumber.toInt(), Integer.parseInt(keepAliveValue));
-            cmdKeepAliveValue = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
+            command = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
+            Timber.d("设置KeepAlive===%s", command);
+            commandItems.add(command);
 
             //自动注册平台参数：设备SN号+产品ID+注册码
             RegistrationPlatformEntity registrationPlatformEntity = new RegistrationPlatformEntity(serverNumber.toInt(), deviceSn, productId, registerCode);
-            cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
+            command = CommandManager.getInstance().getCommand(CommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
+            Timber.d("自动/手动注册平台参数===%s", command);
+            commandItems.add(command);
+
         } else if (communicationProtocol.equals("5")) {//MQTT手动注册
             //选择注册平台
             RegistrationPlatformSelectionEntity platformSelectionEntity = new RegistrationPlatformSelectionEntity(serverNumber.toInt(), Integer.parseInt(registerPlatform));
-            cmdRegistrationPlatform = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
+            command = CommandManager.getInstance().getCommand(CommandType.AUTO_REGISTRATION_PLATFORM, platformSelectionEntity);
+            Timber.d("选择平台配置===%s", command);
+            commandItems.add(command);
 
             //MQTT KeepAlive值
             MQTTKeepAliveEntity keepAliveEntity = new MQTTKeepAliveEntity(serverNumber.toInt(), Integer.parseInt(keepAliveValue));
-            cmdKeepAliveValue = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
+            command = CommandManager.getInstance().getCommand(CommandType.MQTT_KEEP_ALIVE, keepAliveEntity);
+            Timber.d("设置KeepAlive===%s", command);
+            commandItems.add(command);
 
             //手动注册平台参数：产品ID+设备ID+设备KEY
             RegistrationPlatformEntity registrationPlatformEntity = new RegistrationPlatformEntity(serverNumber.toInt(), mqttUsername, mqttDeviceId, mqttPassword);
-            cmdPlatformParam = CommandManager.getInstance().getCommand(CommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
+            command = CommandManager.getInstance().getCommand(CommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM, registrationPlatformEntity);
+            Timber.d("自动/手动注册平台参数===%s", command);
+            commandItems.add(command);
         }
 
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
-        sendCommand(cmdCommunicationProtocol);
-        Timber.d("设置网络中心通讯协议===%s", cmdCommunicationProtocol);
+        sendCommandFromCmdList(this::saveConfigInfoNoReboot);
     }
 
     @Override
@@ -636,8 +646,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommand(cmdDataServerAddress);
-                Timber.d("数据服务器地址、端口配置===%s", cmdDataServerAddress);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SET_SERVER_ADDRESS_PORT://设置数据服务器地址、端口应答
@@ -646,18 +655,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                //处理关闭中心1、2、3的开关时，接收到的应答指令
-                if (!mSbCenterEnable.isChecked()) {
-                    doAfterSetting();
-                    return;
-                }
-                if (communicationProtocol.equals("2")) {//MDM协议
-                    doAfterSetting();
-                } else if (communicationProtocol.equals("4") || communicationProtocol.equals("5")) {//MQTT自动注册/MQTT手动注册
-                    sendCommand(cmdRegistrationPlatform);
-                    Timber.d("选择平台配置===%s", cmdRegistrationPlatform);
-                    return;
-                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case AUTO_REGISTRATION_PLATFORM:// MQTT 自动注册设置通选择注册平台时应答
@@ -666,14 +664,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                if (communicationProtocol.equals("4")) {//MQTT自动注册
-                    sendCommand(cmdRegistrationPlatformAddress);
-                    Timber.d("自动注册平台地址配置===%s", cmdRegistrationPlatformAddress);
-                } else if (communicationProtocol.equals("5")) {//MQTT手动注册
-                    sendCommand(cmdKeepAliveValue);
-                    Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
-                    return;
-                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT:// MQTT 自动注册设置注册平台地址时应答
@@ -682,8 +673,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommand(cmdKeepAliveValue);
-                Timber.d("设置KeepAlive===%s", cmdKeepAliveValue);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case MQTT_KEEP_ALIVE://设置KeepAlive值应答
@@ -692,8 +682,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommand(cmdPlatformParam);
-                Timber.d("自动/手动注册平台参数===%s", cmdPlatformParam);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SET_AUTO_REGISTRATION_PLATFORM_PARAM:// MQTT 自动注册设置参数时应答
@@ -702,7 +691,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                doAfterSetting();
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SET_MANUAL_REGISTRATION_PLATFORM_PARAM:// MQTT 手动注册设置参数时应答
@@ -711,7 +700,7 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                doAfterSetting();
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SAVE_CONFIG_INFO:
@@ -720,8 +709,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
                     return;
                 }
                 Toast.makeText(getActivity(), "已保存", Toast.LENGTH_LONG).show();
-                communicationProtocolOld = communicationProtocol;
-                registerPlatformOld = registerPlatform;
                 break;
 
             default:
@@ -737,17 +724,17 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
             mqttConfigInfo = new MqttConfigInfo();
             return;
         }
-        communicationProtocolOld = mqttConfigInfo.getCommunicationProtocol();
-        if (communicationProtocolOld.equals("2")) {
+        communicationProtocol = mqttConfigInfo.getCommunicationProtocol();
+        if (communicationProtocol.equals("2")) {
             updateViewByCommunicationProtocol(registProtocols[0]);
-        } else if (communicationProtocolOld.equals("4")) {
+        } else if (communicationProtocol.equals("4")) {
             updateViewByCommunicationProtocol(registProtocols[1]);
-        } else if (communicationProtocolOld.equals("5")) {
+        } else if (communicationProtocol.equals("5")) {
             updateViewByCommunicationProtocol(registProtocols[2]);
         }
 
         if (RegexUtils.isMatch(RegexConstants.REGEX_POSITIVE_INTEGER, mqttConfigInfo.getRegisterPlatform())) {
-            registerPlatformOld = mqttConfigInfo.getRegisterPlatform();
+            registerPlatform = mqttConfigInfo.getRegisterPlatform();
             int number = Integer.parseInt(mqttConfigInfo.getRegisterPlatform());
             if (number < platforms.length)
                 updateViewByRegisterPlatform(platforms[number]);
@@ -777,12 +764,6 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
         mEtMqttDeviceId.setText(mqttDeviceId);
         mEtMqttUsername.setText(mqttUsername);
         mEtMqttPwd.setText(mqttPassword);
-    }
-
-    private void doAfterSetting() {
-        stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-//        isExitMode = true;
-        saveConfigInfoNoReboot();
     }
 
     @Override
@@ -815,51 +796,51 @@ public class BleDasDataCenterServerConfigFragment extends BaseBleCommunicateFrag
     }
 
     private boolean checkValueIsChange() {
-        if (!mSbCenterEnable.isChecked()) {
-            return false;
-        }
-        if (communicationProtocolOld != null && communicationProtocol != null && !communicationProtocolOld.equals(communicationProtocol)) {
-            return true;
-        }
-        if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
-            return true;
-        }
-        if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
-            return true;
-        }
-        if (communicationProtocol != null && communicationProtocol.equals("4")) {//MQTT自动注册
-            if (registerPlatformOld != null && registerPlatform != null && !registerPlatformOld.equals(registerPlatform)) {
-                return true;
-            }
-            if (registerPlatformAddress != null && !registerPlatformAddress.equals(mEtRegisterPlatformAddress.getText().toString().trim())) {
-                return true;
-            }
-            if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
-                return true;
-            }
-            if (deviceSn != null && !deviceSn.equals(mEtDeviceSN.getText().toString().trim())) {
-                return true;
-            }
-            if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
-                return true;
-            }
-            if (registerCode != null && !registerCode.equals(mEtRegisterCode.getText().toString().trim())) {
-                return true;
-            }
-        } else if (communicationProtocol != null && communicationProtocol.equals("5")) {//MQTT手动注册
-            if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
-                return true;
-            }
-            if (mqttDeviceId != null && !mqttDeviceId.equals(mEtMqttDeviceId.getText().toString().trim())) {
-                return true;
-            }
-            if (mqttUsername != null && !mqttUsername.equals(mEtMqttUsername.getText().toString().trim())) {
-                return true;
-            }
-            if (mqttPassword != null && !mqttPassword.equals(mEtMqttPwd.getText().toString().trim())) {
-                return true;
-            }
-        }
+//        if (!mSbCenterEnable.isChecked()) {
+//            return false;
+//        }
+//        if (communicationProtocolOld != null && communicationProtocol != null && !communicationProtocolOld.equals(communicationProtocol)) {
+//            return true;
+//        }
+//        if (dataServerAddress != null && !dataServerAddress.equals(mEtDataServerAddress.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (dataServerPort != null && !dataServerPort.equals(mEtDataServerPort.getText().toString().trim())) {
+//            return true;
+//        }
+//        if (communicationProtocol != null && communicationProtocol.equals("4")) {//MQTT自动注册
+//            if (registerPlatformOld != null && registerPlatform != null && !registerPlatformOld.equals(registerPlatform)) {
+//                return true;
+//            }
+//            if (registerPlatformAddress != null && !registerPlatformAddress.equals(mEtRegisterPlatformAddress.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (deviceSn != null && !deviceSn.equals(mEtDeviceSN.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (productId != null && !productId.equals(mEtProductId.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (registerCode != null && !registerCode.equals(mEtRegisterCode.getText().toString().trim())) {
+//                return true;
+//            }
+//        } else if (communicationProtocol != null && communicationProtocol.equals("5")) {//MQTT手动注册
+//            if (keepAliveValue != null && !keepAliveValue.equals(mEtKeepAlive.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (mqttDeviceId != null && !mqttDeviceId.equals(mEtMqttDeviceId.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (mqttUsername != null && !mqttUsername.equals(mEtMqttUsername.getText().toString().trim())) {
+//                return true;
+//            }
+//            if (mqttPassword != null && !mqttPassword.equals(mEtMqttPwd.getText().toString().trim())) {
+//                return true;
+//            }
+//        }
         return false;
     }
 }

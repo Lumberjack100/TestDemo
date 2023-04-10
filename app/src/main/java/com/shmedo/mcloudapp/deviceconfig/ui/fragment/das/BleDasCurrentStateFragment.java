@@ -372,7 +372,7 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
         querySensorStatus();
         queryInclinometerInfo();
 
-        sendCommandFromCmdList(false);
+        sendCommandFromCmdList(null);
     }
 
     /**
@@ -507,24 +507,19 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
     }
 
     private void setResultData(final String cmdStr) {
+        sendCommandFromCmdList(() -> {
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(true);
+            }
+        });
         String tempStr = cmdStr.replace(CommandResult.COMMAND_RESULT_HEADER, "").replace("\r\n", "");
         CommandType type = StringUtil.extractCommandType(cmdStr);
         switch (type) {
             case QUERY_DAS_STATUS_1://##041\r\n：查询设备状态1
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     Timber.e("查询设备状态1指令出错!");
                     ToastUtils.show("查询设备状态1出错!");
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList(false);
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 DeviceStatusInfoOne deviceStatusInfoOne = ResultParserUtil.getEntityObject(cmdStr);
                 initDeviceStatusOne(deviceStatusInfoOne);
@@ -532,19 +527,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case VERSION_MESSAGE://##040\r\n：获取版本信息
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     Timber.e("查询设备版本信息出错!");
                     ToastUtils.show("查询设备版本信息出错!");
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList(false);
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 versionMessageInfo = ResultParserUtil.getEntityObject(cmdStr);
                 if (versionMessageInfo != null) {
@@ -554,19 +539,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case SYSTEM_RUN_STATE://##014\r\n：获取信号强度
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     Timber.e("查询运行状态出错!");
                     ToastUtils.show("查询运行状态出错!");
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList(false);
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 SystemRunStateInfo runStateInfo = ResultParserUtil.getEntityObject(cmdStr);
                 initOperatorInformation(runStateInfo);
@@ -574,19 +549,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_NETWORK_STATUS://##044n\r\n：数据中心网络状态
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     Timber.e("查询数据中心网络状态出错!");
                     ToastUtils.show("查询数据中心网络状态出错!");
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList(false);
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 String number = tempStr.substring(3, 4);
                 if ("1".equals(number)) {
@@ -600,19 +565,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_DAS_STATUS_2://##042\r\n：查询设备状态2
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     Timber.e("查询设备状态2出错!");
                     ToastUtils.show("查询设备状态2出错!");
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList(false);
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 DeviceStatusInfoTwo statusTwo = ResultParserUtil.getEntityObject(cmdStr);
                 setDeviceStatusTwo(statusTwo);
@@ -620,19 +575,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
 
             case QUERY_DAS_STATUS_3://##043\r\n: 获取主传感器状态
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     Timber.e("查询设备状态3出错!");
                     ToastUtils.show("查询设备状态3出错!");
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList(false);
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 DeviceStatusInfoThree statusThree = ResultParserUtil.getEntityObject(cmdStr);
                 if (statusThree != null) {
@@ -642,17 +587,9 @@ public class BleDasCurrentStateFragment extends BaseBleCommunicateFragment {
                 break;
 
             case QUERY_INCLINOMETER_INFO:
-                mRefreshLayout.finishRefresh(true);
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     Timber.e("查询倾角计信息出错!");
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList(false);
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 InclinometerInfo inclinometerInfo = ResultParserUtil.getEntityObject(cmdStr);
                 setInclinometerInfo(inclinometerInfo);

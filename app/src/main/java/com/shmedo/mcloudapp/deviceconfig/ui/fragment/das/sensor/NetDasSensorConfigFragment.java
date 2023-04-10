@@ -58,6 +58,13 @@ import timber.log.Timber;
  * 描述：     TODO
  */
 public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
+    static final int RAIN_GAUGE = 1;//是否设置雨量计
+    static final int DIGITAL_OSMOMETER = 1 << 1;//是否打开水位计
+    static final int MCU = 1 << 2;//是否配置 MCU 地址
+
+    private int mExistingUpdateTypes = 0;
+
+
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 
@@ -135,7 +142,6 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     private McuAddressInfo mcuAddressInfo = new McuAddressInfo();
     private String mcuAddress;
 
-    private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭北斗数传终端操作
 
     public static NetDasSensorConfigFragment newInstance(DeviceInfo deviceInfo) {
         NetDasSensorConfigFragment fragment = new NetDasSensorConfigFragment();
@@ -177,6 +183,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
 
         if (deviceInfo.getProductName().contains("MR701")) {
             mcuAddrLayout.setVisibility(View.VISIBLE);
+            btnConfirm.setVisibility(View.VISIBLE);
+            mExistingUpdateTypes |= MCU;
         } else {
             mcuAddrLayout.setVisibility(View.GONE);
         }
@@ -204,9 +212,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     rbCloseSwitchSensor.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_343434));
                     rbRainGauge.setChecked(false);
                     rbBreakAlarm.setChecked(false);
-                    if (!mSbDigitalOsmometerEnable.isChecked()) {
-                        btnConfirm.setVisibility(View.GONE);
-                    }
+                    mExistingUpdateTypes &= ~RAIN_GAUGE;
+
                     //发送关闭传感器指令
                     DasIOSensorEntity entity = new DasIOSensorEntity();
                     entity.setType("0");
@@ -223,7 +230,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                         dumpMinTimeLayout.setVisibility(View.VISIBLE);
                     }
                     rbBreakAlarm.setChecked(false);
-                    btnConfirm.setVisibility(View.VISIBLE);
+                    mExistingUpdateTypes |= RAIN_GAUGE;
                 } else {
                     rbRainGauge.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                     rainPrecisionLayout.setVisibility(View.GONE);
@@ -235,9 +242,8 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     rbRainGauge.setChecked(false);
                     rbBreakAlarm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_343434));
                     rgBreakAlarmItems.setVisibility(View.VISIBLE);
-                    if (!mSbDigitalOsmometerEnable.isChecked()) {
-                        btnConfirm.setVisibility(View.GONE);
-                    }
+                    mExistingUpdateTypes &= ~RAIN_GAUGE;
+
                     //发送断线报警器常开指令
                     DasIOSensorEntity entity = new DasIOSensorEntity();
                     entity.setType("2");
@@ -248,6 +254,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     rgBreakAlarmItems.setVisibility(View.GONE);
                 }
             }
+            btnConfirm.setVisibility((mExistingUpdateTypes & (RAIN_GAUGE | DIGITAL_OSMOMETER | MCU)) != 0 ? View.VISIBLE : View.GONE);
         }
     };
 
@@ -276,15 +283,13 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     digitalOsmometerChildsLayout.setVisibility(View.VISIBLE);
-                    btnConfirm.setVisibility(View.VISIBLE);
+                    mExistingUpdateTypes |= DIGITAL_OSMOMETER;
                 } else {
                     digitalOsmometerChildsLayout.setVisibility(View.GONE);
-                    //判断是否禁用保存按钮
-                    if (!rbRainGauge.isChecked()) {
-                        btnConfirm.setVisibility(View.GONE);
-                    }
+                    mExistingUpdateTypes &= ~DIGITAL_OSMOMETER;
                     disableDigitalPiezometer();
                 }
+                btnConfirm.setVisibility((mExistingUpdateTypes & (RAIN_GAUGE | DIGITAL_OSMOMETER | MCU)) != 0 ? View.VISIBLE : View.GONE);
             }
         });
     }
@@ -333,7 +338,6 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         DasDigitalPiezometerEntity entity = new DasDigitalPiezometerEntity();
         entity.setSw("0");
 
-        isSaveParamOperation = false;
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO, entity);
         showWaitDialog("处理中...");
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
@@ -599,22 +603,17 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case DAS_MD_GET_IO_SENSOR_INFO: {//查询开关量传感器参数
+                sendCommandFromCmdList(() -> {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                });
                 IOTCommandResult<DasIOSensorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     String errMsg = String.format("%s %s", "查询开关量传感器参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 ioSensorInfo = commandResult.getResult();
                 initSwitchSensor();
@@ -622,22 +621,17 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case DAS_MD_GET_DIGITAL_PIEZOMETER_INFO: {//查询数字水位计参数
+                sendCommandFromCmdList(() -> {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                });
                 IOTCommandResult<DasDigitalPiezometerInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     String errMsg = String.format("%s %s", "查询数字水位计参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 digitalPiezometerInfo = commandResult.getResult();
                 initDigitalPiezometerInfo();
@@ -645,22 +639,17 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             break;
 
             case DAS_MD_GET_MCU_ADDRESS: {//查询 MCU 地址
+                sendCommandFromCmdList(() -> {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                });
                 IOTCommandResult<McuAddressInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     String errMsg = String.format("%s %s", "查询 MCU 地址出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 mcuAddressInfo = commandResult.getResult();
                 initMcuAddress();
@@ -676,12 +665,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    dismissWaitDialog();
-                    ToastUtils.show("保存成功");
-                }
+                sendCommandFromCmdList(() -> ToastUtils.show("保存成功"));
             }
             break;
 
@@ -694,12 +678,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    dismissWaitDialog();
-                    ToastUtils.show("保存成功");
-                }
+                sendCommandFromCmdList(() -> ToastUtils.show("保存成功"));
             }
             break;
 
@@ -712,12 +691,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    dismissWaitDialog();
-                    ToastUtils.show("保存成功");
-                }
+                sendCommandFromCmdList(() -> ToastUtils.show("保存成功"));
             }
 
             default:
@@ -756,6 +730,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
                 rbBreakAlarm.setTextColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.text_color_cccccc));
                 rgBreakAlarmItems.setVisibility(View.GONE);
                 rbRainGauge.setOnCheckedChangeListener(onCheckedChangeListener);
+                mExistingUpdateTypes |= RAIN_GAUGE;
                 btnConfirm.setVisibility(View.VISIBLE);
                 try {
                     decimalFormat.applyPattern("#.#");
@@ -806,20 +781,15 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             digitalPiezometerInfo = new DasDigitalPiezometerInfo();
             mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(false);
             digitalOsmometerChildsLayout.setVisibility(View.GONE);
-            if (!rbRainGauge.isChecked()) {
-                btnConfirm.setVisibility(View.GONE);
-            }
             return;
         }
         if (digitalPiezometerInfo.getSw().equals("0")) {
             mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(false);
             digitalOsmometerChildsLayout.setVisibility(View.GONE);
-            if (!rbRainGauge.isChecked()) {
-                btnConfirm.setVisibility(View.GONE);
-            }
         } else {
             mSbDigitalOsmometerEnable.setCheckedImmediatelyNoEvent(true);
             digitalOsmometerChildsLayout.setVisibility(View.VISIBLE);
+            mExistingUpdateTypes |= DIGITAL_OSMOMETER;
             btnConfirm.setVisibility(View.VISIBLE);
         }
         try {
@@ -849,12 +819,6 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         }
         mcuAddress = mcuAddressInfo.getMcuaddr();
         mEtMcuAddress.setText(mcuAddress);
-    }
-
-    private void doAfterSetting() {
-        if (isSaveParamOperation) {
-            ToastUtils.show("保存成功");
-        }
     }
 
     @Override

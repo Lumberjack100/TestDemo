@@ -386,6 +386,25 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected void sendCommandFromCmdList(CallBackListener callBackListener) {
+        if (commandItems.size() > 0) {
+            String command = commandItems.getFirst();
+            doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+            commandItems.removeFirst();
+        } else {
+            dismissWaitDialog();
+            if (callBackListener != null)
+                callBackListener.callBack();
+        }
+    }
+
+    public interface CallBackListener {
+        void callBack();
+    }
+
     protected void warnNotYetSettingBeforeLeavePage() {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示：")

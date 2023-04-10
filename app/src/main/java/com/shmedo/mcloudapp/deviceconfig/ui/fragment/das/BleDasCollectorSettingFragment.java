@@ -298,7 +298,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
             commandItems.add(command);
         }
         startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_20000_MILLIS);
-        sendCommandFromCmdList(true);
+        sendCommandFromCmdList(this::saveConfigInfoNoReboot);
     }
 
     @Override
@@ -326,7 +326,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommandFromCmdList(true);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case COLLECTOR_SOLUTION_FREQUENCY:
@@ -335,7 +335,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommandFromCmdList(true);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case COLLECTOR_STANDBY_TIME:
@@ -344,7 +344,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommandFromCmdList(true);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case COLLECTOR_FREQUENCY:
@@ -353,7 +353,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommandFromCmdList(true);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SET_COLLECTOR_SENSITIVITY:
@@ -362,7 +362,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }
-                sendCommandFromCmdList(true);
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
             case SAVE_CONFIG_INFO:

@@ -325,31 +325,20 @@ public abstract class BaseBleCommunicateFragment extends BaseFragment {
     /**
      * 发送指令队列中的第一条指令
      */
-    protected void sendCommandFromCmdList(boolean isSave) {
+    protected void sendCommandFromCmdList(CallBackListener callBackListener) {
         if (commandItems.size() > 0) {
             String command = commandItems.getFirst();
             sendCommand(command);
             commandItems.removeFirst();
         } else {
             stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-            if (isSave)
-                saveConfigInfoNoReboot();
+            if (callBackListener != null)
+                callBackListener.callBack();
         }
     }
 
-    /**
-     * 发送指令队列中的第一条指令
-     */
-    protected void sendCommandFromCmdList(String dialogContent, int what, long delayMillis) {
-        if (commandItems.size() > 0) {
-            String command = commandItems.getFirst();
-            sendCommand(command);
-            commandItems.removeFirst();
-            if (!TextUtils.isEmpty(dialogContent) && delayMillis != 0)
-                startDefaultProgress(dialogContent, what, delayMillis);
-        } else {
-            stopDefaultProgress(what);
-        }
+    public interface CallBackListener {
+        void callBack();
     }
 
     protected void showDisconnectDialog(String content) {

@@ -98,7 +98,6 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
     private DasBdTerminalInfo bdTerminalInfo;
     private final String[] baudRates = new String[]{"9600", "115200"};
 
-    private boolean isBdTerminalParamChange = false;//判断有没有修改北斗数传终端参数
     private boolean isSaveParamOperation = false;//判断当前是保存参数操作，还是关闭北斗数传终端操作
 
     private ActivityResultLauncher<Intent> resultLauncher;
@@ -302,7 +301,7 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         if (!mSbBeiDouEnable.isChecked())
             return true;
 
-        targetAddr = mEtTargetAddress.getText().toString().trim();
+        targetAddr = mEtTargetAddress.getText().toString();
         if (TextUtils.isEmpty(targetAddr)) {
             ToastUtils.show("请输入北斗目标地址!");
             mEtTargetAddress.requestFocus();
@@ -314,16 +313,28 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             return false;
         }
 
-        isBdTerminalParamChange = true;
         return true;
     }
 
     private void processSave() {
+        commandItems.clear();
+
         DasDataReportEntity entity = new DasDataReportEntity();
         entity.setReport_intv(reportingInterval);
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.MD_SET_DATA_REPORT_TIME, entity);
+        commandItems.add(command);
+
+        if (mSbBeiDouEnable.isChecked()) {
+            isSaveParamOperation = true;
+            DasBdTerminalEntity entity2 = new DasBdTerminalEntity();
+            entity2.setSw("1");
+            entity2.setDstaddr(targetAddr);
+            entity2.setBaud(baudRate);
+            command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity2);
+            commandItems.add(command);
+        }
         showWaitDialog("处理中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        sendCommandFromCmdList();
     }
 
 
@@ -394,22 +405,17 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
         IOTCommandType type = IOTStringUtil.extractCommandType(queryCmdResult.getCmdEngName());
         switch (type) {
             case MD_GET_DATA_REPORT_TIME: {//
+                sendCommandFromCmdList(() -> {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                });
                 IOTCommandResult<DasDataReportInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     String errMsg = String.format("%s %s", "查询数据上报时间出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 dataReportInfo = commandResult.getResult();
                 initDataReportTime();
@@ -417,22 +423,17 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             break;
 
             case DAS_MD_GET_BD_TERMINAL: {//
+                sendCommandFromCmdList(() -> {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                });
                 IOTCommandResult<DasBdTerminalInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     String errMsg = String.format("%s %s", "查询北斗数传终端参数出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 bdTerminalInfo = commandResult.getResult();
                 initBdTerminalInfo();
@@ -440,22 +441,17 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             break;
 
             case MD_GET_DATA_CENTER_STATUS: {//获取设备的数据中心状态
+                sendCommandFromCmdList(() -> {
+                    if (mRefreshLayout.isRefreshing()) {
+                        mRefreshLayout.finishRefresh(true);
+                    }
+                });
                 IOTCommandResult<DataCenterStatus> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(false);
-                    }
                     String errMsg = String.format("%s %s", "查询数据中心状态出错!", commandResult.getMessage());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;
-                }
-                if (commandItems.size() > 0) {
-                    sendCommandFromCmdList();
-                } else {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
                 }
                 DataCenterStatus centerStatus = commandResult.getResult();
                 if (centerStatus.getCenterid() == 1) {
@@ -480,20 +476,9 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
                     ToastUtils.show(errMsg);
                     return;
                 }
-
-                if (mSbBeiDouEnable.isChecked() && isBdTerminalParamChange) {
-                    DasBdTerminalEntity entity = new DasBdTerminalEntity();
-                    entity.setSw("1");
-                    entity.setDstaddr(targetAddr);
-                    entity.setBaud(baudRate);
-
-                    isSaveParamOperation = true;
-                    String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_BD_TERMINAL, entity);
-                    doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-                } else {
-                    dismissWaitDialog();
+                sendCommandFromCmdList(() -> {
                     ToastUtils.show("保存成功");
-                }
+                });
             }
             break;
 
@@ -523,7 +508,6 @@ public class NetDasDataCenterHomeFragment extends BaseNetIotCommunicateFragment 
             dataReportInfo = new DasDataReportInfo();
             return;
         }
-
         reportingInterval = dataReportInfo.getReport_intv();
         mEtReportingInterval.setText(reportingInterval);
     }
