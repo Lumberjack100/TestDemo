@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
@@ -192,7 +193,7 @@ public class ConfigBluetoothMacDialogFragment extends BaseDebugBoxDialogFragment
 
     @OnClick({R.id.iv_close, R.id.btn_link})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

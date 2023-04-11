@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -132,7 +133,7 @@ public class BleAdmeGuideGrooveCalibrationFragment extends BaseUSRBleIotCommunic
     @OnClick({R.id.ll_motion_type, R.id.btn_run, R.id.ll_clear_motion_data})
     public void onClick(View view) {
         int id = view.getId();
-        if (isDoubleClick(view)) {
+        if (!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (id == R.id.ll_motion_type) {//选择运动方式

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
@@ -133,7 +134,7 @@ public class NetVmsTerminalExternalSensorHomeFragment extends BaseNetIotCommunic
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                if (isDoubleClick(view)) {
+                if(!DebouncingUtils.isValid(view, 1000)) {
                     return;
                 }
                 curSensorIndex = position;

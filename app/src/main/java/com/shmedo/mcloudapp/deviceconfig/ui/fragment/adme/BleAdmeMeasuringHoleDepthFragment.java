@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
@@ -316,7 +317,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @OnClick({R.id.ll_measure_mode, R.id.ll_movement_way, R.id.btn_run, R.id.ll_clear_motion_data})
     public void onClick(View view) {
         int id = view.getId();
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (id == R.id.ll_measure_mode) {

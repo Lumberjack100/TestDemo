@@ -34,8 +34,6 @@ import butterknife.Unbinder;
  * 描述：     TODO #gh#
  */
 public abstract class BaseBottomSheetDialogFragment extends BottomSheetDialogFragment {
-    //防止按钮重复点击设置的时间间隔
-    private static final int DOUBLE_CLICK_TIME_INTERVAL = 1500;
     protected AppCompatActivity mActivity;
     private ViewModelProvider mFragmentProvider;
     private ViewModelProvider mActivityProvider;
@@ -112,16 +110,6 @@ public abstract class BaseBottomSheetDialogFragment extends BottomSheetDialogFra
     public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-    }
-
-    protected boolean isDoubleClick(View v) {
-        Object tag = v.getTag(v.getId());
-        long beforeTimeMillis = tag != null ? (long) tag : 0;
-        long timeInMillis = System.currentTimeMillis();
-        v.setTag(v.getId(), timeInMillis);
-
-        long interval = timeInMillis - beforeTimeMillis;
-        return interval < DOUBLE_CLICK_TIME_INTERVAL;
     }
 
     protected <T extends ViewModel> T getFragmentScopeViewModel(@NonNull Class<T> modelClass) {

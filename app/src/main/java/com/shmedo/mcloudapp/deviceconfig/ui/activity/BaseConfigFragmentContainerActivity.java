@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.activity.BaseActivity;
@@ -82,7 +83,7 @@ public abstract class BaseConfigFragmentContainerActivity extends BaseActivity {
 
     @OnClick({R.id.tv_action, R.id.iv_action})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

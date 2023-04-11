@@ -12,6 +12,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -158,7 +159,7 @@ public class BleDasCollectorSettingFragment extends BaseBleCommunicateFragment {
 
     @OnClick({R.id.btn_confirm})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

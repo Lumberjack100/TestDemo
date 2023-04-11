@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.StringUtils;
@@ -182,7 +183,7 @@ public class UserHomePageActivity extends BaseActivity implements TextWatcher {
 
     @OnClick({R.id.userLayout, R.id.btn_confirm})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

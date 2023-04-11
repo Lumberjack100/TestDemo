@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:keepScreenOn="true"
     tools:context=".deviceconfig.ui.fragment.usb.Inclinometer_debug_box.InclinometerDebugBoxLoggerFragment">
 
     <LinearLayout

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.interfaces.OnSelectListener;
@@ -101,7 +102,7 @@ public class NetE40GpsWorkParamFragment extends BaseNetIotCommunicateFragment {
 
     @OnClick({R.id.ll_data_frequency, R.id.btn_confirm})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

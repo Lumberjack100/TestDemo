@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -179,10 +180,10 @@ public class BleAdmeAutoMeasuringHoleDepthBottomDialog extends BaseDialogFragmen
 
     @OnClick({R.id.iv_close, R.id.btn_stop, R.id.btn_exit})
     public void onClick(View view) {
-        int id = view.getId();
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
+        int id = view.getId();
         if (id == R.id.iv_close) {
             if (!bleViewModel.isConnected() || btnExit.getVisibility() == View.VISIBLE) {
                 dismiss();

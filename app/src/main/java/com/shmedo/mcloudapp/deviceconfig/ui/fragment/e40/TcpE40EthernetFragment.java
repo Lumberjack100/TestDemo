@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -96,7 +97,7 @@ public class TcpE40EthernetFragment extends BaseTcpIotCommunicateFragment {
 
     @OnClick({R.id.ll_dhcp, R.id.btn_confirm})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (!tcpViewModel.getConnectStatus()) {

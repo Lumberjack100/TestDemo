@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
@@ -59,11 +60,11 @@ public class NetE40AdvancedSettingFragment extends BaseNetIotCommunicateFragment
     }
 
     @OnClick({R.id.resetLayout, R.id.serialPortLayout, R.id.gpsWorkParamLayout, R.id.rtkParamLayout, R.id.fileDownloadLayout, R.id.dataDebugLayout})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 

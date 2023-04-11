@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.MessageDialog;
@@ -129,7 +130,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
 
     @OnClick({R.id.ll_measure_method, R.id.ll_measurement_interval_per_round, R.id.ll_data_settlement_method, R.id.btn_confirm})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

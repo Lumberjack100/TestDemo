@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.google.gson.Gson;
 import com.iflytek.cloud.ErrorCode;
@@ -228,7 +228,7 @@ public class RealtimeSpeechDialog extends BaseDialogFragment {
     @OnClick({R.id.iv_close, R.id.iv_microphone})
     public void onClick(View view) {
         int id = view.getId();
-        if (isDoubleClick(view)) {
+        if (!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (id == R.id.iv_close) {

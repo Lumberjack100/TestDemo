@@ -42,8 +42,6 @@ import timber.log.Timber;
  */
 
 public abstract class BaseFragment extends Fragment implements HandleBackInterface {
-    //防止按钮重复点击设置的时间间隔
-    private static final int DOUBLE_CLICK_TIME_INTERVAL = 1000;
 
     protected AppCompatActivity mActivity;
     private ViewModelProvider mFragmentProvider;
@@ -294,16 +292,6 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
 
     protected void dismissProgressDialog() {
         WaitDialog.dismiss();
-    }
-
-    protected boolean isDoubleClick(View v) {
-        Object tag = v.getTag(v.getId());
-        long beforeTimeMillis = tag != null ? (long) tag : 0;
-        long timeInMillis = System.currentTimeMillis();
-        v.setTag(v.getId(), timeInMillis);
-
-        long interval = timeInMillis - beforeTimeMillis;
-        return interval < DOUBLE_CLICK_TIME_INTERVAL;
     }
 
     @Override

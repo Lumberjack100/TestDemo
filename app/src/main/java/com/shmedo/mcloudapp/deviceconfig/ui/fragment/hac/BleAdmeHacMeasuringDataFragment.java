@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.VibrateUtils;
 import com.hjq.toast.ToastUtils;
@@ -192,7 +193,7 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
     @OnClick({R.id.ll_data_settlement_method, R.id.btn_run})
     public void onClick(View view) {
         int id = view.getId();
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (id == R.id.ll_data_settlement_method) {

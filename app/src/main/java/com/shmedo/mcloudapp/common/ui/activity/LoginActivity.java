@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.EncryptUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
@@ -169,7 +170,7 @@ public class LoginActivity extends BaseActivity implements LoginManager.LoginCal
 
     @OnClick({R.id.iv_eye_password, R.id.tv_get_code, R.id.btn_confirm, R.id.iv_login_way})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

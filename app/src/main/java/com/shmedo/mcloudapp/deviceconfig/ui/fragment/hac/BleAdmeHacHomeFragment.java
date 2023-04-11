@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -154,7 +155,7 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (isDoubleClick(view)) {
+                if(!DebouncingUtils.isValid(view, 1000)) {
                     return;
                 }
                 if (!isConnected()) {
@@ -310,9 +311,10 @@ public class BleAdmeHacHomeFragment extends BaseUSRBleIotCommunicateFragment {
 
     @OnClick({R.id.tv_device_connect_operate})
     public void onClick(View v) {
-        if (isDoubleClick(v)) {
+        if(!DebouncingUtils.isValid(v, 1000)) {
             return;
         }
+
         int id = v.getId();
         if (id == R.id.tv_device_connect_operate) {//断开/重新连接
             if (!isConnected()) {

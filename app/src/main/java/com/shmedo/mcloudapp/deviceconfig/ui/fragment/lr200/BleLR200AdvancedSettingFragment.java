@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -93,15 +94,15 @@ public class BleLR200AdvancedSettingFragment extends BaseUSRBleIotCommunicateFra
     }
 
     @OnClick({R.id.syncInstallLocationLayout, R.id.firmwareUpgradeLayout, R.id.cmdDebugLogLayout, R.id.resetLayout, R.id.remoteDebuggingLayout})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if (!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (!isConnected()) {
             ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
             return;
         }
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.syncInstallLocationLayout) {
             SyncInstallationLocationDialog newFragment = new SyncInstallationLocationDialog(mActivity, installLocation);
             newFragment.setDialogFragmentClickListener(LocationFragmentClickListener);

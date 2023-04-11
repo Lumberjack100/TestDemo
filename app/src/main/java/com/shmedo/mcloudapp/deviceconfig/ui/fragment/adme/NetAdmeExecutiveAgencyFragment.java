@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kongzue.dialogx.dialogs.PopTip;
@@ -83,7 +84,7 @@ public class NetAdmeExecutiveAgencyFragment extends BaseNetIotCommunicateFragmen
 
     @OnClick({R.id.ll_measure_method, R.id.ll_data_settlement_method, R.id.ll_data_response, R.id.ll_measurement_interval_per_round, R.id.btn_confirm})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

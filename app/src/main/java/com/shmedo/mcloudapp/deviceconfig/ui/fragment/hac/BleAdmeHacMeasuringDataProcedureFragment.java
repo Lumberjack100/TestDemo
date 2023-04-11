@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.CustomDialog;
@@ -240,10 +241,10 @@ public class BleAdmeHacMeasuringDataProcedureFragment extends BaseUSRBleIotCommu
 
     @OnClick({R.id.btn_action})
     public void onClick(View view) {
-        int id = view.getId();
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
+        int id = view.getId();
         if (id == R.id.btn_action) {
             if (!bleViewModel.isConnected()) {
                 ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 
 import com.hjq.toast.ToastUtils;
@@ -73,7 +75,7 @@ public class BleAdmeHacExecutiveAgencyFragment extends BaseUSRBleIotCommunicateF
 
     @OnClick({R.id.ll_data_settlement_method, R.id.btn_confirm})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

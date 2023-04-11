@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -130,7 +131,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (isDoubleClick(view)) {
+                if (!DebouncingUtils.isValid(view, 1000)) {
                     return;
                 }
                 selectedConfigModule = configModuleList.get(position);
@@ -180,7 +181,7 @@ public class NetAdmeHomeFragment extends BaseNetIotCommunicateFragment {
 
     @OnClick({R.id.ll_switch_config_model})
     public void onClick(View v) {
-        if (isDoubleClick(v)) {
+        if (!DebouncingUtils.isValid(v, 1000)) {
             return;
         }
         if (v.getId() == R.id.ll_switch_config_model) {//切换设备模式

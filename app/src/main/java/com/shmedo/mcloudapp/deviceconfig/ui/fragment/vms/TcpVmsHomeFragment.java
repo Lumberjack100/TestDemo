@@ -25,6 +25,7 @@ import androidx.lifecycle.Observer;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -263,12 +264,12 @@ public class TcpVmsHomeFragment extends BaseVmsTcpCommunicateFragment implements
     }
 
     @OnClick({R.id.search_placeholder, R.id.tv_device_connect_operate})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         //断开/重新连接
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.tv_device_connect_operate) {
             if (!tcpViewModel.getConnectStatus()) {
                 startDefaultProgress("建立通讯连接...", AppContants.MsgWhat.CONNECT_DEVICE, TCP_CONNECT_DELAY_MILLIS);

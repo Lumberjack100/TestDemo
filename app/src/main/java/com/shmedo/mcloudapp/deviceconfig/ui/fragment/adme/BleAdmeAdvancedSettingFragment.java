@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -105,7 +106,7 @@ public class BleAdmeAdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
 
     @OnClick({R.id.dataCenterConfigLayout, R.id.rebootLayout, R.id.resetLayout, R.id.firmwareUpgradeLayout, R.id.workModeLayout})
     public void onClick(View v) {
-        if (isDoubleClick(v)) {
+        if(!DebouncingUtils.isValid(v, 1000)) {
             return;
         }
         if (!isConnected()) {

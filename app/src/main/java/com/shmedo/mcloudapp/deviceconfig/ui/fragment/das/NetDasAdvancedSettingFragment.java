@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -81,11 +82,11 @@ public class NetDasAdvancedSettingFragment extends BaseNetIotCommunicateFragment
     }
 
     @OnClick({R.id.firmwareUpgradeLayout, R.id.resetLayout, R.id.fixedPointReportingLayout, R.id.voiceBroadcastLayout, R.id.audibleAlarmLayout})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.firmwareUpgradeLayout) {//固件升级
             FirmWareSelectDialog newFragment = new FirmWareSelectDialog(deviceInfo.getProductID());
             newFragment.setDialogFragmentClickListener(firmWareSelectListener);

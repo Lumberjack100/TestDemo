@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -130,7 +131,7 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (isDoubleClick(view)) {
+                if(!DebouncingUtils.isValid(view, 1000)) {
                     return;
                 }
                 vmsTerminalInfo = vmsTerminalInfoList.get(position);
@@ -157,11 +158,11 @@ public class NetVmsTerminalSearchFragment extends BaseNetIotCommunicateFragment 
     }
 
     @OnClick({R.id.iv_back, R.id.tv_search})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
-        switch (v.getId()) {
+        switch (view.getId()) {
             case R.id.iv_back:
                 mActivity.finish();
                 break;

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -132,7 +133,7 @@ public class TcpVmsTerminalExternalSensorHomeFragment extends BaseVmsTcpCommunic
         sensorAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                if (isDoubleClick(view)) {
+                if(!DebouncingUtils.isValid(view, 1000)) {
                     return;
                 }
                 if (!tcpViewModel.getConnectStatus()) {

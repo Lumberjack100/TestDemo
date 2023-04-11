@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -224,11 +225,11 @@ public class NetIntelligentControlFragment extends BaseNetIotCommunicateFragment
     }
 
     @OnClick({R.id.iv_reboot, R.id.ll_brake_pad_control})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.iv_reboot) {
             showWarnDialog();
         } else if (id == R.id.ll_brake_pad_control) {

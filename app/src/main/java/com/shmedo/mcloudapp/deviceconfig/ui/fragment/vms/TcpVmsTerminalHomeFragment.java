@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -172,7 +173,7 @@ public class TcpVmsTerminalHomeFragment extends BaseVmsTcpCommunicateFragment {
         moduleAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                if (isDoubleClick(view)) {
+                if(!DebouncingUtils.isValid(view, 1000)) {
                     return;
                 }
                 if (!tcpViewModel.getConnectStatus()) {

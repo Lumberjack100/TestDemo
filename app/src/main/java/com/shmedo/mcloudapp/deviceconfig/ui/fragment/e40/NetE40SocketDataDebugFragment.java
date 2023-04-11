@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.UriUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -288,7 +289,7 @@ public class NetE40SocketDataDebugFragment extends BaseNetIotCommunicateFragment
 
     @OnClick({R.id.dataCenterLayout, R.id.pause_log, R.id.share_log})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

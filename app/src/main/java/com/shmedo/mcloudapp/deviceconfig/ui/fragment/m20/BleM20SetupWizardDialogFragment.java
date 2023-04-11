@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
@@ -118,11 +119,11 @@ public class BleM20SetupWizardDialogFragment extends BaseDialogFragment {
     }
 
     @OnClick({R.id.iv_close, R.id.tv_left, R.id.tv_right})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.iv_close) {
             dismiss();
 

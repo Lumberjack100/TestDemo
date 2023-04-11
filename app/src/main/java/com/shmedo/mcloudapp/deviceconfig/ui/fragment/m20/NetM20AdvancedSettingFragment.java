@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.GsonUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -73,12 +74,11 @@ public class NetM20AdvancedSettingFragment extends BaseNetIotCommunicateFragment
 
 
     @OnClick({R.id.dataCenterConfigLayout, R.id.firmwareUpgradeLayout, R.id.horizontalInitializationLayout, R.id.rebootLayout, R.id.resetLayout})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
-
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.dataCenterConfigLayout) {
             DataCenterHomeActivity.startActivity(mActivity, ProductType.M20, deviceInfo);
 

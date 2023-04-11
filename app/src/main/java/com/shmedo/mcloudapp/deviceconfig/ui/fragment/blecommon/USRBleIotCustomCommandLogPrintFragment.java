@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.hjq.toast.ToastUtils;
@@ -157,7 +158,7 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
 
     @OnClick({R.id.fab_clear_log, R.id.btn_send})
     public void onViewClicked(View view) {
-        if (isDoubleClick(view)) {
+        if (!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

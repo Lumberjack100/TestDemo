@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.fragment.hac;
 import android.os.Bundle;
 import android.view.View;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.DeviceConfigActivity;
@@ -34,10 +35,10 @@ public class BleAdmeHacMeasuringDataResultsFragment extends BaseUSRBleIotCommuni
 
     @OnClick({R.id.btn_restart, R.id.btn_save})
     public void onClick(View view) {
-        int id = view.getId();
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
+        int id = view.getId();
         if (id == R.id.btn_restart) {
             AdmeHacMeasuringDataActivity.startActivity(mActivity, AppContants.CommunicationWay.BLE_CONNECT);
 

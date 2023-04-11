@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -235,15 +236,15 @@ public class BleIntelligentControlFragment extends BaseUSRBleIotCommunicateFragm
     }
 
     @OnClick({R.id.iv_reboot, R.id.ll_brake_pad_control})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (!isConnected()) {
             ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
             return;
         }
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.iv_reboot) {
             showWarnDialog();
 

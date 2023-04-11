@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.enums.ChannelNumber;
@@ -34,7 +35,7 @@ public class BleCommonSensorHomeFragment extends BaseUSRBleIotCommunicateFragmen
 
     @OnClick({R.id.channelOneLayout, R.id.channelTwoLayout, R.id.channelThreeLayout, R.id.channelFourLayout})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (!isConnected()) {

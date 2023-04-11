@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.utils.ValidateUtil;
 import com.shmedo.core.MCloudApp;
@@ -77,7 +78,7 @@ public class UpdatePasswordActivity extends BaseActivity {
 
     @OnClick({R.id.iv_eye_new_password, R.id.iv_eye_confirm_password, R.id.btn_confirm})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();

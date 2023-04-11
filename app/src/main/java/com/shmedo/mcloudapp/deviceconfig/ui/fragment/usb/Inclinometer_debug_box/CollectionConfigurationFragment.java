@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
@@ -135,11 +136,11 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
     }
 
     @OnClick({R.id.ll_collector_debug_mode_switch, R.id.btn_save})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.ll_collector_debug_mode_switch) {
             showDebugModeDialog();
 
@@ -148,7 +149,7 @@ public class CollectionConfigurationFragment extends BaseUSBSerialCommunicateFra
                 ToastUtils.show(StringUtils.getString(R.string.usb_config_disconnect_warn));
                 return;
             }
-            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(v);
+            com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
                 Timber.w("参数存在错误!");
                 return;

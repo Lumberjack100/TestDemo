@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -81,7 +82,7 @@ public class BleRN20AdvancedSettingFragment extends BaseUSRBleIotCommunicateFrag
 
     @OnClick({R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout})
     public void onClick(View v) {
-        if (isDoubleClick(v)) {
+        if (!DebouncingUtils.isValid(v, 1000)) {
             return;
         }
         if (!isConnected()) {

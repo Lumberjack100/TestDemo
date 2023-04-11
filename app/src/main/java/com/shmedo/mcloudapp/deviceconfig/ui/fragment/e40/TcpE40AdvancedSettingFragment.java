@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.iot.cmd.IOTCommandManager;
@@ -53,8 +54,8 @@ public class TcpE40AdvancedSettingFragment extends BaseTcpIotCommunicateFragment
     }
 
     @OnClick({R.id.resetLayout, R.id.serialPortLayout, R.id.gpsWorkParamLayout, R.id.fileDownloadLayout})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (!tcpViewModel.getConnectStatus()) {
@@ -62,7 +63,7 @@ public class TcpE40AdvancedSettingFragment extends BaseTcpIotCommunicateFragment
             return;
         }
 
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.resetLayout) {//恢复出厂设置
             showWarnDialog("确定恢复出厂设置吗？", RESET);
 

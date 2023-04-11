@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.hjq.toast.ToastUtils;
 import com.lxj.xpopup.XPopup;
@@ -137,7 +138,7 @@ public class BleDasAdvancedSettingFragment extends BaseBleCommunicateFragment {
 
     @OnClick({R.id.resetLayout, R.id.syncInstallLocationLayout, R.id.customCommandLogPrintLayout, R.id.chongQingTestLayout, R.id.remoteDebuggingLayout})
     public void onClick(View view) {
-        if (isDoubleClick(view)) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (!isConnected()) {

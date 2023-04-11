@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.blankj.utilcode.util.DebouncingUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.hjq.toast.ToastUtils;
@@ -227,12 +228,12 @@ public class NetVmsHomeFragment extends BaseNetIotCommunicateFragment implements
     }
 
     @OnClick({R.id.search_placeholder, R.id.ll_scan_add_device})
-    public void onClick(View v) {
-        if (isDoubleClick(v)) {
+    public void onClick(View view) {
+        if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         //断开/重新连接
-        int id = v.getId();
+        int id = view.getId();
         if (id == R.id.search_placeholder) {
             VmsTerminalSearchActivity.startActivity(mActivity, deviceInfo);
         } else if (id == R.id.ll_scan_add_device) {
