@@ -110,9 +110,9 @@ public class BleAdmeHacCurrentStateFragment extends BaseUSRBleIotCommunicateFrag
                     ToastUtils.show(errMsg);
                     return;
                 }
+                queryMotorState();
                 currentStateInfo = commandResult.getResult();
                 hacCurrentStateView.initStatusInfo(currentStateInfo);
-                queryMotorState();
             }
             break;
 

@@ -175,7 +175,6 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_STATE: {
-//                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<AdmeCurrentStateInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.getMessage());
@@ -183,9 +182,9 @@ public class NetAdmeCurrentStateFragment extends BaseNetIotCommunicateFragment {
                     ToastUtils.show(errMsg);
                     return;
                 }
+                queryMotorState();
                 currentStateInfo = commandResult.getResult();
                 admeCurrentStateView.initStatusInfo(currentStateInfo);
-                queryMotorState();
             }
             break;
 

@@ -65,7 +65,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setSwitchViewListener();
-        queryBasicParamConfigInfo();
+        queryData();
         //TODO #gh# 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
             configPageViewModel.configPageEditableChanged.setValue(true);
@@ -74,37 +74,27 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
         }
     }
 
-    /**
-     * 获取设备的基础配置参数
-     */
-    private void queryBasicParamConfigInfo() {
+    private void queryData() {
+        commandItems.clear();
+
+        //获取设备的基础配置参数
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC);
+        commandItems.add(command);
+
+        //获取执行机构参数
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
+        commandItems.add(command);
+
+        //获取堵转检测参数
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
+        commandItems.add(command);
+
+        //获取设备的步进电机正反测使能信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
+        commandItems.add(command);
+
         showWaitDialog("加载中...");
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
-
-    /**
-     * 获取执行机构参数
-     */
-    private void queryExecutiveAgencyInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
-
-    /**
-     * 获取堵转检测参数
-     */
-    private void queryLockRotorInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-    }
-
-    /**
-     * 获取设备的步进电机正反测使能信息
-     */
-    private void queryPositiveAndNegativeParamInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
-        doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+        sendCommandFromCmdList();
     }
 
     private void setSwitchViewListener() {
@@ -152,10 +142,19 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                 Timber.w("参数存在错误!");
                 return;
             }
+            commandItems.clear();
+
             String command = admeBasicParamConfigView.getBasicCommand();
-            if (!TextUtils.isEmpty(command)) {
+            if (!TextUtils.isEmpty(command))
+                commandItems.add(command);
+
+            command = admeBasicParamConfigView.getExecutiveAgencyCommand();
+            if (!TextUtils.isEmpty(command))
+                commandItems.add(command);
+
+            if (commandItems.size() > 0) {
                 showWaitDialog("处理中...");
-                doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
+                sendCommandFromCmdList(this::saveConfigInfo);
             }
         }
     }
@@ -235,8 +234,8 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
+                sendCommandFromCmdList();
                 admeBasicParamConfigView.initBasicConfigInfo(commandResult.getResult());
-                queryExecutiveAgencyInfo();
             }
             break;
 
@@ -250,8 +249,8 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
+                sendCommandFromCmdList();
                 admeBasicParamConfigView.initExecutiveAgencyInfo(commandResult.getResult());
-                queryLockRotorInfo();
             }
             break;
 
@@ -264,13 +263,12 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     ToastUtils.show(errMsg);
                     return;
                 }
+                sendCommandFromCmdList();
                 admeBasicParamConfigView.initLockedRotorDetectionInfo(commandResult.getResult());
-                queryPositiveAndNegativeParamInfo();
             }
             break;
 
             case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
-                dismissWaitDialog();
                 IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
@@ -278,6 +276,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     ToastUtils.show(errMsg);
                     return;
                 }
+                sendCommandFromCmdList();
                 admeBasicParamConfigView.initPositiveAndNegativeInfo(commandResult.getResult());
             }
             break;
@@ -303,7 +302,6 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     ToastUtils.show(errMsg);
                     return;
                 }
-//                saveConfigInfo();
             }
             break;
 
@@ -316,13 +314,8 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     ToastUtils.show(errMsg);
                     return;
                 }
+                sendCommandFromCmdList(this::saveConfigInfo);
                 admeBasicParamConfigView.doAfterSetting();
-                String command = admeBasicParamConfigView.getExecutiveAgencyCommand();
-                if (!TextUtils.isEmpty(command)) {
-                    doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
-                } else {
-                    saveConfigInfo();
-                }
             }
             break;
 
@@ -337,7 +330,7 @@ public class NetAdmeBasicParamConfigFragment extends BaseNetIotCommunicateFragme
                     MessageDialog.show("提示", errMsg, "我已知晓");
                     return;
                 }
-                saveConfigInfo();
+                sendCommandFromCmdList(this::saveConfigInfo);
             }
             break;
 

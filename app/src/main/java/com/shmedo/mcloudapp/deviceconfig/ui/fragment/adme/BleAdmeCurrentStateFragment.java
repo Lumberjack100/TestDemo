@@ -115,7 +115,6 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
             case ADME_MD_GET_EQUIPMENT_STATE: {
-//                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<AdmeCurrentStateInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取设备状态出错!", commandResult.getMessage());
@@ -123,14 +122,14 @@ public class BleAdmeCurrentStateFragment extends BaseUSRBleIotCommunicateFragmen
                     ToastUtils.show(errMsg);
                     return;
                 }
+                queryMotorState();
                 currentStateInfo = commandResult.getResult();
                 admeCurrentStateView.initStatusInfo(currentStateInfo);
-                queryMotorState();
             }
             break;
 
             case ADME_MD_GET_MOTION_STATE: {//获取ADME的运行状态
-                 mRefreshLayout.finishRefresh(true);
+                mRefreshLayout.finishRefresh(true);
                 IOTCommandResult<AdmeMotionState> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "获取CTR工作状态出错!", commandResult.getMessage());

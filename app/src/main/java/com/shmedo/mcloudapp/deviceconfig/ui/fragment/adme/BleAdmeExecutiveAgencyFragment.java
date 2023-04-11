@@ -149,7 +149,6 @@ public class BleAdmeExecutiveAgencyFragment extends BaseUSRBleIotCommunicateFrag
                     Timber.e(errMsg);
                     if (errMsg.contains("time_err"))
                         errMsg = errMsg.replaceFirst("(time_err)(:?)", "一轮测量时间不能少于").concat("小时");
-//                    PopTip.show(errMsg).autoDismiss(4500).iconError();
                     MessageDialog.show("提示", errMsg, "我已知晓");
                     return;
                 }

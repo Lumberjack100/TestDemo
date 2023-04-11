@@ -761,6 +761,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         mEtDecentralizationWaitingTime.setEnabled(isEditable);
         dataSettlementMethodLayout.setEnabled(isEditable);
         mSbDecentralizedEnable.setEnabled(isEditable);
+        positiveAndNegativeEnableSBtn.setEnabled(isEditable);
         if (isEditable) {
             mEtMacAddress.setHint("XXXXXXXXXXXX");
             mTvMeasureMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);

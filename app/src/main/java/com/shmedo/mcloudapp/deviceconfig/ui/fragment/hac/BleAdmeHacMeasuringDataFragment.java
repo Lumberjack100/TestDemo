@@ -368,9 +368,9 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
+                sendCommandFromCmdList();
                 measuringDataInfo = commandResult.getResult();
                 initMeasuringDataInfoParam();
-                sendCommandFromCmdList();
             }
             break;
 
@@ -384,8 +384,8 @@ public class BleAdmeHacMeasuringDataFragment extends BaseUSRBleIotCommunicateFra
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
-                initMotionState(commandResult.getResult());
                 sendCommandFromCmdList();
+                initMotionState(commandResult.getResult());
             }
             break;
 

@@ -60,7 +60,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setSwitchViewListener();
-        queryBasicParamConfigInfo();
+        queryData();
         //TODO #gh# 设备处于自动监测模式时，不可编辑参数(后期还要考虑点击编辑按钮时的页面状态切换)
         if (admeViewModel.deviceMode == 0) {
             configPageViewModel.configPageEditableChanged.setValue(true);
@@ -69,37 +69,27 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
         }
     }
 
-    /**
-     * 获取设备的基础配置参数
-     */
-    private void queryBasicParamConfigInfo() {
-        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+    private void queryData() {
+        commandItems.clear();
+
+        //获取设备的基础配置参数
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_BASIC);
-        sendCommand(command);
-    }
+        commandItems.add(command);
 
-    /**
-     * 获取执行机构参数
-     */
-    private void queryExecutiveAgencyInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
-        sendCommand(command);
-    }
+        //获取执行机构参数
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY);
+        commandItems.add(command);
 
-    /**
-     * 获取堵转检测参数
-     */
-    private void queryLockRotorInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-        sendCommand(command);
-    }
+        //获取堵转检测参数
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
+        commandItems.add(command);
 
-    /**
-     * 获取设备的步进电机正反测使能信息
-     */
-    private void queryPositiveAndNegativeParamInfo() {
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
-        sendCommand(command);
+        //获取设备的步进电机正反测使能信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
+        commandItems.add(command);
+
+        startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
+        sendCommandFromCmdList();
     }
 
     private void setSwitchViewListener() {
@@ -162,10 +152,19 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                 Timber.w("参数存在错误!");
                 return;
             }
+            commandItems.clear();
+
             String command = admeBasicParamConfigView.getBasicCommand();
-            if (!TextUtils.isEmpty(command)) {
+            if (!TextUtils.isEmpty(command))
+                commandItems.add(command);
+
+            command = admeBasicParamConfigView.getExecutiveAgencyCommand();
+            if (!TextUtils.isEmpty(command))
+                commandItems.add(command);
+
+            if (commandItems.size() > 0) {
                 startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_15000_MILLIS);
-                sendCommand(command);
+                sendCommandFromCmdList(this::saveConfigInfo);
             }
         }
     }
@@ -197,8 +196,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
+                sendCommandFromCmdList();
                 admeBasicParamConfigView.initBasicConfigInfo(commandResult.getResult());
-                queryExecutiveAgencyInfo();
             }
             break;
 
@@ -212,8 +211,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                     maskLayerLayout.setVisibility(commandResult.getMessage().contains("unsupported") ? View.VISIBLE : View.GONE);
                     return;
                 }
+                sendCommandFromCmdList();
                 admeBasicParamConfigView.initExecutiveAgencyInfo(commandResult.getResult());
-                queryLockRotorInfo();
             }
             break;
 
@@ -226,13 +225,12 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
+                sendCommandFromCmdList();
                 admeBasicParamConfigView.initLockedRotorDetectionInfo(commandResult.getResult());
-                queryPositiveAndNegativeParamInfo();
             }
             break;
 
             case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
-                stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
                     String errMsg = String.format("%s %s", "查询步进电机参数出错!", commandResult.getMessage());
@@ -240,11 +238,12 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
+                sendCommandFromCmdList();
                 admeBasicParamConfigView.initPositiveAndNegativeInfo(commandResult.getResult());
             }
             break;
 
-            case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {
+            case ADME_MD_SET_LOCKED_ROTOR_DETECTION: {//下放堵转检测使能
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -257,7 +256,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
             }
             break;
 
-            case ADME_MD_SET_STEPPER_MOTOR: {//设置ADME的步进电机配置参数
+            case ADME_MD_SET_STEPPER_MOTOR: {//正反测使能
                 stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
@@ -279,13 +278,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
+                sendCommandFromCmdList(this::saveConfigInfo);
                 admeBasicParamConfigView.doAfterSetting();
-                String command = admeBasicParamConfigView.getExecutiveAgencyCommand();
-                if (!TextUtils.isEmpty(command)) {
-                    sendCommand(command);
-                } else {
-                    saveConfigInfo();
-                }
             }
             break;
 
@@ -300,7 +294,7 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                     MessageDialog.show("提示", errMsg, "我已知晓");
                     return;
                 }
-                saveConfigInfo();
+                sendCommandFromCmdList(this::saveConfigInfo);
             }
             break;
 
@@ -313,8 +307,8 @@ public class BleAdmeBasicParamConfigFragment extends BaseUSRBleIotCommunicateFra
                     ToastUtils.show(errMsg);
                     return;
                 }
+                ToastUtils.show("保存成功");
             }
-            ToastUtils.show("保存成功");
             break;
 
             default:
