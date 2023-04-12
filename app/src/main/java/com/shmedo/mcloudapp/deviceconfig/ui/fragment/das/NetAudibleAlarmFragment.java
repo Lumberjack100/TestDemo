@@ -383,7 +383,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         try {
             int value = Integer.parseInt(mEtPlayGap.getText().toString());
             if (value < 5 || value > 300 || value > Integer.parseInt(mEtPlayTime.getText().toString())) {
-                PopTip.show("播放时长不能小于5秒或大于300秒，并且不能超过播放时长!").autoDismiss(4000).iconError();
+                PopTip.show("切换间隙不能小于5秒或大于300秒，并且不能超过播放时长!").autoDismiss(4000).iconError();
                 return false;
             }
         } catch (Exception ex) {
