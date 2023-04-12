@@ -316,7 +316,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         commandItems.add(command);
 
         //查询 MCU 地址
-        if (deviceInfo.getProductName().contains("MR701")) {
+        if ((mExistingUpdateTypes & MCU) != 0) {
             command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_GET_MCU_ADDRESS);
             commandItems.add(command);
         }
@@ -346,7 +346,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
 
     @OnClick({R.id.tvPrecision, R.id.extendSensorLayout, R.id.btn_confirm})
     public void onClick(View view) {
-        if(!DebouncingUtils.isValid(view, 1000)) {
+        if (!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();
@@ -367,7 +367,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
         } else if (id == R.id.btn_confirm) {
             try {
                 com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
-                if (!checkDigitalOsmometerParam() && !checkMcuAddressParam()) {
+                if (!checkDigitalOsmometerParam() || !checkMcuAddressParam()) {
                     Timber.w("参数存在错误!");
                     return;
                 }
@@ -478,6 +478,10 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
     }
 
     private boolean checkMcuAddressParam() {
+        if ((mExistingUpdateTypes & MCU) == 0) {
+            return true;
+        }
+
         mcuAddress = mEtMcuAddress.getText().toString().trim();
         if (TextUtils.isEmpty(mcuAddress)) {
             ToastUtils.show("请输入MCU地址");
@@ -525,7 +529,7 @@ public class NetDasSensorConfigFragment extends BaseNetIotCommunicateFragment {
             commandItems.add(command);
         }
         //设置 MCU 地址
-        if (deviceInfo.getProductName().contains("MR701")) {
+        if ((mExistingUpdateTypes & MCU) != 0) {
             DasMcuAddressEntity entity = new DasMcuAddressEntity();
             entity.setMcuaddr(mcuAddress);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_MCU_ADDRESS, entity);
