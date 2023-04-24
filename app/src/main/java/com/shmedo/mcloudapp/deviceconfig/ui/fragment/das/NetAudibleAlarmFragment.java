@@ -452,22 +452,22 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
 //            showGap = null;
 //        }
 
-        if (TextUtils.isEmpty(mEtMcuAddr.getText().toString())) {
-            PopTip.show("请输入 MCU 地址!").autoDismiss(3500).iconError();
-            mEtMcuAddr.requestFocus();
-            return false;
-        }
-        try {
-            int value = Integer.parseInt(mEtMcuAddr.getText().toString());
-            if (value > 65535) {
-                PopTip.show("MCU 地址不能大于 65535，并且不能超过播放时长!").autoDismiss(3500).iconError();
-                return false;
-            }
-        } catch (Exception ex) {
-            PopTip.show("MCU 地址必须为整数值!").autoDismiss(3500).iconError();
-            mEtMcuAddr.requestFocus();
-            return false;
-        }
+//        if (TextUtils.isEmpty(mEtMcuAddr.getText().toString())) {
+//            PopTip.show("请输入 MCU 地址!").autoDismiss(3500).iconError();
+//            mEtMcuAddr.requestFocus();
+//            return false;
+//        }
+//        try {
+//            int value = Integer.parseInt(mEtMcuAddr.getText().toString());
+//            if (value > 65535) {
+//                PopTip.show("MCU 地址不能大于 65535，并且不能超过播放时长!").autoDismiss(3500).iconError();
+//                return false;
+//            }
+//        } catch (Exception ex) {
+//            PopTip.show("MCU 地址必须为整数值!").autoDismiss(3500).iconError();
+//            mEtMcuAddr.requestFocus();
+//            return false;
+//        }
 
         return true;
     }
@@ -488,7 +488,7 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
             entity.setScreenaddr(screenAddr);
             entity.setShowtime(showTime);
             entity.setShowgap(showGap);
-            entity.setMcuaddr(mcuAddr);
+//            entity.setMcuaddr(mcuAddr);
 
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.DAS_MD_SET_AUDIBLE_ALARM, entity);
             showWaitDialog("处理中...");
@@ -635,6 +635,6 @@ public class NetAudibleAlarmFragment extends BaseNetIotCommunicateFragment {
         mEtScreenAddr.setText(screenAddr);
         mEtShowTime.setText(showTime);
         mEtShowGap.setText(showGap);
-        mEtMcuAddr.setText(mcuAddr);
+//        mEtMcuAddr.setText(mcuAddr);
     }
 }

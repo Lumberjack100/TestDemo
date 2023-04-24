@@ -343,7 +343,8 @@
 
         <RelativeLayout
             style="@style/SwitchButton_LayoutStyle"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
 
             <TextView
                 style="@style/SwitchButton_TitleStyle"
@@ -354,7 +355,8 @@
 
         <LinearLayout
             style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            android:background="@drawable/layer_common_click_item_with_divider"
+            android:visibility="gone">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
