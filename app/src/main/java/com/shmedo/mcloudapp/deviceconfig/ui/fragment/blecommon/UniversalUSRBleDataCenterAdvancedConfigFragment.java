@@ -159,7 +159,14 @@ public class UniversalUSRBleDataCenterAdvancedConfigFragment extends BaseUSRBleI
                     return;
                 }
                 dataCenterAdvancedConfigView.doAfterSetting();
-                saveConfigInfo();
+                if (productType == ProductType.ADME)
+                    saveConfigInfo();
+                else {
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    if (dataCenterAdvancedConfigView.isSaveParamOperation) {
+                        ToastUtils.show("保存成功");
+                    }
+                }
             }
             break;
 
