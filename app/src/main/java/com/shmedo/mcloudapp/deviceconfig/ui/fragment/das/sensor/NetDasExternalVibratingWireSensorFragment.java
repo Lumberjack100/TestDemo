@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.ui.fragment.BaseFragment;
 import com.shmedo.mcloudapp.deviceconfig.model.SensorScanResult;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorBGK4500View;
+import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorMcuSWJView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorVWP03View;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorYLJView;
 import com.shmedo.mcloudapp.deviceconfig.view.sensor.SensorZLJ300tView;
@@ -64,6 +65,9 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
 
     @BindView(R.id.sensorYLJView)
     SensorYLJView sensorYLJView;
+
+    @BindView(R.id.sensorMcuSWJView)
+    SensorMcuSWJView sensorMcuSWJView;
 
     private List<String> sensorTypeList = Arrays.asList(IOTSensorType.KANG_PERCOLATE.getDescription(), IOTSensorType.GUDAN_PERCOLATE.getDescription(),
             IOTSensorType.JUNXING_ZLJ_300T.getDescription(), IOTSensorType.GUDAN_STRESS.getDescription(),
@@ -145,6 +149,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.GONE);
                 sensorYLJView.setVisibility(View.GONE);
+                sensorMcuSWJView.setVisibility(View.GONE);
                 sensorBGK4500View.initData(externalSensorInfo);
                 break;
 
@@ -153,6 +158,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorVWP03View.setVisibility(View.VISIBLE);
                 sensorZLJ300tView.setVisibility(View.GONE);
                 sensorYLJView.setVisibility(View.GONE);
+                sensorMcuSWJView.setVisibility(View.GONE);
                 sensorVWP03View.initData(externalSensorInfo);
                 break;
 
@@ -161,6 +167,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.VISIBLE);
                 sensorYLJView.setVisibility(View.GONE);
+                sensorMcuSWJView.setVisibility(View.GONE);
                 sensorZLJ300tView.initData(externalSensorInfo);
                 break;
 
@@ -169,17 +176,27 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.GONE);
                 sensorYLJView.setVisibility(View.VISIBLE);
+                sensorMcuSWJView.setVisibility(View.GONE);
                 sensorYLJView.initData(externalSensorInfo);
                 break;
 
             case VW08://MCU 振弦传感器
             case WEIR://MCU 量水堰计
+                mTvSensorType.setText(String.format("%s%s", MCU_PREFIX, iotSensorType.getDescription()));
+                sensorBGK4500View.setVisibility(View.GONE);
+                sensorVWP03View.setVisibility(View.GONE);
+                sensorZLJ300tView.setVisibility(View.GONE);
+                sensorYLJView.setVisibility(View.GONE);
+                sensorMcuSWJView.setVisibility(View.GONE);
+                break;
+
             case WATER_LEVEL_GAUGE://MCU 水位(液位)计
                 mTvSensorType.setText(String.format("%s%s", MCU_PREFIX, iotSensorType.getDescription()));
                 sensorBGK4500View.setVisibility(View.GONE);
                 sensorVWP03View.setVisibility(View.GONE);
                 sensorZLJ300tView.setVisibility(View.GONE);
                 sensorYLJView.setVisibility(View.GONE);
+                sensorMcuSWJView.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -286,9 +303,9 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 externalSensorInfo.setLsyysst("NullKey");
                 break;
 
-            case WATER_LEVEL_GAUGE://MCU 振弦传感器
+            case WATER_LEVEL_GAUGE://MCU 水位(液位)计
                 externalSensorInfo.setThreshold("NullKey");
-                externalSensorInfo.setCorrval("NullKey");
+                updateDataSuccess = sensorMcuSWJView.updateSensorData(externalSensorInfo);
                 break;
         }
         if (!updateDataSuccess) {

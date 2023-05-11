@@ -370,6 +370,8 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                 break;
 
             case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
+
+            case WATER_LEVEL_GAUGE://MCU 水位(液位)计
                 entity.setTubealti(externalSensorInfo.getTubealti());
                 entity.setRopelen(externalSensorInfo.getRopelen());
                 break;

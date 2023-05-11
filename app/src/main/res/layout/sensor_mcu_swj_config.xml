@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="修正值(mm)" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_correct_value"
+            style="@style/Common_EditItem_EditText_Style"
+            android:hint="默认为0"
+            android:inputType="numberDecimal"
+            android:text="0" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="绳长(mm)" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_cord_length"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="安装高程(mm)"/>
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_install_elevation"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="numberDecimal" />
+
+    </LinearLayout>
+
+</LinearLayout>
