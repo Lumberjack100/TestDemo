@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -10,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.fragment.app.Fragment;
+import androidx.activity.result.ActivityResultLauncher;
 
 import com.hjq.toast.ToastUtils;
 import com.shmedo.configlibrary.ble.enums.SensorType;
@@ -98,14 +99,14 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
     private String exValue1, exValue2, exValue3;
 
 
-    public static void startActivityForResultByFragment(Fragment context, int requestCode, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
-        Intent intent = new Intent(context.getActivity(), DasExternalDigitalSensorActivity.class);
+    public static void startActivityForResultByFragment(Context context, ActivityResultLauncher<Intent> launcher, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
+        Intent intent = new Intent(context, DasExternalDigitalSensorActivity.class);
         intent.putStringArrayListExtra(SENSOR_ITEM_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, parcelable);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivityForResult(intent, requestCode);
+        launcher.launch(intent);
     }
 
     @Override

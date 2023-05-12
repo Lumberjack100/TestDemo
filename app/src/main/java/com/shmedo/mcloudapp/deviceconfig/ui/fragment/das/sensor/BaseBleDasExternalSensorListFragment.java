@@ -6,7 +6,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -16,9 +21,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.StringUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -38,8 +40,8 @@ import com.shmedo.configlibrary.ble.utils.StringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.GridSpacingItemDecoration;
-import com.shmedo.mcloudapp.deviceconfig.adapter.DASSensorAdapter;
-import com.shmedo.mcloudapp.deviceconfig.model.DASSensorItem;
+import com.shmedo.mcloudapp.deviceconfig.adapter.ExternalSensorAdapter;
+import com.shmedo.mcloudapp.deviceconfig.model.ExternalSensorItem;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalDigitalSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor.DasExternalVibratingWireSensorActivity;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.das.BaseBleCommunicateFragment;
@@ -60,32 +62,35 @@ import timber.log.Timber;
  * @deprecated 后面将用物联网指令模式取代
  */
 public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommunicateFragment {
-    private static final int REQUEST_CODE_SENSOR_CONFIG = 0x0102;
-
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
 
     @BindView(R.id.recyclerview_sensor)
     RecyclerView mRecyclerViewSensor;
 
-    private DASSensorAdapter sensorAdapter;
-    private List<DASSensorItem> sensorItemList = new ArrayList<>();
-    private DASSensorItem curSensorItem;
+    @BindView(R.id.btn_confirm)
+    Button mBtnSave;
 
+    private ExternalSensorAdapter mAdapter;
+    private ExternalSensorItem curItem;
+
+    //以传感器的通道号为 Key,CollectorSensorParamsInfo 对象为 Value
+    protected HashMap<String, CollectorSensorParamsInfo> sensorHashMap = new HashMap<>();
+    protected List<CollectorSensorParamsInfo> collectorSensorParamsInfoSubs = new ArrayList<>();
+    protected CollectorSensorParamsInfo defaultSensorParamsInfo = new CollectorSensorParamsInfo();
+    private CollectorSensorParamsInfo curSensorParamsInfo;
+    private ArrayList<String> addressList = new ArrayList<>();
+
+    private CollectorConfigInfo collectorConfigInfo;
     protected String collectorName;
     protected String collectorCode;//采集器类型
-    private int accessSum = 0;              //接入扩展传感器总数
-    protected int sensorIndex = 0;//接入的传感器索引号
 
-    protected List<CollectorSensorParamsInfo> collectorSensorParamsInfoSubs = new ArrayList<>();
-    //以传感器的通道号为 Key,CollectorSensorParamsInfo 对象为 Value
-    protected HashMap<String, CollectorSensorParamsInfo> collectorSensorHashMap = new HashMap<>();
-    protected CollectorSensorParamsInfo defaultCollectorSensorParamsInfo = new CollectorSensorParamsInfo();
-    private CollectorSensorParamsInfo curCollectorSensorParamsInfo;
-    private String curSensorAddress;
-    private ArrayList<String> addressList = new ArrayList<>();
-    private boolean isEnableNewSensor = false;//是启用新传感器还是编辑现有传感器
+    private final int maxSensorSum = 16;
+    private int accessSum = 0;    //接入扩展传感器总数
+    protected int sensorIndex = 0;//接入的传感器索引号
+    private boolean isAddSensor = false;//是启用新传感器还是编辑现有传感器
     private boolean isVibratingWireSensor = false;//是否振弦式传感器
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     @Override
     public void onPause() {
@@ -103,6 +108,44 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 isVibratingWireSensor = true;
             }
         }
+        resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent intent = result.getData();
+                            if (null == intent) {
+                                return;
+                            }
+                            Parcelable parcelableData = intent.getParcelableExtra(AppContants.Extras.SENSOR_PARAM);
+                            String sensorAddress = intent.getStringExtra(AppContants.Extras.SENSOR_ADDRESS);
+                            SensorType sensorType = (SensorType) intent.getSerializableExtra(AppContants.Extras.SENSOR_TYPE);
+                            if (isAddSensor) {
+                                CollectorSensorParamsInfo sensorParamsInfo = new CollectorSensorParamsInfo();
+                                sensorParamsInfo.setCollectorModel(defaultSensorParamsInfo.getCollectorModel());
+                                sensorParamsInfo.setSensorAddress(sensorAddress);
+                                sensorParamsInfo.setSensorType(sensorType);
+                                sensorParamsInfo.setSensorData(parcelableData);
+                                sensorHashMap.put(sensorAddress, sensorParamsInfo);
+
+                                ExternalSensorItem item = new ExternalSensorItem(sensorAddress);
+                                item.setVibratingWireSensor(isVibratingWireSensor);
+                                mAdapter.getData().add(item);
+                                mAdapter.notifyItemInserted(mAdapter.getData().size());
+                                mBtnSave.setEnabled(true);
+                            } else {
+                                sensorHashMap.remove(curItem.getSensorAddress());
+                                curSensorParamsInfo.setSensorAddress(sensorAddress);
+                                curSensorParamsInfo.setSensorType(sensorType);
+                                curSensorParamsInfo.setSensorData(parcelableData);
+                                sensorHashMap.put(sensorAddress, curSensorParamsInfo);
+
+                                curItem.setSensorAddress(sensorAddress);
+                            }
+                        }
+                    }
+                });
     }
 
     @Override
@@ -113,7 +156,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initExtendSensorAdapter();
+        initAdapter();
         initRefreshLayout();
         mRefreshLayout.setEnableLoadMore(false);
         //是否在刷新的时候禁止内容的一切手势操作（默认false）
@@ -121,83 +164,82 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         mRefreshLayout.autoRefresh();
     }
 
-    private void initExtendSensorAdapter() {
+    private void initAdapter() {
         int spanCount = 4;//跟布局里面的spanCount属性是一致的
         int spacing = ConvertUtils.dp2px(15);//每一个矩形的间距
         mRecyclerViewSensor.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         //设置每个item间距
         mRecyclerViewSensor.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacing, false));
-        sensorAdapter = new DASSensorAdapter(sensorItemList);
-        sensorAdapter.setAnimationEnable(true);
-        sensorAdapter.setAnimationFirstOnly(false);
-        sensorAdapter.setOnItemClickListener(new OnItemClickListener() {
+        mAdapter = new ExternalSensorAdapter(mActivity, new ArrayList<>());
+        mAdapter.setOnItemClickListener(new ExternalSensorAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+            public void onItemClick(View v, int position) {
                 if (!isConnected()) {
                     ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
                     return;
                 }
-                processItemClick(position);
+                isAddSensor = false;
+                curItem = mAdapter.getData().get(position);
+                addressList.clear();
+                for (ExternalSensorItem item : mAdapter.getData()) {
+                    if (!TextUtils.isEmpty(item.getSensorAddress())) {
+                        addressList.add(item.getSensorAddress());
+                    }
+                }
+                curSensorParamsInfo = sensorHashMap.get(curItem.getSensorAddress());
+                SensorType sensorType = curSensorParamsInfo.getSensorType();
+                if (sensorType == SensorType.UNKNOWN_TYPE) {
+                    ToastUtils.show("暂不支持此类型采集器！");
+                    return;
+                }
+                Parcelable parcelableData = (Parcelable) curSensorParamsInfo.getSensorData();
+                if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
+                    DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(mActivity, resultLauncher, addressList, curItem.getSensorAddress(), sensorType, parcelableData);
+                } else { //数字式传感器
+                    DasExternalDigitalSensorActivity.startActivityForResultByFragment(mActivity, resultLauncher, addressList, curItem.getSensorAddress(), sensorType, parcelableData);
+                }
             }
-        });
-        sensorAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+
             @Override
-            public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+            public void addItem() {
+                isAddSensor = true;
+                addressList.clear();
+                for (ExternalSensorItem item : mAdapter.getData()) {
+                    if (!TextUtils.isEmpty(item.getSensorAddress())) {
+                        addressList.add(item.getSensorAddress());
+                    }
+                }
+                SensorType sensorType = defaultSensorParamsInfo.getSensorType();
+                if (sensorType == SensorType.UNKNOWN_TYPE) {
+                    ToastUtils.show("暂不支持此类型采集器！");
+                    return;
+                }
+                Parcelable parcelableData = null;
+                if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
+                    DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(mActivity, resultLauncher, addressList, curItem.getSensorAddress(), sensorType, parcelableData);
+                } else { //数字式传感器
+                    DasExternalDigitalSensorActivity.startActivityForResultByFragment(mActivity, resultLauncher, addressList, curItem.getSensorAddress(), sensorType, parcelableData);
+                }
+            }
+
+            @Override
+            public void deleteItem(int position) {
                 if (!isConnected()) {
                     ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
-                    return true;
+                    return;
                 }
-                DASSensorItem sensorItem = sensorItemList.get(position);
-                if (sensorItem == null || sensorItem.isAddButton()) {
-                    return true;
-                }
-                if (sensorItemList.size() <= 2) {
+                if (mAdapter.getData().size() <= 1) {
                     ToastUtils.show("最少保留一个传感器!");
-                    return true;
+                    return;
                 }
                 warnDeleteSensorItem(position);
-                return true;
             }
         });
-        mRecyclerViewSensor.setAdapter(sensorAdapter);
+        mAdapter.setItemMax(maxSensorSum);
+        mRecyclerViewSensor.setAdapter(mAdapter);
     }
 
-    private void processItemClick(int position) {
-        Parcelable parcelableData;
-        SensorType sensorType;
-        curSensorItem = sensorItemList.get(position);
-        curSensorAddress = curSensorItem.getSensorAddress();
-
-        addressList.clear();
-        for (DASSensorItem item : sensorItemList) {
-            if (!TextUtils.isEmpty(item.getSensorAddress())) {
-                addressList.add(item.getSensorAddress());
-            }
-        }
-        if (curSensorItem.isAddButton()) {
-            isEnableNewSensor = true;
-            sensorType = defaultCollectorSensorParamsInfo.getSensorType();
-            parcelableData = null;
-        } else {
-            isEnableNewSensor = false;
-            curCollectorSensorParamsInfo = collectorSensorHashMap.get(curSensorAddress);
-            sensorType = curCollectorSensorParamsInfo.getSensorType();
-            parcelableData = (Parcelable) curCollectorSensorParamsInfo.getSensorData();
-        }
-        if (sensorType == SensorType.UNKNOWN_TYPE) {
-            ToastUtils.show("暂不支持此类型采集器！");
-            return;
-        }
-
-        if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
-            DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
-
-        } else { //数字式传感器
-            DasExternalDigitalSensorActivity.startActivityForResultByFragment(this, REQUEST_CODE_SENSOR_CONFIG, addressList, curSensorAddress, sensorType, parcelableData);
-        }
-    }
-
-    private void warnDeleteSensorItem(final int position) {
+    private void warnDeleteSensorItem(final int deleteItemIndex) {
         MaterialDialog.Builder mBuilder = new MaterialDialog.Builder(requireContext())
                 .title("温馨提示")
                 .content("确定移除传感器?")
@@ -211,17 +253,11 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        String address = sensorItemList.get(position).getSensorAddress();
-                        collectorSensorHashMap.remove(address);
-                        sensorItemList.remove(position);
-                        sensorAdapter.notifyItemRemoved(position);
-                        sensorAdapter.notifyItemRangeChanged(position, sensorItemList.size() - position);
-                        DASSensorItem lastItem = sensorItemList.get(sensorItemList.size() - 1);
-                        if (sensorItemList.size() < 8 && !lastItem.isAddButton()) {
-                            DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
-                            sensorItemList.add(sensorItem);
-                            sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
-                        }
+                        String address = mAdapter.getData().get(deleteItemIndex).getSensorAddress();
+                        sensorHashMap.remove(address);
+                        mAdapter.getData().remove(deleteItemIndex);
+                        mAdapter.notifyItemRemoved(deleteItemIndex);
+                        mAdapter.notifyItemRangeChanged(deleteItemIndex, mAdapter.getData().size() - deleteItemIndex);
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -231,10 +267,11 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
     private void clear() {
         accessSum = 0;
         sensorIndex = 0;
-        sensorItemList.clear();
-        curSensorItem = null;
-        collectorSensorHashMap.clear();
-        addressList.clear();
+        curItem = null;
+        sensorHashMap.clear();
+        mAdapter.getData().clear();
+        mAdapter.notifyDataSetChanged();
+        mBtnSave.setEnabled(false);
     }
 
     private void initRefreshLayout() {
@@ -262,7 +299,7 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
      * 查询采集器接入的传感器配置信息
      */
     private void queryExtendSensorConfigInfo() {
-        String address = StringUtil.formatStringTwo(sensorIndex + "");
+        String address = StringUtil.formatStringTwo(String.valueOf(sensorIndex));
         CollectorSensorParamsEntity entity = new CollectorSensorParamsEntity(collectorCode, address);
         String command = CommandManager.getInstance().getCommand(CommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER, entity);
         sendCommand(command);
@@ -309,38 +346,16 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         switch (type) {
             case COLLECTOR_CONFIG://采集器配置信息 ##100
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    Timber.e("查询采集器配置信息指令出错!");
                     if (mRefreshLayout.isRefreshing()) {
                         mRefreshLayout.finishRefresh(false);
                     }
-                    initDefaultSensorItems();
+                    String errMsg = String.format("%s", "查询采集器参数出错!");
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
                     initEmptyDefaultCollectorSensorParamsInfo();
                     return;
                 }
-                CollectorConfigInfo collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
-                if (collectorConfigInfo == null) {
-                    Timber.e("采集器配置信息为空!");
-                } else {
-                    if (collectorConfigInfo.getCollectorAddress().equals("0")) {
-                        if (mRefreshLayout.isRefreshing()) {
-                            mRefreshLayout.finishRefresh(true);
-                        }
-                        collectorCloseWarn();
-                        return;
-                    }
-                    accessSum = collectorConfigInfo.getAccessSum();
-                }
-                if (accessSum == 0) {
-                    if (mRefreshLayout.isRefreshing()) {
-                        mRefreshLayout.finishRefresh(true);
-                    }
-                    initDefaultSensorItems();
-                    initEmptyDefaultCollectorSensorParamsInfo();
-                    return;
-                }
-                //查询传感器配置信息前,重置accessNumFlag、sbcollectorSensor参数
-                sensorIndex = 0;
-                queryExtendSensorConfigInfo();
+                initCollectorInfo(cmdStr);
                 break;
 
             case COLLECTOR_CHANNEL_SENSOR_PARAMETER://获取XX采集器YY通道的传感器参数 ##101
@@ -348,11 +363,13 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                     if (mRefreshLayout.isRefreshing()) {
                         mRefreshLayout.finishRefresh(false);
                     }
-                    Timber.e("查询采集器配置信息指令出错!");
+                    String errMsg = String.format("%s", "查询传感器参数出错!");
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
                     return;
                 }
                 //处理此通道的传感器配置参数
-                processCollectorSensorParamsInfo(cmdStr);
+                processSensorParamsInfo(cmdStr);
                 sensorIndex++;
                 //还有待查询通道的传感器
                 if (sensorIndex < accessSum) {
@@ -361,13 +378,13 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                     if (mRefreshLayout.isRefreshing()) {
                         mRefreshLayout.finishRefresh(true);
                     }
-                    if (sensorItemList.size() < 8) {
-                        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
-                        sensorItemList.add(sensorItem);
+                    if (mAdapter.getData().size() < 1) {
+                        mBtnSave.setEnabled(false);
+                    } else {
+                        mBtnSave.setEnabled(true);
                     }
-                    sensorAdapter.notifyDataSetChanged();
-                    if (!collectorSensorHashMap.values().isEmpty()) {
-                        defaultCollectorSensorParamsInfo = (CollectorSensorParamsInfo) collectorSensorHashMap.values().toArray()[0];
+                    if (!sensorHashMap.values().isEmpty()) {
+                        defaultSensorParamsInfo = (CollectorSensorParamsInfo) sensorHashMap.values().toArray()[0];
                     } else {
                         initEmptyDefaultCollectorSensorParamsInfo();
                     }
@@ -401,43 +418,68 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
         }
     }
 
+    /**
+     * 初始化采集器信息，根据接入的传感器数量遍历查询各个通道的传感器参数
+     */
+    private void initCollectorInfo(final String cmdStr) {
+        collectorConfigInfo = ResultParserUtil.getEntityObject(cmdStr);
+        if (null == collectorConfigInfo) {
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(false);
+            }
+            Timber.e("采集器配置信息为空!");
+            collectorConfigInfo = new CollectorConfigInfo();
+            return;
+        }
+        //采集器地址为 0 时，表示采集器未启用，不允许配置传感器，退出页面
+        if ("0".equals(collectorConfigInfo.getCollectorAddress())) {
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(true);
+            }
+            collectorCloseWarn();
+            return;
+        }
+        accessSum = collectorConfigInfo.getAccessSum();
+        //接入传感器数量为0
+        if (accessSum == 0) {
+            if (mRefreshLayout.isRefreshing()) {
+                mRefreshLayout.finishRefresh(true);
+            }
+            initEmptyDefaultCollectorSensorParamsInfo();
+            return;
+        }
+        //查询传感器配置信息前,重置accessNumFlag、sbcollectorSensor参数
+        sensorIndex = 0;
+        queryExtendSensorConfigInfo();
+    }
+
     private void initEmptyDefaultCollectorSensorParamsInfo() {
-        defaultCollectorSensorParamsInfo = new CollectorSensorParamsInfo();
-        defaultCollectorSensorParamsInfo.setCollectorModel(CollectorModel.value(collectorCode));
-        defaultCollectorSensorParamsInfo.setSensorData(null);
+        defaultSensorParamsInfo = new CollectorSensorParamsInfo();
+        defaultSensorParamsInfo.setCollectorModel(CollectorModel.value(collectorCode));
+        defaultSensorParamsInfo.setSensorData(null);
         if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {
-            defaultCollectorSensorParamsInfo.setSensorType(SensorType.KANG_PERCOLATE);
+            defaultSensorParamsInfo.setSensorType(SensorType.KANG_PERCOLATE);
         } else {
-            defaultCollectorSensorParamsInfo.setSensorType(SensorType.value(collectorCode));
+            defaultSensorParamsInfo.setSensorType(SensorType.value(collectorCode));
         }
     }
 
     /**
      * 处理XX采集器YY通道的传感器参数
      */
-    private void processCollectorSensorParamsInfo(String cmdStr) {
+    private void processSensorParamsInfo(String cmdStr) {
         CollectorSensorParamsInfo mCollectorParamsInfoSub = ResultParserUtil.getEntityObject(cmdStr);
         if (mCollectorParamsInfoSub == null) {
-            Timber.e("%s 采集器 %s 通道的传感器参数为空!", collectorCode, StringUtil.formatStringTwo(sensorIndex + ""));
+            Timber.e("%s 采集器 %s 通道的传感器参数为空!", collectorCode, StringUtil.formatStringTwo(String.valueOf(sensorIndex)));
             return;
         }
-        Timber.d("%s 采集器 %s 通道的传感器参数-------%s", collectorCode, StringUtil.formatStringTwo(sensorIndex + ""), mCollectorParamsInfoSub.toString());
-        collectorSensorHashMap.put(mCollectorParamsInfoSub.getSensorAddress(), mCollectorParamsInfoSub);
-        addSensorItem(mCollectorParamsInfoSub.getSensorAddress());
-    }
+        Timber.d("%s 采集器 %s 通道的传感器参数-------%s", collectorCode, StringUtil.formatStringTwo(String.valueOf(sensorIndex)), mCollectorParamsInfoSub.toString());
+        sensorHashMap.put(mCollectorParamsInfoSub.getSensorAddress(), mCollectorParamsInfoSub);
 
-    private void initDefaultSensorItems() {
-        sensorItemList.clear();
-        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
-        sensorItemList.add(sensorItem);
-        sensorAdapter.notifyDataSetChanged();
-    }
-
-    private void addSensorItem(String address) {
-        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, address);
-        sensorItem.setVibratingWireSensor(isVibratingWireSensor);
-        sensorItemList.add(sensorItem);
-        sensorAdapter.notifyItemInserted(sensorItemList.size() - 1);
+        ExternalSensorItem item = new ExternalSensorItem(mCollectorParamsInfoSub.getSensorAddress());
+        item.setVibratingWireSensor(isVibratingWireSensor);
+        mAdapter.getData().add(item);
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     protected void doAfterSetting() {
@@ -464,51 +506,5 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
         mMaterialDialog.show();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode != Activity.RESULT_OK)
-            return;
-
-        switch (requestCode) {
-            case REQUEST_CODE_SENSOR_CONFIG:
-                if (intent != null) {
-                    Parcelable parcelableData = intent.getParcelableExtra(AppContants.Extras.SENSOR_PARAM);
-                    String sensorAddress = intent.getStringExtra(AppContants.Extras.SENSOR_ADDRESS);
-                    SensorType sensorType = (SensorType) intent.getSerializableExtra(AppContants.Extras.SENSOR_TYPE);
-
-                    if (isEnableNewSensor) {
-                        CollectorSensorParamsInfo collectorSensorParamsInfoSub = new CollectorSensorParamsInfo();
-                        collectorSensorParamsInfoSub.setCollectorModel(defaultCollectorSensorParamsInfo.getCollectorModel());
-//                        collectorSensorParamsInfoSub.setChannelNumber(curChannelNumber);
-                        collectorSensorParamsInfoSub.setSensorAddress(sensorAddress);
-                        collectorSensorParamsInfoSub.setSensorType(sensorType);
-                        collectorSensorParamsInfoSub.setSensorData(parcelableData);
-                        collectorSensorHashMap.put(sensorAddress, collectorSensorParamsInfoSub);
-
-                        sensorItemList.remove(sensorItemList.size() - 1);
-                        DASSensorItem sensorItem = new DASSensorItem(R.drawable.ic_sensor_holder_bright, false, sensorAddress);
-                        sensorItem.setVibratingWireSensor(isVibratingWireSensor);
-                        sensorItemList.add(sensorItem);
-                        if (sensorItemList.size() < 8) {
-                            sensorItem = new DASSensorItem(R.drawable.ic_add_sensor, true);
-                            sensorItemList.add(sensorItem);
-                        }
-                        sensorAdapter.notifyDataSetChanged();
-
-                    } else {
-                        collectorSensorHashMap.remove(curSensorAddress);
-                        curCollectorSensorParamsInfo.setSensorAddress(sensorAddress);
-                        curCollectorSensorParamsInfo.setSensorType(sensorType);
-                        curCollectorSensorParamsInfo.setSensorData(parcelableData);
-                        collectorSensorHashMap.put(sensorAddress, curCollectorSensorParamsInfo);
-                        curSensorItem.setSensorAddress(sensorAddress);
-                        curSensorAddress = sensorAddress;
-                    }
-                }
-                break;
-        }
     }
 }

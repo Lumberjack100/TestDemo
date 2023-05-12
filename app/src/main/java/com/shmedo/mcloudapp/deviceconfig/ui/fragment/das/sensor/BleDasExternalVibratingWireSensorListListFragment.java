@@ -67,7 +67,7 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
     @Override
     protected void sendInstruction() {
         collectorSensorParamsInfoSubs.clear();
-        collectorSensorParamsInfoSubs.addAll(collectorSensorHashMap.values());
+        collectorSensorParamsInfoSubs.addAll(sensorHashMap.values());
         if (collectorSensorParamsInfoSubs.isEmpty()) {
             Timber.i("%s 采集器接入的传感器信息为空!", collectorName);
             sendCloseCollectorCmd();
@@ -77,8 +77,8 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
         //##150zzxxXXXX\r\n：设置采集器接入的传感器
         StringBuilder builderFirst = new StringBuilder();
         builderFirst.append("##150");
-        builderFirst.append(defaultCollectorSensorParamsInfo.getCollectorModel() + StringUtil.formatStringTwo(String.valueOf(collectorSensorParamsInfoSubs.size())));
-        for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorHashMap.values()) {
+        builderFirst.append(defaultSensorParamsInfo.getCollectorModel() + StringUtil.formatStringTwo(String.valueOf(collectorSensorParamsInfoSubs.size())));
+        for (CollectorSensorParamsInfo paramsInfoSub : sensorHashMap.values()) {
             builderFirst.append(StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) + StringUtil.formatStringTwo(paramsInfoSub.getSensorType().toString()));
         }
         builderFirst.append("\r\n");
@@ -100,7 +100,7 @@ public class BleDasExternalVibratingWireSensorListListFragment extends BaseBleDa
     private void setTriggerThreshold() {
         StringBuilder builderFirst = new StringBuilder();
         builderFirst.append("##162");
-        builderFirst.append(defaultCollectorSensorParamsInfo.getCollectorModel());
+        builderFirst.append(defaultSensorParamsInfo.getCollectorModel());
         for (CollectorSensorParamsInfo paramsInfoSub : collectorSensorParamsInfoSubs) {
             builderFirst.append(getTriggerThresholdBySensorType(paramsInfoSub));
         }

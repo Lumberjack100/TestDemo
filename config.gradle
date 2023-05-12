@@ -1,9 +1,9 @@
 ext {
     android = [
             applicationId    : 'com.shmedo.mcloudapp.iot',
-            compileSdkVersion: 31,
+            compileSdkVersion: 32,
             minSdkVersion    : 24,
-            targetSdkVersion : 31,
+            targetSdkVersion : 32,
             appVersionName   : '3.1.15'
     ]
     thirdLib = [
@@ -41,7 +41,7 @@ ext {
             Log4a                        : '1.5.0',
             Logcat                       : '9.8',
 
-            permissionx                  : '1.6.4',
+            permissionx                  : '1.7.1',
 
             swiperefreshlayout           : '1.1.0',
             SmartRefreshLayout           : '2.0.5',

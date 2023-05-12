@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.ui.activity.das.sensor;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -10,8 +11,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -89,14 +90,14 @@ public class DasExternalVibratingWireSensorActivity extends BaseActivity {
     private Parcelable parcelableData;
 
 
-    public static void startActivityForResultByFragment(Fragment context, int requestCode, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
-        Intent intent = new Intent(context.getActivity(), DasExternalVibratingWireSensorActivity.class);
+    public static void startActivityForResultByFragment(Context context, ActivityResultLauncher<Intent> launcher, ArrayList<String> addressList, String sensorAddress, SensorType sensorType, Parcelable parcelable) {
+        Intent intent = new Intent(context, DasExternalVibratingWireSensorActivity.class);
         intent.putStringArrayListExtra(SENSOR_ITEM_LIST, addressList);
         intent.putExtra(AppContants.Extras.SENSOR_ADDRESS, sensorAddress);
         intent.putExtra(AppContants.Extras.SENSOR_TYPE, sensorType);
         intent.putExtra(AppContants.Extras.SENSOR_PARAM, parcelable);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        context.startActivityForResult(intent, requestCode);
+        launcher.launch(intent);
     }
 
     @Override
