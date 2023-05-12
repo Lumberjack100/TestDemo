@@ -254,7 +254,9 @@ public class DasExternalDigitalSensorActivity extends BaseActivity {
                     }
                     break;
             }
-            mEtModbusAddress.setText(sensorAddress);
+            if (!TextUtils.isEmpty(sensorAddress)) {
+                mEtModbusAddress.setText(sensorAddress);
+            }
             if (!TextUtils.isEmpty(triggerThreshold)) {
                 triggerThreshold = decimalFormat.format(Double.parseDouble(triggerThreshold));
                 mEtAlarmValue.setText(triggerThreshold);

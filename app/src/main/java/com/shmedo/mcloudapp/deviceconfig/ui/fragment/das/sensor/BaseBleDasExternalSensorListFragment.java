@@ -216,9 +216,9 @@ public abstract class BaseBleDasExternalSensorListFragment extends BaseBleCommun
                 }
                 Parcelable parcelableData = null;
                 if (CollectorModel.value(collectorCode) == CollectorModel.VW08) {//振弦式传感器
-                    DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(mActivity, resultLauncher, addressList, curItem.getSensorAddress(), sensorType, parcelableData);
+                    DasExternalVibratingWireSensorActivity.startActivityForResultByFragment(mActivity, resultLauncher, addressList, null, sensorType, parcelableData);
                 } else { //数字式传感器
-                    DasExternalDigitalSensorActivity.startActivityForResultByFragment(mActivity, resultLauncher, addressList, curItem.getSensorAddress(), sensorType, parcelableData);
+                    DasExternalDigitalSensorActivity.startActivityForResultByFragment(mActivity, resultLauncher, addressList, null, sensorType, parcelableData);
                 }
             }
 
