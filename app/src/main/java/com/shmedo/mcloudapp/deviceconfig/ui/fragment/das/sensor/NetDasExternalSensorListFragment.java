@@ -108,10 +108,14 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent intent = result.getData();
+                            if (null == intent) {
+                                return;
+                            }
                             DasExternalSensorInfo sensorInfo = (DasExternalSensorInfo) intent.getSerializableExtra(AppContants.Extras.SENSOR_PARAM);
                             String sensorAddress = sensorInfo.getAddr();
                             if (isAddSensor) {
                                 sensorHashMap.put(sensorAddress, sensorInfo);
+
                                 ExternalSensorItem item = new ExternalSensorItem(sensorAddress);
                                 item.setVibratingWireSensor(isVibratingWireSensor);
                                 mAdapter.getData().add(item);
@@ -389,7 +393,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
 
     @OnClick({R.id.btn_confirm})
     public void onClick(View view) {
-        if(!DebouncingUtils.isValid(view, 1000)) {
+        if (!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();
@@ -586,7 +590,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
      * 初始化采集器信息，根据接入的传感器数量遍历查询各个通道的传感器参数
      */
     private void initCollectorInfo() {
-        if (collectorInfo == null) {
+        if (null == collectorInfo) {
             if (mRefreshLayout.isRefreshing()) {
                 mRefreshLayout.finishRefresh(false);
             }

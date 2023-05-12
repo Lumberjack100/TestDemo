@@ -197,6 +197,7 @@ public class NetDasExternalVibratingWireSensorFragment extends BaseFragment {
                 sensorZLJ300tView.setVisibility(View.GONE);
                 sensorYLJView.setVisibility(View.GONE);
                 sensorMcuSWJView.setVisibility(View.VISIBLE);
+                sensorMcuSWJView.initData(externalSensorInfo);
                 break;
         }
     }
