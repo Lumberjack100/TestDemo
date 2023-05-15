@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--
  如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加ACCESS_BACKGROUND_LOCATION权限声明
@@ -28,15 +27,35 @@
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="no.nordicsemi.android.LOG" /> <!-- Bluetooth permission is required on Android 4.3 - 11 in order to communicate with Bluetooth LE devices. -->
+
+    <!--
+ Bluetooth permission is required on Android 4.3 - 11 in order to communicate with
+ Bluetooth LE devices.
+-->
     <uses-permission
         android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="30" /> <!-- Bluetooth Admin permission is required on Android 4.3 - 11 in order to scan for Bluetooth LE devices. -->
+        android:maxSdkVersion="30" />
+    <!--
+ Bluetooth Admin permission is required on Android 4.3 - 11 in order to scan for
+ Bluetooth LE devices.
+-->
     <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"
         android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <!--
+     On Android 12 new set of Bluetooth permissions were added. BLUETOOTH_SCAN permission is
+     needed to scan for Bluetooth LE devices. The "never for location" flag is set, as we are not
+     interested in finding the user location, and we are OK with the fact, that beacons info
+     will be removed from the scan results.
+    -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <!--
+     This permission is required in order to connect to a Bluetooth LE device on Android 12
+     onwards.
+    -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <uses-feature
@@ -56,13 +75,7 @@
         tools:ignore="LockedOrientationActivity"
         tools:replace="android:name"
         tools:targetApi="p">
-        <activity
-            android:name=".CommonSensorDetailActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
@@ -457,6 +470,11 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
+
+        <activity
+            android:name="com.shmedo.mcloudapp.deviceconfig.ui.activity.CommonSensorDetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"/>
 
         <service android:name="com.amap.api.location.APSService" />
 
