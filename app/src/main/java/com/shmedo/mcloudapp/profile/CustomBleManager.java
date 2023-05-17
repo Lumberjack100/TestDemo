@@ -150,12 +150,15 @@ public class CustomBleManager extends ObservableBleManager {
                         }
                     }
                 }
-            } else {
+            } else if (result.contains("$cmd")){
                 Timber.v("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
                 int index = result.lastIndexOf("$cmd");
                 if (index != -1) {
                     result = result.substring(index);
                 }
+                responseMsg.setValue(result);
+            }else{
+                Timber.v("接收数据(onResponseReceived): length=%s bytes;content: %s", result.getBytes().length, result);
                 responseMsg.setValue(result);
             }
         }

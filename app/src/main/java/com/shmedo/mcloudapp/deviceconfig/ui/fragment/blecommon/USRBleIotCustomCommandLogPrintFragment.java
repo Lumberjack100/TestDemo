@@ -176,12 +176,12 @@ public class USRBleIotCustomCommandLogPrintFragment extends BaseUSRBleIotCommuni
             if (command.startsWith("##")) {
                 command = String.format("$cmd=md_raw&content=%s", command);
             }
-            if (!command.startsWith("$cmd")) {
-                ToastUtils.show("指令格式不正确，请重新输入");
-                return;
+            if (command.startsWith("$cmd")) {
+                sendCommand(command);
+            } else {
+                sendATCommand(command + "\r\n");
             }
-            sendCommand(command);
-//            btnSend.setEnabled(false);
+
             CmdLogInfo cmdLogInfo = new CmdLogInfo(TimeUtils.getNowString(new SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())), command);
             logDataList.add(cmdLogInfo);
             cmdAdapter.notifyItemInserted(logDataList.size() - 1);

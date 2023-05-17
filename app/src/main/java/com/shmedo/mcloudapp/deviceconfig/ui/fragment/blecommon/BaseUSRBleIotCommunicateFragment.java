@@ -127,11 +127,11 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
         bleViewModel.getResponseMsg().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String result) {
-//                if (!result.startsWith("$cmd=")) {
-//                    if (bleViewModel.getLogOutputMode().getValue() == null || !bleViewModel.getLogOutputMode().getValue()) {
-//                        return;
-//                    }
-//                }
+                if (!result.startsWith("$cmd=")) {
+                    if (bleViewModel.getLogOutputMode().getValue() == null || !bleViewModel.getLogOutputMode().getValue()) {
+                        return;
+                    }
+                }
 
                 try {
                     parseResponseMessage(result);
@@ -228,6 +228,13 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
                     + "&msgid=" + UUID.randomUUID().toString().substring(30);
         }
 
+        bleViewModel.sendIOTProtocolCommand(cmdStr);
+    }
+
+    public void sendATCommand(String cmdStr) {
+        if (!isConnected()) {
+            return;
+        }
         bleViewModel.sendIOTProtocolCommand(cmdStr);
     }
 
