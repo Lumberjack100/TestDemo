@@ -212,7 +212,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                         mEtExtension1.setText(exValue1);
                     }
                     modelType = externalSensorInfo.getModel_type();
-                    if (!modelType.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(modelType) && !modelType.equals("NullKey")) {
                         modelSwitchLayout.setVisibility(View.VISIBLE);
                         mTvModelSwitch.setText(modelType.equals("0") ? modelTypeList.get(0) : modelTypeList.get(1));
 
@@ -239,7 +239,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvAlarmValue.setText("触发值(单位:mm)");
                     mTvCorrectValue.setText("安装高程(单位:m)");
                     childRadarType = externalSensorInfo.getChild_type();
-                    if (!childRadarType.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(childRadarType) && !childRadarType.equals("NullKey")) {
                         childSensorTypeLayout.setVisibility(View.VISIBLE);
                         mTvChildSensorTitle.setText("雷达类型");
                         if (childRadarType.equals("1"))
@@ -346,7 +346,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
     @OnClick({R.id.modelSwitchLayout, R.id.childSensorTypeLayout, R.id.btn_confirm})
     public void onClick(View view) {
-        if(!DebouncingUtils.isValid(view, 1000)) {
+        if (!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();
@@ -399,7 +399,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
         new XPopup.Builder(mActivity)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asBottomList("",  childRadarTypeList.toArray(new String[0]),
+                .asBottomList("", childRadarTypeList.toArray(new String[0]),
                         null, pos,
                         new OnSelectListener() {
                             @Override
@@ -611,8 +611,10 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         switch (iotSensorType) {
             case INCLINOMETER:
                 externalSensorInfo.setSpacing(exValue1);//测斜仪
-                if (!modelType.equals("NullKey"))
+                if (!TextUtils.isEmpty(modelType) && !modelType.equals("NullKey"))
                     externalSensorInfo.setModel_type(modelType);
+                else
+                    externalSensorInfo.setModel_type("NullKey");
                 break;
 
             case LUYAN_INCLINOMETER://倾角仪
@@ -635,8 +637,10 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 break;
 
             case RADAR_LEVEL_GAUGE://雷达液(物)位计 设置子雷达传感器型号
-                if (!childRadarType.equals("NullKey"))
+                if (!TextUtils.isEmpty(childRadarType) &&!childRadarType.equals("NullKey"))
                     externalSensorInfo.setChild_type(childRadarType);
+                else
+                    externalSensorInfo.setChild_type("NullKey");
                 break;
 
             default:
