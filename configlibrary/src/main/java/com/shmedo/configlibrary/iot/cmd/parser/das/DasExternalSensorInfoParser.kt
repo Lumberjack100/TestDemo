@@ -45,6 +45,7 @@ class DasExternalSensorInfoParser : IOTResultParser<DasExternalSensorInfo?> {
             info.lsyysst = keyValueMap.getOrDefault("lsyysst", "NullKey")
             info.initvalx = keyValueMap.getOrDefault("initvalx", "NullKey")
             info.initvaly = keyValueMap.getOrDefault("initvaly", "NullKey")
+            info.initvalz = keyValueMap.getOrDefault("initvalz", "NullKey")
             info.child_type = keyValueMap.getOrDefault("child_type", "NullKey")
             info.datatype = keyValueMap.getOrDefault("datatype", "NullKey")
             info.measinval = keyValueMap.getOrDefault("measinval", "NullKey")

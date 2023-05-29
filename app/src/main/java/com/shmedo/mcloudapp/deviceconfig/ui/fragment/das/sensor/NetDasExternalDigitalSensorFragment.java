@@ -207,7 +207,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     extensionLayout1.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("测段长(单位:mm)");
                     exValue1 = externalSensorInfo.getSpacing();
-                    if (!TextUtils.isEmpty(exValue1)) {
+                    if (!TextUtils.isEmpty(exValue1) && !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
@@ -254,17 +254,24 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     correctionLayout.setVisibility(View.GONE);
                     extensionLayout1.setVisibility(View.VISIBLE);
                     extensionLayout2.setVisibility(View.VISIBLE);
-                    mTvExtension1.setText("X轴角度(°)");
-                    mTvExtension2.setText("Y轴角度(°)");
+                    extensionLayout3.setVisibility(View.VISIBLE);
+                    mTvExtension1.setText("X轴初始角度(°)");
+                    mTvExtension2.setText("Y轴初始角度(°)");
+                    mTvExtension3.setText("Z轴初始角度(°)");
                     exValue1 = externalSensorInfo.getInitvalx();
                     exValue2 = externalSensorInfo.getInitvaly();
-                    if (!TextUtils.isEmpty(exValue1)) {
+                    exValue3 = externalSensorInfo.getInitvalz();
+                    if (!TextUtils.isEmpty(exValue1)&& !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
-                    if (!TextUtils.isEmpty(exValue2)) {
+                    if (!TextUtils.isEmpty(exValue2)&& !exValue2.equals("NullKey")) {
                         exValue2 = decimalFormat.format(Double.parseDouble(exValue2));
                         mEtExtension2.setText(exValue2);
+                    }
+                    if (!TextUtils.isEmpty(exValue3)&& !exValue3.equals("NullKey")) {
+                        exValue3 = decimalFormat.format(Double.parseDouble(exValue3));
+                        mEtExtension3.setText(exValue3);
                     }
                     break;
 
@@ -282,11 +289,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvExtension2.setText("堰上水头(单位:mm)");
                     exValue1 = externalSensorInfo.getLsycsds();
                     exValue2 = externalSensorInfo.getLsyysst();
-                    if (!TextUtils.isEmpty(exValue1)) {
+                    if (!TextUtils.isEmpty(exValue1)&& !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
-                    if (!TextUtils.isEmpty(exValue2)) {
+                    if (!TextUtils.isEmpty(exValue2)&& !exValue2.equals("NullKey")) {
                         exValue2 = decimalFormat.format(Double.parseDouble(exValue2));
                         mEtExtension2.setText(exValue2);
                     }
@@ -298,7 +305,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     extensionLayout1.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("高程(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
-                    if (!TextUtils.isEmpty(exValue1)) {
+                    if (!TextUtils.isEmpty(exValue1)&& !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
@@ -319,11 +326,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvExtension2.setText("绳长(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
                     exValue2 = externalSensorInfo.getRopelen();
-                    if (!TextUtils.isEmpty(exValue1)) {
+                    if (!TextUtils.isEmpty(exValue1)&& !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
-                    if (!TextUtils.isEmpty(exValue2)) {
+                    if (!TextUtils.isEmpty(exValue2)&& !exValue2.equals("NullKey")) {
                         exValue2 = decimalFormat.format(Double.parseDouble(exValue2));
                         mEtExtension2.setText(exValue2);
                     }
@@ -519,6 +526,20 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 mEtExtension2.requestFocus();
                 return false;
             }
+
+            if (TextUtils.isEmpty(exValue3)) {
+                ToastUtils.show("Z轴初始值不能为空!");
+                mEtExtension3.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(exValue3);
+
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的Z轴初始值!");
+                mEtExtension3.requestFocus();
+                return false;
+            }
         }
 
         if (iotSensorType == IOTSensorType.WEIR) {//量水堰计
@@ -620,6 +641,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             case LUYAN_INCLINOMETER://倾角仪
                 externalSensorInfo.setInitvalx(exValue1);
                 externalSensorInfo.setInitvaly(exValue2);
+                externalSensorInfo.setInitvalz(exValue3);
                 break;
 
             case WEIR://量水堰计

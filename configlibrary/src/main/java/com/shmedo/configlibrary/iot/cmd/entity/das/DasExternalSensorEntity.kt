@@ -56,6 +56,8 @@ class DasExternalSensorEntity : Validater {
             : String? = null
     var initvaly //Y轴初始值
             : String? = null
+    var initvalz //Z轴初始值
+            : String? = null
     var child_type //子传感器类型
             : String? = null
 

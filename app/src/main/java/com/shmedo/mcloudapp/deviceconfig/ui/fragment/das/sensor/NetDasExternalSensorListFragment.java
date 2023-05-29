@@ -362,6 +362,7 @@ public class NetDasExternalSensorListFragment extends BaseNetIotCommunicateFragm
             case LUYAN_INCLINOMETER://倾角仪
                 entity.setInitvalx(externalSensorInfo.getInitvalx());
                 entity.setInitvaly(externalSensorInfo.getInitvaly());
+                entity.setInitvalz(externalSensorInfo.getInitvalz());
                 break;
 
             case WEIR://量水堰计

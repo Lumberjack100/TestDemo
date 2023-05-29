@@ -79,6 +79,10 @@ class DasExternalSensorInfo : Serializable {
     var initvaly //Y轴初始值
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
+    var initvalz //z轴初始值
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+
     var child_type //子传感器类型/采集器类型
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "0" else field
