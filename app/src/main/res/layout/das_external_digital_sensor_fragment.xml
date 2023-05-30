@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -119,6 +120,17 @@
                 style="@style/Common_EditItem_EditText_Style"
                 android:inputType="numberSigned|numberDecimal" />
 
+            <ImageView
+                android:id="@+id/iv_extension1"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_userinfo_about"
+                android:visibility="gone"
+                app:tint="@color/red"
+                tools:visibility="visible" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -138,6 +150,17 @@
                 style="@style/Common_EditItem_EditText_Style"
                 android:inputType="numberSigned|numberDecimal" />
 
+            <ImageView
+                android:id="@+id/iv_extension2"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_userinfo_about"
+                android:visibility="gone"
+                app:tint="@color/red"
+                tools:visibility="visible" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -156,6 +179,17 @@
                 android:id="@+id/et_extension3"
                 style="@style/Common_EditItem_EditText_Style"
                 android:inputType="numberSigned|numberDecimal" />
+
+            <ImageView
+                android:id="@+id/iv_extension3"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_userinfo_about"
+                android:visibility="gone"
+                app:tint="@color/red"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

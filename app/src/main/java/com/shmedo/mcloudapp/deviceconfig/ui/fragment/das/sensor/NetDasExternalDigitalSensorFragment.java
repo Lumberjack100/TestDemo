@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -95,6 +96,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.et_extension1)
     EditText mEtExtension1;
 
+    @BindView(R.id.iv_extension1)
+    ImageView mIvExtension1;
+
     @BindView(R.id.extension_layout1)
     ViewGroup extensionLayout1;
 
@@ -107,6 +111,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.et_extension2)
     EditText mEtExtension2;
 
+    @BindView(R.id.iv_extension2)
+    ImageView mIvExtension2;
+
     @BindView(R.id.extension_layout2)
     ViewGroup extensionLayout2;
 
@@ -118,6 +125,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
     @BindView(R.id.et_extension3)
     EditText mEtExtension3;
+
+    @BindView(R.id.iv_extension3)
+    ImageView mIvExtension3;
 
     @BindView(R.id.extension_layout3)
     ViewGroup extensionLayout3;
@@ -255,21 +265,25 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     extensionLayout1.setVisibility(View.VISIBLE);
                     extensionLayout2.setVisibility(View.VISIBLE);
                     extensionLayout3.setVisibility(View.VISIBLE);
+                    mIvExtension1.setVisibility(View.VISIBLE);
+                    mIvExtension2.setVisibility(View.VISIBLE);
+                    mIvExtension3.setVisibility(View.VISIBLE);
+
                     mTvExtension1.setText("X轴初始角度(°)");
                     mTvExtension2.setText("Y轴初始角度(°)");
                     mTvExtension3.setText("Z轴初始角度(°)");
                     exValue1 = externalSensorInfo.getInitvalx();
                     exValue2 = externalSensorInfo.getInitvaly();
                     exValue3 = externalSensorInfo.getInitvalz();
-                    if (!TextUtils.isEmpty(exValue1)&& !exValue1.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(exValue1) && !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
-                    if (!TextUtils.isEmpty(exValue2)&& !exValue2.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(exValue2) && !exValue2.equals("NullKey")) {
                         exValue2 = decimalFormat.format(Double.parseDouble(exValue2));
                         mEtExtension2.setText(exValue2);
                     }
-                    if (!TextUtils.isEmpty(exValue3)&& !exValue3.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(exValue3) && !exValue3.equals("NullKey")) {
                         exValue3 = decimalFormat.format(Double.parseDouble(exValue3));
                         mEtExtension3.setText(exValue3);
                     }
@@ -289,11 +303,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvExtension2.setText("堰上水头(单位:mm)");
                     exValue1 = externalSensorInfo.getLsycsds();
                     exValue2 = externalSensorInfo.getLsyysst();
-                    if (!TextUtils.isEmpty(exValue1)&& !exValue1.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(exValue1) && !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
-                    if (!TextUtils.isEmpty(exValue2)&& !exValue2.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(exValue2) && !exValue2.equals("NullKey")) {
                         exValue2 = decimalFormat.format(Double.parseDouble(exValue2));
                         mEtExtension2.setText(exValue2);
                     }
@@ -305,7 +319,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     extensionLayout1.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("高程(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
-                    if (!TextUtils.isEmpty(exValue1)&& !exValue1.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(exValue1) && !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
@@ -326,11 +340,11 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvExtension2.setText("绳长(单位:m)");
                     exValue1 = externalSensorInfo.getTubealti();
                     exValue2 = externalSensorInfo.getRopelen();
-                    if (!TextUtils.isEmpty(exValue1)&& !exValue1.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(exValue1) && !exValue1.equals("NullKey")) {
                         exValue1 = decimalFormat.format(Double.parseDouble(exValue1));
                         mEtExtension1.setText(exValue1);
                     }
-                    if (!TextUtils.isEmpty(exValue2)&& !exValue2.equals("NullKey")) {
+                    if (!TextUtils.isEmpty(exValue2) && !exValue2.equals("NullKey")) {
                         exValue2 = decimalFormat.format(Double.parseDouble(exValue2));
                         mEtExtension2.setText(exValue2);
                     }
@@ -351,7 +365,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.modelSwitchLayout, R.id.childSensorTypeLayout, R.id.btn_confirm})
+    @OnClick({R.id.modelSwitchLayout, R.id.childSensorTypeLayout, R.id.iv_extension1, R.id.iv_extension2, R.id.iv_extension3, R.id.btn_confirm})
     public void onClick(View view) {
         if (!DebouncingUtils.isValid(view, 1000)) {
             return;
@@ -362,6 +376,18 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
         } else if (id == R.id.childSensorTypeLayout) {
             showChildRadarTypeListDialog();
+        } else if (id == R.id.iv_extension1) {
+            if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
+                showTipDialog("初始值大于 360，设备将自动计算");
+
+        } else if (id == R.id.iv_extension2) {
+            if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
+                showTipDialog("初始值大于 360，设备将自动计算");
+
+        } else if (id == R.id.iv_extension3) {
+            if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
+                showTipDialog("初始值大于 360，设备将自动计算");
+
         } else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!checkValueIsValid()) {
@@ -659,7 +685,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 break;
 
             case RADAR_LEVEL_GAUGE://雷达液(物)位计 设置子雷达传感器型号
-                if (!TextUtils.isEmpty(childRadarType) &&!childRadarType.equals("NullKey"))
+                if (!TextUtils.isEmpty(childRadarType) && !childRadarType.equals("NullKey"))
                     externalSensorInfo.setChild_type(childRadarType);
                 else
                     externalSensorInfo.setChild_type("NullKey");

@@ -16,7 +16,7 @@ public class VersionMessageParser implements ResultParser<VersionMessageInfo> {
     @Override
     public VersionMessageInfo parse(String result) {
         String[] strs = result.split(",");
-        if (strs.length == 4) {
+        if (strs.length >= 2) {
             return startParser(strs);
         } else {
             throw new DASParameterException("参数错误");
@@ -35,14 +35,17 @@ public class VersionMessageParser implements ResultParser<VersionMessageInfo> {
 
     /**
      * 版本解析
+     *
      * @param strs
      * @return
      */
     private VersionMessageInfo startParser(String[] strs) {
         VersionMessageInfo info = new VersionMessageInfo();
         info.setProductID(strs[1]);
-        info.setFirmwareVersion(strs[2]);
-        info.setProduceDate(strs[3]);
+        if (strs.length >= 3)
+            info.setFirmwareVersion(strs[2]);
+        if (strs.length >= 4)
+            info.setProduceDate(strs[3]);
         return info;
     }
 }
