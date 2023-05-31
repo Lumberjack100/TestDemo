@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.deviceconfig.view.adme;
 
 import android.content.Context;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -38,8 +39,17 @@ import timber.log.Timber;
  */
 public class AdmeInclinometerView extends LinearLayout {
 
+    @BindView(R.id.tv_inclinometer_version)
+    TextView mTvInclinometerVersion; //测斜仪版本
+
     @BindView(R.id.tv_low_power_mode)
     TextView mTvMode;
+
+    @BindView(R.id.tv_compensate_way)
+    TextView mTvCompensateWay;//补偿方式
+
+    @BindView(R.id.et_torsion_angle)
+    ClearEditText mEtTorsionAngle;//扭转角γ
 
     @BindView(R.id.et_mac_address)
     ClearEditText mEtMacAddress;//Mac 地址
@@ -59,8 +69,17 @@ public class AdmeInclinometerView extends LinearLayout {
     @BindView(R.id.btn_confirm)
     Button mBtnSave;
 
+    @BindView(R.id.ll_inclinometer_version)
+    ViewGroup inclinometerVersionLayout;
+
     @BindView(R.id.ll_low_power_mode)
     ViewGroup lowModeLayout;
+
+    @BindView(R.id.ll_compensate_way)
+    ViewGroup compensateWayLayout;
+
+    @BindView(R.id.ll_torsion_angle)
+    ViewGroup torsionAngleLayout;
 
     @BindView(R.id.ll_mac_address)
     ViewGroup macAddressLayout;
@@ -77,17 +96,34 @@ public class AdmeInclinometerView extends LinearLayout {
     @BindView(R.id.ll_correction_value)
     ViewGroup correctionValueLayout;
 
+    private String inclinometerVersion;// 测斜仪版本
     private String mode;// 测量工作模式
+    private String compensateWay;// 补偿方式
+    private String torsionAngle;// 扭转角γ
+
     private String address;// 采集器地址/Mac 地址
     private String collectionInterval;//采集器采集间隔
     private String solvingInterval;//采集器解算间隔
     private String sleepTime;//休眠时间
     private String correctionValue;//测斜仪修正值
 
+    private final String[] versions = new String[]{"V2.1", "V3.0"};
     private final String[] modes = new String[]{"蓝牙关测量关", "蓝牙开测量关", "蓝牙关测量开", "蓝牙开测量开"};
+    private final String[] compensateWays = new String[]{"X+Y轴无扭转角补偿", "X轴扭转角补偿"};
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-    public AdmeInclinometerInfo admeInclinometerInfo=new AdmeInclinometerInfo();
+    public AdmeInclinometerInfo admeInclinometerInfo = new AdmeInclinometerInfo();
+
+    private InputFilter numberFilter = new InputFilter() {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            for (int i = start; i < end; i++) {
+                if (!"-0123456789".contains(source.charAt(i) + "")) {
+                    return "";
+                }
+            }
+            return null;
+        }
+    };
 
     public AdmeInclinometerView(Context context) {
         this(context, null);
@@ -106,6 +142,9 @@ public class AdmeInclinometerView extends LinearLayout {
     }
 
     private void initView() {
+        mEtTorsionAngle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4), numberFilter});
+        mEtTorsionAngle.setHint("[-90,90]");
+
         mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
         mEtMacAddress.setHint("XXXXXXXXXXXX");
 
@@ -114,8 +153,41 @@ public class AdmeInclinometerView extends LinearLayout {
         mEtSleepTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtCorrectionValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
 
+        mTvInclinometerVersion.setText(versions[0]);
+        inclinometerVersion = "0";
+
         mTvMode.setText(modes[0]);
         mode = "5";
+
+        mTvCompensateWay.setText(compensateWays[0]);
+        compensateWay = "0";
+    }
+
+    /**
+     * 选择测斜仪版本
+     */
+    public void showInclinometerVersionDialog(Context context) {
+        int pos = Arrays.asList(versions).indexOf(String.valueOf(mTvInclinometerVersion.getText()));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(context)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", versions,
+                        null, pos,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvInclinometerVersion.setText(text);
+                                if (position == 0) {
+                                    mode = "0";
+                                    compensateWayLayout.setVisibility(View.GONE);
+
+                                } else if (position == 1) {
+                                    mode = "1";
+                                    compensateWayLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
     }
 
     /**
@@ -146,7 +218,54 @@ public class AdmeInclinometerView extends LinearLayout {
                 .show();
     }
 
+    /**
+     * 补偿方式
+     */
+    public void showCompensateWayDialog(Context context) {
+        int pos = Arrays.asList(compensateWays).indexOf(String.valueOf(mTvCompensateWay.getText()));
+        XPopup.setPrimaryColor(com.blankj.utilcode.util.ColorUtils.getColor(R.color.blue_52B4F8));
+        new XPopup.Builder(context)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asBottomList("", compensateWays,
+                        null, pos,
+                        new OnSelectListener() {
+                            @Override
+                            public void onSelect(int position, String text) {
+                                mTvCompensateWay.setText(text);
+                                if (position == 0) {
+                                    compensateWay = "0";
+                                    torsionAngleLayout.setVisibility(View.GONE);
+                                } else {
+                                    compensateWay = "1";
+                                    torsionAngleLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }, 0, R.layout.custom_xpopup_adapter_text_with_check)
+                .show();
+    }
+
     public boolean checkValueIsValid() {
+        if (!torsionAngle.equals("NullKey") && compensateWay.equals("1")) {
+            torsionAngle = mEtTorsionAngle.getText().toString().trim();
+            if (TextUtils.isEmpty(torsionAngle)) {
+                ToastUtils.show("请输入扭转角γ!");
+                mEtTorsionAngle.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(torsionAngle);
+                if (value < -90 || value > 90) {
+                    ToastUtils.show("请输入正确的扭转角γ!");
+                    mEtTorsionAngle.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的扭转角γ!");
+                mEtTorsionAngle.requestFocus();
+                return false;
+            }
+        }
+
         address = mEtMacAddress.getText().toString().trim();
         if (TextUtils.isEmpty(address)) {
             ToastUtils.show("请输入Mac地址!");
@@ -250,6 +369,9 @@ public class AdmeInclinometerView extends LinearLayout {
             decimalFormat.applyPattern("#.####");
             entity.setInterupdate(admeInclinometerInfo.getInterupdate().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(correctionValue)));
             entity.setMode(admeInclinometerInfo.getMode().equals("NullKey") ? "NullKey" : mode);
+            entity.setIncversion(admeInclinometerInfo.getIncversion().equals("NullKey") ? "NullKey" : inclinometerVersion);
+            entity.setCompenway(admeInclinometerInfo.getCompenway().equals("NullKey") ? "NullKey" : compensateWay);
+            entity.setTorangle(admeInclinometerInfo.getTorangle().equals("NullKey") ? "NullKey" : torsionAngle);
 
             command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_INCLINOMETER, entity);
         } catch (Exception ex) {
@@ -265,15 +387,34 @@ public class AdmeInclinometerView extends LinearLayout {
             admeInclinometerInfo = new AdmeInclinometerInfo();
             return;
         }
+        inclinometerVersion = admeInclinometerInfo.getIncversion().trim();
         mode = admeInclinometerInfo.getMode().trim();
+        compensateWay = admeInclinometerInfo.getCompenway().trim();
+        torsionAngle = admeInclinometerInfo.getTorangle().trim();
         address = admeInclinometerInfo.getAddress().trim();
         collectionInterval = admeInclinometerInfo.getCollinval().trim();
         solvingInterval = admeInclinometerInfo.getCalcinval().trim();
         sleepTime = admeInclinometerInfo.getDormancytime().trim();
         correctionValue = admeInclinometerInfo.getInterupdate().trim();
 
-        mEtMacAddress.setText(address);
-        macAddressLayout.setVisibility(View.VISIBLE);
+        if (inclinometerVersion.equals("NullKey")) {
+            inclinometerVersionLayout.setVisibility(View.GONE);
+        } else {
+            inclinometerVersionLayout.setVisibility(View.VISIBLE);
+            if (inclinometerVersion.equals("0")) {
+                mTvInclinometerVersion.setText(versions[0]);
+            } else if (inclinometerVersion.equals("1")) {
+                mTvInclinometerVersion.setText(versions[1]);
+                compensateWayLayout.setVisibility(View.VISIBLE);
+                if (compensateWay.equals("0")) {
+                    mTvCompensateWay.setText(compensateWays[0]);
+                } else if (compensateWay.equals("1")) {
+                    mTvCompensateWay.setText(compensateWays[1]);
+                    torsionAngleLayout.setVisibility(View.VISIBLE);
+                    mEtTorsionAngle.setText(torsionAngle);
+                }
+            }
+        }
 
         if (mode.equals("NullKey")) {
             lowModeLayout.setVisibility(View.GONE);
@@ -293,6 +434,9 @@ public class AdmeInclinometerView extends LinearLayout {
         }
 
         try {
+            mEtMacAddress.setText(address);
+            macAddressLayout.setVisibility(View.VISIBLE);
+
             if (collectionInterval.equals("NullKey")) {
                 collectionIntervalLayout.setVisibility(View.GONE);
             } else {
@@ -359,7 +503,10 @@ public class AdmeInclinometerView extends LinearLayout {
     }
 
     public void onEditableChanged(boolean isEditable) {
+        inclinometerVersionLayout.setEnabled(isEditable);
         lowModeLayout.setEnabled(isEditable);
+        compensateWayLayout.setEnabled(isEditable);
+        mEtTorsionAngle.setEnabled(isEditable);
         mEtMacAddress.setEnabled(isEditable);
         mEtCollectionInterval.setEnabled(isEditable);
         mEtSolvingInterval.setEnabled(isEditable);
@@ -367,14 +514,20 @@ public class AdmeInclinometerView extends LinearLayout {
         mEtCorrectionValue.setEnabled(isEditable);
 
         if (isEditable) {
+            mTvInclinometerVersion.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
             mTvMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
+            mTvCompensateWay.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
+            mEtTorsionAngle.setHint("[-90,90]");
             mEtMacAddress.setHint("XXXXXXXXXXXX");
             mEtCollectionInterval.setHint("请输入");
             mEtSolvingInterval.setHint("请输入");
             mEtSleepTime.setHint("请输入");
             mEtCorrectionValue.setHint("请输入");
         } else {
+            mTvInclinometerVersion.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mTvMode.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mTvCompensateWay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            mEtTorsionAngle.setHint("");
             mEtMacAddress.setHint("");
             mEtCollectionInterval.setHint("");
             mEtSolvingInterval.setHint("");

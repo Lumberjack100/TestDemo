@@ -10,11 +10,9 @@ import android.text.TextUtils;
 public class AdmeTimeItem {
 
     private String time;
-    private boolean isAddButton = false;
 
-    public AdmeTimeItem(String time, boolean isAddButton) {
+    public AdmeTimeItem(String time) {
         this.time = time;
-        this.isAddButton = isAddButton;
     }
 
     public String getTime() {
@@ -25,11 +23,4 @@ public class AdmeTimeItem {
         this.time = time;
     }
 
-    public boolean isAddButton() {
-        return isAddButton;
-    }
-
-    public void setAddButton(boolean addButton) {
-        isAddButton = addButton;
-    }
 }

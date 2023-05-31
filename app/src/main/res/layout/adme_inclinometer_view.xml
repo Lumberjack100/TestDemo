@@ -10,6 +10,24 @@
         android:layout_height="10dp" />
 
     <LinearLayout
+        android:id="@+id/ll_inclinometer_version"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="测斜仪版本" />
+
+        <TextView
+            android:id="@+id/tv_inclinometer_version"
+            style="@style/Common_ClickableItem_ValueStyle"
+            android:text="2.1版本" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_low_power_mode"
         style="@style/Common_ClickableItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
@@ -26,10 +44,46 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_compensate_way"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="补偿方式" />
+
+        <TextView
+            android:id="@+id/tv_compensate_way"
+            style="@style/Common_ClickableItem_ValueStyle"
+            android:text="X+Y轴无扭转角补偿" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_torsion_angle"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="扭转角γ" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_torsion_angle"
+            style="@style/Common_EditItem_EditText_Style" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_mac_address"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"

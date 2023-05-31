@@ -33,4 +33,16 @@ class AdmeInclinometerInfo {
     var mode //测量工作模式(5:蓝牙关测量关，7:蓝牙开测量关，8:蓝牙关测量开，9:蓝牙开测量开)
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "5" else field
+
+    var incversion //测斜仪版本（0：2.1 版本，1：3.0 版本）
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+
+    var compenway //补偿方式（0：X+Y轴无扭转角补偿，1：X轴扭转角补偿）
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+
+    var torangle //扭转角γ
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
 }

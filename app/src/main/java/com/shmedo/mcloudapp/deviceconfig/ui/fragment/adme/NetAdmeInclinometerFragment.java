@@ -79,16 +79,22 @@ public class NetAdmeInclinometerFragment extends BaseNetIotCommunicateFragment {
         doCommonDispatchRawCmd(command, Arrays.asList(deviceInfo.getDeviceToken()));
     }
 
-    @OnClick({R.id.ll_low_power_mode, R.id.btn_confirm})
+    @OnClick({R.id.ll_inclinometer_version, R.id.ll_low_power_mode, R.id.ll_compensate_way, R.id.btn_confirm})
     public void onClick(View view) {
         if(!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         int id = view.getId();
-        if (id == R.id.ll_low_power_mode) {
+        if (id == R.id.ll_inclinometer_version) {
+            admeInclinometerView.showInclinometerVersionDialog(mActivity);
+
+        } else if (id == R.id.ll_low_power_mode) {
             admeInclinometerView.showLowPowerModeDialog(mActivity);
 
-        } else if (id == R.id.btn_confirm) {
+        } else if (id == R.id.ll_compensate_way) {
+            admeInclinometerView.showCompensateWayDialog(mActivity);
+
+        }  else if (id == R.id.btn_confirm) {
             com.blankj.utilcode.util.KeyboardUtils.hideSoftInput(view);
             if (!admeInclinometerView.checkValueIsValid()) {
                 Timber.w("参数存在错误!");

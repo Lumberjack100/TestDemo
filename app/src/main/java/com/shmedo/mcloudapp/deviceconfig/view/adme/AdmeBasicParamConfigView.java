@@ -21,9 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.ConvertUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.hjq.toast.ToastUtils;
 import com.kongzue.dialogx.dialogs.MessageDialog;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -49,7 +46,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.AdmeTimeItem;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -147,12 +143,11 @@ public class AdmeBasicParamConfigView extends LinearLayout {
 
     private DecimalFormat decimalFormat = new DecimalFormat();
 
-    public AdmeBasicConfigInfo basicConfigParam=new AdmeBasicConfigInfo();
-    public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo=new AdmeExecutiveAgencyInfo();
-    public AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo=new AdmeLockedRotorDetectionInfo();
+    public AdmeBasicConfigInfo basicConfigParam = new AdmeBasicConfigInfo();
+    public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo = new AdmeExecutiveAgencyInfo();
+    public AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo = new AdmeLockedRotorDetectionInfo();
 
     private AdmeTimeAdapter admeTimeAdapter;
-    private List<AdmeTimeItem> admeTimeItemList = new ArrayList<>();
 
     public AdmeBasicParamConfigView(Context context) {
         this(context, null);
@@ -169,9 +164,6 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         ButterKnife.bind(this);
         initView();
         initTimeAdapter(context);
-        AdmeTimeItem item = new AdmeTimeItem(null, true);
-        admeTimeItemList.add(item);
-        admeTimeAdapter.notifyItemInserted(admeTimeItemList.size() - 1);
     }
 
     private void initView() {
@@ -202,54 +194,37 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private void initTimeAdapter(Context context) {
         mRecyclerViewTime.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         mRecyclerViewTime.addItemDecoration(new RecycleViewDivider(LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(0.5f), com.blankj.utilcode.util.ColorUtils.getColor(R.color.divider_line_bg_efefef)));
-        admeTimeAdapter = new AdmeTimeAdapter(admeTimeItemList);
-        admeTimeAdapter.setAnimationEnable(false);
-        admeTimeAdapter.setAnimationFirstOnly(false);
-        admeTimeAdapter.setOnItemClickListener(new OnItemClickListener() {
+        admeTimeAdapter = new AdmeTimeAdapter(context, new ArrayList<>());
+        admeTimeAdapter.setOnItemClickListener(new AdmeTimeAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                processItemClick(context, position);
+            public void onItemClick(View v, int position) {
+            }
+
+            @Override
+            public void addItem() {
+                new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        String time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay);
+                        for (AdmeTimeItem item : admeTimeAdapter.getData()) {
+                            if (item.getTime().contains(time)) {
+                                ToastUtils.show("不能设置重复时间点!");
+                                return;
+                            }
+                        }
+                        admeTimeAdapter.getData().add(new AdmeTimeItem(time));
+                        admeTimeAdapter.notifyItemInserted(admeTimeAdapter.getData().size());
+                    }
+                }, 0, 0, true).show();
             }
         });
-        admeTimeAdapter.setOnItemLongClickListener(new OnItemLongClickListener() {
+        admeTimeAdapter.setItemLongClickListener(new AdmeTimeAdapter.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-                AdmeTimeItem admeTimeItem = admeTimeItemList.get(position);
-                if (admeTimeItem.isAddButton()) {
-                    return true;
-                }
+            public void onItemLongClick(RecyclerView.ViewHolder holder, int position, View v) {
                 warnDeleteSensorItem(context, position);
-                return true;
             }
         });
         mRecyclerViewTime.setAdapter(admeTimeAdapter);
-    }
-
-    private void processItemClick(Context context, int position) {
-        AdmeTimeItem admeTimeItem = admeTimeItemList.get(position);
-        if (!admeTimeItem.isAddButton())
-            return;
-
-        new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                String time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay);
-                for (AdmeTimeItem item : admeTimeItemList) {
-                    if (item.getTime().contains(time)) {
-                        ToastUtils.show("不能设置重复时间点!");
-                        return;
-                    }
-                }
-                admeTimeItemList.remove(admeTimeItemList.size() - 1);
-                AdmeTimeItem item = new AdmeTimeItem(time, false);
-                admeTimeItemList.add(item);
-                if (admeTimeItemList.size() < 8) {
-                    item = new AdmeTimeItem(null, true);
-                    admeTimeItemList.add(item);
-                }
-                admeTimeAdapter.notifyDataSetChanged();
-            }
-        }, 0, 0, true).show();
     }
 
     private void warnDeleteSensorItem(Context context, int position) {
@@ -266,13 +241,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        admeTimeItemList.remove(position);
-                        admeTimeItemList.remove(admeTimeItemList.size() - 1);
-                        if (admeTimeItemList.size() < 8) {
-                            AdmeTimeItem item = new AdmeTimeItem(null, true);
-                            admeTimeItemList.add(item);
-                        }
-                        admeTimeAdapter.notifyDataSetChanged();
+                        admeTimeAdapter.getData().remove(position);
+                        admeTimeAdapter.notifyItemRemoved(position);
+                        admeTimeAdapter.notifyItemRangeChanged(position, admeTimeAdapter.getData().size() - position);
                     }
                 });
         MaterialDialog mMaterialDialog = mBuilder.build();
@@ -295,7 +266,8 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                                 mTvMeasureMethod.setText(text);
                                 measureMethod = String.valueOf(position);
                                 if (position == 0) {
-                                    waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                                    if (null != waitingIntervalPerRound && !waitingIntervalPerRound.equals("NullKey"))
+                                        waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
                                     intervalDayLayout.setVisibility(View.GONE);
                                     startTimePerRoundLayout.setVisibility(View.GONE);
@@ -309,7 +281,8 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                                 } else if (position == 2) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
-                                    intervalDayLayout.setVisibility(View.VISIBLE);
+                                    if (null != intervalDays && intervalDays.equals("NullKey"))
+                                        intervalDayLayout.setVisibility(View.VISIBLE);
                                     startTimePerRoundLayout.setVisibility(View.VISIBLE);
                                     mRecyclerViewTime.setVisibility(View.VISIBLE);
                                 }
@@ -376,7 +349,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         }
 
         if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
-            if (admeTimeItemList.size() <= 1) {
+            if (admeTimeAdapter.getData().size() <= 1) {
                 MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
                 return false;
             }
@@ -519,7 +492,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             //定时测量方式
             if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
                 StringBuffer timeBuffer = new StringBuffer();
-                for (AdmeTimeItem admeTimeItem : admeTimeItemList) {
+                for (AdmeTimeItem admeTimeItem : admeTimeAdapter.getData()) {
                     String time = admeTimeItem.getTime();
                     if (!TextUtils.isEmpty(time)) {
                         timeBuffer.append(Integer.parseInt(time.substring(0, time.indexOf(":"))));
@@ -710,17 +683,13 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             if (!startTimePerRound.equals("NullKey")) {
                 AdmeTimeItem item;
                 String[] times = startTimePerRound.split("\\|");
-                admeTimeItemList.clear();
+                admeTimeAdapter.getData().clear();
                 for (String time : times) {
                     if (!TextUtils.isEmpty(time)) {
                         time = String.format(Locale.getDefault(), "%02d:00:00", Integer.parseInt(time));
-                        item = new AdmeTimeItem(time, false);
-                        admeTimeItemList.add(item);
+                        item = new AdmeTimeItem(time);
+                        admeTimeAdapter.getData().add(item);
                     }
-                }
-                if (admeTimeItemList.size() < 8) {
-                    item = new AdmeTimeItem(null, true);
-                    admeTimeItemList.add(item);
                 }
                 admeTimeAdapter.notifyDataSetChanged();
             }

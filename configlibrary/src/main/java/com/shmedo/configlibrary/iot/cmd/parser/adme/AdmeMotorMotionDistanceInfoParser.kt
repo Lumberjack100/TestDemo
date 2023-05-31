@@ -26,6 +26,7 @@ class AdmeMotorMotionDistanceInfoParser : IOTResultParser<AdmeMotorMotionDistanc
             info.pulsenumber = keyValueMap.getOrDefault("pulsenumber", "NullKey")
             info.realmovedistance = keyValueMap.getOrDefault("realmovedistance", "NullKey")
             info.realholedepth = keyValueMap.getOrDefault("realholedepth", "NullKey")
+            info.recoholedepth = keyValueMap.getOrDefault("recoholedepth", "NullKey")
             info.realmoveangle = keyValueMap.getOrDefault("realmoveangle", "NullKey")
             info
         } catch (ex: Exception) {

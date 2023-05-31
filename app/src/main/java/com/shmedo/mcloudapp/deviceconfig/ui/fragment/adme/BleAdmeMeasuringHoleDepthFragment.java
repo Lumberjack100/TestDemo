@@ -64,8 +64,14 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @BindView(R.id.decentralizedEnableSBtn)
     SwitchButton mSbDecentralizedEnable;
 
+    @BindView(R.id.positiveAndNegativeEnableSBtn)
+    SwitchButton positiveAndNegativeEnableSBtn;//正反测使能
+
     @BindView(R.id.ll_decentralized)
     RelativeLayout decentralizedLayout;
+
+    @BindView(R.id.rl_positive_and_negative_test)
+    RelativeLayout positiveAndNegativeTestLayout;
 
     /**
      * 自动测孔深模式
@@ -76,8 +82,11 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @BindView(R.id.et_bottom_safe_distance)
     ClearEditText mEtBottomSafeDistance;//管底补偿距离
 
-    @BindView(R.id.tv_hole_depth)
-    TextView mTvHoleDepth;//测孔深度
+    @BindView(R.id.tv_real_hole_depth)
+    TextView mTvRealHoleDepth;//实测测斜管孔深
+
+    @BindView(R.id.tv_recommended_hole_depth)
+    TextView mTvRecommendHoleDepth;//推荐测斜管孔深
 
     /**
      * 手动测孔深模式
@@ -108,7 +117,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
     private String downSpeed;// 电机下放速度(r/min)
     private String safeDistance;// 安全距离补偿
-    private String holeDepth;// 测量孔深
 
     private String movementway;// 运动方式
     private String movementSpeed;// 电机运动速度(r/min)
@@ -125,7 +133,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     private final String[] measureWays = new String[]{"自动测孔深", "手动测孔深"};
     private final String[] movementWays = new String[]{"上拉", "下放"};
 
-    private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo=new AdmeLockedRotorDetectionInfo();
+    private AdmeLockedRotorDetectionInfo lockedRotorDetectionInfo = new AdmeLockedRotorDetectionInfo();
 
     public static BleAdmeMeasuringHoleDepthFragment newInstance() {
         return new BleAdmeMeasuringHoleDepthFragment();
@@ -162,6 +170,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         //默认自动测量模式
         mTvMeasureMode.setText(measureWays[0]);
         decentralizedLayout.setVisibility(View.GONE);
+        positiveAndNegativeTestLayout.setVisibility(View.VISIBLE);
         autoMeasureModeLayout.setVisibility(View.VISIBLE);
         manualMeasureModeLayout.setVisibility(View.GONE);
         mTvMovementWay.setText("上拉");
@@ -304,7 +313,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             safeDistance = decimalFormat.format(Double.parseDouble(safeDistance));
             entity.setSafedistance(safeDistance);
 
-            mTvHoleDepth.setText("0");
+            mTvRealHoleDepth.setText("0");
+            mTvRecommendHoleDepth.setText("0");
             mBtnRun.setEnabled(false);
             startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
             String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_AUTO_MEASURING_HOLEDEPTH, entity);
@@ -317,7 +327,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @OnClick({R.id.ll_measure_mode, R.id.ll_movement_way, R.id.btn_run, R.id.ll_clear_motion_data})
     public void onClick(View view) {
         int id = view.getId();
-        if(!DebouncingUtils.isValid(view, 1000)) {
+        if (!DebouncingUtils.isValid(view, 1000)) {
             return;
         }
         if (id == R.id.ll_measure_mode) {
@@ -366,6 +376,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                             public void onSelect(int position, String text) {
                                 mTvMeasureMode.setText(text);
                                 decentralizedLayout.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
+                                positiveAndNegativeTestLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
                                 autoMeasureModeLayout.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
                                 manualMeasureModeLayout.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
 
@@ -666,14 +677,16 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 AdmeMotorMotionDistanceInfo motorMotionDistanceInfo = commandResult.getResult();
                 if (motorMotionDistanceInfo != null) {
                     lastDistance = motorMotionDistanceInfo.getRealmovedistance();
-                    holeDepth = motorMotionDistanceInfo.getRealholedepth();
+                    String holeDepth = motorMotionDistanceInfo.getRealholedepth();
+                    String recDepth = motorMotionDistanceInfo.getRecoholedepth();
                     if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safeDistance)) {
                         try {
                             double holeValue = Math.abs(Double.parseDouble(holeDepth));
                             double safeValue = Math.abs(Double.parseDouble(safeDistance));
                             //测孔深值不等于安全补偿距离表示测孔深值有效
                             if (holeValue != safeValue) {
-                                mTvHoleDepth.setText(holeDepth);
+                                mTvRealHoleDepth.setText(holeDepth);
+                                mTvRecommendHoleDepth.setText(recDepth);
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
