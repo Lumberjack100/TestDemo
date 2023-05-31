@@ -14,7 +14,8 @@
         android:id="@+id/ll_mac_address"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
@@ -47,7 +48,8 @@
         android:id="@+id/ll_waiting_interval_per_round"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"
@@ -78,10 +80,30 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_interval_day"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="间隔时间(天)" />
+
+        <com.shmedo.mcloudapp.common.view.ClearEditText
+            android:id="@+id/et_interval_day"
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="number"
+            android:text="30" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_start_time_per_round"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"

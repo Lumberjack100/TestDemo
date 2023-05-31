@@ -23,6 +23,11 @@ class AdmeExecutiveAgencyInfo {
     var roundmeasinval //每轮测量间隔
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
+
+    var invalday //间隔天数
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+
     var roundmeasstart //每轮测量开始时间
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
@@ -71,13 +76,17 @@ class AdmeExecutiveAgencyInfo {
     var detectionend //堵转检测终点
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
-    var interval_compensation //距离补偿区间h1
+    var interval_compensation //管口安全距离 h1
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+
+    var bottom_safe_distance //管底安全距离
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
     var interval_fitting //数据拟合区间h2
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
-    var point_offset //测点偏移距离h3
+    var point_offset //测点下移距离 h3
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
 }

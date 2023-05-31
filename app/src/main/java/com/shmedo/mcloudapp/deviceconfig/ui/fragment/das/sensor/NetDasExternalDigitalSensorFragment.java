@@ -455,6 +455,8 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         correctValue = mEtCorrectValue.getText().toString().trim();
         exValue1 = mEtExtension1.getText().toString().trim();
         exValue2 = mEtExtension2.getText().toString().trim();
+        exValue3 = mEtExtension3.getText().toString().trim();
+
         if (TextUtils.isEmpty(sensorAddress)) {
             ToastUtils.show("传感器地址不能为空!");
             mEtModbusAddress.requestFocus();

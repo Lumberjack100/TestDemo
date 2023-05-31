@@ -18,6 +18,8 @@ class AdmeExecutiveAgencyEntity : Validater {
             : String? = null
     var roundmeasinval //每轮测量间隔
             : String? = null
+    var invalday //间隔天数
+            : String? = null
     var roundmeasstart //每轮测量开始时间
             : String? = null
     var datainval //数据读取间隔
@@ -50,7 +52,9 @@ class AdmeExecutiveAgencyEntity : Validater {
             : String? = null
     var detectionend //堵转检测终点
             : String? = null
-    var interval_compensation //距离补偿区间h1
+    var interval_compensation //管口安全距离
+            : String? = null
+    var bottom_safe_distance //管底安全距离
             : String? = null
     var interval_fitting //数据拟合区间h2
             : String? = null

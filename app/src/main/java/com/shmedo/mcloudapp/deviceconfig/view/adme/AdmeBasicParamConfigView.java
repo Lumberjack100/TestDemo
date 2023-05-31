@@ -74,6 +74,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     @BindView(R.id.tv_measurement_interval_per_round)
     TextView mTvMeasurementIntervalPerRound;//每轮测量间隔
 
+    @BindView(R.id.et_interval_day)
+    ClearEditText mEtIntervalDay;//间隔时间
+
     @BindView(R.id.recyclerview_time)
     RecyclerView mRecyclerViewTime;
 
@@ -110,6 +113,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     @BindView(R.id.ll_measurement_interval_per_round)
     ViewGroup measurementIntervalPerRoundLayout;
 
+    @BindView(R.id.ll_interval_day)
+    ViewGroup intervalDayLayout;
+
     @BindView(R.id.ll_start_time_per_round)
     ViewGroup startTimePerRoundLayout;
 
@@ -126,15 +132,15 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     ViewGroup dataSettlementMethodLayout;
 
     private String measureMethod;//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)
-    private String waitingIntervalPerRound;// 每轮等待时间
-    private String measurementIntervalPerRound;// 每轮测量间隔
-    private String startTimePerRound;// 每轮测量开始时间
-
-    private String address;// 采集器地址/Mac 地址
-    private String inclinometerTubeHoleDepth;// 测斜管孔深(m)
-    private String decentralizationSpeed;// 下放速度(r/min)
+    private String waitingIntervalPerRound;//每轮等待时间
+    private String measurementIntervalPerRound;//每轮测量间隔
+    private String intervalDays;//间隔时间
+    private String startTimePerRound;//每轮测量开始时间
+    private String address;//采集器地址/Mac 地址
+    private String inclinometerTubeHoleDepth;//测斜管孔深(m)
+    private String decentralizationSpeed;//下放速度(r/min)
     private String decentralizationWaitingTime;//下放等待时间(min)
-    private String dataSettlementMethod;// 数据解算方式
+    private String dataSettlementMethod;//数据解算方式
     private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
     private final String[] measIntervalPerRounds = new String[]{"1", "2", "3", "4", "6", "8", "12", "24"};
     private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
@@ -171,6 +177,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     private void initView() {
         mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
         mEtMacAddress.setHint("XXXXXXXXXXXX");
+
+        mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtIntervalDay.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
         mEtInclinometerTubeHoleDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
 
@@ -288,16 +297,19 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                                 if (position == 0) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    intervalDayLayout.setVisibility(View.GONE);
                                     startTimePerRoundLayout.setVisibility(View.GONE);
                                     mRecyclerViewTime.setVisibility(View.GONE);
                                 } else if (position == 1) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                                    intervalDayLayout.setVisibility(View.GONE);
                                     startTimePerRoundLayout.setVisibility(View.GONE);
                                     mRecyclerViewTime.setVisibility(View.GONE);
                                 } else if (position == 2) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    intervalDayLayout.setVisibility(View.VISIBLE);
                                     startTimePerRoundLayout.setVisibility(View.VISIBLE);
                                     mRecyclerViewTime.setVisibility(View.VISIBLE);
                                 }
@@ -390,6 +402,28 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                 return false;
             }
         }
+
+        if (!intervalDays.equals("NullKey")) {
+            intervalDays = mEtIntervalDay.getText().toString().trim();
+            if (TextUtils.isEmpty(waitingIntervalPerRound)) {
+                ToastUtils.show("请输入间隔时间!");
+                mEtIntervalDay.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(intervalDays);
+                if (value < 1) {
+                    ToastUtils.show("请输入正确的间隔时间!");
+                    mEtIntervalDay.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的间隔时间!");
+                mEtIntervalDay.requestFocus();
+                return false;
+            }
+        }
+
         if (!inclinometerTubeHoleDepth.equals("NullKey")) {
             inclinometerTubeHoleDepth = mEtInclinometerTubeHoleDepth.getText().toString().trim();
             if (TextUtils.isEmpty(inclinometerTubeHoleDepth)) {
@@ -478,9 +512,10 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             AdmeExecutiveAgencyEntity entity = new AdmeExecutiveAgencyEntity();
             entity.setMeastype(admeExecutiveAgencyInfo.getMeastype().equals("NullKey") ? "NullKey" : measureMethod);
             entity.setDatatype(admeExecutiveAgencyInfo.getDatatype().equals("NullKey") ? "NullKey" : dataSettlementMethod);
-            entity.setDatareply(admeExecutiveAgencyInfo.getDatareply().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getDatareply());
+            entity.setDatareply(admeExecutiveAgencyInfo.getDatareply());
             entity.setRoundwaitetime(admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") ? "NullKey" : waitingIntervalPerRound);
             entity.setRoundmeasinval(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
+            entity.setInvalday(admeExecutiveAgencyInfo.getInvalday().equals("NullKey") ? "NullKey" : intervalDays);
             //定时测量方式
             if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
                 StringBuffer timeBuffer = new StringBuffer();
@@ -495,26 +530,23 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                     timeBuffer.delete(timeBuffer.length() - 1, timeBuffer.length());
                 entity.setRoundmeasstart(timeBuffer.toString());
             } else {
-                entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getRoundmeasstart());
+                entity.setRoundmeasstart(admeExecutiveAgencyInfo.getRoundmeasstart());
             }
-            entity.setDatainval(admeExecutiveAgencyInfo.getDatainval().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getDatainval());
-            entity.setCompensatetime(admeExecutiveAgencyInfo.getCompensatetime().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getCompensatetime());
-            entity.setDriveaddress(admeExecutiveAgencyInfo.getDriveaddress().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getDriveaddress());
+            entity.setDatainval(admeExecutiveAgencyInfo.getDatainval());
+            entity.setCompensatetime(admeExecutiveAgencyInfo.getCompensatetime());
+            entity.setDriveaddress(admeExecutiveAgencyInfo.getDriveaddress());
             entity.setDownspeed(admeExecutiveAgencyInfo.getDownspeed().equals("NullKey") ? "NullKey" : decentralizationSpeed);
             decimalFormat.applyPattern("#.##");
             entity.setInterdeep(admeExecutiveAgencyInfo.getInterdeep().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth)));
             entity.setDownwaitetime(admeExecutiveAgencyInfo.getDownwaitetime().equals("NullKey") ? "NullKey" : decentralizationWaitingTime);
-            entity.setUpspeed(admeExecutiveAgencyInfo.getUpspeed().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getUpspeed());
-            entity.setMeaspacing(admeExecutiveAgencyInfo.getMeaspacing().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getMeaspacing());
-            entity.setMeaintertime(admeExecutiveAgencyInfo.getMeaintertime().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getMeaintertime());
-            decimalFormat.applyPattern("#.##");
-            entity.setMeabaseth(admeExecutiveAgencyInfo.getMeabaseth().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getMeabaseth());
-            decimalFormat.applyPattern("#.###");
-            entity.setInterval_compensation(admeExecutiveAgencyInfo.getInterval_compensation().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getInterval_compensation());
-            decimalFormat.applyPattern("#.#");
-            entity.setInterval_fitting(admeExecutiveAgencyInfo.getInterval_fitting().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getInterval_fitting());
-            decimalFormat.applyPattern("#.###");
-            entity.setPoint_offset(admeExecutiveAgencyInfo.getPoint_offset().equals("NullKey") ? "NullKey" : admeExecutiveAgencyInfo.getPoint_offset());
+            entity.setUpspeed(admeExecutiveAgencyInfo.getUpspeed());
+            entity.setMeaspacing(admeExecutiveAgencyInfo.getMeaspacing());
+            entity.setMeaintertime(admeExecutiveAgencyInfo.getMeaintertime());
+            entity.setMeabaseth(admeExecutiveAgencyInfo.getMeabaseth());
+            entity.setInterval_compensation(admeExecutiveAgencyInfo.getInterval_compensation());
+            entity.setBottom_safe_distance(admeExecutiveAgencyInfo.getBottom_safe_distance());
+            entity.setInterval_fitting(admeExecutiveAgencyInfo.getInterval_fitting());
+            entity.setPoint_offset(admeExecutiveAgencyInfo.getPoint_offset());
 
             command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY, entity);
         } catch (Exception ex) {
@@ -624,10 +656,13 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         measureMethod = admeExecutiveAgencyInfo.getMeastype().trim();
         waitingIntervalPerRound = admeExecutiveAgencyInfo.getRoundwaitetime().trim();
         measurementIntervalPerRound = admeExecutiveAgencyInfo.getRoundmeasinval().trim();
+        intervalDays = admeExecutiveAgencyInfo.getInvalday();
         startTimePerRound = admeExecutiveAgencyInfo.getRoundmeasstart().trim();
         if (measureMethod.equals("NullKey")) {
             measureMethodLayout.setVisibility(View.GONE);
+            waitingIntervalPerRoundLayout.setVisibility(View.GONE);
             measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+            intervalDayLayout.setVisibility(View.GONE);
             startTimePerRoundLayout.setVisibility(View.GONE);
             mRecyclerViewTime.setVisibility(View.GONE);
         } else {
@@ -636,6 +671,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[0]);
                     waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    intervalDayLayout.setVisibility(View.GONE);
                     startTimePerRoundLayout.setVisibility(View.GONE);
                     mRecyclerViewTime.setVisibility(View.GONE);
                     break;
@@ -643,6 +679,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[1]);
                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                     measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                    intervalDayLayout.setVisibility(View.GONE);
                     startTimePerRoundLayout.setVisibility(View.GONE);
                     mRecyclerViewTime.setVisibility(View.GONE);
                     break;
@@ -650,6 +687,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[2]);
                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    intervalDayLayout.setVisibility(View.VISIBLE);
                     startTimePerRoundLayout.setVisibility(View.VISIBLE);
                     mRecyclerViewTime.setVisibility(View.VISIBLE);
                     break;
@@ -663,6 +701,12 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                 mEtWaitingIntervalPerRound.setText(waitingIntervalPerRound);
             }
             mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRound);
+            if (intervalDays.equals("NullKey")) {
+                intervalDayLayout.setVisibility(View.GONE);
+            } else {
+                mEtIntervalDay.setText(intervalDays);
+            }
+
             if (!startTimePerRound.equals("NullKey")) {
                 AdmeTimeItem item;
                 String[] times = startTimePerRound.split("\\|");
@@ -756,6 +800,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     public void onEditableChanged(boolean isEditable) {
         mEtMacAddress.setEnabled(isEditable);
         mEtWaitingIntervalPerRound.setEnabled(isEditable);
+        mEtIntervalDay.setEnabled(isEditable);
         mEtInclinometerTubeHoleDepth.setEnabled(isEditable);
         mEtDecentralizationSpeed.setEnabled(isEditable);
         mEtDecentralizationWaitingTime.setEnabled(isEditable);
@@ -766,6 +811,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             mEtMacAddress.setHint("XXXXXXXXXXXX");
             mTvMeasureMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
             mEtWaitingIntervalPerRound.setHint("请输入");
+            mEtIntervalDay.setHint("请输入");
             mEtInclinometerTubeHoleDepth.setHint("请输入");
             mEtDecentralizationSpeed.setHint("1-180");
             mEtDecentralizationWaitingTime.setHint("1-32");
@@ -774,6 +820,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             mEtMacAddress.setHint("");
             mTvMeasureMethod.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             mEtWaitingIntervalPerRound.setHint("");
+            mEtIntervalDay.setHint("");
             mEtInclinometerTubeHoleDepth.setHint("");
             mEtDecentralizationSpeed.setHint("");
             mEtDecentralizationWaitingTime.setHint("");

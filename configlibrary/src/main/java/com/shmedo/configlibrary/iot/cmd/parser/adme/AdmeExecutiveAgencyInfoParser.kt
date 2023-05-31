@@ -28,6 +28,7 @@ class AdmeExecutiveAgencyInfoParser : IOTResultParser<AdmeExecutiveAgencyInfo?> 
             info.datareply = keyValueMap.getOrDefault("datareply", "NullKey")
             info.roundwaitetime = keyValueMap.getOrDefault("roundwaitetime", "NullKey")
             info.roundmeasinval = keyValueMap.getOrDefault("roundmeasinval", "NullKey")
+            info.invalday = keyValueMap.getOrDefault("invalday", "NullKey")
             info.roundmeasstart = keyValueMap.getOrDefault("roundmeasstart", "NullKey")
             info.datainval = keyValueMap.getOrDefault("datainval", "NullKey")
             info.compensatetime = keyValueMap.getOrDefault("compensatetime", "NullKey")
@@ -44,8 +45,8 @@ class AdmeExecutiveAgencyInfoParser : IOTResultParser<AdmeExecutiveAgencyInfo?> 
             info.detectiontime = keyValueMap.getOrDefault("detectiontime", "NullKey")
             info.detectionstart = keyValueMap.getOrDefault("detectionstart", "NullKey")
             info.detectionend = keyValueMap.getOrDefault("detectionend", "NullKey")
-            info.interval_compensation =
-                keyValueMap.getOrDefault("interval_compensation", "NullKey")
+            info.interval_compensation = keyValueMap.getOrDefault("interval_compensation", "NullKey")
+            info.bottom_safe_distance = keyValueMap.getOrDefault("bottom_safe_distance", "NullKey")
             info.interval_fitting = keyValueMap.getOrDefault("interval_fitting", "NullKey")
             info.point_offset = keyValueMap.getOrDefault("point_offset", "NullKey")
             info

@@ -65,11 +65,14 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     @BindView(R.id.tv_data_response)
     TextView mTvDataResponse;//数据应答
 
+    @BindView(R.id.et_waiting_interval_per_round)
+    ClearEditText mEtWaitingIntervalPerRound;//每轮等待时间
+
     @BindView(R.id.tv_measurement_interval_per_round)
     TextView mTvMeasurementIntervalPerRound;//每轮测量间隔
 
-    @BindView(R.id.et_waiting_interval_per_round)
-    ClearEditText mEtWaitingIntervalPerRound;//每轮等待时间
+    @BindView(R.id.et_interval_day)
+    ClearEditText mEtIntervalDay;//间隔时间
 
     @BindView(R.id.recyclerview_time)
     RecyclerView mRecyclerViewTime;
@@ -107,6 +110,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     @BindView(R.id.et_interval_compensation)
     ClearEditText mEtIntervalCompensation;//管口安全距离h1
 
+    @BindView(R.id.et_bottom_safety_distance)
+    ClearEditText mEtBottomSafetyDistance;// 管底安全距离
+
     @BindView(R.id.et_interval_fitting)
     ClearEditText mEtIntervalFitting;//数据拟合区间h2
 
@@ -125,14 +131,17 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     @BindView(R.id.ll_data_response)
     ViewGroup dataResponseLayout;
 
+    @BindView(R.id.ll_waiting_interval_per_round)
+    ViewGroup waitingIntervalPerRoundLayout;
+
     @BindView(R.id.ll_measurement_interval_per_round)
     ViewGroup measurementIntervalPerRoundLayout;
 
+    @BindView(R.id.ll_interval_day)
+    ViewGroup intervalDayLayout;
+
     @BindView(R.id.ll_start_time_per_round)
     ViewGroup startTimePerRoundLayout;
-
-    @BindView(R.id.ll_waiting_interval_per_round)
-    ViewGroup waitingIntervalPerRoundLayout;
 
     @BindView(R.id.ll_data_reading_interval)
     ViewGroup dataReadingIntervalLayout;
@@ -167,6 +176,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     @BindView(R.id.ll_interval_compensation)
     ViewGroup intervalCompensationLayout;
 
+    @BindView(R.id.ll_bottom_safety_distance)
+    ViewGroup bottomSafetyDistanceLayout;
+
     @BindView(R.id.ll_interval_fitting)
     ViewGroup intervalFittingLayout;
 
@@ -175,24 +187,26 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
 
     private String measureMethod;//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)
-    private String dataSettlementMethod;// 数据解算方式
-    private String dataResponse;// 数据应答（0:关闭，1:启用）
-    private String measurementIntervalPerRound;// 每轮测量间隔
-    private String waitingIntervalPerRound;// 每轮等待时间
-    private String startTimePerRound;// 每轮测量开始时间
-    private String dataReadingInterval;// 数据读取间隔
-    private String measurementCompensationTime;// 测量补偿时间
-    private String motorDriveAddress;// 电机驱动器地址
-    private String decentralizationSpeed;// 下放速度(r/min)
-    private String inclinometerTubeHoleDepth;// 测斜管孔深(m)
+    private String dataSettlementMethod;//数据解算方式
+    private String dataResponse;//数据应答（0:关闭，1:启用）
+    private String waitingIntervalPerRound;//每轮等待时间
+    private String measurementIntervalPerRound;//每轮测量间隔
+    private String intervalDays;//间隔时间
+    private String startTimePerRound;//每轮测量开始时间
+    private String dataReadingInterval;//数据读取间隔
+    private String measurementCompensationTime;//测量补偿时间
+    private String motorDriveAddress;//电机驱动器地址
+    private String decentralizationSpeed;//下放速度(r/min)
+    private String inclinometerTubeHoleDepth;//测斜管孔深(m)
     private String decentralizationWaitingTime;//下放等待时间(min)
-    private String pullUpSpeed;// 电机上拉速度
-    private String measuringDistance;// 测量间距
-    private String measurementIntervalTime;// 测量间隔时间
-    private String measuringReferenceDepth;// 测量基准深度
-    private String intervalCompensation;// 管口安全距离h1
-    private String intervalFitting;// 数据拟合区间h2
-    private String pointOffset;// 测点偏移距离h3
+    private String pullUpSpeed;//电机上拉速度
+    private String measuringDistance;//测量间距
+    private String measurementIntervalTime;//测量间隔时间
+    private String measuringReferenceDepth;//测量基准深度
+    private String intervalCompensation;//管口安全距离h1
+    private String bottomSafetyDistance;//管底安全距离
+    private String intervalFitting;//数据拟合区间h2
+    private String pointOffset;//测点偏移距离h3
 
     private final String[] measureMethods = new String[]{"实时测量", "整时整点测量", "定时定点测量"};
     private final String[] settlementMethods = new String[]{"顶部固定法", "底部固定法"};
@@ -201,7 +215,6 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
     private AdmeTimeAdapter admeTimeAdapter;
     private List<AdmeTimeItem> admeTimeItemList = new ArrayList<>();
-
     private DecimalFormat decimalFormat = new DecimalFormat();
     public AdmeExecutiveAgencyInfo admeExecutiveAgencyInfo=new AdmeExecutiveAgencyInfo();
 
@@ -228,6 +241,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
     private void initView() {
         mEtWaitingIntervalPerRound.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
+        mEtIntervalDay.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDataReadingInterval.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasurementCompensationTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMotorDriveAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
@@ -242,6 +256,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtMeasurementIntervalTime.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMeasuringReferenceDepth.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
         mEtIntervalCompensation.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+        mEtBottomSafetyDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtIntervalFitting.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtPointOffset.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
 
@@ -356,16 +371,19 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                                 if (position == 0) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    intervalDayLayout.setVisibility(View.GONE);
                                     startTimePerRoundLayout.setVisibility(View.GONE);
                                     mRecyclerViewTime.setVisibility(View.GONE);
                                 } else if (position == 1) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                                    intervalDayLayout.setVisibility(View.GONE);
                                     startTimePerRoundLayout.setVisibility(View.GONE);
                                     mRecyclerViewTime.setVisibility(View.GONE);
                                 } else if (position == 2) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    intervalDayLayout.setVisibility(View.VISIBLE);
                                     startTimePerRoundLayout.setVisibility(View.VISIBLE);
                                     mRecyclerViewTime.setVisibility(View.VISIBLE);
                                 }
@@ -444,6 +462,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
     public boolean checkValueIsValid() {
         waitingIntervalPerRound = mEtWaitingIntervalPerRound.getText().toString();
+        intervalDays = mEtIntervalDay.getText().toString();
         dataReadingInterval = mEtDataReadingInterval.getText().toString();
         measurementCompensationTime = mEtMeasurementCompensationTime.getText().toString();
         motorDriveAddress = mEtMotorDriveAddress.getText().toString();
@@ -455,15 +474,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         measurementIntervalTime = mEtMeasurementIntervalTime.getText().toString();
         measuringReferenceDepth = mEtMeasuringReferenceDepth.getText().toString();
         intervalCompensation = mEtIntervalCompensation.getText().toString();
+        bottomSafetyDistance = mEtBottomSafetyDistance.getText().toString();
         intervalFitting = mEtIntervalFitting.getText().toString();
         pointOffset = mEtPointOffset.getText().toString();
-
-        if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
-            if (admeTimeItemList.size() <= 1) {
-                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
-                return false;
-            }
-        }
 
         if (!admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") && !admeExecutiveAgencyInfo.getRoundwaitetime().equals(waitingIntervalPerRound)) {
             if (TextUtils.isEmpty(waitingIntervalPerRound)) {
@@ -485,6 +498,35 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             }
         } else {
 //            waitingIntervalPerRound = null;
+        }
+
+        if (!admeExecutiveAgencyInfo.getInvalday().equals("NullKey") && !admeExecutiveAgencyInfo.getInvalday().equals(intervalDays)) {
+            if (TextUtils.isEmpty(intervalDays)) {
+                ToastUtils.show("请输入间隔时间!");
+                mEtIntervalDay.requestFocus();
+                return false;
+            }
+            try {
+                int value = Integer.parseInt(intervalDays);
+                if (value < 1) {
+                    ToastUtils.show("请输入正确的间隔时间!");
+                    mEtIntervalDay.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的间隔时间!");
+                mEtIntervalDay.requestFocus();
+                return false;
+            }
+        } else {
+//            intervalDays = null;
+        }
+
+        if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
+            if (admeTimeItemList.size() <= 1) {
+                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
+                return false;
+            }
         }
 
         if (!admeExecutiveAgencyInfo.getDatainval().equals("NullKey") && !admeExecutiveAgencyInfo.getDatainval().equals(dataReadingInterval)) {
@@ -730,6 +772,30 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         } else {
 //            intervalCompensation = null;
         }
+        if (!admeExecutiveAgencyInfo.getBottom_safe_distance().equals("NullKey")
+                && RegexUtils.isMatch(RegexConstants.REGEX_FLOAT, admeExecutiveAgencyInfo.getBottom_safe_distance())
+                && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getBottom_safe_distance())).equals(bottomSafetyDistance)) {
+
+            if (TextUtils.isEmpty(bottomSafetyDistance)) {
+                ToastUtils.show("请输入管底安全距离!");
+                mEtBottomSafetyDistance.requestFocus();
+                return false;
+            }
+            try {
+                double value = Double.parseDouble(bottomSafetyDistance);
+                if (value <= -10 || value >= 10) {
+                    ToastUtils.show("请输入正确的管底安全距离!");
+                    mEtBottomSafetyDistance.requestFocus();
+                    return false;
+                }
+            } catch (Exception ex) {
+                ToastUtils.show("请输入正确的管底安全距离!");
+                mEtBottomSafetyDistance.requestFocus();
+                return false;
+            }
+        } else {
+//            bottomSafetyDistance = null;
+        }
 
         decimalFormat.applyPattern("#.#");
         if (!admeExecutiveAgencyInfo.getInterval_fitting().equals("NullKey")
@@ -794,6 +860,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             entity.setDatareply(dataResponse);
             entity.setRoundwaitetime(waitingIntervalPerRound);
             entity.setRoundmeasinval(measurementIntervalPerRound);
+            entity.setInvalday(intervalDays);
             //定时测量方式
             if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
                 StringBuffer timeBuffer = new StringBuffer();
@@ -821,6 +888,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             entity.setMeaintertime(measurementIntervalTime);
             entity.setMeabaseth(measuringReferenceDepth);
             entity.setInterval_compensation(intervalCompensation);
+            entity.setBottom_safe_distance(bottomSafetyDistance);
             entity.setInterval_fitting(intervalFitting);
             entity.setPoint_offset(pointOffset);
 
@@ -841,10 +909,11 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         measureMethod = admeExecutiveAgencyInfo.getMeastype();
         dataSettlementMethod = admeExecutiveAgencyInfo.getDatatype();
         dataResponse = admeExecutiveAgencyInfo.getDatareply();
+        waitingIntervalPerRound = admeExecutiveAgencyInfo.getRoundwaitetime();
         measurementIntervalPerRound = admeExecutiveAgencyInfo.getRoundmeasinval();
         startTimePerRound = admeExecutiveAgencyInfo.getRoundmeasstart();
 
-        waitingIntervalPerRound = admeExecutiveAgencyInfo.getRoundwaitetime();
+        intervalDays = admeExecutiveAgencyInfo.getInvalday();
         dataReadingInterval = admeExecutiveAgencyInfo.getDatainval();
         measurementCompensationTime = admeExecutiveAgencyInfo.getCompensatetime();
         motorDriveAddress = admeExecutiveAgencyInfo.getDriveaddress();
@@ -856,12 +925,15 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         measurementIntervalTime = admeExecutiveAgencyInfo.getMeaintertime();
         measuringReferenceDepth = admeExecutiveAgencyInfo.getMeabaseth();
         intervalCompensation = admeExecutiveAgencyInfo.getInterval_compensation();
+        bottomSafetyDistance = admeExecutiveAgencyInfo.getBottom_safe_distance();
         intervalFitting = admeExecutiveAgencyInfo.getInterval_fitting();
         pointOffset = admeExecutiveAgencyInfo.getPoint_offset();
 
         if (measureMethod.equals("NullKey")) {
             measureMethodLayout.setVisibility(View.GONE);
+            waitingIntervalPerRoundLayout.setVisibility(View.GONE);
             measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+            intervalDayLayout.setVisibility(View.GONE);
             startTimePerRoundLayout.setVisibility(View.GONE);
             mRecyclerViewTime.setVisibility(View.GONE);
 
@@ -871,6 +943,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[0]);
                     waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    intervalDayLayout.setVisibility(View.GONE);
                     startTimePerRoundLayout.setVisibility(View.GONE);
                     mRecyclerViewTime.setVisibility(View.GONE);
                     break;
@@ -878,6 +951,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[1]);
                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                     measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                    intervalDayLayout.setVisibility(View.GONE);
                     startTimePerRoundLayout.setVisibility(View.GONE);
                     mRecyclerViewTime.setVisibility(View.GONE);
                     break;
@@ -885,6 +959,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[2]);
                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    intervalDayLayout.setVisibility(View.VISIBLE);
                     startTimePerRoundLayout.setVisibility(View.VISIBLE);
                     mRecyclerViewTime.setVisibility(View.VISIBLE);
                     break;
@@ -913,7 +988,6 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 
         try {
             mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRound);
-
             if (!startTimePerRound.equals("NullKey")) {
                 AdmeTimeItem item;
                 String[] times = startTimePerRound.split("\\|");
@@ -936,6 +1010,12 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 waitingIntervalPerRoundLayout.setVisibility(View.GONE);
             } else {
                 mEtWaitingIntervalPerRound.setText(waitingIntervalPerRound);
+            }
+
+            if (intervalDays.equals("NullKey")) {
+                intervalDayLayout.setVisibility(View.GONE);
+            } else {
+                mEtIntervalDay.setText(intervalDays);
             }
 
             if (dataReadingInterval.equals("NullKey")) {
@@ -1009,6 +1089,12 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             } else {
                 intervalCompensation = decimalFormat.format(Double.parseDouble(intervalCompensation));
                 mEtIntervalCompensation.setText(intervalCompensation);
+            }
+            if(bottomSafetyDistance.equals("NullKey")) {
+                bottomSafetyDistanceLayout.setVisibility(View.GONE);
+            } else {
+                bottomSafetyDistance = decimalFormat.format(Double.parseDouble(bottomSafetyDistance));
+                mEtBottomSafetyDistance.setText(bottomSafetyDistance);
             }
 
             decimalFormat.applyPattern("#.#");
@@ -1106,6 +1192,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         dataResponseLayout.setEnabled(isEditable);
         measurementIntervalPerRoundLayout.setEnabled(isEditable);
         mEtWaitingIntervalPerRound.setEnabled(isEditable);
+        mEtIntervalDay.setEnabled(isEditable);
         mEtDataReadingInterval.setEnabled(isEditable);
         mEtMeasurementCompensationTime.setEnabled(isEditable);
         mEtMotorDriveAddress.setEnabled(isEditable);
@@ -1117,6 +1204,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtMeasurementIntervalTime.setEnabled(isEditable);
         mEtMeasuringReferenceDepth.setEnabled(isEditable);
         mEtIntervalCompensation.setEnabled(isEditable);
+        mEtBottomSafetyDistance.setEnabled(isEditable);
         mEtIntervalFitting.setEnabled(isEditable);
         mEtPointOffset.setEnabled(isEditable);
 
@@ -1127,6 +1215,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             mTvMeasurementIntervalPerRound.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_arrow_right, 0);
 
             mEtWaitingIntervalPerRound.setHint("请输入");
+            mEtIntervalDay.setHint("请输入");
             mEtDataReadingInterval.setHint("请输入");
             mEtMeasurementCompensationTime.setHint("请输入");
             mEtMotorDriveAddress.setHint("请输入");
@@ -1138,6 +1227,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             mEtMeasurementIntervalTime.setHint("请输入");
             mEtMeasuringReferenceDepth.setHint("请输入");
             mEtIntervalCompensation.setHint("请输入");
+            mEtBottomSafetyDistance.setHint("请输入");
             mEtIntervalFitting.setHint("请输入");
             mEtPointOffset.setHint("请输入");
         } else {
@@ -1147,6 +1237,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             mTvMeasurementIntervalPerRound.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
             mEtWaitingIntervalPerRound.setHint("");
+            mEtIntervalDay.setHint("");
             mEtDataReadingInterval.setHint("");
             mEtMeasurementCompensationTime.setHint("");
             mEtMotorDriveAddress.setHint("");
@@ -1158,9 +1249,9 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             mEtMeasurementIntervalTime.setHint("");
             mEtMeasuringReferenceDepth.setHint("");
             mEtIntervalCompensation.setHint("");
+            mEtBottomSafetyDistance.setHint("");
             mEtIntervalFitting.setHint("");
             mEtPointOffset.setHint("");
-//            initParamConfigInfo();
         }
         mBtnSave.setVisibility(isEditable ? View.VISIBLE : View.GONE);
     }
