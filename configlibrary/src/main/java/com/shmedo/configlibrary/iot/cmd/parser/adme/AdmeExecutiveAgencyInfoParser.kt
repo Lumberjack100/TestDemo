@@ -28,6 +28,7 @@ class AdmeExecutiveAgencyInfoParser : IOTResultParser<AdmeExecutiveAgencyInfo?> 
             info.datareply = keyValueMap.getOrDefault("datareply", "NullKey")
             info.roundwaitetime = keyValueMap.getOrDefault("roundwaitetime", "NullKey")
             info.roundmeasinval = keyValueMap.getOrDefault("roundmeasinval", "NullKey")
+            info.updatedate = keyValueMap.getOrDefault("updatedate", "NullKey")
             info.invalday = keyValueMap.getOrDefault("invalday", "NullKey")
             info.roundmeasstart = keyValueMap.getOrDefault("roundmeasstart", "NullKey")
             info.datainval = keyValueMap.getOrDefault("datainval", "NullKey")

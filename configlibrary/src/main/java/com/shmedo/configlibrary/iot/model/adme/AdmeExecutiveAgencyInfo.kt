@@ -24,6 +24,10 @@ class AdmeExecutiveAgencyInfo {
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
 
+    var updatedate // 修改日期
+            : String? = null
+        get() = if (TextUtils.isEmpty(field)) "" else field
+
     var invalday //间隔天数
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field

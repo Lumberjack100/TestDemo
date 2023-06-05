@@ -70,6 +70,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     @BindView(R.id.tv_measurement_interval_per_round)
     TextView mTvMeasurementIntervalPerRound;//每轮测量间隔
 
+    @BindView(R.id.tv_modified_date)
+    TextView  mTvModifiedDate;//修改日期
+
     @BindView(R.id.et_interval_day)
     ClearEditText mEtIntervalDay;//间隔时间
 
@@ -108,6 +111,9 @@ public class AdmeBasicParamConfigView extends LinearLayout {
 
     @BindView(R.id.ll_measurement_interval_per_round)
     ViewGroup measurementIntervalPerRoundLayout;
+
+    @BindView(R.id.ll_modified_date)
+    ViewGroup modifiedDateLayout;
 
     @BindView(R.id.ll_interval_day)
     ViewGroup intervalDayLayout;
@@ -269,20 +275,24 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                                     if (null != waitingIntervalPerRound && !waitingIntervalPerRound.equals("NullKey"))
                                         waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                                    modifiedDateLayout.setVisibility(View.GONE);
                                     intervalDayLayout.setVisibility(View.GONE);
                                     startTimePerRoundLayout.setVisibility(View.GONE);
                                     mRecyclerViewTime.setVisibility(View.GONE);
                                 } else if (position == 1) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                                    modifiedDateLayout.setVisibility(View.GONE);
                                     intervalDayLayout.setVisibility(View.GONE);
                                     startTimePerRoundLayout.setVisibility(View.GONE);
                                     mRecyclerViewTime.setVisibility(View.GONE);
                                 } else if (position == 2) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
-                                    if (null != intervalDays && intervalDays.equals("NullKey"))
+                                    if (null != intervalDays && intervalDays.equals("NullKey")) {
+                                        modifiedDateLayout.setVisibility(View.VISIBLE);
                                         intervalDayLayout.setVisibility(View.VISIBLE);
+                                    }
                                     startTimePerRoundLayout.setVisibility(View.VISIBLE);
                                     mRecyclerViewTime.setVisibility(View.VISIBLE);
                                 }
@@ -635,6 +645,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             measureMethodLayout.setVisibility(View.GONE);
             waitingIntervalPerRoundLayout.setVisibility(View.GONE);
             measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+            modifiedDateLayout.setVisibility(View.GONE);
             intervalDayLayout.setVisibility(View.GONE);
             startTimePerRoundLayout.setVisibility(View.GONE);
             mRecyclerViewTime.setVisibility(View.GONE);
@@ -644,6 +655,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[0]);
                     waitingIntervalPerRoundLayout.setVisibility(View.VISIBLE);
                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    modifiedDateLayout.setVisibility(View.GONE);
                     intervalDayLayout.setVisibility(View.GONE);
                     startTimePerRoundLayout.setVisibility(View.GONE);
                     mRecyclerViewTime.setVisibility(View.GONE);
@@ -652,6 +664,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[1]);
                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                     measurementIntervalPerRoundLayout.setVisibility(View.VISIBLE);
+                    modifiedDateLayout.setVisibility(View.GONE);
                     intervalDayLayout.setVisibility(View.GONE);
                     startTimePerRoundLayout.setVisibility(View.GONE);
                     mRecyclerViewTime.setVisibility(View.GONE);
@@ -660,6 +673,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                     mTvMeasureMethod.setText(measureMethods[2]);
                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
+                    modifiedDateLayout.setVisibility(View.VISIBLE);
                     intervalDayLayout.setVisibility(View.VISIBLE);
                     startTimePerRoundLayout.setVisibility(View.VISIBLE);
                     mRecyclerViewTime.setVisibility(View.VISIBLE);
@@ -674,6 +688,13 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                 mEtWaitingIntervalPerRound.setText(waitingIntervalPerRound);
             }
             mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRound);
+
+            if (admeExecutiveAgencyInfo.getUpdatedate().equals("NullKey")) {
+                modifiedDateLayout.setVisibility(View.GONE);
+            } else {
+                mTvModifiedDate.setText(admeExecutiveAgencyInfo.getUpdatedate());
+            }
+
             if (intervalDays.equals("NullKey")) {
                 intervalDayLayout.setVisibility(View.GONE);
             } else {
