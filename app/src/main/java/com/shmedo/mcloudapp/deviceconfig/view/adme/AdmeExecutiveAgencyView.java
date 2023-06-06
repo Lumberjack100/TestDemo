@@ -38,6 +38,7 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeTimeAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.AdmeTimeItem;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -68,7 +69,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
     TextView mTvMeasurementIntervalPerRound;//每轮测量间隔
 
     @BindView(R.id.tv_modified_date)
-    TextView  mTvModifiedDate;//修改日期
+    TextView mTvModifiedDate;//修改日期
 
     @BindView(R.id.et_interval_day)
     ClearEditText mEtIntervalDay;//间隔时间
@@ -257,6 +258,8 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         mEtBottomSafetyDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtIntervalFitting.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
         mEtPointOffset.setFilters(new InputFilter[]{new InputFilter.LengthFilter(5)});
+
+        mEtBottomSafetyDistance.setHint("[-10,10]");
 
         mTvMeasureMethod.setText("实时测量");
         measureMethod = "0";
@@ -755,6 +758,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         } else {
 //            intervalCompensation = null;
         }
+        decimalFormat.applyPattern("#.###");
         if (!admeExecutiveAgencyInfo.getBottom_safe_distance().equals("NullKey")
                 && RegexUtils.isMatch(RegexConstants.REGEX_FLOAT, admeExecutiveAgencyInfo.getBottom_safe_distance())
                 && !decimalFormat.format(Double.parseDouble(admeExecutiveAgencyInfo.getBottom_safe_distance())).equals(bottomSafetyDistance)) {
@@ -871,7 +875,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             entity.setMeaintertime(measurementIntervalTime);
             entity.setMeabaseth(measuringReferenceDepth);
             entity.setInterval_compensation(intervalCompensation);
-            entity.setBottom_safe_distance(bottomSafetyDistance);
+            entity.setBottom_safe_distance(bottomSafetyDistance.contains(".") ? bottomSafetyDistance : bottomSafetyDistance + ".0");
             entity.setInterval_fitting(intervalFitting);
             entity.setPoint_offset(pointOffset);
 
@@ -998,7 +1002,8 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
             if (admeExecutiveAgencyInfo.getUpdatedate().equals("NullKey")) {
                 modifiedDateLayout.setVisibility(View.GONE);
             } else {
-                mTvModifiedDate.setText(admeExecutiveAgencyInfo.getUpdatedate());
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new java.util.Date(Long.parseLong(admeExecutiveAgencyInfo.getUpdatedate()) * 1000));
+                mTvModifiedDate.setText(date);
             }
 
             if (intervalDays.equals("NullKey")) {

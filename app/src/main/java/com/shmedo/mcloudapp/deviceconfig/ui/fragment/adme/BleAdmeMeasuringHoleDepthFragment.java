@@ -31,12 +31,14 @@ import com.shmedo.configlibrary.iot.cmd.IOTCommandResult;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeAutoMeasuringHoleDepthEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeLockedRotorDetectionEntity;
 import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeMeasuringHoleDepthEntity;
+import com.shmedo.configlibrary.iot.cmd.entity.adme.AdmeStepperMotorEntity;
 import com.shmedo.configlibrary.iot.cmd.parser.IOTParseManager;
 import com.shmedo.configlibrary.iot.enums.IOTCommandType;
 import com.shmedo.configlibrary.iot.model.CommonSettingCmdResult;
 import com.shmedo.configlibrary.iot.model.adme.AdmeLockedRotorDetectionInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMeasuringHoleDepthInfo;
 import com.shmedo.configlibrary.iot.model.adme.AdmeMotorMotionDistanceInfo;
+import com.shmedo.configlibrary.iot.model.adme.AdmeStepperMotorInfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
 import com.shmedo.mcloudapp.R;
@@ -117,19 +119,16 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
     private String downSpeed;// 电机下放速度(r/min)
     private String safeDistance;// 安全距离补偿
-
     private String movementway;// 运动方式
     private String movementSpeed;// 电机运动速度(r/min)
     private String totalDistanceGoal;//  运动距离
     private String lastDistance;//当前距离
-
 
     private AdmeMeasuringHoleDepthInfo measuringHoleDepthInfo;
     private BleAdmeManualMeasuringHoleDepthBottomDialog manualMeasuringHoleDepthBottomDialog;
     private BleAdmeAutoMeasuringHoleDepthBottomDialog autoMeasuringHoleDepthBottomDialog;
 
     private DecimalFormat decimalFormat = new DecimalFormat();
-
     private final String[] measureWays = new String[]{"自动测孔深", "手动测孔深"};
     private final String[] movementWays = new String[]{"上拉", "下放"};
 
@@ -149,9 +148,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         super.onViewCreated(view, savedInstanceState);
         setView();
         setSwitchViewListener();
-        //进入页面默认自动测孔深，需要打开堵转检测，先查询是否打开
-        queryLockRotorInfo();
         loadAutoLastHistoryData();
+        //进入页面默认自动测孔深，需要打开堵转检测，先查询是否打开
+        intQueryCommands();
     }
 
     private void setView() {
@@ -173,6 +172,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         positiveAndNegativeTestLayout.setVisibility(View.VISIBLE);
         autoMeasureModeLayout.setVisibility(View.VISIBLE);
         manualMeasureModeLayout.setVisibility(View.GONE);
+
         mTvMovementWay.setText("上拉");
         movementway = "0";
 
@@ -182,9 +182,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         mEtMovementSpeed.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence text, int start, int before, int count) {
                 if (!TextUtils.isEmpty(text) && !TextUtils.isEmpty(movementway) && movementway.equals("0")) {
@@ -201,7 +199,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
     }
@@ -218,16 +215,34 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 setLockRotorInfo(isChecked);
             }
         });
+        positiveAndNegativeEnableSBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isConnected()) {
+                    ToastUtils.show(StringUtils.getString(R.string.ble_config_disconnect_warn));
+                    positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(!isChecked);
+                    return;
+                }
+                enableOrDisableStepperMotorParam(isChecked);
+            }
+        });
     }
 
-    /**
-     * 获取堵转检测参数
-     */
-    private void queryLockRotorInfo() {
+    private void intQueryCommands() {
+        commandItems.clear();
+
+        //获取设备的步进电机正反测使能信息
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_STEPPER_MOTOR);
+        commandItems.add(command);
+
+        //获取设备的堵转检测信息
+        command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
+        commandItems.add(command);
+
         startDefaultProgress("加载中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_10000_MILLIS);
-        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION);
-        sendCommand(command);
+        sendCommandFromCmdList();
     }
+
 
     /**
      * 查询ADME测孔深运动的脉冲数、运动距离
@@ -270,6 +285,18 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         entity.setUpsusranb(lockedRotorDetectionInfo.getUpsusranb());
 
         String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION, entity);
+        sendCommand(command);
+    }
+
+    /**
+     * 步进电机正反测使能
+     */
+    private void enableOrDisableStepperMotorParam(boolean isOpen) {
+        AdmeStepperMotorEntity entity = new AdmeStepperMotorEntity();
+        entity.setPosnegtest(isOpen ? "1" : "0");
+
+        startDefaultProgress("处理中...", AppContants.MsgWhat.MSG_DEFAULT, DELAY_5000_MILLIS);
+        String command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_STEPPER_MOTOR, entity);
         sendCommand(command);
     }
 
@@ -567,6 +594,29 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     private void setResultData(final String cmdStr) {
         IOTCommandType type = IOTStringUtil.extractCommandType(cmdStr);
         switch (type) {
+            case ADME_MD_GET_STEPPER_MOTOR: {//获取ADME的步进电机配置参数
+                sendCommandFromCmdList();
+                IOTCommandResult<AdmeStepperMotorInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
+                if (!commandResult.isSuccess()) {
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    String errMsg = String.format("%s %s", "查询正反测使能状态出错!", commandResult.getMessage());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                AdmeStepperMotorInfo admeStepperMotorInfo = commandResult.getResult();
+                if (admeStepperMotorInfo == null) {
+                    Timber.e("AdmeStepperMotorInfo is Null!");
+                    return;
+                }
+                if ("0".equals(admeStepperMotorInfo.getPosnegtest())) {
+                    positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(false);
+                } else {
+                    positiveAndNegativeEnableSBtn.setCheckedImmediatelyNoEvent(true);
+                }
+            }
+            break;
+
             case ADME_MD_GET_LOCKED_ROTOR_DETECTION: {//获取ADME的堵转参数
                 IOTCommandResult<AdmeLockedRotorDetectionInfo> commandResult = IOTParseManager.getInstance().parse(cmdStr);
                 if (!commandResult.isSuccess()) {
@@ -590,7 +640,20 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
                 if (!cmdResult.isSucceed()) {
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
-                    String errMsg = String.format("%s %s", "设置堵转参数出错!", cmdResult.getReason());
+                    String errMsg = String.format("%s %s", "设置堵转使能出错!", cmdResult.getReason());
+                    Timber.e(errMsg);
+                    ToastUtils.show(errMsg);
+                    return;
+                }
+                saveConfigInfo();
+            }
+            break;
+
+            case ADME_MD_SET_STEPPER_MOTOR: {//设置ADME的步进电机配置参数
+                CommonSettingCmdResult cmdResult = IOTParseManager.getInstance().parseSettingCmd(cmdStr);
+                if (!cmdResult.isSucceed()) {
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    String errMsg = String.format("%s %s", "设置正反测使能出错!", cmdResult.getReason());
                     Timber.e(errMsg);
                     ToastUtils.show(errMsg);
                     return;

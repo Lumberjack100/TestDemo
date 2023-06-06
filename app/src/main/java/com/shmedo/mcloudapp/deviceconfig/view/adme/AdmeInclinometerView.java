@@ -142,7 +142,7 @@ public class AdmeInclinometerView extends LinearLayout {
     }
 
     private void initView() {
-        mEtTorsionAngle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4), numberFilter});
+        mEtTorsionAngle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(9), numberFilter});
         mEtTorsionAngle.setHint("[-90,90]");
 
         mEtMacAddress.setFilters(new InputFilter[]{new InputFilter.LengthFilter(12)});
@@ -178,11 +178,11 @@ public class AdmeInclinometerView extends LinearLayout {
                             public void onSelect(int position, String text) {
                                 mTvInclinometerVersion.setText(text);
                                 if (position == 0) {
-                                    mode = "0";
+                                    inclinometerVersion = "0";
                                     compensateWayLayout.setVisibility(View.GONE);
 
                                 } else if (position == 1) {
-                                    mode = "1";
+                                    inclinometerVersion = "1";
                                     compensateWayLayout.setVisibility(View.VISIBLE);
                                 }
                             }
@@ -253,7 +253,7 @@ public class AdmeInclinometerView extends LinearLayout {
                 return false;
             }
             try {
-                int value = Integer.parseInt(torsionAngle);
+                double value = Double.parseDouble(torsionAngle);
                 if (value < -90 || value > 90) {
                     ToastUtils.show("请输入正确的扭转角γ!");
                     mEtTorsionAngle.requestFocus();
@@ -411,6 +411,8 @@ public class AdmeInclinometerView extends LinearLayout {
                 } else if (compensateWay.equals("1")) {
                     mTvCompensateWay.setText(compensateWays[1]);
                     torsionAngleLayout.setVisibility(View.VISIBLE);
+                    decimalFormat.applyPattern("#.##");
+                    torsionAngle = decimalFormat.format(Double.parseDouble(torsionAngle));
                     mEtTorsionAngle.setText(torsionAngle);
                 }
             }

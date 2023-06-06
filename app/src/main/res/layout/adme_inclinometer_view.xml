@@ -74,7 +74,8 @@
 
         <com.shmedo.mcloudapp.common.view.ClearEditText
             android:id="@+id/et_torsion_angle"
-            style="@style/Common_EditItem_EditText_Style" />
+            style="@style/Common_EditItem_EditText_Style"
+            android:inputType="numberDecimal"/>
 
     </LinearLayout>
 

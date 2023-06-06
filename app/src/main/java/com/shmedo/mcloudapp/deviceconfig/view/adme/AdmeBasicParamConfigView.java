@@ -44,6 +44,7 @@ import com.shmedo.mcloudapp.deviceconfig.adapter.AdmeTimeAdapter;
 import com.shmedo.mcloudapp.deviceconfig.model.AdmeTimeItem;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -71,7 +72,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     TextView mTvMeasurementIntervalPerRound;//每轮测量间隔
 
     @BindView(R.id.tv_modified_date)
-    TextView  mTvModifiedDate;//修改日期
+    TextView mTvModifiedDate;//修改日期
 
     @BindView(R.id.et_interval_day)
     ClearEditText mEtIntervalDay;//间隔时间
@@ -692,7 +693,8 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             if (admeExecutiveAgencyInfo.getUpdatedate().equals("NullKey")) {
                 modifiedDateLayout.setVisibility(View.GONE);
             } else {
-                mTvModifiedDate.setText(admeExecutiveAgencyInfo.getUpdatedate());
+                String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new java.util.Date(Long.parseLong(admeExecutiveAgencyInfo.getUpdatedate()) * 1000));
+                mTvModifiedDate.setText(date);
             }
 
             if (intervalDays.equals("NullKey")) {
