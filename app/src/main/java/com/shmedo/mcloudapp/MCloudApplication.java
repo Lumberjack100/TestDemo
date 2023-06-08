@@ -57,7 +57,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         MCloudApp.initialize(this);
 
         //友盟预初始化
-        setUmeng();
+//        setUmeng();
 
         //异常上报和升级
         initCrashReport();
@@ -206,7 +206,7 @@ public class MCloudApplication extends Application implements ViewModelStoreOwne
         UMConfigure.preInit(this, appKey, "production");
 
         // 页面自动采集选择
-        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL);
+//        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL);
 
         SPStaticUtils.setDefaultSPUtils(SPUtils.getInstance(getPackageName() + "_preferences"));
         String mPrivacy = SPStaticUtils.getString(AppContants.PRIVACY_AGREEMENT);

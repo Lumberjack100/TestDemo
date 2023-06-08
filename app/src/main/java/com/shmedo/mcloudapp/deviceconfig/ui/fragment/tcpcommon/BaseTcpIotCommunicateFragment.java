@@ -25,7 +25,6 @@ import com.shmedo.mcloudapp.deviceconfig.callback.WeakHandler;
 import com.shmedo.mcloudapp.deviceconfig.model.TcpConnectionState;
 import com.shmedo.mcloudapp.deviceconfig.viewmodels.DeviceApiKeyViewModel;
 import com.shmedo.mcloudapp.profile.TcpViewModel;
-import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -135,7 +134,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
                     valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
                     valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
                     valueMap.put("command_content", msg);
-                    MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
+//                    MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
                 } catch (Exception ex) {
                     Timber.e(ex);
                 }
@@ -174,7 +173,7 @@ public abstract class BaseTcpIotCommunicateFragment extends BaseFragment {
             valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
             valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
             valueMap.put("command_content", cmdStr);
-            MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
+//            MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -24,7 +24,6 @@ import com.shmedo.mcloudapp.network.ErrorInfo;
 import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.util.ResponseHandler;
-import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -172,7 +171,7 @@ public class UpdatePasswordActivity extends BaseActivity {
                                     public void run() {
                                         MCloudApp.logout();
                                         //登出
-                                        MobclickAgent.onProfileSignOff();
+//                                        MobclickAgent.onProfileSignOff();
                                         LoginActivity.startActivity(UpdatePasswordActivity.this);
                                     }
                                 }, 1000);

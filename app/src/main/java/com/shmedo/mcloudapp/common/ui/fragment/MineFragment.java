@@ -29,7 +29,6 @@ import com.shmedo.mcloudapp.user.ui.activity.UserHomePageActivity;
 import com.shmedo.mcloudapp.util.GlideUtils;
 import com.shmedo.mcloudapp.util.ResponseHandler;
 import com.shmedo.mcloudapp.util.UpdataManagerUtil;
-import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -155,7 +154,7 @@ public class MineFragment extends BaseFragment {
     private void exitLogin() {
         MCloudApp.logout();
         //登出
-        MobclickAgent.onProfileSignOff();
+//        MobclickAgent.onProfileSignOff();
         LoginActivity.startActivity(getActivity());
     }
 

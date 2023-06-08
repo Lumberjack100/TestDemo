@@ -81,9 +81,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     @BindView(R.id.et_down_speed)
     ClearEditText mEtDownSpeed;//下放速度
 
-    @BindView(R.id.et_bottom_safe_distance)
-    ClearEditText mEtBottomSafeDistance;//管底补偿距离
-
     @BindView(R.id.tv_real_hole_depth)
     TextView mTvRealHoleDepth;//实测测斜管孔深
 
@@ -156,8 +153,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
     private void setView() {
         mEtDownSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtDownSpeed.setHint("1-100");
-        mEtBottomSafeDistance.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
-        mEtBottomSafeDistance.setHint("0-10");
 
         mEtMovementSpeed.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         mEtMovementSpeed.setHint("1-100");
@@ -332,13 +327,9 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
         try {
             //持久化保存用户数据到SharedPreferences文件中
             SPStaticUtils.put(AppContants.ADME.AUTO_LAST_MOTOR_DROP_SPEED, downSpeed);
-            SPStaticUtils.put(AppContants.ADME.AUTO_LAST_BOTTOM_SAFE_DISTANCE, safeDistance);
 
             AdmeAutoMeasuringHoleDepthEntity entity = new AdmeAutoMeasuringHoleDepthEntity();
             entity.setMotorspeed(downSpeed);
-            decimalFormat.applyPattern("#.###");
-            safeDistance = decimalFormat.format(Double.parseDouble(safeDistance));
-            entity.setSafedistance(safeDistance);
 
             mTvRealHoleDepth.setText("0");
             mTvRecommendHoleDepth.setText("0");
@@ -457,9 +448,7 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
      */
     private void loadAutoLastHistoryData() {
         String speed = SPStaticUtils.getString(AppContants.ADME.AUTO_LAST_MOTOR_DROP_SPEED, "");
-        String distance = SPStaticUtils.getString(AppContants.ADME.AUTO_LAST_BOTTOM_SAFE_DISTANCE, "");
         mEtDownSpeed.setText(speed);
-        mEtBottomSafeDistance.setText(distance);
     }
 
     /**
@@ -511,9 +500,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 return false;
             }
 
-        } else {
+        } else {//自动测量孔深模式
             downSpeed = mEtDownSpeed.getText().toString().trim();
-            safeDistance = mEtBottomSafeDistance.getText().toString().trim();
             if (TextUtils.isEmpty(downSpeed)) {
                 ToastUtils.show("请输入下放速度!");
                 mEtDownSpeed.requestFocus();
@@ -529,24 +517,6 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
             } catch (Exception ex) {
                 ToastUtils.show("请输入正确的下放速度!");
                 mEtDownSpeed.requestFocus();
-                return false;
-            }
-
-            if (TextUtils.isEmpty(safeDistance)) {
-                ToastUtils.show("请输入安全距离补偿!");
-                mEtBottomSafeDistance.requestFocus();
-                return false;
-            }
-            try {
-                double value = Double.parseDouble(safeDistance);
-                if (value < 0 || value > 10) {
-                    ToastUtils.show("请输入正确的安全距离补偿!");
-                    mEtBottomSafeDistance.requestFocus();
-                    return false;
-                }
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的安全距离补偿!");
-                mEtBottomSafeDistance.requestFocus();
                 return false;
             }
         }
@@ -740,6 +710,8 @@ public class BleAdmeMeasuringHoleDepthFragment extends BaseUSRBleIotCommunicateF
                 AdmeMotorMotionDistanceInfo motorMotionDistanceInfo = commandResult.getResult();
                 if (motorMotionDistanceInfo != null) {
                     lastDistance = motorMotionDistanceInfo.getRealmovedistance();
+                    if(TextUtils.isEmpty(safeDistance))
+                        safeDistance = motorMotionDistanceInfo.getRealholedepth();
                     String holeDepth = motorMotionDistanceInfo.getRealholedepth();
                     String recDepth = motorMotionDistanceInfo.getRecoholedepth();
                     if (!TextUtils.isEmpty(holeDepth) && !TextUtils.isEmpty(safeDistance)) {

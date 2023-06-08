@@ -96,21 +96,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            style="@style/Common_EditItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="管底补偿距离(m)" />
-
-            <com.shmedo.mcloudapp.common.view.ClearEditText
-                android:id="@+id/et_bottom_safe_distance"
-                style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberDecimal" />
-
-        </LinearLayout>
-
         <LinearLayout style="@style/Common_ClickableItem_LayoutStyle">
 
             <TextView

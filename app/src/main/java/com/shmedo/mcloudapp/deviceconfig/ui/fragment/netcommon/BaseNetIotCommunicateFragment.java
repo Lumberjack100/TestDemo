@@ -43,7 +43,6 @@ import com.shmedo.mcloudapp.network.MDRetrofit;
 import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.util.ResponseHandler;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -182,7 +181,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
             valueMap.put("device_sn", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken());
             valueMap.put("command_type", command_type);
             valueMap.put("command_content", content);
-            MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
+//            MobclickAgent.onEventObject(MCloudApp.getContext(), "Dispatch_Command", valueMap);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -303,7 +302,7 @@ public abstract class BaseNetIotCommunicateFragment extends BaseFragment {
                 valueMap.put("device_sn", TextUtils.isEmpty(deviceInfo.getDeviceToken()) ? "" : deviceInfo.getDeviceToken());
                 valueMap.put("command_type", type.toString());
                 valueMap.put("command_content", content);
-                MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
+//                MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

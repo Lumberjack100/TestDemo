@@ -26,7 +26,6 @@ import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.callback.HandleBackInterface;
 import com.shmedo.mcloudapp.util.HandleBackUtil;
-import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -247,8 +246,8 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onResume();
         isActive = true;
         Timber.i("onResume,Fragment=%s", name);
-        if (!isExcludedFragment())
-            MobclickAgent.onPageStart(getClass().getSimpleName().intern()); //统计页面
+//        if (!isExcludedFragment())
+//            MobclickAgent.onPageStart(getClass().getSimpleName().intern()); //统计页面
 
     }
 
@@ -257,8 +256,8 @@ public abstract class BaseFragment extends Fragment implements HandleBackInterfa
         super.onPause();
         isActive = false;
         Timber.i("onPause,Fragment=%s", name);
-        if (!isExcludedFragment())
-            MobclickAgent.onPageEnd(getClass().getSimpleName().intern());
+//        if (!isExcludedFragment())
+//            MobclickAgent.onPageEnd(getClass().getSimpleName().intern());
     }
 
     @Override

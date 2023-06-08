@@ -94,7 +94,7 @@ public class WelcomeActivity extends BaseActivity implements LoginManager.LoginC
         //自动登录
         if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
             //当用户使用自有账号登录时，可以这样统计：
-            MobclickAgent.onProfileSignIn(mAccount);
+//            MobclickAgent.onProfileSignIn(mAccount);
             LoginManager.getInstance().login(mAccount, mPassword, this);
         } else {
             redirectToLoginActivity(1000);

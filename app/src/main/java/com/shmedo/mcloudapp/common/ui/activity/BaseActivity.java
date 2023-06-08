@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.MCloudApplication;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.viewmodels.ShareViewModel;
 import com.shmedo.mcloudapp.util.HandleBackUtil;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.Objects;
 
@@ -138,7 +137,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         String name = getClass().getName();
         Timber.i("onResume,activity=%s", name);
         //统计时长
-        MobclickAgent.onResume(this);
+//        MobclickAgent.onResume(this);
 
         //在无网络情况下打开APP时，系统不会发送网络状况变更的Intent，需要自己手动检查
         netStateChangedUI(NetworkUtils.isConnected());
@@ -150,7 +149,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         isActive = false;
         String name = getClass().getName();
         Timber.i("onPause,activity=%s", name);
-        MobclickAgent.onPause(this);
+//        MobclickAgent.onPause(this);
     }
 
     @Override
@@ -284,13 +283,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         return mActivityProvider.get(modelClass);
     }
 
-//    protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
-//        if (mApplicationProvider == null) {
-//            mApplicationProvider = new ViewModelProvider((MCloudApplication) this.getApplicationContext());
-//        }
-//        return mApplicationProvider.get(modelClass);
-//    }
-
     protected <T extends ViewModel> T getApplicationScopeViewModel(@NonNull Class<T> modelClass) {
         if (mApplicationProvider == null) {
             mApplicationProvider = new ViewModelProvider((MCloudApplication) this.getApplicationContext(),
@@ -314,9 +306,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
-        //当提示View被动态添加后直接关闭页面会导致该View内存溢出，所以需要在finish时移除
+    protected void onDestroy() {
+        super.onDestroy();
+         //当提示View被动态添加后直接关闭页面会导致该View内存溢出
         if (mTipView != null && mTipView.getParent() != null) {
             mWindowManager.removeView(mTipView);
         }

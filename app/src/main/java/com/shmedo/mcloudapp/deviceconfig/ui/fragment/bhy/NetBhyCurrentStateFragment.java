@@ -34,7 +34,6 @@ import com.shmedo.configlibrary.iot.model.das.DasSubSensorStatusInfo;
 import com.shmedo.configlibrary.iot.model.das.DasTemperatureAndHumidityStatusinfo;
 import com.shmedo.configlibrary.iot.utils.IOTStringUtil;
 import com.shmedo.core.AppContants;
-import com.shmedo.core.MCloudApp;
 import com.shmedo.mcloudapp.R;
 import com.shmedo.mcloudapp.common.view.recycleviewitemdivider.RecycleViewDivider;
 import com.shmedo.mcloudapp.deviceconfig.model.DeviceInfo;
@@ -42,7 +41,6 @@ import com.shmedo.mcloudapp.deviceconfig.model.DispatchCmdItem;
 import com.shmedo.mcloudapp.deviceconfig.model.QueryCmdResult;
 import com.shmedo.mcloudapp.deviceconfig.ui.fragment.netcommon.BaseNetIotCommunicateFragment;
 import com.shmedo.mcloudapp.deviceconfig.util.DeviceCurrentRunStateUtils;
-import com.umeng.analytics.MobclickAgent;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.CommonViewHolder;
 
@@ -694,7 +692,7 @@ public class NetBhyCurrentStateFragment extends BaseNetIotCommunicateFragment {
                 }
                 Map<String, Object> valueMap = new HashMap<String, Object>();
                 valueMap.put("axis_value", dasSubSensorStatusInfo.getMems().getVaule());//自定义参数：音乐类型，值：流行
-                MobclickAgent.onEventObject(MCloudApp.getContext(), "qingjiao_axis", valueMap);
+//                MobclickAgent.onEventObject(MCloudApp.getContext(), "qingjiao_axis", valueMap);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

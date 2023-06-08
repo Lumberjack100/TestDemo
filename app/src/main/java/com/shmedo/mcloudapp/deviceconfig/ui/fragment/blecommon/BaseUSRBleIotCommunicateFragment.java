@@ -37,7 +37,6 @@ import com.shmedo.mcloudapp.network.RequestHeader;
 import com.shmedo.mcloudapp.network.ServiceAddressType;
 import com.shmedo.mcloudapp.profile.BleViewModel;
 import com.shmedo.mcloudapp.util.ResponseHandler;
-import com.umeng.analytics.MobclickAgent;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -140,7 +139,7 @@ public abstract class BaseUSRBleIotCommunicateFragment extends BaseFragment {
                     valueMap.put("login_user", SPStaticUtils.getString(AppContants.User.UID, ""));
                     valueMap.put("device_sn", MCloudApp.getCurDeviceToken());
                     valueMap.put("command_content", result);
-                    MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
+//                    MobclickAgent.onEventObject(MCloudApp.getContext(), "Response_Command", valueMap);
                 } catch (Exception ex) {
                     Timber.e(ex);
                 }
