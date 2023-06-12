@@ -84,6 +84,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
     @BindView(R.id.et_revised)
     EditText mEtCorrectValue;
 
+    @BindView(R.id.iv_correction)
+    ImageView mIvCorrection;
+
     @BindView(R.id.correction_layout)
     ViewGroup correctionLayout;
 
@@ -299,6 +302,9 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mTvCorrectValue.setText("修正值(单位:mm)");
                     extensionLayout1.setVisibility(View.VISIBLE);
                     extensionLayout2.setVisibility(View.VISIBLE);
+                    mIvCorrection.setVisibility(View.VISIBLE);
+                    mIvExtension1.setVisibility(View.VISIBLE);
+                    mIvExtension2.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("初始读数(单位:mm)");
                     mTvExtension2.setText("堰上水头(单位:mm)");
                     exValue1 = externalSensorInfo.getLsycsds();
@@ -365,7 +371,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.modelSwitchLayout, R.id.childSensorTypeLayout, R.id.iv_extension1, R.id.iv_extension2, R.id.iv_extension3, R.id.btn_confirm})
+    @OnClick({R.id.modelSwitchLayout, R.id.childSensorTypeLayout, R.id.iv_correction,R.id.iv_extension1, R.id.iv_extension2, R.id.iv_extension3, R.id.btn_confirm})
     public void onClick(View view) {
         if (!DebouncingUtils.isValid(view, 1000)) {
             return;
@@ -376,13 +382,23 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
 
         } else if (id == R.id.childSensorTypeLayout) {
             showChildRadarTypeListDialog();
-        } else if (id == R.id.iv_extension1) {
+
+        } else if (id == R.id.iv_correction) {
+            if (iotSensorType == IOTSensorType.WEIR) //量水堰计修正值
+                showTipDialog("修正浮子高度  ");
+
+        }else if (id == R.id.iv_extension1) {
             if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
                 showTipDialog("初始值大于 360，设备将自动计算");
+            else if (iotSensorType == IOTSensorType.WEIR) //量水堰计初始读数
+                showTipDialog("当初始读数设置值小于 0  时，设备将自动计算初始值");
+
 
         } else if (id == R.id.iv_extension2) {
             if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
                 showTipDialog("初始值大于 360，设备将自动计算");
+            else if (iotSensorType == IOTSensorType.WEIR) //量水堰计堰上水头
+                showTipDialog("当水经堰顶点流出时，设置值为堰顶点到水面的距离；否则，设置值为堰顶点到浮子距离的负值；");
 
         } else if (id == R.id.iv_extension3) {
             if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪

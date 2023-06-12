@@ -149,6 +149,14 @@ public enum CommandType {
      */
     SENSOR_INSTALLELEVATION("169"),
     /**
+     * 设置量水堰初始读数
+     */
+    SENSOR_INITIAL_READING("171"),
+    /**
+     * 设置量水堰堰上水头
+     */
+    SENSOR_WEIR_HEAD("172"),
+    /**
      * DAS发送认证请求
      */
     DAS_SEND_AUTHENTICATION_REQUEST("222"),

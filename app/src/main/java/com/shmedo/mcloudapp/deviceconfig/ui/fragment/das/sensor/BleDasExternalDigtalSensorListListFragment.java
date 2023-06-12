@@ -93,6 +93,19 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                 if (!TextUtils.isEmpty(command)) {
                     commandItems.add(command);
                 }
+                //静力水准需要额外设置
+                if (SensorType.value(collectorCode) == SensorType.WEIR) {
+                    //初始读数指令
+                    command = getInitialReadingValue(paramsInfoSub);
+                    if (!TextUtils.isEmpty(command)) {
+                        commandItems.add(command);
+                    }
+                    //堰上水头指令
+                    command = getWeirHeadValue(paramsInfoSub);
+                    if (!TextUtils.isEmpty(command)) {
+                        commandItems.add(command);
+                    }
+                }
                 //静力水准需要额外设置高程
                 if (SensorType.value(collectorCode) == SensorType.STATIC_LEVEL) {
                     command = getElevationValue(paramsInfoSub);
@@ -155,6 +168,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case ULTRASONIC_LEVEL_GAUGE://超声波物位计
             case RADAR_LEVEL_GAUGE://雷达物位计
             case INFRASOUND://次声仪
+            case WEIR://量水堰计
             case STATIC_LEVEL://静力水准
             case WEATHER_STATION://气象计
             case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
@@ -185,6 +199,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case ULTRASONIC_LEVEL_GAUGE://超声波物位计
             case RADAR_LEVEL_GAUGE://雷达物位计
             case INFRASOUND://次声仪
+            case WEIR://量水堰计
             case STATIC_LEVEL://静力水准
             case WEATHER_STATION://气象计
             case DIGITAL_WATER_LEVEL_GAUGE://数字式水位计
@@ -211,6 +226,34 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
         }
         builderFirst.append("\r\n");
         String command = String.valueOf(builderFirst);
+        return command;
+    }
+
+    /**
+     * 获取量水堰计 初始读数指令
+     */
+    private String getInitialReadingValue(CollectorSensorParamsInfo paramsInfoSub) {
+        String command = "";
+        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
+        command = "##171" +
+                StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                commonDigitalSensorInfo.getExValue1() + "\r\n";
+
+        return command;
+    }
+
+    /**
+     * 获取量水堰计 堰上水头指令
+     */
+    private String getWeirHeadValue(CollectorSensorParamsInfo paramsInfoSub) {
+        String command = "";
+        CommonDigitalSensorInfo commonDigitalSensorInfo = (CommonDigitalSensorInfo) paramsInfoSub.getSensorData();
+        command = "##172" +
+                StringUtil.formatStringTwo(paramsInfoSub.getCollectorModel().toString()) +
+                StringUtil.formatStringTwo(paramsInfoSub.getSensorAddress()) +
+                commonDigitalSensorInfo.getExValue2() + "\r\n";
+
         return command;
     }
 
@@ -273,6 +316,24 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
             case STATIC_LEVEL_ELEVATION: //设置静力水准高程
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
                     ToastUtils.show("静力水准设置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    return;
+                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
+                break;
+
+            case SENSOR_INITIAL_READING: //设置量水堰初始读数
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("量水堰初始读数设置错误!");
+                    stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
+                    return;
+                }
+                sendCommandFromCmdList(this::saveConfigInfoNoReboot);
+                break;
+
+            case SENSOR_WEIR_HEAD: //设置量水堰堰上水头
+                if (tempStr.endsWith(CommandResult.ERROR_END)) {
+                    ToastUtils.show("量水堰堰上水头设置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }

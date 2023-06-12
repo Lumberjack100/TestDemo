@@ -82,7 +82,8 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_trigger_threshold"
                 style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
+                android:inputType="text"
+                android:digits="0123456789-." />
 
         </LinearLayout>
 
@@ -99,7 +100,19 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_revised"
                 style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
+                android:inputType="text"
+                android:digits="0123456789-." />
+
+            <ImageView
+                android:id="@+id/iv_correction"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_userinfo_about"
+                android:visibility="gone"
+                app:tint="@color/red"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
@@ -118,7 +131,8 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_extension1"
                 style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
+                android:inputType="text"
+                android:digits="0123456789-." />
 
             <ImageView
                 android:id="@+id/iv_extension1"
@@ -148,7 +162,8 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_extension2"
                 style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
+                android:inputType="text"
+                android:digits="0123456789-." />
 
             <ImageView
                 android:id="@+id/iv_extension2"
@@ -178,7 +193,8 @@
             <com.shmedo.mcloudapp.common.view.ClearEditText
                 android:id="@+id/et_extension3"
                 style="@style/Common_EditItem_EditText_Style"
-                android:inputType="numberSigned|numberDecimal" />
+                android:inputType="text"
+                android:digits="0123456789-." />
 
             <ImageView
                 android:id="@+id/iv_extension3"
