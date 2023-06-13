@@ -153,7 +153,7 @@ public enum CommandType {
      */
     SENSOR_INITIAL_READING("171"),
     /**
-     * 设置量水堰堰上水头
+     * 设置量水堰初始堰上水头
      */
     SENSOR_WEIR_HEAD("172"),
     /**

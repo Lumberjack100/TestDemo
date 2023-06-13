@@ -48,7 +48,7 @@ class DasExternalSensorEntity : Validater {
     //量水堰计特有
     var lsycsds //初始读数
             : String? = null
-    var lsyysst //堰上水头
+    var lsyysst //初始堰上水头
             : String? = null
 
     //倾角仪特有
