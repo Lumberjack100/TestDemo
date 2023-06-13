@@ -68,7 +68,7 @@ class DasExternalSensorInfo : Serializable {
     var lsycsds //初始读数
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
-    var lsyysst //堰上水头
+    var lsyysst //初始堰上水头
             : String? = null
         get() = if (TextUtils.isEmpty(field)) "" else field
 

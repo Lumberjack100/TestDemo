@@ -100,7 +100,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                     if (!TextUtils.isEmpty(command)) {
                         commandItems.add(command);
                     }
-                    //堰上水头指令
+                    //初始堰上水头指令
                     command = getWeirHeadValue(paramsInfoSub);
                     if (!TextUtils.isEmpty(command)) {
                         commandItems.add(command);
@@ -244,7 +244,7 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
     }
 
     /**
-     * 获取量水堰计 堰上水头指令
+     * 获取量水堰计初始堰上水头指令
      */
     private String getWeirHeadValue(CollectorSensorParamsInfo paramsInfoSub) {
         String command = "";
@@ -331,9 +331,9 @@ public class BleDasExternalDigtalSensorListListFragment extends BaseBleDasExtern
                 sendCommandFromCmdList(this::saveConfigInfoNoReboot);
                 break;
 
-            case SENSOR_WEIR_HEAD: //设置量水堰堰上水头
+            case SENSOR_WEIR_HEAD: //设置量水堰初始堰上水头
                 if (tempStr.endsWith(CommandResult.ERROR_END)) {
-                    ToastUtils.show("量水堰堰上水头设置错误!");
+                    ToastUtils.show("量水堰初始堰上水头设置错误!");
                     stopDefaultProgress(AppContants.MsgWhat.MSG_DEFAULT);
                     return;
                 }

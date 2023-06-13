@@ -306,7 +306,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                     mIvExtension1.setVisibility(View.VISIBLE);
                     mIvExtension2.setVisibility(View.VISIBLE);
                     mTvExtension1.setText("初始读数(单位:mm)");
-                    mTvExtension2.setText("堰上水头(单位:mm)");
+                    mTvExtension2.setText("初始堰上水头(单位:mm)");
                     exValue1 = externalSensorInfo.getLsycsds();
                     exValue2 = externalSensorInfo.getLsyysst();
                     if (!TextUtils.isEmpty(exValue1) && !exValue1.equals("NullKey")) {
@@ -397,7 +397,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
         } else if (id == R.id.iv_extension2) {
             if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
                 showTipDialog("初始值大于 360，设备将自动计算");
-            else if (iotSensorType == IOTSensorType.WEIR) //量水堰计堰上水头
+            else if (iotSensorType == IOTSensorType.WEIR) //量水堰计初始堰上水头
                 showTipDialog("当水经堰顶点流出时，设置值为堰顶点到水面的距离；否则，设置值为堰顶点到浮子距离的负值；");
 
         } else if (id == R.id.iv_extension3) {
@@ -602,7 +602,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
             }
 
             if (TextUtils.isEmpty(exValue2)) {
-                ToastUtils.show("堰上水头不能为空!");
+                ToastUtils.show("初始堰上水头不能为空!");
                 mEtExtension2.requestFocus();
                 return false;
             }
@@ -610,7 +610,7 @@ public class NetDasExternalDigitalSensorFragment extends BaseFragment {
                 double value = Double.parseDouble(exValue2);
 
             } catch (Exception ex) {
-                ToastUtils.show("请输入正确的堰上水头!");
+                ToastUtils.show("请输入正确的初始堰上水头!");
                 mEtExtension2.requestFocus();
                 return false;
             }
