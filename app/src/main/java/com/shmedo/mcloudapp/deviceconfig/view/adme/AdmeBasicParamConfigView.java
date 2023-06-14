@@ -360,7 +360,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         }
 
         if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
-            if (admeTimeAdapter.getData().size() <= 1) {
+            if (admeTimeAdapter.getData().size() < 1) {
                 MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
                 return false;
             }
