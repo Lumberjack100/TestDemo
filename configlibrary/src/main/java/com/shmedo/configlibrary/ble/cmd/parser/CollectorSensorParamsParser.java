@@ -169,6 +169,7 @@ public class CollectorSensorParamsParser implements ResultParser<CollectorSensor
                 commonDigitalSensorInfo.setTriggerThreshold((TextUtils.isEmpty(strs[3]) || strs[3].contains("nan")) ? "0" : strs[3]);
                 commonDigitalSensorInfo.setCorrectionValue((TextUtils.isEmpty(strs[5]) || strs[5].contains("nan")) ? "0" : strs[5]);
                 commonDigitalSensorInfo.setExValue1((TextUtils.isEmpty(strs[4]) || strs[4].contains("nan")) ? "0" : strs[4]);
+                sensorParamsInfo.setSensorData(commonDigitalSensorInfo);
             }
             break;
 
