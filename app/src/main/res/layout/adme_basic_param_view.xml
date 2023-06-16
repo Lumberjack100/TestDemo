@@ -80,6 +80,25 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_modified_date"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text="修改日期" />
+
+        <TextView
+            android:id="@+id/tv_modified_date"
+            style="@style/Common_ClickableItem_ValueStyle"
+            android:drawableEnd="@null"
+            tools:text="3" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_interval_day"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider"
