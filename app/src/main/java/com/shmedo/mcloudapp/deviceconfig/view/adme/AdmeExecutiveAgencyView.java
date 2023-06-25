@@ -366,7 +366,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                                 } else if (position == 2) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
-                                    if (null != intervalDays && intervalDays.equals("NullKey")) {
+                                    if (null != intervalDays && !intervalDays.equals("NullKey")) {
                                         modifiedDateLayout.setVisibility(View.VISIBLE);
                                         intervalDayLayout.setVisibility(View.VISIBLE);
                                     }
@@ -464,7 +464,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         intervalFitting = mEtIntervalFitting.getText().toString();
         pointOffset = mEtPointOffset.getText().toString();
 
-        if (!admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") && !admeExecutiveAgencyInfo.getRoundwaitetime().equals(waitingIntervalPerRound)) {
+        if (!measureMethod.equals("NullKey") && measureMethod.equals("0") && !admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") && !admeExecutiveAgencyInfo.getRoundwaitetime().equals(waitingIntervalPerRound)) {
             if (TextUtils.isEmpty(waitingIntervalPerRound)) {
                 ToastUtils.show("请输入每轮等待时间!");
                 mEtWaitingIntervalPerRound.requestFocus();
@@ -486,30 +486,30 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
 //            waitingIntervalPerRound = null;
         }
 
-        if (!admeExecutiveAgencyInfo.getInvalday().equals("NullKey") && !admeExecutiveAgencyInfo.getInvalday().equals(intervalDays)) {
-            if (TextUtils.isEmpty(intervalDays)) {
-                ToastUtils.show("请输入间隔时间!");
-                mEtIntervalDay.requestFocus();
-                return false;
-            }
-            try {
-                int value = Integer.parseInt(intervalDays);
-                if (value < 1) {
+        if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
+            if (!admeExecutiveAgencyInfo.getInvalday().equals("NullKey") && !admeExecutiveAgencyInfo.getInvalday().equals(intervalDays)) {
+                if (TextUtils.isEmpty(intervalDays)) {
+                    ToastUtils.show("请输入间隔时间!");
+                    mEtIntervalDay.requestFocus();
+                    return false;
+                }
+                try {
+                    int value = Integer.parseInt(intervalDays);
+                    if (value < 1) {
+                        ToastUtils.show("请输入正确的间隔时间!");
+                        mEtIntervalDay.requestFocus();
+                        return false;
+                    }
+                } catch (Exception ex) {
                     ToastUtils.show("请输入正确的间隔时间!");
                     mEtIntervalDay.requestFocus();
                     return false;
                 }
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的间隔时间!");
-                mEtIntervalDay.requestFocus();
-                return false;
-            }
-        } else {
+            } else {
 //            intervalDays = null;
-        }
+            }
 
-        if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
-            if (admeTimeAdapter.getData().size() <1) {
+            if (admeTimeAdapter.getData().size() < 1) {
                 MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
                 return false;
             }
@@ -978,26 +978,12 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         }
 
         try {
-            mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRound);
-            if (!startTimePerRound.equals("NullKey")) {
-                AdmeTimeItem item;
-                String[] times = startTimePerRound.split("\\|");
-                admeTimeAdapter.getData().clear();
-                for (String time : times) {
-                    if (!TextUtils.isEmpty(time)) {
-                        time = String.format(Locale.getDefault(), "%02d:00:00", Integer.parseInt(time));
-                        item = new AdmeTimeItem(time);
-                        admeTimeAdapter.getData().add(item);
-                    }
-                }
-                admeTimeAdapter.notifyDataSetChanged();
-            }
-
             if (waitingIntervalPerRound.equals("NullKey")) {
                 waitingIntervalPerRoundLayout.setVisibility(View.GONE);
             } else {
                 mEtWaitingIntervalPerRound.setText(waitingIntervalPerRound);
             }
+            mTvMeasurementIntervalPerRound.setText(measurementIntervalPerRound);
 
             if (admeExecutiveAgencyInfo.getUpdatedate().equals("NullKey")) {
                 modifiedDateLayout.setVisibility(View.GONE);
@@ -1010,6 +996,20 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 intervalDayLayout.setVisibility(View.GONE);
             } else {
                 mEtIntervalDay.setText(intervalDays);
+            }
+
+            if (!startTimePerRound.equals("NullKey")) {
+                AdmeTimeItem item;
+                String[] times = startTimePerRound.split("\\|");
+                admeTimeAdapter.getData().clear();
+                for (String time : times) {
+                    if (!TextUtils.isEmpty(time)) {
+                        time = String.format(Locale.getDefault(), "%02d:00:00", Integer.parseInt(time));
+                        item = new AdmeTimeItem(time);
+                        admeTimeAdapter.getData().add(item);
+                    }
+                }
+                admeTimeAdapter.notifyDataSetChanged();
             }
 
             if (dataReadingInterval.equals("NullKey")) {
@@ -1109,8 +1109,6 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-
     }
 
     public void doAfterSetting() {

@@ -14,8 +14,7 @@
         android:id="@+id/ll_mac_address"
         style="@style/Common_EditItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="visible">
 
         <TextView
             style="@style/Common_ClickableItem_TitleStyle"

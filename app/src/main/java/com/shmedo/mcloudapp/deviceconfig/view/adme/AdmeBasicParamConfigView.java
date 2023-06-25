@@ -290,7 +290,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
                                 } else if (position == 2) {
                                     waitingIntervalPerRoundLayout.setVisibility(View.GONE);
                                     measurementIntervalPerRoundLayout.setVisibility(View.GONE);
-                                    if (null != intervalDays && intervalDays.equals("NullKey")) {
+                                    if (null != intervalDays && !intervalDays.equals("NullKey")) {
                                         modifiedDateLayout.setVisibility(View.VISIBLE);
                                         intervalDayLayout.setVisibility(View.VISIBLE);
                                     }
@@ -359,14 +359,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             return false;
         }
 
-        if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
-            if (admeTimeAdapter.getData().size() < 1) {
-                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
-                return false;
-            }
-        }
-
-        if (!waitingIntervalPerRound.equals("NullKey")) {
+        if (!measureMethod.equals("NullKey") && measureMethod.equals("0") && !waitingIntervalPerRound.equals("NullKey")) {
             waitingIntervalPerRound = mEtWaitingIntervalPerRound.getText().toString().trim();
             if (TextUtils.isEmpty(waitingIntervalPerRound)) {
                 ToastUtils.show("请输入每轮等待时间!");
@@ -387,23 +380,30 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             }
         }
 
-        if (!intervalDays.equals("NullKey")) {
-            intervalDays = mEtIntervalDay.getText().toString().trim();
-            if (TextUtils.isEmpty(waitingIntervalPerRound)) {
-                ToastUtils.show("请输入间隔时间!");
-                mEtIntervalDay.requestFocus();
-                return false;
-            }
-            try {
-                int value = Integer.parseInt(intervalDays);
-                if (value < 1) {
+        if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
+            if (!intervalDays.equals("NullKey")) {
+                intervalDays = mEtIntervalDay.getText().toString().trim();
+                if (TextUtils.isEmpty(intervalDays)) {
+                    ToastUtils.show("请输入间隔时间!");
+                    mEtIntervalDay.requestFocus();
+                    return false;
+                }
+                try {
+                    int value = Integer.parseInt(intervalDays);
+                    if (value < 1) {
+                        ToastUtils.show("请输入正确的间隔时间!");
+                        mEtIntervalDay.requestFocus();
+                        return false;
+                    }
+                } catch (Exception ex) {
                     ToastUtils.show("请输入正确的间隔时间!");
                     mEtIntervalDay.requestFocus();
                     return false;
                 }
-            } catch (Exception ex) {
-                ToastUtils.show("请输入正确的间隔时间!");
-                mEtIntervalDay.requestFocus();
+            }
+
+            if (admeTimeAdapter.getData().size() < 1) {
+                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓");
                 return false;
             }
         }
@@ -474,13 +474,13 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         String command = "";
         try {
             AdmeBasicConfigEntity entity = new AdmeBasicConfigEntity();
-            entity.setInctype(basicConfigParam.getInctype().equals("NullKey") ? "NullKey" : basicConfigParam.getInctype());
+            entity.setInctype(basicConfigParam.getInctype());
             entity.setAddress(basicConfigParam.getAddress().equals("NullKey") ? "NullKey" : address);
             decimalFormat.applyPattern("#.##");
             entity.setInterdeep(basicConfigParam.getInterdeep().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth)));
-            entity.setDownspeed(basicConfigParam.getDownspeed().equals("NullKey") ? "NullKey" : decentralizationSpeed);
-            entity.setDownwaitetime(basicConfigParam.getDownwaitetime().equals("NullKey") ? "NullKey" : decentralizationWaitingTime);
-            entity.setDatatype(basicConfigParam.getDatatype().equals("NullKey") ? "NullKey" : dataSettlementMethod);
+            entity.setDownspeed(decentralizationSpeed);
+            entity.setDownwaitetime(decentralizationWaitingTime);
+            entity.setDatatype(dataSettlementMethod);
 
             command = IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_BASIC, entity);
         } catch (Exception ex) {
@@ -494,11 +494,11 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         String command = "";
         try {
             AdmeExecutiveAgencyEntity entity = new AdmeExecutiveAgencyEntity();
-            entity.setMeastype(admeExecutiveAgencyInfo.getMeastype().equals("NullKey") ? "NullKey" : measureMethod);
-            entity.setDatatype(admeExecutiveAgencyInfo.getDatatype().equals("NullKey") ? "NullKey" : dataSettlementMethod);
+            entity.setMeastype(measureMethod);
+            entity.setDatatype(dataSettlementMethod);
             entity.setDatareply(admeExecutiveAgencyInfo.getDatareply());
-            entity.setRoundwaitetime(admeExecutiveAgencyInfo.getRoundwaitetime().equals("NullKey") ? "NullKey" : waitingIntervalPerRound);
-            entity.setRoundmeasinval(admeExecutiveAgencyInfo.getRoundmeasinval().equals("NullKey") ? "NullKey" : measurementIntervalPerRound);
+            entity.setRoundwaitetime( waitingIntervalPerRound);
+            entity.setRoundmeasinval( measurementIntervalPerRound);
             entity.setInvalday(admeExecutiveAgencyInfo.getInvalday().equals("NullKey") ? "NullKey" : intervalDays);
             //定时测量方式
             if (!measureMethod.equals("NullKey") && measureMethod.equals("2")) {
@@ -519,7 +519,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
             entity.setDatainval(admeExecutiveAgencyInfo.getDatainval());
             entity.setCompensatetime(admeExecutiveAgencyInfo.getCompensatetime());
             entity.setDriveaddress(admeExecutiveAgencyInfo.getDriveaddress());
-            entity.setDownspeed(admeExecutiveAgencyInfo.getDownspeed().equals("NullKey") ? "NullKey" : decentralizationSpeed);
+            entity.setDownspeed(decentralizationSpeed);
             decimalFormat.applyPattern("#.##");
             entity.setInterdeep(admeExecutiveAgencyInfo.getInterdeep().equals("NullKey") ? "NullKey" : decimalFormat.format(Double.parseDouble(inclinometerTubeHoleDepth)));
             entity.setDownwaitetime(admeExecutiveAgencyInfo.getDownwaitetime().equals("NullKey") ? "NullKey" : decentralizationWaitingTime);
@@ -642,6 +642,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
         measurementIntervalPerRound = admeExecutiveAgencyInfo.getRoundmeasinval().trim();
         intervalDays = admeExecutiveAgencyInfo.getInvalday();
         startTimePerRound = admeExecutiveAgencyInfo.getRoundmeasstart().trim();
+
         if (measureMethod.equals("NullKey")) {
             measureMethodLayout.setVisibility(View.GONE);
             waitingIntervalPerRoundLayout.setVisibility(View.GONE);
@@ -760,32 +761,7 @@ public class AdmeBasicParamConfigView extends LinearLayout {
     }
 
     public boolean checkValueIsChange(boolean configPageEditableChanged) {
-//        if (!configPageEditableChanged)
-//            return false;
-//
-//        if (inclinometerTypeOld != null && !inclinometerTypeOld.equals("NullKey") && inclinometerType != null && !inclinometerTypeOld.equals(inclinometerType)) {
-//            return true;
-//        }
-//        if (address != null) {
-//            if (inclinometerTypeOld.equals("0") && !inclinometerTypeOld.equals("NullKey") && !address.equals(mEtCollectorAddress.getText().toString().trim())) {
-//                return true;
-//            }
-//            if (inclinometerTypeOld.equals("1") && !inclinometerTypeOld.equals("NullKey") && !address.equals(mEtMacAddress.getText().toString().trim())) {
-//                return true;
-//            }
-//        }
-//        if (inclinometerTubeHoleDepth != null && !inclinometerTubeHoleDepth.equals("NullKey") && !inclinometerTubeHoleDepth.equals(mEtInclinometerTubeHoleDepth.getText().toString().trim())) {
-//            return true;
-//        }
-//        if (decentralizationSpeed != null && !decentralizationSpeed.equals("NullKey") && !decentralizationSpeed.equals(mEtDecentralizationSpeed.getText().toString().trim())) {
-//            return true;
-//        }
-//        if (decentralizationWaitingTime != null && !decentralizationWaitingTime.equals("NullKey") && !decentralizationWaitingTime.equals(mEtDecentralizationWaitingTime.getText().toString().trim())) {
-//            return true;
-//        }
-//        if (dataSettlementMethodOld != null && !dataSettlementMethodOld.equals("NullKey") && dataSettlementMethod != null && !dataSettlementMethodOld.equals(dataSettlementMethod)) {
-//            return true;
-//        }
+
         return false;
     }
 
