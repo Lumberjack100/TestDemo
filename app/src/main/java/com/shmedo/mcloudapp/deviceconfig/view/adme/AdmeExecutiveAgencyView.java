@@ -495,7 +495,7 @@ public class AdmeExecutiveAgencyView extends LinearLayout {
                 }
                 try {
                     int value = Integer.parseInt(intervalDays);
-                    if (value < 1) {
+                    if (value < 0) {
                         ToastUtils.show("请输入正确的间隔时间!");
                         mEtIntervalDay.requestFocus();
                         return false;
