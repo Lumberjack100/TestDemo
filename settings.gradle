@@ -1,2 +1,27 @@
-include ':app',':configlibrary'
-include ':core'
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+
+        //gradle 7.0.x 以上对于 http 协议的的仓库地址，需要显示声明：allowInsecureProtocol = true
+//        maven {
+//            allowInsecureProtocol = true
+//            url "http://xx.xx.xx.xx:xxxx/xx/xx/"
+//        }
+    }
+}
+
+rootProject.name = "mCloudapp"
+include ':app'
+
+include ':lib_tcp'

@@ -1,6 +1,9 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    alias(libs.plugins.android.ksp)
+}
 
 /**
  * 获取APP名字
@@ -26,28 +29,34 @@ def gitVersionCode() {
     try {
         //底层使用的是 Runtime.getRuntime().exec()去执行
         def getGit = 'git rev-list --count HEAD'.execute()
-        buildnum = getGit.text.trim().toInteger()
+        if (getGit.text.trim() == '')
+            buildnum = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
+        else {
+            buildnum = getGit.text.trim().toInteger()
+        }
     } catch (e) {
-        buildnum = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
         e.printStackTrace()
     }
     return buildnum
 }
 
 android {
-    compileSdkVersion rootProject.android.compileSdkVersion
-
+    compileSdk libs.versions.compileSdk.get().toInteger()
     defaultConfig {
-        applicationId rootProject.android.applicationId
-        minSdkVersion rootProject.android.minSdkVersion
-        targetSdkVersion rootProject.android.targetSdkVersion
-        versionCode gitVersionCode()
-        versionName rootProject.android.appVersionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        applicationId "com.shmedo.mcloudapp.iot"
+        minSdk = libs.versions.minSdk.get().toInteger()
+        targetSdk = libs.versions.targetSdk.get().toInteger()
+        versionCode getReversion()
+        versionName '3.2.0'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
             abiFilters "armeabi-v7a"//"x86_64","x86", "armeabi", "armeabi-v7a"
         }
+    }
+    buildFeatures {
+        dataBinding true
+        viewBinding true
     }
 
     sourceSets {
@@ -97,8 +106,6 @@ android {
             applicationId rootProject.android.applicationId
             resValue "string", "app_name", "米易通物联网"   // 设置默认的app_name
             manifestPlaceholders = ["mapApikey"  : "61b252e0afae07eebf71fd8b519b511c",
-//                                    "pgyerKey"    : "64454bf76fe2abd8dec45200c11fc93b",
-//                                    "frontJSToken": "b90c635e2cc7113d03ee6a213a8e013d",
                                     "buglyAppId" : "09b15cd6a7",
                                     "umengAppkey": "6209cd80226836222738b72b"]
 
@@ -121,115 +128,5 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-    implementation project(path: ':configlibrary')
-    implementation project(path: ':core')
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation "com.google.android.material:material:$rootProject.thirdLib.material"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android:flexbox:2.0.1'
 
-    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.thirdLib.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.thirdLib.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.thirdLib.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.thirdLib.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.thirdLib.lifecycleVersion"
-
-    implementation "io.reactivex.rxjava3:rxjava:$rootProject.thirdLib.rxjava"
-    implementation "io.reactivex.rxjava3:rxandroid:$rootProject.thirdLib.rxandroid"
-    implementation "com.squareup.retrofit2:retrofit:$rootProject.thirdLib.retrofitVersion"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:$rootProject.thirdLib.adapterRxjava3"
-    implementation "com.squareup.retrofit2:converter-gson:$rootProject.thirdLib.retrofitVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.thirdLib.okHttpVersion"
-    implementation "com.uber.autodispose2:autodispose-androidx-lifecycle:$rootProject.thirdLib.autodispose2Version"
-
-    implementation "com.jakewharton:butterknife:$rootProject.thirdLib.butterknife"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.thirdLib.butterknifeCompiler"
-
-    // Glide
-    implementation "com.github.bumptech.glide:glide:$rootProject.thirdLib.glideVersion"
-    //annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.thirdLib.glideVersion"
-    implementation "de.hdodenhof:circleimageview:$rootProject.thirdLib.circleimageview"
-
-    //Material Dialog
-    implementation "com.afollestad.material-dialogs:core:$rootProject.thirdLib.materialDialogsCore"
-    //Powerful and Beautiful Popup for Android，can absolutely replace Dialog，PopupWindow，PopupMenu，BottomSheet，DrawerLayout，Spinner...
-    implementation "com.github.li-xiaojun:XPopup:$rootProject.thirdLib.xpopupVersion"
-    //轻松实现各种对话框、菜单和提示效果，更有iOS、MIUI等主题扩展可选
-    implementation "com.github.kongzue.DialogX:DialogX:$rootProject.thirdLib.dialogxVersion"
-    //Toast 吐司
-    implementation "com.github.getActivity:ToastUtils:$rootProject.thirdLib.ToastUtils"
-
-    //开关 Button
-    implementation "com.kyleduo.switchbutton:library:$rootProject.thirdLib.switchbutton"
-    //Add progress to any button by few lines of code without layout changes
-    implementation "com.github.razir.progressbutton:progressbutton:$rootProject.thirdLib.progressbutton"
-
-    //异常信息上报组件
-    implementation "com.tencent.bugly:crashreport:$rootProject.thirdLib.buglyCrashReport"
-
-    //An open source Android library that makes handling runtime permissions extremely easy.
-    implementation "com.guolindev.permissionx:permissionx:$rootProject.thirdLib.permissionx"
-
-    //下拉刷新
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$rootProject.thirdLib.swiperefreshlayout"
-    implementation "io.github.scwang90:refresh-layout-kernel:$rootProject.thirdLib.SmartRefreshLayout"
-    //经典刷新头,核心必须依赖
-    implementation "io.github.scwang90:refresh-header-classics:$rootProject.thirdLib.SmartRefreshLayout"
-
-    //RecyclerView侧滑菜单，Item拖拽，滑动删除Item，自动加载更多，HeaderView，FooterView，Item分组黏贴
-    implementation "com.yanzhenjie.recyclerview:x:$rootProject.thirdLib.SwipeRecyclerView"
-    //一个强大并且灵活的RecyclerViewAdapter
-    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:$rootProject.thirdLib.BaseRecyclerViewAdapterHelper"
-
-    //利用了 Android 系统的原生 API 实现了分享功能
-    implementation "gdut.bsx:share2:$rootProject.thirdLib.bsxShare"
-
-    // 一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
-    implementation "com.github.Jay-Goo:RangeSeekBar:$rootProject.thirdLib.RangeSeekBar"
-
-    //高德地图导航
-    implementation "com.amap.api:navi-3dmap:$rootProject.thirdLib.amapNavi"
-    //高德地图定位功能
-    implementation "com.amap.api:location:$rootProject.thirdLib.amapLocation"
-    //高德地图搜索
-    implementation "com.amap.api:search:$rootProject.thirdLib.amapSearch"
-
-    // 透明系统栏设置基础依赖包，必须要依赖
-    implementation "com.geyifeng.immersionbar:immersionbar:$rootProject.thirdLib.immersionbar"
-
-    //StateView is an invisible, zero-sized View that can be used to lazily inflate loadingView/emptyView/retryView/anyView at runtime.
-    implementation 'com.github.nukc:StateView:v3.0.2'
-
-    //Android Library to handle software keyboard visibility change event.
-    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3'
-
-    //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
-    implementation "no.nordicsemi.android.support.v18:scanner:$rootProject.thirdLib.nordicsemiScanner"
-    // Log Bluetooth LE events in nRF Logger APP
-    implementation "no.nordicsemi.android:log:$rootProject.thirdLib.nordicsemiLog"
-
-    //Android USB host serial driver library for CDC, FTDI, Arduino and other devices.
-    implementation "com.github.mik3y:usb-serial-for-android:$rootProject.thirdLib.usbSerialVersion"
-
-    //华为扫码服务
-    implementation "com.huawei.hms:scan:$rootProject.thirdLib.hmsScanVersion"
-
-    // 友盟统计SDK
-    implementation "com.umeng.umsdk:common:$rootProject.thirdLib.umsdkCommonVersion"// 必选
-    implementation "com.umeng.umsdk:asms:$rootProject.thirdLib.umsdkAsmsVersion"// 必选
-
-    // 一个轻量级、高可用性的Android版本更新框架
-    implementation 'com.github.xuexiangjys:XUpdate:2.1.2'
-    implementation 'com.zhy:okhttputils:2.6.2'
-
-    //debugImplementation because LeakCanary should only run in debug builds
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
-
-    //日志调试框架：https://github.com/getActivity/Logcat
-    debugImplementation 'com.github.getActivity:Logcat:10.6'
-
-    testImplementation "junit:junit:$rootProject.thirdLib.junit"
-    androidTestImplementation "androidx.test:runner:$rootProject.thirdLib.runner"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.thirdLib.espresso"
 }
