@@ -6,11 +6,11 @@
         android:bottomRightRadius="30dp"/>
 
     <!--中间颜色-->
-    <solid android:color="@color/floating_action_button_selected" />
+    <solid android:color="@color/gray_797979" />
 
     <!--边框/颜色-->
     <stroke
         android:width="0.5dp"
-        android:color="@color/floating_action_button_selected" />
+        android:color="@color/gray_797979" />
 
 </shape>

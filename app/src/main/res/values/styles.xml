@@ -12,10 +12,13 @@
         <item name="android:windowAnimationStyle">@style/ActivityAnimation</item>
     </style>
 
-    <!-- 闪屏页主题 -->
-    <style name="MCloud.WelcomeActivity" parent="AppTheme">
-        <!--Android冷启动白屏解析http://blog.csdn.net/guolin_blog/article/details/51019856-->
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Toolbar_TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <!--        <item name="android:textColor">@color/title_text_color</item>-->
+        <item name="android:textSize">@dimen/text_size_16</item>
     </style>
 
     <style name="LightStatusBarActivity" parent="Theme.MaterialComponents.Light.Bridge">
@@ -60,7 +63,6 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-
     <!--TextView相关样式-->
     <style name="BaseTextTheme">
         <item name="android:layout_width">wrap_content</item>
@@ -75,7 +77,6 @@
     <style name="SmallTextTheme.BaseTextTheme" parent="BaseTextTheme">
         <item name="android:textSize" tools:ignore="SpUsage">14sp</item>
     </style>
-
 
     <style name="UserInfo_LinearLayoutStyle">
         <item name="android:layout_width">match_parent</item>

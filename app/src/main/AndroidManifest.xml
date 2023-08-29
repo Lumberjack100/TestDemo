@@ -5,481 +5,117 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--
- 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加ACCESS_BACKGROUND_LOCATION权限声明
-如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框
-    -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- 允许程序访问精良位置(如GPS) -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 如果设置了target >= 28 如果需要启动后台定位则必须声明这个权限 -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> <!-- 允许应用程序访问额外的位置提供命令 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的读权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的写权限 -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Android8.0 安装 apk 需要添加权限,更新自身及下载安装app -->
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- 请求访问使用照相设备 -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Android 13版本适配，细化存储权限 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 允许程序录制音频 -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Android 13 通知的运行时权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 允许阻止进程睡眠或屏幕变暗,用WakeLock使Android应用程序保持后台唤醒 -->
     <uses-permission android:name="android.permission.FLASHLIGHT" /> <!-- 访问闪光灯 -->
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 允许访问振动设备 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Android8.0 安装 apk 需要添加权限,更新自身及下载安装app -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 请求访问使用照相设备 -->
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
-
-    <!--
- Bluetooth permission is required on Android 4.3 - 11 in order to communicate with
- Bluetooth LE devices.
--->
     <uses-permission
         android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
-    <!--
- Bluetooth Admin permission is required on Android 4.3 - 11 in order to scan for
- Bluetooth LE devices.
--->
     <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"
         android:maxSdkVersion="30" />
-    <!--
-     On Android 12 new set of Bluetooth permissions were added. BLUETOOTH_SCAN permission is
-     needed to scan for Bluetooth LE devices. The "never for location" flag is set, as we are not
-     interested in finding the user location, and we are OK with the fact, that beacons info
-     will be removed from the scan results.
-    -->
     <uses-permission
         android:name="android.permission.BLUETOOTH_SCAN"
         android:usesPermissionFlags="neverForLocation"
         tools:targetApi="s" />
-    <!--
-     This permission is required in order to connect to a Bluetooth LE device on Android 12
-     onwards.
-    -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
     <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 声明应用仅适用于支持 BLE 的设备 -->
-    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-feature android:name="android.hardware.usb.host" /> <!-- 适配Android R包可见性 开始 -->
+    <queries package="${applicationId}">
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" />
+        </intent>
+    </queries>
 
     <application
         android:name=".MCloudApplication"
+        android:allowBackup="true"
+        android:allowNativeHeapPointerTagging="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme"
-        tools:ignore="LockedOrientationActivity"
-        tools:replace="android:name"
-        tools:targetApi="p">
+        android:usesCleartextTraffic="true"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute,LockedOrientationActivity"
+        tools:replace="android:name">
 
+        <!-- 适配华为（huawei）刘海屏 -->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" /> <!-- 适配小米（xiaomi）刘海屏 -->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+        <service android:name="com.amap.api.location.APSService" />
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="${mapApikey}" />
         <meta-data
             android:name="BUGLY_APPID"
-            android:value="${buglyAppId}" /> <!-- 配置APP版本号 -->
-        <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
+            android:value="${buglyAppId}" /> <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
             android:value="false" />
         <meta-data
             android:name="UMENG_APP_KEY"
-            android:value="${umengAppkey}" /> <!-- 适配华为（huawei）刘海屏 -->
-        <meta-data
-            android:name="android.notch_support"
-            android:value="true" /> <!-- 适配小米（xiaomi）刘海屏 -->
-        <meta-data
-            android:name="notch.config"
-            android:value="portrait|landscape" />
+            android:value="${umengAppkey}" />
 
         <activity
-            android:name=".common.ui.activity.WelcomeActivity"
+            android:name=".ui.activity.SplashActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/MCloud.WelcomeActivity">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <!--
-                <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="um.618cdd28e014255fcb75af8a" />
-            </intent-filter>
-            -->
         </activity>
+
+
         <activity
-            android:name=".common.ui.activity.LoginActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity
-            android:name=".common.ui.activity.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:name="com.shmedo.mcloudapp.ui.activity.ErrorActivity"
+            android:label="错误界面"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" /> <!-- Activity在高德 SDK内部实现 -->
-        <activity
-            android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.amap.api.navi.AmapRouteActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity
-            android:name=".user.ui.activity.UserHomePageActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".user.ui.activity.CompanyHomePageActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".user.ui.activity.AboutAppActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".user.ui.activity.UpdatePasswordActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".common.ui.activity.WebViewActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/CropImageActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.DeviceSearchActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.DeviceConfigActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.das.DasCollectorSettingActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.QueryDeviceDataActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.das.DasSensorConfigActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.AdvancedSettingActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.CustomCommandLogPrintActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.das.sensor.DasExternalSensorListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.das.sensor.DasExternalVibratingWireSensorActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.das.sensor.DasExternalDigitalSensorActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.das.DasExternalSensorConfigActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.das.DasExternalSensorListNewActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.das.FixedPointReportingActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.vms.VmsTerminalSearchActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.vms.VmsAisleSettingActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.vms.VmsTerminalHomeActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.vms.VmsTerminalCurrentStateActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.vms.VmsTerminalExternalSensorHomeActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.vms.VmsTerminalExternalSensorConfigActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.vms.VmsTerminalParamSettingActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeBasicParamActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeAdvancedConfigActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.DataCenterConfigActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.DataCenterHomeActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeMeterWheelActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeInclinometerActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeStepperMotorActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeExecutiveAgencyActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeLockedRotorDetectionActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeMeasuringHoleDepthActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeGuideGrooveCalibrationActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.DeviceCurrentStateActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.AdmeVoltageConfigActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.adme.IntelligentControlActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.e40.E40EthernetActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.e40.E40SerialPortParamActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.e40.E40GpsWorkParamActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.e40.E40RtkParamActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.e40.E40SocketDataDebugActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.usb.BluetoothDebugBoxHomeActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.usb.CollectionConfigurationActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.VoiceBroadcastActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.AudibleAlarmActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.TcpToBleDebugActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".deviceconfig.ui.activity.DeviceListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataProcedureActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-        <activity
-            android:name=".deviceconfig.ui.activity.hac.AdmeHacMeasuringDataResultsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-
-        <activity
-            android:name=".deviceconfig.ui.activity.CommonSensorListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-
-        <activity
-            android:name=".deviceconfig.ui.activity.CommonSensorHomeActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
-
-        <activity
-            android:name="com.shmedo.mcloudapp.deviceconfig.ui.activity.CommonSensorDetailActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"/>
-
-        <service android:name="com.amap.api.location.APSService" />
 
         <provider
-            android:name="com.shmedo.core.provider.GenericFileProvider"
+            android:name="com.shmedo.lib.core.base.GenericFileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -488,6 +124,10 @@
                 android:resource="@xml/file_paths"
                 tools:replace="android:resource" />
         </provider>
+        <provider
+            android:name="com.shmedo.lib.core.base.AppContentProvider"
+            android:authorities="${applicationId}.appContentProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -1,8 +1,10 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         google()
         mavenCentral()
-        gradlePluginPortal()
+        maven { url 'https://jitpack.io' }
+        maven {url 'https://developer.huawei.com/repo/'}// 华为仓
     }
 }
 dependencyResolutionManagement {
@@ -12,16 +14,13 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter()
         maven { url 'https://jitpack.io' }
-
-        //gradle 7.0.x 以上对于 http 协议的的仓库地址，需要显示声明：allowInsecureProtocol = true
-//        maven {
-//            allowInsecureProtocol = true
-//            url "http://xx.xx.xx.xx:xxxx/xx/xx/"
-//        }
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven {url 'https://developer.huawei.com/repo/'}// 华为仓
     }
 }
 
-rootProject.name = "mCloudapp"
-include ':app'
 
+include ':app'
 include ':lib_tcp'
+include ':lib_core'
+include ':lib_ble'

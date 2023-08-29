@@ -20,6 +20,9 @@
     <string name="unknown_error">发生未知错误</string>
     <string name="fetch_data_failed">获取数据失败</string>
     <string name="button_save">保存</string>
+    <string name="error_occurred">不好意思App翻车了。\n请拿已复制好的错误日志去啪啪啪得打作者的脸</string>
+    <string name="crash_error_activity_error_occurred_explanation">An unexpected error occurred.\nSorry for the inconvenience.</string>
+
 
     <!-- 网络 -->
     <string name="network_connect_error">网络连接异常</string>
