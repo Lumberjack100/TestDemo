@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.login.activity
+package com.shmedo.mcloudapp.user.activity
 
 import android.content.Context
 import android.content.Intent
@@ -30,9 +30,9 @@ import com.shmedo.mcloudapp.common.activity.MainActivity
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
 import com.shmedo.mcloudapp.common.widget.MyCountDownTimer
 import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
-import com.shmedo.mcloudapp.login.model.ContentType
-import com.shmedo.mcloudapp.login.viewmodel.request.LoginRequestViewModel
-import com.shmedo.mcloudapp.login.viewmodel.state.LoginViewModel
+import com.shmedo.mcloudapp.user.model.ContentType
+import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
+import com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel
 import com.tencent.bugly.crashreport.CrashReport
 import java.lang.Boolean
 import kotlin.Long

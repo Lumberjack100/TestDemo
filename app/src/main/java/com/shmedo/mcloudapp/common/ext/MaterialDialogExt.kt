@@ -8,7 +8,7 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import com.shmedo.mcloudapp.utils.SettingUtil
+import com.shmedo.mcloudapp.common.utils.SettingUtil
 
 
 /**

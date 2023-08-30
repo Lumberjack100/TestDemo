@@ -215,6 +215,8 @@ dependencies {
 
     // Glide
     implementation libs.glide
+    // PictureSelector
+    implementation libs.bundles.pictureselector
 
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation libs.timber

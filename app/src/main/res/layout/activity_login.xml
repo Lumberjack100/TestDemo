@@ -9,11 +9,11 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.login.viewmodel.state.LoginViewModel" />
+            type="com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.login.activity.LoginActivity.ClickProxy" />
+            type="com.shmedo.mcloudapp.user.activity.LoginActivity.ClickProxy" />
     </data>
 
     <LinearLayout

@@ -15,16 +15,16 @@ import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
-import com.shmedo.mcloudapp.login.activity.LoginActivity
-import com.shmedo.mcloudapp.login.fragment.PolicyDialog
-import com.shmedo.mcloudapp.login.viewmodel.request.LoginRequestViewModel
-import com.shmedo.mcloudapp.login.viewmodel.state.SplashViewModel
+import com.shmedo.mcloudapp.user.activity.LoginActivity
+import com.shmedo.mcloudapp.user.fragment.PolicyDialog
+import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.tencent.bugly.crashreport.CrashReport
 
 class SplashActivity : BaseActivity() {
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: SplashViewModel by viewModels()
+    private val mStates: EmptyViewModel by viewModels()
     private val loginRequestViewModel: LoginRequestViewModel by viewModels()
 
     override fun getDataBindingConfig(): DataBindingConfig {

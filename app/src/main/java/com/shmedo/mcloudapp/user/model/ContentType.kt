@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.login.model
+package com.shmedo.mcloudapp.user.model
 
 /**
  * 创建者:   gonghe <br></br>

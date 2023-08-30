@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.login.fragment
+package com.shmedo.mcloudapp.user.fragment
 
 import android.content.Context
 import android.graphics.Color
@@ -24,8 +24,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.PrivacyDialogBinding
-import com.shmedo.mcloudapp.login.model.ContentType
-import com.shmedo.mcloudapp.login.viewmodel.state.PolicyViewModel
+import com.shmedo.mcloudapp.user.model.ContentType
+import com.shmedo.mcloudapp.user.viewmodel.state.PolicyViewModel
 
 /**
  * 创建者:   gonghe <br></br>

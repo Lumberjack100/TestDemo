@@ -77,6 +77,29 @@ class NetDataRepository private constructor() {
             .toAwaitResponse<UserWrapperInfo>()
             .tryAwait(onCatch)
 
+    /**
+     * 修改用户信息
+     */
+    suspend fun updateUserInfo(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/UpdateUser")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+    suspend fun uploadUserAvatar(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/UploadUserAvatar")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
     companion object {
         val instance = NetDataRepository()
     }

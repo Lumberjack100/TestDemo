@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.user.viewmodel.state.UserInfoHomeViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.user.fragment.UserInfoHomeFragment.ClickProxy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray_f3f9fe">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_toolbar_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="100dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/userAvatarLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:onClick="@{()->click.onChangeAvatar()}"
+                    android:padding="12dp"
+                    app:drawable_radiusLT="@{6}"
+                    app:drawable_radiusRT="@{6}"
+                    app:drawable_solidColor="@{@color/white}">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="头像"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <ImageView
+                        android:id="@+id/userAvatar"
+                        circleImageUrl="@{vm.imageUrl}"
+                        placeHolder="@{vm.placeHolder}"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/dimen_size_10"
+                        android:layout_toStartOf="@+id/iv_arrow_right"
+                        android:src="@drawable/ic_account" />
+
+                    <ImageView
+                        android:id="@+id/iv_arrow_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/ic_arrow_right_gray" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="53dp"
+                    android:layout_marginTop="0.5dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="姓名"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        android:id="@+id/nameET"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="end"
+                        android:hint="请输入"
+                        android:padding="8dp"
+                        android:text="@={vm.name}"
+                        android:textColor="@color/title_text_color"
+                        android:textColorHint="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="53dp"
+                    android:layout_marginTop="0.5dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="职位"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        android:id="@+id/postET"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="end"
+                        android:hint="请输入"
+                        android:padding="8dp"
+                        android:text="@={vm.post}"
+                        android:textColor="@color/title_text_color"
+                        android:textColorHint="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="53dp"
+                    android:layout_marginTop="0.5dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="手机号"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        android:id="@+id/phoneET"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:enabled="false"
+                        android:gravity="end"
+                        android:hint="请输入"
+                        android:padding="8dp"
+                        android:text="@={vm.phone}"
+                        android:textColor="@color/title_text_color"
+                        android:textColorHint="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="53dp"
+                    android:layout_marginTop="0.5dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="邮箱"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        android:id="@+id/emailET"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="end"
+                        android:hint="请输入"
+                        android:inputType="textEmailAddress"
+                        android:padding="8dp"
+                        android:text="@={vm.email}"
+                        android:textColor="@color/title_text_color"
+                        android:textColorHint="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/btn_confirm"
+            style="@style/SubmitButton_ColorPrimary"
+            android:layout_marginBottom="15dp"
+            android:onClick="@{()->click.onSubmitClick()}"
+            android:text="确定"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

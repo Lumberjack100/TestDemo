@@ -19,6 +19,11 @@ abstract class BaseFragment : BaseVmDbFragment() {
 
     abstract override fun initView(savedInstanceState: Bundle?)
 
+    override fun initData() {
+
+    }
+
+
     /**
      * 打开等待框
      */

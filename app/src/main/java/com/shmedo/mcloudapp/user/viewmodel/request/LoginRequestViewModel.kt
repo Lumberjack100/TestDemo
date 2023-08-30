@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.login.viewmodel.request
+package com.shmedo.mcloudapp.user.viewmodel.request
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,6 +33,12 @@ class LoginRequestViewModel : ViewModel() {
 
     private val _userWrapperInfoResult = MutableResult<DataResult<UserWrapperInfo>>()
     val userWrapperInfoResult: Result<DataResult<UserWrapperInfo>> = _userWrapperInfoResult
+
+    private val _uploadUserAvataResult = MutableResult<DataResult<String>>()
+    val uploadUserAvataResult: Result<DataResult<String>> = _uploadUserAvataResult
+
+    private val _updateUserInfoResult = MutableResult<DataResult<String>>()
+    val updateUserInfoResult: Result<DataResult<String>> = _updateUserInfoResult
 
     private val _updatePasswordResult = MutableResult<DataResult<String>>()
     val updatePasswordResult: Result<DataResult<String>> = _updatePasswordResult
@@ -176,4 +182,55 @@ class LoginRequestViewModel : ViewModel() {
         }
     }
 
+    fun requestUpdateUserInfo(jsonParam: String) {
+        viewModelScope.launch {
+            val data: String =
+                NetDataRepository.instance.updateUserInfo(jsonParam) { error: Throwable ->
+                    val responseStatus = ResponseStatus()
+                    responseStatus.isSuccess = false
+                    responseStatus.errorMessage = error.errorMsg
+                    responseStatus.source = ResultSource.NETWORK
+                    _updateUserInfoResult.setValue(DataResult(responseStatus = responseStatus))
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _updateUserInfoResult.setValue(DataResult(data, responseStatus = responseStatus))
+        }
+    }
+
+    fun uploadUserAvatar(jsonParam: String) {
+        viewModelScope.launch {
+            val data: String =
+                NetDataRepository.instance.uploadUserAvatar(jsonParam) { error: Throwable ->
+                    val responseStatus = ResponseStatus()
+                    responseStatus.isSuccess = false
+                    responseStatus.errorMessage = error.errorMsg
+                    responseStatus.source = ResultSource.NETWORK
+                    _uploadUserAvataResult.setValue(DataResult(responseStatus = responseStatus))
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _uploadUserAvataResult.setValue(DataResult(data, responseStatus = responseStatus))
+        }
+    }
+
+    fun refreshUserInfo(companyID: Int = 0, userID: Int = 0) {
+        viewModelScope.launch {
+            val userWrapperInfo: UserWrapperInfo =
+                queryUserByID(companyID, userID) ?: return@launch
+            MmkvCacheUtil.setUser(userWrapperInfo.user)
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _userWrapperInfoResult.setValue(DataResult(userWrapperInfo, responseStatus = responseStatus))
+        }
+    }
 }

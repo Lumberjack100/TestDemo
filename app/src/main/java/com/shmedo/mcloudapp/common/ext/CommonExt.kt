@@ -9,7 +9,7 @@ import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
 import com.blankj.utilcode.util.Utils
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.utils.SettingUtil
+import com.shmedo.mcloudapp.common.utils.SettingUtil
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

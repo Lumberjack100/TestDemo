@@ -33,4 +33,4 @@ data class UserInfo(
     val expireTime: String? = "",
     val ssoUser: Boolean = false,
     val ssoToken: String? = ""
-)
+) : java.io.Serializable

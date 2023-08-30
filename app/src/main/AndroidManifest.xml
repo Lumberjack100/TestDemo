@@ -114,7 +114,7 @@
         </activity>
 
         <activity
-            android:name=".login.activity.LoginActivity"
+            android:name=".user.activity.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"

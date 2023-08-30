@@ -15,7 +15,6 @@
 ##
 [versions]
 activityKtx = "1.7.2"
-kotlinReflect = "1.8.20"
 minSdk = "23"
 compileSdk = "33"
 moshiVersion = "1.14.0"
@@ -41,9 +40,9 @@ gson = "2.10.1"
 hmsScan = "2.5.0.300"
 immersionbar = "3.2.2"
 junit = "4.13.2"
-kotlin = "1.8.21"
+kotlin = "1.8.10"
 keyboardvisibilityevent = "3.0.0-RC3"
-ksp = "1.8.21-1.0.11"
+ksp = "1.8.10-1.0.9"
 leakcanary = "2.12"
 lifecycle = "2.6.1"
 legacyV4 = "1.0.0"
@@ -114,7 +113,7 @@ immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", vers
 junit = { module = "junit:junit", version.ref = "junit" }
 keyboardvisibilityevent = { module = "net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent", version.ref = "keyboardvisibilityevent" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -129,6 +128,7 @@ getActivity-toastutils = { module = "com.github.getActivity:ToastUtils", version
 getActivity-xxpermission = { module = "com.github.getActivity:XXPermissions", version.ref = "xxPermission" }
 lucksiege-pictureselector = { module = "io.github.lucksiege:pictureselector", version.ref = "pictureselector" }
 lucksiege-compress = { module = "io.github.lucksiege:compress", version.ref = "pictureselector" }
+lucksiege-camerax = { module = "io.github.lucksiege:camerax", version.ref = "pictureselector" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 material-dialogs-lifecycle = { module = "com.afollestad.material-dialogs:lifecycle", version.ref = "materialDialogs" }
 material-dialogs-core = { module = "com.afollestad.material-dialogs:core", version.ref = "materialDialogs" }
@@ -167,6 +167,7 @@ xuexiangjys-xupdate = { module = "com.github.xuexiangjys:XUpdate", version.ref =
 [bundles]
 material-dialogs = ["material-dialogs-lifecycle", "material-dialogs-core", "material-dialogs-datetime", "material-dialogs-bottomsheets"]
 refreshlayout = ["androidx-swiperefreshlayout", "scwang90-refresh-layout-kernel", "scwang90-refresh-header-classics"]
+pictureselector = ["lucksiege-pictureselector", "lucksiege-compress", "lucksiege-camerax"]
 
 [plugins]
 android-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

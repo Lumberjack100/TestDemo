@@ -114,8 +114,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">16dp</item>
@@ -143,6 +141,21 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <!-- Button 样式-->
+    <style name="SubmitButton_ColorPrimary" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">46dp</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginBottom">25dp</item>
+        <item name="android:background">@drawable/ripple_button_with_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!-- SwitchButton 样式-->
     <style name="SwitchButton_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
@@ -166,21 +179,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_centerVertical">true</item>
-    </style>
-
-    <!-- Button 样式-->
-    <style name="SubmitBordelessButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">
-        <item name="android:background">@drawable/ripple_button_with_corner</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">17sp</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">46dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginTop">25dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:layout_marginBottom">25dp</item>
-
     </style>
 
     <!--设备当前运行状态分组标题样式-->

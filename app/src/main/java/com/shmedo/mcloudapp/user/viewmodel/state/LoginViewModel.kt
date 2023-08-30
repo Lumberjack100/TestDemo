@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.login.viewmodel.state
+package com.shmedo.mcloudapp.user.viewmodel.state
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
