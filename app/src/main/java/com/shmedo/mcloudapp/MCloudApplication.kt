@@ -9,24 +9,12 @@ import com.hjq.toast.Toaster
 import com.hjq.toast.style.BlackToastStyle
 import com.kongzue.dialogx.DialogX
 import com.shmedo.lib.core.util.CrashReportingTree
-import com.shmedo.mcloudapp.ui.activity.ErrorActivity
-import com.shmedo.mcloudapp.ui.activity.SplashActivity
-import com.shmedo.mcloudapp.utils.CacheUtil
-import com.shmedo.mcloudapp.utils.OKHttpUpdateHttpService
+import com.shmedo.lib.network.RxHttpManager
+import com.shmedo.mcloudapp.common.activity.ErrorActivity
+import com.shmedo.mcloudapp.common.activity.SplashActivity
 import com.tencent.bugly.crashreport.CrashReport
-import com.tencent.mmkv.MMKV
-import com.xuexiang.xupdate.XUpdate
-import com.xuexiang.xupdate.entity.UpdateError
-import com.xuexiang.xupdate.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION
-import com.xuexiang.xupdate.listener.OnUpdateFailureListener
-import com.xuexiang.xupdate.utils.UpdateUtils
-import com.zhy.http.okhttp.OkHttpUtils
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import rxhttp.RxHttpPlugins
-import rxhttp.wrapper.param.Param
+import timber.log.Timber
 import timber.log.Timber.Forest.plant
-import java.util.concurrent.TimeUnit
 
 /**
  * 项目名：  mCloudapp
@@ -41,7 +29,6 @@ class MCloudApplication : Application(), ViewModelStoreOwner {
     override fun onCreate() {
         super.onCreate()
         mAppViewModelStore = ViewModelStore()
-        MMKV.initialize(this)
         //异常上报和升级
         initCrashReport()
         //初始化吐司消息组件
@@ -50,9 +37,8 @@ class MCloudApplication : Application(), ViewModelStoreOwner {
         initTimber()
         //初始化
         DialogX.init(this)
-        initRxHttp()
-        initOKHttpUtils()
-        initUpdate()
+
+        RxHttpManager.initial(this)
     }
 
     override val viewModelStore: ViewModelStore
@@ -100,7 +86,7 @@ class MCloudApplication : Application(), ViewModelStoreOwner {
      */
     private fun initTimber() {
         if (BuildConfig.DEBUG) {
-            plant(DebugTree())
+            plant(Timber.DebugTree())
         } else {
             plant(CrashReportingTree())
         }
@@ -114,53 +100,5 @@ class MCloudApplication : Application(), ViewModelStoreOwner {
         // 初始化 Toast 框架
         Toaster.init(this)
         Toaster.setStyle(BlackToastStyle())
-    }
-
-    private fun initRxHttp() {
-        val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-        //设置读、写、连接超时时间为15s
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS)
-            .writeTimeout(20, TimeUnit.SECONDS)
-            .addInterceptor(logging) // 日志拦截器
-            .build()
-        RxHttpPlugins.init(client)
-            .setOnParamAssembly { p: Param<*> ->                  //设置公共参数，非必须
-                p.addHeader("X-Access-Token", CacheUtil.getToken()) //添加公共请求头
-            }
-    }
-
-    private fun initOKHttpUtils() {
-        val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-            .connectTimeout(20000L, TimeUnit.MILLISECONDS)
-            .readTimeout(20000L, TimeUnit.MILLISECONDS)
-            .build()
-        OkHttpUtils.initClient(okHttpClient)
-    }
-
-    /**
-     * 初始化 APP 版本更新库
-     * https://github.com/xuexiangjys/XUpdate
-     */
-    private fun initUpdate() {
-        XUpdate.get()
-            .debug(false) //默认设置只在wifi下检查版本更新
-            .isWifiOnly(false) //默认设置使用get请求检查版本
-            .isGet(true) //默认设置非自动模式，可根据具体使用配置
-            .isAutoMode(false) //设置默认公共请求参数
-            .param("versionCode", UpdateUtils.getVersionCode(this))
-            .param("appKey", packageName) //设置版本更新出错的监听
-            .setOnUpdateFailureListener { error ->
-                error.printStackTrace()
-                //对不同错误进行处理
-                if (error.code != CHECK_NO_NEW_VERSION) {
-                    Toaster.show(error.toString())
-                }
-            } //设置是否支持静默安装，默认是true
-            .supportSilentInstall(false) //这个必须设置！实现网络请求功能。
-            .setIUpdateHttpService(OKHttpUpdateHttpService()) //这个必须初始化
-            .init(this)
     }
 }

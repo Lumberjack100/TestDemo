@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.login.fragment.PolicyDialog.ClickProxy" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            drawable_radius="@{10}"
+            drawable_shapeMode="@{0}"
+            drawable_solidColor="@{@color/white}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_size_25"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_size_20">
+
+            <TextView
+                android:id="@+id/tv_privacy_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/privacy_agreement_title"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_18"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_privacy_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dimen_size_20"
+                android:layout_marginBottom="@dimen/dimen_size_20"
+                tools:text="@string/privacy_agreement_desc"
+                android:textColor="@color/text_color_666666"
+                android:textSize="@dimen/text_size_15" />
+
+            <Button
+                android:id="@+id/btn_agree"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/btn_select"
+                android:foreground="?attr/selectableItemBackground"
+                android:onClick="@{()->click.agree()}"
+                android:text="同意"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_18" />
+
+            <TextView
+                android:id="@+id/btn_deny"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:background="@null"
+                android:onClick="@{()->click.disAgree()}"
+                android:text="拒绝并退出"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_15" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>

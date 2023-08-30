@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
+    alias(libs.plugins.android.ksp)
 }
 
 android {
@@ -46,21 +46,15 @@ dependencies {
     implementation libs.androidx.lifecycle.viewmodel.ktx
     implementation libs.kunminx.unpeek.livedata
     implementation libs.kunminx.strict.databinding
-//    implementation libs.kunminx.smooth.navigation
-//    //通过 exclude 把对官方 java 包的依赖排除了，引用默认指向 smooth-Navigation
-//    implementation(libs.androidx.navigation.fragment.ktx) {
-//        exclude group: 'androidx.navigation', module: "navigation-fragment"
-//    }
-//    implementation libs.androidx.navigation.ui.ktx
 
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation libs.timber
     //AndroidUtilCode 是一个强大易用的安卓工具类库
     implementation libs.utilcodex
     implementation libs.mmkv
-    implementation libs.gson
-    implementation libs.moshi.kotlin
-
     // Glide
     implementation libs.glide
+
+    implementation libs.moshi
+    ksp libs.moshi.kotlin.codegen
 }

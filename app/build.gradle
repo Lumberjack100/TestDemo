@@ -51,7 +51,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi-v7a"//"x86_64","x86", "armeabi", "armeabi-v7a"
+            abiFilters  "arm64-v8a","armeabi-v7a"//"x86_64","x86", "armeabi", "armeabi-v7a"
         }
     }
     signingConfigs {
@@ -93,6 +93,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 
     packagingOptions {
@@ -131,15 +132,9 @@ android {
             output.outputFileName = fileName
         }
     }
-    //ksp传参方式
-    ksp {
-        arg("rxhttp_rxjava", "$libs.versions.rxjava")
-//        arg('room.schemaLocation', "$projectDir/schemas")
-    }
 }
 
 dependencies {
-    implementation libs.androidx.legacy.support.v4
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.ext.junit
     androidTestImplementation libs.androidx.espresso.core
@@ -147,6 +142,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(":lib_ble")
     implementation project(":lib_tcp")
+    implementation project(":lib_network")
     implementation project(":lib_core")
     implementation libs.androidx.constraintlayout
     implementation libs.flexbox
@@ -154,6 +150,7 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.material
     implementation libs.androidx.activity.ktx
+    implementation libs.androidx.fragment.ktx
     implementation libs.androidx.lifecycle.livedata.ktx
     implementation libs.androidx.lifecycle.viewmodel.ktx
     implementation libs.kunminx.unpeek.livedata
@@ -164,7 +161,6 @@ dependencies {
         exclude group: 'androidx.navigation', module: "navigation-fragment"
     }
 //    implementation libs.androidx.navigation.ui.ktx
-
 
     //透明系统栏设置基础依赖包，必须要依赖
     implementation libs.immersionbar
@@ -207,7 +203,7 @@ dependencies {
     implementation libs.share2
     //高德地图导航
     implementation libs.amap3dmap
-
+    //异常处理页面
     implementation libs.customactivityoncrash
     //异常信息上报组件
     implementation libs.bugly.crashreport
@@ -223,17 +219,8 @@ dependencies {
     //AndroidUtilCode 是一个强大易用的安卓工具类库
     implementation libs.utilcodex
     implementation libs.mmkv
-    implementation libs.gson
-    implementation libs.moshi.kotlin
 
-    implementation libs.okhttp3.logging.interceptor
-    implementation libs.rxhttp
-    ksp libs.rxhttp.compiler
-    implementation libs.rxlife.rxjava3
-    implementation libs.rxjava
-    implementation libs.rxandroid
+    implementation libs.moshi
+    ksp libs.moshi.kotlin.codegen
 
-    // 一个轻量级、高可用性的Android版本更新框架
-    api libs.xuexiangjys.xupdate
-    api libs.okhttputils
 }

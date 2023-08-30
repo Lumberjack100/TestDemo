@@ -96,7 +96,7 @@
             android:value="${umengAppkey}" />
 
         <activity
-            android:name=".ui.activity.SplashActivity"
+            android:name=".common.activity.SplashActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait">
@@ -107,9 +107,28 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".login.activity.LoginActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
 
         <activity
-            android:name="com.shmedo.mcloudapp.ui.activity.ErrorActivity"
+            android:name=".common.activity.MainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
+
+        <activity
+            android:name=".common.activity.WebviewActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".common.activity.ErrorActivity"
             android:label="错误界面"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />

@@ -10,6 +10,7 @@ import android.net.Uri
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.shmedo.lib.core.ext.lifecycle.AppLifeObserver
 import com.shmedo.lib.core.network.manager.NetworkStateReceive
+import com.tencent.mmkv.MMKV
 
 /**
  * 作者　: hegaojian
@@ -17,12 +18,9 @@ import com.shmedo.lib.core.network.manager.NetworkStateReceive
  * 描述　:
  */
 
-val appContext: Application by lazy { AppContentProvider.app }
 
 class AppContentProvider : ContentProvider() {
-
     companion object {
-        lateinit var app: Application
         private var mNetworkStateReceive: NetworkStateReceive? = null
         var watchAppLife = true
     }
@@ -34,15 +32,17 @@ class AppContentProvider : ContentProvider() {
     }
 
     private fun install(application: Application) {
-        app = application
         mNetworkStateReceive = NetworkStateReceive()
-        app.registerReceiver(
+        application.registerReceiver(
             mNetworkStateReceive,
             IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         )
-        if (watchAppLife) ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifeObserver)
-    }
+        if (watchAppLife)
+            ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifeObserver)
 
+        //初始化MMKV
+        MMKV.initialize(application)
+    }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? = null
 
@@ -53,7 +53,6 @@ class AppContentProvider : ContentProvider() {
         selectionArgs: Array<String>?,
         sortOrder: String?
     ): Cursor? = null
-
 
     override fun update(
         uri: Uri,

@@ -25,19 +25,25 @@ import com.kunminx.architecture.ui.page.DataBindingActivity
  * Create by KunMinX at 19/8/1
  */
 abstract class BaseVmDbActivity : DataBindingActivity() {
-    /**
-     * 初始化view
-     */
-    protected abstract fun initView(savedInstanceState: Bundle?)
-
-    protected abstract fun createObserver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //getLifecycle().addObserver(NetworkStateManager.getInstance());
         initView(savedInstanceState)
+        initData()
         createObserver()
     }
+
+    /**
+     * 初始化view
+     */
+    abstract fun initView(savedInstanceState: Bundle?)
+
+    abstract fun initData()
+
+    /**
+     * 创建观察者
+     */
+    abstract fun createObserver()
 
     override fun getResources(): Resources {
         return if (ScreenUtils.isPortrait()) {

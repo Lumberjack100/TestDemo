@@ -1,7 +1,7 @@
 package com.shmedo.lib.core.util
 
+
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -52,7 +52,8 @@ object MoshiUtil {
     abstract class MoshiTypeReference<T> // 自定义的类，用来包装泛型
 
     val moshi: Moshi = Moshi.Builder()
-        .addLast(KotlinJsonAdapterFactory()).build()
+//        .addLast(KotlinJsonAdapterFactory())
+        .build()
 
     inline fun <reified T> toJson(src: T, indent: String = ""): String {
         try {

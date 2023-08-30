@@ -106,9 +106,7 @@ abstract class BaseVmDbDialogFragment : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        dismissListener?.let {
-            it.onDismiss(dialog)
-        }
+        dismissListener?.onDismiss(dialog)
     }
 
     interface OnDialogFragmentDismissListener {

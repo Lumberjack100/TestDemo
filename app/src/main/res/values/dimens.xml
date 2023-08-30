@@ -101,4 +101,5 @@
     <!--语音波形动画条-->
     <dimen name="sound_wave_line_width">1dp</dimen>
     <dimen name="sound_wave_line_space">6.5dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
