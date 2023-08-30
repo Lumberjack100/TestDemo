@@ -6,22 +6,24 @@ import android.os.Looper
 import android.text.TextUtils
 import androidx.activity.viewModels
 import com.amap.api.maps.MapsInitializer
-import com.blankj.utilcode.util.NetworkUtils
 import com.gyf.immersionbar.ktx.immersionBar
-import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.util.MmkvCacheUtil.getPassword
+import com.shmedo.lib.core.util.MmkvCacheUtil.getUserName
 import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.login.activity.LoginActivity
 import com.shmedo.mcloudapp.login.fragment.PolicyDialog
 import com.shmedo.mcloudapp.login.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.login.viewmodel.state.SplashViewModel
-import org.json.JSONException
-import org.json.JSONObject
+import com.tencent.bugly.crashreport.CrashReport
 
 class SplashActivity : BaseActivity() {
+    private val mMessenger: PageMessenger by lazy { getAppViewModel() }
     private val mStates: SplashViewModel by viewModels()
     private val loginRequestViewModel: LoginRequestViewModel by viewModels()
 
@@ -48,38 +50,32 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun createObserver() {
+        mMessenger.isAgreePolicy.observe(this) { aBoolean: Boolean ->
+            if (aBoolean) {
+                goToLogin()
+            } else {
+                finish()
+            }
+        }
         loginRequestViewModel.loginResult.observe(this) { dataResult: DataResult<String> ->
             if (!dataResult.responseStatus.isSuccess) {
                 dismissLoading()
-                Toaster.show(dataResult.responseStatus.errorMessage)
+                redirectToLoginActivity(500)
                 return@observe
             }
-//            CrashReport.setUserId(mStates.name.get()) //该用户本次启动后的异常日志用户account
-//            setToken(dataResult.result!!.token)
-//            setUserName(mStates.name.get())
-//            setPassword(mStates.password.get())
+            CrashReport.setUserId(getUserName()) //该用户本次启动后的异常日志用户account
+            redirectToMainActivity(500)
         }
     }
 
     private fun goToLogin() {
-        val mAccount = "medo_gh"//getUserName()
-        val mPassword ="medo123456"// getPassword()
+        val mAccount = getUserName()
+        val mPassword = getPassword()
         //自动登录
         if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
-            if (!NetworkUtils.isConnected()) {
-                redirectToMainActivity(300)
-            } else {
-                val jsonObjectRequest = JSONObject()//接口请求参数
-                try {
-                    jsonObjectRequest.put("account", mAccount)
-                    jsonObjectRequest.put("password", mPassword)
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-                loginRequestViewModel.requestLogin(jsonObjectRequest.toString())
-            }
+            loginRequestViewModel.requestLogin(mAccount, mPassword)
         } else {
-            redirectToLoginActivity(0)
+            redirectToLoginActivity(500)
         }
     }
 

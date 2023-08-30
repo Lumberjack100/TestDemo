@@ -76,10 +76,14 @@
         <!-- 适配华为（huawei）刘海屏 -->
         <meta-data
             android:name="android.notch_support"
-            android:value="true" /> <!-- 适配小米（xiaomi）刘海屏 -->
+            android:value="true" />
+
+        <!-- 适配小米（xiaomi）刘海屏 -->
         <meta-data
             android:name="notch.config"
-            android:value="portrait|landscape" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+            android:value="portrait|landscape" />
+
+        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
 
         <meta-data
@@ -87,7 +91,9 @@
             android:value="${mapApikey}" />
         <meta-data
             android:name="BUGLY_APPID"
-            android:value="${buglyAppId}" /> <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
+            android:value="${buglyAppId}" />
+
+        <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
             android:value="false" />

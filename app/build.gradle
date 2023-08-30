@@ -135,6 +135,7 @@ android {
 }
 
 dependencies {
+    implementation libs.androidx.legacy.support.v4
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.ext.junit
     androidTestImplementation libs.androidx.espresso.core
@@ -144,6 +145,7 @@ dependencies {
     implementation project(":lib_tcp")
     implementation project(":lib_network")
     implementation project(":lib_core")
+    implementation libs.kotlin.stdlib.jdk8
     implementation libs.androidx.constraintlayout
     implementation libs.flexbox
     implementation libs.androidx.core.ktx

@@ -1,5 +1,6 @@
 package com.shmedo.lib.core.util
 
+import com.shmedo.lib.core.base.model.UserInfo
 import com.tencent.mmkv.MMKV
 
 object MmkvCacheUtil {
@@ -30,26 +31,32 @@ object MmkvCacheUtil {
         return kv.encode("private", first)
     }
 
+    /**
+     * 用户名
+     */
     fun getUserName(): String {
         val kv = MMKV.defaultMMKV()
-        val _value = kv.decodeString("username")
-        return _value ?: ""
+        val value = kv.decodeString("username")
+        return value ?: ""
     }
 
-    fun setUserName(_value: String) {
+    fun setUserName(value: String) {
         val kv = MMKV.defaultMMKV()
-        kv.encode("username", _value)
+        kv.encode("username", value)
     }
 
+    /**
+     * 密码
+     */
     fun getPassword(): String {
         val kv = MMKV.defaultMMKV()
-        val _value = kv.decodeString("password")
-        return _value ?: ""
+        val value = kv.decodeString("password")
+        return value ?: ""
     }
 
-    fun setPassword(_value: String) {
+    fun setPassword(value: String) {
         val kv = MMKV.defaultMMKV()
-        kv.encode("password", _value)
+        kv.encode("password", value)
     }
 
     fun getToken(): String {
@@ -63,28 +70,42 @@ object MmkvCacheUtil {
         kv.encode("token", token)
     }
 
-//    /**
-//     * 获取保存的用户信息
-//     */
-//    fun getUser(): UserInfo? {
-//        val kv = MMKV.defaultMMKV()
-//        val userStr = kv.decodeString("user")
-//        return if (TextUtils.isEmpty(userStr)) {
-//            null
-//        } else {
-//            Gson().fromJson(userStr, UserInfo::class.java)
-//        }
-//    }
-//
-//    fun setUser(info: UserInfo?) {
-//        val kv = MMKV.defaultMMKV()
-//        if (info == null) {
-//            kv.encode("user", "")
-//            setIsLogin(false)
-//        } else {
-//            kv.encode("user", Gson().toJson(info))
-//            setIsLogin(true)
-//        }
-//    }
+    fun getUserId(): Int {
+        val kv = MMKV.defaultMMKV()
+        return kv.decodeInt("user_id", 0)
+    }
+
+    fun setUserId(value: Int) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("user_id", value)
+    }
+
+    fun getUserCompanyId(): Int {
+        val kv = MMKV.defaultMMKV()
+        return kv.decodeInt("user_company_id", 0)
+    }
+
+    fun setUserCompanyId(value: Int) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("user_company_id", value)
+    }
+
+    /**
+     * 获取保存的用户信息
+     */
+    fun getUser(): UserInfo? {
+        val kv = MMKV.defaultMMKV()
+        val userStr = kv.decodeString("user_info")
+
+        return if (userStr.isNullOrEmpty()) null
+        else MoshiUtil.fromJson<UserInfo>(userStr)
+    }
+
+    fun setUser(info: UserInfo?) {
+        val kv = MMKV.defaultMMKV()
+        info?.let {
+            kv.encode("user_info", MoshiUtil.toJson(info))
+        }
+    }
 
 }

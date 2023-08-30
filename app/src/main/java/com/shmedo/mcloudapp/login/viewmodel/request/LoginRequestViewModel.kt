@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
+import com.shmedo.lib.core.base.model.BasicUserInfo
+import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
-import com.shmedo.mcloudapp.data.model.bean.BasicUserInfo
-import com.shmedo.mcloudapp.data.model.bean.UserWrapperInfo
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -25,6 +25,9 @@ import org.json.JSONObject
  *
  */
 class LoginRequestViewModel : ViewModel() {
+    private val _sendCodeResult = MutableResult<DataResult<String>>()
+    val sendCodeResult: Result<DataResult<String>> = _sendCodeResult
+
     private val _loginResult = MutableResult<DataResult<String>>()
     val loginResult: Result<DataResult<String>> = _loginResult
 
@@ -34,55 +37,143 @@ class LoginRequestViewModel : ViewModel() {
     private val _updatePasswordResult = MutableResult<DataResult<String>>()
     val updatePasswordResult: Result<DataResult<String>> = _updatePasswordResult
 
-
-    fun requestLogin(jsonParam: String) =
+    /**
+     * 发送验证码
+     */
+    fun requestSendSmsCode(mobile: String) {
         viewModelScope.launch {
-            val token: String? =
-                NetDataRepository.instance.loginByAccount(jsonParam) { error: Throwable ->
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _loginResult.setValue(DataResult(responseStatus = responseStatus))
-                } ?: return@launch
-
-            MmkvCacheUtil.setToken(token)
-
-            val basicUserInfo: BasicUserInfo? =
-                NetDataRepository.instance.getUserByToken { error: Throwable ->
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _loginResult.setValue(DataResult(responseStatus = responseStatus))
-                } ?: return@launch
-
-            val jsonObjectRequest = JSONObject()
+            val jsonObjectRequest = JSONObject()//接口请求参数
             try {
-                jsonObjectRequest.put("companyID", basicUserInfo!!.companyID)
-                jsonObjectRequest.put("userID", basicUserInfo.subjectID)
+                jsonObjectRequest.put("phone", mobile)
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-            val userWrapperInfo: UserWrapperInfo? =
-                NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
+            val data: String =
+                NetDataRepository.instance.sendSmsCode(jsonObjectRequest.toString()) { error: Throwable ->
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
                     responseStatus.source = ResultSource.NETWORK
-                    _loginResult.setValue(DataResult(responseStatus = responseStatus))
+                    _sendCodeResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
-
-//            try {
-//
-//            } catch (error: Throwable) {
-//                //请求异常，通过it拿到Throwable对象
-//                val responseStatus = ResponseStatus()
-//                responseStatus.isSuccess = false
-//                responseStatus.errorMessage = error.errorMsg
-//                responseStatus.source = ResultSource.NETWORK
-//                _loginResult.setValue(DataResult(responseStatus = responseStatus))
-//            }
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _sendCodeResult.setValue(DataResult(data, responseStatus = responseStatus))
         }
+    }
+
+    /**
+     * 通过账户密码登录
+     */
+    fun requestLogin(mAccount: String, mPassword: String) {
+        viewModelScope.launch {
+            val token: String = loginByAccount(mAccount, mPassword) ?: return@launch
+            MmkvCacheUtil.setUserName(mAccount)
+            MmkvCacheUtil.setPassword(mPassword)
+            MmkvCacheUtil.setToken(token)
+
+            val basicUserInfo: BasicUserInfo = getUserByToken() ?: return@launch
+            MmkvCacheUtil.setUserId(basicUserInfo.subjectID)
+            MmkvCacheUtil.setUserCompanyId(basicUserInfo.companyID)
+
+            val userWrapperInfo: UserWrapperInfo =
+                queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
+            MmkvCacheUtil.setUser(userWrapperInfo.user)
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _loginResult.setValue(DataResult(token, responseStatus = responseStatus))
+        }
+    }
+
+    /**
+     * 通过手机验证码登录
+     */
+    fun requestQuickLogin(phone: String, code: String) {
+        viewModelScope.launch {
+            val token: String = loginByPhone(phone, code) ?: return@launch
+            MmkvCacheUtil.setToken(token)
+
+            val basicUserInfo: BasicUserInfo = getUserByToken() ?: return@launch
+            MmkvCacheUtil.setUserId(basicUserInfo.subjectID)
+            MmkvCacheUtil.setUserCompanyId(basicUserInfo.companyID)
+
+            val userWrapperInfo: UserWrapperInfo =
+                queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
+            MmkvCacheUtil.setUser(userWrapperInfo.user)
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _loginResult.setValue(DataResult(token, responseStatus = responseStatus))
+        }
+    }
+
+    private suspend fun loginByAccount(mAccount: String, mPassword: String): String? {
+        val jsonObjectRequest = JSONObject()//接口请求参数
+        try {
+            jsonObjectRequest.put("account", mAccount)
+            jsonObjectRequest.put("password", mPassword)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return NetDataRepository.instance.loginByAccount(jsonObjectRequest.toString()) { error: Throwable ->
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = false
+            responseStatus.errorMessage = error.errorMsg
+            responseStatus.source = ResultSource.NETWORK
+            _loginResult.setValue(DataResult(responseStatus = responseStatus))
+        }
+    }
+
+    private suspend fun loginByPhone(phone: String, code: String): String? {
+        val jsonObjectRequest = JSONObject()//接口请求参数
+        try {
+            jsonObjectRequest.put("phone", phone)
+            jsonObjectRequest.put("code", code)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return NetDataRepository.instance.loginByPhone(jsonObjectRequest.toString()) { error: Throwable ->
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = false
+            responseStatus.errorMessage = error.errorMsg
+            responseStatus.source = ResultSource.NETWORK
+            _loginResult.setValue(DataResult(responseStatus = responseStatus))
+        }
+    }
+
+    private suspend fun getUserByToken(): BasicUserInfo? =
+        NetDataRepository.instance.getUserByToken { error: Throwable ->
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = false
+            responseStatus.errorMessage = error.errorMsg
+            responseStatus.source = ResultSource.NETWORK
+            _loginResult.setValue(DataResult(responseStatus = responseStatus))
+        }
+
+    private suspend fun queryUserByID(companyID: Int = 0, userID: Int = 0): UserWrapperInfo? {
+        val jsonObjectRequest = JSONObject()
+        try {
+            jsonObjectRequest.put("companyID", companyID)
+            jsonObjectRequest.put("userID", userID)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        return NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = false
+            responseStatus.errorMessage = error.errorMsg
+            responseStatus.source = ResultSource.NETWORK
+            _loginResult.setValue(DataResult(responseStatus = responseStatus))
+        }
+    }
+
 }

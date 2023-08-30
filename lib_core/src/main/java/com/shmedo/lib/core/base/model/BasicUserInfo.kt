@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.data.model.bean
+package com.shmedo.lib.core.base.model
 
 import com.squareup.moshi.JsonClass
 

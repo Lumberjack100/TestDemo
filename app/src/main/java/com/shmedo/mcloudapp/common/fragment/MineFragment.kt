@@ -8,24 +8,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.shmedo.mcloudapp.R
 
-class BlankFragment : Fragment() {
+class MineFragment : Fragment() {
 
     companion object {
-        fun newInstance() = BlankFragment()
+        fun newInstance() = MineFragment()
     }
 
-    private lateinit var viewModel: BlankViewModel
+    private lateinit var viewModel: MineViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_blank, container, false)
+        return inflater.inflate(R.layout.fragment_mine, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(BlankViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MineViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

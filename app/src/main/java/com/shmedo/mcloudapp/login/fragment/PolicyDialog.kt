@@ -17,10 +17,12 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.StringUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
+import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil.setAgreePrivate
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
+import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.PrivacyDialogBinding
 import com.shmedo.mcloudapp.login.model.ContentType
 import com.shmedo.mcloudapp.login.viewmodel.state.PolicyViewModel
@@ -32,6 +34,7 @@ import com.shmedo.mcloudapp.login.viewmodel.state.PolicyViewModel
  */
 class PolicyDialog : BaseVmDbDialogFragment() {
     private val binding: PrivacyDialogBinding by lazy { mDatabind as PrivacyDialogBinding }
+    private val mMessenger: PageMessenger by lazy { getAppViewModel() }
     private val mStates: PolicyViewModel by viewModels()
 
     override val dataBindingConfig: DataBindingConfig
@@ -75,6 +78,7 @@ class PolicyDialog : BaseVmDbDialogFragment() {
             //更新同意隐私状态,需要在初始化地图之前完成
             MapsInitializer.updatePrivacyAgree(mActivity, true)
             setAgreePrivate(true)
+            mMessenger.updateIsAgreePolicy(true)
             dismiss()
         }
 

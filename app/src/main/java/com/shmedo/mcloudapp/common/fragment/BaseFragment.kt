@@ -6,8 +6,8 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.shmedo.lib.core.base.fragment.BaseVmDbFragment
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.dismissLoadingExt
-import com.shmedo.mcloudapp.ext.showLoadingExt
+import com.shmedo.mcloudapp.common.ext.dismissLoadingExt
+import com.shmedo.mcloudapp.common.ext.showLoadingExt
 
 
 /**

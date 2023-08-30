@@ -1,9 +1,9 @@
 package com.shmedo.mcloudapp.data.repository.remote
 
 import android.annotation.SuppressLint
+import com.shmedo.lib.core.base.model.BasicUserInfo
+import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.network.util.BaseURL
-import com.shmedo.mcloudapp.data.model.bean.BasicUserInfo
-import com.shmedo.mcloudapp.data.model.bean.UserWrapperInfo
 import rxhttp.tryAwait
 import rxhttp.wrapper.param.RxHttp
 import rxhttp.wrapper.param.toAwaitResponse
@@ -15,6 +15,20 @@ import rxhttp.wrapper.param.toAwaitResponse
  */
 @SuppressLint("CheckResult")
 class NetDataRepository private constructor() {
+
+    /**
+     * 发送验证码
+     */
+    suspend fun sendSmsCode(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/SendSmsCode")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
     /**
      * 账户密码登录
      */
@@ -23,6 +37,19 @@ class NetDataRepository private constructor() {
         onCatch: ((Throwable) -> Unit)? = null
     ): String? =
         RxHttp.postJson("/SignIn")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+    /**
+     * 手机验证码登录
+     */
+    suspend fun loginByPhone(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/SmsLogin")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<String>()

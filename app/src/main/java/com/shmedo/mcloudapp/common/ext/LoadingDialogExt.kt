@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ext
+package com.shmedo.mcloudapp.common.ext
 
 import android.app.Activity
 import android.widget.TextView

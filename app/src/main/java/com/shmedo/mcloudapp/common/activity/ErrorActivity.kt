@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil.getBinding
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 import com.blankj.utilcode.util.ToastUtils
 import com.gyf.immersionbar.ktx.immersionBar
@@ -14,8 +15,8 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityErrorBinding
-import com.shmedo.mcloudapp.ext.clickNoRepeat
-import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.clickNoRepeat
+import com.shmedo.mcloudapp.common.ext.showMessage
 
 
 /**

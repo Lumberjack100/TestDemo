@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
     alias(libs.plugins.android.ksp)
 }
 
@@ -42,6 +43,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(":lib_core")
 
+    implementation libs.kotlin.stdlib.jdk8
     implementation libs.androidx.core.ktx
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation libs.timber

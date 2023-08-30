@@ -1,13 +1,11 @@
 package com.shmedo.mcloudapp
 
-import android.app.Application
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
 import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.blankj.utilcode.util.DeviceUtils
 import com.hjq.toast.Toaster
 import com.hjq.toast.style.BlackToastStyle
 import com.kongzue.dialogx.DialogX
+import com.shmedo.lib.core.base.BaseApp
 import com.shmedo.lib.core.util.CrashReportingTree
 import com.shmedo.lib.network.RxHttpManager
 import com.shmedo.mcloudapp.common.activity.ErrorActivity
@@ -23,12 +21,10 @@ import timber.log.Timber.Forest.plant
  * 创建者:   dpc
  * 创建时间:  2019/1/8 09:16
  */
-class MCloudApplication : Application(), ViewModelStoreOwner {
-    private lateinit var mAppViewModelStore: ViewModelStore
+class MCloudApplication : BaseApp() {
 
     override fun onCreate() {
         super.onCreate()
-        mAppViewModelStore = ViewModelStore()
         //异常上报和升级
         initCrashReport()
         //初始化吐司消息组件
@@ -40,10 +36,6 @@ class MCloudApplication : Application(), ViewModelStoreOwner {
 
         RxHttpManager.initial(this)
     }
-
-    override val viewModelStore: ViewModelStore
-        get() = mAppViewModelStore
-
 
     /**
      * 初始化异常上报

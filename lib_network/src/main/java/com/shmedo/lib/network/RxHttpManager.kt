@@ -3,6 +3,7 @@ package com.shmedo.lib.network
 import android.app.Application
 import com.blankj.utilcode.util.ToastUtils
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.network.converter.MyMoshiConverter
 import com.shmedo.lib.network.util.OKHttpUpdateHttpService
 import com.xuexiang.xupdate.XUpdate
 import com.xuexiang.xupdate.entity.UpdateError
@@ -11,7 +12,6 @@ import com.zhy.http.okhttp.OkHttpUtils
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import rxhttp.RxHttpPlugins
-import rxhttp.wrapper.converter.MoshiConverter
 import rxhttp.wrapper.param.Param
 import java.util.concurrent.TimeUnit
 
@@ -42,12 +42,14 @@ object RxHttpManager {
             .build()
 
         RxHttpPlugins.init(client)
-            .setConverter(MoshiConverter.create()) //设置数据解析器，非必须
+            .setConverter(MyMoshiConverter.create()) //设置数据解析器，非必须
             .setOnParamAssembly { p: Param<*> ->                  //设置公共参数，非必须
-                if(MmkvCacheUtil.getToken().isEmpty()){
-                    p.addHeader("access_type", "android") //添加公共请求头
-                    p.addHeader("access_service", "mcloud") //添加公共请求头
-                }
+//                if(MmkvCacheUtil.getToken().isEmpty()){
+//                    p.addHeader("access_type", "android") //添加公共请求头
+//                    p.addHeader("access_service", "mcloud") //添加公共请求头
+//                }
+                p.addHeader("access_type", "android")
+                p.addHeader("access_service", "mcloud")
                 p.addHeader("Authorization", MmkvCacheUtil.getToken()) //添加公共请求头
             }
     }

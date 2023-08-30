@@ -20,6 +20,7 @@ import android.os.Bundle
 import com.blankj.utilcode.util.AdaptScreenUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.kunminx.architecture.ui.page.DataBindingActivity
+import timber.log.Timber
 
 /**
  * Create by KunMinX at 19/8/1
@@ -60,5 +61,30 @@ abstract class BaseVmDbActivity : DataBindingActivity() {
      */
     override fun isDebug(): Boolean {
         return false
+    }
+
+    override fun onStart() {
+        Timber.i("onStart,BaseVmDbActivity=%s", javaClass.simpleName)
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Timber.i("onResume,BaseVmDbActivity=%s", javaClass.simpleName)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Timber.i("onPause,BaseVmDbActivity=%s", javaClass.simpleName)
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Timber.i("onStop,BaseVmDbActivity=%s", javaClass.simpleName)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Timber.i("onDestroy,BaseVmDbActivity=%s", javaClass.simpleName)
+        super.onDestroy()
     }
 }

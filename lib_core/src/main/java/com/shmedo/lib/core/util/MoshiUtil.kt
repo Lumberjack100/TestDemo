@@ -52,7 +52,7 @@ object MoshiUtil {
     abstract class MoshiTypeReference<T> // 自定义的类，用来包装泛型
 
     val moshi: Moshi = Moshi.Builder()
-//        .addLast(KotlinJsonAdapterFactory())
+//        .addLast(KotlinJsonAdapterFactory()) //TODO 使用kotlin反射时，需要添加这个适配器以及 implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
         .build()
 
     inline fun <reified T> toJson(src: T, indent: String = ""): String {
