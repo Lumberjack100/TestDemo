@@ -83,10 +83,7 @@ class UserInfoHomeFragment : BaseFragment() {
     }
 
     override fun initData() {
-        if (!TextUtils.isEmpty(userInfo.headPhotoPath) && MediaUtils.getMimeTypeFromMediaHttpUrl(
-                userInfo.headPhotoPath
-            ) != null
-        )
+        if (!TextUtils.isEmpty(userInfo.headPhotoPath))
             mStates.imageUrl.set(userInfo.headPhotoPath!!)
     }
 
@@ -105,6 +102,10 @@ class UserInfoHomeFragment : BaseFragment() {
                 return@observe
             }
             Toaster.show("头像已上传")
+            setFragmentResult(
+                MineFragment.requestKey,
+                bundleOf(AppContants.Extras.IS_REFRESH_USER_INFO to true)
+            )
         }
         loginRequestViewModel.updateUserInfoResult.observe(this) { dataResult: DataResult<String> ->
             dismissLoading()

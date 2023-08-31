@@ -8,12 +8,6 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
-    <style name="LightStatusBarActivity" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@color/white</item>
-    </style>
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -22,8 +16,6 @@
         <!--        <item name="android:textColor">@color/title_text_color</item>-->
         <item name="android:textSize">@dimen/text_size_16</item>
     </style>
-
-    <style name="CropImageActivity" parent="Base.Theme.AppCompat" />
 
     <!--Activity进入和退出动画-->
     <!-- animation 样式 -->
@@ -149,6 +141,7 @@
         <item name="android:layout_marginEnd">15dp</item>
         <item name="android:layout_marginTop">25dp</item>
         <item name="android:layout_marginBottom">25dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:background">@drawable/ripple_button_with_corner</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white</item>
@@ -180,6 +173,31 @@
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_centerVertical">true</item>
     </style>
+
+    <style name="bg_empty_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/main_bg_gray</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="empty_img">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Product_Tag_Checked_TitleStyle">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Product_Tag_UnChecked_TitleStyle">
+        <item name="android:textColor">@color/text_color_666666</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 
     <!--设备当前运行状态分组标题样式-->
     <style name="DeviceCurrentState_Group_TitleStyle">
@@ -225,16 +243,5 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <style name="bg_empty_view">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@color/main_bg_gray</item>
-        <item name="android:orientation">vertical</item>
-    </style>
-
-    <style name="empty_img">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
 
 </resources>

@@ -35,6 +35,6 @@ package com.shmedo.lib.network.response
 class DataResult<T>(
     val result: T? = null,
     val responseStatus: ResponseStatus = ResponseStatus(),
-    val current: Int = 0,
-    val pages: Int = 0,
+    val totalCount: Int = 0,
+    val totalPage: Int = 0,
 )

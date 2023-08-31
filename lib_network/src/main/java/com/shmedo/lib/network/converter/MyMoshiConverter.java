@@ -1,5 +1,8 @@
 package com.shmedo.lib.network.converter;
 
+import com.shmedo.lib.core.util.NullBooleanAdapter;
+import com.shmedo.lib.core.util.NullDoubleAdapter;
+import com.shmedo.lib.core.util.NullIntAdapter;
 import com.shmedo.lib.core.util.NullStringAdapter;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
@@ -53,6 +56,9 @@ public class MyMoshiConverter implements JsonConverter {
      */
     public static MyMoshiConverter create() {
         return create(new Moshi.Builder()
+                .add(NullIntAdapter.INSTANCE)
+                .add(NullDoubleAdapter.INSTANCE)
+                .add(NullBooleanAdapter.INSTANCE)
                 .add(NullStringAdapter.INSTANCE)
                 .build());
     }

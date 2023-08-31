@@ -1,5 +1,7 @@
 package com.shmedo.lib.network.response
 
+import com.squareup.moshi.JsonClass
+
 
 /**
  * 创建者：gonghe
@@ -8,6 +10,7 @@ package com.shmedo.lib.network.response
  *
  * 描述： TODO
  */
+@JsonClass(generateAdapter = true)
 data class PageList<T>(
     var totalCount: Int = 0,
     var totalPage: Int = 0,

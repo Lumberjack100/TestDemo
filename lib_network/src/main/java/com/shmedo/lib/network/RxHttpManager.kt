@@ -44,10 +44,6 @@ object RxHttpManager {
         RxHttpPlugins.init(client)
             .setConverter(MyMoshiConverter.create()) //设置数据解析器，非必须
             .setOnParamAssembly { p: Param<*> ->                  //设置公共参数，非必须
-//                if(MmkvCacheUtil.getToken().isEmpty()){
-//                    p.addHeader("access_type", "android") //添加公共请求头
-//                    p.addHeader("access_service", "mcloud") //添加公共请求头
-//                }
                 p.addHeader("access_type", "android")
                 p.addHeader("access_service", "mcloud")
                 p.addHeader("Authorization", MmkvCacheUtil.getToken()) //添加公共请求头

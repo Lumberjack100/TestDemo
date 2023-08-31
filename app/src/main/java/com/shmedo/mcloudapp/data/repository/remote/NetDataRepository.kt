@@ -1,9 +1,18 @@
 package com.shmedo.mcloudapp.data.repository.remote
 
 import android.annotation.SuppressLint
+import com.blankj.utilcode.util.AppUtils
 import com.shmedo.lib.core.base.model.BasicUserInfo
+import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.base.model.DeviceStatisticInfo
+import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
+import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.network.parser.PgyerApiResponseParser
+import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.util.BaseURL
+import com.shmedo.mcloudapp.common.model.CheckSoftModel
+import rxhttp.toAwait
 import rxhttp.tryAwait
 import rxhttp.wrapper.param.RxHttp
 import rxhttp.wrapper.param.toAwaitResponse
@@ -90,6 +99,9 @@ class NetDataRepository private constructor() {
             .toAwaitResponse<String>()
             .tryAwait(onCatch)
 
+    /**
+     * 上传用户头像
+     */
     suspend fun uploadUserAvatar(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
@@ -98,6 +110,57 @@ class NetDataRepository private constructor() {
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+    /**
+     * 查询公司设备在线统计信息
+     */
+    suspend fun getDeviceStatByCompanyID(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): DeviceStatisticInfo? =
+        RxHttp.postJson("/GetDeviceStatByCompanyID")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<DeviceStatisticInfo>()
+            .tryAwait(onCatch)
+
+    /**
+     * 分页查询产品列表
+     */
+    suspend fun getProductList(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<ProductInfo>? =
+        RxHttp.postJson("/QueryProduct")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<PageList<ProductInfo>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 分页查询设备列表
+     */
+    suspend fun queryDeviceList(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<DeviceInfo>? =
+        RxHttp.postJson("/GetDeviceList")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<PageList<DeviceInfo>>()
+            .tryAwait(onCatch)
+
+
+    suspend fun checkAppVersion(
+        onCatch: ((Throwable) -> Unit)? = null
+    ): CheckSoftModel? =
+        RxHttp.postForm("/check")
+            .setDomainIfAbsent(BaseURL.PGYER_SERVICE_ADDRESS.baseUrl)
+            .add("_api_key", AppContants.PGY_API_KEY)
+            .add("appKey", AppContants.PGY_APP_KEY)
+            .add("buildVersion", AppUtils.getAppVersionName())
+            .toAwait(object : PgyerApiResponseParser<CheckSoftModel>() {})
             .tryAwait(onCatch)
 
     companion object {

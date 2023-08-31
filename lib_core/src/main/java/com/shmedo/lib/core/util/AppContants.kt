@@ -8,7 +8,8 @@ package com.shmedo.lib.core.util
 interface AppContants {
 
     companion object {
-        const val HeFengKey = "73e7ccfff31f416e99b86fdfdad7a6ff"
+        const val PGY_API_KEY = "64454bf76fe2abd8dec45200c11fc93b"
+        const val PGY_APP_KEY = "b8a852c106c6cc532332081e22f218a9"
     }
 
     interface Extras {

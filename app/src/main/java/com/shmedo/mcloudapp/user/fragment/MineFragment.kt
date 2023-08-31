@@ -1,9 +1,9 @@
 package com.shmedo.mcloudapp.user.fragment
 
 import android.os.Bundle
+import android.text.TextUtils
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.AppUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -12,14 +12,14 @@ import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.core.util.MmkvCacheUtil.setPassword
-import com.shmedo.lib.core.util.MmkvCacheUtil.setUser
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.MCloudUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
+import com.shmedo.mcloudapp.common.viewmodel.request.ShareRequestViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentMineBinding
 import com.shmedo.mcloudapp.user.activity.LoginActivity
@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.user.viewmodel.state.MineViewModel
 class MineFragment : BaseFragment() {
     private val binding: FragmentMineBinding by lazy { getBinding() as FragmentMineBinding }
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }
+    private val shareRequestViewModel: ShareRequestViewModel by viewModels()
     private val loginRequestViewModel: LoginRequestViewModel by viewModels()
     private val mStates: MineViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
@@ -46,6 +47,8 @@ class MineFragment : BaseFragment() {
         updateUserInfo(userInfo)
     }
     private fun updateUserInfo(info: UserInfo) {
+        if (!TextUtils.isEmpty(userInfo.headPhotoPath))
+            mStates.imageUrl.set(userInfo.headPhotoPath!!)
         mStates.name.set(info.name!!)
         mStates.title.set(info.position!!)
         mStates.company.set(info.companyName!!)
@@ -69,7 +72,7 @@ class MineFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.statusBarView, false)
+        initImmersionBar(binding.statusBarView, true)
     }
 
     inner class ClickProxy {
@@ -101,7 +104,7 @@ class MineFragment : BaseFragment() {
             //清除缓存
 //            CleanUtils.cleanInternalCache();
 //            CleanUtils.cleanExternalCache();
-//            shareViewModel.requestCheckAppVersion(true)
+            shareRequestViewModel.requestCheckAppVersion(true)
         }
 
         /**
@@ -113,10 +116,7 @@ class MineFragment : BaseFragment() {
 
         fun logout() {
             showMessage("确定退出登录吗", "温馨提示", "退出", {
-                //appViewModel.userInfo.value = null
-                setPassword("")
-                setUser(null)
-                ActivityUtils.finishAllActivities()
+                MCloudUtil.logout()
                 LoginActivity.start(mActivity)
             }, "取消")
         }

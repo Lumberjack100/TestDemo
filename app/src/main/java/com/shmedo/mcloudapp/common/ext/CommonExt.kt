@@ -7,12 +7,14 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
+import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.Utils
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.utils.SettingUtil
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import timber.log.Timber
 
 
 /**
@@ -103,5 +105,19 @@ fun String.toHtml(flag: Int = Html.FROM_HTML_MODE_LEGACY): Spanned {
         Html.fromHtml(this)
     }
 }
+
+/**
+ * 控制台输出带协程信息的log
+ */
+fun logX(any: Any?) {
+    Timber.d(
+        """
+================================
+$any
+${TimeUtils.getNowString()} Thread:${Thread.currentThread().name}
+""".trimIndent()
+    )
+}
+
 
 

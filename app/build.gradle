@@ -47,7 +47,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInteger()
         targetSdk = libs.versions.targetSdk.get().toInteger()
         versionCode getReversion()
-        versionName '3.2.0'
+        versionName '3.0.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
@@ -141,6 +141,7 @@ dependencies {
     androidTestImplementation libs.androidx.espresso.core
 
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation project(":lib_device_base")
     implementation project(":lib_ble")
     implementation project(":lib_tcp")
     implementation project(":lib_network")

@@ -1,11 +1,11 @@
 package com.shmedo.mcloudapp.user.viewmodel.request
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.lib.core.base.model.BasicUserInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
+import com.shmedo.lib.core.base.viewmodel.BaseViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
@@ -24,7 +24,7 @@ import org.json.JSONObject
  * 描述： TODO
  *
  */
-class LoginRequestViewModel : ViewModel() {
+class LoginRequestViewModel : BaseViewModel() {
     private val _sendCodeResult = MutableResult<DataResult<String>>()
     val sendCodeResult: Result<DataResult<String>> = _sendCodeResult
 

@@ -53,6 +53,10 @@ object MoshiUtil {
 
     val moshi: Moshi = Moshi.Builder()
 //        .addLast(KotlinJsonAdapterFactory()) //TODO 使用kotlin反射时，需要添加这个适配器以及 implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
+        .add(NullIntAdapter)
+        .add(NullDoubleAdapter)
+        .add(NullBooleanAdapter)
+        .add(NullStringAdapter)
         .build()
 
     inline fun <reified T> toJson(src: T, indent: String = ""): String {

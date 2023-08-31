@@ -49,13 +49,16 @@ abstract class BaseFragment : BaseVmDbFragment() {
         bar: View,
         isDarkFont: Boolean = true,
         isDarkIcon: Boolean = true,
-        navigationBarColor: Int = R.color.white
+        navigationBarColor: Int = R.color.white,
+        statusBarColor: Int = -1
     ) {
         immersionBar {
             titleBar(bar)
             statusBarDarkFont(isDarkFont)
             navigationBarDarkIcon(isDarkIcon)
             navigationBarColor(navigationBarColor)
+            if (statusBarColor != -1)
+                statusBarColor(statusBarColor)
         }
     }
 }

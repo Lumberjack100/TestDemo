@@ -13,18 +13,18 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class DepartmentInfo(
-    var id: Int = 0,
-    var name: String? = "",
-    var companyID: Int = 0,
-    var parentID: Int = 0,
-    var desc: String? = "",
-    var level: Int = 0,
-    var isReadOnly: Boolean = false,
-    var displayOrder: Int = 0,
-    var createUserID: Int = 0,
-    var createTime: String? = "",
-    var updateUserID: Int = 0,
-    var updateTime: String? = "",
-    var isHasChild: Boolean = false,
-    var isDelete: Boolean = false
+    val id: Int = 0,
+    val name: String = "",
+    val companyID: Int = 0,
+    val parentID: Int = 0,
+    val desc: String = "",
+    val level: Int = 0,
+    val isReadOnly: Boolean = false,
+    val displayOrder: Int = 0,
+    val createUserID: Int = 0,
+    val createTime: String = "",
+    val updateUserID: Int = 0,
+    val updateTime: String = "",
+    val isHasChild: Boolean = false,
+    val isDelete: Boolean = false
 )

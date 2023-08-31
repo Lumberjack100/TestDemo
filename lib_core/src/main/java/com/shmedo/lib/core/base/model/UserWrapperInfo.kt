@@ -11,6 +11,6 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class UserWrapperInfo(
-    var user: UserInfo? = null,
-    var departments: List<DepartmentInfo>? = ArrayList()
+    val user: UserInfo? = null,
+    val departments: List<DepartmentInfo>? = ArrayList()
 )

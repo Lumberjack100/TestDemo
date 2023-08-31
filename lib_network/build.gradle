@@ -31,9 +31,9 @@ android {
     }
 
     //ksp传参方式
-    ksp {
-        arg("rxhttp_rxjava", "$libs.versions.rxjava")
-    }
+//    ksp {
+//        arg("rxhttp_rxjava", "$libs.versions.rxjava")
+//    }
 }
 
 dependencies {
@@ -52,8 +52,8 @@ dependencies {
     implementation libs.mmkv
 
     implementation libs.okhttp3.logging.interceptor
-    api libs.rxjava
-    api libs.rxandroid
+//    api libs.rxjava
+//    api libs.rxandroid
     api libs.rxhttp
     ksp libs.rxhttp.compiler
     implementation libs.rxhttp.converter.moshi
@@ -62,6 +62,6 @@ dependencies {
     ksp libs.moshi.kotlin.codegen
 
     // 一个轻量级、高可用性的Android版本更新框架
-    implementation libs.xuexiangjys.xupdate
+    api libs.xuexiangjys.xupdate
     implementation libs.okhttputils
 }
