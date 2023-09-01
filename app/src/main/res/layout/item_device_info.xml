@@ -6,11 +6,12 @@
     <data>
 
         <variable
-            name="deviceInfo"
+            name="m"
             type="com.shmedo.lib.core.base.model.DeviceInfo" />
     </data>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -41,8 +42,8 @@
                     android:ellipsize="end"
                     android:gravity="left"
                     android:singleLine="true"
-                    android:text="@{deviceInfo.deviceToken}"
-                    android:textColor="@{deviceInfo.onlineStatus?@color/title_text_color:@color/text_color_b3b3b3}"
+                    android:text="@{m.deviceToken}"
+                    android:textColor="@{m.onlineStatus?@color/title_text_color:@color/text_color_b3b3b3}"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     tools:text="19D95B"
@@ -53,7 +54,7 @@
                     android:layout_width="15dp"
                     android:layout_height="13dp"
                     android:layout_marginStart="10dp"
-                    android:src="@{deviceInfo.onlineStatus?@drawable/ic_device_signal_three:@drawable/ic_device_signal_offline}"
+                    android:src="@{m.onlineStatus?@drawable/ic_device_signal_three:@drawable/ic_device_signal_offline}"
                     tools:src="@drawable/ic_signal_default" />
 
             </LinearLayout>
@@ -68,7 +69,7 @@
                     android:id="@+id/iv_battery"
                     android:layout_width="26dp"
                     android:layout_height="15dp"
-                    android:src="@{deviceInfo.onlineStatus?@drawable/ic_battery_full_online:@drawable/ic_battery_full_offline}"
+                    android:src="@{m.onlineStatus?@drawable/ic_battery_full_online:@drawable/ic_battery_full_offline}"
                     tools:src="@drawable/ic_battery_default" />
 
                 <TextView
@@ -110,7 +111,7 @@
                     android:layout_marginStart="12dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="@{deviceInfo.productName}"
+                    android:text="@{m.productName}"
                     android:textColor="@color/title_text_color"
                     android:textSize="13sp"
                     tools:text="智能声光报警器专业监测设备" />

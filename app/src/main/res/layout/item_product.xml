@@ -5,15 +5,15 @@
     <data>
 
         <variable
-            name="productInfo"
+            name="m"
             type="com.shmedo.lib.core.base.model.ProductInfo" />
     </data>
 
     <LinearLayout
-        android:id="@+id/ll_item"
+        android:id="@+id/item"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:background="@{productInfo.checked?@drawable/bg_device_type_checked:null}"
+        android:background="@{m.checked?@drawable/bg_device_type_checked:null}"
         android:gravity="center"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
@@ -23,7 +23,7 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{productInfo.productName}"
+            android:text="@{m.productName}"
             tools:text="全部"
             tools:textColor="@color/colorPrimary"
             tools:textSize="17sp" />

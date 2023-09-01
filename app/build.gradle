@@ -180,14 +180,10 @@ dependencies {
     implementation libs.getActivity.toastutils
     implementation libs.datetime.picker
 
-    //下拉刷新
-    implementation libs.bundles.refreshlayout
-    //RecyclerView侧滑菜单，Item拖拽，滑动删除Item，自动加载更多，HeaderView，FooterView，Item分组黏贴
-    implementation libs.recyclerview.x
+    //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
+    implementation libs.liangjingkanji.brv
     //一个强大并且灵活的RecyclerViewAdapter
     implementation libs.base.recyclerview.adapter.helper
-    //StateView is an invisible, zero-sized View that can be used to lazily inflate loadingView/emptyView/retryView/anyView at runtime.
-    implementation libs.stateview
 
     implementation libs.agentweb.core
 

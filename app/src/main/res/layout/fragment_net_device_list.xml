@@ -140,45 +140,26 @@
                     android:paddingEnd="16dp"
                     android:paddingBottom="10dp" />
 
-                <com.scwang.smart.refresh.layout.SmartRefreshLayout
+                <com.drake.brv.PageRefreshLayout
                     android:id="@+id/refreshLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.scwang.smart.refresh.header.ClassicsHeader
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_device"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="match_parent"
+                        android:clipToPadding="false"
+                        android:paddingStart="@dimen/dimen_size_10"
+                        android:paddingTop="10dp"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        android:paddingBottom="@dimen/dimen_size_10"
+                        android:splitMotionEvents="false"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="2"
+                        tools:listitem="@layout/item_device_info" />
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <com.github.nukc.stateview.StateView
-                            android:id="@+id/stateView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerview_device"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:clipToPadding="false"
-                            android:paddingStart="@dimen/dimen_size_10"
-                            android:paddingTop="10dp"
-                            android:paddingRight="@dimen/dimen_size_10"
-                            android:paddingBottom="@dimen/dimen_size_10"
-                            android:splitMotionEvents="false"
-                            tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                            tools:listitem="@layout/item_device_info"
-                            tools:spanCount="2" />
-
-                    </FrameLayout>
-
-                    <com.scwang.smart.refresh.footer.ClassicsFooter
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+                </com.drake.brv.PageRefreshLayout>
 
             </LinearLayout>
 

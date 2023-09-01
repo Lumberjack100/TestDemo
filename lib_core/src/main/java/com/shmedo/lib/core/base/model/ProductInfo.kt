@@ -30,13 +30,4 @@ class ProductInfo(
     val modelNum: Int = 0,
     @Json(ignore = true)
     var isChecked: Boolean = false
-) : Comparable<ProductInfo> {
-
-    override fun compareTo(obj: ProductInfo): Int {
-        //定义一个中文排序器
-//        Comparator collator = Collator.getInstance(Locale.CHINA);
-//        int lastCmp = this.productToken.compareTo(obj.getProductToken());
-//        return collator.compare(getProductName(), obj.getProductName());
-        return productName.compareTo(obj.productName)
-    }
-}
+)

@@ -32,7 +32,7 @@ class DeviceInfoAdapter : BaseQuickAdapter<DeviceInfo, BaseDataBindingHolder<Ite
         item: DeviceInfo
     ) {
         // 设置数据
-        binding.deviceInfo = item
+        binding.m = item
 
     }
 }

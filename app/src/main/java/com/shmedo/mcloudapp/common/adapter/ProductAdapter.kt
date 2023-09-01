@@ -32,7 +32,7 @@ class ProductAdapter : BaseQuickAdapter<ProductInfo, BaseDataBindingHolder<ItemP
         item: ProductInfo
     ) {
         // 设置数据
-        binding.productInfo = item
+        binding.m = item
         if (item.isChecked)
             binding.tvName.setTextAppearance(R.style.Product_Tag_Checked_TitleStyle)
         else

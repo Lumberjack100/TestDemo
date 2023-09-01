@@ -6,14 +6,15 @@ import android.text.Spanned
 import android.text.SpannedString
 import android.text.style.AbsoluteSizeSpan
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ConvertUtils
+import com.drake.brv.PageRefreshLayout
+import com.drake.brv.utils.models
+import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
-import com.shmedo.lib.core.base.model.PageInfo
 import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getAppViewModel
@@ -21,14 +22,13 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.adapter.DeviceInfoAdapter
-import com.shmedo.mcloudapp.common.adapter.ProductAdapter
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.NetDeviceListViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.common.widget.recycleviewitemdivider.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
+import com.shmedo.mcloudapp.databinding.ItemProductBinding
 import java.text.DecimalFormat
 
 class NetDeviceListFragment : BaseFragment() {
@@ -38,10 +38,6 @@ class NetDeviceListFragment : BaseFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
-    private val pageInfo = PageInfo(1)
-    private val mProductAdapter: ProductAdapter by lazy { ProductAdapter() }
-    private val mDeviceInfoAdapter: DeviceInfoAdapter by lazy { DeviceInfoAdapter() }
-    private val deviceInfoList: MutableList<DeviceInfo> = ArrayList()
     private var lastSelectedProductIndex = 0
     private var companyID = -100
     private var productID = -1
@@ -52,40 +48,39 @@ class NetDeviceListFragment : BaseFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.refreshLayout.setEnableLoadMoreWhenContentNotFull(false)
-        binding.refreshLayout.setOnRefreshListener {
-            //下拉刷新，需要重置页数
-            pageInfo.reset()
-            deviceInfoList.clear()
-            queryDeviceList()
-        }
-        binding.refreshLayout.setOnLoadMoreListener {
-            pageInfo.nextPage()
-            queryDeviceList()
-        }
         initProductAdapter()
         initDeviceInfoAdapter()
+        initRefresh()
     }
 
     private fun initProductAdapter() {
-        binding.recyclerviewProduct.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = mProductAdapter
-            mProductAdapter.setOnItemClickListener { _, _, position ->
-                val productInfo = mProductAdapter.data[position]
+        binding.recyclerviewProduct.setup { rv ->
+            rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            addType<ProductInfo>(R.layout.item_product)
+            onBind {
+                val productInfo = getModel<ProductInfo>()
                 if (productInfo.isChecked) {
-                    return@setOnItemClickListener
+                    getBinding<ItemProductBinding>().tvName.setTextAppearance(R.style.Product_Tag_Checked_TitleStyle)
+                } else {
+                    getBinding<ItemProductBinding>().tvName.setTextAppearance(R.style.Product_Tag_UnChecked_TitleStyle)
+                }
+            }
+            R.id.item.onClick {
+                val productInfo = getModel<ProductInfo>()
+                if (productInfo.isChecked) {
+                    return@onClick
                 }
                 if (lastSelectedProductIndex != -1) {
-                    mProductAdapter.data[lastSelectedProductIndex].isChecked = false
-                    mProductAdapter.notifyItemChanged(lastSelectedProductIndex)
+                    getModel<ProductInfo>(lastSelectedProductIndex).isChecked = false
+                    notifyItemChanged(lastSelectedProductIndex)
                 }
+                lastSelectedProductIndex = modelPosition
                 productInfo.isChecked = true
-                mProductAdapter.notifyItemChanged(position)
+                notifyItemChanged(modelPosition)
                 val lastVisibleItemPosition =
                     (binding.recyclerviewProduct.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                 //点击选中最后一个 Item 时,使RecyclerView滚动到底
-                if (position == lastVisibleItemPosition) {
+                if (modelPosition == lastVisibleItemPosition) {
                     binding.recyclerviewProduct.scrollToPosition(lastVisibleItemPosition)
                 }
                 productID = productInfo.id
@@ -95,17 +90,27 @@ class NetDeviceListFragment : BaseFragment() {
     }
 
     private fun initDeviceInfoAdapter() {
-        val spanCount = 2//跟布局里面的spanCount属性是一致的
-        val spacing = ConvertUtils.dp2px(10f) //每一个矩形的间距
-        binding.recyclerviewDevice.apply {
-            layoutManager = GridLayoutManager(context, spanCount)
-            addItemDecoration(MyGridSpacingItemDecoration(spanCount, spacing, false))
-            adapter = mDeviceInfoAdapter
-            mDeviceInfoAdapter.setOnItemClickListener { _, _, position ->
-                val deviceInfo = mDeviceInfoAdapter.data[position]
+        binding.recyclerviewDevice.setup { rv ->
+            rv.addItemDecoration(
+                MyGridSpacingItemDecoration(
+                    2,
+                    ConvertUtils.dp2px(10f),
+                    false
+                )
+            )
+            addType<DeviceInfo>(R.layout.item_device_info)
+            R.id.item.onClick {
+                val deviceInfo = getModel<DeviceInfo>()
 //                DeviceConfigActivity.startActivity(mActivity, deviceInfo)
             }
         }
+    }
+
+    private fun initRefresh() {
+        PageRefreshLayout.startIndex = 1
+        binding.refreshLayout.onRefresh {
+            queryDeviceList()
+        }.showLoading()
     }
 
     override fun createObserver() {
@@ -128,28 +133,21 @@ class NetDeviceListFragment : BaseFragment() {
                 return@observe
             }
             dataResult.result?.let { tempList ->
-                mProductAdapter.data.clear()
-                mProductAdapter.data.addAll(tempList)
-                mProductAdapter.notifyDataSetChanged()
+                binding.recyclerviewProduct.models = tempList
                 binding.recyclerviewProduct.scrollToPosition(0)
             }
         }
         deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
-                updateResult()
-                binding.refreshLayout.finishLoadMore(false)
                 return@observe
             }
             listDataResult.result?.let {
-                deviceInfoList.addAll(it)
-            }
-            updateResult()
-            if (pageInfo.page == listDataResult.totalPage) {
-                binding.refreshLayout.finishRefreshWithNoMoreData()
-            } else {
-                if (pageInfo.isFirstPage()) binding.refreshLayout.finishRefresh()
-                else binding.refreshLayout.finishLoadMore()
+                binding.refreshLayout.addData(it, isEmpty = {
+                    binding.refreshLayout.index == 1 && it.isEmpty()
+                }, hasMore = {
+                    binding.refreshLayout.index < listDataResult.totalPage
+                })
             }
         }
     }
@@ -162,21 +160,9 @@ class NetDeviceListFragment : BaseFragment() {
         deviceRequestViewModel.getDeviceList(
             userInfo.companyID,
             productID,
-            pageInfo.page,
+            binding.refreshLayout.index,
             PAGE_SIZE
         )
-    }
-
-    private fun updateResult() {
-        mDeviceInfoAdapter.data.clear()
-        if (deviceInfoList.isEmpty()) {
-            mDeviceInfoAdapter.notifyDataSetChanged()
-            binding.stateView.showEmpty()
-            return
-        }
-        mDeviceInfoAdapter.data.addAll(deviceInfoList)
-        mDeviceInfoAdapter.notifyDataSetChanged()
-        binding.stateView.showContent()
     }
 
     private fun updateTopView(rate: String) {

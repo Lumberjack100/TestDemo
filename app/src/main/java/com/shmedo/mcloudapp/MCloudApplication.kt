@@ -2,9 +2,15 @@ package com.shmedo.mcloudapp
 
 import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.blankj.utilcode.util.DeviceUtils
+import com.drake.brv.PageRefreshLayout
+import com.drake.brv.utils.BRV
+import com.drake.statelayout.StateConfig
 import com.hjq.toast.Toaster
 import com.hjq.toast.style.BlackToastStyle
 import com.kongzue.dialogx.DialogX
+import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.shmedo.lib.core.base.BaseApp
 import com.shmedo.lib.core.util.CrashReportingTree
 import com.shmedo.lib.network.RxHttpManager
@@ -31,10 +37,10 @@ class MCloudApplication : BaseApp() {
         initToastUtil()
         //初始化日志输出
         initTimber()
-        //初始化
         DialogX.init(this)
-
         RxHttpManager.initial(this)
+        //Android 快速构建 RecyclerView
+        initBrv()
     }
 
     /**
@@ -92,5 +98,30 @@ class MCloudApplication : BaseApp() {
         // 初始化 Toast 框架
         Toaster.init(this)
         Toaster.setStyle(BlackToastStyle())
+    }
+
+    private fun initBrv() {
+        BRV.modelId = BR.m
+        // 禁止错误缺省页启用下拉刷新
+        PageRefreshLayout.refreshEnableWhenError = false
+        /**
+         *  推荐在Application中进行全局配置缺省页, 当然同样每个页面可以单独指定缺省页.
+         *  具体查看 https://github.com/liangjingkanji/StateLayout
+         */
+        StateConfig.apply {
+            emptyLayout = R.layout.layout_empty
+            errorLayout = R.layout.layout_error
+            loadingLayout = R.layout.layout_loading
+            setRetryIds(R.id.msg, R.id.iv)
+            onLoading {
+                // 此生命周期可以拿到LoadingLayout创建的视图对象, 可以进行动画设置或点击事件.
+            }
+        }
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout ->
+            MaterialHeader(context)
+        }
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout ->
+            ClassicsFooter(context)
+        }
     }
 }
