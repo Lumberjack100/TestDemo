@@ -55,7 +55,7 @@ class MineFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        loginRequestViewModel.userWrapperInfoResult.observe(this) { dataResult: DataResult<UserWrapperInfo> ->
+        loginRequestViewModel.userWrapperInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<UserWrapperInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe

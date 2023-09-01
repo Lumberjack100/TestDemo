@@ -108,4 +108,19 @@ object MmkvCacheUtil {
         }
     }
 
+    /**
+     * 获取搜索历史缓存数据
+     */
+    fun getSearchHistoryData(): List<String> {
+        val kv = MMKV.defaultMMKV()
+        val searchCacheStr = kv.decodeString("device_search_history")
+        return if (searchCacheStr.isNullOrEmpty()) arrayListOf()
+        else MoshiUtil.fromJson<List<String>>(searchCacheStr) ?: arrayListOf()
+    }
+
+    fun setSearchHistoryData(searchResponseStr: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("device_search_history", searchResponseStr)
+    }
+
 }

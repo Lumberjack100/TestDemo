@@ -22,6 +22,7 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.NetDeviceListViewModel
@@ -44,13 +45,17 @@ class NetDeviceListFragment : BaseFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_net_device_list, BR.vm, mStates)
-            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         initProductAdapter()
         initDeviceInfoAdapter()
         initRefresh()
+        binding.searchPlaceholder.llSearchPlaceholder.setOnClickListener {
+            nav().navigate(
+                R.id.action_mainFragment_to_deviceSearchFragment
+            )
+        }
     }
 
     private fun initProductAdapter() {
@@ -84,7 +89,7 @@ class NetDeviceListFragment : BaseFragment() {
                     binding.recyclerviewProduct.scrollToPosition(lastVisibleItemPosition)
                 }
                 productID = productInfo.id
-                binding.refreshLayout.autoRefresh()
+                binding.refreshLayout.showLoading()
             }
         }
     }
@@ -110,11 +115,11 @@ class NetDeviceListFragment : BaseFragment() {
         PageRefreshLayout.startIndex = 1
         binding.refreshLayout.onRefresh {
             queryDeviceList()
-        }.showLoading()
+        }
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceStatisticInfoResult.observe(this) { dataResult: DataResult<DeviceStatisticInfo> ->
+        deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceStatisticInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -127,7 +132,7 @@ class NetDeviceListFragment : BaseFragment() {
                 updateTopView(rate)
             }
         }
-        deviceRequestViewModel.productListResult.observe(this) { dataResult: DataResult<List<ProductInfo>> ->
+        deviceRequestViewModel.productListResult.observe(viewLifecycleOwner) { dataResult: DataResult<List<ProductInfo>> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -152,16 +157,12 @@ class NetDeviceListFragment : BaseFragment() {
         }
     }
 
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
     private fun queryDeviceList() {
         deviceRequestViewModel.getDeviceList(
-            userInfo.companyID,
-            productID,
-            binding.refreshLayout.index,
-            PAGE_SIZE
+            companyID = userInfo.companyID,
+            productID = productID,
+            currentPage = binding.refreshLayout.index,
+            pageSize = PAGE_SIZE
         )
     }
 
@@ -184,12 +185,8 @@ class NetDeviceListFragment : BaseFragment() {
             productID = -1
             deviceRequestViewModel.getDeviceStatByCompanyID(userInfo.companyID)
             deviceRequestViewModel.getProductList(userInfo.companyID)
-            binding.refreshLayout.autoRefresh()
+            binding.refreshLayout.showLoading()
         }
-    }
-
-    inner class ClickProxy {
-
     }
 
     companion object {

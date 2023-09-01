@@ -72,7 +72,7 @@ fun Fragment.showMessage(
 ) {
     activity?.let {
         MaterialDialog(it)
-            .cancelable(true)
+            .cancelable(false)
             .lifecycleOwner(viewLifecycleOwner)
             .show {
                 title(text = title)

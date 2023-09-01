@@ -95,7 +95,7 @@ class UserInfoHomeFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        loginRequestViewModel.uploadUserAvataResult.observe(this) { dataResult: DataResult<String> ->
+        loginRequestViewModel.uploadUserAvataResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
             dismissLoading()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
@@ -107,7 +107,7 @@ class UserInfoHomeFragment : BaseFragment() {
                 bundleOf(AppContants.Extras.IS_REFRESH_USER_INFO to true)
             )
         }
-        loginRequestViewModel.updateUserInfoResult.observe(this) { dataResult: DataResult<String> ->
+        loginRequestViewModel.updateUserInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
             dismissLoading()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)

@@ -120,11 +120,19 @@ class DeviceRequestViewModel : BaseViewModel() {
     /**
      * 分页查询设备列表
      */
-    fun getDeviceList(companyID: Int, productID: Int, currentPage: Int, pageSize: Int) {
+    fun getDeviceList(
+        companyID: Int,
+        productID: Int = -1,
+        deviceToken: String = "",
+        currentPage: Int,
+        pageSize: Int
+    ) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
             try {
                 jsonObjectRequest.put("companyID", companyID)
+                if (deviceToken.isNotEmpty())
+                    jsonObjectRequest.put("deviceToken", deviceToken)
                 jsonObjectRequest.put("productID", if (productID == -1) "" else productID)
                 jsonObjectRequest.put("tokenAndVersion", false)
                 jsonObjectRequest.put("deviceStatus", "启用")

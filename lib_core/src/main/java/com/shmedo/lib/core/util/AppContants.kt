@@ -20,6 +20,8 @@ interface AppContants {
             const val IS_REFRESH_USER_INFO = "is_refresh_user_info"
 
             const val USER_INFO = "user_info"
+
+            const val DEVICE_SEARCH_KEYWORD = "device_search_keyword"
         }
     }
 }

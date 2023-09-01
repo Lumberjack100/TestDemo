@@ -9,9 +9,6 @@
             name="vm"
             type="com.shmedo.mcloudapp.common.viewmodel.state.NetDeviceListViewModel" />
 
-        <variable
-            name="click"
-            type="com.shmedo.mcloudapp.device.NetDeviceListFragment.ClickProxy" />
     </data>
 
     <LinearLayout

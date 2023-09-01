@@ -88,7 +88,7 @@ fun Toolbar.init(titleStr: String = ""): Toolbar {
  */
 fun Toolbar.initClose(
     titleStr: String = "",
-    backImg: Int = R.drawable.ic_back,
+    backImg: Int = R.drawable.ic_navigation_white,
     onBack: (toolbar: Toolbar) -> Unit
 ): Toolbar {
     setBackgroundColor(SettingUtil.getColor(Utils.getApp()))

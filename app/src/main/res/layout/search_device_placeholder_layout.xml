@@ -5,6 +5,7 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/ll_search_placeholder"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginStart="@dimen/dimen_size_16"
