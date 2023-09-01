@@ -10,9 +10,9 @@ import com.shmedo.lib.device.base.iot_cmd.model.das.DasSensorStatusInfo
  * 创建时间:  2021/4/16 <br></br>
  * 描述：     解析DAS 状态页面主传感器状态参数
  */
-class DasSensorStatusInfoParser : IOTResultParser<List<DasSensorStatusInfo?>?> {
-    override fun parse(result: String): List<DasSensorStatusInfo?>? {
-        var sensorStatusInfoList: List<DasSensorStatusInfo?>? = null
+class DasSensorStatusInfoParser : IOTResultParser<List<DasSensorStatusInfo>?> {
+    override fun parse(result: String): List<DasSensorStatusInfo>? {
+        var sensorStatusInfoList: List<DasSensorStatusInfo>? = null
         return try {
             val keyValues = result.split("&").toTypedArray()
             val keyValueMap = HashMap<String, String>()
@@ -24,11 +24,8 @@ class DasSensorStatusInfoParser : IOTResultParser<List<DasSensorStatusInfo?>?> {
                     keyValueMap[strs[0]] = strs[1]
                 }
             }
-            val status = keyValueMap["status"]
-
-            sensorStatusInfoList = MoshiUtil.moshi.adapter<List<DasSensorStatusInfo?>?>(
-                List::class.java
-            ).fromJson(status)
+            val status = keyValueMap["status"]?: return null
+            sensorStatusInfoList = MoshiUtil.fromJson<List<DasSensorStatusInfo>>(status)
 
             sensorStatusInfoList
         } catch (ex: Exception) {

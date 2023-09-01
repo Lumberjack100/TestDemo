@@ -1,8 +1,6 @@
 package com.shmedo.lib.device.base.iot_cmd.parser.hac
 
-import android.text.TextUtils
-import com.blankj.utilcode.util.GsonUtils
-import com.google.gson.reflect.TypeToken
+import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTResultParser
 import com.shmedo.lib.device.base.iot_cmd.model.hac.HacHoleAreaDepthInfo
@@ -29,12 +27,8 @@ class HacMeasuringHoleDepthInfoParser : IOTResultParser<HacMeasuringHoleDepthInf
             }
             hacMeasuringHoleDepthInfo.address = keyValueMap.getOrDefault("address", "NullKey")
             hacMeasuringHoleDepthInfo.lowtbtss = keyValueMap.getOrDefault("lowtbtss", "NullKey")
-            val value = keyValueMap["holelist"]
-            hacMeasuringHoleDepthInfo.holelist =
-                if (TextUtils.isEmpty(value)) null else GsonUtils.fromJson<List<HacHoleAreaDepthInfo>>(
-                value,
-                object : TypeToken<List<HacHoleAreaDepthInfo?>?>() {}.type
-            )
+            val value = keyValueMap["holelist"]?: return null
+            hacMeasuringHoleDepthInfo.holelist = MoshiUtil.fromJson<List<HacHoleAreaDepthInfo>>(value)
             hacMeasuringHoleDepthInfo
         } catch (ex: Exception) {
             ex.printStackTrace()

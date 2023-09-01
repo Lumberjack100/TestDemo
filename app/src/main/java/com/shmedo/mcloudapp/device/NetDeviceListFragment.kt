@@ -42,7 +42,7 @@ class NetDeviceListFragment : BaseFragment() {
     private val mProductAdapter: ProductAdapter by lazy { ProductAdapter() }
     private val mDeviceInfoAdapter: DeviceInfoAdapter by lazy { DeviceInfoAdapter() }
     private val deviceInfoList: MutableList<DeviceInfo> = ArrayList()
-    private var lastSelectedProductIndex = -1
+    private var lastSelectedProductIndex = 0
     private var companyID = -100
     private var productID = -1
 
@@ -207,7 +207,7 @@ class NetDeviceListFragment : BaseFragment() {
     }
 
     companion object {
-        private const val PAGE_SIZE = 30
+        private const val PAGE_SIZE = 20
         fun newInstance() = NetDeviceListFragment()
     }
 

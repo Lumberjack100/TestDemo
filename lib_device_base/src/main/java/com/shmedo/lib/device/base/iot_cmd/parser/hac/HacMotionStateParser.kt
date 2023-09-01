@@ -2,7 +2,7 @@ package com.shmedo.lib.device.base.iot_cmd.parser.hac
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTResultParser
-import com.shmedo.configlibrary.iot.model.hac.HacMotionState
+import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 
 /**
  * 创建者:   gonghe <br></br>

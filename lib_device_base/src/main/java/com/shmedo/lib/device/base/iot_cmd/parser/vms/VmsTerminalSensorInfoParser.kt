@@ -1,8 +1,8 @@
 package com.shmedo.lib.device.base.iot_cmd.parser.vms
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.configlibrary.iot.model.vms.VmsTerminalSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTResultParser
+import com.shmedo.lib.device.base.iot_cmd.model.vms.VmsTerminalSensorInfo
 
 /**
  * 创建者:   gonghe <br></br>
