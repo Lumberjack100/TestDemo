@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/net_m20_graph"
+    app:startDestination="@id/netM20HomeFragment">
+
+    <fragment
+        android:id="@+id/netM20HomeFragment"
+        android:name="com.shmedo.mcloudapp.device.m20.fragment.NetM20HomeFragment"
+        android:label="NetM20HomeFragment"
+        tools:layout="@layout/fragment_m20_home">
+
+    </fragment>
+
+</navigation>

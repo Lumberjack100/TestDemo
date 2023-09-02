@@ -37,5 +37,9 @@ dependencies {
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
-    implementation libs.material
+
+    //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
+    implementation libs.nordicsemi.scanner
+    //A library that makes working with Bluetooth LE on Android a pleasure.
+//    implementation "no.nordicsemi.android:ble-livedata:2.4.1"
 }

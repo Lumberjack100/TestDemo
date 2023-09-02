@@ -75,7 +75,7 @@ class DeviceSearchResultFragment : BaseFragment() {
             addType<DeviceInfo>(R.layout.item_device_info)
             R.id.item.onClick {
                 val deviceInfo = getModel<DeviceInfo>()
-//                DeviceConfigActivity.startActivity(mActivity, deviceInfo)
+                DeviceHomeActivity.start(mActivity, deviceInfo)
             }
         }
     }
