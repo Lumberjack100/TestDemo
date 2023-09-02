@@ -35,6 +35,9 @@ class WebviewActivity : BaseActivity() {
                 .ready()
                 .go(url)
         }
+        binding.llToolbar.toolbar.setNavigationOnClickListener {
+            finish()
+        }
     }
 
     override fun onPause() {

@@ -34,7 +34,7 @@ class DeviceHomeActivity : BaseActivity() {
 
 
     override fun initView(savedInstanceState: Bundle?) {
-//        initImmersionBar()
+
     }
 
     override fun initData() {
@@ -48,8 +48,6 @@ class DeviceHomeActivity : BaseActivity() {
             deviceInfo = bundle.getSerializable(AppContants.Extras.DEVICE_INFO) as DeviceInfo?
             device = intent.getParcelableExtra(AppContants.Extras.BLE_DEVICE)
         }
-
-
     }
 
     override fun createObserver() {
@@ -79,7 +77,7 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             ProductType.M20 -> {
-                nav(binding.deviceHomeHostFragment)
+                nav(R.id.device_home_host_fragment)
                     .setGraph(R.navigation.net_m20_graph, intent.extras)
             }
 

@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.PageRefreshLayout
@@ -18,6 +17,7 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
@@ -53,12 +53,10 @@ class DeviceSearchResultFragment : BaseFragment() {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            nav().navigateUp()
+        }
         initDeviceInfoAdapter()
         initRefresh()
     }

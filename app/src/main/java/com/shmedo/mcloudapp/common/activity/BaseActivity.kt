@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.common.activity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import com.blankj.utilcode.util.KeyboardUtils
 import com.gyf.immersionbar.ktx.immersionBar
@@ -10,6 +11,7 @@ import com.shmedo.lib.core.base.activity.BaseVmDbActivity
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
 import com.shmedo.mcloudapp.common.ext.showWaitDialog
+
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2022/11/28 <br></br>
@@ -61,7 +63,7 @@ abstract class BaseActivity : BaseVmDbActivity() {
         bar: View,
         isDarkFont: Boolean = true,
         isDarkIcon: Boolean = true,
-        navigationBarColor: Int = com.shmedo.mcloudapp.R.color.white
+        navigationBarColor: Int = R.color.white
     ) {
         immersionBar {
             titleBar(bar)

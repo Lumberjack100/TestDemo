@@ -10,7 +10,20 @@
         android:name="com.shmedo.mcloudapp.device.m20.fragment.NetM20HomeFragment"
         android:label="NetM20HomeFragment"
         tools:layout="@layout/fragment_m20_home">
+        <action
+            android:id="@+id/action_netM20HomeFragment_to_netM20AdvancedSettingFragment"
+            app:destination="@id/netM20AdvancedSettingFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/netM20AdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.m20.fragment.NetM20AdvancedSettingFragment"
+        android:label="NetM20AdvancedSettingFragment"
+        tools:layout="@layout/fragment_m20_advanced_setting" />
 
 </navigation>
