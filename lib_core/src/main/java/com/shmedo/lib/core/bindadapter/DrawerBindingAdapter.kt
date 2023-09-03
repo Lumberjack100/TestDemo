@@ -1,4 +1,4 @@
-package com.shmedo.lib.core.base.bindadapter;
+package com.shmedo.lib.core.bindadapter;
 
 import androidx.core.view.GravityCompat
 import androidx.databinding.BindingAdapter

@@ -26,7 +26,7 @@ class MainFragment : BaseFragment() {
         val viewPagerAdapter = object : FragmentStateAdapter(this) {
             override fun createFragment(position: Int): Fragment {
                 return if (position == 0)
-                    DeviceHomeFragment()
+                    DeviceManageHomeFragment()
                 else MineFragment()
             }
 

@@ -54,7 +54,7 @@ fun Fragment.showLoadingExt(message: String = "请求网络中") {
                     .cancelable(true)
                     .cancelOnTouchOutside(false)
                     .customView(R.layout.layout_custom_progress_dialog_view)
-                    .lifecycleOwner(this)
+                    .lifecycleOwner(viewLifecycleOwner)
                 loadingDialog?.getCustomView()?.run {
                     this.findViewById<TextView>(R.id.loading_tips).text = message
 //                    this.findViewById<ProgressBar>(R.id.progressBar).indeterminateTintList = SettingUtil.getOneColorStateList(it)

@@ -51,7 +51,7 @@
                 android:layout_height="45dp"
                 android:background="@drawable/btn_select"
                 android:foreground="?attr/selectableItemBackground"
-                android:onClick="@{()->click.agree()}"
+                onClickWithDebouncing="@{()->click.agree()}"
                 android:text="同意"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_18" />
@@ -63,7 +63,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dimen_size_15"
                 android:background="@null"
-                android:onClick="@{()->click.disAgree()}"
+                onClickWithDebouncing="@{()->click.disAgree()}"
                 android:text="拒绝并退出"
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_15" />

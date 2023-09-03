@@ -12,6 +12,7 @@ import com.shmedo.lib.network.parser.PgyerApiResponseParser
 import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.common.model.CheckSoftModel
+import com.shmedo.mcloudapp.device.model.DispatchCmdItem
 import rxhttp.toAwait
 import rxhttp.tryAwait
 import rxhttp.wrapper.param.RxHttp
@@ -151,6 +152,31 @@ class NetDataRepository private constructor() {
             .toAwaitResponse<PageList<DeviceInfo>>()
             .tryAwait(onCatch)
 
+    /**
+     * 批量透明指令下发(限定同一产品)
+     */
+    suspend fun batchDispatchRawCmd(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): List<DispatchCmdItem>? =
+        RxHttp.postJson("/BatchDispatchRawCmd")
+            .setDomainIfAbsent(BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<List<DispatchCmdItem>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 查询指令响应结果
+     */
+    suspend fun queryCmdResultByMsgID(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): List<DispatchCmdItem>? =
+        RxHttp.postJson("/QueryCmdResultByMsgID")
+            .setDomainIfAbsent(BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<List<DispatchCmdItem>>()
+            .tryAwait(onCatch)
 
     suspend fun checkAppVersion(
         onCatch: ((Throwable) -> Unit)? = null

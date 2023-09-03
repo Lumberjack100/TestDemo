@@ -5,8 +5,6 @@
 
     <data>
 
-        <import type="android.text.InputType" />
-
         <variable
             name="vm"
             type="com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel" />
@@ -164,7 +162,7 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_marginEnd="25dp"
-                            android:onClick="@{()->click.eyeClick()}"
+                            onClickWithDebouncing="@{()->click.eyeClick()}"
                             android:src="@{vm.eyeOpen?@drawable/icon_eye_open:@drawable/icon_eye_close}" />
 
                     </LinearLayout>
@@ -250,7 +248,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="43dp"
-                            android:onClick="@{()->click.onGetCodeClick()}"
+                            onClickWithDebouncing="@{()->click.onGetCodeClick()}"
                             android:text="获取验证码"
                             android:textColor="@color/title_text_color"
                             android:textSize="@dimen/text_size_15" />
@@ -268,7 +266,7 @@
                 android:layout_marginTop="32dp"
                 android:background="@drawable/login_button_gradient_bg"
                 android:gravity="center"
-                android:onClick="@{()->click.login()}"
+                onClickWithDebouncing="@{()->click.login()}"
                 android:text="登录"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_17" />
@@ -291,7 +289,7 @@
                 android:id="@+id/iv_login_way"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:onClick="@{()->click.onSwitchLoginWayClick()}"
+                onClickWithDebouncing="@{()->click.onSwitchLoginWayClick()}"
                 android:src="@{vm.isAccountLogin?@drawable/icon_account_login:@drawable/icon_phone_login}" />
 
             <TextView

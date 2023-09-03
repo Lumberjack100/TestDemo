@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.widget;
+package com.shmedo.mcloudapp.common.widget.recyclerview;
 
 
 import android.content.Context;

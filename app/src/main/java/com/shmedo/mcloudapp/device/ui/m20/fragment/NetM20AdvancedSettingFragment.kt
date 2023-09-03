@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.m20.fragment
+package com.shmedo.mcloudapp.device.ui.m20.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -13,35 +13,33 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.common.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
-import com.shmedo.mcloudapp.databinding.FragmentM20HomeBinding
-import com.shmedo.mcloudapp.device.m20.viewmodel.M20HomeViewModel
+import com.shmedo.mcloudapp.databinding.FragmentM20AdvancedSettingBinding
+import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.M20AdvancedSettingViewModel
 
-class NetM20HomeFragment : BaseFragment() {
-    private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
+class NetM20AdvancedSettingFragment : BaseFragment() {
+
+    private val binding: FragmentM20AdvancedSettingBinding by lazy { getBinding() as FragmentM20AdvancedSettingBinding }
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: M20HomeViewModel by viewModels()
+    private val mStates: M20AdvancedSettingViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private var statusBarColor = 0
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m20_home, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_m20_advanced_setting, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            mActivity.finish()
+            nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            mActivity.finish()
-        }
-        binding.llDeviceInfo.ivDeviceLogo.setOnClickListener {
-            nav().navigate(R.id.action_netM20HomeFragment_to_netM20AdvancedSettingFragment)
+            nav().navigateUp()
         }
     }
 

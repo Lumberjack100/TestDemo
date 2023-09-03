@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.common.viewmodel.state.NetDeviceListViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel" />
 
     </data>
 
@@ -127,7 +127,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <com.shmedo.mcloudapp.common.widget.SlidingConflictRecyclerView
+                <com.shmedo.mcloudapp.common.widget.recyclerview.SlidingConflictRecyclerView
                     android:id="@+id/recyclerview_product"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

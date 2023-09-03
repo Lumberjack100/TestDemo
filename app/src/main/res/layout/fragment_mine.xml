@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:foreground="?attr/selectableItemBackground"
-                android:onClick="@{()->click.onUpdateUserClick()}"
+                onClickWithDebouncing="@{()->click.onUpdateUserClick()}"
                 android:padding="@dimen/dimen_size_20">
 
                 <ImageView
@@ -93,7 +93,7 @@
                 android:id="@+id/companyLayout"
                 style="@style/Common_ClickableItem_LayoutStyle"
                 android:layout_marginTop="@dimen/dimen_size_14"
-                android:onClick="@{()->click.onCompanyClick()}">
+                onClickWithDebouncing="@{()->click.onCompanyClick()}">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -136,7 +136,7 @@
             <LinearLayout
                 android:id="@+id/updatePwdLayout"
                 style="@style/Common_ClickableItem_LayoutStyle"
-                android:onClick="@{()->click.onModifyPasswordClick()}">
+                onClickWithDebouncing="@{()->click.onModifyPasswordClick()}">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -170,7 +170,7 @@
                 android:id="@+id/checkVersionLayout"
                 style="@style/Common_ClickableItem_LayoutStyle"
                 android:layout_marginTop="@dimen/dimen_size_14"
-                android:onClick="@{()->click.onVersionCheckClick()}">
+                onClickWithDebouncing="@{()->click.onVersionCheckClick()}">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -213,7 +213,7 @@
             <LinearLayout
                 android:id="@+id/aboutLayout"
                 style="@style/Common_ClickableItem_LayoutStyle"
-                android:onClick="@{()->click.onAboutUsClick()}">
+                onClickWithDebouncing="@{()->click.onAboutUsClick()}">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -249,7 +249,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:gravity="center"
-                android:onClick="@{()->click.logout()}">
+                onClickWithDebouncing="@{()->click.logout()}">
 
                 <TextView
                     android:layout_width="wrap_content"

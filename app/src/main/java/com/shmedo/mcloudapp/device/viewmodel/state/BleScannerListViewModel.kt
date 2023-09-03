@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.viewmodel.state
+package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 

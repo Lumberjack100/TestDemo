@@ -9,7 +9,7 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
  */
 class PolicyViewModel : BaseViewModel() {
 
-    @JvmField
+
     val checkbox = NonNullObservableField(false)
 
 }

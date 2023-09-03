@@ -1,5 +1,5 @@
 
-package com.shmedo.lib.core.base.bindadapter;
+package com.shmedo.lib.core.bindadapter;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;

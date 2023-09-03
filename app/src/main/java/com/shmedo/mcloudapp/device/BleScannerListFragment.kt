@@ -9,9 +9,9 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.common.viewmodel.state.BleScannerListViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentBleScannerListBinding
+import com.shmedo.mcloudapp.device.viewmodel.state.BleScannerListViewModel
 
 class BleScannerListFragment : BaseFragment() {
     private val binding: FragmentBleScannerListBinding by lazy { getBinding() as FragmentBleScannerListBinding }

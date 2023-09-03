@@ -20,9 +20,10 @@ import com.shmedo.mcloudapp.common.ext.initClose
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.common.viewmodel.request.RequestSearchViewModel
+import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchBinding
+import com.shmedo.mcloudapp.device.viewmodel.request.RequestSearchViewModel
 
 /**
  * 创建者：gonghe
@@ -36,7 +37,7 @@ import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchBinding
 class DeviceSearchFragment : BaseFragment() {
     private val binding: FragmentDeviceSearchBinding by lazy { getBinding() as FragmentDeviceSearchBinding }
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: DeviceSearchViewModel by viewModels()
+    private val mStates: EmptyViewModel by viewModels()
     private val requestSearchViewModel: RequestSearchViewModel by viewModels()
 
 

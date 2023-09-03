@@ -17,20 +17,20 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.common.viewmodel.state.DeviceHomeViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.DeviceManageHomeViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
-import com.shmedo.mcloudapp.databinding.FragmentDeviceHomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
 import com.shmedo.mcloudapp.device.BleScannerListFragment
 import com.shmedo.mcloudapp.device.NetDeviceListFragment
 
-class DeviceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private val binding: FragmentDeviceHomeBinding by lazy { getBinding() as FragmentDeviceHomeBinding }
+class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
+    private val binding: FragmentDeviceManageHomeBinding by lazy { getBinding() as FragmentDeviceManageHomeBinding }
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: DeviceHomeViewModel by viewModels()
+    private val mStates: DeviceManageHomeViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_device_home, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_device_manage_home, BR.vm, mStates)
             .addBindingParam(BR.click, ClickProxy())
     }
 

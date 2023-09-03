@@ -14,9 +14,9 @@ import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.BaseActivity
-import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
+import com.shmedo.mcloudapp.device.ui.m20.fragment.NetM20HomeFragment
 
 class DeviceHomeActivity : BaseActivity() {
     private val binding: ActivityDeviceHomeBinding by lazy { getBinding() as ActivityDeviceHomeBinding }
@@ -72,13 +72,15 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             ProductType.ADME -> {
+                val bundle = NetM20HomeFragment.newBundleArguments(deviceInfo!!)
                 findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.net_m20_graph, intent.extras)
+                    .setGraph(R.navigation.net_m20_graph, bundle)
             }
 
             ProductType.M20 -> {
-                nav(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.net_m20_graph, intent.extras)
+                val bundle = NetM20HomeFragment.newBundleArguments(deviceInfo!!)
+                findNavController(R.id.device_home_host_fragment)
+                    .setGraph(R.navigation.net_m20_graph, bundle)
             }
 
             ProductType.E40 -> {

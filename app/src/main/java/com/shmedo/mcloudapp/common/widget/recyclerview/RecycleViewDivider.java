@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.widget.recycleviewitemdivider;
+package com.shmedo.mcloudapp.common.widget.recyclerview;
 
 import android.content.Context;
 import android.content.res.TypedArray;

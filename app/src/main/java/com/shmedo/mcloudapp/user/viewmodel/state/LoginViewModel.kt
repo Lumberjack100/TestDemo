@@ -9,22 +9,22 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
  */
 class LoginViewModel : BaseViewModel() {
 
-    @JvmField
+
     val name = NonNullObservableField("")
 
-    @JvmField
+
     val password = NonNullObservableField("")
 
-    @JvmField
+
     val phone = NonNullObservableField("")
 
-    @JvmField
+
     val code = NonNullObservableField("")
 
-    @JvmField
+
     val eyeOpen = NonNullObservableField(false)
 
-    @JvmField
+
     val isAccountLogin = NonNullObservableField(true)
 
 }

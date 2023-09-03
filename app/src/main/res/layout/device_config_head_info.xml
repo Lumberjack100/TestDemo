@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.CommonDeviceHomeViewModel" />
 
     </data>
 
@@ -47,6 +50,7 @@
                         android:singleLine="true"
                         android:textColor="@color/text_color_1f1f1f"
                         android:textSize="@dimen/text_size_15"
+                        android:text="@{vm.deviceName}"
                         tools:text="DAS-RDS" />
 
                     <TextView
@@ -54,13 +58,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="16dp"
                         android:layout_marginStart="5dp"
-                        android:background="@drawable/bg_device_offline_state_flag"
+                        android:background="@{vm.isOnline()?@drawable/bg_device_online_state_flag:@drawable/bg_device_offline_state_flag}"
                         android:gravity="center"
                         android:paddingStart="5dp"
                         android:paddingEnd="5dp"
                         android:singleLine="true"
-                        android:text="已断开"
-                        android:textColor="@color/sub_title_text_color"
+                        android:text="@{vm.onlineStatus}"
+                        android:textColor="@{vm.isOnline()?@color/text_color_50E9B9:@color/sub_title_text_color}"
+                        tools:text="已断开"
+                        tools:textColor="@color/sub_title_text_color"
+                        tools:background="@drawable/bg_device_offline_state_flag"
                         android:textSize="@dimen/text_size_10" />
 
                 </LinearLayout>
@@ -73,6 +80,7 @@
                     android:singleLine="true"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
+                    android:text="@{vm.deviceToken}"
                     tools:text="设备SN号：21E118L" />
 
                 <TextView
@@ -83,6 +91,7 @@
                     android:singleLine="true"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
+                    android:text="@{vm.productName}"
                     tools:text="所属产品：DAS-V1.5-雷达物位采集器" />
 
                 <TextView
@@ -93,6 +102,7 @@
                     android:singleLine="true"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
+                    android:text="@{vm.firmwareVersion}"
                     tools:text="固件版本：3.1.10_Q12" />
 
                 <TextView
@@ -103,7 +113,9 @@
                     android:singleLine="true"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
-                    tools:text="运行状态：等待" />
+                    android:text="@{vm.extendedField3}"
+                    tools:text="运行状态：等待"
+                    visible="@{vm.isExtendedField3Visible}"/>
 
                 <TextView
                     android:id="@+id/tv_platform_communication_state"
@@ -113,8 +125,9 @@
                     android:singleLine="true"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
-                    tools:text="米度平台连接状态：在线" />
-
+                    android:text="@{vm.platformConnectionState}"
+                    tools:text="米度平台连接状态：在线"
+                    visible="@{vm.isPlatformConnectionStateVisible}"/>
 
             </LinearLayout>
 
@@ -126,9 +139,10 @@
                 android:singleLine="true"
                 android:textColor="@color/text_color_b3b3b3"
                 android:textSize="@dimen/text_size_13"
-                android:visibility="invisible"
+                android:text="@{vm.connectOperate}"
                 tools:text="断开连接"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                visible="@{vm.isConnectOperateVisible}"/>
 
         </LinearLayout>
 

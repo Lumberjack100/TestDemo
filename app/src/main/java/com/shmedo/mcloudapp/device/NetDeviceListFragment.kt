@@ -24,12 +24,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.common.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.common.viewmodel.state.NetDeviceListViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
-import com.shmedo.mcloudapp.common.widget.recycleviewitemdivider.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
 import com.shmedo.mcloudapp.databinding.ItemProductBinding
+import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel
 import java.text.DecimalFormat
 
 class NetDeviceListFragment : BaseFragment() {

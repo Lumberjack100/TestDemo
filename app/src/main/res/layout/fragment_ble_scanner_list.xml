@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.common.viewmodel.state.BleScannerListViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.BleScannerListViewModel" />
 
         <variable
             name="click"

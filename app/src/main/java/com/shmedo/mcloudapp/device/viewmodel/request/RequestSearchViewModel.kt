@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.viewmodel.request
+package com.shmedo.mcloudapp.device.viewmodel.request
 
 
 import com.kunminx.architecture.domain.message.MutableResult
