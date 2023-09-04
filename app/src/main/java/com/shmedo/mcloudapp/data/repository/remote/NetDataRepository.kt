@@ -13,6 +13,7 @@ import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.common.model.CheckSoftModel
 import com.shmedo.mcloudapp.device.model.DispatchCmdItem
+import com.shmedo.mcloudapp.device.model.QueryCmdResult
 import rxhttp.toAwait
 import rxhttp.tryAwait
 import rxhttp.wrapper.param.RxHttp
@@ -156,27 +157,26 @@ class NetDataRepository private constructor() {
      * 批量透明指令下发(限定同一产品)
      */
     suspend fun batchDispatchRawCmd(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): List<DispatchCmdItem>? =
+        jsonParam: String
+    ): List<DispatchCmdItem> =
         RxHttp.postJson("/BatchDispatchRawCmd")
             .setDomainIfAbsent(BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<List<DispatchCmdItem>>()
-            .tryAwait(onCatch)
+            .await()
+
 
     /**
      * 查询指令响应结果
      */
     suspend fun queryCmdResultByMsgID(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): List<DispatchCmdItem>? =
+        jsonParam: String
+    ): List<QueryCmdResult> =
         RxHttp.postJson("/QueryCmdResultByMsgID")
-            .setDomainIfAbsent(BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl)
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addAll(jsonParam)
-            .toAwaitResponse<List<DispatchCmdItem>>()
-            .tryAwait(onCatch)
+            .toAwaitResponse<List<QueryCmdResult>>()
+            .await()
 
     suspend fun checkAppVersion(
         onCatch: ((Throwable) -> Unit)? = null

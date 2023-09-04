@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/netM20HomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.NetM20HomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.M20HomeFragment"
         android:label="NetM20HomeFragment"
         tools:layout="@layout/fragment_m20_home">
         <action

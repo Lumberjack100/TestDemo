@@ -176,28 +176,28 @@ class DeviceRequestViewModel : BaseViewModel() {
      * 批量透明指令下发(限定同一产品)
      */
     fun batchDispatchRawCmd(content: String, deviceTokenList: List<String>) {
-        viewModelScope.launch {
-            val rawCmdParam = DispatchRawCmdParam(content, deviceTokenList)
-            val jsonParam = MoshiUtil.toJson(rawCmdParam)
-            val data: List<DispatchCmdItem> =
-                NetDataRepository.instance.batchDispatchRawCmd(jsonParam) { error: Throwable ->
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _batchDispatchRawCmdResult.setValue(DataResult(responseStatus = responseStatus))
-                } ?: return@launch
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = true
-            responseStatus.responseCode = "0"
-            responseStatus.source = ResultSource.NETWORK
-            _batchDispatchRawCmdResult.setValue(
-                DataResult(
-                    data,
-                    responseStatus = responseStatus
-                )
-            )
-        }
+//        viewModelScope.launch {
+//            val rawCmdParam = DispatchRawCmdParam(content, deviceTokenList)
+//            val jsonParam = MoshiUtil.toJson(rawCmdParam)
+//            val data: List<DispatchCmdItem> =
+//                NetDataRepository.instance.batchDispatchRawCmd(jsonParam) { error: Throwable ->
+//                    val responseStatus = ResponseStatus()
+//                    responseStatus.isSuccess = false
+//                    responseStatus.errorMessage = error.errorMsg
+//                    responseStatus.source = ResultSource.NETWORK
+//                    _batchDispatchRawCmdResult.setValue(DataResult(responseStatus = responseStatus))
+//                } ?: return@launch
+//
+//            val responseStatus = ResponseStatus()
+//            responseStatus.isSuccess = true
+//            responseStatus.responseCode = "0"
+//            responseStatus.source = ResultSource.NETWORK
+//            _batchDispatchRawCmdResult.setValue(
+//                DataResult(
+//                    data,
+//                    responseStatus = responseStatus
+//                )
+//            )
+//        }
     }
 }

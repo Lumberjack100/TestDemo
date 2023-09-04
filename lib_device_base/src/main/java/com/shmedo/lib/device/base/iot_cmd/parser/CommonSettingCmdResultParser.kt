@@ -10,8 +10,8 @@ import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
  * 创建时间:  2020/9/2 <br></br>
  * 描述：     解析通用的设置指令响应结果
  */
-class CommonSettingCmdResultParser : IOTResultParser<CommonSettingCmdResult?> {
-    override fun parse(result: String): CommonSettingCmdResult? {
+class CommonSettingCmdResultParser : IOTResultParser<CommonSettingCmdResult> {
+    override fun parse(result: String): CommonSettingCmdResult {
         val commonSettingCmdResult = CommonSettingCmdResult()
         val strs = result.split("&").toTypedArray()
         for (ss in strs) {
