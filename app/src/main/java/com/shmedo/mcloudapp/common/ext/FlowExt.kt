@@ -25,7 +25,7 @@ inline fun <T : Any> Flow<T>.collectWithLifecycle(
     crossinline block: suspend CoroutineScope.(data: T) -> Unit
 ) {
     lifecycleOwner.lifecycleScope.launch {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(minActiveState) {
+        lifecycleOwner.repeatOnLifecycle(minActiveState) {
             this@collectWithLifecycle.collect {
                 block(it)
             }
@@ -39,7 +39,7 @@ inline fun Fragment.launchAndRepeatWithViewLifecycle(
     crossinline block: suspend CoroutineScope.() -> Unit
 ) {
     viewLifecycleOwner.lifecycleScope.launch {
-        viewLifecycleOwner.lifecycle.repeatOnLifecycle(minActiveState) {
+        viewLifecycleOwner.repeatOnLifecycle(minActiveState) {
             block()
         }
     }

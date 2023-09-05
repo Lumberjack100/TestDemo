@@ -44,11 +44,20 @@ dependencies {
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
+    implementation libs.androidx.activity.ktx
+    implementation libs.androidx.fragment.ktx
     implementation libs.androidx.lifecycle.livedata.ktx
     implementation libs.androidx.lifecycle.viewmodel.ktx
     implementation libs.kunminx.unpeek.livedata
     implementation libs.kunminx.strict.databinding
 
+    // 权限请求框架：https://github.com/getActivity/XXPermissions
+    implementation libs.getActivity.xxpermission
+
+    //Toast 吐司
+    implementation libs.getActivity.toastutils
+    //Material Dialog
+    implementation libs.bundles.material.dialogs
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation libs.timber
     //AndroidUtilCode 是一个强大易用的安卓工具类库

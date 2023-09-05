@@ -19,160 +19,83 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package com.shmedo.lib.ble.scanner.model
 
-package com.shmedo.lib.ble.model;
+import android.bluetooth.BluetoothDevice
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import no.nordicsemi.android.support.v18.scanner.ScanResult
 
-import android.bluetooth.BluetoothDevice;
-import android.os.Parcel;
-import android.os.Parcelable;
+@Suppress("unused")
+@Parcelize
+data class DiscoveredBluetoothDevice(
+    val device: BluetoothDevice,
+    val scanResult: ScanResult? = null,
+    val name: String? = null,
+    val hadName: Boolean = name != null,
+    val lastScanResult: ScanResult? = null,
+    val rssi: Int = 0,
+    val previousRssi: Int = 0,
+    val highestRssi: Int = Integer.max(rssi, previousRssi),
+) : Parcelable {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    fun hasRssiLevelChanged(): Boolean {
+        val newLevel =
+            if (rssi <= 10) 0 else if (rssi <= 28) 1 else if (rssi <= 45) 2 else if (rssi <= 65) 3 else 4
+        val oldLevel =
+            if (previousRssi <= 10) 0 else if (previousRssi <= 28) 1 else if (previousRssi <= 45) 2 else if (previousRssi <= 65) 3 else 4
+        return newLevel != oldLevel
+    }
 
-import no.nordicsemi.android.support.v18.scanner.ScanResult;
+    fun update(scanResult: ScanResult): DiscoveredBluetoothDevice = copy(
+        device = scanResult.device,
+        lastScanResult = scanResult,
+        name = scanResult.scanRecord?.deviceName,
+        hadName = hadName || name != null,
+        previousRssi = rssi,
+        rssi = scanResult.rssi,
+        highestRssi = if (highestRssi > rssi) highestRssi else rssi
+    )
 
-public class DiscoveredBluetoothDevice implements Parcelable {
-	private final BluetoothDevice device;
-	private ScanResult lastScanResult;
-	private String name;
-	private int rssi;
-	private int previousRssi;
-	private int highestRssi = -128;
+    fun matches(scanResult: ScanResult) = device.address == scanResult.device.address
 
-	public DiscoveredBluetoothDevice(@NonNull final ScanResult scanResult) {
-		device = scanResult.getDevice();
-		update(scanResult);
-	}
+    fun createBond() {
+        device.createBond()
+    }
 
-	@NonNull
-	public BluetoothDevice getDevice() {
-		return device;
-	}
+    val displayName: String?
+        get() = when {
+            name?.isNotEmpty() == true -> name
+            device.name?.isNotEmpty() == true -> device.name
+            else -> null
+        }
 
-	@NonNull
-	public String getAddress() {
-		return device.getAddress();
-	}
+    val address: String
+        get() = device.address
 
-	@Nullable
-	public String getName() {
-		return name;
-	}
+    val displayNameOrAddress: String
+        get() = displayName ?: address
 
-	@SuppressWarnings("WeakerAccess")
-	public int getRssi() {
-		return rssi;
-	}
+    val bondingState: Int
+        get() = device.bondState
 
-	@NonNull
-	public ScanResult getScanResult() {
-		return lastScanResult;
-	}
-	/**
-	 * Returns the highest recorded RSSI value during the scan.
-	 *
-	 * @return Highest RSSI value.
-	 */
-	public int getHighestRssi() {
-		return highestRssi;
-	}
+    val isBonded: Boolean
+        get() = bondingState == BluetoothDevice.BOND_BONDED
 
-	/**
-	 * This method returns true if the RSSI range has changed.
-	 * @return True, if the RSSI range has changed.
-	 */
-	/* package */ boolean hasRssiLevelChanged() {
-		final int newLevel =
-				rssi <= 10 ?
-						0 :
-						rssi <= 28 ?
-								1 :
-								rssi <= 45 ?
-										2 :
-										rssi <= 65 ?
-												3 :
-												4;
-		final int oldLevel =
-				previousRssi <= 10 ?
-						0 :
-						previousRssi <= 28 ?
-								1 :
-								previousRssi <= 45 ?
-										2 :
-										previousRssi <= 65 ?
-												3 :
-												4;
-		return newLevel != oldLevel;
-	}
+    override fun hashCode() = device.hashCode()
 
-	/**
-	 * Updates the device values based on the scan result.
-	 *
-	 * @param scanResult the new received scan result.
-	 */
-	public void update(@NonNull final ScanResult scanResult) {
-		lastScanResult = scanResult;
-		name = scanResult.getScanRecord() != null ?
-				scanResult.getScanRecord().getDeviceName() : null;
-		previousRssi = rssi;
-		rssi = scanResult.getRssi();
-		if (highestRssi < rssi)
-			highestRssi = rssi;
-	}
-
-	public boolean matches(@NonNull final ScanResult scanResult) {
-		return device.getAddress().equals(scanResult.getDevice().getAddress());
-	}
-
-	@Override
-	public int hashCode() {
-		return device.hashCode();
-	}
-
-	@Override
-	public boolean equals(final Object o) {
-		if (o instanceof DiscoveredBluetoothDevice) {
-			final DiscoveredBluetoothDevice that = (DiscoveredBluetoothDevice) o;
-			return device.getAddress().equals(that.device.getAddress());
-		}
-		return super.equals(o);
-	}
-
-	// Parcelable implementation
-
-	private DiscoveredBluetoothDevice(final Parcel in) {
-		device = in.readParcelable(BluetoothDevice.class.getClassLoader());
-		lastScanResult = in.readParcelable(ScanResult.class.getClassLoader());
-		name = in.readString();
-		rssi = in.readInt();
-		previousRssi = in.readInt();
-		highestRssi = in.readInt();
-	}
-
-	@Override
-	public void writeToParcel(final Parcel parcel, final int flags) {
-		parcel.writeParcelable(device, flags);
-		parcel.writeParcelable(lastScanResult, flags);
-		parcel.writeString(name);
-		parcel.writeInt(rssi);
-		parcel.writeInt(previousRssi);
-		parcel.writeInt(highestRssi);
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	public static final Creator<DiscoveredBluetoothDevice> CREATOR = new Creator<DiscoveredBluetoothDevice>() {
-		@Override
-		public DiscoveredBluetoothDevice createFromParcel(final Parcel source) {
-			return new DiscoveredBluetoothDevice(source);
-		}
-
-		@Override
-		public DiscoveredBluetoothDevice[] newArray(final int size) {
-			return new DiscoveredBluetoothDevice[size];
-		}
-	};
+    override fun equals(other: Any?): Boolean {
+        if (other is DiscoveredBluetoothDevice) {
+            return device == other.device
+        }
+        return super.equals(other)
+    }
 }
+
+fun ScanResult.toDiscoveredBluetoothDevice() = DiscoveredBluetoothDevice(
+    device = device,
+    scanResult = this,
+    name = scanRecord?.deviceName,
+    previousRssi = rssi,
+    rssi = rssi
+)

@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.ble.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType

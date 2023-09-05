@@ -206,7 +206,7 @@ dependencies {
     implementation libs.customactivityoncrash
     //异常信息上报组件
     implementation libs.bugly.crashreport
-    debugImplementation libs.leakcanary.android
+//    debugImplementation libs.leakcanary.android
     //日志调试框架：https://github.com/getActivity/Logcat
 //    debugImplementation libs.getActivity.logcat
 
