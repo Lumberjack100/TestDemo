@@ -5,10 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.mcloudapp.device.MedoViewState
-import com.shmedo.mcloudapp.device.NoDeviceState
 import com.shmedo.mcloudapp.device.WorkingState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -23,18 +22,17 @@ import kotlinx.coroutines.flow.onEach
  */
 class BleViewModel : ViewModel() {
 
-//    val state = medoBleRepository.data.stateIn(
-//        viewModelScope,
-//        WhileSubscribed(5000),
-//        ScanningState.Loading
-//    )
+    //    private val _state = MutableStateFlow<MedoViewState>(NoDeviceState)
+//    val state = _state.asStateFlow()
+    private val _state: MutableSharedFlow<MedoViewState> = MutableSharedFlow()
+    val state = _state.asSharedFlow()
 
-    private val _state = MutableStateFlow<MedoViewState>(NoDeviceState)
-    val state = _state.asStateFlow()
+
 
     init {
         MedoBleRepository.instance.data.onEach {
-            _state.value = WorkingState(it)
+//            _state.value = WorkingState(it)
+            _state.emit(WorkingState(it))
         }.launchIn(viewModelScope)
     }
 

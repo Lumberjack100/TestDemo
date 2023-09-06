@@ -12,10 +12,10 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.util.clipboardManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.databinding.ActivityErrorBinding
 import com.shmedo.mcloudapp.common.ext.clickNoRepeat
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.databinding.ActivityErrorBinding
 
 
 /**
@@ -41,7 +41,7 @@ class ErrorActivity : BaseActivity() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        initImmersionBar()
+//        initImmersionBar()
         binding.llToolbar.toolbar.title = "发生错误"
         val config = CustomActivityOnCrash.getConfigFromIntent(intent)
         binding.errorRestart.clickNoRepeat {

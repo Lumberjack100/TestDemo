@@ -43,16 +43,15 @@ class DeviceHomeActivity : BaseActivity() {
             deviceInfo = bundle.getParcelable(AppContants.Extras.DEVICE_INFO)
             bleDevice = bundle.getParcelable(AppContants.Extras.BLE_DEVICE)
         }
+        binding.deviceHomeHostFragment.post {
+            setGraph()
+        }
     }
 
     override fun createObserver() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        setGraph()
-    }
 
     private fun setGraph() {
         when (productType) {

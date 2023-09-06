@@ -38,6 +38,7 @@ import com.shmedo.lib.ble.communicate.service.base.NotificationService
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 
 internal class MedoBleService : NotificationService() {
 
@@ -49,7 +50,10 @@ internal class MedoBleService : NotificationService() {
         MedoBleRepository.instance.start(device, lifecycleScope)
 
         MedoBleRepository.instance.hasBeenDisconnected.onEach {
-            if (it) stopSelf()
+            if (it) {
+                Timber.d( "Medo BluetoothGatt:call stopSelf" )
+                stopSelf()
+            }
         }.launchIn(lifecycleScope)
 
         return START_REDELIVER_INTENT

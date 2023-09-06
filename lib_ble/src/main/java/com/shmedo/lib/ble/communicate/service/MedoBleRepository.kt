@@ -36,17 +36,17 @@ import com.blankj.utilcode.util.Utils
 import com.shmedo.lib.ble.communicate.data.IOTCmdData
 import com.shmedo.lib.ble.communicate.data.MedoBleManager
 import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
-import com.shmedo.lib.ble.communicate.service.base.IdleResult
 import com.shmedo.lib.ble.communicate.service.base.ServiceManager
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.ktx.suspend
+import timber.log.Timber
 
 class MedoBleRepository private constructor(
     private val context: Context,
@@ -54,14 +54,18 @@ class MedoBleRepository private constructor(
 ) {
     private var medoBleManager: MedoBleManager? = null
 
-    private val _data = MutableStateFlow<BleManagerResult<IOTCmdData>>(IdleResult())
-    val data = _data.asStateFlow()
+//    private val _data = MutableStateFlow<BleManagerResult<IOTCmdData>>(IdleResult())
+//    val data = _data.asStateFlow()
+        private val _data = MutableSharedFlow<BleManagerResult<IOTCmdData>>()
+    val data = _data.asSharedFlow()
+
 
     val isRunning = data.map { it.isRunning() }
 
     val hasBeenDisconnected = data.map { it.hasBeenDisconnected() }
 
     fun launch(device: DiscoveredBluetoothDevice) {
+        Timber.d("Medo BluetoothGatt: call startService MedoBleService")
         serviceManager.startService(MedoBleService::class.java, device)
     }
 
@@ -70,16 +74,15 @@ class MedoBleRepository private constructor(
         this.medoBleManager = manager
 
         manager.dataHolder.status.onEach {
-            _data.value = it
+//            _data.value = it
+            _data.emit(it)
+
         }.launchIn(scope)
 
         scope.launch {
+            Timber.d("Medo BluetoothGatt:call connect")
             manager.start(device)
         }
-    }
-
-    fun openLogger() {
-//        NordicLogger.launch(context, logger)
     }
 
     private suspend fun MedoBleManager.start(device: DiscoveredBluetoothDevice) {

@@ -42,12 +42,19 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import com.shmedo.lib.ble.R
+import timber.log.Timber
 
 private const val CHANNEL_ID = "FOREGROUND_BLE_SERVICE"
 
 abstract class NotificationService : LifecycleService() {
 
+    override fun onCreate() {
+        Timber.d("Medo BluetoothGatt NotificationService onCreate")
+        super.onCreate()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Timber.d("Medo BluetoothGatt NotificationService onStartCommand")
         val result = super.onStartCommand(intent, flags, startId)
         startForegroundService()
         return result
@@ -128,6 +135,7 @@ abstract class NotificationService : LifecycleService() {
     }
 
     override fun onDestroy() {
+        Timber.d("Medo BluetoothGatt NotificationService onDestroy")
         // when user has disconnected from the sensor, we have to cancel the notification that we've created some milliseconds before using unbindService
         cancelNotification()
         stopForegroundService()

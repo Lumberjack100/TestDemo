@@ -79,7 +79,8 @@ class M20HomeFragment : BaseFragment() {
                     bleViewModel.disconnect()
                     mActivity.finish()
                 }, "取消")
-            }
+            } else
+                mActivity.finish()
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -88,7 +89,8 @@ class M20HomeFragment : BaseFragment() {
                     bleViewModel.disconnect()
                     mActivity.finish()
                 }, "取消")
-            }
+            } else
+                mActivity.finish()
         }
         initModuleAdapter()
         binding.llDeviceInfo.tvDeviceConnectOperate.setOnClickListener {
@@ -202,20 +204,23 @@ class M20HomeFragment : BaseFragment() {
                         }
 
                         is ConnectedResult -> {
-                            dismissWaitDialog()
+//                            dismissWaitDialog()
                         }
 
                         is SuccessResult -> {
                             dismissWaitDialog()
+                            mStates.isBleConnected.set(true)
                             mStates.isDeviceStateHighLight.set(true)
                             mStates.deviceState.set("已连接")
                             mStates.connectOperate.set("断开连接")
-                            mStates.isBleConnected.set(true)
                         }
 
                         is DisconnectedResult -> {
                             dismissWaitDialog()
                             mStates.isBleConnected.set(false)
+                            mStates.isDeviceStateHighLight.set(false)
+                            mStates.deviceState.set("未连接")
+                            mStates.connectOperate.set("蓝牙连接")
                         }
 
                         is LinkLossResult -> {
@@ -275,6 +280,7 @@ class M20HomeFragment : BaseFragment() {
                 bleViewModel.disconnect()
             }, "取消")
         } else {
+            showWaitDialog(StringUtils.getString(R.string.ble_state_connecting))
             bleViewModel.launch(bleDevice!!)
         }
     }
