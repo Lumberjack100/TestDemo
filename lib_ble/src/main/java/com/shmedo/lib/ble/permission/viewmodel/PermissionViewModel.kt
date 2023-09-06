@@ -47,8 +47,8 @@ import kotlinx.coroutines.flow.stateIn
  * Needed for injecting to @Composable functions.
  */
 class PermissionViewModel : ViewModel() {
-    private val bluetoothManager = BluetoothStateManager(Utils.getApp().applicationContext)
-    private val locationManager = LocationStateManager(Utils.getApp().applicationContext)
+    private val bluetoothManager by lazy { BluetoothStateManager(Utils.getApp().applicationContext) }
+    private val locationManager by lazy { LocationStateManager(Utils.getApp().applicationContext) }
 
 
     val bluetoothState = bluetoothManager.bluetoothState()

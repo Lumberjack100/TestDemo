@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.common.activity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import com.blankj.utilcode.util.KeyboardUtils
 import com.gyf.immersionbar.ktx.immersionBar
@@ -21,7 +20,7 @@ abstract class BaseActivity : BaseVmDbActivity() {
 
     override fun initViewModel() {}
 
-    abstract override fun initView(savedInstanceState: Bundle?)
+    override fun initView(savedInstanceState: Bundle?) {}
 
     override fun initData() {}
 

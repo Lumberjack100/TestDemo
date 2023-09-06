@@ -67,7 +67,13 @@
     <color name="bottom_nav_icon_color_normal">#C4C6CA</color>
 
     <color name="device_unopened_platform">#BCC0CC</color>
-    <color name="device_not_connected_platform">#F24B4B</color>
+
+    <color name="device_online_foreground">#00B26B</color>
+    <color name="device_online_backround">#1A00B26B</color>
+    <color name="device_offline_foreground">#F13838</color>
+    <color name="device_offline_backround">#1AF13838</color>
+    <color name="connect_ble_foreground">#0096FF</color>
+    <color name="disconnect_ble_foreground">#666666</color>
 
     <!-- E40存储状态圆环颜色 -->
     <color name="storage_ring_progress_normal">#5289e8</color>

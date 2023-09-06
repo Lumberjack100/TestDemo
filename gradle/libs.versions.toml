@@ -15,7 +15,7 @@
 ##
 [versions]
 activityKtx = "1.7.2"
-androidGradlePlugin = "7.3.1"
+androidGradlePlugin = "7.4.2"
 agentweb = "v5.0.6-androidx"
 appcompat = "1.6.1"
 amap3dmap = "9.8.2"

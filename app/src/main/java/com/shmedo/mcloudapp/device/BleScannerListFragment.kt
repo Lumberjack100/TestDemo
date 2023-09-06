@@ -13,6 +13,7 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
+import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.permission.util.Available
 import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
@@ -21,14 +22,18 @@ import com.shmedo.lib.ble.permission.viewmodel.PermissionViewModel
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.ble.scanner.repository.ScanningState
 import com.shmedo.lib.ble.scanner.viewmodel.ScannerViewModel
+import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.PermissionInterceptor
+import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentBleScannerListBinding
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.BleScannerListViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -38,10 +43,14 @@ import timber.log.Timber
 class BleScannerListFragment : BaseFragment() {
     private val binding: FragmentBleScannerListBinding by lazy { getBinding() as FragmentBleScannerListBinding }
     private val mStates: BleScannerListViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
     private val scannerViewModel: ScannerViewModel by viewModels()
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
     private val lifecycleScope by lazy { viewLifecycleOwner.lifecycleScope }
+
+    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private var discoveredBluetoothDevice: DiscoveredBluetoothDevice? = null
+
 
     private val rotationAnimator: ObjectAnimator by lazy {
         ObjectAnimator.ofFloat(binding.ivBleScanRefresh, "rotation", 0f, 360f)
@@ -79,7 +88,10 @@ class BleScannerListFragment : BaseFragment() {
             rv.layoutManager = LinearLayoutManager(context)
             addType<DiscoveredBluetoothDevice>(R.layout.item_ble_device)
             R.id.item.onClick {
-                val device = getModel<DiscoveredBluetoothDevice>()
+                discoveredBluetoothDevice = getModel<DiscoveredBluetoothDevice>()
+                discoveredBluetoothDevice!!.name?.replaceFirst(Regex("^MD-?"), "")?.let { deviceToken ->
+                    deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
+                }
             }
         }
     }
@@ -104,6 +116,18 @@ class BleScannerListFragment : BaseFragment() {
                     else -> {}
                 }
             }
+        }
+        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
+            if (!dataResult.responseStatus.isSuccess) {
+                Toaster.show("不支持此设备!${dataResult.responseStatus.errorMessage}")
+                return@observe
+            }
+            DeviceHomeActivity.start(
+                mActivity,
+                dataResult.result!!,
+                discoveredBluetoothDevice,
+                BleConnect
+            )
         }
     }
 

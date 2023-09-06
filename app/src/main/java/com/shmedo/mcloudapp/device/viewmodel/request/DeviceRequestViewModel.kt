@@ -3,11 +3,11 @@ package com.shmedo.mcloudapp.device.viewmodel.request
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
+import com.shmedo.lib.core.base.model.DeviceDetailInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
-import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
@@ -15,8 +15,6 @@ import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
-import com.shmedo.mcloudapp.device.model.DispatchCmdItem
-import com.shmedo.mcloudapp.device.model.DispatchRawCmdParam
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -43,9 +41,9 @@ class DeviceRequestViewModel : BaseViewModel() {
     val deviceListResult: Result<DataResult<List<DeviceInfo>>> =
         _deviceListResult
 
-    private val _batchDispatchRawCmdResult = MutableResult<DataResult<List<DispatchCmdItem>>>()
-    val batchDispatchRawCmdResult: Result<DataResult<List<DispatchCmdItem>>> =
-        _batchDispatchRawCmdResult
+    private val _deviceInfoResult = MutableResult<DataResult<DeviceInfo>>()
+    val deviceInfoResult: Result<DataResult<DeviceInfo>> =
+        _deviceInfoResult
 
     /**
      * 查询公司设备在线统计信息
@@ -173,31 +171,36 @@ class DeviceRequestViewModel : BaseViewModel() {
     }
 
     /**
-     * 批量透明指令下发(限定同一产品)
+     * 获取设备详细信息
      */
-    fun batchDispatchRawCmd(content: String, deviceTokenList: List<String>) {
-//        viewModelScope.launch {
-//            val rawCmdParam = DispatchRawCmdParam(content, deviceTokenList)
-//            val jsonParam = MoshiUtil.toJson(rawCmdParam)
-//            val data: List<DispatchCmdItem> =
-//                NetDataRepository.instance.batchDispatchRawCmd(jsonParam) { error: Throwable ->
-//                    val responseStatus = ResponseStatus()
-//                    responseStatus.isSuccess = false
-//                    responseStatus.errorMessage = error.errorMsg
-//                    responseStatus.source = ResultSource.NETWORK
-//                    _batchDispatchRawCmdResult.setValue(DataResult(responseStatus = responseStatus))
-//                } ?: return@launch
-//
-//            val responseStatus = ResponseStatus()
-//            responseStatus.isSuccess = true
-//            responseStatus.responseCode = "0"
-//            responseStatus.source = ResultSource.NETWORK
-//            _batchDispatchRawCmdResult.setValue(
-//                DataResult(
-//                    data,
-//                    responseStatus = responseStatus
-//                )
-//            )
-//        }
+    fun getDeviceDetailInfo(deviceToken: String = "") {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject()
+            try {
+                jsonObjectRequest.put("deviceToken", deviceToken)
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+            val data: DeviceDetailInfo =
+                NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
+                    val responseStatus = ResponseStatus()
+                    responseStatus.isSuccess = false
+                    responseStatus.errorMessage = error.errorMsg
+                    responseStatus.source = ResultSource.NETWORK
+                    _deviceInfoResult.setValue(DataResult(responseStatus = responseStatus))
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _deviceInfoResult.setValue(
+                DataResult(
+                    data.deviceInfo,
+                    responseStatus = responseStatus
+                )
+            )
+        }
     }
+
 }

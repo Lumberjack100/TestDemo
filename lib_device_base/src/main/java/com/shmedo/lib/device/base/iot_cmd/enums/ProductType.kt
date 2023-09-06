@@ -1,6 +1,8 @@
 package com.shmedo.lib.device.base.iot_cmd.enums
 
+import android.os.Parcelable
 import android.text.TextUtils
+import kotlinx.parcelize.Parcelize
 import java.util.Locale
 
 /**
@@ -8,22 +10,23 @@ import java.util.Locale
  * 创建时间:  2022/2/24 <br></br>
  * 描述：     产品类型
  */
-enum class ProductType(// 产品类型前缀
-    val prefix: String, //SN 后缀标识
-    val suffix: String, //产品描述
-    val description: String
-) {
-    DAS("DAS", "L", "智能采集器"),
-    HAC("ADME_HAC10", "T", "半自动化测斜机器人"),
+@Parcelize
+enum class ProductType(
+    val prefix: String, //产品类型前缀
+    val suffix: String, //SN 后缀标识
+    val description: String//产品描述
+) : Parcelable {
     ADME("ADME", "T", "自动化测斜机器人"),
-    VMS("VMS|GW300", "G", "振弦式采集仪"),
+    BHY("BHY", "H", "崩滑仪"),
+    DAS("DAS", "L", "智能采集器"),
+    DMS("DMS", "F", "数字式采集仪"),
     E40("E40|E60", "B", "GNSS"),
+    HAC("ADME_HAC10", "T", "半自动化测斜机器人"),
+    INCLINOMETER_DEBUG_BOX("INCLINOMETER", "#", "蓝牙测斜仪调试盒子"),
+    LR200("LR200", "Z", "一体式裂缝计"),
     M20("M20", "V", "GNSS"),
     RN20("RN20", "Y", "轴力计"),
-    BHY("BHY", "H", "崩滑仪"),
-    LR200("LR200", "Z", "一体式裂缝计"),
-    DMS("DMS", "F", "数字式采集仪"),
-    INCLINOMETER_DEBUG_BOX("INCLINOMETER", "#", "蓝牙测斜仪调试盒子"),
+    VMS("VMS|GW300", "G", "振弦式采集仪"),
 
     UnKnown("UnKnown", "#", "未知类型");
 

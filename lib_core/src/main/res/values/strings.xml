@@ -15,6 +15,7 @@
   -->
 
 <resources translatable="false">
+    <string name="app_name">米易通</string>
 
     <string name="common_permission_alert">授权提醒</string>
     <string name="common_permission_background_location_fail_hint">获取后台定位权限失败，\n请您选择《%s》选项</string>

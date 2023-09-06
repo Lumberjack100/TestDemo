@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.data.repository.remote
 import android.annotation.SuppressLint
 import com.blankj.utilcode.util.AppUtils
 import com.shmedo.lib.core.base.model.BasicUserInfo
+import com.shmedo.lib.core.base.model.DeviceDetailInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
@@ -151,6 +152,19 @@ class NetDataRepository private constructor() {
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<PageList<DeviceInfo>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 查询公司设备在线统计信息
+     */
+    suspend fun getDeviceDetailInfo(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): DeviceDetailInfo? =
+        RxHttp.postJson("/GetDeviceDetail")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<DeviceDetailInfo>()
             .tryAwait(onCatch)
 
     /**

@@ -7,14 +7,14 @@
     -->
     <uses-permission
         android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="30"/>
+        android:maxSdkVersion="30" />
     <!--
      Bluetooth Admin permission is required on Android 4.3 - 11 in order to scan for
      Bluetooth LE devices.
     -->
     <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="30"/>
+        android:maxSdkVersion="30" />
     <!--
      Location permission is required from Android 6 to 11 to be able to scan for advertising
      Bluetooth LE devices. Some BLE devices, called beacons, may be used to position the phone.
@@ -25,10 +25,10 @@
     -->
     <uses-permission
         android:name="android.permission.ACCESS_COARSE_LOCATION"
-        android:maxSdkVersion="30"/>
+        android:maxSdkVersion="30" />
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:maxSdkVersion="30"/>
+        android:maxSdkVersion="30" />
     <!--
      On Android 12 new set of Bluetooth permissions were added. BLUETOOTH_SCAN permission is
      needed to scan for Bluetooth LE devices. The "never for location" flag is set, as we are not
@@ -47,5 +47,11 @@
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
-        android:required="true"/>
+        android:required="true" />
+
+
+    <application>
+        <service android:name="com.shmedo.lib.ble.communicate.service.MedoBleService" />
+    </application>
+
 </manifest>

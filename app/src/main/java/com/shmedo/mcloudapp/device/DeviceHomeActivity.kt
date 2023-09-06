@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.device
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
+import android.os.Parcelable
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import com.hjq.toast.Toaster
@@ -16,6 +16,10 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.BaseActivity
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommunicateWay
+import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.model.TcpConnect
 import com.shmedo.mcloudapp.device.ui.m20.fragment.M20HomeFragment
 
 class DeviceHomeActivity : BaseActivity() {
@@ -23,30 +27,21 @@ class DeviceHomeActivity : BaseActivity() {
     private val mStates: EmptyViewModel by viewModels()
 
     private var productType = ProductType.UnKnown
-    private var connectWay: Int = AppContants.CommunicationWay.NET_PLATFORM_CONNECT
+    private var communicateWay: CommunicateWay = NetPlatformConnect
     private var deviceInfo: DeviceInfo? = null
-    private var device: DiscoveredBluetoothDevice? = null
+    private var bleDevice: DiscoveredBluetoothDevice? = null
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_device_home, BR.vm, mStates)
     }
 
-
-    override fun initView(savedInstanceState: Bundle?) {
-
-    }
-
     override fun initData() {
         intent.extras?.let { bundle ->
-            productType =
-                intent.getSerializableExtra(AppContants.Extras.PRODUCT_TYPE) as ProductType
-            connectWay = bundle.getInt(
-                AppContants.Extras.COMMUNICATION_WAY,
-                AppContants.CommunicationWay.NET_PLATFORM_CONNECT
-            )
-            deviceInfo = bundle.getSerializable(AppContants.Extras.DEVICE_INFO) as DeviceInfo?
-            device = intent.getParcelableExtra(AppContants.Extras.BLE_DEVICE)
+            productType = bundle.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = bundle.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = bundle.getParcelable(AppContants.Extras.DEVICE_INFO)
+            bleDevice = bundle.getParcelable(AppContants.Extras.BLE_DEVICE)
         }
     }
 
@@ -61,40 +56,125 @@ class DeviceHomeActivity : BaseActivity() {
 
     private fun setGraph() {
         when (productType) {
-            ProductType.DAS -> {
-                if (connectWay == AppContants.CommunicationWay.NET_PLATFORM_CONNECT) {
+            ProductType.ADME -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
 
-                } else if (connectWay == AppContants.CommunicationWay.BLE_CONNECT) {
+                    }
 
-                } else if (connectWay == AppContants.CommunicationWay.TCP_CONNECT) {
+                    BleConnect -> {
 
+                    }
+                    else -> {
+                    }
                 }
             }
-
-            ProductType.ADME -> {
-                val bundle = M20HomeFragment.newBundleArguments(deviceInfo!!)
-                findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.net_m20_graph, bundle)
-            }
-
-            ProductType.M20 -> {
-                val bundle = M20HomeFragment.newBundleArguments(deviceInfo!!)
-                findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.net_m20_graph, bundle)
-            }
-
-            ProductType.E40 -> {
-
-            }
-
-            ProductType.VMS -> {
-
-            }
-
             ProductType.BHY -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
 
+                    }
+
+                    BleConnect -> {
+
+                    }
+                    else -> {
+                    }
+                }
             }
+            ProductType.DAS -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
 
+                    }
+
+                    BleConnect -> {
+
+                    }
+                    else -> {
+                    }
+                }
+            }
+            ProductType.E40 -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
+
+                    }
+
+                    TcpConnect -> {
+
+                    }
+                    else -> {
+                    }
+                }
+            }
+            ProductType.HAC -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
+
+                    }
+
+                    BleConnect -> {
+
+                    }
+                    else -> {
+                    }
+                }
+            }
+            ProductType.LR200 -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
+
+                    }
+
+                    BleConnect -> {
+
+                    }
+                    else -> {
+                    }
+                }
+            }
+            ProductType.M20 -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
+
+                    }
+
+                    BleConnect -> {
+
+                    }
+                    else -> {
+                    }
+                }
+                val bundle = M20HomeFragment.newBundleArguments(communicateWay,deviceInfo!!,bleDevice)
+                findNavController(R.id.device_home_host_fragment)
+                    .setGraph(R.navigation.net_m20_graph, bundle)
+            }
+            ProductType.RN20 -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
+
+                    }
+
+                    BleConnect -> {
+
+                    }
+                    else -> {
+                    }
+                }
+            }
+            ProductType.VMS -> {
+                when (communicateWay) {
+                    NetPlatformConnect -> {
+
+                    }
+                    TcpConnect -> {
+
+                    }
+                    else -> {
+                    }
+                }
+            }
             else -> {
 
             }
@@ -102,13 +182,12 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     companion object {
-        /**
-         * 4G 通讯方式
-         *
-         * @param context
-         * @param deviceInfo
-         */
-        fun start(context: Context, deviceInfo: DeviceInfo) {
+        fun start(
+            context: Context,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            communicateWay: CommunicateWay = NetPlatformConnect
+        ) {
             var type: ProductType = ProductType.valueByPrefix(deviceInfo.productToken.uppercase())
             //双重判断设备产品类型，先根据设备产品标识判断所属产品类型，若未判断出再根据 SN 号判断，若还未判断出来，提示不支持
             if (type === ProductType.UnKnown) {
@@ -119,9 +198,11 @@ class DeviceHomeActivity : BaseActivity() {
                 }
             }
             val intent = Intent(context, DeviceHomeActivity::class.java).apply {
+                putExtra(AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
+                putExtra(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
                 putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo)
-                putExtra(AppContants.Extras.PRODUCT_TYPE, type)
-                setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                putExtra(AppContants.Extras.BLE_DEVICE, bleDevice)
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
             context.startActivity(intent)
         }
