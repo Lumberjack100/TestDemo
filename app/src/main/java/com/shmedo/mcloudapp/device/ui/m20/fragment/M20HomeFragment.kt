@@ -39,7 +39,11 @@ import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentM20HomeBinding
-import com.shmedo.mcloudapp.device.CmdDispatch
+import com.shmedo.mcloudapp.device.CmdResponseResultError
+import com.shmedo.mcloudapp.device.CmdResponseResultSuccess
+import com.shmedo.mcloudapp.device.CmdResponseResultTimeOut
+import com.shmedo.mcloudapp.device.DispatchFailed
+import com.shmedo.mcloudapp.device.DispatchSuccess
 import com.shmedo.mcloudapp.device.NoDeviceState
 import com.shmedo.mcloudapp.device.WorkingState
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -48,7 +52,7 @@ import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.QueryCmdResult
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
-import com.shmedo.mcloudapp.device.viewmodel.request.IOTCommandViewModel
+import com.shmedo.mcloudapp.device.viewmodel.request.NetIOTCommandViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.M20HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -57,7 +61,7 @@ class M20HomeFragment : BaseFragment() {
     private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }
     private val mStates: M20HomeViewModel by viewModels()
-    private val iotCommandViewModel: IOTCommandViewModel by viewModels()
+    private val netIotCommandViewModel: NetIOTCommandViewModel by viewModels()
     private val bleViewModel: BleViewModel by activityViewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
     private var statusBarColor = 0
@@ -159,28 +163,28 @@ class M20HomeFragment : BaseFragment() {
 
     private fun processNetPlatform() {
         launchAndRepeatWithViewLifecycle {
-            iotCommandViewModel.cmdDispatchFlow.collectLatest {
+            netIotCommandViewModel.cmdDispatchFlow.collectLatest {
                 when (it) {
-                    is CmdDispatch.DispatchFailed -> {
+                    is DispatchFailed -> {
                         dismissWaitDialog()
                         doDispatchFailed(it.cmdStr, it.errorMsg)
                     }
 
-                    is CmdDispatch.DispatchSuccess -> {
+                    is DispatchSuccess -> {
                         doDispatchSuccess(it.cmdStr)
                     }
 
-                    is CmdDispatch.CmdResponseResultError -> {
+                    is CmdResponseResultError -> {
                         dismissWaitDialog()
                         Toaster.show("指令响应错误: ${it.errorMsg}")
                     }
 
-                    is CmdDispatch.CmdResponseResultTimeOut -> {
+                    is CmdResponseResultTimeOut -> {
                         dismissWaitDialog()
                         Toaster.show("指令响应超时")
                     }
 
-                    is CmdDispatch.CmdResponseResultSuccess -> {
+                    is CmdResponseResultSuccess -> {
                         dismissWaitDialog()
                         setResultData(it.cmdResult)
                     }
@@ -251,7 +255,11 @@ class M20HomeFragment : BaseFragment() {
         val command: String =
             IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         showWaitDialog("处理中...")
-        iotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
+        if (communicateWay is NetPlatformConnect) {
+            netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
+        } else {
+            bleViewModel.sendCommand(command, true, deviceInfo.apiKey)
+        }
     }
 
     private fun processItemClick(moduleName: String) {
@@ -299,7 +307,7 @@ class M20HomeFragment : BaseFragment() {
     private fun doDispatchSuccess(cmdStr: String) {
         when (IOTStringUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
-                iotCommandViewModel.processCmdResult()
+                netIotCommandViewModel.processCmdResult()
             }
 
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {

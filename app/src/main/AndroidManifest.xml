@@ -135,7 +135,8 @@
             android:name=".common.activity.ErrorActivity"
             android:label="错误界面"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity"/>
 
         <provider
             android:name="com.shmedo.lib.core.base.GenericFileProvider"

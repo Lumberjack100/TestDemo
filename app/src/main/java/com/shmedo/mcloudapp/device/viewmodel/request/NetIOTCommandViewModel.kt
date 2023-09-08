@@ -6,6 +6,11 @@ import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.device.CmdDispatch
+import com.shmedo.mcloudapp.device.CmdResponseResultError
+import com.shmedo.mcloudapp.device.CmdResponseResultSuccess
+import com.shmedo.mcloudapp.device.CmdResponseResultTimeOut
+import com.shmedo.mcloudapp.device.DispatchFailed
+import com.shmedo.mcloudapp.device.DispatchSuccess
 import com.shmedo.mcloudapp.device.model.DispatchCmdItem
 import com.shmedo.mcloudapp.device.model.DispatchRawCmdParam
 import com.shmedo.mcloudapp.device.model.QueryCmdResult
@@ -22,11 +27,11 @@ import kotlinx.coroutines.withContext
  *
  * 创建时间：2023/9/4
  *
- * 描述： TODO
+ * 描述： 物联网平台透传指令
  *
  *
  */
-class IOTCommandViewModel : BaseViewModel() {
+class NetIOTCommandViewModel : BaseViewModel() {
     private val _cmdDispatchFlow: MutableSharedFlow<CmdDispatch> = MutableSharedFlow()
     val cmdDispatchFlow = _cmdDispatchFlow.asSharedFlow()
 
@@ -45,9 +50,9 @@ class IOTCommandViewModel : BaseViewModel() {
 
                 msgIDList.clear()
                 msgIDList.addAll(data.map { it.msgID })
-                _cmdDispatchFlow.emit(CmdDispatch.DispatchSuccess(content))
+                _cmdDispatchFlow.emit(DispatchSuccess(content))
             } catch (error: Throwable) {
-                _cmdDispatchFlow.emit(CmdDispatch.DispatchFailed(content, error.errorMsg))
+                _cmdDispatchFlow.emit(DispatchFailed(content, error.errorMsg))
             }
         }
     }
@@ -59,7 +64,7 @@ class IOTCommandViewModel : BaseViewModel() {
                 val response = pollForCommandResult(MoshiUtil.toJson(parameter))
             } catch (e: Exception) {
                 // 错误处理
-                _cmdDispatchFlow.emit(CmdDispatch.CmdResponseResultError(e.message ?: "Error"))
+                _cmdDispatchFlow.emit(CmdResponseResultError(e.message ?: "Error"))
             }
         }
     }
@@ -72,11 +77,11 @@ class IOTCommandViewModel : BaseViewModel() {
             delay(500) // 延迟1秒
             val cmdResult: QueryCmdResult = queryCmdResultByMsgID(jsonParam)
             if (cmdResult.cmdStatus == 2) {
-                _cmdDispatchFlow.emit(CmdDispatch.CmdResponseResultSuccess(cmdResult))
+                _cmdDispatchFlow.emit(CmdResponseResultSuccess(cmdResult))
                 return true
             }
         }
-        _cmdDispatchFlow.emit(CmdDispatch.CmdResponseResultTimeOut())
+        _cmdDispatchFlow.emit(CmdResponseResultTimeOut())
         return false
     }
 

@@ -45,18 +45,17 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import no.nordicsemi.android.ble.ktx.suspend
 import timber.log.Timber
 
 class MedoBleRepository private constructor(
     private val context: Context,
-    private val serviceManager: ServiceManager,
+    private val serviceManager: ServiceManager
 ) {
     private var medoBleManager: MedoBleManager? = null
 
-//    private val _data = MutableStateFlow<BleManagerResult<IOTCmdData>>(IdleResult())
+    //    private val _data = MutableStateFlow<BleManagerResult<IOTCmdData>>(IdleResult())
 //    val data = _data.asStateFlow()
-        private val _data = MutableSharedFlow<BleManagerResult<IOTCmdData>>()
+    private val _data = MutableSharedFlow<BleManagerResult<IOTCmdData>>()
     val data = _data.asSharedFlow()
 
 
@@ -69,7 +68,7 @@ class MedoBleRepository private constructor(
         serviceManager.startService(MedoBleService::class.java, device)
     }
 
-    fun start(device: DiscoveredBluetoothDevice, scope: CoroutineScope) {
+    fun startConnect(device: DiscoveredBluetoothDevice, scope: CoroutineScope) {
         val manager = MedoBleManager(context, scope)
         this.medoBleManager = manager
 
@@ -81,23 +80,28 @@ class MedoBleRepository private constructor(
 
         scope.launch {
             Timber.d("Medo BluetoothGatt:call connect")
-            manager.start(device)
+            manager.connect(device)
         }
     }
 
-    private suspend fun MedoBleManager.start(device: DiscoveredBluetoothDevice) {
-        try {
-            connect(device.device)
-                .useAutoConnect(false)
-                .retry(3, 100)
-                .suspend()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+//    private suspend fun MedoBleManager.connect(device: DiscoveredBluetoothDevice) {
+//        try {
+//            connect(device.device)
+//                .useAutoConnect(false)
+//                .retry(3, 100)
+//                .suspend()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//    }
+
+    suspend fun sendData(command: String) {
+        medoBleManager?.sendData(command)
     }
 
-    fun release() {
-        medoBleManager?.disconnect()?.enqueue()
+
+    fun disconnect() {
+        medoBleManager?.release()
         medoBleManager = null
     }
 

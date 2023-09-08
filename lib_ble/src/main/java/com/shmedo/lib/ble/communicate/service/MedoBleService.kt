@@ -47,7 +47,7 @@ internal class MedoBleService : NotificationService() {
 
         val device = intent!!.getParcelableExtra<DiscoveredBluetoothDevice>(DEVICE_DATA)!!
 
-        MedoBleRepository.instance.start(device, lifecycleScope)
+        MedoBleRepository.instance.startConnect(device, lifecycleScope)
 
         MedoBleRepository.instance.hasBeenDisconnected.onEach {
             if (it) {

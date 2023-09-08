@@ -42,23 +42,26 @@ import com.shmedo.lib.ble.communicate.spec.GOC400Spec
 import com.shmedo.lib.ble.communicate.spec.GOCW91200Spec
 import com.shmedo.lib.ble.communicate.spec.PacketMerger
 import com.shmedo.lib.ble.communicate.spec.USRSpec
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import no.nordicsemi.android.ble.BleManager
+import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.ktx.asValidResponseFlow
+import no.nordicsemi.android.ble.ktx.suspend
 import timber.log.Timber
 
 
-internal class MedoBleManager(
+class MedoBleManager(
     context: Context,
     private val scope: CoroutineScope
 ) : BleManager(context) {
 
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
-    private var writeCharacteristic: BluetoothGattCharacteristic? = null
+    private var writeCharac: BluetoothGattCharacteristic? = null
 
     private val data = MutableStateFlow(IOTCmdData())
     val dataHolder = ConnectionObserverAdapter<IOTCmdData>()
@@ -82,21 +85,7 @@ internal class MedoBleManager(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun initialize() {
         // Increase the MTU
-        requestMtu(513)
-            .with { device, mtu -> //                            USRManager.this.mtu = mtu;
-                Timber.d("MTU changed to %s", mtu)
-                log(Log.VERBOSE, "MTU changed to $mtu")
-            }
-            .done {
-                // You may do some logic in here that should be done when the request finished successfully.
-                // In case of MTU this method is called also when the MTU hasn't changed, or has changed
-                // to a different (lower) value. Use .with(...) to get the MTU value.
-            }
-            .fail { device, status ->
-                Timber.w("MTU change not supported")
-                log(Log.WARN, "MTU change not supported")
-            }
-            .enqueue()
+        requestMtu(512).enqueue()
 
         setNotificationCallback(notifyCharacteristic)
             // Merges packets until the entire text is present in the stream [PacketMerger.merge].
@@ -110,20 +99,7 @@ internal class MedoBleManager(
             }
             .launchIn(scope)
 
-        enableNotifications(notifyCharacteristic)
-            // Method called after the data were sent (data will contain 0x0100 in this case)
-            .with { device, data ->
-                Timber.d("Data sent: %s", data.toString())
-            }
-            // Method called when the request finished successfully. This will be called after .with(..) callback
-            .done { device ->
-                Timber.d("Notifications enabled")
-            }
-            // Methods called in case of an error, for example when the characteristic does not have Notify property
-            .fail { device, status ->
-                Timber.d("Failed to enable notifications")
-            }
-            .enqueue()
+        enableNotifications(notifyCharacteristic).enqueue()
     }
 
     override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
@@ -131,7 +107,7 @@ internal class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 ESP32ASpec.ESP32_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharacteristic = getCharacteristic(
+            writeCharac = getCharacteristic(
                 ESP32ASpec.ESP32_WRITABLE_CHARACTERISTIC_UUID
             )
         }
@@ -139,7 +115,7 @@ internal class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 ESP32BSpec.ESP32B_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharacteristic = getCharacteristic(
+            writeCharac = getCharacteristic(
                 ESP32BSpec.ESP32B_WRITABLE_CHARACTERISTIC_UUID
             )
         }
@@ -147,7 +123,7 @@ internal class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 GOC400Spec.GOC400_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharacteristic = getCharacteristic(
+            writeCharac = getCharacteristic(
                 GOC400Spec.GOC400_WRITABLE_CHARACTERISTIC_UUID
             )
         }
@@ -155,7 +131,7 @@ internal class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 GOCW91200Spec.GOCW91200_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharacteristic = getCharacteristic(
+            writeCharac = getCharacteristic(
                 GOCW91200Spec.GOCW91200_WRITABLE_CHARACTERISTIC_UUID
             )
         }
@@ -163,14 +139,14 @@ internal class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 USRSpec.USR_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharacteristic = getCharacteristic(
+            writeCharac = getCharacteristic(
                 USRSpec.USR_WRITABLE_CHARACTERISTIC_UUID
             )
         }
 
         var writeRequest = false
         var writeCommand = false
-        writeCharacteristic?.let {
+        writeCharac?.let {
             val rxProperties = it.properties
             writeRequest = rxProperties and BluetoothGattCharacteristic.PROPERTY_WRITE > 0
             writeCommand =
@@ -178,12 +154,45 @@ internal class MedoBleManager(
         }
 
         val supported =
-            notifyCharacteristic != null && writeCharacteristic != null && (writeRequest || writeCommand)
+            notifyCharacteristic != null && writeCharac != null && (writeRequest || writeCommand)
         return supported
     }
 
     override fun onServicesInvalidated() {
-        writeCharacteristic = null
+        writeCharac = null
         notifyCharacteristic = null
+    }
+
+    suspend fun sendData(command: String) {
+        writeCharac?.let {
+            Timber.v(
+                "发送数据: length=%s bytes;content: %s",
+                command.toByteArray().size,
+                command
+            )
+            writeCharacteristic(
+                writeCharac,
+                Data.from(command),
+                it.writeType
+            )
+                .split()
+                .suspend()
+        }
+    }
+
+    suspend fun connect(device: DiscoveredBluetoothDevice) {
+        try {
+            connect(device.device)
+                .useAutoConnect(false)
+                .retry(3, 100)
+                .suspend()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun release() {
+        cancelQueue()
+        disconnect().enqueue()
     }
 }

@@ -19,19 +19,15 @@ class PacketMerger : DataMerger {
         if (lastPacket == null)
             return false
 
-        Timber.e(
-            "merge: length=%s bytes;content: %s",
-            lastPacket.size, String(lastPacket, Charsets.UTF_8)
-        )
-//        Timber.e("merge: length=%s bytes;content: %s",
-//            lastPacket?.size ?: 0, lastPacket?.let { it.asList().toString() } ?: "Null")
+        Timber.e("merge: length=%s bytes;content: %s", lastPacket.size, String(lastPacket, Charsets.UTF_8))
+//        Timber.e("merge: length=%s bytes;content: %s", lastPacket?.size ?: 0, lastPacket?.let { it.asList().toString() } ?: "Null")
+
+        output.write(lastPacket)
+
         //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
-        val dataPacket = output.toByteArray()
-        return if (dataPacket.size < 2) false
+        return  if(lastPacket.size < 2)  false
         else
-            (dataPacket[dataPacket.size - 1].toInt() == 38 && dataPacket[dataPacket.size - 2].toInt() == 38)
-                    || (dataPacket[dataPacket.size - 1].toInt() == 10 && dataPacket[dataPacket.size - 2].toInt() == 13)
-
+            (lastPacket[lastPacket.size - 1].toInt() == 38 && lastPacket[lastPacket.size - 2].toInt() == 38)
+                    || (lastPacket[lastPacket.size - 1].toInt() == 10 && lastPacket[lastPacket.size - 2].toInt() == 13)
     }
-
 }
