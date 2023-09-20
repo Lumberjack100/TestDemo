@@ -9,7 +9,7 @@
     </item>
     <item android:state_checked="true" android:state_enabled="false">
         <shape>
-            <solid android:color="@color/app_color_blue_disabled" />
+            <solid android:color="@color/blue_disabled" />
             <corners android:radius="99dp" />
             <stroke android:width="0.5dp" android:color="@color/gray_BABABA" />
         </shape>

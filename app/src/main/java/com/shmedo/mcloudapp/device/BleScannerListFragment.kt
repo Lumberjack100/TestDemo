@@ -89,9 +89,10 @@ class BleScannerListFragment : BaseFragment() {
             addType<DiscoveredBluetoothDevice>(R.layout.item_ble_device)
             R.id.item.onClick {
                 discoveredBluetoothDevice = getModel<DiscoveredBluetoothDevice>()
-                discoveredBluetoothDevice!!.name?.replaceFirst(Regex("^MD-?"), "")?.let { deviceToken ->
-                    deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
-                }
+                discoveredBluetoothDevice!!.name?.replaceFirst(Regex("^MD-?"), "")
+                    ?.let { deviceToken ->
+                        deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
+                    }
             }
         }
     }
@@ -165,16 +166,17 @@ class BleScannerListFragment : BaseFragment() {
                     ScanningState.Loading -> {
 //                        mStates.scanState.set("正在扫描...")
 //                        mStates.deviceCount.set(0)
-                        Timber.d("scannerViewModel.state: Loading")
+                        Timber.i("scannerViewModel.state: Loading")
                     }
 
                     is ScanningState.Error -> {
 //                        mStates.scanState.set("刷新")
+                        Timber.e("scannerViewModel.state: Error")
                         mStates.deviceCount.set(0)
                     }
 
                     is ScanningState.DevicesDiscovered -> {
-                        Timber.d("scannerViewModel.state: DevicesDiscovered")
+                        Timber.i("scannerViewModel.state: DevicesDiscovered")
                         mStates.deviceCount.set(state.devices.size)
                         binding.recyclerView.models = state.devices
                     }

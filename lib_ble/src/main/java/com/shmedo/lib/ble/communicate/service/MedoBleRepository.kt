@@ -64,7 +64,7 @@ class MedoBleRepository private constructor(
     val hasBeenDisconnected = data.map { it.hasBeenDisconnected() }
 
     fun launch(device: DiscoveredBluetoothDevice) {
-        Timber.d("Medo BluetoothGatt: call startService MedoBleService")
+        Timber.i("Medo BluetoothGatt: call startService MedoBleService")
         serviceManager.startService(MedoBleService::class.java, device)
     }
 
@@ -79,7 +79,7 @@ class MedoBleRepository private constructor(
         }.launchIn(scope)
 
         scope.launch {
-            Timber.d("Medo BluetoothGatt:call connect")
+            Timber.i("Medo BluetoothGatt:call connect")
             manager.connect(device)
         }
     }

@@ -198,7 +198,7 @@ class M20HomeFragment : BaseFragment() {
     private fun processBle() {
         launchAndRepeatWithViewLifecycle {
             bleViewModel.state.collectLatest { state ->
-                Timber.d("Medo BluetoothGatt: $state")
+                Timber.i("Medo BluetoothGatt: $state")
                 when (state) {
                     NoDeviceState -> {}
                     is WorkingState -> when (state.result) {

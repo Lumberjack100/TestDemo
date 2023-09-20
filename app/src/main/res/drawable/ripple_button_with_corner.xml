@@ -7,7 +7,7 @@
     </item>
 
     <item>
-        <ripple android:color="@color/app_color_blue_disabled">
+        <ripple android:color="@color/blue_disabled">
             <item android:id="@android:id/background" android:drawable="@drawable/btn_bg_normal" />
         </ripple>
     </item>

@@ -25,7 +25,7 @@ private const val FILTER_RSSI = -50 // [dBm]
 class ScannerViewModel : ViewModel() {
     private var uuid: ParcelUuid? = null
 
-    val filterConfig = MutableStateFlow(
+    private val filterConfig = MutableStateFlow(
         DevicesScanFilter(
             filterUuidRequired = true,
             filterNearbyOnly = false,

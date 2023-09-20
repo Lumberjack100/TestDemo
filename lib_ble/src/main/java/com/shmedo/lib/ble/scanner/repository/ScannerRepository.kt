@@ -44,7 +44,7 @@ class ScannerRepository internal constructor() {
                     trySend(ScanningState.Error(errorCode))
                 }
             }
-
+            Timber.i("scannerViewModel Start Scanning")
             trySend(ScanningState.Loading)
 
             val settings = ScanSettings.Builder()
@@ -57,7 +57,7 @@ class ScannerRepository internal constructor() {
             scanner.startScan(null, settings, scanCallback)
 
             awaitClose {
-                Timber.d("scannerViewModel awaitClose")
+                Timber.i("scannerViewModel awaitClose")
                 scanner.stopScan(scanCallback)
             }
         }

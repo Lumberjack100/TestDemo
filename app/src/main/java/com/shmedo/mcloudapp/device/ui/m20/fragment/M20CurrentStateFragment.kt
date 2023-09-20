@@ -5,6 +5,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.ColorUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
@@ -33,7 +34,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
 import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showWaitDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentM20CurrentStateBinding
@@ -82,6 +82,14 @@ class M20CurrentStateFragment : BaseFragment() {
                 nav().navigateUp()
             }
         })
+        initRefresh()
+    }
+
+    private fun initRefresh() {
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            queryStatusInfo()
+        }
     }
 
     override fun initData() {
@@ -104,10 +112,9 @@ class M20CurrentStateFragment : BaseFragment() {
     /**
      * 获取设备的基本信息
      */
-    private fun queryBaseInfo() {
+    private fun queryStatusInfo() {
         val command: String =
             IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        showWaitDialog("处理中...")
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
@@ -116,7 +123,7 @@ class M20CurrentStateFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        queryBaseInfo()
+        binding.refreshLayout.autoRefresh()
     }
 
     private fun processNetPlatform() {
@@ -207,6 +214,7 @@ class M20CurrentStateFragment : BaseFragment() {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 netIotCommandViewModel.processCmdResult()
             }
+
             else -> {}
         }
     }
@@ -214,8 +222,8 @@ class M20CurrentStateFragment : BaseFragment() {
     private fun setResultData(cmdStr: String) {
         when (IOTStringUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
-                val commandResult: IOTCommandResult<String> =
-                    IOTParseManager.instance.parse<String>(cmdStr)
+                binding.refreshLayout.finish()
+                val commandResult: IOTCommandResult<String> = IOTParseManager.instance.parse<String>(cmdStr)
                 if (!commandResult.isSuccess) {
                     val errMsg =
                         java.lang.String.format("%s %s", "查询设备状态出错!", commandResult.message)
@@ -232,10 +240,37 @@ class M20CurrentStateFragment : BaseFragment() {
     }
 
     private fun initStatusInfo(content: String) {
-
         try {
             val m20CurrentStateInfo = MoshiUtil.fromJson<M20CurrentStateInfo>(content) ?: return
             mStates.wrapStateInfo.set(m20CurrentStateInfo)
+
+            var sensorAbnormal = false
+            m20CurrentStateInfo.sensor_errno?.forEach { errnoBean ->
+                sensorAbnormal = errnoBean.errno != 0
+            }
+            binding.tvSensorStatus.text = if (sensorAbnormal) "未接入" else "正常"
+            binding.tvSensorStatus.setTextColor(
+                if (sensorAbnormal) ColorUtils.getColor(R.color.device_offline_platform)
+                else ColorUtils.getColor(R.color.device_online_platform)
+            )
+
+            binding.tvInclination.text = String.format(
+                "%s°,%s°,%s°",
+                m20CurrentStateInfo.x_Angle,
+                m20CurrentStateInfo.y_Angle,
+                m20CurrentStateInfo.z_Angle
+            )
+            binding.tvInternalVoltage.text =
+                String.format("%sV", m20CurrentStateInfo.inner_power_volt)
+            binding.tvExternalVoltage.text =
+                String.format("%sV", m20CurrentStateInfo.ext_power_volt)
+            binding.tvSolarPanelVoltage.text = String.format("%sV", m20CurrentStateInfo.solar_volt)
+            binding.tvAmbientTemperature.text = String.format("%s℃", m20CurrentStateInfo.temp)
+            binding.tvAmbientHumidity.text = String.format("%s%%", m20CurrentStateInfo.humidity)
+            binding.tvSupplementaryPower.text =
+                String.format("%sV", m20CurrentStateInfo.supply_power)
+            binding.tvPowerConsumption.text =
+                String.format("%sV", m20CurrentStateInfo.consume_power)
 
         } catch (e: Exception) {
             e.printStackTrace()
