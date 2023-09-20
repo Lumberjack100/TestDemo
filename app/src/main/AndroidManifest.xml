@@ -8,27 +8,34 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 如果设置了target >= 28 如果需要启动后台定位则必须声明这个权限 -->
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> <!-- 允许应用程序访问额外的位置提供命令 -->
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的读权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 允许程序设置内置sd卡的写权限 -->
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Android 13版本适配，细化存储权限 -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /><!-- Android 13版本适配，细化存储权限 -->
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- 允许程序录制音频 -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Android 13 通知的运行时权限 -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 允许阻止进程睡眠或屏幕变暗,用WakeLock使Android应用程序保持后台唤醒 -->
     <uses-permission android:name="android.permission.FLASHLIGHT" /> <!-- 访问闪光灯 -->
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- 允许访问振动设备 -->
+
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- Android8.0 安装 apk 需要添加权限,更新自身及下载安装app -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 请求访问使用照相设备 -->
+
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />

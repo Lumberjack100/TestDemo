@@ -23,7 +23,6 @@ import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.device.base.iot_cmd.IOTCommandManager
 import com.shmedo.lib.device.base.iot_cmd.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
@@ -32,6 +31,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
 import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.ext.showWaitDialog
@@ -208,11 +208,10 @@ class M20HomeFragment : BaseFragment() {
                         }
 
                         is ConnectedResult -> {
-//                            dismissWaitDialog()
+                            dismissWaitDialog()
                         }
 
                         is SuccessResult -> {
-                            dismissWaitDialog()
                             mStates.isBleConnected.set(true)
                             mStates.isDeviceStateHighLight.set(true)
                             mStates.deviceState.set("已连接")
@@ -248,28 +247,20 @@ class M20HomeFragment : BaseFragment() {
         bleViewModel.launch(bleDevice!!)
     }
 
-    /**
-     * 获取设备的基本信息
-     */
-    private fun queryBaseInfo() {
-        val command: String =
-            IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        showWaitDialog("处理中...")
-        if (communicateWay is NetPlatformConnect) {
-            netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
-        } else {
-            bleViewModel.sendCommand(command, true, deviceInfo.apiKey)
-        }
-    }
-
     private fun processItemClick(moduleName: String) {
         when (moduleName) {
             "设置向导" -> {
-                queryBaseInfo()
+
             }
 
             "状态" -> {
-
+                val bundle =
+                    M20CurrentStateFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                nav().navigate(R.id.action_netM20HomeFragment_to_m20CurrentStateFragment, bundle)
             }
 
             "数据中心" -> {
@@ -295,7 +286,6 @@ class M20HomeFragment : BaseFragment() {
 
     private fun doDispatchFailed(cmdStr: String, errorMsg: String) {
         when (IOTStringUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> Toaster.show("下发指令失败: $errorMsg")
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
 
             }
@@ -306,10 +296,6 @@ class M20HomeFragment : BaseFragment() {
 
     private fun doDispatchSuccess(cmdStr: String) {
         when (IOTStringUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                netIotCommandViewModel.processCmdResult()
-            }
-
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
 
             }
@@ -321,18 +307,16 @@ class M20HomeFragment : BaseFragment() {
     private fun setResultData(queryCmdResult: QueryCmdResult) {
         val cmdStr: String = queryCmdResult.responseContent
         when (IOTStringUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
+            IOTCommandType.M20_MD_LEVEL_INITIAL -> {
                 val commandResult: IOTCommandResult<String> =
                     IOTParseManager.instance.parse<String>(cmdStr)
                 if (!commandResult.isSuccess) {
-                    val errMsg =
-                        java.lang.String.format("%s %s", "查询设备状态出错!", commandResult.message)
+                    val errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.message)
                     Timber.e(errMsg)
                     Toaster.show(errMsg)
                     return
                 }
                 val content: String = commandResult.result!!
-                Toaster.show(content)
             }
 
             else -> {}

@@ -6,8 +6,6 @@
 
     <data>
 
-        <import type="String" />
-
         <variable
             name="vm"
             type="com.shmedo.mcloudapp.device.viewmodel.state.M20CurrentStateViewModel" />

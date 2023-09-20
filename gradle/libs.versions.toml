@@ -19,35 +19,33 @@ androidGradlePlugin = "7.4.2"
 agentweb = "v5.0.6-androidx"
 appcompat = "1.6.1"
 amap3dmap = "9.8.2"
-baseRecyclerViewAdapterHelper = "3.0.11"
-baseRecyclerView = "1.5.1"
+baseRecyclerView = "1.5.2"
 compileSdk = "33"
 constraintLayout = "2.1.4"
 core-ktx = "1.10.1"
-coroutines = "1.7.1"
+coroutines = "1.7.3"
 crashreport = "4.1.9.2"
 customactivityoncrash = "2.4.0"
 dateTimePicker = "0.6.3"
 dialogX = "0.0.48"
 espresso = "3.5.1"
 flexbox = "2.0.1"
-fragmentKtx = "1.3.6"
+fragmentKtx = "1.6.0"
 getActivityLogcat = "10.6"
 glide = "4.15.1"
-gson = "2.10.1"
 hmsScan = "2.5.0.300"
 immersionbar = "3.2.2"
 junit = "4.13.2"
-kotlin = "1.8.10"
+kotlin = "1.9.10"
 keyboardvisibilityevent = "3.0.0-RC3"
-ksp = "1.8.10-1.0.9"
+ksp = "1.9.10-1.0.13"
 leakcanary = "2.12"
 lifecycle = "2.6.1"
 legacyV4 = "1.0.0"
 material = "1.9.0"
 materialDialogs = "3.3.0"
 minSdk = "24"
-moshiVersion = "1.14.0"
+moshiVersion = "1.15.0"
 mmkv = "1.3.1"
 navigation = "2.6.0"
 nordicsemiBleKtx = "2.6.1"
@@ -60,17 +58,12 @@ progressbutton = "2.1.0"
 rangeSeekBar = "v3.0.0"
 recyclerView = "1.3.1"
 retrofit = "2.9.0"
-rxjava = "3.1.6"
-rxandroid = "3.0.2"
 rxhttp = "3.1.1"
-rxlife = "2.2.2"
-recyclerviewX = "1.3.2"
 xpopup = "2.9.19"
 room = "2.5.2"
 share2 = "0.9.3"
 smoothNavigation = "4.0.0"
 smartRefreshLayout = "2.0.6"
-stateView = "v3.0.2"
 strictDatabinding = "5.6.0"
 swiperefreshlayout = "1.1.0"
 switchbutton = "2.1.0"
@@ -103,7 +96,6 @@ androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefre
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
 agentweb-core = { module = "com.github.Justson.AgentWeb:agentweb-core", version.ref = "agentweb" }
 amap3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
-base-recyclerview-adapter-helper = { module = "com.github.CymChad:BaseRecyclerViewAdapterHelper", version.ref = "baseRecyclerViewAdapterHelper" }
 bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "crashreport" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 datetime-picker = { module = "com.github.loper7:DateTimePicker", version.ref = "dateTimePicker" }
@@ -113,7 +105,6 @@ getActivity-logcat = { module = "com.github.getActivity:Logcat", version.ref = "
 getActivity-toastutils = { module = "com.github.getActivity:ToastUtils", version.ref = "toastUtils" }
 getActivity-xxpermission = { module = "com.github.getActivity:XXPermissions", version.ref = "xxPermission" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hms-scan = { module = "com.huawei.hms:scan", version.ref = "hmsScan" }
 immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref = "immersionbar" }
 immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
@@ -127,8 +118,6 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kunminx-unpeek-livedata = { module = "com.kunminx.arch:unpeek-livedata", version.ref = "unpeekLivedata" }
 kunminx-smooth-navigation = { module = "com.kunminx.arch:smooth-navigation", version.ref = "smoothNavigation" }
 kunminx-strict-databinding = { module = "com.github.KunMinX.Strict-DataBinding:strict_databinding", version.ref = "strictDatabinding" }
-kunminx-binding-state = { module = "com.github.KunMinX.Strict-DataBinding:binding_state", version.ref = "strictDatabinding" }
-kunminx-binding-recyclerview = { module = "com.github.KunMinX.Strict-DataBinding:binding_recyclerview", version.ref = "strictDatabinding" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 liangjingkanji-brv = { module = "com.github.liangjingkanji:BRV", version.ref = "baseRecyclerView" }
 lucksiege-pictureselector = { module = "io.github.lucksiege:pictureselector", version.ref = "pictureselector" }
@@ -141,7 +130,6 @@ material-dialogs-datetime = { module = "com.afollestad.material-dialogs:datetime
 material-dialogs-bottomsheets = { module = "com.afollestad.material-dialogs:bottomsheets", version.ref = "materialDialogs" }
 mmkv = { module = "com.tencent:mmkv", version.ref = "mmkv" }
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshiVersion" }
-moshi-kotlin-reflection = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiVersion" }
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshiVersion" }
 nordicsemi-ble-ktx = { module = "no.nordicsemi.android:ble-ktx", version.ref = "nordicsemiBleKtx" }
 nordicsemi-scanner = { module = "no.nordicsemi.android.support.v18:scanner", version.ref = "nordicsemiScanner" }
@@ -151,18 +139,12 @@ permissionx = { module = "com.guolindev.permissionx:permissionx", version.ref = 
 progressbutton = { module = "com.github.razir.progressbutton:progressbutton", version.ref = "progressbutton" }
 rangeSeekBar = { module = "com.github.Jay-Goo:RangeSeekBar", version.ref = "rangeSeekBar" }
 retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
-recyclerview-x = { module = "com.yanzhenjie.recyclerview:x", version.ref = "recyclerviewX" }
-rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
-rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxhttp = { module = "com.github.liujingxing.rxhttp:rxhttp", version.ref = "rxhttp" }
 rxhttp-compiler = { module = "com.github.liujingxing.rxhttp:rxhttp-compiler", version.ref = "rxhttp" }
 rxhttp-converter-moshi = { module = "com.github.liujingxing.rxhttp:converter-moshi", version.ref = "rxhttp" }
-rxlife-rxjava3 = { module = "com.github.liujingxing.rxlife:rxlife-rxjava3", version.ref = "rxlife" }
 scwang90-refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-kernel", version.ref = "smartRefreshLayout" }
 scwang90-refresh-header-classics = { module = "io.github.scwang90:refresh-header-classics", version.ref = "smartRefreshLayout" }
 share2 = { module = "gdut.bsx:share2", version.ref = "share2" }
-stateview = { module = "com.github.nukc:StateView", version.ref = "stateView" }
 switchbutton-library = { module = "com.kyleduo.switchbutton:library", version.ref = "switchbutton" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
