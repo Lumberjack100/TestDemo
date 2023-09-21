@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/m20_graph"
+    app:startDestination="@id/m20HomeFragment">
+
+    <fragment
+        android:id="@+id/m20HomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.M20HomeFragment"
+        android:label="NetM20HomeFragment"
+        tools:layout="@layout/fragment_m20_home">
+
+        <action
+            android:id="@+id/action_m20HomeFragment_to_m20CurrentStateFragment"
+            app:destination="@id/m20CurrentStateFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_netM20HomeFragment_to_netM20AdvancedSettingFragment"
+            app:destination="@id/netM20AdvancedSettingFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/m20CurrentStateFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.M20CurrentStateFragment"
+        android:label="M20CurrentStateFragment"
+        tools:layout="@layout/fragment_m20_current_state" />
+
+    <fragment
+        android:id="@+id/netM20AdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.NetM20AdvancedSettingFragment"
+        android:label="NetM20AdvancedSettingFragment"
+        tools:layout="@layout/fragment_m20_advanced_setting" />
+
+</navigation>

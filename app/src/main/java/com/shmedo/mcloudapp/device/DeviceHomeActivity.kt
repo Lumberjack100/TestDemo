@@ -16,11 +16,11 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.BaseActivity
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.TcpConnect
 import com.shmedo.mcloudapp.device.ui.m20.fragment.M20HomeFragment
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702HomeFragment
 
 class DeviceHomeActivity : BaseActivity() {
     private val binding: ActivityDeviceHomeBinding by lazy { getBinding() as ActivityDeviceHomeBinding }
@@ -52,130 +52,67 @@ class DeviceHomeActivity : BaseActivity() {
 
     }
 
-
     private fun setGraph() {
         when (productType) {
             ProductType.ADME -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
 
-                    }
-
-                    BleConnect -> {
-
-                    }
-                    else -> {
-                    }
-                }
             }
+
             ProductType.BHY -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
 
-                    }
-
-                    BleConnect -> {
-
-                    }
-                    else -> {
-                    }
-                }
             }
+
             ProductType.DAS -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
 
-                    }
-
-                    BleConnect -> {
-
-                    }
-                    else -> {
-                    }
-                }
             }
+
             ProductType.E40 -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
 
-                    }
-
-                    TcpConnect -> {
-
-                    }
-                    else -> {
-                    }
-                }
             }
+
             ProductType.HAC -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
 
-                    }
-
-                    BleConnect -> {
-
-                    }
-                    else -> {
-                    }
-                }
             }
+
             ProductType.LR200 -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
 
-                    }
-
-                    BleConnect -> {
-
-                    }
-                    else -> {
-                    }
-                }
             }
+
             ProductType.M20 -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
-
-                    }
-
-                    BleConnect -> {
-
-                    }
-                    else -> {
-                    }
-                }
-                val bundle = M20HomeFragment.newBundleArguments(communicateWay,deviceInfo!!,bleDevice)
+                val bundle =
+                    M20HomeFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
                 findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.net_m20_graph, bundle)
+                    .setGraph(R.navigation.m20_graph, bundle)
             }
+
+            ProductType.MR702 -> {
+                val bundle =
+                    MR702HomeFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
+                findNavController(R.id.device_home_host_fragment)
+                    .setGraph(R.navigation.mr702_graph, bundle)
+            }
+
             ProductType.RN20 -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
 
-                    }
-
-                    BleConnect -> {
-
-                    }
-                    else -> {
-                    }
-                }
             }
+
             ProductType.VMS -> {
+
+            }
+
+            else -> {
                 when (communicateWay) {
                     NetPlatformConnect -> {
 
                     }
+
                     TcpConnect -> {
 
                     }
+
                     else -> {
                     }
                 }
-            }
-            else -> {
-
             }
         }
     }

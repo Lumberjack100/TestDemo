@@ -24,7 +24,8 @@ enum class ProductType(
     HAC("ADME_HAC10", "T", "半自动化测斜机器人"),
     INCLINOMETER_DEBUG_BOX("INCLINOMETER", "#", "蓝牙测斜仪调试盒子"),
     LR200("LR200", "Z", "一体式裂缝计"),
-    M20("M20", "V", "GNSS"),
+    M20("M20", "V", "M20-GNSS"),
+    MR702("SL651", "L", "水利遥测终端机"),
     RN20("RN20", "Y", "轴力计"),
     VMS("VMS|GW300", "G", "振弦式采集仪"),
 

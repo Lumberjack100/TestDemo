@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_toolbar_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/ll_device_info"
+            layout="@layout/device_config_head_info_mr702"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="0.5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
+            app:vm="@{vm}" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_work_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_size_15"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginEnd="@dimen/dimen_size_15"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_device_info">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="-80dp"
+                android:text="工作模式"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17"
+                android:textStyle="bold"
+                app:drawableStartCompat="@drawable/ic_mr702_work_mode" />
+
+            <RadioGroup
+                android:id="@+id/rg_work_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_normal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/radiobutton_selector"
+                    android:checked="@{vm.isWorkModeNormal()}"
+                    android:text="正常"
+                    android:textColor="@{vm.isWorkModeNormal()?@color/colorPrimary:@color/sub_title_text_color}"
+                    android:textSize="@dimen/text_size_15"
+                    tools:checked="true"
+                    tools:textColor="@color/colorPrimary" />
+
+                <RadioButton
+                    android:id="@+id/radio_low_power"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:button="@drawable/radiobutton_selector"
+                    android:checked="@{!vm.isWorkModeNormal()}"
+                    android:text="低功耗"
+                    android:textColor="@{!vm.isWorkModeNormal()?@color/colorPrimary:@color/sub_title_text_color}"
+                    android:textSize="@dimen/text_size_15"
+                    tools:textColor="@color/sub_title_text_color" />
+            </RadioGroup>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_module"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/dimen_size_15"
+            android:clipToPadding="false"
+            android:splitMotionEvents="false"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_work_mode"
+            app:spanCount="2"
+            tools:listitem="@layout/item_device_config_module" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

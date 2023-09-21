@@ -46,16 +46,16 @@ abstract class BaseFragment : BaseVmDbFragment() {
     }
 
     open fun initImmersionBar(
-        bar: View,
-        isDarkFont: Boolean = true,
-        isDarkIcon: Boolean = true,
+        statusBar: View,
+        isStatusBarDarkFont: Boolean = true,
+        isNavigationBarDarkIcon: Boolean = true,
         navigationBarColor: Int = R.color.white,
         statusBarColor: Int = -1
     ) {
         immersionBar {
-            titleBar(bar)
-            statusBarDarkFont(isDarkFont)
-            navigationBarDarkIcon(isDarkIcon)
+            titleBar(statusBar)
+            statusBarDarkFont(isStatusBarDarkFont)
+            navigationBarDarkIcon(isNavigationBarDarkIcon)
             navigationBarColor(navigationBarColor)
             if (statusBarColor != -1)
                 statusBarColor(statusBarColor)

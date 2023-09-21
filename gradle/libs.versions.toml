@@ -29,7 +29,7 @@ customactivityoncrash = "2.4.0"
 dateTimePicker = "0.6.3"
 dialogX = "0.0.48"
 espresso = "3.5.1"
-flexbox = "2.0.1"
+flexbox = "3.0.0"
 fragmentKtx = "1.6.0"
 getActivityLogcat = "10.6"
 glide = "4.15.1"
@@ -100,7 +100,7 @@ bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "c
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 datetime-picker = { module = "com.github.loper7:DateTimePicker", version.ref = "dateTimePicker" }
 dialogx = { module = "com.kongzue.dialogx:DialogX", version.ref = "dialogX" }
-flexbox = { module = "com.google.android:flexbox", version.ref = "flexbox" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 getActivity-logcat = { module = "com.github.getActivity:Logcat", version.ref = "getActivityLogcat" }
 getActivity-toastutils = { module = "com.github.getActivity:ToastUtils", version.ref = "toastUtils" }
 getActivity-xxpermission = { module = "com.github.getActivity:XXPermissions", version.ref = "xxPermission" }

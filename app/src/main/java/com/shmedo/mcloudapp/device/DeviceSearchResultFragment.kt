@@ -19,11 +19,11 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchResultBinding
+import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 
 /**
  * 创建者：gonghe
@@ -99,13 +99,13 @@ class DeviceSearchResultFragment : BaseFragment() {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe
             }
-            listDataResult.result?.let {
-                binding.refreshLayout.addData(it, isEmpty = {
-                    binding.refreshLayout.index == 1 && it.isEmpty()
-                }, hasMore = {
-                    binding.refreshLayout.index < listDataResult.totalPage
-                })
+            if (listDataResult.result.isNullOrEmpty()) {
+                binding.refreshLayout.showEmpty()
+                return@observe
             }
+            binding.refreshLayout.addData(listDataResult.result, hasMore = {
+                binding.refreshLayout.index < listDataResult.totalPage
+            })
         }
     }
 

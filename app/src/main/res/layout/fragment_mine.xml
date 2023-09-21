@@ -131,7 +131,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="18dp"
-                android:background="@color/divider_line_bg_efefef" />
+                android:background="@color/divider_line_bg" />
 
             <LinearLayout
                 android:id="@+id/updatePwdLayout"
@@ -208,7 +208,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="18dp"
-                android:background="@color/divider_line_bg_efefef" />
+                android:background="@color/divider_line_bg" />
 
             <LinearLayout
                 android:id="@+id/aboutLayout"

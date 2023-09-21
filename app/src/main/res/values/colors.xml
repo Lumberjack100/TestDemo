@@ -10,7 +10,7 @@
     <color name="orange">#ff7502</color>
     <color name="transparent">#00000000</color>
     <color name="bg_black_40">#66000000</color>
-    <color name="main_bg_gray">#f8f8f8</color>
+    <color name="main_bg_gray">#f6f6f6</color>
     <color name="main_bg_gray_f3f9fe">#F3F9FE</color>
     <color name="main_bg_gray_f2f2f2">#f2f2f2</color>
     <color name="main_bg_gray_f9f9f9">#f9f9f9</color>
@@ -58,8 +58,8 @@
     <color name="blue_disabled">#8000A8E1</color>
     <color name="blue_pressed">#c000A8E1</color>
     <color name="update_theme_color">#FFFFAC5D</color>
-    <color name="divider_line_bg">#ffe5e5e5</color>
-    <color name="divider_line_bg_efefef">#EFEFEF</color>
+    <color name="divider_line_bg">#EDEDEF</color>
+    <color name="divider_line_bg2">#ffe5e5e5</color>
     <color name="search_bg_gray_color">#fff1f1f1</color>
 
     <color name="device_unopened_platform">#BCC0CC</color>

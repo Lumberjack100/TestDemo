@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.m20.fragment
+package com.shmedo.mcloudapp.device.ui.mr702.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.setup
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
@@ -22,21 +23,24 @@ import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.ext.showWaitDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentM20HomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentMR702HomeBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.viewmodel.state.M20HomeViewModel
+import com.shmedo.mcloudapp.device.model.PlatformLable
+import com.shmedo.mcloudapp.device.ui.m20.fragment.M20CurrentStateFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import timber.log.Timber
 
-class M20HomeFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
-    override val mStates: M20HomeViewModel by viewModels()
+class MR702HomeFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentMR702HomeBinding by lazy { getBinding() as FragmentMR702HomeBinding }
+    override val mStates: MR702HomeViewModel by viewModels()
+
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m20_home, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_m_r702_home, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -61,14 +65,30 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
             } else
                 mActivity.finish()
         }
+        initPlatformAdapter()
         initModuleAdapter()
-        binding.llDeviceInfo.tvDeviceConnectOperate.setOnClickListener {
-            onConnectOperateClick()
-        }
+        initClickListener()
+    }
+
+    private fun initPlatformAdapter() {
+        binding.llDeviceInfo.rvPlatform.setup { rv ->
+            rv.layoutManager = FlexboxLayoutManager(context)
+            addType<PlatformLable>(R.layout.item_platform_label)
+        }.models = testData()
+    }
+
+    private fun testData(): List<PlatformLable> {
+        return listOf(
+            PlatformLable("淘宝", true),
+            PlatformLable("微信"),
+            PlatformLable("QQ"),
+            PlatformLable("UC浏览器"),
+            PlatformLable("京东"),
+        )
     }
 
     private fun initModuleAdapter() {
-        binding.recyclerview.setup { rv ->
+        binding.rvModule.setup { rv ->
             rv.addItemDecoration(
                 MyGridSpacingItemDecoration(
                     2,
@@ -87,9 +107,9 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mStates.deviceToken.set(String.format("设备编号：%s", deviceInfo.deviceToken))
-        mStates.productName.set(String.format("产品型号：%s", deviceInfo.productName))
-        mStates.firmwareVersion.set(String.format("固件版本：%s", deviceInfo.firmwareVersion))
+        mStates.deviceToken.set( deviceInfo.deviceToken)
+        mStates.productName.set(deviceInfo.productName)
+        mStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
         when (communicateWay) {
             NetPlatformConnect -> {
@@ -113,6 +133,43 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun initClickListener() {
+        binding.llDeviceInfo.tvDeviceConnectOperate.setOnClickListener {
+            onConnectOperateClick()
+        }
+        binding.rgWorkMode.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.radio_normal -> {
+                   Toaster.show("正常")
+                   if(!mStates.isBleConnected.get()) {
+                       Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                       return@setOnCheckedChangeListener
+                   }
+                    if(mStates.isWorkModeNormal.get())
+                        return@setOnCheckedChangeListener
+
+                    showMessage("确定切换到正常模式吗？", "温馨提示", "确定", {
+                        bleViewModel.disconnect()
+                    }, "取消")
+
+                }
+                R.id.radio_low_power -> {
+                    Toaster.show("低功耗")
+                    if(!mStates.isBleConnected.get()) {
+                        Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                        return@setOnCheckedChangeListener
+                    }
+                    if(!mStates.isWorkModeNormal.get())
+                        return@setOnCheckedChangeListener
+
+                    showMessage("确定切换到低功耗模式吗？", "温馨提示", "确定", {
+                        bleViewModel.disconnect()
+                    }, "取消")
+                }
+            }
+        }
+    }
+
     private fun onConnectOperateClick() {
         if (mStates.isBleConnected.get()) {
             showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
@@ -126,11 +183,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
 
     private fun processItemClick(moduleName: String) {
         when (moduleName) {
-            "设置向导" -> {
-
-            }
-
-            "状态" -> {
+            "关于设备" -> {
                 val bundle =
                     M20CurrentStateFragment.newBundleArguments(
                         communicateWay,
@@ -144,7 +197,19 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
 
             }
 
-            "设置" -> {
+            "接口配置" -> {
+
+            }
+
+            "终端参数" -> {
+
+            }
+
+            "设备操作" -> {
+
+            }
+
+            "网络与通信" -> {
 
             }
         }
@@ -197,30 +262,46 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         arrayListOf<ConfigModule>().apply {
             add(
                 ConfigModule(
-                    R.drawable.ic_setup_wizard,
-                    "设置向导",
-                    "一键配置"
+                    R.drawable.ic_device_running_info,
+                    "关于设备",
+                    "设备基本信息、运行数据"
                 )
             )
             add(
                 ConfigModule(
-                    R.drawable.ic_device_current_state,
-                    "状态",
-                    "获取当前设备状态"
+                    R.drawable.ic_device_terminal_param,
+                    "数据中心",
+                    "连接平台设置"
+                )
+            )
+            add(
+                ConfigModule(
+                    R.drawable.ic_device_sensor_config,
+                    "接口配置",
+                    "串口、ADC、DI、DO配置"
                 )
             )
             add(
                 ConfigModule(
                     R.drawable.ic_device_data_center,
-                    "数据中心",
-                    "基础参数配置"
+                    "终端参数",
+                    "本机触摸屏和上报规则设置"
                 )
             )
+
             add(
                 ConfigModule(
                     R.drawable.ic_device_setting,
-                    "设置",
-                    "高级设置"
+                    "设备操作",
+                    "时间校准、人工置数、召测等"
+                )
+            )
+
+            add(
+                ConfigModule(
+                    R.drawable.ic_device_net_communicate,
+                    "网络与通信",
+                    "无线、有线配置"
                 )
             )
         }
