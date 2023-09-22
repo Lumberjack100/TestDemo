@@ -213,7 +213,8 @@ class IOTParseManager private constructor() {
             HacMotionStateParser::class.java,
             HacWarningValueParser::class.java,
             HacMotorMotionDistanceInfoParser::class.java,
-            HacExecutiveAgencyInfoParser::class.java
+            HacExecutiveAgencyInfoParser::class.java,
+            WorkModeParser::class.java
         )
         registerWithClass(clazzes)
     }

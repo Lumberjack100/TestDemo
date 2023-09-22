@@ -12,7 +12,9 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.device.base.iot_cmd.IOTCommandManager
 import com.shmedo.lib.device.base.iot_cmd.IOTCommandResult
+import com.shmedo.lib.device.base.iot_cmd.entity.adme.AdmeWorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTStringUtil
@@ -41,6 +43,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_m_r702_home, BR.vm, mStates)
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -107,7 +110,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mStates.deviceToken.set( deviceInfo.deviceToken)
+        mStates.deviceToken.set(deviceInfo.deviceToken)
         mStates.productName.set(deviceInfo.productName)
         mStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
@@ -137,37 +140,6 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         binding.llDeviceInfo.tvDeviceConnectOperate.setOnClickListener {
             onConnectOperateClick()
         }
-        binding.rgWorkMode.setOnCheckedChangeListener { group, checkedId ->
-            when (checkedId) {
-                R.id.radio_normal -> {
-                   Toaster.show("正常")
-                   if(!mStates.isBleConnected.get()) {
-                       Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                       return@setOnCheckedChangeListener
-                   }
-                    if(mStates.isWorkModeNormal.get())
-                        return@setOnCheckedChangeListener
-
-                    showMessage("确定切换到正常模式吗？", "温馨提示", "确定", {
-                        bleViewModel.disconnect()
-                    }, "取消")
-
-                }
-                R.id.radio_low_power -> {
-                    Toaster.show("低功耗")
-                    if(!mStates.isBleConnected.get()) {
-                        Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                        return@setOnCheckedChangeListener
-                    }
-                    if(!mStates.isWorkModeNormal.get())
-                        return@setOnCheckedChangeListener
-
-                    showMessage("确定切换到低功耗模式吗？", "温馨提示", "确定", {
-                        bleViewModel.disconnect()
-                    }, "取消")
-                }
-            }
-        }
     }
 
     private fun onConnectOperateClick() {
@@ -178,6 +150,35 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         } else {
             showWaitDialog(StringUtils.getString(R.string.ble_state_connecting))
             bleViewModel.launch(bleDevice!!)
+        }
+    }
+
+    inner class ClickProxy {
+        fun onNormalClick() {
+            if (mStates.isWorkModeNormal.get())
+                return
+
+            if (communicateWay is BleConnect && !mStates.isBleConnected.get()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            showMessage("确定切换到正常模式吗？", "温馨提示", "确定", {
+                mStates.isWorkModeNormal.set(true)
+
+            }, "取消")
+        }
+
+        fun onLowPowerClick() {
+            if (!mStates.isWorkModeNormal.get())
+                return
+            if (communicateWay is BleConnect && !mStates.isBleConnected.get()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            showMessage("确定切换到低功耗模式吗？", "温馨提示", "确定", {
+                mStates.isWorkModeNormal.set(false)
+
+            }, "取消")
         }
     }
 
@@ -213,6 +214,17 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
             }
         }
+    }
+
+    /**
+     * 设置设备工作模式
+     */
+    private fun setWorkMode() {
+        val entity = AdmeWorkModeEntity()
+        entity.workmode
+        val command: String =
+            IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_WORK_MODE, entity)
+        sendCommand(command)
     }
 
     override fun doDispatchFailed(cmdStr: String, errorMsg: String) {

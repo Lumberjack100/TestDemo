@@ -8,6 +8,8 @@ import com.afollestad.materialdialogs.actions.getActionButton
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
+import com.blankj.utilcode.util.ColorUtils
+import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.utils.SettingUtil
 
 
@@ -50,7 +52,7 @@ fun AppCompatActivity.showMessage(
                 }
             }
             getActionButton(WhichButton.POSITIVE).updateTextColor(SettingUtil.getColor(this@showMessage))
-            getActionButton(WhichButton.NEGATIVE).updateTextColor(SettingUtil.getColor(this@showMessage))
+            getActionButton(WhichButton.NEGATIVE).updateTextColor(ColorUtils.getColor(R.color.sub_title_text_color))
         }
 }
 
@@ -86,7 +88,7 @@ fun Fragment.showMessage(
                     }
                 }
                 getActionButton(WhichButton.POSITIVE).updateTextColor(SettingUtil.getColor(it))
-                getActionButton(WhichButton.NEGATIVE).updateTextColor(SettingUtil.getColor(it))
+                getActionButton(WhichButton.NEGATIVE).updateTextColor(ColorUtils.getColor(R.color.sub_title_text_color))
             }
     }
 }

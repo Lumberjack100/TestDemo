@@ -15,10 +15,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 sealed class CommunicateWay : Parcelable
 
-object NetPlatformConnect : CommunicateWay()
+data object NetPlatformConnect : CommunicateWay()
 
-object BleConnect : CommunicateWay()
+data object BleConnect : CommunicateWay()
 
-object TcpConnect : CommunicateWay()
+data object TcpConnect : CommunicateWay()
 
-object UsbSerial : CommunicateWay()
+data object UsbSerial : CommunicateWay()
