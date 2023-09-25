@@ -9,6 +9,9 @@
             name="vm"
             type="com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel" />
 
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.BaseClickProxy" />
     </data>
 
     <LinearLayout
@@ -65,12 +68,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableStart="@{!vm.isDeviceStateTagHighLight()?@drawable/ic_ble_connect:@drawable/ic_ble_disconnect}"
+                android:drawablePadding="@dimen/dimen_size_4"
+                android:onClick="@{()->click.onConnectOperateClick()}"
                 android:text="@{vm.connectOperateText}"
                 android:textColor="@{!vm.isDeviceStateTagHighLight()?@color/connect_ble_foreground:@color/disconnect_ble_foreground}"
                 android:textSize="@dimen/text_size_13"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:drawablePadding="@dimen/dimen_size_4"
                 tools:drawableStartCompat="@drawable/ic_ble_connect"
                 tools:text="蓝牙连接"
                 tools:visibility="visible" />

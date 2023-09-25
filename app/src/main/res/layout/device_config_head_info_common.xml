@@ -4,10 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.shmedo.mcloudapp.device.viewmodel.state.CommonDeviceHomeViewModel" />
 
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.BaseClickProxy" />
     </data>
 
     <LinearLayout
@@ -48,9 +52,9 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:singleLine="true"
+                        android:text="@{vm.deviceName}"
                         android:textColor="@color/text_color_1f1f1f"
                         android:textSize="@dimen/text_size_15"
-                        android:text="@{vm.deviceName}"
                         tools:text="DAS-RDS" />
 
                     <TextView
@@ -65,10 +69,10 @@
                         android:singleLine="true"
                         android:text="@{vm.deviceStateTagText}"
                         android:textColor="@{vm.isDeviceStateTagHighLight()?@color/device_online_foreground:@color/device_offline_foreground}"
-                        tools:text="已断开"
-                        tools:textColor="@color/device_offline_foreground"
+                        android:textSize="@dimen/text_size_10"
                         tools:background="@drawable/bg_device_offline_state_flag"
-                        android:textSize="@dimen/text_size_10" />
+                        tools:text="已断开"
+                        tools:textColor="@color/device_offline_foreground" />
 
                 </LinearLayout>
 
@@ -78,9 +82,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:singleLine="true"
+                    android:text="@{vm.deviceToken}"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
-                    android:text="@{vm.deviceToken}"
                     tools:text="设备编号：21E118L" />
 
                 <TextView
@@ -89,9 +93,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:singleLine="true"
+                    android:text="@{vm.productName}"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
-                    android:text="@{vm.productName}"
                     tools:text="产品型号：DAS-V1.5-雷达物位采集器" />
 
                 <TextView
@@ -100,49 +104,50 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:singleLine="true"
+                    android:text="@{vm.firmwareVersion}"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
-                    android:text="@{vm.firmwareVersion}"
                     tools:text="固件版本：3.1.10_Q12" />
 
                 <TextView
                     android:id="@+id/tv_extended_field3"
+                    visible="@{vm.isExtendedField3Visible}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:singleLine="true"
+                    android:text="@{vm.extendedField3Text}"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
-                    android:text="@{vm.extendedField3Text}"
-                    tools:text="运行状态：等待"
-                    visible="@{vm.isExtendedField3Visible}"/>
+                    tools:text="运行状态：等待" />
 
                 <TextView
                     android:id="@+id/tv_platform_communication_state"
+                    visible="@{vm.isPlatformConnectionStateVisible}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:singleLine="true"
+                    android:text="@{vm.platformConnectionStateText}"
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
-                    android:text="@{vm.platformConnectionStateText}"
-                    tools:text="米度平台连接状态：在线"
-                    visible="@{vm.isPlatformConnectionStateVisible}"/>
+                    tools:text="米度平台连接状态：在线" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_device_connect_operate"
+                visible="@{vm.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:onClick="@{()->click.onConnectOperateClick()}"
                 android:singleLine="true"
-                android:textSize="@dimen/text_size_13"
                 android:text="@{vm.connectOperateText}"
-                tools:text="断开连接"
-                tools:visibility="visible"
                 android:textColor="@{!vm.isDeviceStateTagHighLight()?@color/connect_ble_foreground:@color/disconnect_ble_foreground}"
-                visible="@{vm.isConnectOperateVisible}"/>
+                android:textSize="@dimen/text_size_13"
+                tools:text="断开连接"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

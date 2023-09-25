@@ -39,7 +39,6 @@ import timber.log.Timber
 
 class ConnectionObserverAdapter<T> : ConnectionObserver {
 
-    private val TAG = "BLE-CONNECTION"
 
     private val _status = MutableStateFlow<BleManagerResult<T>>(IdleResult())
     val status = _status.asStateFlow()
@@ -67,7 +66,7 @@ class ConnectionObserverAdapter<T> : ConnectionObserver {
 
     override fun onDeviceReady(device: BluetoothDevice) {
         Timber.d("onDeviceReady()")
-        _status.value = SuccessResult(device, lastValue!!)
+        _status.value = ReadyResult(device)
     }
 
     override fun onDeviceDisconnecting(device: BluetoothDevice) {
@@ -84,10 +83,21 @@ class ConnectionObserverAdapter<T> : ConnectionObserver {
         }
     }
 
+
     fun setValue(value: T) {
         lastValue = value
-        (_status.value as? SuccessResult)?.let {
-            _status.value = SuccessResult(it.device, value)
+
+        when (val currentValue = _status.value) {
+            is ReadyResult -> {
+                _status.value = SuccessResult(currentValue.device, value)
+            }
+
+            is SuccessResult -> {
+                _status.value = SuccessResult(currentValue.device, value)
+            }
+
+            else -> {}
         }
     }
+
 }

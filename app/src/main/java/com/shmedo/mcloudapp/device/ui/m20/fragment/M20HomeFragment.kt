@@ -1,45 +1,52 @@
 package com.shmedo.mcloudapp.device.ui.m20.fragment
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.setup
+import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showMessage
-import com.shmedo.mcloudapp.common.ext.showWaitDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentM20HomeBinding
+import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.M20HomeViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import org.koin.android.ext.android.inject
 
 class M20HomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
-    override val mHeadStates: M20HomeViewModel by viewModels()
+    private val mHeadStates: M20HomeViewModel by viewModels()
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val iotParseManager: IOTParseManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_m20_home, BR.vm, mHeadStates)
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding.llToolbar.toolbar.title = "设备配置"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+        binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            if (mHeadStates.isBleConnected.get()) {
+            if (bleViewModel.isConnected()) {
                 showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                     mActivity.finish()
@@ -49,7 +56,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            if (mHeadStates.isBleConnected.get()) {
+            if (bleViewModel.isConnected()) {
                 showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                     mActivity.finish()
@@ -58,9 +65,6 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
                 mActivity.finish()
         }
         initModuleAdapter()
-        binding.llDeviceInfo.tvDeviceConnectOperate.setOnClickListener {
-            onConnectOperateClick()
-        }
     }
 
     private fun initModuleAdapter() {
@@ -109,14 +113,34 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun onConnectOperateClick() {
-        if (mHeadStates.isBleConnected.get()) {
-            showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
-                bleViewModel.disconnect()
-            }, "取消")
-        } else {
-            showWaitDialog(StringUtils.getString(R.string.ble_state_connecting))
+    override fun createObserver() {
+        super.createObserver()
+        if (communicateWay is BleConnect) {
             bleViewModel.launch(bleDevice!!)
+        }
+    }
+
+    override fun onConnectionStateChanged(isConnected: Boolean) {
+        if(isConnected){
+            mHeadStates.isDeviceStateTagHighLight.set(true)
+            mHeadStates.deviceStateTagText.set("已连接")
+            mHeadStates.connectOperateText.set("断开连接")
+        }else{
+            mHeadStates.isDeviceStateTagHighLight.set(false)
+            mHeadStates.deviceStateTagText.set("未连接")
+            mHeadStates.connectOperateText.set("蓝牙连接")
+        }
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onConnectOperateClick() {
+            if (bleViewModel.isConnected()) {
+                showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
+                    bleViewModel.disconnect()
+                }, "取消")
+            } else {
+                bleViewModel.launch(bleDevice!!)
+            }
         }
     }
 
@@ -146,10 +170,14 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun onBleDeviceReady() {
+
+    }
+
     override fun doDispatchFailed(cmdStr: String, errorMsg: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
-
+                Toaster.show("下发指令失败")
             }
 
             else -> {}
@@ -159,7 +187,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     override fun doDispatchSuccess(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
-
+                netIotCommandViewModel.processCmdResult()
             }
 
             else -> {}

@@ -82,7 +82,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
-                        android:src="@drawable/ic_arrow_right_gray" />
+                        android:src="@drawable/icon_arrow_right" />
 
                 </RelativeLayout>
 

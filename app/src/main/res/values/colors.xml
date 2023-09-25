@@ -16,6 +16,7 @@
     <color name="main_bg_gray_f9f9f9">#f9f9f9</color>
     <color name="title_text_color">#333333</color>
     <color name="sub_title_text_color">#999999</color>
+    <color name="text_color_hint">#D6D6D6</color>
     <color name="text_color_9a9a9a">#9a9a9a</color>
     <color name="text_color_666666">#666666</color>
     <color name="text_color_b3b3b3">#b3b3b3</color>

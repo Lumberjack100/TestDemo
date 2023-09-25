@@ -6,6 +6,13 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.BaseClickProxy" />
     </data>
 
     <androidx.appcompat.widget.Toolbar
@@ -29,21 +36,25 @@
 
             <ImageView
                 android:id="@+id/iv_action"
+                imageResId="@{vm.toolbarIvActionResId}"
+                visible="@{vm.toolbarIvActionVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_query_device_data"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+                android:onClick="@{()->click.onToolbarIvClick()}"
+                tools:src="@drawable/ic_query_device_data"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_action"
+                visible="@{vm.toolbarTvActionVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{()->click.onToolbarTvClick()}"
                 android:singleLine="true"
-                android:text="编辑"
+                android:text="@{vm.toolbarTvActionText}"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size_15"
-                android:visibility="gone"
+                tools:text="编辑"
                 tools:visibility="visible" />
 
         </FrameLayout>

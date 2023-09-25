@@ -10,6 +10,14 @@
             name="vm"
             type="com.shmedo.mcloudapp.device.viewmodel.state.M20CurrentStateViewModel" />
 
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.BaseClickProxy" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,10 +26,12 @@
 
         <include
             android:id="@+id/ll_toolbar"
-            layout="@layout/include_toolbar_white"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
 
         <com.drake.brv.PageRefreshLayout
             android:id="@+id/refreshLayout"
@@ -268,12 +278,12 @@
 
                             <TextView
                                 android:id="@+id/tv_link_one_status"
+                                linkStatus='@{vm.wrapStateInfo.dataCenter1+""}'
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
-                                linkStatus='@{vm.wrapStateInfo.dataCenter1+""}'
                                 tools:text="未开启"
                                 tools:textColor="#BCC0CC" />
 
@@ -295,13 +305,13 @@
 
                             <TextView
                                 android:id="@+id/tv_link_two_status"
+                                linkStatus='@{vm.wrapStateInfo.dataCenter2+""}'
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:textColor="@color/title_text_color"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
-                                linkStatus='@{vm.wrapStateInfo.dataCenter2+""}'
                                 tools:text="已连接" />
 
                         </LinearLayout>
@@ -322,13 +332,13 @@
 
                             <TextView
                                 android:id="@+id/tv_link_three_status"
+                                linkStatus='@{vm.wrapStateInfo.dataCenter3+""}'
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:textColor="@color/title_text_color"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
-                                linkStatus='@{vm.wrapStateInfo.dataCenter3+""}'
                                 tools:text="已连接" />
 
                         </LinearLayout>
@@ -349,13 +359,13 @@
 
                             <TextView
                                 android:id="@+id/tv_link_four_status"
+                                linkStatus='@{vm.wrapStateInfo.dataCenter4+""}'
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:textColor="@color/device_offline_foreground"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
-                                linkStatus='@{vm.wrapStateInfo.dataCenter4+""}'
                                 tools:text="未连接" />
 
                         </LinearLayout>

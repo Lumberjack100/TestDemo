@@ -78,6 +78,7 @@
     <string name="reset_failed">恢复出厂设置失败!</string>
     <string name="device_reboot_tip">设备即将重启,请稍后重新连接</string>
     <string name="device_reset_tip">设备即将恢复出厂设置,请稍后重新连接</string>
+    <string name="loading">加载中…</string>
     <string name="processing">处理中…</string>
 
     <!-- USB Serial 通信 -->

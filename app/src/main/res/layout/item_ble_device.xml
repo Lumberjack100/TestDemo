@@ -54,6 +54,7 @@
                     tools:text="小泉寺门头沟-E60S0231" />
 
                 <!-- visible="@{!TextUtils.isEmpty(m.name)}"-->
+                <!-- visible="@{ProductType.valueBySuffix(m.name).prefix}"-->
                 <TextView
                     android:id="@+id/tv_device_type"
                     android:layout_width="wrap_content"
@@ -66,7 +67,6 @@
                     android:singleLine="true"
                     android:textColor="#626366"
                     android:textSize="@dimen/text_size_12"
-                    android:text="@{ProductType.valueBySuffix(m.name).prefix}"
                     tools:text="ADME"
                     android:visibility="gone" />
 

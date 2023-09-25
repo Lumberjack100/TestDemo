@@ -683,7 +683,22 @@ enum class IOTCommandType(private val value: String) {
     // </editor-fold>
 
     //<editor-fold desc="MR702水利终端机通用指令">
+    /**
+     * 获取时间
+     */
+    MD_MR_GET_SYSTEM_TIME("md_mrgetsystime"),
 
+    /**
+     * 时间校准
+     */
+    MD_MR_SET_SYSTEM_TIME("md_mrsetsystime"),
+
+    /**
+     * 4G是否开启
+     */
+    MD_MR_GET_DATA_NETWORK("md_mrgetdatanetwork"),
+
+    MD_MR_SET_DATA_NETWORK("md_mrgetdatanetwork"),
 
     // </editor-fold>
 

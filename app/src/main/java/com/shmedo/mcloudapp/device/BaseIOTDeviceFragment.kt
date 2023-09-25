@@ -11,14 +11,13 @@ import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
 import com.shmedo.lib.ble.communicate.service.base.IdleResult
 import com.shmedo.lib.ble.communicate.service.base.LinkLossResult
 import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
+import com.shmedo.lib.ble.communicate.service.base.ReadyResult
 import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
 import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
@@ -29,8 +28,6 @@ import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.request.NetIOTCommandViewModel
-import com.shmedo.mcloudapp.device.viewmodel.state.CommonDeviceHomeViewModel
-import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 /**
@@ -40,10 +37,8 @@ import timber.log.Timber
  */
 abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    protected open val mHeadStates: CommonDeviceHomeViewModel by viewModels()
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModels()
     protected val bleViewModel: BleViewModel by activityViewModels()
-    protected val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
     protected var statusBarColor = 0
 
     protected var communicateWay: CommunicateWay = NetPlatformConnect
@@ -72,7 +67,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     private fun processNetPlatform() {
         launchAndRepeatWithViewLifecycle {
-            netIotCommandViewModel.cmdDispatchFlow.collectLatest {
+            netIotCommandViewModel.cmdDispatchFlow.collect {
                 when (it) {
                     is DispatchFailed -> {
                         dismissWaitDialog()
@@ -94,7 +89,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     }
 
                     is CmdResponseResultSuccess -> {
-                        dismissWaitDialog()
+//                        dismissWaitDialog()
                         setResultData(it.cmdResult.responseContent)
                     }
 
@@ -106,7 +101,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     private fun processBle() {
         launchAndRepeatWithViewLifecycle {
-            bleViewModel.state.collectLatest { state ->
+            bleViewModel.state.collect { state ->
                 Timber.i("Medo BluetoothGatt: $state")
                 when (state) {
                     NoDeviceState -> {}
@@ -118,11 +113,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
                         is ConnectedResult -> {
                             dismissWaitDialog()
-                            mHeadStates.isBleConnected.set(true)
-                            mHeadStates.isDeviceStateTagHighLight.set(true)
-                            mHeadStates.deviceStateTagText.set("已连接")
-                            mHeadStates.connectOperateText.set("断开连接")
-                            onDeviceConnected()
+                            onConnectionStateChanged(true)
+                        }
+
+                        is ReadyResult -> {
+                            onBleDeviceReady()
                         }
 
                         is SuccessResult -> {
@@ -131,20 +126,17 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
                         is DisconnectedResult -> {
                             dismissWaitDialog()
-                            mHeadStates.isBleConnected.set(false)
-                            mHeadStates.isDeviceStateTagHighLight.set(false)
-                            mHeadStates.deviceStateTagText.set("未连接")
-                            mHeadStates.connectOperateText.set("蓝牙连接")
+                            onConnectionStateChanged(false)
                         }
 
                         is LinkLossResult -> {
                             dismissWaitDialog()
-                            mHeadStates.isBleConnected.set(false)
+                            onConnectionStateChanged(false)
                         }
 
                         is MissingServiceResult -> {
                             dismissWaitDialog()
-                            mHeadStates.isBleConnected.set(false)
+                            onConnectionStateChanged(false)
                         }
 
                         is UnknownErrorResult -> {
@@ -154,10 +146,13 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                 }
             }
         }
-        bleViewModel.launch(bleDevice!!)
     }
 
-    open fun onDeviceConnected() {
+    open fun onConnectionStateChanged(isConnected: Boolean) {
+
+    }
+
+    open fun onBleDeviceReady() {
 
     }
 

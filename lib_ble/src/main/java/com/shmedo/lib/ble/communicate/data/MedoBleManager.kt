@@ -69,6 +69,7 @@ class MedoBleManager(
     init {
         connectionObserver = dataHolder
 
+        //启动一个新的协程来收集 data 发出的所有值，并在每次收到新值时执行 onEach 中的 lambda 函数。
         data.onEach {
             dataHolder.setValue(it)
         }.launchIn(scope)

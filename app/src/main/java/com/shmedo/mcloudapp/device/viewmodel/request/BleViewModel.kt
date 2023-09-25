@@ -6,6 +6,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
 import com.shmedo.mcloudapp.device.MedoViewState
 import com.shmedo.mcloudapp.device.WorkingState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -45,21 +46,27 @@ class BleViewModel : BaseViewModel() {
         MedoBleRepository.instance.disconnect()
     }
 
+    fun isConnected(): Boolean {
+        return MedoBleRepository.instance.isConnected()
+    }
+
     fun sendCommand(
         cmdStr: String,
         needApiKey: Boolean = false,
-        apiKey: String = ""
+        apiKey: String = "",
+        timeMillis: Long = 0
     ) {
         viewModelScope.launch {
+            delay(timeMillis)
             if (needApiKey) {
                 val command = cmdStr.plus(
                     "&apikey=${apiKey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" }}&msgid=${
                         UUID.randomUUID().toString().substring(30)
                     }"
                 )
-                MedoBleRepository.instance.sendData(command)
+                MedoBleRepository.instance.sendData(command + "\r\n")
             } else
-                MedoBleRepository.instance.sendData(cmdStr)
+                MedoBleRepository.instance.sendData(cmdStr + "\r\n")
         }
     }
 }

@@ -22,5 +22,4 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val isPlatformConnectionStateVisible = NonNullObservableField(false)
 
     val isPlatformOnline = NonNullObservableField(false)
-    val isBleConnected = NonNullObservableField(false)
 }

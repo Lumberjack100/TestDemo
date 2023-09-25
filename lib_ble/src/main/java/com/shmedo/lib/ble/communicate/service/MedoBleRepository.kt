@@ -59,8 +59,6 @@ class MedoBleRepository private constructor(
     val data = _data.asSharedFlow()
 
 
-    val isRunning = data.map { it.isRunning() }
-
     val hasBeenDisconnected = data.map { it.hasBeenDisconnected() }
 
     fun launch(device: DiscoveredBluetoothDevice) {
@@ -84,25 +82,17 @@ class MedoBleRepository private constructor(
         }
     }
 
-//    private suspend fun MedoBleManager.connect(device: DiscoveredBluetoothDevice) {
-//        try {
-//            connect(device.device)
-//                .useAutoConnect(false)
-//                .retry(3, 100)
-//                .suspend()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//    }
-
     suspend fun sendData(command: String) {
         medoBleManager?.sendData(command)
     }
 
-
     fun disconnect() {
         medoBleManager?.release()
         medoBleManager = null
+    }
+
+    fun isConnected(): Boolean {
+        return medoBleManager?.isReady ?: false
     }
 
     companion object {
