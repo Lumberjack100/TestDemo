@@ -1,7 +1,9 @@
 package com.shmedo.lib.device.base.iot_cmd.parser
 
+import com.shmedo.lib.device.base.iot_cmd.IOTResultParser
+import com.shmedo.lib.device.base.iot_cmd.ParseResult
+import com.shmedo.lib.device.base.iot_cmd.ValidationResult
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTResultParser
 import com.shmedo.lib.device.base.iot_cmd.model.WorkModeBean
 
 /**
@@ -9,31 +11,30 @@ import com.shmedo.lib.device.base.iot_cmd.model.WorkModeBean
  * 创建时间:  2023/9/21 <br/>
  * 描述：     TODO
  */
-class WorkModeParser: IOTResultParser<WorkModeBean?> {
-    override fun parse(result: String): WorkModeBean? {
-        val info = WorkModeBean()
+class WorkModeParser: IOTResultParser<WorkModeBean> {
+    override fun validCheckBeforeParse(result: String): ValidationResult {
+        if (result.isBlank())
+            return ValidationResult(false, "Result is blank")
+
+        //TODO 其他验证逻辑
+
+        return ValidationResult(true)
+    }
+
+    override fun parse(result: String): ParseResult<WorkModeBean> {
         return try {
-            val keyValues = result.split("&").toTypedArray()
-            val keyValueMap = HashMap<String, String>()
-            for (keyValue in keyValues) {
-                val strs = keyValue.split("=").toTypedArray()
-                if (strs.size < 2) {
-                    keyValueMap[strs[0]] = ""
-                } else {
-                    keyValueMap[strs[0]] = strs[1]
-                }
+            val keyValueMap = result.split("&").associate { keyValue ->
+                keyValue.split("=").let { pair -> pair[0] to pair.getOrElse(1) { "" } }
             }
-            info.mode = keyValueMap.getOrDefault("mode", "NullKey")
-            info
+            val info = WorkModeBean().apply {
+                mode = keyValueMap.getOrDefault("mode", "")
+            }
+            ParseResult.Success(info)
         } catch (ex: Exception) {
-            ex.printStackTrace()
-            null
+            ParseResult.Failure("解析错误: ${ex.message ?: "Unknown error"}")
         }
     }
 
-    override fun validate(result: String) {}
+    override fun commandType(): IOTCommandType = IOTCommandType.GET_WORK_MODE
 
-    override fun commandType(): IOTCommandType {
-        return IOTCommandType.GET_WORK_MODE
-    }
 }

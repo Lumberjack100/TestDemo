@@ -36,6 +36,7 @@ glide = "4.15.1"
 hmsScan = "2.5.0.300"
 immersionbar = "3.2.2"
 junit = "4.13.2"
+koinAndroid = "3.5.0"
 kotlin = "1.9.10"
 keyboardvisibilityevent = "3.0.0-RC3"
 ksp = "1.9.10-1.0.13"
@@ -110,6 +111,7 @@ immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref 
 immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
 junit = { module = "junit:junit", version.ref = "junit" }
 keyboardvisibilityevent = { module = "net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent", version.ref = "keyboardvisibilityevent" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }

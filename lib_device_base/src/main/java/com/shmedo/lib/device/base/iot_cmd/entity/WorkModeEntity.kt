@@ -9,7 +9,7 @@ import com.shmedo.lib.device.base.Validater
  */
 class WorkModeEntity(
     var mode //工作模式(1:正常工作模式，2:低功耗模式)
-    : String = "0"
+    : String = "1"
 ) : Validater {
     override fun validate() {}
 

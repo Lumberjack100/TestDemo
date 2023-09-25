@@ -6,15 +6,12 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.setup
-import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTStringUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -29,21 +26,20 @@ import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.M20HomeViewModel
-import timber.log.Timber
 
 class M20HomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
-    override val mStates: M20HomeViewModel by viewModels()
+    override val mHeadStates: M20HomeViewModel by viewModels()
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m20_home, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_m20_home, BR.vm, mHeadStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            if (mStates.isBleConnected.get()) {
+            if (mHeadStates.isBleConnected.get()) {
                 showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                     mActivity.finish()
@@ -53,7 +49,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            if (mStates.isBleConnected.get()) {
+            if (mHeadStates.isBleConnected.get()) {
                 showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                     mActivity.finish()
@@ -86,27 +82,27 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mStates.deviceToken.set(String.format("设备编号：%s", deviceInfo.deviceToken))
-        mStates.productName.set(String.format("产品型号：%s", deviceInfo.productName))
-        mStates.firmwareVersion.set(String.format("固件版本：%s", deviceInfo.firmwareVersion))
+        mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
+        mHeadStates.deviceToken.set(String.format("设备编号：%s", deviceInfo.deviceToken))
+        mHeadStates.productName.set(String.format("产品型号：%s", deviceInfo.productName))
+        mHeadStates.firmwareVersion.set(String.format("固件版本：%s", deviceInfo.firmwareVersion))
 
         when (communicateWay) {
             NetPlatformConnect -> {
-                mStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
-                mStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
-                mStates.isConnectOperateVisible.set(false)
-                mStates.isExtendedField3Visible.set(false)
-                mStates.isPlatformConnectionStateVisible.set(false)
+                mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
+                mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
+                mHeadStates.isConnectOperateVisible.set(false)
+                mHeadStates.isExtendedField3Visible.set(false)
+                mHeadStates.isPlatformConnectionStateVisible.set(false)
             }
 
             BleConnect -> {
-                mStates.isDeviceStateTagHighLight.set(false)
-                mStates.deviceStateTagText.set("未连接")
-                mStates.connectOperateText.set("蓝牙连接")
-                mStates.isConnectOperateVisible.set(true)
-                mStates.isExtendedField3Visible.set(false)
-                mStates.isPlatformConnectionStateVisible.set(true)
+                mHeadStates.isDeviceStateTagHighLight.set(false)
+                mHeadStates.deviceStateTagText.set("未连接")
+                mHeadStates.connectOperateText.set("蓝牙连接")
+                mHeadStates.isConnectOperateVisible.set(true)
+                mHeadStates.isExtendedField3Visible.set(false)
+                mHeadStates.isPlatformConnectionStateVisible.set(true)
             }
 
             else -> {}
@@ -114,7 +110,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onConnectOperateClick() {
-        if (mStates.isBleConnected.get()) {
+        if (mHeadStates.isBleConnected.get()) {
             showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
                 bleViewModel.disconnect()
             }, "取消")
@@ -151,7 +147,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun doDispatchFailed(cmdStr: String, errorMsg: String) {
-        when (IOTStringUtil.extractCommandType(cmdStr)) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
 
             }
@@ -161,7 +157,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun doDispatchSuccess(cmdStr: String) {
-        when (IOTStringUtil.extractCommandType(cmdStr)) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
 
             }
@@ -171,17 +167,9 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        when (IOTStringUtil.extractCommandType(cmdStr)) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
-                val commandResult: IOTCommandResult<String> =
-                    IOTParseManager.instance.parse<String>(cmdStr)
-                if (!commandResult.isSuccess) {
-                    val errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.message)
-                    Timber.e(errMsg)
-                    Toaster.show(errMsg)
-                    return
-                }
-                val content: String = commandResult.result!!
+
             }
 
             else -> {}

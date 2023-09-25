@@ -27,7 +27,7 @@ import rxhttp.wrapper.param.toAwaitResponse
  */
 @SuppressLint("CheckResult")
 class NetDataRepository private constructor() {
-
+    //<editor-fold desc="用户">
     /**
      * 发送验证码
      */
@@ -114,6 +114,8 @@ class NetDataRepository private constructor() {
             .addAll(jsonParam)
             .toAwaitResponse<String>()
             .tryAwait(onCatch)
+    // </editor-fold>
+
 
     /**
      * 查询公司设备在线统计信息

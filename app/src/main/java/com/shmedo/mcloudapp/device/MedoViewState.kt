@@ -37,8 +37,8 @@ import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
 
 sealed class MedoViewState
 
-internal data class WorkingState(
+data class WorkingState(
     val result: BleManagerResult<IOTCmdData>
 ) : MedoViewState()
 
-internal object NoDeviceState : MedoViewState()
+data object NoDeviceState : MedoViewState()

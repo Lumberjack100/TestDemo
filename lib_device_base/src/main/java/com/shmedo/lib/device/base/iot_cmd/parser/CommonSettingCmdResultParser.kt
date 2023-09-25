@@ -1,8 +1,9 @@
 package com.shmedo.lib.device.base.iot_cmd.parser
 
-import android.text.TextUtils
+import com.shmedo.lib.device.base.iot_cmd.IOTResultParser
+import com.shmedo.lib.device.base.iot_cmd.ParseResult
+import com.shmedo.lib.device.base.iot_cmd.ValidationResult
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTResultParser
 import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
 
 /**
@@ -11,35 +12,28 @@ import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
  * 描述：     解析通用的设置指令响应结果
  */
 class CommonSettingCmdResultParser : IOTResultParser<CommonSettingCmdResult> {
-    override fun parse(result: String): CommonSettingCmdResult {
-        val commonSettingCmdResult = CommonSettingCmdResult()
-        val strs = result.split("&").toTypedArray()
-        for (ss in strs) {
-            if (ss.endsWith("=succ")) {
-                commonSettingCmdResult.isSucceed = true
-                continue
+    override fun validCheckBeforeParse(result: String): ValidationResult {
+        if (result.isBlank())
+            return ValidationResult(false, "Result is blank")
+
+        //TODO 其他验证逻辑
+
+        return ValidationResult(true)
+    }
+
+    override fun parse(result: String): ParseResult<CommonSettingCmdResult> {
+        return try {
+            val keyValueMap = result.split("&").associate { keyValue ->
+                keyValue.split("=").let { pair -> pair[0] to pair.getOrElse(1) { "" } }
             }
-            if (ss.endsWith("=fail")) {
-                commonSettingCmdResult.isSucceed = false
-                continue
+            val info = CommonSettingCmdResult().apply {
+                isSucceed = keyValueMap["result"].equals("succ")
             }
-            if (ss.startsWith("reason=")) {
-                val value = ss.replace("reason=", "")
-                if (!TextUtils.isEmpty(value)) {
-                    commonSettingCmdResult.reason = value
-                }
-            }
+            ParseResult.Success(info)
+        } catch (ex: Exception) {
+            ParseResult.Failure("解析错误: ${ex.message ?: "Unknown error"}")
         }
-        return commonSettingCmdResult
     }
 
-    override fun validate(result: String) {}
-    override fun commandType(): IOTCommandType {
-        return IOTCommandType.UNKNOWN_TYPE
-    }
-
-    companion object {
-        @JvmStatic
-        val instance = CommonSettingCmdResultParser()
-    }
+    override fun commandType(): IOTCommandType = IOTCommandType.COMMON_SETTING_COMMAND
 }

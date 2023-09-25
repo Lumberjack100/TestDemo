@@ -6,7 +6,7 @@ package com.shmedo.lib.device.base.iot_cmd.enums
  * 描述：    米度物联网设备指令
  */
 enum class IOTCommandType(private val value: String) {
-    //region 设备通用指令
+    //<editor-fold desc="设备通用指令">
     /**
      * 获取设备终端时间
      */
@@ -101,9 +101,9 @@ enum class IOTCommandType(private val value: String) {
      * 保存配置参数
      */
     MD_SAVE_CONFIG_PARAM("md_saveconfig"),
-    //endregion 设备通用指令
+    // </editor-fold>
 
-    //region DAS 指令
+    //<editor-fold desc="DAS 指令">
     /**
      * 获取基本信息
      */
@@ -228,9 +228,9 @@ enum class IOTCommandType(private val value: String) {
      * 设置定时上报参数
      */
     DAS_MD_SET_DATA_REPORT_TYPE("md_setdatareporttype"),
-    //endregion DAS 指令
+    // </editor-fold>
 
-    //region VMS-LoRa 指令
+    //<editor-fold desc="VMS-LoRa 指令">
     /**
      * 获取网关的基本信息
      */
@@ -305,9 +305,9 @@ enum class IOTCommandType(private val value: String) {
      * Vms终端遥测
      */
     VMS_TERMINAL_QUERY_SAMPLE("md_sampleterminal"),
-    //endregion VMS-LoRa 指令
+    // </editor-fold>
 
-    //region RN20 指令
+    //<editor-fold desc="RN20 指令">
     /**
      * 获取终端基本信息
      */
@@ -327,9 +327,9 @@ enum class IOTCommandType(private val value: String) {
      * 设置终端经纬度参数
      */
     RN20_MD_SET_TERMINAL_LOCAL("md_setterminallocal"),
-    //endregion RN20 指令
+    // </editor-fold>
 
-    //region ADME 指令
+    //<editor-fold desc="ADME 指令">
     /**
      * 获取ADME的基本信息
      */
@@ -529,9 +529,9 @@ enum class IOTCommandType(private val value: String) {
      * 设置ADME的电机电源使能
      */
     ADME_MD_SET_MOTOR_POWER("md_setmotorpower"),
-    //endregion ADME 指令
+    // </editor-fold>
 
-    //region ADME HAC 型号指令
+    //<editor-fold desc="ADME HAC 指令">
     /**
      * 获取HAC的预警配置参数
      */
@@ -581,9 +581,9 @@ enum class IOTCommandType(private val value: String) {
      * 查询电机当前运动状态
      */
     ADME_HAC_MD_GET_MOTION_STATE("md_hac_getmotionstate"),
-    //endregion ADME HAC 型号指令
+    // </editor-fold>
 
-    //region M20 指令
+    //<editor-fold desc="M20 指令">
     /**
      * 获取M20的基本信息
      */
@@ -593,9 +593,9 @@ enum class IOTCommandType(private val value: String) {
      * M20水平初始化设置
      */
     M20_MD_LEVEL_INITIAL("md_levelinit"),
-    //endregion M20 指令
+    // </editor-fold>
 
-    //region E40 指令
+    //<editor-fold desc="E40 指令">
     /**
      * 获取设备卫星状态
      */
@@ -680,7 +680,12 @@ enum class IOTCommandType(private val value: String) {
      * 设置E40 NMEA输出内容及输出频率
      */
     E40_MD_SET_NMEA_TIME("md_setnmeatime"),
-    //endregion E40 指令
+    // </editor-fold>
+
+    //<editor-fold desc="MR702水利终端机通用指令">
+
+
+    // </editor-fold>
 
     /**
      * 获取设备位置
@@ -706,6 +711,11 @@ enum class IOTCommandType(private val value: String) {
      * 长度不够指令头最低长度要求
      */
     LENGTH_INVALID("length_invalid"),
+
+    /**
+     * 设置指令类型，在解析设置指令响应结果时使用
+     */
+    COMMON_SETTING_COMMAND("common_setting_command"),
 
     /**
      * 未知的命令类型

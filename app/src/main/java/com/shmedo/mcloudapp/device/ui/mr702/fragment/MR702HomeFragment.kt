@@ -13,11 +13,13 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.IOTCommandManager
-import com.shmedo.lib.device.base.iot_cmd.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.entity.adme.AdmeWorkModeEntity
+import com.shmedo.lib.device.base.iot_cmd.entity.WorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.model.WorkModeBean
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTStringUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -34,15 +36,17 @@ import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.PlatformLable
 import com.shmedo.mcloudapp.device.ui.m20.fragment.M20CurrentStateFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MR702HomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMR702HomeBinding by lazy { getBinding() as FragmentMR702HomeBinding }
-    override val mStates: MR702HomeViewModel by viewModels()
+    override val mHeadStates: MR702HomeViewModel by viewModels()
+    private val iotParseManager: IOTParseManager by inject()
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m_r702_home, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_m_r702_home, BR.vm, mHeadStates)
             .addBindingParam(BR.click, ClickProxy())
     }
 
@@ -50,7 +54,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            if (mStates.isBleConnected.get()) {
+            if (mHeadStates.isBleConnected.get()) {
                 showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                     mActivity.finish()
@@ -60,7 +64,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            if (mStates.isBleConnected.get()) {
+            if (mHeadStates.isBleConnected.get()) {
                 showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                     mActivity.finish()
@@ -109,27 +113,27 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mStates.deviceToken.set(deviceInfo.deviceToken)
-        mStates.productName.set(deviceInfo.productName)
-        mStates.firmwareVersion.set(deviceInfo.firmwareVersion)
+        mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
+        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
+        mHeadStates.productName.set(deviceInfo.productName)
+        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
         when (communicateWay) {
             NetPlatformConnect -> {
-                mStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
-                mStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
-                mStates.isConnectOperateVisible.set(false)
-                mStates.isExtendedField3Visible.set(false)
-                mStates.isPlatformConnectionStateVisible.set(false)
+                mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
+                mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
+                mHeadStates.isConnectOperateVisible.set(false)
+                mHeadStates.isExtendedField3Visible.set(false)
+                mHeadStates.isPlatformConnectionStateVisible.set(false)
             }
 
             BleConnect -> {
-                mStates.isDeviceStateTagHighLight.set(false)
-                mStates.deviceStateTagText.set("未连接")
-                mStates.connectOperateText.set("蓝牙连接")
-                mStates.isConnectOperateVisible.set(true)
-                mStates.isExtendedField3Visible.set(false)
-                mStates.isPlatformConnectionStateVisible.set(true)
+                mHeadStates.isDeviceStateTagHighLight.set(false)
+                mHeadStates.deviceStateTagText.set("未连接")
+                mHeadStates.connectOperateText.set("蓝牙连接")
+                mHeadStates.isConnectOperateVisible.set(true)
+                mHeadStates.isExtendedField3Visible.set(false)
+                mHeadStates.isPlatformConnectionStateVisible.set(true)
             }
 
             else -> {}
@@ -143,7 +147,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onConnectOperateClick() {
-        if (mStates.isBleConnected.get()) {
+        if (mHeadStates.isBleConnected.get()) {
             showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
                 bleViewModel.disconnect()
             }, "取消")
@@ -155,29 +159,28 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy {
         fun onNormalClick() {
-            if (mStates.isWorkModeNormal.get())
+            if (mHeadStates.isWorkModeNormal.get())
                 return
-
-            if (communicateWay is BleConnect && !mStates.isBleConnected.get()) {
+            if (communicateWay is BleConnect && !mHeadStates.isBleConnected.get()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
             showMessage("确定切换到正常模式吗？", "温馨提示", "确定", {
-                mStates.isWorkModeNormal.set(true)
-
+                mHeadStates.isWorkModeNormal.set(true)
+                setWorkMode("1")
             }, "取消")
         }
 
         fun onLowPowerClick() {
-            if (!mStates.isWorkModeNormal.get())
+            if (!mHeadStates.isWorkModeNormal.get())
                 return
-            if (communicateWay is BleConnect && !mStates.isBleConnected.get()) {
+            if (communicateWay is BleConnect && !mHeadStates.isBleConnected.get()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
             showMessage("确定切换到低功耗模式吗？", "温馨提示", "确定", {
-                mStates.isWorkModeNormal.set(false)
-
+                mHeadStates.isWorkModeNormal.set(false)
+                setWorkMode("2")
             }, "取消")
         }
     }
@@ -195,7 +198,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             "数据中心" -> {
-
+                queryWorkMode()
             }
 
             "接口配置" -> {
@@ -216,20 +219,48 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun lazyLoadData() {
+        //4G 模式下，直接查询设备工作模式
+        if (communicateWay is NetPlatformConnect) {
+            queryWorkMode()
+        }
+    }
+
+    override fun onDeviceConnected() {
+        //蓝牙模式下，等蓝牙建立连接后查询设备工作模式
+        queryWorkMode()
+    }
+
+    /**
+     * 查询设备工作模式
+     */
+    private fun queryWorkMode() {
+        val command: String =
+            IOTCommandManager.getInstance().getCommand(IOTCommandType.GET_WORK_MODE)
+        if (communicateWay is NetPlatformConnect) {
+            netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
+        } else {
+            bleViewModel.sendCommand(command, true, deviceInfo.apiKey)
+        }
+    }
+
     /**
      * 设置设备工作模式
      */
-    private fun setWorkMode() {
-        val entity = AdmeWorkModeEntity()
-        entity.workmode
+    private fun setWorkMode(mode: String) {
+        val entity = WorkModeEntity(mode)
         val command: String =
-            IOTCommandManager.getInstance().getCommand(IOTCommandType.ADME_MD_SET_WORK_MODE, entity)
-        sendCommand(command)
+            IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_WORK_MODE, entity)
+        if (communicateWay is NetPlatformConnect) {
+            netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
+        } else {
+            bleViewModel.sendCommand(command, true, deviceInfo.apiKey)
+        }
     }
 
     override fun doDispatchFailed(cmdStr: String, errorMsg: String) {
-        when (IOTStringUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.M20_MD_LEVEL_INITIAL -> {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.GET_WORK_MODE -> {
 
             }
 
@@ -238,8 +269,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun doDispatchSuccess(cmdStr: String) {
-        when (IOTStringUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.M20_MD_LEVEL_INITIAL -> {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.GET_WORK_MODE -> {
 
             }
 
@@ -248,17 +279,43 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        when (IOTStringUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.M20_MD_LEVEL_INITIAL -> {
-                val commandResult: IOTCommandResult<String> =
-                    IOTParseManager.instance.parse<String>(cmdStr)
-                if (!commandResult.isSuccess) {
-                    val errMsg = String.format("%s %s", "查询设备状态出错!", commandResult.message)
-                    Timber.e(errMsg)
-                    Toaster.show(errMsg)
-                    return
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.GET_WORK_MODE -> {
+                val result =
+                    iotParseManager.parse<WorkModeBean>(cmdStr, IOTCommandType.GET_WORK_MODE)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询设备工作模式出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        val modeBean: WorkModeBean = result.data
+                        mHeadStates.isWorkModeNormal.set(modeBean.mode == "1")
+                    }
                 }
-                val content: String = commandResult.result!!
+            }
+
+            IOTCommandType.SET_WORK_MODE -> {
+                val result =
+                    iotParseManager.parse<CommonSettingCmdResult>(
+                        cmdStr,
+                        IOTCommandType.COMMON_SETTING_COMMAND
+                    )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "设置设备工作模式出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        Toaster.show("设置成功")
+                    }
+                }
             }
 
             else -> {}
@@ -318,7 +375,6 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             )
         }
 
-
     companion object {
         fun newBundleArguments(
             communicateWay: CommunicateWay = NetPlatformConnect,
@@ -332,5 +388,4 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
-
 }

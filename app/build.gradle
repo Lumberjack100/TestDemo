@@ -164,6 +164,8 @@ dependencies {
         exclude group: 'androidx.navigation', module: "navigation-fragment"
     }
 //    implementation libs.androidx.navigation.ui.ktx
+    //依赖注入框架
+    implementation libs.koin.android
 
     //透明系统栏设置基础依赖包，必须要依赖
     implementation libs.immersionbar

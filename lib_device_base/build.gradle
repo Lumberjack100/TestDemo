@@ -46,4 +46,6 @@ dependencies {
     implementation libs.utilcodex
     implementation libs.moshi
     ksp libs.moshi.kotlin.codegen
+    //依赖注入框架
+    implementation libs.koin.android
 }

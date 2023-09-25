@@ -13,10 +13,14 @@ import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.shmedo.lib.core.base.BaseApp
 import com.shmedo.lib.core.util.CrashReportingTree
+import com.shmedo.mcloudapp.di.appModule
 import com.shmedo.lib.network.RxHttpManager
 import com.shmedo.mcloudapp.common.activity.ErrorActivity
 import com.shmedo.mcloudapp.common.activity.SplashActivity
 import com.tencent.bugly.crashreport.CrashReport
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.GlobalContext.startKoin
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
 
@@ -31,6 +35,12 @@ class MCloudApplication : BaseApp() {
 
     override fun onCreate() {
         super.onCreate()
+        startKoin {
+            androidContext(this@MCloudApplication)
+            androidLogger()
+            modules(appModule)
+        }
+
         //异常上报和升级
         initCrashReport()
         //初始化吐司消息组件

@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.device
 
+import androidx.annotation.CallSuper
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
@@ -39,7 +40,7 @@ import timber.log.Timber
  */
 abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    protected open val mStates: CommonDeviceHomeViewModel by viewModels()
+    protected open val mHeadStates: CommonDeviceHomeViewModel by viewModels()
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModels()
     protected val bleViewModel: BleViewModel by activityViewModels()
     protected val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
@@ -50,6 +51,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected var bleDevice: DiscoveredBluetoothDevice? = null
 
 
+    @CallSuper
     override fun initData() {
         arguments?.let {
             communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
@@ -59,6 +61,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
+    @CallSuper
     override fun createObserver() {
         if (communicateWay is NetPlatformConnect) {
             processNetPlatform()
@@ -115,35 +118,33 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
                         is ConnectedResult -> {
                             dismissWaitDialog()
-                            mStates.isBleConnected.set(true)
-                            mStates.isDeviceStateTagHighLight.set(true)
-                            mStates.deviceStateTagText.set("已连接")
-                            mStates.connectOperateText.set("断开连接")
+                            mHeadStates.isBleConnected.set(true)
+                            mHeadStates.isDeviceStateTagHighLight.set(true)
+                            mHeadStates.deviceStateTagText.set("已连接")
+                            mHeadStates.connectOperateText.set("断开连接")
+                            onDeviceConnected()
                         }
 
                         is SuccessResult -> {
-//                            mStates.isBleConnected.set(true)
-//                            mStates.isDeviceStateHighLight.set(true)
-//                            mStates.deviceState.set("已连接")
-//                            mStates.connectOperate.set("断开连接")
+                            setResultData(state.result.data.response)
                         }
 
                         is DisconnectedResult -> {
                             dismissWaitDialog()
-                            mStates.isBleConnected.set(false)
-                            mStates.isDeviceStateTagHighLight.set(false)
-                            mStates.deviceStateTagText.set("未连接")
-                            mStates.connectOperateText.set("蓝牙连接")
+                            mHeadStates.isBleConnected.set(false)
+                            mHeadStates.isDeviceStateTagHighLight.set(false)
+                            mHeadStates.deviceStateTagText.set("未连接")
+                            mHeadStates.connectOperateText.set("蓝牙连接")
                         }
 
                         is LinkLossResult -> {
                             dismissWaitDialog()
-                            mStates.isBleConnected.set(false)
+                            mHeadStates.isBleConnected.set(false)
                         }
 
                         is MissingServiceResult -> {
                             dismissWaitDialog()
-                            mStates.isBleConnected.set(false)
+                            mHeadStates.isBleConnected.set(false)
                         }
 
                         is UnknownErrorResult -> {
@@ -154,6 +155,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             }
         }
         bleViewModel.launch(bleDevice!!)
+    }
+
+    open fun onDeviceConnected() {
+
     }
 
     abstract fun doDispatchFailed(cmdStr: String, errorMsg: String)
