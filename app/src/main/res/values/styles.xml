@@ -75,7 +75,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:hint">请输入</item>
         <item name="android:textColorHint">@color/text_color_hint</item>
-        <item name="android:textColor">@color/text_color_666666</item>
+        <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">16sp</item>
     </style>
 

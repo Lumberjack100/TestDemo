@@ -19,16 +19,22 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
+import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
-import com.shmedo.mcloudapp.common.ext.showWaitDialog
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.request.NetIOTCommandViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.LinkedList
 
 /**
  * 创建者:   gonghe <br/>
@@ -44,6 +50,9 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected var communicateWay: CommunicateWay = NetPlatformConnect
     protected lateinit var deviceInfo: DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
+    private var timeoutJob: Job? = null
+
+    protected var commandItems = LinkedList<String>()
 
 
     @CallSuper
@@ -70,26 +79,26 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             netIotCommandViewModel.cmdDispatchFlow.collect {
                 when (it) {
                     is DispatchFailed -> {
-                        dismissWaitDialog()
-                        doDispatchFailed(it.cmdStr, it.errorMsg)
+                        dismissLoadingDialog()
+                        doNetDispatchFailed(it.cmdStr, it.errorMsg)
                     }
 
                     is DispatchSuccess -> {
-                        doDispatchSuccess(it.cmdStr)
+                        doNetDispatchSuccess(it.cmdStr)
                     }
 
                     is CmdResponseResultError -> {
-                        dismissWaitDialog()
+                        dismissLoadingDialog()
                         Toaster.show("指令响应错误: ${it.errorMsg}")
                     }
 
                     is CmdResponseResultTimeOut -> {
-                        dismissWaitDialog()
+                        dismissLoadingDialog()
                         Toaster.show("指令响应超时")
                     }
 
                     is CmdResponseResultSuccess -> {
-//                        dismissWaitDialog()
+//                        dismissLoadingDialog
                         setResultData(it.cmdResult.responseContent)
                     }
 
@@ -108,11 +117,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     is WorkingState -> when (state.result) {
                         is IdleResult,
                         is ConnectingResult -> {
-                            showWaitDialog(StringUtils.getString(R.string.ble_state_connecting))
+                            showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                         }
 
                         is ConnectedResult -> {
-                            dismissWaitDialog()
+                            dismissLoadingDialog()
                             onConnectionStateChanged(true)
                         }
 
@@ -125,22 +134,22 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                         }
 
                         is DisconnectedResult -> {
-                            dismissWaitDialog()
+                            dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is LinkLossResult -> {
-                            dismissWaitDialog()
+                            dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is MissingServiceResult -> {
-                            dismissWaitDialog()
+                            dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is UnknownErrorResult -> {
-                            dismissWaitDialog()
+                            dismissLoadingDialog()
                         }
                     }
                 }
@@ -148,15 +157,50 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
-    open fun onConnectionStateChanged(isConnected: Boolean) {
+    open fun onConnectionStateChanged(isConnected: Boolean) {}
+    open fun onBleDeviceReady() {}
 
-    }
-
-    open fun onBleDeviceReady() {
-
-    }
-
-    abstract fun doDispatchFailed(cmdStr: String, errorMsg: String)
-    abstract fun doDispatchSuccess(cmdStr: String)
+    abstract fun doNetDispatchFailed(cmdStr: String, errorMsg: String)
+    abstract fun doNetDispatchSuccess(cmdStr: String)
     abstract fun setResultData(cmdStr: String)
+
+    protected open fun showTimeoutAlert() {}
+    protected fun startTimeoutJob(timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS) {
+        // 启动一个新的协程作为超时Job
+        timeoutJob = launchWithViewLifecycle {
+            delay(timeMillis) // 延迟10秒
+            withContext(Dispatchers.Main) {
+                showTimeoutAlert()
+            }
+        }
+    }
+
+    @CallSuper
+    protected open fun cancelTimeoutJob() {
+        timeoutJob?.cancel()
+    }
+
+
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected inline fun sendCommandFromCmdList(crossinline block: () -> Unit = {}) {
+        if (commandItems.size > 0) {
+            val command = commandItems.getFirst()
+            if (communicateWay is NetPlatformConnect) {
+                netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
+            } else {
+                bleViewModel.sendCommand(command, true, deviceInfo.apiKey, 1000)
+            }
+            commandItems.removeFirst()
+        } else {
+            cancelTimeoutJob()
+            block()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timeoutJob?.cancel() // 在Fragment销毁时取消timeoutJob
+    }
 }

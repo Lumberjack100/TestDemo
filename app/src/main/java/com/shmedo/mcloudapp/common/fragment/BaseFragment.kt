@@ -6,8 +6,6 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.shmedo.lib.core.base.fragment.BaseVmDbFragment
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissLoadingExt
-import com.shmedo.mcloudapp.common.ext.showLoadingExt
 
 
 /**
@@ -28,16 +26,14 @@ abstract class BaseFragment : BaseVmDbFragment() {
      * 打开等待框
      */
     override fun showLoading(message: String) {
-        showLoadingExt(message)
-//        showWaitDialog(message)
+
     }
 
     /**
      * 关闭等待框
      */
     override fun dismissLoading() {
-        dismissLoadingExt()
-//        dismissWaitDialog()
+
     }
 
     override fun onPause() {

@@ -24,7 +24,7 @@ abstract class IOTCommandDataCallback : ProfileReadResponse(), IOTCommandCallbac
 
         val result = data.getStringValue(0)
         result?.let { cmdContent ->
-            Timber.e(
+            Timber.v(
                 "接收数据: length=%s bytes;content: %s",
                 data.size(),
                 cmdContent
@@ -34,7 +34,7 @@ abstract class IOTCommandDataCallback : ProfileReadResponse(), IOTCommandCallbac
                 if (tempCmdList.isNotEmpty()) {
                     val cmdList = mutableListOf<String>()
                     tempCmdList.forEach { it ->
-                        Timber.e(
+                        Timber.v(
                             "接收数据(拆分后): length=%s bytes;content: %s",
                             it.toByteArray().size,
                             it

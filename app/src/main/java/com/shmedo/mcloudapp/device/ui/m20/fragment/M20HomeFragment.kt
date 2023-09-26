@@ -174,7 +174,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
 
     }
 
-    override fun doDispatchFailed(cmdStr: String, errorMsg: String) {
+    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
                 Toaster.show("下发指令失败")
@@ -184,7 +184,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun doDispatchSuccess(cmdStr: String) {
+    override fun doNetDispatchSuccess(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
                 netIotCommandViewModel.processCmdResult()

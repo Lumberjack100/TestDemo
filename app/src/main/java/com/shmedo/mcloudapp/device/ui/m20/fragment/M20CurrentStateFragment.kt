@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.m20.fragment
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
@@ -45,7 +44,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding.llToolbar.toolbar.title = "运行状态"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+        binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
@@ -74,7 +73,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
      */
     private fun queryStatusInfo() {
         val command: String =
-            IOTCommandManager.getInstance().getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+            IOTCommandManager.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
@@ -82,8 +81,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
         }
     }
 
-
-    override fun doDispatchFailed(cmdStr: String, errorMsg: String) {
+    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> Toaster.show("下发指令失败: $errorMsg")
 
@@ -91,7 +89,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun doDispatchSuccess(cmdStr: String) {
+    override fun doNetDispatchSuccess(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 netIotCommandViewModel.processCmdResult()
@@ -99,6 +97,12 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
 
             else -> {}
         }
+    }
+
+    override fun showTimeoutAlert() {
+        // 关闭 loading 框并显示超时警告
+        binding.refreshLayout.finish(false)
+        Toaster.show("发送指令超时,请稍后尝试")
     }
 
     override fun setResultData(cmdStr: String) {

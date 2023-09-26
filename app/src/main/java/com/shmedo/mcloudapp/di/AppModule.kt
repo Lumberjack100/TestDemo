@@ -6,6 +6,8 @@ import com.shmedo.lib.device.base.iot_cmd.parser.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
 import com.shmedo.lib.device.base.iot_cmd.parser.WorkModeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRWiredNetParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRWirelessNetParser
 import org.koin.dsl.module
 
 /**
@@ -19,6 +21,8 @@ val appModule = module {
     factory { WorkModeParser() }
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
+    factory { MRWirelessNetParser() }
+    factory { MRWiredNetParser() }
 
     // 提供 IOTParseManager 的实例
     single {
@@ -26,8 +30,9 @@ val appModule = module {
             get<CommonSettingCmdResultParser>(),
             get<WorkModeParser>(),
             get<M20BaseInfoParser>(),
-            get<DeviceCurrentStateParser>()
-
+            get<DeviceCurrentStateParser>(),
+            get<MRWirelessNetParser>(),
+            get<MRWiredNetParser>()
         )
         IOTParseManager.getInstance(parsers)
     }

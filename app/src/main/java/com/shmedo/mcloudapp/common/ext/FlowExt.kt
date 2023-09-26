@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.huawei.hms.scankit.p.T
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -43,4 +44,11 @@ inline fun Fragment.launchAndRepeatWithViewLifecycle(
             block()
         }
     }
+}
+
+
+inline fun Fragment.launchWithViewLifecycle(
+    crossinline block: suspend CoroutineScope.() -> Unit
+): Job = viewLifecycleOwner.lifecycleScope.launch {
+    block()
 }

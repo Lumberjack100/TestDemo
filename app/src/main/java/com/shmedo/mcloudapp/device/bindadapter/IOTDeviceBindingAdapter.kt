@@ -31,4 +31,22 @@ object IOTDeviceBindingAdapter {
             }
         }
     }
+
+    @JvmStatic
+    @BindingAdapter(
+        value = ["textViewEnabled", "enabledTextColor", "disabledTextColor"],
+        requireAll = false
+    )
+    fun setTextViewEnabled(
+        textView: TextView,
+        enabled: Boolean,
+        enabledColorRes: Int,
+        disabledColorRes: Int
+    ) {
+        textView.isEnabled = enabled
+        textView.setTextColor(
+            if (enabled) ColorUtils.getColor(if (enabledColorRes == 0) R.color.title_text_color else enabledColorRes)
+            else ColorUtils.getColor(if (disabledColorRes == 0) R.color.sub_title_text_color else disabledColorRes)
+        )
+    }
 }

@@ -16,10 +16,12 @@
 package com.shmedo.lib.core.bindadapter;
 
 import android.graphics.drawable.Drawable
+import android.text.InputFilter
 import android.util.Pair
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.BindingAdapter
 import com.blankj.utilcode.util.ClickUtils
@@ -33,6 +35,25 @@ import com.bumptech.glide.request.RequestOptions
  * Create by KunMinX at 19/9/18
  */
 object CommonBindingAdapter {
+    private val numberFilter = InputFilter { source, start, end, _, _, _ ->
+        for (i in start until end) {
+            if (!"0123456789".contains(source[i].toString())) {
+                return@InputFilter ""
+            }
+        }
+        null
+    }
+
+    private val characterFilter = InputFilter { source, start, end, _, _, _ ->
+        for (i in start until end) {
+            if (!"_0123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM".contains(source[i].toString())) {
+                return@InputFilter ""
+            }
+        }
+        null
+    }
+
+
     @JvmStatic
     @BindingAdapter(value = ["imageUrl", "placeHolder"], requireAll = false)
     fun imageUrl(view: ImageView, url: String?, placeHolder: Drawable?) {
@@ -137,6 +158,26 @@ object CommonBindingAdapter {
     @BindingAdapter(value = ["selected"], requireAll = false)
     fun selected(view: View, select: Boolean) {
         view.isSelected = select
+    }
+
+    @JvmStatic
+    @BindingAdapter(
+        value = ["lengthFilter", "isNumberFilter", "isCharacterFilter"],
+        requireAll = false
+    )
+    fun setLengthFilter(
+        view: AppCompatEditText,
+        length: Int,
+        isNumberFilter: Boolean = false,
+        isCharacterFilter: Boolean = false
+    ) {
+        val lengthFilter = InputFilter.LengthFilter(length)
+        if (isNumberFilter) {
+            view.filters = arrayOf<InputFilter>(lengthFilter, numberFilter)
+        } else if (isCharacterFilter) {
+            view.filters = arrayOf<InputFilter>(lengthFilter, characterFilter)
+        } else
+            view.filters = arrayOf<InputFilter>(lengthFilter)
     }
 
     @JvmStatic

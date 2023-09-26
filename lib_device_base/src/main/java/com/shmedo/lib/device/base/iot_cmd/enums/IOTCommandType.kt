@@ -694,11 +694,18 @@ enum class IOTCommandType(private val value: String) {
     MD_MR_SET_SYSTEM_TIME("md_mrsetsystime"),
 
     /**
-     * 4G是否开启
+     * 4G是网络配置
      */
     MD_MR_GET_DATA_NETWORK("md_mrgetdatanetwork"),
 
-    MD_MR_SET_DATA_NETWORK("md_mrgetdatanetwork"),
+    MD_MR_SET_DATA_NETWORK("md_mrsetdatanetwork"),
+
+    /**
+     *  有线网络配置
+     */
+    MD_MR_GET_WIRED_NETWORK("md_mrgetwirednetwork"),
+
+    MD_MR_SET_WIRED_NETWORK("md_mrsetwirednetwork"),
 
     // </editor-fold>
 

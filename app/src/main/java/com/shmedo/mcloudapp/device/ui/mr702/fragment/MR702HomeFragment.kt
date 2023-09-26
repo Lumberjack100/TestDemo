@@ -251,7 +251,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
      */
     private fun queryWorkMode() {
         val command: String =
-            IOTCommandManager.getInstance().getCommand(IOTCommandType.GET_WORK_MODE)
+            IOTCommandManager.getCommand(IOTCommandType.GET_WORK_MODE)
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
@@ -265,7 +265,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     private fun setWorkMode(mode: String) {
         val entity = WorkModeEntity(mode)
         val command: String =
-            IOTCommandManager.getInstance().getCommand(IOTCommandType.SET_WORK_MODE, entity)
+            IOTCommandManager.getCommand(IOTCommandType.SET_WORK_MODE, entity)
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
@@ -273,11 +273,11 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun doDispatchFailed(cmdStr: String, errorMsg: String) {
+    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
         Toaster.show("下发指令失败")
     }
 
-    override fun doDispatchSuccess(cmdStr: String) {
+    override fun doNetDispatchSuccess(cmdStr: String) {
         netIotCommandViewModel.processCmdResult()
     }
 
