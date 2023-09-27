@@ -1,7 +1,5 @@
 package com.shmedo.lib.core.base.viewmodel
 
-import android.text.InputFilter
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 /**
@@ -10,9 +8,5 @@ import androidx.lifecycle.ViewModel
  * 描述：     TODO
  */
 open class BaseStateViewModel : ViewModel() {
-    val length15Filter: MutableLiveData<Array<InputFilter>> by lazy {
-        MutableLiveData<Array<InputFilter>>(arrayOf<InputFilter>(InputFilter.LengthFilter(15)))
-    }
-
 
 }

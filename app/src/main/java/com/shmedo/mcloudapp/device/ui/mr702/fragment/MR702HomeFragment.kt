@@ -10,7 +10,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.IOTCommandManager
 import com.shmedo.lib.device.base.iot_cmd.entity.WorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -37,7 +36,11 @@ import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+/**
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/8/27 <br></br>
+ * 描述：   配置主页
+ */
 class MR702HomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMR702HomeBinding by lazy { getBinding() as FragmentMR702HomeBinding }
     private val mHeadStates: MR702HomeViewModel by viewModels()
@@ -212,7 +215,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             "终端参数" -> {
-
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(
+                    R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment,
+                    bundle
+                )
             }
 
             "设备操作" -> {
@@ -220,8 +231,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             "网络与通信" -> {
-                val bundle =
-                    MR702NetworkCommunicationFragment.newBundleArguments(
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -384,11 +394,11 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
+        ): Bundle = BaseIOTDeviceFragment.newBundleArguments(
+            communicateWay,
+            deviceInfo,
+            bleDevice,
+            statusBarColor
+        )
     }
 }

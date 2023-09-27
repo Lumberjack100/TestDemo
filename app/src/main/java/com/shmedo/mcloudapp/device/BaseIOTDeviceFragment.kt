@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.device
 
+import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -202,5 +203,19 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         timeoutJob?.cancel() // 在Fragment销毁时取消timeoutJob
+    }
+
+    companion object {
+        fun newBundleArguments(
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
     }
 }

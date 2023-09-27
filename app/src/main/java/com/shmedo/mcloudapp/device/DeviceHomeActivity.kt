@@ -19,7 +19,6 @@ import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.TcpConnect
-import com.shmedo.mcloudapp.device.ui.m20.fragment.M20HomeFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702HomeFragment
 
 class DeviceHomeActivity : BaseActivity() {
@@ -79,15 +78,13 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             ProductType.M20 -> {
-                val bundle =
-                    M20HomeFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
                 findNavController(R.id.device_home_host_fragment)
                     .setGraph(R.navigation.m20_graph, bundle)
             }
 
             ProductType.MR702 -> {
-                val bundle =
-                    MR702HomeFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
+                val bundle = MR702HomeFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
                 findNavController(R.id.device_home_host_fragment)
                     .setGraph(R.navigation.mr702_graph, bundle)
             }

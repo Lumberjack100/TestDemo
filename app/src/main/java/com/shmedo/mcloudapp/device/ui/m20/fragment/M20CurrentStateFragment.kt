@@ -6,9 +6,6 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.IOTCommandManager
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -22,13 +19,16 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.databinding.FragmentM20CurrentStateBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.M20CurrentStateViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+/**
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/8/27 <br></br>
+ * 描述：   运行状态页面
+ */
 class M20CurrentStateFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentM20CurrentStateBinding by lazy { getBinding() as FragmentM20CurrentStateBinding }
     private val mStates: M20CurrentStateViewModel by viewModels()
@@ -171,19 +171,5 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
-    }
-
-    companion object {
-        fun newBundleArguments(
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
     }
 }

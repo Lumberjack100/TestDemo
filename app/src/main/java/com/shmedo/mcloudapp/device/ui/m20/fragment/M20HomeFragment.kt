@@ -7,9 +7,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -23,13 +20,16 @@ import com.shmedo.mcloudapp.databinding.FragmentM20HomeBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.M20HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
-
+/**
+ * 创建者:   gonghe <br></br>
+ * 创建时间:  2020/8/27 <br></br>
+ * 描述：   配置主页
+ */
 class M20HomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
     private val mHeadStates: M20HomeViewModel by viewModels()
@@ -151,8 +151,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
             }
 
             "状态" -> {
-                val bundle =
-                    M20CurrentStateFragment.newBundleArguments(
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -240,20 +239,4 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         }
-
-
-    companion object {
-        fun newBundleArguments(
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
-    }
-
 }
