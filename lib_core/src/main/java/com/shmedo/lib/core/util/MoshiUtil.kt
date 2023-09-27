@@ -1,7 +1,9 @@
 package com.shmedo.lib.core.util
 
 
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -67,7 +69,6 @@ object MoshiUtil {
             e.printStackTrace()
         }
         return ""
-
     }
 
     inline fun <reified T> fromJson(jsonStr: String): T? {
@@ -78,6 +79,14 @@ object MoshiUtil {
             e.printStackTrace()
         }
         return null
+    }
+
+    inline fun <reified T> toJsonMap(src: T): Map<String, Any> {
+        val jsonStr = toJson(src)
+        val mapType = Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
+        val adapter: JsonAdapter<Map<String, Any>> = moshi.adapter(mapType)
+
+        return adapter.fromJson(jsonStr) ?: emptyMap()
     }
 
 

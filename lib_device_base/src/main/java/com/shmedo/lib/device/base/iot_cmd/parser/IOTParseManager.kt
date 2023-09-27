@@ -19,7 +19,7 @@ class IOTParseManager private constructor(
 
     fun <T> parse(
         result: String,
-        type: IOTCommandType = IOTCommandType.COMMON_SETTING_COMMAND
+        cmdType: IOTCommandType = IOTCommandType.COMMON_SETTING_COMMAND
     ): IOTCommandResult<T> {
 
         // 检查是否包含表示失败的字段
@@ -29,8 +29,6 @@ class IOTParseManager private constructor(
             return IOTCommandResult.Failure(reason, cmdType)
         }
 
-        val cmdType =
-            if (type == IOTCommandType.COMMON_SETTING_COMMAND) extractCommandType(result) else type
         val parser = parserMap[cmdType] ?: return IOTCommandResult.Failure(
             "未找到命令：$cmdType 的解析器",
             cmdType
@@ -38,9 +36,8 @@ class IOTParseManager private constructor(
         //在调用 parse 进行正式解析前，先对响应指令字符串做个基础检查
         val validationResult = parser.validCheckBeforeParse(result)
         if (!validationResult.isValid) {
-            return IOTCommandResult.Failure(validationResult.errorMessage ?: "验证失败", cmdType)
+            return IOTCommandResult.Failure(validationResult.errorMessage ?: "指令字符串格式验证失败", cmdType)
         }
-
         return when (val parseResult = parser.parse(result)) {
             is ParseResult.Success -> {
                 @Suppress("UNCHECKED_CAST")
