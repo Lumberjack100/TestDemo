@@ -23,7 +23,7 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentMR702HomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -35,20 +35,21 @@ import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2020/8/27 <br></br>
  * 描述：   配置主页
  */
 class MR702HomeFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMR702HomeBinding by lazy { getBinding() as FragmentMR702HomeBinding }
+    private val binding: FragmentMr702HomeBinding by lazy { getBinding() as FragmentMr702HomeBinding }
     private val mHeadStates: MR702HomeViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m_r702_home, BR.vm, mHeadStates)
+        return DataBindingConfig(R.layout.fragment_mr702_home, BR.vm, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
@@ -206,7 +207,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             "数据中心" -> {
-                queryWorkMode()
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(
+                    R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment,
+                    bundle
+                )
             }
 
             "接口配置" -> {

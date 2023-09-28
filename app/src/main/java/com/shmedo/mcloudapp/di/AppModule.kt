@@ -6,6 +6,8 @@ import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandR
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDataCenterParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDataCenterStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRReportMethodParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRScreenParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRWiredNetParser
@@ -27,6 +29,8 @@ val appModule = module {
     factory { MRWiredNetParser() }
     factory { MRReportMethodParser() }
     factory { MRScreenParamParser() }
+    factory { MRDataCenterStatusParser() }
+    factory { MRDataCenterParser() }
 
     // 提供 IOTParseManager 的实例
     single {
@@ -39,6 +43,8 @@ val appModule = module {
             get<MRWiredNetParser>(),
             get<MRReportMethodParser>(),
             get<MRScreenParamParser>(),
+            get<MRDataCenterStatusParser>(),
+            get<MRDataCenterParser>()
         )
         IOTParserManager.getInstance(parsers)
     }

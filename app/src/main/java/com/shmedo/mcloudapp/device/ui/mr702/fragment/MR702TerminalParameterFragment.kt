@@ -16,7 +16,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.enums.PopupAnimation
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRReportMethodEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRScreenParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -28,9 +27,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702TerminalParameterBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
@@ -233,10 +230,6 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             commandItems.add(command)
         }
         sendCommandFromCmdList()
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        if (communicateWay is BleConnect) {
-            startTimeoutJob(AppContants.Communication.DELAY_10000_MILLIS)
-        }
     }
 
     private fun setEditable(editable: Boolean) {
@@ -259,25 +252,10 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
         commandItems.add(command)
 
         sendCommandFromCmdList()
-        showLoadingDialog(StringUtils.getString(R.string.loading))
-        if (communicateWay is BleConnect) {
-            startTimeoutJob()
-        }
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
         Toaster.show("下发指令失败: $errorMsg")
-    }
-
-    override fun cancelTimeoutJob() {
-        super.cancelTimeoutJob()
-        dismissLoadingDialog()
-    }
-
-    override fun showTimeoutAlert() {
-        // 关闭 loading 框并显示超时警告
-        dismissLoadingDialog()
-        Toaster.show("发送指令超时,请稍后尝试")
     }
 
     override fun doNetDispatchSuccess(cmdStr: String) {
@@ -382,7 +360,6 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
         mStates.screenPowerUpTime.set(info.ptime)
         mStates.lightness.set(info.bproport.toInt())
     }
-
 
     override fun onResume() {
         super.onResume()

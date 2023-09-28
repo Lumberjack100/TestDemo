@@ -165,7 +165,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     abstract fun doNetDispatchSuccess(cmdStr: String)
     abstract fun setResultData(cmdStr: String)
 
-    protected open fun showTimeoutAlert() {}
+
     protected fun startTimeoutJob(timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS) {
         // 启动一个新的协程作为超时Job
         timeoutJob = launchWithViewLifecycle {
@@ -176,27 +176,59 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
-    @CallSuper
-    protected open fun cancelTimeoutJob() {
-        timeoutJob?.cancel()
+    /**
+     * 显示蓝牙通讯超时提示
+     */
+    protected open fun showTimeoutAlert(
+        isDismissLoadingDialog: Boolean = true,
+        isShowMsg: Boolean = true,
+        msg: String = ""
+    ) {
+        if (isDismissLoadingDialog) {
+            dismissLoadingDialog()
+        }
+        if (isShowMsg) {
+            Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
+        }
     }
 
+    /**
+     * 取消蓝牙通讯超时Job
+     */
+    @CallSuper
+    protected open fun cancelTimeoutJob(isDismissLoadingDialog: Boolean = true) {
+        timeoutJob?.cancel()
+        if (isDismissLoadingDialog) {
+            dismissLoadingDialog()
+        }
+    }
 
     /**
      * 发送指令队列中的第一条指令
      */
-    protected inline fun sendCommandFromCmdList(crossinline block: () -> Unit = {}) {
-        if (commandItems.size > 0) {
-            val command = commandItems.getFirst()
-            if (communicateWay is NetPlatformConnect) {
-                netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
-            } else {
-                bleViewModel.sendCommand(command, true, deviceInfo.apiKey, 1000)
-            }
-            commandItems.removeFirst()
-        } else {
+    protected inline fun sendCommandFromCmdList(
+        isShowLoadingDialog: Boolean = true,
+        delaySendMillis: Long = 0,// 默认不延迟发送
+        timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,// 默认10秒超时
+        crossinline block: () -> Unit = {}
+    ) {
+        if (commandItems.size <= 0) {
             cancelTimeoutJob()
             block()
+            return
+        }
+        val command = commandItems.getFirst()
+        commandItems.removeFirst()
+        if (communicateWay is NetPlatformConnect) {
+            netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
+
+        } else {
+            bleViewModel.sendCommand(command, true, deviceInfo.apiKey, delaySendMillis)
+            startTimeoutJob(timeoutMillis)
+        }
+
+        if (isShowLoadingDialog) {
+            showLoadingDialog(StringUtils.getString(R.string.loading))
         }
     }
 

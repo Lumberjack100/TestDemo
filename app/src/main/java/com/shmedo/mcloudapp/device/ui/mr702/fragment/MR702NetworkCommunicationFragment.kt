@@ -14,8 +14,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRWiredNetEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRWirelessNetEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -25,13 +23,12 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRWirelessNet
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
-import com.shmedo.mcloudapp.databinding.FragmentMR702NetworkCommunicationBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702NetworkCommunicationBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -40,13 +37,14 @@ import com.shmedo.mcloudapp.device.viewmodel.state.MR702NetworkCommunicationView
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2020/8/27 <br></br>
  * 描述：   网络与通信页面
  */
 class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMR702NetworkCommunicationBinding by lazy { getBinding() as FragmentMR702NetworkCommunicationBinding }
+    private val binding: FragmentMr702NetworkCommunicationBinding by lazy { getBinding() as FragmentMr702NetworkCommunicationBinding }
     private val mStates: MR702NetworkCommunicationViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
@@ -54,7 +52,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     private val ipModeList by lazy { Utils.getApp().resources.getStringArray(R.array.ip_mode) }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m_r702_network_communication, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_mr702_network_communication, BR.vm, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
@@ -253,10 +251,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             commandItems.add(command)
         }
         sendCommandFromCmdList()
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        if (communicateWay is BleConnect) {
-            startTimeoutJob(AppContants.Communication.DELAY_10000_MILLIS)
-        }
     }
 
     override fun lazyLoadData() {
@@ -273,35 +267,22 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         sendCommandFromCmdList()
-        showLoadingDialog(StringUtils.getString(R.string.loading))
-        if (communicateWay is BleConnect) {
-            startTimeoutJob()
-        }
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
         Toaster.show("下发指令失败: $errorMsg")
     }
 
-    override fun cancelTimeoutJob() {
-        super.cancelTimeoutJob()
-        dismissLoadingDialog()
-    }
-
-    override fun showTimeoutAlert() {
-        // 关闭 loading 框并显示超时警告
-        dismissLoadingDialog()
-        Toaster.show("发送指令超时,请稍后尝试")
-    }
-
     override fun doNetDispatchSuccess(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DATA_NETWORK -> {
-                netIotCommandViewModel.processCmdResult()
-            }
+//        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+//            IOTCommandType.MD_MR_GET_DATA_NETWORK -> {
+//                netIotCommandViewModel.processCmdResult()
+//            }
+//
+//            else -> {}
+//        }
 
-            else -> {}
-        }
+        netIotCommandViewModel.processCmdResult()
     }
 
     override fun setResultData(cmdStr: String) {
@@ -357,6 +338,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                         Toaster.show(errMsg)
                         return
                     }
+
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("保存成功")
@@ -375,6 +357,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                         Toaster.show(errMsg)
                         return
                     }
+
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("保存成功")

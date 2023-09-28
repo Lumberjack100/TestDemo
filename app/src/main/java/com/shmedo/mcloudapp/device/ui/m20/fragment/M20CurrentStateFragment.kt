@@ -18,11 +18,11 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.databinding.FragmentM20CurrentStateBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.M20CurrentStateViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2020/8/27 <br></br>
@@ -71,47 +71,44 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
      * 获取设备的基本信息
      */
     private fun queryStatusInfo() {
-        val command: String =
-            IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        if (communicateWay is NetPlatformConnect) {
-            netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
-        } else {
-            bleViewModel.sendCommand(command, true, deviceInfo.apiKey)
-        }
+        commandItems.clear()
+
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        commandItems.add(command)
+
+        sendCommandFromCmdList(isShowLoadingDialog = false)
+    }
+
+    override fun cancelTimeoutJob(isDismissLoadingDialog: Boolean) {
+        super.cancelTimeoutJob(false)
+        binding.refreshLayout.finish(false)
+    }
+
+    override fun showTimeoutAlert(
+        isDismissLoadingDialog: Boolean,
+        isShowMsg: Boolean,
+        msg: String
+    ) {
+        binding.refreshLayout.finish(false)
+        Toaster.show("发送指令超时,请稍后尝试")
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> Toaster.show("下发指令失败: $errorMsg")
-
-            else -> {}
-        }
+        Toaster.show("下发指令失败: $errorMsg")
     }
 
     override fun doNetDispatchSuccess(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                netIotCommandViewModel.processCmdResult()
-            }
-
-            else -> {}
-        }
-    }
-
-    override fun showTimeoutAlert() {
-        // 关闭 loading 框并显示超时警告
-        binding.refreshLayout.finish(false)
-        Toaster.show("发送指令超时,请稍后尝试")
+        netIotCommandViewModel.processCmdResult()
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
-                binding.refreshLayout.finish()
                 val result =
                     iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
                 when (result) {
                     is IOTCommandResult.Failure -> {
+                        cancelTimeoutJob()
                         val errMsg = "查询设备状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -119,6 +116,8 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList()
+                        binding.refreshLayout.finish()
                         val content: String = result.data
                         initStatusInfo(content)
                     }

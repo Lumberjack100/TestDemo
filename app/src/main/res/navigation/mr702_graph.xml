@@ -9,7 +9,15 @@
         android:id="@+id/mR702HomeFragment"
         android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702HomeFragment"
         android:label="MR702HomeFragment"
-        tools:layout="@layout/fragment_m_r702_home">
+        tools:layout="@layout/fragment_mr702_home">
+
+        <action
+            android:id="@+id/action_mR702HomeFragment_to_mR702DataCenterHomeFragment"
+            app:destination="@id/mR702DataCenterHomeFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
 
         <action
             android:id="@+id/action_mR702HomeFragment_to_mR702TerminalParameterFragment"
@@ -28,6 +36,11 @@
             app:popExitAnim="@anim/activity_close_exit" />
     </fragment>
 
+    <fragment
+        android:id="@+id/mR702DataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702DataCenterHomeFragment"
+        android:label="MR702DataCenterHomeFragment"
+        tools:layout="@layout/fragment_mr702_data_center_home" />
 
     <fragment
         android:id="@+id/mR702TerminalParameterFragment"
@@ -39,6 +52,6 @@
         android:id="@+id/mR702NetworkCommunicationFragment"
         android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702NetworkCommunicationFragment"
         android:label="MR702NetworkCommunicationFragment"
-        tools:layout="@layout/fragment_m_r702_network_communication" />
+        tools:layout="@layout/fragment_mr702_network_communication" />
 
 </navigation>
