@@ -1,20 +1,19 @@
 package com.shmedo.lib.device.base.iot_cmd.parser
 
-import com.shmedo.lib.device.base.iot_cmd.ParseResult
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandResponseParser
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTConstants
+import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil.extractCommandType
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/9/22 <br/>
- * 描述：     TODO
+ * 描述：    解析器管理器
  */
 class IOTParserManager private constructor(
-    parsers: List<IOTCommandResponseParser<*>>
+    parsers: List<IOTCommandParser<*>>
 ) {
-    private val parserMap: Map<IOTCommandType, IOTCommandResponseParser<*>> =
+    private val parserMap: Map<IOTCommandType, IOTCommandParser<*>> =
         parsers.associateBy { it.commandType() }
 
     fun <T> parse(
@@ -57,7 +56,7 @@ class IOTParserManager private constructor(
         @Volatile
         private var INSTANCE: IOTParserManager? = null
 
-        fun getInstance(parsers: List<IOTCommandResponseParser<*>>): IOTParserManager =
+        fun getInstance(parsers: List<IOTCommandParser<*>>): IOTParserManager =
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: IOTParserManager(parsers).also { INSTANCE = it }
             }

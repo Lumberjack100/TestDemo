@@ -9,7 +9,7 @@ package com.shmedo.lib.ble.communicate.data
  *
  *
  */
-data class IOTCmdData(
+data class CommandData(
     val response: String = "",
     val responseList: List<String> = listOf()
 )

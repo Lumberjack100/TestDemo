@@ -1,8 +1,7 @@
 package com.shmedo.lib.device.base.iot_cmd.utils
 
-import com.shmedo.lib.device.base.iot_cmd.IOTCommandAssemble
+import com.shmedo.lib.device.base.iot_cmd.assemble.IOTCommandAssemble
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTConstants
 
 /**
  * 创建者:   gonghe <br></br>

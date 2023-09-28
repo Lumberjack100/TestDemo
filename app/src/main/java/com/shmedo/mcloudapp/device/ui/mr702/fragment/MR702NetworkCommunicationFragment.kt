@@ -15,11 +15,11 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTConstants
-import com.shmedo.lib.device.base.iot_cmd.entity.mr.MRWiredNetEntity
-import com.shmedo.lib.device.base.iot_cmd.entity.mr.MRWirelessNetEntity
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRWiredNetEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRWirelessNetEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRWiredNet
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRWirelessNet
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult

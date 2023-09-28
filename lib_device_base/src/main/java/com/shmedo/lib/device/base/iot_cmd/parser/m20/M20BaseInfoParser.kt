@@ -1,7 +1,7 @@
 package com.shmedo.lib.device.base.iot_cmd.parser.m20
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandResponseParser
+import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.model.m20.M20BaseInfo
 
 /**
@@ -10,7 +10,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.m20.M20BaseInfo
  * 描述：     TODO
  */
 
-class M20BaseInfoParser : IOTCommandResponseParser<M20BaseInfo> {
+class M20BaseInfoParser : IOTCommandParser<M20BaseInfo> {
 
     override fun parseInstance(keyValueMap: Map<String, String>): M20BaseInfo {
         return M20BaseInfo().apply {

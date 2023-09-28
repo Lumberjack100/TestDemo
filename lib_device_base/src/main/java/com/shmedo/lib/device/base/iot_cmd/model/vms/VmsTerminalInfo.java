@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.shmedo.lib.device.base.iot_cmd.model.SensorErrnoInfo;
+import com.shmedo.lib.device.base.iot_cmd.model.common.SensorErrnoInfo;
 
 import java.util.ArrayList;
 import java.util.List;

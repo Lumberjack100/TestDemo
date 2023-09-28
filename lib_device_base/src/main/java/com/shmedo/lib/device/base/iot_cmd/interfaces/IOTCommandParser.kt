@@ -1,8 +1,8 @@
 package com.shmedo.lib.device.base.iot_cmd.interfaces
 
-import com.shmedo.lib.device.base.iot_cmd.ParseResult
-import com.shmedo.lib.device.base.iot_cmd.ValidationResult
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.parser.ParseResult
+import com.shmedo.lib.device.base.iot_cmd.parser.ValidationResult
 
 /**
  * 创建者:   gonghe <br/>
@@ -10,7 +10,7 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
  * 描述：     TODO
  */
 
-interface IOTCommandResponseParser<T> {
+interface IOTCommandParser<T> {
     fun validCheckBeforeParse(result: String): ValidationResult {
         if (result.isBlank())
             return ValidationResult(false, "Result is blank")

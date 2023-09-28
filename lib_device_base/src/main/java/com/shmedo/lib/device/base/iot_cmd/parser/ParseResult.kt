@@ -1,9 +1,9 @@
-package com.shmedo.lib.device.base.iot_cmd
+package com.shmedo.lib.device.base.iot_cmd.parser
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/9/22 <br/>
- * 描述：     TODO
+ * 描述：     解析结果
  */
 
 

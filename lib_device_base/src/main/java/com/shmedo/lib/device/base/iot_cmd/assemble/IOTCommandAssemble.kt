@@ -1,4 +1,4 @@
-package com.shmedo.lib.device.base.iot_cmd
+package com.shmedo.lib.device.base.iot_cmd.assemble
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 

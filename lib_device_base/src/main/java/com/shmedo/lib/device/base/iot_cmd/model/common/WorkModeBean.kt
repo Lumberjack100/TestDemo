@@ -1,4 +1,4 @@
-package com.shmedo.lib.device.base.iot_cmd.model
+package com.shmedo.lib.device.base.iot_cmd.model.common
 
 /**
  * 创建者:   gonghe <br/>

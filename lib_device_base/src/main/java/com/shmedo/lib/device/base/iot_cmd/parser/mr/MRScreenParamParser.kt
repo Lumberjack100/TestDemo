@@ -1,6 +1,6 @@
 package com.shmedo.lib.device.base.iot_cmd.parser.mr
 
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandResponseParser
+import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRScreenParam
 
@@ -9,7 +9,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRScreenParam
  * 创建时间:  2023/9/27 <br/>
  * 描述：     TODO
  */
-class MRScreenParamParser: IOTCommandResponseParser<MRScreenParam> {
+class MRScreenParamParser: IOTCommandParser<MRScreenParam> {
 
             override fun parseInstance(keyValueMap: Map<String, String>): MRScreenParam {
                 return MRScreenParam().apply {

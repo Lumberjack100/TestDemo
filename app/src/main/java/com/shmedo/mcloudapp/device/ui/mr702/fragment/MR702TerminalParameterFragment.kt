@@ -17,10 +17,10 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.enums.PopupAnimation
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.entity.mr.MRReportMethodEntity
-import com.shmedo.lib.device.base.iot_cmd.entity.mr.MRScreenParamEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRReportMethodEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRScreenParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRReportMethod
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRScreenParam
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult

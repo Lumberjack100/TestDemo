@@ -11,7 +11,7 @@ import android.bluetooth.BluetoothDevice
  *
  *
  */
-class IOTCommandResponse : IOTCommandDataCallback() {
+class CommandResponse : CommandDataCallback() {
     var response: String = ""
     var responseList: List<String> = listOf()
 

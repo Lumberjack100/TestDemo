@@ -31,14 +31,14 @@
 
 package com.shmedo.mcloudapp.device
 
-import com.shmedo.lib.ble.communicate.data.IOTCmdData
+import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
 
 
 sealed class MedoViewState
 
 data class WorkingState(
-    val result: BleManagerResult<IOTCmdData>
+    val result: BleManagerResult<CommandData>
 ) : MedoViewState()
 
 data object NoDeviceState : MedoViewState()

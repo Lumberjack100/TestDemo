@@ -1,4 +1,4 @@
-package com.shmedo.lib.device.base.iot_cmd.interfaces
+package com.shmedo.lib.device.base.iot_cmd.utils
 
 /**
  * 创建者:   gonghe <br/>

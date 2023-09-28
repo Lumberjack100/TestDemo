@@ -1,7 +1,7 @@
-package com.shmedo.lib.device.base.iot_cmd.entity.mr
+package com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr
 
 import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTConstants
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.squareup.moshi.JsonClass
 
 /**
@@ -10,10 +10,11 @@ import com.squareup.moshi.JsonClass
  * 描述：     TODO
  */
 @JsonClass(generateAdapter = true)
-class MRReportMethodEntity (
-    val type: String = "1",//上报方式 1 定时定点上报  2 固定间隔上报
-    val interval: String = "",//上报间隔  秒,数字
-    val basis: String = "",//上报起始时间(基准时间)   数字,   0-23点(小时)  固定间隔上报下需不需要一个起始时间
+class MRScreenParamEntity (
+    val interval: String = "",//屏幕更新周期  秒 ,数字
+    val otime: String = "",//亮屏时间   秒 ,数字
+    val ptime: String = "",//通电时间   秒 ,数字
+    val bproport: String = "10",//屏幕亮度设置  数字(10-100), 转换比例  10%-100%
 ){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

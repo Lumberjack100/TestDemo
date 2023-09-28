@@ -721,6 +721,15 @@ enum class IOTCommandType(private val value: String) {
 
     MD_MR_SET_SCREEN_PARAM("md_mrsetscreen"),
 
+    /**
+     * 获取数据中心状态
+     */
+    MD_MR_GET_DATA_CENTER_STATUS("md_mrgetcenterstatus"),
+
+    MD_MR_GET_DATA_CENTER("md_mrgetdatacenter"),
+
+    MD_MR_SET_DATA_CENTER("md_mrsetdatacenter"),
+
     // </editor-fold>
 
     /**

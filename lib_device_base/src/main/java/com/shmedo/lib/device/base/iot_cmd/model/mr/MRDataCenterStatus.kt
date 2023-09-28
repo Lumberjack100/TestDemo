@@ -6,9 +6,9 @@ package com.shmedo.lib.device.base.iot_cmd.model.mr
  * 描述：     数据中心状态
  */
 data class MRDataCenterStatus(
-    val status1: String = "",
-    val status2: String = "",
-    val status3: String = "",
-    val status4: String = "",
-    val status5: String = ""
+    var status1: String = "",
+    var status2: String = "",
+    var status3: String = "",
+    var status4: String = "",
+    var status5: String = ""
 )

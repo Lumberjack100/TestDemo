@@ -1,7 +1,7 @@
-package com.shmedo.lib.device.base.iot_cmd.entity.mr
+package com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr
 
 import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTConstants
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.squareup.moshi.JsonClass
 
 /**

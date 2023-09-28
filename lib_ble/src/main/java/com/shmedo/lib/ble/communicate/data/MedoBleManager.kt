@@ -34,7 +34,7 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
-import com.shmedo.lib.ble.communicate.parser.IOTCommandResponse
+import com.shmedo.lib.ble.communicate.parser.CommandResponse
 import com.shmedo.lib.ble.communicate.service.base.ConnectionObserverAdapter
 import com.shmedo.lib.ble.communicate.spec.ESP32ASpec
 import com.shmedo.lib.ble.communicate.spec.ESP32BSpec
@@ -63,8 +63,8 @@ class MedoBleManager(
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
     private var writeCharac: BluetoothGattCharacteristic? = null
 
-    private val data = MutableStateFlow(IOTCmdData())
-    val dataHolder = ConnectionObserverAdapter<IOTCmdData>()
+    private val data = MutableStateFlow(CommandData())
+    val dataHolder = ConnectionObserverAdapter<CommandData>()
 
     init {
         connectionObserver = dataHolder
@@ -91,7 +91,7 @@ class MedoBleManager(
         setNotificationCallback(notifyCharacteristic)
             // Merges packets until the entire text is present in the stream [PacketMerger.merge].
             .merge(PacketMerger())
-            .asValidResponseFlow<IOTCommandResponse>()
+            .asValidResponseFlow<CommandResponse>()
             .onEach {
                 val cmdList = data.value.responseList.toMutableList().apply {
                     addAll(it.responseList)

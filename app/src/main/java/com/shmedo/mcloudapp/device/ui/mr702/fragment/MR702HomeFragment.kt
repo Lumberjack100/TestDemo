@@ -10,10 +10,10 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.device.base.iot_cmd.entity.WorkModeEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.WorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.WorkModeBean
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.model.common.WorkModeBean
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil

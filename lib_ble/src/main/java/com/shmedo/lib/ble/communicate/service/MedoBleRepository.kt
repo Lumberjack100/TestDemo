@@ -33,7 +33,7 @@ package com.shmedo.lib.ble.communicate.service
 
 import android.content.Context
 import com.blankj.utilcode.util.Utils
-import com.shmedo.lib.ble.communicate.data.IOTCmdData
+import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.data.MedoBleManager
 import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
 import com.shmedo.lib.ble.communicate.service.base.ServiceManager
@@ -55,7 +55,7 @@ class MedoBleRepository private constructor(
 
     //    private val _data = MutableStateFlow<BleManagerResult<IOTCmdData>>(IdleResult())
 //    val data = _data.asStateFlow()
-    private val _data = MutableSharedFlow<BleManagerResult<IOTCmdData>>()
+    private val _data = MutableSharedFlow<BleManagerResult<CommandData>>()
     val data = _data.asSharedFlow()
 
 

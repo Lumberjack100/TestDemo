@@ -1,4 +1,4 @@
-package com.shmedo.lib.device.base.iot_cmd.entity
+package com.shmedo.lib.device.base.iot_cmd.assemble.entity.common
 
 /**
  * 创建者:   gonghe <br></br>

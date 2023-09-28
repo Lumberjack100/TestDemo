@@ -1,7 +1,7 @@
 package com.shmedo.lib.device.base.iot_cmd.parser.mr
 
-import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRReportMethod
 
 /**
@@ -9,7 +9,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRReportMethod
  * 创建时间:  2023/9/27 <br/>
  * 描述：     终端参数-上报方式
  */
-class MRReportMethodParser: IOTCommandResponseParser<MRReportMethod> {
+class MRReportMethodParser: IOTCommandParser<MRReportMethod> {
 
         override fun parseInstance(keyValueMap: Map<String, String>): MRReportMethod {
             return MRReportMethod().apply {

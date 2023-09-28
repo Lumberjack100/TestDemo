@@ -14,7 +14,7 @@ import timber.log.Timber
  *
  *
  */
-abstract class IOTCommandDataCallback : ProfileReadResponse(), IOTCommandCallback {
+abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
     override fun onDataReceived(device: BluetoothDevice, data: Data) {
         super.onDataReceived(device, data)
         if (data.size() < 2) {

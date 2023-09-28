@@ -11,7 +11,7 @@ import android.bluetooth.BluetoothDevice
  *
  *
  */
-interface IOTCommandCallback {
+interface CommandCallback {
     fun onResponseReceived(
         device: BluetoothDevice,
         cmdResult: String = "",
