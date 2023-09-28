@@ -6,16 +6,16 @@ import com.squareup.moshi.JsonClass
 
 /**
  * 创建者:   gonghe <br/>
- * 创建时间:  2023/9/26 <br/>
+ * 创建时间:  2023/9/28 <br/>
  * 描述：     TODO
  */
 @JsonClass(generateAdapter = true)
-class MRWirelessNetEntity(
-    val switch: String = "1",//是否开启4G 0:关闭 1:开启
-    val apn: String = IOTConstants.NULL_KEY,
-    val username: String = IOTConstants.NULL_KEY,
-    val password: String = IOTConstants.NULL_KEY
-) {
+class MRScreenParamEntity (
+    val interval: String = "",//屏幕更新周期  秒 ,数字
+    val otime: String = "",//亮屏时间   秒 ,数字
+    val ptime: String = "",//通电时间   秒 ,数字
+    val bproport: String = "10",//屏幕亮度设置  数字(10-100), 转换比例  10%-100%
+){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)
 

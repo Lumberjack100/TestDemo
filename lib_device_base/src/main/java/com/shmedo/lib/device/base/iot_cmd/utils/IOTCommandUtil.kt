@@ -1,7 +1,8 @@
 package com.shmedo.lib.device.base.iot_cmd.utils
 
-import com.shmedo.lib.device.base.iot_cmd.IOTConstants
+import com.shmedo.lib.device.base.iot_cmd.IOTCommandAssemble
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTConstants
 
 /**
  * 创建者:   gonghe <br></br>
@@ -25,5 +26,13 @@ object IOTCommandUtil {
         val cmd = result.substringBefore("&").removePrefix(IOTConstants.COMMAND_HEADER).trim()
 
         return IOTCommandType.entries.firstOrNull { it.toString() == cmd } ?: IOTCommandType.UNKNOWN_TYPE
+    }
+
+    fun getCommand(commandType: IOTCommandType): String {
+        return IOTCommandAssemble<Any>(commandType).toString()
+    }
+
+    fun <T> getCommand(commandType: IOTCommandType, parameter: T): String {
+        return IOTCommandAssemble(commandType, parameter).toString()
     }
 }

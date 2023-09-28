@@ -15,8 +15,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.IOTCommandManager
-import com.shmedo.lib.device.base.iot_cmd.IOTConstants
+import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTConstants
 import com.shmedo.lib.device.base.iot_cmd.entity.mr.MRWiredNetEntity
 import com.shmedo.lib.device.base.iot_cmd.entity.mr.MRWirelessNetEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -24,7 +23,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRWiredNet
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRWirelessNet
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -50,7 +49,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMR702NetworkCommunicationBinding by lazy { getBinding() as FragmentMR702NetworkCommunicationBinding }
     private val mStates: MR702NetworkCommunicationViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val iotParseManager: IOTParseManager by inject()
+    private val iotParseManager: IOTParserManager by inject()
 
     private val ipModeList by lazy { Utils.getApp().resources.getStringArray(R.array.ip_mode) }
 
@@ -163,7 +162,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         val wirelessNetEntity = MRWirelessNetEntity(
             switch = "0"
         )
-        val command = IOTCommandManager.getCommand(
+        val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_DATA_NETWORK,
             wirelessNetEntity.toCommandString()
         )
@@ -176,7 +175,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         val wiredNetEntity = MRWiredNetEntity(
             switch = "0"
         )
-        val command = IOTCommandManager.getCommand(
+        val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_WIRED_NETWORK,
             wiredNetEntity.toCommandString()
         )
@@ -206,7 +205,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 username = mStates.userName.get().ifEmpty { IOTConstants.NULL_KEY },
                 password = mStates.pwd.get().ifEmpty { IOTConstants.NULL_KEY }
             )
-            val command = IOTCommandManager.getCommand(
+            val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_MR_SET_DATA_NETWORK,
                 wirelessNetEntity.toCommandString()
             )
@@ -247,7 +246,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 dns = mStates.preferredDNS.get(),
                 dnss = mStates.alternateDNS.get()
             )
-            val command = IOTCommandManager.getCommand(
+            val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_MR_SET_WIRED_NETWORK,
                 wiredNetEntity.toCommandString()
             )
@@ -267,10 +266,10 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        var command = IOTCommandManager.getCommand(IOTCommandType.MD_MR_GET_DATA_NETWORK)
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_NETWORK)
         commandItems.add(command)
 
-        command = IOTCommandManager.getCommand(IOTCommandType.MD_MR_GET_WIRED_NETWORK)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_WIRED_NETWORK)
         commandItems.add(command)
 
         sendCommandFromCmdList()
@@ -281,11 +280,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DATA_NETWORK -> Toaster.show("下发指令失败: $errorMsg")
-
-            else -> {}
-        }
+        Toaster.show("下发指令失败: $errorMsg")
     }
 
     override fun cancelTimeoutJob() {

@@ -7,11 +7,10 @@ import com.blankj.utilcode.util.ColorUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.IOTCommandManager
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.m20.M20CurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -33,7 +32,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentM20CurrentStateBinding by lazy { getBinding() as FragmentM20CurrentStateBinding }
     private val mStates: M20CurrentStateViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val iotParseManager: IOTParseManager by inject()
+    private val iotParseManager: IOTParserManager by inject()
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -73,7 +72,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
      */
     private fun queryStatusInfo() {
         val command: String =
-            IOTCommandManager.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+            IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {

@@ -707,6 +707,20 @@ enum class IOTCommandType(private val value: String) {
 
     MD_MR_SET_WIRED_NETWORK("md_mrsetwirednetwork"),
 
+    /**
+     *  终端参数-上报方式
+     */
+    MD_MR_GET_REPORT_METHOD("md_mrgetreporttype"),
+
+    MD_MR_SET_REPORT_METHOD("md_mrsetreporttype"),
+
+    /**
+     *  终端参数-本机屏幕
+     */
+    MD_MR_GET_SCREEN_PARAM("md_mrgetscreen"),
+
+    MD_MR_SET_SCREEN_PARAM("md_mrsetscreen"),
+
     // </editor-fold>
 
     /**

@@ -1,6 +1,6 @@
 package com.shmedo.lib.device.base.iot_cmd.parser.mr
 
-import com.shmedo.lib.device.base.iot_cmd.IOTResultParser
+import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRWirelessNet
 
@@ -9,7 +9,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRWirelessNet
  * 创建时间:  2023/9/26 <br/>
  * 描述：     TODO
  */
-class MRWirelessNetParser : IOTResultParser<MRWirelessNet> {
+class MRWirelessNetParser : IOTCommandResponseParser<MRWirelessNet> {
 
     override fun parseInstance(keyValueMap: Map<String, String>): MRWirelessNet {
         return MRWirelessNet().apply {

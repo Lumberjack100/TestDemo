@@ -10,13 +10,12 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.device.base.iot_cmd.IOTCommandManager
 import com.shmedo.lib.device.base.iot_cmd.entity.WorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.WorkModeBean
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -45,7 +44,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMR702HomeBinding by lazy { getBinding() as FragmentMR702HomeBinding }
     private val mHeadStates: MR702HomeViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val iotParseManager: IOTParseManager by inject()
+    private val iotParseManager: IOTParserManager by inject()
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -261,7 +260,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
      */
     private fun queryWorkMode() {
         val command: String =
-            IOTCommandManager.getCommand(IOTCommandType.GET_WORK_MODE)
+            IOTCommandUtil.getCommand(IOTCommandType.GET_WORK_MODE)
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
@@ -275,7 +274,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     private fun setWorkMode(mode: String) {
         val entity = WorkModeEntity(mode)
         val command: String =
-            IOTCommandManager.getCommand(IOTCommandType.SET_WORK_MODE, entity)
+            IOTCommandUtil.getCommand(IOTCommandType.SET_WORK_MODE, entity)
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {

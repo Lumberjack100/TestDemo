@@ -8,7 +8,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParseManager
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -34,7 +34,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
     private val mHeadStates: M20HomeViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val iotParseManager: IOTParseManager by inject()
+    private val iotParseManager: IOTParserManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_m20_home, BR.vm, mHeadStates)

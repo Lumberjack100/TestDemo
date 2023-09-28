@@ -57,19 +57,50 @@
             app:tabMode="fixed"
             app:tabRippleColor="@color/transparent" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewpager"
+        <FrameLayout
+            android:id="@+id/fl_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/dimen_size_16"
             android:layout_marginEnd="@dimen/dimen_size_16"
+            android:paddingBottom="@dimen/dimen_size_25"
             app:drawable_radiusLT="@{6}"
             app:drawable_radiusRT="@{6}"
             app:drawable_solidColor="@{@color/white}"
+            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tabs">
+
+            <include
+                android:id="@+id/ll_report_method"
+                layout="@layout/include_mr702_report_method"
+                visible="@{vm.isReportMethodVisible }"
+                app:click="@{click}"
+                app:vm="@{vm}"
+                tools:visibility="visible" />
+
+            <include
+                layout="@layout/include_mr702_screen"
+                visible="@{!vm.isReportMethodVisible }"
+                app:click="@{click}"
+                app:vm="@{vm}"
+                tools:visibility="gone" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/btn_confirm"
+            style="@style/SubmitButton_ColorPrimary"
+            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            visible="@{vm.isEditable }"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="15dp"
+            android:text="保存"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabs" />
+            app:layout_constraintTop_toBottomOf="@+id/fl_container" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
