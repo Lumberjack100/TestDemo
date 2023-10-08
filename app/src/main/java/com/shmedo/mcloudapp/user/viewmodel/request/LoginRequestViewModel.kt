@@ -5,6 +5,7 @@ import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.lib.core.base.model.BasicUserInfo
 import com.shmedo.lib.core.base.model.CompanyInfo
+import com.shmedo.lib.core.base.model.UserPermissionInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil
@@ -93,6 +94,14 @@ class LoginRequestViewModel : BaseViewModel() {
                 queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
             MmkvCacheUtil.setUser(userWrapperInfo.user)
 
+            val iotPermissionList = queryAllPermissionInService(basicUserInfo.companyID)?: return@launch
+            MmkvCacheUtil.setUserPermissionList(iotPermissionList)
+            iotPermissionList.forEach {
+                if (it.permissionToken == "ListSuperInfo") {
+                    MmkvCacheUtil.setHasListSuperInfoPermission(true)
+                }
+            }
+
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
@@ -116,6 +125,14 @@ class LoginRequestViewModel : BaseViewModel() {
             val userWrapperInfo: UserWrapperInfo =
                 queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
             MmkvCacheUtil.setUser(userWrapperInfo.user)
+
+            val iotPermissionList = queryAllPermissionInService(basicUserInfo.companyID)?: return@launch
+            MmkvCacheUtil.setUserPermissionList(iotPermissionList)
+            iotPermissionList.forEach {
+                if (it.permissionToken == "ListSuperInfo") {
+                    MmkvCacheUtil.setHasListSuperInfoPermission(true)
+                }
+            }
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
@@ -178,6 +195,24 @@ class LoginRequestViewModel : BaseViewModel() {
         }
 
         return NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = false
+            responseStatus.errorMessage = error.errorMsg
+            responseStatus.source = ResultSource.NETWORK
+            _loginResult.setValue(DataResult(responseStatus = responseStatus))
+        }
+    }
+
+    private suspend fun queryAllPermissionInService(companyID: Int = 0): List<UserPermissionInfo>? {
+        val jsonObjectRequest = JSONObject()
+        try {
+            jsonObjectRequest.put("companyID", companyID)
+            jsonObjectRequest.put("serviceName", "iot")
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        return NetDataRepository.instance.queryAllPermissionInService(jsonObjectRequest.toString()) { error: Throwable ->
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = false
             responseStatus.errorMessage = error.errorMsg

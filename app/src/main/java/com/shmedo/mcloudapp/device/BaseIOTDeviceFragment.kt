@@ -217,11 +217,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             block()
             return
         }
+
         val command = commandItems.getFirst()
         commandItems.removeFirst()
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
-
         } else {
             bleViewModel.sendCommand(command, true, deviceInfo.apiKey, delaySendMillis)
             startTimeoutJob(timeoutMillis)

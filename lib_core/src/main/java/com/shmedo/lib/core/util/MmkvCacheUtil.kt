@@ -1,6 +1,7 @@
 package com.shmedo.lib.core.util
 
 import com.shmedo.lib.core.base.model.UserInfo
+import com.shmedo.lib.core.base.model.UserPermissionInfo
 import com.tencent.mmkv.MMKV
 
 object MmkvCacheUtil {
@@ -104,8 +105,33 @@ object MmkvCacheUtil {
     fun setUser(info: UserInfo?) {
         val kv = MMKV.defaultMMKV()
         info?.let {
-            kv.encode("user_info", MoshiUtil.toJson(info))
+            kv.encode("user_info", MoshiUtil.toJson(it))
         }
+    }
+
+    fun getUserPermissionList(): List<UserPermissionInfo>? {
+        val kv = MMKV.defaultMMKV()
+        val userStr = kv.decodeString("user_permission_list")
+
+        return if (userStr.isNullOrEmpty()) null
+        else MoshiUtil.fromJson<List<UserPermissionInfo>>(userStr)
+    }
+
+    fun setUserPermissionList(list: List<UserPermissionInfo>?) {
+        val kv = MMKV.defaultMMKV()
+        list?.let {
+            kv.encode("user_permission_list", MoshiUtil.toJson(it))
+        }
+    }
+
+    fun isHasListSuperInfoPermission(): Boolean {
+        val kv = MMKV.defaultMMKV()
+        return kv.decodeBool("iot_listsuperinfo_permission", false)
+    }
+
+    fun setHasListSuperInfoPermission(flag: Boolean): Boolean {
+        val kv = MMKV.defaultMMKV()
+        return kv.encode("iot_listsuperinfo_permission", flag)
     }
 
     /**

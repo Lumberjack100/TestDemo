@@ -49,7 +49,6 @@
         <item></item>
     </string-array>
 
-
     <!-- 语音播报遍数-->
     <string-array name="broadcast_num">
         <item>1</item>
@@ -80,6 +79,7 @@
         <item>30</item>
     </string-array>
 
+    <!-- MR702 start-->
     <string-array name="ip_mode">
         <item>手动</item>
         <item>自动</item>
@@ -117,5 +117,36 @@
         <item>22:00</item>
         <item>23:00</item>
     </string-array>
+
+    <string-array name="mr_communicate_way">
+        <item>4G</item>
+        <item>有线</item>
+    </string-array>
+
+    <string-array name="mr_ip_level">
+        <item>IPV4</item>
+        <item>IPV6</item>
+    </string-array>
+
+    <string-array name="mr_ip_protocol">
+        <item>TCP</item>
+        <item>UDP</item>
+    </string-array>
+
+    <string-array name="mr_data_protocol">
+        <item>TCP-C</item>
+        <item>MQTT</item>
+        <item>SL651</item>
+    </string-array>
+
+    <string-array name="mr_register_platform">
+        <item>地灾一期</item>
+        <item>成都理工平台</item>
+        <item>米度平台</item>
+        <item>地灾二期</item>
+        <item>河南水利平台</item>
+        <item>米度水文平台</item>
+    </string-array>
+    <!-- MR702 end-->
 
 </resources>

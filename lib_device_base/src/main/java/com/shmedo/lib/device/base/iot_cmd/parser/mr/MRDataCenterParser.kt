@@ -39,11 +39,10 @@ class MRDataCenterParser : IOTCommandParser<MRDataCenterParam> {
             hour_report = keyValueMap.getOrDefault("hour_report", hour_report)
             add_report = keyValueMap.getOrDefault("add_report", add_report)
             maintain_report = keyValueMap.getOrDefault("maintain_report", maintain_report)
-            data_link = keyValueMap.getOrDefault("data_link", data_link)
             valid_day = keyValueMap.getOrDefault("valid_day", valid_day)
             reissue_time = keyValueMap.getOrDefault("reissue_time", reissue_time)
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_DATA_CENTER // 请替换为你的命令类型
+    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_DATA_CENTER
 }

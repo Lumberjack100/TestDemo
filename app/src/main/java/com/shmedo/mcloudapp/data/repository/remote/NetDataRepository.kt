@@ -8,6 +8,7 @@ import com.shmedo.lib.core.base.model.DeviceDetailInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
+import com.shmedo.lib.core.base.model.UserPermissionInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.network.parser.PgyerApiResponseParser
@@ -126,17 +127,32 @@ class NetDataRepository private constructor() {
             .toAwaitResponse<CompanyInfo>()
             .tryAwait(onCatch)
 
+    /**
+     * 查询用户在某公司某服务中的所有权限
+     */
+    suspend fun queryAllPermissionInService(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): List<UserPermissionInfo>? =
+        RxHttp.postJson("/QueryAllPermissionInService")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<List<UserPermissionInfo>>()
+            .tryAwait(onCatch)
     // </editor-fold>
 
 
     /**
-     * 查询公司设备在线统计信息
+     * 根据公司ID对公司下的设备进行统计 或者 统计系统所有设备的信息(系统权限，预定义权限，不允许授予第三方)
+     *
+     * 总数 = 启用+未启用= 在线+离线+未知
      */
     suspend fun getDeviceStatByCompanyID(
         jsonParam: String,
+        isHasListSuperInfoPermission: Boolean = false,
         onCatch: ((Throwable) -> Unit)? = null
     ): DeviceStatisticInfo? =
-        RxHttp.postJson("/GetDeviceStatByCompanyID")
+        RxHttp.postJson(if (isHasListSuperInfoPermission) "/ListSuperDeviceStat" else "/GetDeviceStatByCompanyID")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<DeviceStatisticInfo>()
@@ -156,13 +172,27 @@ class NetDataRepository private constructor() {
             .tryAwait(onCatch)
 
     /**
-     * 分页查询设备列表
+     * 查询用户在其所在的所有公司的产品列表，包含其所在公司的所有下级公司
+     */
+    suspend fun getUserCompanyProductList(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<ProductInfo>? =
+        RxHttp.postJson("/ListUserCompanyProduct")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<PageList<ProductInfo>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 分页查询设备列表(默认排序是创建时间倒序)或者 查询系统所有设备列表(系统权限，预定义权限，不允许授予第三方)
      */
     suspend fun queryDeviceList(
         jsonParam: String,
+        isHasListSuperInfoPermission: Boolean = false,
         onCatch: ((Throwable) -> Unit)? = null
     ): PageList<DeviceInfo>? =
-        RxHttp.postJson("/GetDeviceList")
+        RxHttp.postJson(if (isHasListSuperInfoPermission) "/ListSuperDevice" else "/QueryDeviceList")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<PageList<DeviceInfo>>()
@@ -192,7 +222,6 @@ class NetDataRepository private constructor() {
             .addAll(jsonParam)
             .toAwaitResponse<List<DispatchCmdItem>>()
             .await()
-
 
     /**
      * 查询指令响应结果

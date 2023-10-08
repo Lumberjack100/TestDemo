@@ -118,7 +118,8 @@ class DeviceSearchResultFragment : BaseFragment() {
             companyID = userInfo.companyID,
             deviceToken = keyWord,
             currentPage = binding.refreshLayout.index,
-            pageSize = PAGE_SIZE
+            pageSize = PAGE_SIZE,
+            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
         )
     }
 

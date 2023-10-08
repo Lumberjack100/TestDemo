@@ -46,17 +46,13 @@
 
             <View
                 android:id="@+id/view_line"
-                drawable_strokeColor="@{@color/divider_line_bg}"
-                drawable_strokeDash="@{2}"
-                drawable_strokeDashGap="@{2}"
-                drawable_strokeWidth="@{1.5f}"
                 android:layout_width="0dp"
                 android:layout_height="1.5dp"
                 android:layout_marginTop="@dimen/dimen_size_10"
+                android:background="@drawable/divider_dash_line"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_center_name"
-                tools:background="@color/divider_line_bg" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_center_name" />
 
             <TextView
                 android:id="@+id/tv_status_title"
@@ -88,7 +84,6 @@
                 android:textSize="@dimen/text_size_17"
                 app:layout_constraintEnd_toStartOf="@+id/statusSB"
                 app:layout_constraintTop_toTopOf="@+id/tv_status_title" />
-
 
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/statusSB"

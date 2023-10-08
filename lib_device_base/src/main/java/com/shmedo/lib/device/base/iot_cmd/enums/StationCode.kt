@@ -29,7 +29,7 @@ enum class StationCode(val description: String, val code: String) {
 
     companion object {
         @JvmStatic
-        fun valueByName(name: String): StationCode {
+        fun valueByDescription(name: String): StationCode {
             if (TextUtils.isEmpty(name)) return CUSTOM
             for (errorType in values()) {
                 if (errorType.description == name) return errorType

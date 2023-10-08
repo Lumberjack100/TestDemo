@@ -54,6 +54,7 @@
                     android:paddingBottom="@dimen/dimen_size_25">
 
                     <include
+                        android:id="@+id/ll_data_center_param_head"
                         layout="@layout/data_center_param_head"
                         app:click="@{click}"
                         app:vm="@{stateVM}" />
@@ -194,6 +195,7 @@
 
                     <LinearLayout
                         android:id="@+id/ll_mqtt"
+                        visible="@{stateVM.isMqttItemVisible}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -284,7 +286,8 @@
 
                         </LinearLayout>
 
-                        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                        <LinearLayout style="@style/Common_EditItem_LayoutStyle"
+                            android:background="@drawable/layer_common_click_item_with_divider">
 
                             <TextView
                                 style="@style/Common_ClickableItem_TitleStyle"
@@ -324,6 +327,7 @@
                         android:id="@+id/ll_sl651"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        visible="@{stateVM.isSL651ItemVisible}"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -394,7 +398,7 @@
                             <com.shmedo.mcloudapp.common.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isCenterOpened}"
-                                android:text="@={stateVM.stationCode}"
+                                android:text="@={stateVM.telemetryStationAddr}"
                                 app:isCharacterFilter="@{true}"
                                 app:lengthFilter="@{10}" />
 
@@ -454,7 +458,7 @@
                                     android:checked="@={stateVM.hourlyReport}"
                                     android:text="小时报"
                                     android:textColor="@color/title_text_color"
-                                    android:textSize="@dimen/text_size_15"
+                                    android:textSize="@dimen/text_size_16"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
                                     tools:checked="true" />
@@ -468,7 +472,7 @@
                                     android:checked="@={stateVM.timingReport}"
                                     android:text="定时报"
                                     android:textColor="@color/title_text_color"
-                                    android:textSize="@dimen/text_size_15"
+                                    android:textSize="@dimen/text_size_16"
                                     app:layout_constraintStart_toEndOf="@+id/hourlyReportCheckBox"
                                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -481,7 +485,7 @@
                                     android:checked="@={stateVM.addReport}"
                                     android:text="加报报"
                                     android:textColor="@color/title_text_color"
-                                    android:textSize="@dimen/text_size_15"
+                                    android:textSize="@dimen/text_size_16"
                                     app:layout_constraintStart_toEndOf="@+id/timingReportCheckBox"
                                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -494,7 +498,7 @@
                                     android:checked="@={stateVM.maintainReport}"
                                     android:text="维持报"
                                     android:textColor="@color/title_text_color"
-                                    android:textSize="@dimen/text_size_15"
+                                    android:textSize="@dimen/text_size_16"
                                     app:layout_constraintStart_toStartOf="@+id/hourlyReportCheckBox"
                                     app:layout_constraintTop_toBottomOf="@+id/hourlyReportCheckBox" />
 

@@ -48,7 +48,7 @@ class DeviceRequestViewModel : BaseViewModel() {
     /**
      * 查询公司设备在线统计信息
      */
-    fun getDeviceStatByCompanyID(companyID: Int) {
+    fun getDeviceStatByCompanyID(companyID: Int, isHasListSuperInfoPermission: Boolean = false) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
             try {
@@ -57,7 +57,10 @@ class DeviceRequestViewModel : BaseViewModel() {
                 e.printStackTrace()
             }
             val data: DeviceStatisticInfo =
-                NetDataRepository.instance.getDeviceStatByCompanyID(jsonObjectRequest.toString()) { error: Throwable ->
+                NetDataRepository.instance.getDeviceStatByCompanyID(
+                    jsonObjectRequest.toString(),
+                    isHasListSuperInfoPermission
+                ) { error: Throwable ->
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -74,20 +77,20 @@ class DeviceRequestViewModel : BaseViewModel() {
     }
 
     /**
-     * 分页查询产品列表
+     *  分页查询产品列表
      */
     fun getProductList(companyID: Int) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
             try {
-                jsonObjectRequest.put("companyID", companyID)
+//                jsonObjectRequest.put("companyID", companyID)
                 jsonObjectRequest.put("pageSize", 100)
                 jsonObjectRequest.put("currentPage", 1)
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
             val data: PageList<ProductInfo> =
-                NetDataRepository.instance.getProductList(jsonObjectRequest.toString()) { error: Throwable ->
+                NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString()) { error: Throwable ->
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -97,8 +100,8 @@ class DeviceRequestViewModel : BaseViewModel() {
 
             val tempList = mutableListOf<ProductInfo>()
             data.currentPageData?.filter { product ->
-                product.deviceNum > 0 &&
-                        ProductType.valueByPrefix(product.productToken.uppercase()) !== ProductType.UnKnown
+                product.deviceNum > 0 &&     //过滤掉设备数为0的产品
+                        ProductType.valueByPrefix(product.productToken.uppercase()) !== ProductType.UnKnown //过滤掉未知产品类型
             }?.sortedBy { product ->
                 product.productName
             }?.let {
@@ -130,7 +133,8 @@ class DeviceRequestViewModel : BaseViewModel() {
         productID: Int = -1,
         deviceToken: String = "",
         currentPage: Int,
-        pageSize: Int
+        pageSize: Int,
+        isHasListSuperInfoPermission: Boolean = false
     ) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
@@ -148,7 +152,10 @@ class DeviceRequestViewModel : BaseViewModel() {
                 e.printStackTrace()
             }
             val data: PageList<DeviceInfo> =
-                NetDataRepository.instance.queryDeviceList(jsonObjectRequest.toString()) { error: Throwable ->
+                NetDataRepository.instance.queryDeviceList(
+                    jsonObjectRequest.toString(),
+                    isHasListSuperInfoPermission
+                ) { error: Throwable ->
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg

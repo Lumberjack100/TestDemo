@@ -40,7 +40,6 @@ data class MRDataCenterParam(
     var hour_report: String = "",//小时报开关  0:关闭 1:开启
     var add_report: String = "",//加报报开关  0:关闭 1:开启
     var maintain_report: String = "",//维持报开关  0:关闭 1:开启
-    var data_link: String = "", //数据链路维持报间隔 (s)
     var valid_day: String = "", //补发数据有效天数 1-180
     var reissue_time: String = "", //数据补发间隔 (min)
 )

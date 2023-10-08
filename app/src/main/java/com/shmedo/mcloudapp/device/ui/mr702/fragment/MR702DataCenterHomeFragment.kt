@@ -33,7 +33,11 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_data_center_home, BR.toolbarVM, toolbarViewModel)
+        return DataBindingConfig(
+            R.layout.fragment_mr702_data_center_home,
+            BR.toolbarVM,
+            toolbarViewModel
+        )
             .addBindingParam(BR.click, BaseClickProxy())
     }
 
@@ -72,8 +76,8 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()
-
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                val bundle = MR702DataCenterParamFragment.newBundleArguments(
+                    item,
                     communicateWay,
                     deviceInfo,
                     bleDevice
@@ -151,11 +155,11 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     private fun initDataCenterStatus(dataCenterStatus: MRDataCenterStatus) {
         binding.refreshLayout.addData(
             mutableListOf(
-                DataCenterStatusItem("数据中心01", dataCenterStatus.status1),
-                DataCenterStatusItem("数据中心02", dataCenterStatus.status2),
-                DataCenterStatusItem("数据中心03", dataCenterStatus.status3),
-                DataCenterStatusItem("数据中心04", dataCenterStatus.status4),
-                DataCenterStatusItem("数据中心05", dataCenterStatus.status5),
+                DataCenterStatusItem(1, "数据中心01", dataCenterStatus.status1),
+                DataCenterStatusItem(2, "数据中心02", dataCenterStatus.status2),
+                DataCenterStatusItem(3, "数据中心03", dataCenterStatus.status3),
+                DataCenterStatusItem(4, "数据中心04", dataCenterStatus.status4),
+                DataCenterStatusItem(5, "数据中心05", dataCenterStatus.status5),
             ), hasMore = {
                 false
             }

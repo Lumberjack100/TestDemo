@@ -162,7 +162,8 @@ class NetDeviceListFragment : BaseFragment() {
             companyID = userInfo.companyID,
             productID = productID,
             currentPage = binding.refreshLayout.index,
-            pageSize = PAGE_SIZE
+            pageSize = PAGE_SIZE,
+            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
         )
     }
 
@@ -183,7 +184,10 @@ class NetDeviceListFragment : BaseFragment() {
         if (companyID != userInfo.companyID) {
             companyID = userInfo.companyID
             productID = -1
-            deviceRequestViewModel.getDeviceStatByCompanyID(userInfo.companyID)
+            deviceRequestViewModel.getDeviceStatByCompanyID(
+                userInfo.companyID,
+                MmkvCacheUtil.isHasListSuperInfoPermission()
+            )
             deviceRequestViewModel.getProductList(userInfo.companyID)
             binding.refreshLayout.showLoading()
         }

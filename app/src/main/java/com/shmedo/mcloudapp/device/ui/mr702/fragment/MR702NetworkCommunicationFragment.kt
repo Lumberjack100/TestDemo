@@ -69,13 +69,13 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 nav().navigateUp()
             }
         })
+        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
+        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(true)
     }
 
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
         //4G 交互方式下不允许操作
         mStates.isWirelessDisabled.set(communicateWay is NetPlatformConnect)
     }

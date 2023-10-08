@@ -30,6 +30,8 @@ interface AppContants {
 
             //蓝牙设备信息
             const val BLE_DEVICE = "ble_device"
+
+            const val SERVER_NUMBER = "server_number"
         }
     }
 
