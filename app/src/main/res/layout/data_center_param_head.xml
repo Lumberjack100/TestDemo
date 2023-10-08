@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="RtlSymmetry">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.DataCenterParamViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.BaseClickProxy" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_size_16"
+            android:paddingStart="@dimen/dimen_size_10"
+            android:paddingTop="@dimen/dimen_size_14"
+            android:paddingEnd="@dimen/dimen_size_10"
+            android:paddingBottom="@dimen/dimen_size_14"
+            app:drawable_radius="@{4}"
+            app:drawable_solidColor="@{@color/gray_f5f6f8}"
+            tools:background="@color/gray_f5f6f8">
+
+            <TextView
+                android:id="@+id/tv_center_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{vm.centerName}"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="数据中心03-TCP" />
+
+            <View
+                android:id="@+id/view_line"
+                drawable_strokeColor="@{@color/divider_line_bg}"
+                drawable_strokeDash="@{2}"
+                drawable_strokeDashGap="@{2}"
+                drawable_strokeWidth="@{1.5f}"
+                android:layout_width="0dp"
+                android:layout_height="1.5dp"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_center_name"
+                tools:background="@color/divider_line_bg" />
+
+            <TextView
+                android:id="@+id/tv_status_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:text="状态："
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_line" />
+
+            <TextView
+                android:id="@+id/tv_status"
+                dataCenterStatus='@{vm.centerStatus}'
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_17"
+                app:layout_constraintStart_toEndOf="@+id/tv_status_title"
+                app:layout_constraintTop_toTopOf="@+id/tv_status_title"
+                tools:text="未开启"
+                tools:textColor="#BCC0CC" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开启状态："
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17"
+                app:layout_constraintEnd_toStartOf="@+id/statusSB"
+                app:layout_constraintTop_toTopOf="@+id/tv_status_title" />
+
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/statusSB"
+                style="@style/SwitchButton_ButtonStyle"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:enabled="@{vm.isEditable}"
+                android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                app:kswThumbHeight="18dp"
+                app:kswThumbRangeRatio="2.3"
+                app:kswThumbWidth="18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_line" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</layout>

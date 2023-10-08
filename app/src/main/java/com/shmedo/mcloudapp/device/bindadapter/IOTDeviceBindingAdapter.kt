@@ -11,9 +11,10 @@ import com.shmedo.mcloudapp.R
  * 描述：     TODO
  */
 object IOTDeviceBindingAdapter {
+
     @JvmStatic
-    @BindingAdapter(value = ["linkStatus"], requireAll = false)
-    fun linkStatus(view: TextView, status: String) {
+    @BindingAdapter(value = ["dataCenterStatus"], requireAll = false)
+    fun setDataCenterStatus(view: TextView, status: String) {
         when (status) {
             "0" -> {
                 view.text = "未开启"

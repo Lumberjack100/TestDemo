@@ -2,17 +2,17 @@ package com.shmedo.lib.device.base.iot_cmd.parser.mr
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
-import com.shmedo.lib.device.base.iot_cmd.model.mr.MRDataCenter
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRDataCenterParam
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/9/28 <br/>
  * 描述：     数据中心解析器
  */
-class MRDataCenterParser : IOTCommandParser<MRDataCenter> {
+class MRDataCenterParser : IOTCommandParser<MRDataCenterParam> {
 
-    override fun parseInstance(keyValueMap: Map<String, String>): MRDataCenter {
-        return MRDataCenter().apply {
+    override fun parseInstance(keyValueMap: Map<String, String>): MRDataCenterParam {
+        return MRDataCenterParam().apply {
             centerid = keyValueMap.getOrDefault("centerid", centerid)
             switch = keyValueMap.getOrDefault("switch", switch)
             datanet = keyValueMap.getOrDefault("datanet", datanet)

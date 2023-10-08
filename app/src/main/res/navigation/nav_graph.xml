@@ -19,6 +19,14 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
+            android:id="@+id/action_mainFragment_to_companyHomeFragment"
+            app:destination="@id/companyHomeFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
             android:id="@+id/action_mainFragment_to_deviceSearchFragment"
             app:destination="@id/deviceSearchFragment"
             app:enterAnim="@anim/activity_open_enter"
@@ -32,6 +40,12 @@
         android:name="com.shmedo.mcloudapp.user.fragment.UserInfoHomeFragment"
         android:label="UserInfoHomeFragment"
         tools:layout="@layout/fragment_user_info_home" />
+
+    <fragment
+        android:id="@+id/companyHomeFragment"
+        android:name="com.shmedo.mcloudapp.user.fragment.CompanyHomeFragment"
+        android:label="CompanyHomeFragment"
+        tools:layout="@layout/fragment_company_home" />
 
     <fragment
         android:id="@+id/deviceSearchFragment"

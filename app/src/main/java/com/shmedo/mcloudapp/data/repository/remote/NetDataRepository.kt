@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.data.repository.remote
 import android.annotation.SuppressLint
 import com.blankj.utilcode.util.AppUtils
 import com.shmedo.lib.core.base.model.BasicUserInfo
+import com.shmedo.lib.core.base.model.CompanyInfo
 import com.shmedo.lib.core.base.model.DeviceDetailInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
@@ -114,6 +115,17 @@ class NetDataRepository private constructor() {
             .addAll(jsonParam)
             .toAwaitResponse<String>()
             .tryAwait(onCatch)
+
+    suspend fun queryCompanyInfoByID(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): CompanyInfo? =
+        RxHttp.postJson("/GetCompanyInfo")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<CompanyInfo>()
+            .tryAwait(onCatch)
+
     // </editor-fold>
 
 
@@ -157,7 +169,7 @@ class NetDataRepository private constructor() {
             .tryAwait(onCatch)
 
     /**
-     * 查询公司设备在线统计信息
+     * 查询设备详细信息
      */
     suspend fun getDeviceDetailInfo(
         jsonParam: String,

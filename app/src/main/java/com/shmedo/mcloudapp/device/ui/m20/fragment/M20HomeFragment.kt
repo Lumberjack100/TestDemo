@@ -22,7 +22,7 @@ import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.viewmodel.state.M20HomeViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 /**
@@ -32,7 +32,7 @@ import org.koin.android.ext.android.inject
  */
 class M20HomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
-    private val mHeadStates: M20HomeViewModel by viewModels()
+    private val mHeadStates: CommonDeviceHomeViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 

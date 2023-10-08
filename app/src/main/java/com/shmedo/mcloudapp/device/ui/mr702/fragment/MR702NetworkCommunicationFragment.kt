@@ -95,7 +95,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             setEditable(false)
         }
 
-        fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)

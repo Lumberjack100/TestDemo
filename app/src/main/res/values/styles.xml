@@ -105,8 +105,8 @@
         <item name="android:drawablePadding">10dp</item>
         <item name="android:gravity">right|center_vertical</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColorHint">@color/text_color_cccccc</item>
-        <item name="android:textColor">@color/text_color_666666</item>
+        <item name="android:textColorHint">@color/text_color_hint</item>
+        <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">16sp</item>
     </style>
 

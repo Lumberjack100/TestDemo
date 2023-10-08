@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.device
 
+import android.widget.CompoundButton
+
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/9/25 <br/>
@@ -15,6 +17,10 @@ open class BaseClickProxy {
     }
 
     open fun onConnectOperateClick() {
+
+    }
+
+    open fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
 
     }
 }

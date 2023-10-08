@@ -7,5 +7,4 @@ class MR702HomeViewModel : CommonDeviceHomeViewModel() {
     val isRunningStateNormal = NonNullObservableField(false)
 
     val isWorkModeNormal = NonNullObservableField(true)
-
 }

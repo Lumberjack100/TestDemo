@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.user.viewmodel.state.CompanyHomeViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.user.fragment.CompanyHomeFragment.ClickProxy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_toolbar_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:layout_height="53dp"
+                    android:layout_marginTop="@dimen/dimen_size_8"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="企业名称" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@null"
+                        android:text="@{vm.companyName}"
+                        tools:text="上海米度测控科技有限公司" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:layout_height="53dp"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="企业性质" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@null"
+                        android:text="@{vm.companyType}"
+                        tools:text="私营企业" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:layout_height="53dp"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="所属行业" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@null"
+                        android:text="@{vm.industryName}"
+                        tools:text="互联网" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:layout_height="53dp"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="联系电话" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@null"
+                        android:text="@{vm.companyPhone}"
+                        tools:text="021-33923621" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:layout_height="53dp"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="企业地址" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@null"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:singleLine="false"
+                        android:text="@{vm.companyAddress}"
+                        tools:text="上海浦东新区张江镇博云路111号爱酷空间上海米度测控科技有限公司" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:layout_height="53dp"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="企业官网" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@null"
+                        android:text="@{vm.companyWebsite}"
+                        tools:text="http://www.shmedo.cn" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dimen_size_16"
+                        android:layout_marginTop="@dimen/dimen_size_15"
+                        android:text="企业简介"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_16" />
+
+                    <TextView
+                        android:id="@+id/tv_companyIntro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{vm.companyIntro}"
+                        android:layout_margin="@dimen/dimen_size_16"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_16"
+                        tools:text="@string/company_intro" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

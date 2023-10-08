@@ -4,37 +4,37 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
-import com.drake.brv.utils.setup
+import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.mr.MRDataCenterStatus
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRDataCenterParam
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
-import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterHomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterParamBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702DataCenterParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702DataCenterHomeBinding by lazy { getBinding() as FragmentMr702DataCenterHomeBinding }
+class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentMr702DataCenterParamBinding by lazy { getBinding() as FragmentMr702DataCenterParamBinding }
+    private val mStates: MR702DataCenterParamViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_data_center_home, BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, BaseClickProxy())
+        return DataBindingConfig(R.layout.fragment_mr702_data_center_param, BR.stateVM, mStates)
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -50,7 +50,6 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
             }
         })
         initRefresh()
-        initAdapter()
     }
 
     private fun initRefresh() {
@@ -60,30 +59,79 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initAdapter() {
-        binding.recyclerView.setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
-            addType<DataCenterStatusItem>(R.layout.data_center_status_item)
-            R.id.item.onClick {
-                val item = getModel<DataCenterStatusItem>()
+    private fun setEditable(editable: Boolean) {
+        toolbarViewModel.toolbarIvActionVisible.set(!editable)
+        toolbarViewModel.toolbarTvActionVisible.set(editable)
+        mStates.isEditable.set(editable)
+    }
 
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    R.id.action_mR702DataCenterHomeFragment_to_mR702DataCenterParamFragment,
-                    bundle
-                )
-            }
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onToolbarIvClick() {
+            setEditable(true)
         }
+
+        override fun onToolbarTvClick() {
+            setEditable(false)
+        }
+
+        /**
+         * 通信方式
+         */
+        fun onCommunicateWaySwitchClick() {
+
+        }
+
+        fun onIPTypeSwitchClick() {
+
+        }
+
+        /**
+         * 传输协议
+         */
+        fun onTransferProtocolSwitchClick() {
+
+        }
+
+        /**
+         * 数据协议
+         */
+        fun onDataProtocolSwitchClick() {
+
+        }
+
+        /**
+         * 平台类型
+         */
+        fun onPlatformTypeSwitchClick() {
+
+        }
+
+        /**
+         * 测站分类
+         */
+        fun onStationClassificationSwitchClick() {
+
+        }
+
+        /**
+         * 高级设置展开、折叠
+         */
+        fun onToggleAdvancedClick() {
+            mStates.isAdvancedItemVisible.set(!mStates.isAdvancedItemVisible.get())
+        }
+
+        fun onSubmitClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initSaveCommand()
+        }
+    }
+
+    private fun initSaveCommand() {
+        commandItems.clear()
+
     }
 
     override fun lazyLoadData() {
@@ -93,7 +141,8 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS)
+        val entity = CenterNumberEntity("1")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER, entity)
         commandItems.add(command)
 
         sendCommandFromCmdList(isShowLoadingDialog = false)
@@ -123,15 +172,15 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS -> {
-                val result = iotParseManager.parse<MRDataCenterStatus>(
+            IOTCommandType.MD_MR_GET_DATA_CENTER -> {
+                val result = iotParseManager.parse<MRDataCenterParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS
+                    IOTCommandType.MD_MR_GET_DATA_CENTER
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelTimeoutJob()
-                        val errMsg = "查询数据中心状态出错: ${result.message}"
+                        val errMsg = "查询数据中心参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
@@ -139,7 +188,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        initDataCenterStatus(result.data)
+                        initDataCenterParam(result.data)
                     }
                 }
             }
@@ -148,18 +197,8 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initDataCenterStatus(dataCenterStatus: MRDataCenterStatus) {
-        binding.refreshLayout.addData(
-            mutableListOf(
-                DataCenterStatusItem("数据中心01", dataCenterStatus.status1),
-                DataCenterStatusItem("数据中心02", dataCenterStatus.status2),
-                DataCenterStatusItem("数据中心03", dataCenterStatus.status3),
-                DataCenterStatusItem("数据中心04", dataCenterStatus.status4),
-                DataCenterStatusItem("数据中心05", dataCenterStatus.status5),
-            ), hasMore = {
-                false
-            }
-        )
+    private fun initDataCenterParam(data: Any) {
+
     }
 
     override fun onResume() {

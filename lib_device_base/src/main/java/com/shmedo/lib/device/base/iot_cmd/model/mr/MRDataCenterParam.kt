@@ -5,7 +5,7 @@ package com.shmedo.lib.device.base.iot_cmd.model.mr
  * 创建时间:  2023/9/28 <br/>
  * 描述：     数据中心配置
  */
-data class MRDataCenter(
+data class MRDataCenterParam(
     var centerid: String = "",
     var switch: String = "",//开启状态 0:关闭 1:开启
     var datanet: String = "",//4G开启状态 0:关闭 1:开启

@@ -48,10 +48,10 @@ class MineFragment : BaseFragment() {
     }
     private fun updateUserInfo(info: UserInfo) {
         if (!TextUtils.isEmpty(userInfo.headPhotoPath))
-            mStates.imageUrl.set(userInfo.headPhotoPath!!)
-        mStates.name.set(info.name!!)
-        mStates.title.set(info.position!!)
-        mStates.company.set(info.companyName!!)
+            mStates.imageUrl.set(userInfo.headPhotoPath)
+        mStates.name.set(info.name)
+        mStates.title.set(info.position)
+        mStates.company.set(info.companyName)
     }
 
     override fun createObserver() {
@@ -87,7 +87,7 @@ class MineFragment : BaseFragment() {
          *  所属单位
          */
         fun onCompanyClick() {
-            Toaster.show("正在开发中")
+            nav().navigate(R.id.action_mainFragment_to_companyHomeFragment)
         }
 
         /**

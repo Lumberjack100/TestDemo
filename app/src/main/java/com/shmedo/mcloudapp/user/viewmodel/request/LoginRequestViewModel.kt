@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.lib.core.base.model.BasicUserInfo
+import com.shmedo.lib.core.base.model.CompanyInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil
@@ -39,6 +40,9 @@ class LoginRequestViewModel : BaseViewModel() {
 
     private val _updateUserInfoResult = MutableResult<DataResult<String>>()
     val updateUserInfoResult: Result<DataResult<String>> = _updateUserInfoResult
+
+    private val _companyInfoResult = MutableResult<DataResult<CompanyInfo>>()
+    val companyInfoResult: Result<DataResult<CompanyInfo>> = _companyInfoResult
 
     private val _updatePasswordResult = MutableResult<DataResult<String>>()
     val updatePasswordResult: Result<DataResult<String>> = _updatePasswordResult
@@ -230,7 +234,43 @@ class LoginRequestViewModel : BaseViewModel() {
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _userWrapperInfoResult.setValue(DataResult(userWrapperInfo, responseStatus = responseStatus))
+            _userWrapperInfoResult.setValue(
+                DataResult(
+                    userWrapperInfo,
+                    responseStatus = responseStatus
+                )
+            )
+        }
+    }
+
+    fun queryCompanyInfoByID(companyID: Int = 0) {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject()
+            try {
+                jsonObjectRequest.put("companyID", companyID)
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+
+            val companyInfo: CompanyInfo =
+                NetDataRepository.instance.queryCompanyInfoByID(jsonObjectRequest.toString()) { error: Throwable ->
+                    val responseStatus = ResponseStatus()
+                    responseStatus.isSuccess = false
+                    responseStatus.errorMessage = error.errorMsg
+                    responseStatus.source = ResultSource.NETWORK
+                    _companyInfoResult.setValue(DataResult(responseStatus = responseStatus))
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _companyInfoResult.setValue(
+                DataResult(
+                    companyInfo,
+                    responseStatus = responseStatus
+                )
+            )
         }
     }
 }

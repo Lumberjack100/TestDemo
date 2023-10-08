@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="vm"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702DataCenterHomeViewModel" />
-
-        <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
 

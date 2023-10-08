@@ -137,10 +137,11 @@ class DeviceRequestViewModel : BaseViewModel() {
             try {
                 jsonObjectRequest.put("companyID", companyID)
                 if (deviceToken.isNotEmpty())
-                    jsonObjectRequest.put("deviceToken", deviceToken)
-                jsonObjectRequest.put("productID", if (productID == -1) "" else productID)
-                jsonObjectRequest.put("tokenAndVersion", false)
-                jsonObjectRequest.put("deviceStatus", "启用")
+                    jsonObjectRequest.put("deviceToken", deviceToken)//SN号,支持模糊查询
+                jsonObjectRequest.put("productID", if (productID == -1) "" else productID)//产品ID,null则不指定产品
+                jsonObjectRequest.put("tokenAndVersion", false)//sn号和版本号之间得关系
+                jsonObjectRequest.put("deviceStatus", "启用")//ull选择全部，启用选择启用设备，禁用用选择未启用设备
+                jsonObjectRequest.put("sortSNAsc", true)//ture按SN正序，false按Sn逆序
                 jsonObjectRequest.put("currentPage", currentPage)
                 jsonObjectRequest.put("pageSize", pageSize)
             } catch (e: JSONException) {

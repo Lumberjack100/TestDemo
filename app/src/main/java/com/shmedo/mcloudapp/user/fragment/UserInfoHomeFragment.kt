@@ -29,7 +29,9 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
 import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.showWaitDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.utils.GlideEngine
 import com.shmedo.mcloudapp.common.utils.ImageFileCompressEngine
@@ -96,7 +98,7 @@ class UserInfoHomeFragment : BaseFragment() {
 
     override fun createObserver() {
         loginRequestViewModel.uploadUserAvataResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
-            dismissLoading()
+            dismissWaitDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -108,7 +110,7 @@ class UserInfoHomeFragment : BaseFragment() {
             )
         }
         loginRequestViewModel.updateUserInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
-            dismissLoading()
+            dismissWaitDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -164,7 +166,7 @@ class UserInfoHomeFragment : BaseFragment() {
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-            showLoading("处理中...")
+            showWaitDialog("处理中...")
             loginRequestViewModel.requestUpdateUserInfo(jsonObjectRequest.toString())
         }
     }
@@ -184,7 +186,7 @@ class UserInfoHomeFragment : BaseFragment() {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        showLoading("正在上传...")
+        showWaitDialog("正在上传...")
         loginRequestViewModel.uploadUserAvatar(jsonObjectRequest.toString())
     }
 
