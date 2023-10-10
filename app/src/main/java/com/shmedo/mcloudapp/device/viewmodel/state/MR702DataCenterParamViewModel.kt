@@ -3,6 +3,12 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 class MR702DataCenterParamViewModel : DataCenterParamViewModel() {
+    val isDataNetOpened = NonNullObservableField(true)//4G 是否开启
+    val isWiredNetOpened = NonNullObservableField(true)//有线 是否开启
+
+    val communicateWay = NonNullObservableField("有线")//通信方式
+    val ipType = NonNullObservableField("IPV4")
+
     /**
      * SL651 水文协议特有配置参数
      */

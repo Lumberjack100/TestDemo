@@ -203,7 +203,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     private fun processItemClick(moduleName: String) {
         when (moduleName) {
             "关于设备" -> {
-
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(
+                    R.id.action_mR702HomeFragment_to_mR702DeviceInfoFragment,
+                    bundle
+                )
             }
 
             "数据中心" -> {

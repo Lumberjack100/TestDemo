@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.device.model.MRModuleStatusItem" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="80dp"
+        android:background="@{m.bgResId}"
+        tools:background="@drawable/bg_mr702_module_status_abnormal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@{m.name}"
+            android:textColor="@color/title_text_color"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="触摸屏" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|bottom"
+            android:text="@{m.name}"
+            android:textColor='@{m.name=="异常"?@color/device_offline_foreground:@color/device_online_foreground}'
+            android:textSize="15sp"
+            tools:text="异常"
+            tools:textColor="@color/device_offline_foreground" />
+
+    </FrameLayout>
+
+</layout>

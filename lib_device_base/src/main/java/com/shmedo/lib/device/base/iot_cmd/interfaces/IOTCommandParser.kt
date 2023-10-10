@@ -32,7 +32,7 @@ interface IOTCommandParser<T> {
         }
     }
 
-    fun parseInstance(keyValueMap: Map<String, String>): T // 注意这里是抽象方法，需要子类来实现
+    fun parseInstance(keyValueMap: Map<String, String>): T
 
     fun commandType(): IOTCommandType
 }

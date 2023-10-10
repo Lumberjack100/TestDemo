@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -48,6 +48,12 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
+    private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
+    private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
+    private val activeSize: Float = 17f
+    private val normalSize: Float = 15f
+    private val tabs = arrayOf("上报方式", "本机屏幕")
+
     private val reportMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_method) }
     private val reportStartTimeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_start_time) }
 
@@ -83,43 +89,41 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
     private fun initTabLayout() {
         // add custom tab items
         val tabLayout = binding.tabs
-        var tabView = LayoutInflater.from(mActivity)
-            .inflate(R.layout.custom_tab_textview, null)
-        var textView = tabView.findViewById<TextView>(R.id.tabText)
-        textView.text = "上报方式"
-        textView.textSize = 17f
-        textView.setTextColor(ColorUtils.getColor(R.color.colorPrimary))
-        textView.setTypeface(textView.typeface, Typeface.BOLD)
-        tabLayout.addTab(tabLayout.newTab().setCustomView(tabView))
+        var textView = TextView(requireContext())
+        textView.text = tabs[0]
+        textView.textSize = activeSize
+        textView.typeface = Typeface.DEFAULT_BOLD
+        textView.gravity = Gravity.CENTER
+        textView.setTextColor(activeColor)
+        tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
 
-        tabView = LayoutInflater.from(mActivity)
-            .inflate(R.layout.custom_tab_textview, null)
-        textView = tabView.findViewById<TextView>(R.id.tabText)
-        textView.text = "本机屏幕"
-        textView.textSize = 15f
-        textView.setTextColor(ColorUtils.getColor(R.color.text_color_666666))
-        textView.setTypeface(textView.typeface, Typeface.NORMAL)
-        tabLayout.addTab(tabLayout.newTab().setCustomView(tabView))
+        textView = TextView(requireContext())
+        textView.text = tabs[1]
+        textView.textSize = normalSize
+        textView.typeface = Typeface.DEFAULT
+        textView.gravity = Gravity.CENTER
+        textView.setTextColor(normalColor)
+        tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
 
         tabLayout.addOnTabSelectedListener(this)
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
         mStates.isReportMethodVisible.set(tab.position == 0)
-        tab.customView?.let {
-            val textView = it.findViewById<TextView>(R.id.tabText)
-            textView.textSize = 17f
-            textView.setTextColor(ColorUtils.getColor(R.color.colorPrimary))
-            textView.setTypeface(textView.typeface, Typeface.BOLD)
+        val textView = tab.customView as TextView?
+        textView?.apply {
+            textSize = activeSize
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(activeColor)
         }
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab) {
-        tab.customView?.let {
-            val textView = it.findViewById<TextView>(R.id.tabText)
-            textView.textSize = 15f
-            textView.setTextColor(ColorUtils.getColor(R.color.text_color_666666))
-            textView.setTypeface(textView.typeface, Typeface.NORMAL)
+        val textView = tab.customView as TextView?
+        textView?.apply {
+            textSize = normalSize
+            typeface = Typeface.DEFAULT
+            setTextColor(normalColor)
         }
     }
 

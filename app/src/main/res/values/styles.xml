@@ -24,7 +24,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Toolbar_TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <!--        <item name="android:textColor">@color/title_text_color</item>-->
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/text_size_16</item>
     </style>
 
@@ -179,7 +179,7 @@
     <!--设备当前运行状态单条基本信息样式-->
     <style name="DeviceCurrentState_SingleItem_Style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@color/white</item>
         <item name="android:orientation">horizontal</item>
@@ -191,8 +191,8 @@
     <style name="DeviceCurrentState_SingleItem_NameStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/text_color_666666</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <!--设备当前运行状态单条项目值样式-->
@@ -203,8 +203,8 @@
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:gravity">right</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/text_color_666666</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <!--MR702 终端参数单条项目值样式-->

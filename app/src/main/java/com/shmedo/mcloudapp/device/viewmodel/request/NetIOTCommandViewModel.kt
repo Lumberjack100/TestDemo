@@ -61,7 +61,7 @@ class NetIOTCommandViewModel : BaseViewModel() {
         viewModelScope.launch {
             try {
                 val parameter = QueryCmdResultParam(msgIDList)
-                val response = pollForCommandResult(MoshiUtil.toJson(parameter))
+                pollForCommandResult(MoshiUtil.toJson(parameter))
             } catch (e: Exception) {
                 // 错误处理
                 _cmdDispatchFlow.emit(CmdResponseResultError(e.message ?: "Error"))
@@ -72,17 +72,17 @@ class NetIOTCommandViewModel : BaseViewModel() {
     /**
      * 轮询指令响应结果 10次
      */
-    private suspend fun pollForCommandResult(jsonParam: String): Boolean {
+    private suspend fun pollForCommandResult(jsonParam: String) {
         repeat(20) {
             delay(500) // 延迟1秒
             val cmdResult: QueryCmdResult = queryCmdResultByMsgID(jsonParam)
             if (cmdResult.cmdStatus == 2) {
                 _cmdDispatchFlow.emit(CmdResponseResultSuccess(cmdResult))
-                return true
+                return
             }
         }
         _cmdDispatchFlow.emit(CmdResponseResultTimeOut())
-        return false
+        return
     }
 
     /**

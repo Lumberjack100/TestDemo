@@ -12,6 +12,14 @@
         tools:layout="@layout/fragment_mr702_home">
 
         <action
+            android:id="@+id/action_mR702HomeFragment_to_mR702DeviceInfoFragment"
+            app:destination="@id/mR702DeviceInfoFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
             android:id="@+id/action_mR702HomeFragment_to_mR702DataCenterHomeFragment"
             app:destination="@id/mR702DataCenterHomeFragment"
             app:enterAnim="@anim/activity_open_enter"
@@ -37,6 +45,13 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/mR702DeviceInfoFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo.MR702DeviceInfoFragment"
+        android:label="MR702DeviceInfoFragment"
+        tools:layout="@layout/fragment_mr702_device_info">
+
+    </fragment>
     <fragment
         android:id="@+id/mR702DataCenterHomeFragment"
         android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702DataCenterHomeFragment"

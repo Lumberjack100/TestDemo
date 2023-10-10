@@ -144,6 +144,21 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     "请选择通信方式", communicateWayList,
                     null, selectedIndex,
                     { position, text ->
+                        if (position == 0 && !mStates.isDataNetOpened.get()) {
+                            showMessage(
+                                "请先到网络与通信页面中开启4G后再选择此项！",
+                                "提示",
+                                "我已知晓"
+                            )
+                            return@asBottomList
+                        } else if (position == 1 && !mStates.isWiredNetOpened.get()) {
+                            showMessage(
+                                "请先到网络与通信页面中开启以太网功能后再选择此项！",
+                                "提示",
+                                "我已知晓"
+                            )
+                            return@asBottomList
+                        }
                         mStates.communicateWay.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
@@ -470,6 +485,8 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initDataCenterParam(data: MRDataCenterParam) {
+        mStates.isDataNetOpened.set(data.datanet == "1")
+        mStates.isWiredNetOpened.set(data.wirednet == "1")
         mStates.centerServerAddress.set(data.addr)
         mStates.centerServerPort.set(data.port)
         mStates.communicateWay.set(if (data.line == "1") communicateWayList[0] else communicateWayList[1])
