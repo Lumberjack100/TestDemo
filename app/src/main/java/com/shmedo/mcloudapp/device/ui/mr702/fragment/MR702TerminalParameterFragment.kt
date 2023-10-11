@@ -275,7 +275,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询上报方式参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -296,7 +296,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询屏幕参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -313,7 +313,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             IOTCommandType.MD_MR_SET_REPORT_METHOD -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "上报方式设置出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -332,7 +332,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             IOTCommandType.MD_MR_SET_SCREEN_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "屏幕参数设置出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)

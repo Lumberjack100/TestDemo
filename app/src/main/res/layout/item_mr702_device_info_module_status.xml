@@ -14,9 +14,9 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background='@{m.status=="异常"?@color/mr_module_status_item_abnormal_backround:@color/mr_module_status_item_normal_backround}'
         android:minHeight="80dp"
-        android:background="@{m.bgResId}"
-        tools:background="@drawable/bg_mr702_module_status_abnormal">
+        tools:background="@color/device_offline_backround">
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
             android:layout_gravity="center"
             android:text="@{m.name}"
             android:textColor="@color/title_text_color"
-            android:textSize="18sp"
+            android:textSize="17sp"
             android:textStyle="bold"
             tools:text="触摸屏" />
 
@@ -32,11 +32,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|bottom"
-            android:text="@{m.name}"
-            android:textColor='@{m.name=="异常"?@color/device_offline_foreground:@color/device_online_foreground}'
-            android:textSize="15sp"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:paddingStart="@dimen/dimen_size_6"
+            android:paddingTop="@dimen/dimen_size_2"
+            android:paddingEnd="@dimen/dimen_size_6"
+            android:paddingBottom="@dimen/dimen_size_2"
+            android:text="@{m.status}"
+            android:textColor='@{m.status=="异常"?@color/mr_module_status_abnormal_foreground:@color/mr_module_status_normal_foreground}'
+            android:textSize="13sp"
+            app:drawable_radiusRT="@{13}"
+            app:drawable_solidColor='@{m.status=="异常"?@color/mr_module_status_text_abnormal_backround:@color/mr_module_status_text_normal_backround}'
             tools:text="异常"
-            tools:textColor="@color/device_offline_foreground" />
+            tools:textColor="@color/mr_module_status_abnormal_foreground" />
 
     </FrameLayout>
 

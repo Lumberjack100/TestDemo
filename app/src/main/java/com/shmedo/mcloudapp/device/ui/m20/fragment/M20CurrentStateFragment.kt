@@ -79,18 +79,18 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isShowLoadingDialog = false)
     }
 
-    override fun cancelTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelTimeoutJob(false)
+    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
+        super.cancelNearbyCommunicationTimeoutJob(false)
         binding.refreshLayout.finish(false)
     }
 
-    override fun showTimeoutAlert(
+    override fun showNearbyCommunicationTimeoutAlert(
         isDismissLoadingDialog: Boolean,
         isShowMsg: Boolean,
         msg: String
     ) {
-        binding.refreshLayout.finish(false)
         Toaster.show("发送指令超时,请稍后尝试")
+        binding.refreshLayout.finish(false)
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
@@ -101,6 +101,16 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
         netIotCommandViewModel.processCmdResult()
     }
 
+    override fun doCmdResponseResultError(errorMsg: String) {
+        Toaster.show("指令响应错误: $errorMsg")
+        binding.refreshLayout.finish(false)
+    }
+
+    override fun doCmdResponseResultTimeOut(errorMsg: String) {
+        Toaster.show("指令响应超时: $errorMsg")
+        binding.refreshLayout.finish(false)
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
@@ -108,7 +118,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
                     iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询设备状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -116,7 +126,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList(isShowLoadingDialog = false)
                         binding.refreshLayout.finish()
                         val content: String = result.data
                         initStatusInfo(content)

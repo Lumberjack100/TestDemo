@@ -103,18 +103,18 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isShowLoadingDialog = false)
     }
 
-    override fun cancelTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelTimeoutJob(false)
+    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
+        super.cancelNearbyCommunicationTimeoutJob(false)
         binding.refreshLayout.finish(false)
     }
 
-    override fun showTimeoutAlert(
+    override fun showNearbyCommunicationTimeoutAlert(
         isDismissLoadingDialog: Boolean,
         isShowMsg: Boolean,
         msg: String
     ) {
-        binding.refreshLayout.finish(false)
         Toaster.show("发送指令超时,请稍后尝试")
+        binding.refreshLayout.finish(false)
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
@@ -123,6 +123,16 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun doNetDispatchSuccess(cmdStr: String) {
         netIotCommandViewModel.processCmdResult()
+    }
+
+    override fun doCmdResponseResultError(errorMsg: String) {
+        Toaster.show("指令响应错误: $errorMsg")
+        binding.refreshLayout.finish(false)
+    }
+
+    override fun doCmdResponseResultTimeOut(errorMsg: String) {
+        Toaster.show("指令响应超时: $errorMsg")
+        binding.refreshLayout.finish(false)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -134,7 +144,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询数据中心状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -142,7 +152,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList(isShowLoadingDialog = false)
                         initDataCenterStatus(result.data)
                     }
                 }

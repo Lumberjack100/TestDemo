@@ -13,11 +13,35 @@ class MRDeviceInfoParser : IOTCommandParser<MRDeviceInfo> {
     override fun parseInstance(keyValueMap: Map<String, String>): MRDeviceInfo {
         when (keyValueMap["pages"]) {
             "1" -> {
-                return MRDeviceInfo(baseInfo = MRBaseInfoParser().parseInstance(keyValueMap))
+                return MRDeviceInfo(
+                    pages = "1",
+                    label = keyValueMap["label"] ?: "1",
+                    baseInfo = MRBaseInfoParser().parseInstance(keyValueMap)
+                )
+            }
+
+            "2" -> when (keyValueMap["label"]) {
+                "1" -> {
+                    return MRDeviceInfo(
+                        pages = "2",
+                        label = "1",
+                        communicationData = MRCommunicationDataParser().parseInstance(keyValueMap)
+                    )
+                }
+
+                else -> {
+                    return MRDeviceInfo(
+                        pages = "2",
+                        label = "2",
+                        runningData = MRRunningDataParser().parseInstance(keyValueMap)
+                    )
+                }
             }
 
             else -> {
                 return MRDeviceInfo(
+                    pages = "4",
+                    label = keyValueMap["label"] ?: "1",
                     moduleStatusInfo = MRModuleStatusInfoParser().parseInstance(keyValueMap)
                 )
             }

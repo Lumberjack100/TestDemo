@@ -26,6 +26,7 @@
             android:splitMotionEvents="false"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
+            tools:itemCount="6"
             tools:listitem="@layout/item_mr702_device_info_module_status" />
 
     </com.drake.brv.PageRefreshLayout>

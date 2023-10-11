@@ -50,7 +50,6 @@ internal class MedoBleService : NotificationService() {
         MedoBleRepository.instance.startConnect(device, lifecycleScope)
 
         MedoBleRepository.instance.hasBeenDisconnected.onEach {
-            Timber.i( "MedoBleService hasBeenDisconnected:$it" )
             if (it) {
                 Timber.i( "MedoBleService:call stopSelf" )
                 stopSelf()

@@ -7,19 +7,77 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RunningStatusInfoViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel" />
 
     </data>
 
-    <FrameLayout
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="MR702RunningStatusInfoFragment" />
+            android:layout_height="wrap_content"
+            android:background="@color/main_bg_gray">
 
-    </FrameLayout>
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:layout_marginBottom="@dimen/dimen_size_15"
+                    android:drawablePadding="-80dp"
+                    android:text="通讯数据"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_mr702_device_info_communication_data" />
+
+                <com.evrencoskun.tableview.TableView
+                    android:id="@+id/tableview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:allow_click_inside_cell="false"
+                    app:allow_click_inside_column_header="false"
+                    app:allow_click_inside_row_header="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:layout_marginBottom="@dimen/dimen_size_15"
+                    android:drawablePadding="-80dp"
+                    android:text="运行数据"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_mr702_device_info_running_data" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_running_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:clipToPadding="false"
+                    android:paddingStart="@dimen/dimen_size_15"
+                    android:paddingTop="@dimen/dimen_size_15"
+                    android:paddingEnd="@dimen/dimen_size_15"
+                    android:paddingBottom="@dimen/dimen_size_25"
+                    android:splitMotionEvents="false"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="2"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/item_mr702_device_info_running_data" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+    </com.drake.brv.PageRefreshLayout>
 </layout>

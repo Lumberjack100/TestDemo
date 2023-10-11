@@ -19,11 +19,9 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702ModuleStatusInfoBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.MRModuleStatusItem
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMr702ModuleStatusInfoBinding by lazy { getBinding() as FragmentMr702ModuleStatusInfoBinding }
@@ -37,6 +35,48 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         initRefresh()
         initAdapter()
+//        testData()
+    }
+
+    private fun testData() {
+        val list = mutableListOf<MRModuleStatusItem>()
+        list.add(
+            MRModuleStatusItem(
+                "触摸屏",
+                "正常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "4G模块",
+                "异常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "北斗定位模块",
+                "正常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "有线网模块",
+                "异常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "Flash",
+                "正常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "EMMC存储模块",
+                "正常"
+            )
+        )
+        binding.rv.models = list
     }
 
     private fun initRefresh() {
@@ -55,7 +95,7 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
                     false
                 )
             )
-            addType<ConfigModule>(R.layout.item_mr702_device_info_module_status)
+            addType<MRModuleStatusItem>(R.layout.item_mr702_device_info_module_status)
         }
     }
 
@@ -72,18 +112,18 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isShowLoadingDialog = false)
     }
 
-    override fun cancelTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelTimeoutJob(false)
+    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
+        super.cancelNearbyCommunicationTimeoutJob(false)
         binding.refreshLayout.finish(false)
     }
 
-    override fun showTimeoutAlert(
+    override fun showNearbyCommunicationTimeoutAlert(
         isDismissLoadingDialog: Boolean,
         isShowMsg: Boolean,
         msg: String
     ) {
-        binding.refreshLayout.finish(false)
         Toaster.show("发送指令超时,请稍后尝试")
+        binding.refreshLayout.finish(false)
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
@@ -94,7 +134,20 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
         netIotCommandViewModel.processCmdResult()
     }
 
+    override fun doCmdResponseResultError(errorMsg: String) {
+        Toaster.show("指令响应错误: $errorMsg")
+        binding.refreshLayout.finish(false)
+    }
+
+    override fun doCmdResponseResultTimeOut(errorMsg: String) {
+        Toaster.show("指令响应超时: $errorMsg")
+        binding.refreshLayout.finish(false)
+    }
+
     override fun setResultData(cmdStr: String) {
+        if (viewLifecycleOwner.lifecycle.currentState < androidx.lifecycle.Lifecycle.State.RESUMED) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO -> {
                 val result = iotParseManager.parse<MRDeviceInfo>(
@@ -103,68 +156,63 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询模块状态出错: ${result.message}"
-                        Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList(isShowLoadingDialog = false)
                         binding.refreshLayout.finish()
-                        val moduleStatusInfo: MRModuleStatusInfo = result.data.moduleStatusInfo
-
-                        val list = mutableListOf<MRModuleStatusItem>()
-                        list.add(
-                            MRModuleStatusItem(
-                                "触摸屏",
-                                if (moduleStatusInfo.screen == "1") "正常" else "异常",
-                                if (moduleStatusInfo.screen == "1") R.drawable.bg_mr702_module_status_normal else R.drawable.bg_mr702_module_status_abnormal
-                            )
-                        )
-                        list.add(
-                            MRModuleStatusItem(
-                                "4G模块",
-                                if (moduleStatusInfo.datanet == "1") "正常" else "异常",
-                                if (moduleStatusInfo.datanet == "1") R.drawable.bg_mr702_module_status_normal else R.drawable.bg_mr702_module_status_abnormal
-                            )
-                        )
-                        list.add(
-                            MRModuleStatusItem(
-                                "北斗定位模块",
-                                if (moduleStatusInfo.beidou == "1") "正常" else "异常",
-                                if (moduleStatusInfo.beidou == "1") R.drawable.bg_mr702_module_status_normal else R.drawable.bg_mr702_module_status_abnormal
-                            )
-                        )
-                        list.add(
-                            MRModuleStatusItem(
-                                "有线网模块",
-                                if (moduleStatusInfo.wirednet == "1") "正常" else "异常",
-                                if (moduleStatusInfo.wirednet == "1") R.drawable.bg_mr702_module_status_normal else R.drawable.bg_mr702_module_status_abnormal
-                            )
-                        )
-                        list.add(
-                            MRModuleStatusItem(
-                                "Flash",
-                                if (moduleStatusInfo.flash == "1") "正常" else "异常",
-                                if (moduleStatusInfo.flash == "1") R.drawable.bg_mr702_module_status_normal else R.drawable.bg_mr702_module_status_abnormal
-                            )
-                        )
-                        list.add(
-                            MRModuleStatusItem(
-                                "EMMC存储模块",
-                                if (moduleStatusInfo.emmc == "1") "正常" else "异常",
-                                if (moduleStatusInfo.emmc == "1") R.drawable.bg_mr702_module_status_normal else R.drawable.bg_mr702_module_status_abnormal
-                            )
-                        )
-                        binding.rv.models = list
+                        initData(result.data.moduleStatusInfo)
                     }
                 }
             }
 
             else -> {}
         }
+    }
+
+    private fun initData(moduleStatusInfo: MRModuleStatusInfo) {
+        val list = mutableListOf<MRModuleStatusItem>()
+        list.add(
+            MRModuleStatusItem(
+                "触摸屏",
+                if (moduleStatusInfo.screen == "1") "正常" else "异常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "4G模块",
+                if (moduleStatusInfo.datanet == "1") "正常" else "异常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "北斗定位模块",
+                if (moduleStatusInfo.beidou == "1") "正常" else "异常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "有线网模块",
+                if (moduleStatusInfo.wirednet == "1") "正常" else "异常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "Flash",
+                if (moduleStatusInfo.flash == "1") "正常" else "异常"
+            )
+        )
+        list.add(
+            MRModuleStatusItem(
+                "EMMC存储模块",
+                if (moduleStatusInfo.emmc == "1") "正常" else "异常"
+            )
+        )
+        binding.rv.models = list
     }
 
     companion object {

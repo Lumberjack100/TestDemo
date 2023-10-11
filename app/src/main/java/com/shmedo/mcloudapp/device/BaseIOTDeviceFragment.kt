@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -43,9 +42,10 @@ import java.util.LinkedList
  * 描述：     TODO
  */
 abstract class BaseIOTDeviceFragment : BaseFragment() {
+    private val fragmentName by lazy { javaClass.simpleName }
     protected val mMessenger: PageMessenger by lazy { getAppViewModel() }
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModels()
-    protected val bleViewModel: BleViewModel by activityViewModels()
+    protected val bleViewModel: BleViewModel by viewModels()
     protected var statusBarColor = 0
 
     protected var communicateWay: CommunicateWay = NetPlatformConnect
@@ -69,13 +69,13 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     @CallSuper
     override fun createObserver() {
         if (communicateWay is NetPlatformConnect) {
-            processNetPlatform()
+            processNetData()
         } else {
-            processBle()
+            processBleData()
         }
     }
 
-    private fun processNetPlatform() {
+    private fun processNetData() {
         launchAndRepeatWithViewLifecycle {
             netIotCommandViewModel.cmdDispatchFlow.collect {
                 when (it) {
@@ -89,13 +89,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     }
 
                     is CmdResponseResultError -> {
-                        dismissLoadingDialog()
-                        Toaster.show("指令响应错误: ${it.errorMsg}")
+                        doCmdResponseResultError(it.errorMsg)
                     }
 
                     is CmdResponseResultTimeOut -> {
-                        dismissLoadingDialog()
-                        Toaster.show("指令响应超时")
+                        doCmdResponseResultTimeOut(it.errorMsg)
                     }
 
                     is CmdResponseResultSuccess -> {
@@ -109,10 +107,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
-    private fun processBle() {
+    private fun processBleData() {
         launchAndRepeatWithViewLifecycle {
             bleViewModel.state.collect { state ->
-                Timber.i("Medo BluetoothGatt: $state")
+                Timber.i("$fragmentName Medo BluetoothGatt: $state")
                 when (state) {
                     NoDeviceState -> {}
                     is WorkingState -> when (state.result) {
@@ -158,50 +156,24 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
+    abstract fun doNetDispatchFailed(cmdStr: String, errorMsg: String)
+    abstract fun doNetDispatchSuccess(cmdStr: String)
+    open fun doCmdResponseResultError(errorMsg: String) {
+        dismissLoadingDialog()
+        Toaster.show("指令响应错误: $errorMsg")
+    }
+
+    open fun doCmdResponseResultTimeOut(errorMsg: String) {
+        dismissLoadingDialog()
+        Toaster.show("指令响应超时: $errorMsg")
+    }
+
+
     open fun onConnectionStateChanged(isConnected: Boolean) {}
     open fun onBleDeviceReady() {}
 
-    abstract fun doNetDispatchFailed(cmdStr: String, errorMsg: String)
-    abstract fun doNetDispatchSuccess(cmdStr: String)
     abstract fun setResultData(cmdStr: String)
 
-
-    protected fun startTimeoutJob(timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS) {
-        // 启动一个新的协程作为超时Job
-        timeoutJob = launchWithViewLifecycle {
-            delay(timeMillis) // 延迟10秒
-            withContext(Dispatchers.Main) {
-                showTimeoutAlert()
-            }
-        }
-    }
-
-    /**
-     * 显示蓝牙通讯超时提示
-     */
-    protected open fun showTimeoutAlert(
-        isDismissLoadingDialog: Boolean = true,
-        isShowMsg: Boolean = true,
-        msg: String = ""
-    ) {
-        if (isDismissLoadingDialog) {
-            dismissLoadingDialog()
-        }
-        if (isShowMsg) {
-            Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
-        }
-    }
-
-    /**
-     * 取消蓝牙通讯超时Job
-     */
-    @CallSuper
-    protected open fun cancelTimeoutJob(isDismissLoadingDialog: Boolean = true) {
-        timeoutJob?.cancel()
-        if (isDismissLoadingDialog) {
-            dismissLoadingDialog()
-        }
-    }
 
     /**
      * 发送指令队列中的第一条指令
@@ -213,7 +185,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         crossinline block: () -> Unit = {}
     ) {
         if (commandItems.size <= 0) {
-            cancelTimeoutJob()
+            cancelNearbyCommunicationTimeoutJob()
             block()
             return
         }
@@ -224,11 +196,52 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
             bleViewModel.sendCommand(command, true, deviceInfo.apiKey, delaySendMillis)
-            startTimeoutJob(timeoutMillis)
+            startNearbyCommunicationTimeoutJob(timeoutMillis)
         }
 
         if (isShowLoadingDialog) {
             showLoadingDialog(StringUtils.getString(R.string.loading))
+        }
+    }
+
+    /**
+     * 启动蓝牙通讯/WIFI通信等近场通信超时Job
+     */
+    fun startNearbyCommunicationTimeoutJob(timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS) {
+        // 启动一个新的协程作为超时Job
+        timeoutJob = launchWithViewLifecycle {
+            delay(timeMillis) // 延迟 timeMillis 秒后，提示超时
+            withContext(Dispatchers.Main) {
+                showNearbyCommunicationTimeoutAlert()
+            }
+        }
+    }
+
+    /**
+     * 取消蓝牙通讯/WIFI通信等近场通信超时Job
+     */
+    @CallSuper
+    protected open fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean = true) {
+        timeoutJob?.cancel()
+        if (isDismissLoadingDialog) {
+            dismissLoadingDialog()
+        }
+    }
+
+    /**
+     * 显示近场通信超时提示
+     */
+    protected open fun showNearbyCommunicationTimeoutAlert(
+        isDismissLoadingDialog: Boolean = true,
+        isShowMsg: Boolean = true,
+        msg: String = ""
+    ) {
+        Timber.i("$fragmentName 发送指令超时")
+        if (isDismissLoadingDialog) {
+            dismissLoadingDialog()
+        }
+        if (isShowMsg) {
+            Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
         }
     }
 

@@ -146,6 +146,8 @@ class DeviceRequestViewModel : BaseViewModel() {
                 jsonObjectRequest.put("tokenAndVersion", false)//sn号和版本号之间得关系
                 jsonObjectRequest.put("deviceStatus", "启用")//ull选择全部，启用选择启用设备，禁用用选择未启用设备
                 jsonObjectRequest.put("sortSNAsc", true)//ture按SN正序，false按Sn逆序
+                if(isHasListSuperInfoPermission)
+                    jsonObjectRequest.put("filterNoPermissionDevice", true)//过滤用户无权限设备
                 jsonObjectRequest.put("currentPage", currentPage)
                 jsonObjectRequest.put("pageSize", pageSize)
             } catch (e: JSONException) {

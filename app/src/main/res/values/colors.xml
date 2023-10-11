@@ -81,4 +81,12 @@
     <color name="storage_ring_progress_warn">#e69331</color>
     <color name="storage_ring_progress_abnormal">#cc4d4d</color>
 
+
+    <color name="mr_module_status_normal_foreground">#00B26B</color>
+    <color name="mr_module_status_abnormal_foreground">#F13838</color>
+    <color name="mr_module_status_item_normal_backround">#EBF9F4</color>
+    <color name="mr_module_status_item_abnormal_backround">#FEEFEF</color>
+    <color name="mr_module_status_text_normal_backround">#AAE4CE</color>
+    <color name="mr_module_status_text_abnormal_backround">#FCD8D8</color>
+
 </resources>

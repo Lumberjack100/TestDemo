@@ -16,7 +16,6 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702BaseInfoBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMr702BaseInfoBinding by lazy { getBinding() as FragmentMr702BaseInfoBinding }
@@ -54,18 +53,18 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isShowLoadingDialog = false)
     }
 
-    override fun cancelTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelTimeoutJob(false)
+    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
+        super.cancelNearbyCommunicationTimeoutJob(false)
         binding.refreshLayout.finish(false)
     }
 
-    override fun showTimeoutAlert(
+    override fun showNearbyCommunicationTimeoutAlert(
         isDismissLoadingDialog: Boolean,
         isShowMsg: Boolean,
         msg: String
     ) {
-        binding.refreshLayout.finish(false)
         Toaster.show("发送指令超时,请稍后尝试")
+        binding.refreshLayout.finish(false)
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
@@ -76,7 +75,20 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
         netIotCommandViewModel.processCmdResult()
     }
 
+    override fun doCmdResponseResultError(errorMsg: String) {
+        Toaster.show("指令响应错误: $errorMsg")
+        binding.refreshLayout.finish(false)
+    }
+
+    override fun doCmdResponseResultTimeOut(errorMsg: String) {
+        Toaster.show("指令响应超时: $errorMsg")
+        binding.refreshLayout.finish(false)
+    }
+
     override fun setResultData(cmdStr: String) {
+        if (viewLifecycleOwner.lifecycle.currentState < androidx.lifecycle.Lifecycle.State.RESUMED) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO -> {
                 val result = iotParseManager.parse<MRDeviceInfo>(
@@ -85,15 +97,14 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询设备基本信息出错: ${result.message}"
-                        Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList(isShowLoadingDialog = false)
                         binding.refreshLayout.finish()
                         mStates.wrapBaseInfo.set(result.data.baseInfo)
                     }

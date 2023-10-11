@@ -294,7 +294,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询无线配置出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -315,7 +315,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询以太网配置出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -332,7 +332,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_DATA_NETWORK -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "无线配置出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -351,7 +351,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_WIRED_NETWORK -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "以太网配置出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)

@@ -416,18 +416,18 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isShowLoadingDialog = false)
     }
 
-    override fun cancelTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelTimeoutJob(true)
+    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
+        super.cancelNearbyCommunicationTimeoutJob(true)
         binding.refreshLayout.finish(false)
     }
 
-    override fun showTimeoutAlert(
+    override fun showNearbyCommunicationTimeoutAlert(
         isDismissLoadingDialog: Boolean,
         isShowMsg: Boolean,
         msg: String
     ) {
-        binding.refreshLayout.finish(false)
         Toaster.show("发送指令超时,请稍后尝试")
+        binding.refreshLayout.finish(false)
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
@@ -436,6 +436,16 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun doNetDispatchSuccess(cmdStr: String) {
         netIotCommandViewModel.processCmdResult()
+    }
+
+    override fun doCmdResponseResultError(errorMsg: String) {
+        Toaster.show("指令响应错误: $errorMsg")
+        binding.refreshLayout.finish(false)
+    }
+
+    override fun doCmdResponseResultTimeOut(errorMsg: String) {
+        Toaster.show("指令响应超时: $errorMsg")
+        binding.refreshLayout.finish(false)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -447,7 +457,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询数据中心参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -455,7 +465,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList(isShowLoadingDialog = false)
                         initDataCenterParam(result.data)
                     }
                 }
@@ -464,7 +474,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_DATA_CENTER -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelTimeoutJob()
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)

@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
+import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -77,7 +78,7 @@ class MR702DeviceInfoFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSelected
                 }
             )
         binding.viewpager.adapter = PageAdapter((mActivity as FragmentActivity), mFragments)
-        binding.viewpager.offscreenPageLimit = tabs.size
+        binding.viewpager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_DEFAULT
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)
 

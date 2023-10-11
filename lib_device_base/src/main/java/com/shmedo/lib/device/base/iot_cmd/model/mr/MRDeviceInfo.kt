@@ -6,6 +6,10 @@ package com.shmedo.lib.device.base.iot_cmd.model.mr
  * 描述：     TODO
  */
 data class MRDeviceInfo(
+    val pages: String = "1",
+    val label: String = "1",
     val baseInfo: MRBaseInfo = MRBaseInfo(),
+    val communicationData: MRCommunicationData = MRCommunicationData(),
+    val runningData: MRRunningData = MRRunningData(),
     val moduleStatusInfo: MRModuleStatusInfo = MRModuleStatusInfo()
 )
