@@ -60,7 +60,7 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
     /**
      * 创建观察者
      */
-    abstract fun createObserver()
+    open fun createObserver() {}
 
     override fun onResume() {
         Timber.i("onResume,Fragment=%s", javaClass.simpleName)

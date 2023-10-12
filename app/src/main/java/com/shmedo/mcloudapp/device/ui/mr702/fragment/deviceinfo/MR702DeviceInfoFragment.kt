@@ -13,19 +13,29 @@ import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702DeviceInfoBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.model.CommunicateWay
+import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 
-class MR702DeviceInfoFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSelectedListener {
+class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val binding: FragmentMr702DeviceInfoBinding by lazy { getBinding() as FragmentMr702DeviceInfoBinding }
     private val mStates: MR702DeviceInfoViewModel by viewModels()
+
+    private var statusBarColor = 0
+    private var communicateWay: CommunicateWay = NetPlatformConnect
+    private lateinit var deviceInfo: DeviceInfo
+    private var bleDevice: DiscoveredBluetoothDevice? = null
 
     private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
     private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
@@ -52,12 +62,17 @@ class MR702DeviceInfoFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSelected
     }
 
     override fun initData() {
-        super.initData()
+        arguments?.let {
+            communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
+            bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
+            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
+        }
         initViewPager()
     }
 
     private fun initViewPager() {
-        val bundle = newBundleArguments(
+        val bundle = BaseIOTDeviceFragment.newBundleArguments(
             communicateWay,
             deviceInfo,
             bleDevice
@@ -120,18 +135,6 @@ class MR702DeviceInfoFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSelected
     }
 
     override fun onTabReselected(tab: TabLayout.Tab) {}
-
-    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("下发指令失败: $errorMsg")
-    }
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        netIotCommandViewModel.processCmdResult()
-    }
-
-    override fun setResultData(cmdStr: String) {
-
-    }
 
     override fun onResume() {
         super.onResume()

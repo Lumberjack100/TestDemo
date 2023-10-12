@@ -15,6 +15,7 @@
  */
 package com.shmedo.lib.core.bindadapter;
 
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.InputFilter
 import android.util.Pair
@@ -152,6 +153,12 @@ object CommonBindingAdapter {
     @BindingAdapter(value = ["textColor"], requireAll = false)
     fun setTextColor(textView: TextView, textColorRes: Int) {
         textView.setTextColor(textView.context.getColor(textColorRes))
+    }
+
+    @JvmStatic
+    @BindingAdapter(value = ["textStyle"], requireAll = false)
+    fun setTextStyle(textView: TextView, isBold: Boolean) {
+        textView.setTypeface(null, if (isBold) Typeface.BOLD else Typeface.NORMAL)
     }
 
     @JvmStatic
