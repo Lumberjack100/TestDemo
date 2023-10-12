@@ -51,6 +51,7 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initCommunicateDataTableView() {
+        binding.tableview.isIgnoreSelectionColors = true
         binding.tableview.setAdapter(tableAdapter)
     }
 
@@ -154,7 +155,144 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initCommunicationData(communicationData: MRCommunicationData) {
+        try {
+            tableAdapter.setAllItems(
+                getColumnHeaderList(),
+                getRowHeaderList(),
+                getCellDataList(communicationData)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
+    private fun getColumnHeaderList(): ArrayList<CommunicationDataCellModel> {
+        val columnHeaderList = arrayListOf<CommunicationDataCellModel>()
+        for (i in 1..5) {
+            val columnHeader = CommunicationDataCellModel("平台$i")
+            columnHeaderList.add(columnHeader)
+        }
+        return columnHeaderList
+    }
+
+    private fun getRowHeaderList(): ArrayList<CommunicationDataCellModel> {
+        return arrayListOf(
+            CommunicationDataCellModel("数据状态"),
+            CommunicationDataCellModel("网络协议"),
+            CommunicationDataCellModel("发送数据"),
+            CommunicationDataCellModel("未发数据"),
+            CommunicationDataCellModel("人工置数"),
+            CommunicationDataCellModel("在线率"),
+        )
+    }
+
+    private fun getCellDataList(communicationData: MRCommunicationData): MutableList<MutableList<CommunicationDataCellModel>> {
+        val cellDataList: MutableList<MutableList<CommunicationDataCellModel>> = arrayListOf()
+        getRowHeaderList().forEach { headerText ->
+            val columnCellDataList = arrayListOf<CommunicationDataCellModel>()
+            when (headerText.mData) {
+                "数据状态" -> {
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            mData = if (communicationData.status1 == "0") "未接入" else if (communicationData.status1 == "1") "在线" else "离线",
+                            textColorResId = if (communicationData.status1 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                        )
+                    )
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            mData = if (communicationData.status2 == "0") "未接入" else if (communicationData.status2 == "1") "在线" else "离线",
+                            textColorResId = if (communicationData.status2 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                        )
+                    )
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            mData = if (communicationData.status3 == "0") "未接入" else if (communicationData.status3 == "1") "在线" else "离线",
+                            textColorResId = if (communicationData.status3 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                        )
+                    )
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            mData = if (communicationData.status4 == "0") "未接入" else if (communicationData.status4 == "1") "在线" else "离线",
+                            textColorResId = if (communicationData.status4 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                        )
+                    )
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            mData = if (communicationData.status5 == "0") "未接入" else if (communicationData.status5 == "1") "在线" else "离线",
+                            textColorResId = if (communicationData.status5 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                        )
+                    )
+                }
+
+                "网络协议" -> {
+                    columnCellDataList.add(CommunicationDataCellModel(if (communicationData.agreem1 == "1") "IPV4" else "IPV6"))
+                    columnCellDataList.add(CommunicationDataCellModel(if (communicationData.agreem2 == "1") "IPV4" else "IPV6"))
+                    columnCellDataList.add(CommunicationDataCellModel(if (communicationData.agreem3 == "1") "IPV4" else "IPV6"))
+                    columnCellDataList.add(CommunicationDataCellModel(if (communicationData.agreem4 == "1") "IPV4" else "IPV6"))
+                    columnCellDataList.add(CommunicationDataCellModel(if (communicationData.agreem5 == "1") "IPV4" else "IPV6"))
+                }
+
+                "发送数据" -> {
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.sdata1))
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.sdata2))
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.sdata3))
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.sdata4))
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.sdata5))
+                }
+
+                "未发数据" -> {
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            communicationData.ndata1,
+                            R.color.device_offline_platform
+                        )
+                    )
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            communicationData.ndata2,
+                            R.color.device_offline_platform
+                        )
+                    )
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            communicationData.ndata3,
+                            R.color.device_offline_platform
+                        )
+                    )
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            communicationData.ndata4,
+                            R.color.device_offline_platform
+                        )
+                    )
+                    columnCellDataList.add(
+                        CommunicationDataCellModel(
+                            communicationData.ndata5,
+                            R.color.device_offline_platform
+                        )
+                    )
+                }
+
+                "人工置数" -> {
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.adata1))
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.adata2))
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.adata3))
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.adata4))
+                    columnCellDataList.add(CommunicationDataCellModel(communicationData.adata5))
+                }
+
+                "在线率" -> {
+                    columnCellDataList.add(CommunicationDataCellModel("${communicationData.rate1}%"))
+                    columnCellDataList.add(CommunicationDataCellModel("${communicationData.rate2}%"))
+                    columnCellDataList.add(CommunicationDataCellModel("${communicationData.rate3}%"))
+                    columnCellDataList.add(CommunicationDataCellModel("${communicationData.rate4}%"))
+                    columnCellDataList.add(CommunicationDataCellModel("${communicationData.rate5}%"))
+                }
+            }
+            cellDataList.add(columnCellDataList)
+        }
+
+        return cellDataList
     }
 
     private fun initRunningData(runningData: MRRunningData) {
@@ -210,66 +348,43 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun testTableData() {
-        val columnHeaderList = arrayListOf<CommunicationDataCellModel>()
-        val rowHeaderList = arrayListOf(
-            CommunicationDataCellModel("数据状态"),
-            CommunicationDataCellModel("网络协议"),
-            CommunicationDataCellModel("发送数据"),
-            CommunicationDataCellModel("未发数据"),
-            CommunicationDataCellModel("人工置数"),
-            CommunicationDataCellModel("在线率"),
+        val communicationData = MRCommunicationData(
+            status1 = "0",
+            status2 = "1",
+            status3 = "2",
+            status4 = "1",
+            status5 = "1",
+            agreem1 = "1",
+            agreem2 = "2",
+            agreem3 = "1",
+            agreem4 = "1",
+            agreem5 = "1",
+            sdata1 = "100",
+            sdata2 = "100",
+            sdata3 = "100",
+            sdata4 = "100",
+            sdata5 = "100",
+            ndata1 = "100",
+            ndata2 = "100",
+            ndata3 = "100",
+            ndata4 = "100",
+            ndata5 = "100",
+            adata1 = "100",
+            adata2 = "100",
+            adata3 = "100",
+            adata4 = "100",
+            adata5 = "100",
+            rate1 = "100",
+            rate2 = "100",
+            rate3 = "100",
+            rate4 = "100",
+            rate5 = "100",
         )
-        val cellDataList: MutableList<MutableList<CommunicationDataCellModel>> = arrayListOf()
-
-        for (i in 1..7) {
-            val columnHeader = CommunicationDataCellModel("平台$i")
-            columnHeaderList.add(columnHeader)
-        }
-
-        for (i in 1..6) {
-            val list = arrayListOf<CommunicationDataCellModel>()
-            when (i) {
-
-                1 -> {
-                    for (j in 1..7) {
-                        list.add(CommunicationDataCellModel(if (j % 2 == 0) "在线" else "离线"))
-                    }
-                }
-
-                2 -> {
-                    for (j in 1..7) {
-                        list.add(CommunicationDataCellModel(if (j % 2 == 0) "IPV4" else "IPV6"))
-                    }
-                }
-
-                3 -> {
-                    for (j in 1..7) {
-                        list.add(CommunicationDataCellModel(if (j % 2 == 0) "100000" else "6000"))
-                    }
-                }
-
-                4 -> {
-                    for (j in 1..7) {
-                        list.add(CommunicationDataCellModel(if (j % 2 == 0) "10" else "6"))
-                    }
-                }
-
-                5 -> {
-                    for (j in 1..7) {
-                        list.add(CommunicationDataCellModel(if (j % 2 == 0) "10" else "45"))
-                    }
-                }
-
-                6 -> {
-                    for (j in 1..7) {
-                        list.add(CommunicationDataCellModel(if (j % 2 == 0) "100%" else "0%"))
-                    }
-                }
-            }
-            cellDataList.add(list)
-        }
-
-        tableAdapter.setAllItems(columnHeaderList, rowHeaderList, cellDataList)
+        tableAdapter.setAllItems(
+            getColumnHeaderList(),
+            getRowHeaderList(),
+            getCellDataList(communicationData)
+        )
     }
 
     private fun testRunningData() {

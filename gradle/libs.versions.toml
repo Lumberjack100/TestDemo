@@ -60,6 +60,7 @@ rangeSeekBar = "v3.0.0"
 recyclerView = "1.3.1"
 retrofit = "2.9.0"
 rxhttp = "3.1.1"
+tableView = "v0.8.9.4"
 xpopup = "2.9.19"
 room = "2.5.2"
 share2 = "0.9.3"
@@ -148,6 +149,7 @@ scwang90-refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-k
 scwang90-refresh-header-classics = { module = "io.github.scwang90:refresh-header-classics", version.ref = "smartRefreshLayout" }
 share2 = { module = "gdut.bsx:share2", version.ref = "share2" }
 switchbutton-library = { module = "com.kyleduo.switchbutton:library", version.ref = "switchbutton" }
+tableview = { module = "com.github.evrencoskun:TableView", version.ref = "tableView" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 xpopup = { module = "com.github.li-xiaojun:XPopup", version.ref = "xpopup" }

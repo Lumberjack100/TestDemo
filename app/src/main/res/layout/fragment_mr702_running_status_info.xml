@@ -44,9 +44,12 @@
                     android:id="@+id/tableview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dimen_size_10"
                     app:allow_click_inside_cell="false"
                     app:allow_click_inside_column_header="false"
-                    app:allow_click_inside_row_header="false" />
+                    app:allow_click_inside_row_header="false"
+                    app:column_header_height="@dimen/mr_communication_data_table_column_header_height"
+                    app:row_header_width="@dimen/mr_communication_data_table_row_header_width" />
 
                 <TextView
                     android:layout_width="wrap_content"

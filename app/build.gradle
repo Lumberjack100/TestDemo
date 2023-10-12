@@ -184,8 +184,7 @@ dependencies {
 
     //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
     implementation libs.liangjingkanji.brv
-    //一个强大并且灵活的RecyclerViewAdapter
-//    implementation libs.base.recyclerview.adapter.helper
+    implementation libs.tableview
 
     implementation libs.agentweb.core
 

@@ -11,5 +11,7 @@ data class MRDeviceInfo(
     val baseInfo: MRBaseInfo = MRBaseInfo(),
     val communicationData: MRCommunicationData = MRCommunicationData(),
     val runningData: MRRunningData = MRRunningData(),
-    val moduleStatusInfo: MRModuleStatusInfo = MRModuleStatusInfo()
+    val moduleStatusInfo: MRModuleStatusInfo = MRModuleStatusInfo(),
+    val interfaceStatusInfo: MRInterfaceStatusInfo = MRInterfaceStatusInfo(),
+    val ioStatusInfo: MRIOStatusInfo = MRIOStatusInfo(),
 )

@@ -129,7 +129,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.temp}"
+                        android:text='@{vm.wrapBaseInfo.temp+"℃"}'
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -144,7 +144,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.hum}"
+                        android:text='@{vm.wrapBaseInfo.hum+"%"}'
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -159,7 +159,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.volt}"
+                        android:text='@{vm.wrapBaseInfo.volt+"V"}'
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>

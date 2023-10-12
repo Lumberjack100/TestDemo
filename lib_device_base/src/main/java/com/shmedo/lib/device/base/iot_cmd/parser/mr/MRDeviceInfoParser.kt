@@ -37,6 +37,24 @@ class MRDeviceInfoParser : IOTCommandParser<MRDeviceInfo> {
                     )
                 }
             }
+            "3" -> when (keyValueMap["label"]) {
+
+                "1" -> {
+                    return MRDeviceInfo(
+                        pages = "3",
+                        label = "1",
+                        interfaceStatusInfo = MRInterfaceStatusInfoParser().parseInstance(keyValueMap)
+                    )
+                }
+
+                else -> {
+                    return MRDeviceInfo(
+                        pages = "3",
+                        label = "2",
+                        ioStatusInfo = MRIOStatusInfoParser().parseInstance(keyValueMap)
+                    )
+                }
+            }
 
             else -> {
                 return MRDeviceInfo(

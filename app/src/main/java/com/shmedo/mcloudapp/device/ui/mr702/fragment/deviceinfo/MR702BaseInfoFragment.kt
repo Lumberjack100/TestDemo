@@ -6,6 +6,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRBaseInfo
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRDeviceInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -16,6 +17,7 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702BaseInfoBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
+import java.text.DecimalFormat
 
 class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMr702BaseInfoBinding by lazy { getBinding() as FragmentMr702BaseInfoBinding }
@@ -106,12 +108,30 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList(isShowLoadingDialog = false)
                         binding.refreshLayout.finish()
-                        mStates.wrapBaseInfo.set(result.data.baseInfo)
+                        initBaseInfo(result.data.baseInfo)
                     }
                 }
             }
 
             else -> {}
+        }
+    }
+
+    private fun initBaseInfo(baseInfo: MRBaseInfo) {
+        val decimalFormat = DecimalFormat("#.#")
+        try {
+            baseInfo.temp = decimalFormat.format(baseInfo.temp.toDouble())
+            baseInfo.hum = decimalFormat.format(baseInfo.hum.toDouble())
+            baseInfo.volt = decimalFormat.format(baseInfo.volt.toDouble())
+            baseInfo.csq = when (baseInfo.csq.toInt()) {
+                1 -> "优"
+                2 -> "良好"
+                3 -> "较差"
+                else -> "未知"
+            }
+            mStates.wrapBaseInfo.set(baseInfo)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
