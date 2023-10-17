@@ -91,4 +91,8 @@
 
     <color name="mr_communication_data_table_row_header_backround">#EBF7FF</color>
 
+    <color name="mr_interface_sensor_flag_in_backround">#0099E9</color>
+    <color name="mr_interface_sensor_flag_out_backround">#969696</color>
+
+
 </resources>

@@ -69,10 +69,10 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-//        binding.refreshLayout.autoRefresh()
+        binding.refreshLayout.autoRefresh()
 
-        testTableData()
-        testRunningData()
+//        testTableData()
+//        testRunningData()
     }
 
     private fun queryInfo() {

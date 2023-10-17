@@ -6,6 +6,11 @@ import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandR
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MR485Port1CollectionParamParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MR485Port1SensorStatusParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MR485Port2CollectionParamParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MR485Port2SensorStatusParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MR485Port2SerialPortParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDataCenterParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDataCenterStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDeviceInfoParser
@@ -33,6 +38,12 @@ val appModule = module {
     factory { MRDataCenterStatusParser() }
     factory { MRDataCenterParser() }
     factory { MRDeviceInfoParser() }
+    factory { MR485Port1CollectionParamParser() }
+    factory { MR485Port1SensorStatusParser() }
+    factory { MR485Port2CollectionParamParser() }
+    factory { MR485Port2SerialPortParamParser() }
+    factory { MR485Port2SensorStatusParser() }
+
 
     // 提供 IOTParseManager 的实例
     single {
@@ -47,7 +58,12 @@ val appModule = module {
             get<MRScreenParamParser>(),
             get<MRDataCenterStatusParser>(),
             get<MRDataCenterParser>(),
-            get<MRDeviceInfoParser>()
+            get<MRDeviceInfoParser>(),
+            get<MR485Port1CollectionParamParser>(),
+            get<MR485Port1SensorStatusParser>(),
+            get<MR485Port2CollectionParamParser>(),
+            get<MR485Port2SerialPortParamParser>(),
+            get<MR485Port2SensorStatusParser>(),
         )
         IOTParserManager.getInstance(parsers)
     }

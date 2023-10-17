@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:minWidth="80dp"
+    android:minHeight="32dp"
+    tools:background="@drawable/bg_mr702_interface_tab_normal">
+
+    <TextView
+        android:id="@+id/tabText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#65A2CD"
+        android:textSize="@dimen/text_size_15"
+        tools:text="全部" />
+
+
+</LinearLayout>

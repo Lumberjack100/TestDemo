@@ -227,7 +227,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             "接口配置" -> {
-
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(
+                    R.id.action_mR702HomeFragment_to_mR702InterfaceHomeFragment,
+                    bundle
+                )
             }
 
             "终端参数" -> {

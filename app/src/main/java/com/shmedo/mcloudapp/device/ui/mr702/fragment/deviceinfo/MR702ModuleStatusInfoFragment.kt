@@ -58,8 +58,8 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-//        binding.refreshLayout.autoRefresh()
-        testData()
+        binding.refreshLayout.autoRefresh()
+//        testData()
     }
 
     private fun queryInfo() {

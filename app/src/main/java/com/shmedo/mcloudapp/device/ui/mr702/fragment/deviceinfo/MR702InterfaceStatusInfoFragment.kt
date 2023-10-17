@@ -95,9 +95,9 @@ class MR702InterfaceStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-//        binding.refreshLayout.autoRefresh()
-        testSerialData()
-        testIOData()
+        binding.refreshLayout.autoRefresh()
+//        testSerialData()
+//        testIOData()
     }
 
     private fun queryInfo() {

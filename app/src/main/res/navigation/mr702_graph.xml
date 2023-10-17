@@ -28,6 +28,14 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
+            android:id="@+id/action_mR702HomeFragment_to_mR702InterfaceHomeFragment"
+            app:destination="@id/mR702InterfaceHomeFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
             android:id="@+id/action_mR702HomeFragment_to_mR702TerminalParameterFragment"
             app:destination="@id/mR702TerminalParameterFragment"
             app:enterAnim="@anim/activity_open_enter"
@@ -49,14 +57,14 @@
         android:id="@+id/mR702DeviceInfoFragment"
         android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo.MR702DeviceInfoFragment"
         android:label="MR702DeviceInfoFragment"
-        tools:layout="@layout/fragment_mr702_device_info">
+        tools:layout="@layout/fragment_mr702_device_info"/>
 
-    </fragment>
     <fragment
         android:id="@+id/mR702DataCenterHomeFragment"
         android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702DataCenterHomeFragment"
         android:label="MR702DataCenterHomeFragment"
         tools:layout="@layout/fragment_mr702_data_center_home">
+
         <action
             android:id="@+id/action_mR702DataCenterHomeFragment_to_mR702DataCenterParamFragment"
             app:destination="@id/mR702DataCenterParamFragment"
@@ -64,6 +72,7 @@
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
+
     </fragment>
 
     <fragment
@@ -71,6 +80,12 @@
         android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702DataCenterParamFragment"
         android:label="MR702DataCenterParamFragment"
         tools:layout="@layout/fragment_mr702_data_center_param" />
+
+    <fragment
+        android:id="@+id/mR702InterfaceHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinterface.MR702InterfaceHomeFragment"
+        android:label="MR702InterfaceHomeFragment"
+        tools:layout="@layout/fragment_mr702_interface_home" />
 
     <fragment
         android:id="@+id/mR702TerminalParameterFragment"

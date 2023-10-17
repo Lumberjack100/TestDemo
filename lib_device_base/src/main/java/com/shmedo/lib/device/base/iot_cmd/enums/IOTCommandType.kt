@@ -687,6 +687,7 @@ enum class IOTCommandType(private val value: String) {
      * 基本信息
      */
     MD_MR_GET_DEVICE_BASE_INFO("md_mrgetdevicebase"),
+
     /**
      * 获取时间
      */
@@ -733,6 +734,51 @@ enum class IOTCommandType(private val value: String) {
     MD_MR_GET_DATA_CENTER("md_mrgetdatacenter"),
 
     MD_MR_SET_DATA_CENTER("md_mrsetdatacenter"),
+
+    /**
+     * RS485-端口1 获取采集控制参数配置
+     */
+    MD_MR_GET_485_PORT1_COLL("md_get485port1_coll"),
+
+    MD_MR_SET_485_PORT1_COLL("md_set485port1_coll"),
+
+    /**
+     * 传感器获取
+     */
+    MD_MR_GET_485_PORT1_SENSOR("md_get485port1_sensor"),
+
+    /**
+     * RS485-端口1 传感器参数获取
+     */
+    MD_MR_GET_485_PORT1_SENSOR_PARAM("md_get485port1_param"),
+
+    MD_MR_SET_485_PORT1_SENSOR_PARAM("md_set485port1_param"),
+
+    /**
+     * RS485-端口2 获取采集控制参数配置
+     */
+    MD_MR_GET_485_PORT2_COLL("md_get485port2_coll"),
+
+    MD_MR_SET_485_PORT2_COLL("md_set485port2_coll"),
+
+    /**
+     * RS485-端口2 获取串口参数配置
+     */
+    MD_MR_GET_485_PORT2_UART("md_get485port2_uart"),
+
+    MD_MR_SET_485_PORT2_UART("md_set485port2_uart"),
+
+    /**
+     * 传感器获取
+     */
+    MD_MR_GET_485_PORT2_SENSOR("md_get485port2_sensor"),
+
+    /**
+     * RS485-端口2 传感器参数获取
+     */
+    MD_MR_GET_485_PORT2_SENSOR_PARAM("md_get485port2_param"),
+
+    MD_MR_SET_485_PORT2_SENSOR_PARAM("md_set485port2_param"),
 
     // </editor-fold>
 
