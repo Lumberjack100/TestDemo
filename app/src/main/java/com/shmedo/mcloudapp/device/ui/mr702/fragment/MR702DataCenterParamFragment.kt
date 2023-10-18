@@ -28,6 +28,7 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterParamBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
@@ -81,6 +82,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             queryData()
@@ -308,8 +310,8 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_DATA_CENTER,
             entity.toCommandString()
         )
-        commandItems.add(command)
-        sendCommandFromCmdList()
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -355,7 +357,6 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 else -> "5"
             }
         )
-
         if (mStates.dataProtocol.get() == dataProtocolList[1]) {//MQTT
             if (mStates.registerAddress.get().isEmpty()) {
                 Toaster.show("请输入设备注册地址")
@@ -381,7 +382,6 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.regcode = mStates.registerCode.get()
             entity.httpaddr = mStates.registerAddress.get()
             entity.httpport = mStates.registerPort.get()
-
         } else if (mStates.dataProtocol.get() == dataProtocolList[2]) {//SL651
             entity.type_code = StationCode.valueByDescription(mStates.stationType.get()).code
             entity.co_address = mStates.centerStationAddr.get()
@@ -400,7 +400,8 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.toCommandString()
         )
         commandItems.add(command)
-        sendCommandFromCmdList()
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -413,39 +414,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         val entity = CenterNumberEntity(statusItem.centerid.toString())
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER, entity)
         commandItems.add(command)
-        sendCommandFromCmdList(isShowLoadingDialog = false)
-    }
-
-    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelNearbyCommunicationTimeoutJob(true)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
-    ) {
-        Toaster.show("发送指令超时,请稍后尝试")
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("下发指令失败: $errorMsg")
-    }
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        netIotCommandViewModel.processCmdResult()
-    }
-
-    override fun doCmdResponseResultError(errorMsg: String) {
-        Toaster.show("指令响应错误: $errorMsg")
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doCmdResponseResultTimeOut(errorMsg: String) {
-        Toaster.show("指令响应超时: $errorMsg")
-        binding.refreshLayout.finish(false)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -465,7 +434,8 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList(isShowLoadingDialog = false)
+                        sendCommandFromCmdList()
+                        binding.refreshLayout.finish()
                         initDataCenterParam(result.data)
                     }
                 }

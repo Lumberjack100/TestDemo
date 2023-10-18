@@ -58,6 +58,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             queryData()
@@ -100,11 +101,11 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS)
         commandItems.add(command)
 
-        sendCommandFromCmdList(isShowLoadingDialog = false)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelNearbyCommunicationTimeoutJob(false)
+        super.cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog)
         binding.refreshLayout.finish(false)
     }
 
@@ -113,12 +114,13 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
-        Toaster.show("发送指令超时,请稍后尝试")
+        super.showNearbyCommunicationTimeoutAlert(isDismissLoadingDialog, isShowMsg, msg)
         binding.refreshLayout.finish(false)
     }
 
     override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("下发指令失败: $errorMsg")
+        super.doNetDispatchFailed(cmdStr, errorMsg)
+        binding.refreshLayout.finish(false)
     }
 
     override fun doNetDispatchSuccess(cmdStr: String) {
@@ -126,12 +128,12 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun doCmdResponseResultError(errorMsg: String) {
-        Toaster.show("指令响应错误: $errorMsg")
+        super.doCmdResponseResultError(errorMsg)
         binding.refreshLayout.finish(false)
     }
 
     override fun doCmdResponseResultTimeOut(errorMsg: String) {
-        Toaster.show("指令响应超时: $errorMsg")
+        super.doCmdResponseResultTimeOut(errorMsg)
         binding.refreshLayout.finish(false)
     }
 
@@ -152,7 +154,8 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList(isShowLoadingDialog = false)
+                        sendCommandFromCmdList()
+                        binding.refreshLayout.finish()
                         initDataCenterStatus(result.data)
                     }
                 }

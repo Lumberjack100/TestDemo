@@ -10,4 +10,5 @@ data class MRSensorItem(
     val name: String,//名称
     val model: String,//物模型
     val addr: String,//地址 or 通道号
+    var isShowDel: Boolean = false,//是否显示删除按钮
 )

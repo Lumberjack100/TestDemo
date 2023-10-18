@@ -27,8 +27,8 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentMr702InterfaceStatusInfoBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.MRIOStatusItem
-import com.shmedo.mcloudapp.device.model.MRInterfaceStatusHeader
 import com.shmedo.mcloudapp.device.model.MRInterfaceStatusItem
+import com.shmedo.mcloudapp.device.model.RVEmptyHeader
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
@@ -50,6 +50,7 @@ class MR702InterfaceStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             queryInfo()
@@ -65,7 +66,7 @@ class MR702InterfaceStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             )
-            addType<MRInterfaceStatusHeader>(R.layout.item_mr702_device_info_interface_status_rv_header)
+            addType<RVEmptyHeader>(R.layout.item_mr702_device_info_interface_status_rv_header)
             addType<MRInterfaceStatusItem>(R.layout.item_mr702_device_info_interface_status_rv)
         }
     }
@@ -79,7 +80,7 @@ class MR702InterfaceStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             )
-            addType<MRInterfaceStatusHeader>(R.layout.item_mr702_device_info_interface_status_rv_header)
+            addType<RVEmptyHeader>(R.layout.item_mr702_device_info_interface_status_rv_header)
             addType<MRInterfaceStatusItem>(R.layout.item_mr702_device_info_interface_status_rv)
         }
     }
@@ -110,39 +111,7 @@ class MR702InterfaceStatusInfoFragment : BaseIOTDeviceFragment() {
         entity = MRDeviceInfoEntity(pages = 3, label = 2)
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO, entity)
         commandItems.add(command)
-        sendCommandFromCmdList(isShowLoadingDialog = false)
-    }
-
-    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelNearbyCommunicationTimeoutJob(false)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
-    ) {
-        Toaster.show("发送指令超时,请稍后尝试")
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("下发指令失败: $errorMsg")
-    }
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        netIotCommandViewModel.processCmdResult()
-    }
-
-    override fun doCmdResponseResultError(errorMsg: String) {
-        Toaster.show("指令响应错误: $errorMsg")
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doCmdResponseResultTimeOut(errorMsg: String) {
-        Toaster.show("指令响应超时: $errorMsg")
-        binding.refreshLayout.finish(false)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -164,7 +133,7 @@ class MR702InterfaceStatusInfoFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList(isShowLoadingDialog = false)
+                        sendCommandFromCmdList()
                         if (result.data.label == "1") {
                             initSerialPortData(result.data.interfaceStatusInfo)
                             initAnalogInterfaceStatusInfo(result.data.interfaceStatusInfo)
@@ -230,7 +199,7 @@ class MR702InterfaceStatusInfoFragment : BaseIOTDeviceFragment() {
             )
             binding.rvSerialPortStatus.models = serialPortList
             binding.rvSerialPortStatus.bindingAdapter.run {
-                addHeader(MRInterfaceStatusHeader(), animation = true)
+                addHeader(RVEmptyHeader(), animation = true)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -346,7 +315,7 @@ class MR702InterfaceStatusInfoFragment : BaseIOTDeviceFragment() {
             }
             binding.rvAnalogInterfaceStatus.models = analogList
             binding.rvAnalogInterfaceStatus.bindingAdapter.run {
-                addHeader(MRInterfaceStatusHeader(), animation = true)
+                addHeader(RVEmptyHeader(), animation = true)
             }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -10,14 +10,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ResourceUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
@@ -27,14 +30,16 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702InterfaceHomeBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.CommunicateWay
+import com.shmedo.mcloudapp.device.model.MR702InterfaceSensorConfig
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702InterfaceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.launch
 
 class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val binding: FragmentMr702InterfaceHomeBinding by lazy { getBinding() as FragmentMr702InterfaceHomeBinding }
-    private val mStates: MR702InterfaceHomeViewModel by activityViewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702InterfaceHomeViewModel by activityViewModels()
 
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -83,6 +88,7 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
         mStates.interfaceName.set("RS485-1 Modbus")
         mStates.interfaceDesc.set("最多支持32支传感器接入")
         initViewPager()
+        loadSensorConfig()
     }
 
     private fun initViewPager() {
@@ -163,6 +169,21 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
         }.attach()
     }
 
+    private fun loadSensorConfig() {
+        lifecycleScope.launch {
+            val jsonStr = ResourceUtils.readAssets2String("mr702_interface_sensor_config.json")
+            if (jsonStr.isNullOrEmpty()) return@launch
+            val configList =
+                MoshiUtil.fromJson<List<MR702InterfaceSensorConfig>>(jsonStr) ?: return@launch
+            configList.forEach { mInterface ->
+                mStates.sensorConfig[mInterface.interfaceName] = mInterface.models
+                mInterface.models.forEach { model ->
+                    mStates.sensorModelMap[model.modelToken] = model
+                }
+            }
+        }
+    }
+
     override fun onTabSelected(tab: TabLayout.Tab) {
         tab.customView?.let {
             it.setBackgroundResource(activeBg)
@@ -186,7 +207,7 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
     private fun setEditable(editable: Boolean) {
         toolbarViewModel.toolbarIvActionVisible.set(!editable)
         toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
+        mStates.isEditable.value = editable
     }
 
     inner class ClickProxy : BaseClickProxy() {

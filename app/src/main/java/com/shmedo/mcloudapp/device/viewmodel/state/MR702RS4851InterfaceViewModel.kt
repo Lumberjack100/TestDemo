@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 class MR702RS4851InterfaceViewModel : ViewModel() {
-
     val acquisitionFrequency = NonNullObservableField("")//采集频率
     val collectionDuration = NonNullObservableField("")//采集时长
     val collectionInterval = NonNullObservableField("")//采集间隔

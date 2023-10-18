@@ -6,7 +6,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.MRInterfaceStatusHeader" />
+            type="com.shmedo.mcloudapp.device.model.RVEmptyHeader" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
@@ -46,8 +47,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected val mMessenger: PageMessenger by lazy { getAppViewModel() }
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModels()
     protected val bleViewModel: BleViewModel by viewModels()
-    protected var statusBarColor = 0
 
+    protected var refreshLayout: PageRefreshLayout? = null
+
+    protected var statusBarColor = 0
     protected var communicateWay: CommunicateWay = NetPlatformConnect
     protected lateinit var deviceInfo: DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
@@ -80,7 +83,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             netIotCommandViewModel.cmdDispatchFlow.collect {
                 when (it) {
                     is DispatchFailed -> {
-                        dismissLoadingDialog()
                         doNetDispatchFailed(it.cmdStr, it.errorMsg)
                     }
 
@@ -97,7 +99,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     }
 
                     is CmdResponseResultSuccess -> {
-//                        dismissLoadingDialog
                         setResultData(it.cmdResult.responseContent)
                     }
 
@@ -156,18 +157,27 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
-    abstract fun doNetDispatchFailed(cmdStr: String, errorMsg: String)
-    abstract fun doNetDispatchSuccess(cmdStr: String)
-    open fun doCmdResponseResultError(errorMsg: String) {
+    open fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
+        Toaster.show("指令发送失败: $errorMsg")
         dismissLoadingDialog()
+        refreshLayout?.finish(false)
+    }
+
+    open fun doNetDispatchSuccess(cmdStr: String) {
+        netIotCommandViewModel.processCmdResult()
+    }
+
+    open fun doCmdResponseResultError(errorMsg: String) {
         Toaster.show("指令响应错误: $errorMsg")
+        dismissLoadingDialog()
+        refreshLayout?.finish(false)
     }
 
     open fun doCmdResponseResultTimeOut(errorMsg: String) {
-        dismissLoadingDialog()
         Toaster.show("指令响应超时: $errorMsg")
+        dismissLoadingDialog()
+        refreshLayout?.finish(false)
     }
-
 
     open fun onConnectionStateChanged(isConnected: Boolean) {}
     open fun onBleDeviceReady() {}
@@ -179,9 +189,9 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
      * 发送指令队列中的第一条指令
      */
     protected inline fun sendCommandFromCmdList(
-        isShowLoadingDialog: Boolean = true,
-        delaySendMillis: Long = 0,// 默认不延迟发送
-        timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,// 默认10秒超时
+        delaySendMillis: Long = 0,//默认不延迟发送
+        isStartTimeoutJob: Boolean = false,//默认不启动超时Job
+        timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
         crossinline block: () -> Unit = {}
     ) {
         if (commandItems.size <= 0) {
@@ -196,11 +206,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
             bleViewModel.sendCommand(command, true, deviceInfo.apiKey, delaySendMillis)
-            startNearbyCommunicationTimeoutJob(timeoutMillis)
-        }
-
-        if (isShowLoadingDialog) {
-            showLoadingDialog(StringUtils.getString(R.string.loading))
+            if (isStartTimeoutJob)
+                startNearbyCommunicationTimeoutJob(timeoutMillis)
         }
     }
 
@@ -226,6 +233,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         if (isDismissLoadingDialog) {
             dismissLoadingDialog()
         }
+        refreshLayout?.finish(false)
     }
 
     /**
@@ -237,12 +245,13 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         msg: String = ""
     ) {
         Timber.i("$fragmentName 发送指令超时")
-        if (isDismissLoadingDialog) {
-            dismissLoadingDialog()
-        }
         if (isShowMsg) {
             Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
         }
+        if (isDismissLoadingDialog) {
+            dismissLoadingDialog()
+        }
+        refreshLayout?.finish(false)
     }
 
     override fun onDestroy() {

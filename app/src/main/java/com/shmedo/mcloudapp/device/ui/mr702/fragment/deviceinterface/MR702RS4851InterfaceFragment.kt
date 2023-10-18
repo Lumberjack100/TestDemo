@@ -6,12 +6,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRCollectionParam
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRSensorStatus
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -19,22 +21,28 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs4851InterfaceBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
+import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702InterfaceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS4851InterfaceViewModel
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMr702Rs4851InterfaceBinding by lazy { getBinding() as FragmentMr702Rs4851InterfaceBinding }
     private val mInterfaceHomeViewModel: MR702InterfaceHomeViewModel by activityViewModels()
     private val mStates: MR702RS4851InterfaceViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
+
+    private var deleteItemIndex = 0
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rs485_1_interface, BR.vm, mStates)
@@ -48,6 +56,7 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             queryInfo()
@@ -64,6 +73,42 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
                 )
             )
             addType<MRSensorItem>(R.layout.item_mr702_interface_sensor_item)
+            addType<RVEmptyFooter>(R.layout.item_mr702_interface_sensor_rv_footer)
+            R.id.item.onClick {
+                when (itemViewType) {
+                    R.layout.item_mr702_interface_sensor_item -> {
+                        val item = getModel<MRSensorItem>()
+
+                    }
+
+                    else -> Toaster.show("添加传感器")
+                }
+            }
+            R.id.item_del.onClick {
+                val item = getModel<MRSensorItem>()
+                showMessage("确定删除此传感器吗？", "提示", "删除", {
+                    deleteItemIndex = adapterPosition
+                    deleteSensorCommand(item.model)
+                }, "取消", {
+
+                })
+            }
+        }
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        mInterfaceHomeViewModel.isEditable.observe(viewLifecycleOwner) { editable ->
+            val list = binding.rv.bindingAdapter.models ?: return@observe
+            list.forEach { item ->
+                (item as MRSensorItem).isShowDel = editable
+            }
+            binding.rv.models = list
+//            if (editable) {
+//                binding.rv.bindingAdapter.addFooter(RVEmptyFooter(), animation = true)
+//            } else {
+//                binding.rv.bindingAdapter.removeFooterAt(animation = true)
+//            }
         }
     }
 
@@ -77,6 +122,24 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 删除传感器
+     */
+    private fun deleteSensorCommand(model: String) {
+        commandItems.clear()
+
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_DEL_485_PORT1_SENSOR,
+            "mode=$model&del=1"
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 保存采集参数
+     */
     private fun initSaveCommand() {
         commandItems.clear()
 
@@ -95,39 +158,7 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
 
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_485_PORT1_SENSOR, "index=0")
         commandItems.add(command)
-        sendCommandFromCmdList(isShowLoadingDialog = false)
-    }
-
-    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelNearbyCommunicationTimeoutJob(false)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
-    ) {
-        Toaster.show("发送指令超时,请稍后尝试")
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("下发指令失败: $errorMsg")
-    }
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        netIotCommandViewModel.processCmdResult()
-    }
-
-    override fun doCmdResponseResultError(errorMsg: String) {
-        Toaster.show("指令响应错误: $errorMsg")
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doCmdResponseResultTimeOut(errorMsg: String) {
-        Toaster.show("指令响应超时: $errorMsg")
-        binding.refreshLayout.finish(false)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -149,7 +180,7 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList(isShowLoadingDialog = false)
+                        sendCommandFromCmdList()
                         initCollectionData(result.data)
                     }
                 }
@@ -169,9 +200,37 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList(isShowLoadingDialog = false)
+                        sendCommandFromCmdList()
                         binding.refreshLayout.finish()
                         initSensorData(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MD_MR_DEL_485_PORT1_SENSOR -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "移除传感器出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("移除成功")
+                            binding.rv.bindingAdapter.mutable.removeAt(deleteItemIndex)
+                            binding.rv.bindingAdapter.notifyItemRemoved(deleteItemIndex)
+                            if (binding.rv.bindingAdapter.modelCount < SENSOR_SIZE) {
+                                binding.rv.bindingAdapter.addFooter(
+                                    RVEmptyFooter(),
+                                    animation = true
+                                )
+                            } else {
+                                binding.rv.bindingAdapter.removeFooterAt(animation = true)
+                            }
+                        }
                     }
                 }
             }
@@ -193,14 +252,20 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
                 val sensorStatusList =
                     MoshiUtil.fromJson<List<MRSensorStatus>>(content) ?: return@launch
                 val list = sensorStatusList.map { sensorStatus ->
-                    var sensorItem = MRSensorItem(
+                    val strs = sensorStatus.model.split("_").toTypedArray()
+                    MRSensorItem(
                         sensorStatus.sta == "0",
-                        "雷达水位计",
-                        "214",
-                        "1",
+                        mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.modelName ?: "未知类型",
+                        strs[0],
+                        strs[1],
                     )
                 }
-                binding.rv.models = sensorStatusList
+                binding.rv.models = list
+                if (binding.rv.bindingAdapter.modelCount < SENSOR_SIZE) {
+                    binding.rv.bindingAdapter.addFooter(RVEmptyFooter(), animation = true)
+                } else {
+                    binding.rv.bindingAdapter.removeFooterAt(animation = true)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -209,42 +274,12 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
 
     companion object {
         fun newInstance() = MR702RS4851InterfaceFragment()
+        const val SENSOR_SIZE = 4
     }
 
     private fun testData() {
-        val list = mutableListOf<MRSensorItem>()
-        list.add(
-            MRSensorItem(
-                true,
-                "雷达水位计",
-                "214",
-                "1",
-            )
-        )
-        list.add(
-            MRSensorItem(
-                true,
-                "雷达水位计",
-                "214",
-                "2",
-            )
-        )
-        list.add(
-            MRSensorItem(
-                true,
-                "雷达水位计",
-                "214",
-                "3",
-            )
-        )
-        list.add(
-            MRSensorItem(
-                false,
-                "雷达水位计",
-                "214",
-                "4",
-            )
-        )
-        binding.rv.models = list
+        val content =
+            "[{\"model\": \"214_1\",\"sta\": \"0\"},{\"model\": \"214_2\",\"sta\": \"0\"},{\"model\": \"214_3\",\"sta\": \"2\"},{\"model\": \"214_3\",\"sta\": \"2\"}]"
+        initSensorData(content)
     }
 }

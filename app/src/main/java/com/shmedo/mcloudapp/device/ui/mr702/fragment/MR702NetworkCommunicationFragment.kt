@@ -27,6 +27,7 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702NetworkCommunicationBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
@@ -165,7 +166,8 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             wirelessNetEntity.toCommandString()
         )
         commandItems.add(command)
-        sendCommandFromCmdList()
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun closeEthernet() {
@@ -178,7 +180,8 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             wiredNetEntity.toCommandString()
         )
         commandItems.add(command)
-        sendCommandFromCmdList()
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -234,7 +237,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                     return
                 }
             }
-
             val wiredNetEntity = MRWiredNetEntity(
                 switch = "1",
                 dhcp = if (mStates.isManualVisible.get()) "0" else "1",
@@ -250,7 +252,8 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             )
             commandItems.add(command)
         }
-        sendCommandFromCmdList()
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -266,23 +269,8 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_WIRED_NETWORK)
         commandItems.add(command)
 
-        sendCommandFromCmdList()
-    }
-
-    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("下发指令失败: $errorMsg")
-    }
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-//        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-//            IOTCommandType.MD_MR_GET_DATA_NETWORK -> {
-//                netIotCommandViewModel.processCmdResult()
-//            }
-//
-//            else -> {}
-//        }
-
-        netIotCommandViewModel.processCmdResult()
+        showLoadingDialog(StringUtils.getString(R.string.loading))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -395,5 +383,4 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
-
 }

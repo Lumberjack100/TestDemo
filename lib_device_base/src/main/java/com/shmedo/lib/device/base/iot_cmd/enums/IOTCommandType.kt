@@ -746,6 +746,7 @@ enum class IOTCommandType(private val value: String) {
      * 传感器获取
      */
     MD_MR_GET_485_PORT1_SENSOR("md_get485port1_sensor"),
+    MD_MR_DEL_485_PORT1_SENSOR("md_del485port1_param"),
 
     /**
      * RS485-端口1 传感器参数获取

@@ -57,6 +57,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             queryStatusInfo()
@@ -75,40 +76,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
-
-        sendCommandFromCmdList(isShowLoadingDialog = false)
-    }
-
-    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelNearbyCommunicationTimeoutJob(false)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
-    ) {
-        Toaster.show("发送指令超时,请稍后尝试")
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("下发指令失败: $errorMsg")
-    }
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        netIotCommandViewModel.processCmdResult()
-    }
-
-    override fun doCmdResponseResultError(errorMsg: String) {
-        Toaster.show("指令响应错误: $errorMsg")
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doCmdResponseResultTimeOut(errorMsg: String) {
-        Toaster.show("指令响应超时: $errorMsg")
-        binding.refreshLayout.finish(false)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -126,7 +94,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList(isShowLoadingDialog = false)
+                        sendCommandFromCmdList()
                         binding.refreshLayout.finish()
                         val content: String = result.data
                         initStatusInfo(content)

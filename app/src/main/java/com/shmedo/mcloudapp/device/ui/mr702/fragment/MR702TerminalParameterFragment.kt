@@ -28,6 +28,7 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702TerminalParameterBinding
 import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
@@ -196,7 +197,6 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 Toaster.show("请输入上报间隔")
                 return
             }
-
             val entity = MRReportMethodEntity(
                 type = (reportMethodList.indexOf(mStates.reportMethod.get()) + 1).toString(),
                 basis = reportStartTimeList.indexOf(mStates.startTime.get()).toString(),
@@ -208,19 +208,18 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             )
             commandItems.add(command)
         } else {
-            if(mStates.screenRefreshTime.get().isEmpty()){
+            if (mStates.screenRefreshTime.get().isEmpty()) {
                 Toaster.show("请输入屏幕更新周期")
                 return
             }
-            if(mStates.screenBrightTime.get().isEmpty()){
+            if (mStates.screenBrightTime.get().isEmpty()) {
                 Toaster.show("请输入屏幕亮屏时间")
                 return
             }
-            if(mStates.screenPowerUpTime.get().isEmpty()){
+            if (mStates.screenPowerUpTime.get().isEmpty()) {
                 Toaster.show("请输入屏幕通电时间")
                 return
             }
-
             val entity = MRScreenParamEntity(
                 interval = mStates.screenRefreshTime.get().toString(),
                 otime = mStates.screenBrightTime.get().toString(),
@@ -233,7 +232,8 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             )
             commandItems.add(command)
         }
-        sendCommandFromCmdList()
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun setEditable(editable: Boolean) {
@@ -255,11 +255,8 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_SCREEN_PARAM)
         commandItems.add(command)
 
-        sendCommandFromCmdList()
-    }
-
-    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("下发指令失败: $errorMsg")
+        showLoadingDialog(StringUtils.getString(R.string.loading))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun doNetDispatchSuccess(cmdStr: String) {
@@ -321,7 +318,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        sendCommandFromCmdList{
                             Toaster.show("保存成功")
                             setEditable(false)
                         }
@@ -340,7 +337,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
+                        sendCommandFromCmdList{
                             Toaster.show("保存成功")
                             setEditable(false)
                         }
