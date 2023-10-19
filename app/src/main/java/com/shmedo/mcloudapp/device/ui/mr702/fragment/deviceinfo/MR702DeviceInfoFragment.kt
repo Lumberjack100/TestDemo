@@ -92,7 +92,7 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
                     arguments = bundle
                 }
             )
-        binding.viewpager.adapter = PageAdapter((mActivity as FragmentActivity), mFragments)
+        binding.viewpager.adapter = PageAdapter(this, mFragments)
         binding.viewpager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_DEFAULT
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)

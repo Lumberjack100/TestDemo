@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +16,7 @@ import com.blankj.utilcode.util.ResourceUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MR702InterfaceSensorConfig
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702InterfaceSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702InterfaceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.launch
@@ -40,6 +41,8 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
     private val binding: FragmentMr702InterfaceHomeBinding by lazy { getBinding() as FragmentMr702InterfaceHomeBinding }
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: MR702InterfaceHomeViewModel by activityViewModels()
+
+    private var mLayoutMediator: TabLayoutMediator? = null
 
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -52,7 +55,7 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
     private val normalColor: Int = Color.parseColor("#65A2CD")
     private val activeSize: Float = 15f
     private val normalSize: Float = 15f
-    private val tabs =
+    private val tabNames =
         arrayOf("RS485-1", "RS485-2", "RS485-3", "RS232-1", "RS232-2", "雨量", "DO", "DI")
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -124,8 +127,8 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
             },
         )
         binding.viewpager.isUserInputEnabled = false
-        binding.viewpager.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
-        binding.viewpager.adapter = PageAdapter((mActivity as FragmentActivity), mFragments)
+        binding.viewpager.offscreenPageLimit = tabNames.size
+        binding.viewpager.adapter = PageAdapter(this, mFragments)
         binding.viewpager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -133,29 +136,28 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
 
                 when (position) {
                     0, 1 -> {
-                        mStates.interfaceName.set(tabs[position] + "Modbus")
+                        mStates.interfaceName.set(tabNames[position] + "Modbus")
                         mStates.interfaceDesc.set("最多支持32支传感器接入")
                     }
 
                     2 -> {
-                        mStates.interfaceName.set(tabs[position] + "拓展接口")
+                        mStates.interfaceName.set(tabNames[position] + "拓展接口")
                         mStates.interfaceDesc.set("最多支持32支传感器接入")
                     }
 
                     else -> {
-                        mStates.interfaceName.set(tabs[position])
+                        mStates.interfaceName.set(tabNames[position])
                         mStates.interfaceDesc.set("北斗数传终端")
                     }
                 }
             }
         })
         binding.tabs.addOnTabSelectedListener(this)
-
-        TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
+        mLayoutMediator = TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
             val tabView =
                 LayoutInflater.from(mActivity).inflate(R.layout.custom_tab_mr702_interface, null)
             val textView = tabView.findViewById<TextView>(R.id.tabText)
-            textView.text = tabs[position]
+            textView.text = tabNames[position]
             if (position == 0) { // 第一个为默认选中
                 tabView.setBackgroundResource(activeBg)
                 textView.textSize = activeSize
@@ -166,7 +168,8 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
                 textView.setTextColor(normalColor)
             }
             tab.customView = tabView
-        }.attach()
+        }
+        mLayoutMediator?.attach()
     }
 
     private fun loadSensorConfig() {
@@ -218,10 +221,39 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
         override fun onToolbarTvClick() {
             setEditable(false)
         }
+
+        fun onShowSelectInterfacePopup() {
+            val selectionPopupView = MR702InterfaceSelectionPartShadowPopupView(requireContext())
+            selectionPopupView.setData(tabNames.toList(), binding.viewpager.currentItem)
+                .setSelectListener(object :
+                    MR702InterfaceSelectionPartShadowPopupView.OnSelectListener {
+                    override fun onSelect(name: String) {
+                        tabNames.indexOfFirst { it == name }.let {
+                            binding.viewpager.setCurrentItem(it, false)
+                        }
+                    }
+                })
+            XPopup.Builder(context)
+                .atView(binding.headLine)
+                .isViewMode(true)
+                .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+                .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
+                .enableDrag(false)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asCustom(selectionPopupView)
+                .show()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // TabLayout 解绑
+        mLayoutMediator?.detach()
+        mLayoutMediator = null
     }
 }

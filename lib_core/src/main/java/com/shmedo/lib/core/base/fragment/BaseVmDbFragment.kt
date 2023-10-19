@@ -143,4 +143,9 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        Timber.i("onSaveInstanceState,Fragment=%s", javaClass.simpleName)
+        super.onSaveInstanceState(outState)
+    }
 }

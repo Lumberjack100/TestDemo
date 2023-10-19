@@ -11,6 +11,7 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -30,6 +31,8 @@ import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
+import com.shmedo.mcloudapp.device.model.SensorModel
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702InterfaceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS4851InterfaceViewModel
 import kotlinx.coroutines.launch
@@ -80,8 +83,7 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
                         val item = getModel<MRSensorItem>()
 
                     }
-
-                    else -> Toaster.show("添加传感器")
+                    else -> showAddSensorPopup()
                 }
             }
             R.id.item_del.onClick {
@@ -89,9 +91,7 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
                 showMessage("确定删除此传感器吗？", "提示", "删除", {
                     deleteItemIndex = adapterPosition
                     deleteSensorCommand(item.model)
-                }, "取消", {
-
-                })
+                }, "取消")
             }
         }
     }
@@ -110,6 +110,24 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
 //                binding.rv.bindingAdapter.removeFooterAt(animation = true)
 //            }
         }
+    }
+
+    private fun showAddSensorPopup() {
+        val sensorList = mInterfaceHomeViewModel.sensorConfig["485port1"] ?: listOf()
+        val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
+        selectionPopupView.setData("请选择传感器类型", sensorList)
+            .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
+                override fun onSelect(sensorModel: SensorModel) {
+                   Toaster.show("选择了${sensorModel.modelName}")
+                }
+            })
+        XPopup.Builder(context)
+            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+            .enableDrag(false)
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .asCustom(selectionPopupView)
+            .show()
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -142,7 +160,6 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
      */
     private fun initSaveCommand() {
         commandItems.clear()
-
     }
 
     override fun lazyLoadData() {
@@ -274,7 +291,7 @@ class MR702RS4851InterfaceFragment : BaseIOTDeviceFragment() {
 
     companion object {
         fun newInstance() = MR702RS4851InterfaceFragment()
-        const val SENSOR_SIZE = 4
+        const val SENSOR_SIZE = 32
     }
 
     private fun testData() {

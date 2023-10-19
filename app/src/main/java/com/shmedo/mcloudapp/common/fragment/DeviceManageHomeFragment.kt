@@ -59,7 +59,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                 NetDeviceListFragment.newInstance(),
                 BleScannerListFragment.newInstance()
             )
-        binding.viewpager.adapter = PageAdapter((mActivity as FragmentActivity), mFragments)
+        binding.viewpager.adapter = PageAdapter(this, mFragments)
         binding.viewpager.offscreenPageLimit = 2
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)

@@ -1,6 +1,6 @@
 [
     {
-        "name": "485port1",
+        "interfaceName": "485port1",
         "models": [
             {
                 "modelID": 4,
@@ -20,7 +20,7 @@
         ]
     },
     {
-        "name": "485port2",
+        "interfaceName": "485port2",
         "models": [
             {
                 "modelID": 17,

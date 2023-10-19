@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:background="@drawable/bg_mr702_interface_tab_normal">
+
+        <TextView
+            android:id="@+id/tabText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{m}"
+            android:textColor="#65A2CD"
+            android:textSize="@dimen/text_size_15"
+            tools:text="全部" />
+
+    </LinearLayout>
+</layout>

@@ -9,7 +9,17 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
  * 创建时间:  2020/8/18 <br></br>
  * 描述：
  */
-class PageAdapter(fragmentActivity: FragmentActivity, private val mFragments: List<Fragment>) : FragmentStateAdapter(fragmentActivity) {
+class PageAdapter : FragmentStateAdapter {
+
+    private val mFragments: List<Fragment>
+
+    constructor(fragmentActivity: FragmentActivity, fragments: List<Fragment>) : super(fragmentActivity) {
+        mFragments = fragments
+    }
+
+    constructor(fragment: Fragment, fragments: List<Fragment>) : super(fragment) {
+        mFragments = fragments
+    }
 
     override fun createFragment(position: Int): Fragment {
         return mFragments[position]
@@ -19,3 +29,4 @@ class PageAdapter(fragmentActivity: FragmentActivity, private val mFragments: Li
         return mFragments.size
     }
 }
+

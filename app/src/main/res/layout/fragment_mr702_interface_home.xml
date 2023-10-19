@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.BaseClickProxy" />
+            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinterface.MR702InterfaceHomeFragment.ClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,15 +32,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:vm="@{toolbarVM}" />
 
+        <View
+            android:id="@+id/head_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar" />
+
         <FrameLayout
             android:id="@+id/fl_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_1"
             android:background="@color/white"
             android:paddingTop="@dimen/dimen_size_5"
             android:paddingBottom="@dimen/dimen_size_5"
-            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/head_line">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
@@ -52,15 +57,17 @@
                 app:tabGravity="start"
                 app:tabIndicatorHeight="0dp"
                 app:tabMode="scrollable"
-                app:tabPaddingStart="0dp"
                 app:tabPaddingEnd="@dimen/dimen_size_8"
+                app:tabPaddingStart="0dp"
                 app:tabRippleColor="@null" />
 
             <ImageView
+                android:id="@+id/iv_select_interface"
                 android:layout_width="33dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="@dimen/dimen_size_10"
+                android:onClick="@{() -> click.onShowSelectInterfacePopup()}"
                 android:src="@drawable/all_img" />
 
         </FrameLayout>
