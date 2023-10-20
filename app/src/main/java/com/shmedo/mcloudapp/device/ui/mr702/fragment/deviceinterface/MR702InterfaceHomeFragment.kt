@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ResourceUtils
@@ -23,7 +24,6 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702InterfaceHomeBinding
@@ -100,35 +100,55 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
             deviceInfo,
             bleDevice
         )
-        val mFragments = listOf<Fragment>(
-            MR702RS4851InterfaceFragment.newInstance().apply {
-                arguments = bundle
-            },
-            MR702RS4852InterfaceFragment.newInstance().apply {
-                arguments = bundle
-            },
-            MR702RS4853InterfaceFragment.newInstance().apply {
-                arguments = bundle
-            },
-            MR702RS2321InterfaceFragment.newInstance().apply {
-                arguments = bundle
-            },
-            MR702RS2322InterfaceFragment.newInstance().apply {
-                arguments = bundle
-            },
-            MR702RainInterfaceFragment.newInstance().apply {
-                arguments = bundle
-            },
-            MR702DOInterfaceFragment.newInstance().apply {
-                arguments = bundle
-            },
-            MR702DIInterfaceFragment.newInstance().apply {
-                arguments = bundle
-            },
-        )
         binding.viewpager.isUserInputEnabled = false
-        binding.viewpager.offscreenPageLimit = tabNames.size
-        binding.viewpager.adapter = PageAdapter(this, mFragments)
+           //设置缓存数量，对应 RecyclerView 中的 mCachedViews，即屏幕外的视图数量
+//        ((binding.viewpager.getChildAt(0)) as RecyclerView).setItemViewCacheSize(0)
+//        binding.viewpager.offscreenPageLimit = tabNames.size
+        binding.viewpager.adapter = object : FragmentStateAdapter(this) {
+            override fun getItemCount(): Int {
+                return tabNames.size
+            }
+
+            override fun createFragment(position: Int): Fragment {
+                when (position) {
+                    0 -> return MR702RS4851InterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+
+                    1 -> return MR702RS4852InterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+
+                    2 -> return MR702RS4853InterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+
+                    3 -> return MR702RS2321InterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+
+                    4 -> return MR702RS2322InterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+
+                    5 -> return MR702RainInterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+
+                    6 -> return MR702DOInterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+
+                    7 -> return MR702DIInterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+
+                    else -> return MR702RS4851InterfaceFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                }
+            }
+        }
         binding.viewpager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -153,22 +173,24 @@ class MR702InterfaceHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListen
             }
         })
         binding.tabs.addOnTabSelectedListener(this)
-        mLayoutMediator = TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
-            val tabView =
-                LayoutInflater.from(mActivity).inflate(R.layout.custom_tab_mr702_interface, null)
-            val textView = tabView.findViewById<TextView>(R.id.tabText)
-            textView.text = tabNames[position]
-            if (position == 0) { // 第一个为默认选中
-                tabView.setBackgroundResource(activeBg)
-                textView.textSize = activeSize
-                textView.setTextColor(activeColor)
-            } else {
-                tabView.setBackgroundResource(normalBg)
-                textView.textSize = normalSize
-                textView.setTextColor(normalColor)
+        mLayoutMediator =
+            TabLayoutMediator(binding.tabs, binding.viewpager, true, false) { tab, position ->
+                val tabView =
+                    LayoutInflater.from(mActivity)
+                        .inflate(R.layout.custom_tab_mr702_interface, null)
+                val textView = tabView.findViewById<TextView>(R.id.tabText)
+                textView.text = tabNames[position]
+                if (position == 0) { // 第一个为默认选中
+                    tabView.setBackgroundResource(activeBg)
+                    textView.textSize = activeSize
+                    textView.setTextColor(activeColor)
+                } else {
+                    tabView.setBackgroundResource(normalBg)
+                    textView.textSize = normalSize
+                    textView.setTextColor(normalColor)
+                }
+                tab.customView = tabView
             }
-            tab.customView = tabView
-        }
         mLayoutMediator?.attach()
     }
 

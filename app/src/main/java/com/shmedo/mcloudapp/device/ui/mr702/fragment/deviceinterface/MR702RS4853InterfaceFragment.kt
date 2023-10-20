@@ -3,31 +3,41 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinterface
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.ConvertUtils
+import com.drake.brv.utils.models
+import com.drake.brv.utils.setup
+import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port3SensorStatus
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs4853InterfaceBinding
-import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702InterfaceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS4853InterfaceViewModel
+import org.koin.android.ext.android.inject
 
 class MR702RS4853InterfaceFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMr702Rs4853InterfaceBinding by lazy { getBinding() as FragmentMr702Rs4853InterfaceBinding }
     private val mInterfaceHomeViewModel: MR702InterfaceHomeViewModel by activityViewModels()
     private val mStates: MR702RS4853InterfaceViewModel by viewModels()
-
+    private val iotParseManager: IOTParserManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rs485_3_interface, BR.vm, mStates)
             .addBindingParam(BR.homeVM, mInterfaceHomeViewModel)
-            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         initRefresh()
+        initSensorAdapter()
     }
 
     private fun initRefresh() {
@@ -38,31 +48,42 @@ class MR702RS4853InterfaceFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun initSensorAdapter() {
+        binding.rv.setup { rv ->
+            rv.addItemDecoration(
+                MyGridSpacingItemDecoration(
+                    2,
+                    ConvertUtils.dp2px(8f),
+                    false
+                )
+            )
+            addType<MRSensorItem>(R.layout.item_mr702_interface_sensor_item)
+            R.id.item.onClick {
+                val item = getModel<MRSensorItem>()
 
-    inner class ClickProxy : BaseClickProxy() {
-        fun onSubmitClick() {
-
+                val bundle = MR702RS4853InterfaceSensorParamFragment.newBundleArguments(
+                    0,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(
+                    R.id.action_mR702InterfaceHomeFragment_to_mR702RS4853InterfaceSensorParamFragment,
+                    bundle
+                )
+            }
         }
-    }
-    /**
-     * 保存采集参数
-     */
-    private fun initSaveCommand() {
-        commandItems.clear()
     }
 
     override fun lazyLoadData() {
-//        binding.refreshLayout.autoRefresh()
-//        testData()
+        binding.refreshLayout.autoRefresh()
+        testData()
     }
 
     private fun queryInfo() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_485_PORT1_COLL)
-        commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_485_PORT1_SENSOR, "index=0")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_485_PORT3_SENSOR_STATUS)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -71,10 +92,71 @@ class MR702RS4853InterfaceFragment : BaseIOTDeviceFragment() {
         if (viewLifecycleOwner.lifecycle.currentState < androidx.lifecycle.Lifecycle.State.RESUMED) {
             return
         }
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
 
+            IOTCommandType.MD_MR_GET_485_PORT3_SENSOR_STATUS -> {
+                val result = iotParseManager.parse<MRRS485Port3SensorStatus>(
+                    cmdStr,
+                    IOTCommandType.MD_MR_GET_485_PORT3_SENSOR_STATUS
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询状态出错: ${result.message}"
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList()
+                        binding.refreshLayout.finish()
+                        initSensorData(result.data)
+                    }
+                }
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun initSensorData(sensorStatus: MRRS485Port3SensorStatus) {
+        val list = mutableListOf<MRSensorItem>()
+        var item = MRSensorItem(
+            isPlugin = sensorStatus.solarstatus == "1",
+            name = "太阳能",
+            addr = sensorStatus.solarid
+        )
+        list.add(item)
+
+        item = MRSensorItem(
+            isPlugin = sensorStatus.ysstatus == "1",
+            name = "声光报警器",
+            addr = sensorStatus.ysid
+        )
+        list.add(item)
+
+        item = MRSensorItem(
+            isPlugin = sensorStatus.ledstatus == "1",
+            name = "LED屏",
+            addr = sensorStatus.ledid
+        )
+        list.add(item)
+        binding.rv.models = list
     }
 
     companion object {
         fun newInstance() = MR702RS4853InterfaceFragment()
+    }
+
+    private fun testData() {
+        val sensorStatus: MRRS485Port3SensorStatus = MRRS485Port3SensorStatus(
+            solarid = "1",
+            solarstatus = "1",
+            ysid = "2",
+            ysstatus = "1",
+            ledid = "3",
+            ledstatus = "0"
+        )
+        initSensorData(sensorStatus)
     }
 }

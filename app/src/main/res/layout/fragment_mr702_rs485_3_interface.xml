@@ -14,9 +14,6 @@
             name="vm"
             type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RS4853InterfaceViewModel" />
 
-        <variable
-            name="click"
-            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinterface.MR702RS4853InterfaceFragment.ClickProxy" />
     </data>
 
     <com.drake.brv.PageRefreshLayout
@@ -42,6 +39,33 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_8"
                     app:vm="@{homeVM}" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:layout_marginBottom="@dimen/dimen_size_15"
+                    android:drawablePadding="-80dp"
+                    android:text="外接设备"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_mr702_interface_info_sensor_config" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:clipToPadding="false"
+                    android:padding="@dimen/dimen_size_15"
+                    android:splitMotionEvents="false"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="2"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_mr702_interface_sensor_item" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>

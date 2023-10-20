@@ -85,7 +85,22 @@
         android:id="@+id/mR702InterfaceHomeFragment"
         android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinterface.MR702InterfaceHomeFragment"
         android:label="MR702InterfaceHomeFragment"
-        tools:layout="@layout/fragment_mr702_interface_home" />
+        tools:layout="@layout/fragment_mr702_interface_home" >
+
+        <action
+            android:id="@+id/action_mR702InterfaceHomeFragment_to_mR702RS4853InterfaceSensorParamFragment"
+            app:destination="@id/mR702RS4853InterfaceSensorParamFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mR702RS4853InterfaceSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinterface.MR702RS4853InterfaceSensorParamFragment"
+        android:label="MR702RS4853InterfaceSensorParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_3_interface_sensor_param" />
 
     <fragment
         android:id="@+id/mR702TerminalParameterFragment"

@@ -605,7 +605,6 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的 RTK
      */
     E40_MD_GET_RTK("md_getrtk"),
-
     /**
      * 设置E40 的 RTK
      */
@@ -615,7 +614,6 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的 CORS 服务参数
      */
     E40_MD_GET_CORS("md_getntrip"),
-
     /**
      * 设置E40 的 CORS 服务参数
      */
@@ -625,7 +623,6 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的板卡解算参数
      */
     E40_MD_GET_BOARDSOLUTION("md_getembedams"),
-
     /**
      * 设置E40 的板卡解算参数
      */
@@ -635,7 +632,6 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的有线网络配置置参数
      */
     E40_MD_GET_ETHERNET("md_geteth0"),
-
     /**
      * 设置E40 的有线网络配置置参数
      */
@@ -645,7 +641,6 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的串口配置置参数
      */
     E40_MD_GET_DB_GUART("md_getdbguart"),
-
     /**
      * 设置E40 的串口配置置参数
      */
@@ -655,7 +650,6 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的GPS工作参数
      */
     E40_MD_GET_GPS_PARAM("md_getgpsparam"),
-
     /**
      * 设置E40 的GPS工作参数
      */
@@ -665,7 +659,6 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的基站位置信息
      */
     E40_MD_GET_BASE_POSITION("md_getbaseposition"),
-
     /**
      * 设置E40 的基站位置信息
      */
@@ -675,7 +668,6 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 NMEA输出内容及输出频率
      */
     E40_MD_GET_NMEA_TIME("md_getnmeatime"),
-
     /**
      * 设置E40 NMEA输出内容及输出频率
      */
@@ -702,84 +694,78 @@ enum class IOTCommandType(private val value: String) {
      * 4G是网络配置
      */
     MD_MR_GET_DATA_NETWORK("md_mrgetdatanetwork"),
-
     MD_MR_SET_DATA_NETWORK("md_mrsetdatanetwork"),
 
     /**
      *  有线网络配置
      */
     MD_MR_GET_WIRED_NETWORK("md_mrgetwirednetwork"),
-
     MD_MR_SET_WIRED_NETWORK("md_mrsetwirednetwork"),
 
     /**
      *  终端参数-上报方式
      */
     MD_MR_GET_REPORT_METHOD("md_mrgetreporttype"),
-
     MD_MR_SET_REPORT_METHOD("md_mrsetreporttype"),
 
     /**
      *  终端参数-本机屏幕
      */
     MD_MR_GET_SCREEN_PARAM("md_mrgetscreen"),
-
     MD_MR_SET_SCREEN_PARAM("md_mrsetscreen"),
 
     /**
      * 获取数据中心状态
      */
     MD_MR_GET_DATA_CENTER_STATUS("md_mrgetcenterstatus"),
-
     MD_MR_GET_DATA_CENTER("md_mrgetdatacenter"),
-
     MD_MR_SET_DATA_CENTER("md_mrsetdatacenter"),
 
     /**
      * RS485-端口1 获取采集控制参数配置
      */
     MD_MR_GET_485_PORT1_COLL("md_get485port1_coll"),
-
     MD_MR_SET_485_PORT1_COLL("md_set485port1_coll"),
-
     /**
      * 传感器获取
      */
     MD_MR_GET_485_PORT1_SENSOR("md_get485port1_sensor"),
     MD_MR_DEL_485_PORT1_SENSOR("md_del485port1_param"),
-
     /**
      * RS485-端口1 传感器参数获取
      */
     MD_MR_GET_485_PORT1_SENSOR_PARAM("md_get485port1_param"),
-
     MD_MR_SET_485_PORT1_SENSOR_PARAM("md_set485port1_param"),
 
     /**
      * RS485-端口2 获取采集控制参数配置
      */
     MD_MR_GET_485_PORT2_COLL("md_get485port2_coll"),
-
     MD_MR_SET_485_PORT2_COLL("md_set485port2_coll"),
-
     /**
      * RS485-端口2 获取串口参数配置
      */
     MD_MR_GET_485_PORT2_UART("md_get485port2_uart"),
-
     MD_MR_SET_485_PORT2_UART("md_set485port2_uart"),
-
     /**
      * 传感器获取
      */
     MD_MR_GET_485_PORT2_SENSOR("md_get485port2_sensor"),
-
     /**
      * RS485-端口2 传感器参数获取
      */
     MD_MR_GET_485_PORT2_SENSOR_PARAM("md_get485port2_param"),
-
     MD_MR_SET_485_PORT2_SENSOR_PARAM("md_set485port2_param"),
+
+    /**
+     * RS485-3-模块状态
+     */
+    MD_MR_GET_485_PORT3_SENSOR_STATUS("md_mrgetrs485p3status"),
+    /**
+     * RS485-端口3 传感器参数获取
+     */
+    MD_MR_GET_485_PORT3_SENSOR_PARAM("md_mrgetrs485p3param"),
+    MD_MR_SET_485_PORT3_SENSOR_PARAM("md_mrsetrs485p3param"),
 
     // </editor-fold>
 

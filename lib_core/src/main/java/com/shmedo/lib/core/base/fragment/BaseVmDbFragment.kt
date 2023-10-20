@@ -123,6 +123,10 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
         return false
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.i("onCreate,Fragment=%s", javaClass.simpleName)
+        super.onCreate(savedInstanceState)
+    }
     override fun onPause() {
         Timber.i("onPause,Fragment=%s", javaClass.simpleName)
         super.onPause()
