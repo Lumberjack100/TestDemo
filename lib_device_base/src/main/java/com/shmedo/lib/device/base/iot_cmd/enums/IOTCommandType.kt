@@ -724,49 +724,78 @@ enum class IOTCommandType(private val value: String) {
     /**
      * RS485-端口1 获取采集控制参数配置
      */
-    MD_MR_GET_485_PORT1_COLL("md_get485port1_coll"),
-    MD_MR_SET_485_PORT1_COLL("md_set485port1_coll"),
+    MD_MR_GET_RS485_PORT1_COLL("md_get485port1_coll"),
+    MD_MR_SET_RS485_PORT1_COLL("md_set485port1_coll"),
     /**
      * 传感器获取
      */
-    MD_MR_GET_485_PORT1_SENSOR("md_get485port1_sensor"),
-    MD_MR_DEL_485_PORT1_SENSOR("md_del485port1_param"),
+    MD_MR_GET_RS485_PORT1_SENSOR("md_get485port1_sensor"),
+    MD_MR_DEL_RS485_PORT1_SENSOR("md_del485port1_param"),
     /**
      * RS485-端口1 传感器参数获取
      */
-    MD_MR_GET_485_PORT1_SENSOR_PARAM("md_get485port1_param"),
-    MD_MR_SET_485_PORT1_SENSOR_PARAM("md_set485port1_param"),
+    MD_MR_GET_RS485_PORT1_SENSOR_PARAM("md_get485port1_param"),
+    MD_MR_SET_RS485_PORT1_SENSOR_PARAM("md_set485port1_param"),
 
     /**
      * RS485-端口2 获取采集控制参数配置
      */
-    MD_MR_GET_485_PORT2_COLL("md_get485port2_coll"),
-    MD_MR_SET_485_PORT2_COLL("md_set485port2_coll"),
+    MD_MR_GET_RS485_PORT2_COLL("md_get485port2_coll"),
+    MD_MR_SET_RS485_PORT2_COLL("md_set485port2_coll"),
     /**
      * RS485-端口2 获取串口参数配置
      */
-    MD_MR_GET_485_PORT2_UART("md_get485port2_uart"),
-    MD_MR_SET_485_PORT2_UART("md_set485port2_uart"),
+    MD_MR_GET_RS485_PORT2_UART("md_get485port2_uart"),
+    MD_MR_SET_RS485_PORT2_UART("md_set485port2_uart"),
     /**
      * 传感器获取
      */
-    MD_MR_GET_485_PORT2_SENSOR("md_get485port2_sensor"),
+    MD_MR_GET_RS485_PORT2_SENSOR("md_get485port2_sensor"),
     /**
      * RS485-端口2 传感器参数获取
      */
-    MD_MR_GET_485_PORT2_SENSOR_PARAM("md_get485port2_param"),
-    MD_MR_SET_485_PORT2_SENSOR_PARAM("md_set485port2_param"),
+    MD_MR_GET_RS485_PORT2_SENSOR_PARAM("md_get485port2_param"),
+    MD_MR_SET_RS485_PORT2_SENSOR_PARAM("md_set485port2_param"),
 
     /**
      * RS485-3-模块状态
      */
-    MD_MR_GET_485_PORT3_SENSOR_STATUS("md_mrgetrs485p3status"),
+    MD_MR_GET_RS485_PORT3_SENSOR_STATUS("md_mrgetrs485p3status"),
     /**
      * RS485-端口3 传感器参数获取
      */
-    MD_MR_GET_485_PORT3_SENSOR_PARAM("md_mrgetrs485p3param"),
-    MD_MR_SET_485_PORT3_SENSOR_PARAM("md_mrsetrs485p3param"),
+    MD_MR_GET_RS485_PORT3_SENSOR_PARAM("md_mrgetrs485p3param"),
+    MD_MR_SET_RS485_PORT3_SENSOR_PARAM("md_mrsetrs485p3param"),
 
+    /**
+     * RS232-1-摄像头 参数获取
+     */
+    MD_MR_GET_RS232_PORT1_PARAM("md_mrgetrs232p1param"),
+    MD_MR_SET_RS232_PORT1_PARAM("md_mrsetrs232p1param"),
+
+    /**
+     * RS232-2-北斗数据终端 参数获取
+     */
+    MD_MR_GET_RS232_PORT2_PARAM("md_mrgetrs232p2param"),
+    MD_MR_SET_RS232_PORT2_PARAM("md_mrsetrs232p2param"),
+
+    /**
+     * 雨量计 参数获取
+     */
+    MD_MR_GET_RAIN_GAUGE_PORT_PARAM("md_mrgetraingauge"),
+    MD_MR_SET_RAIN_GAUGE_PORT_PARAM("md_mrsetraingauge"),
+
+    /**
+     * DO 参数获取
+     */
+    MD_MR_GET_DO_PORT_PARAM("md_mrgetdostatus"),
+    MD_MR_SET_DO_PORT_PARAM("md_mrsetdostatus"),
+
+    /**
+     * DI 参数获取
+     */
+    MD_MR_GET_DI_PORT_PARAM("md_mrgetdistatus"),
+    MD_MR_SET_DI_PORT_PARAM("md_mrsetdistatus"),
     // </editor-fold>
 
     /**

@@ -147,6 +147,44 @@
         <item>河南水利平台</item>
         <item>米度水文平台</item>
     </string-array>
+
+    <string-array name="mr_rs485_port3_led_type">
+        <item>类型1</item>
+        <item>类型2</item>
+    </string-array>
+
+    <string-array name="mr_rs232_port1_camera_model">
+        <item>类型1</item>
+        <item>类型2</item>
+        <item>类型3</item>
+    </string-array>
+
+    <string-array name="mr_rs232_port2_camera_resolution">
+        <item>分辨率1</item>
+        <item>分辨率2</item>
+        <item>分辨率3</item>
+    </string-array>
+
+    <string-array name="mr_data_bit">
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <string-array name="mr_check_bit">
+        <item>NONE</item>
+        <item>ODD</item>
+        <item>EVEN</item>
+        <item>MARK</item>
+        <item>SPACE</item>
+    </string-array>
+
+    <string-array name="mr_stop_bit">
+        <item>1</item>
+        <item>1.5</item>
+        <item>2</item>
+    </string-array>
     <!-- MR702 end-->
 
 </resources>

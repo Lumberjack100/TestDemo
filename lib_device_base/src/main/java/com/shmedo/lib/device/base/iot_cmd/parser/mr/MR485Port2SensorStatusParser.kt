@@ -17,5 +17,5 @@ class MR485Port2SensorStatusParser: IOTCommandParser<MRSensorStatus> {
             chl = keyValueMap.getOrDefault("chl", chl)
         }
     }
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_485_PORT2_SENSOR
+    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR
 }

@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="vm"
+            name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.MR702TerminalParameterViewModel" />
 
         <variable
@@ -36,7 +36,7 @@
 
                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                     style="@style/Common_EditItem_EditText_Style"
-                    android:text="@={vm.screenRefreshTime}"
+                    android:text="@={stateVM.screenRefreshTime}"
                     app:isCharacterFilter="@{false}"
                     app:isNumberFilter="@{false}"
                     app:lengthFilter="@{4}" />
@@ -54,7 +54,7 @@
 
                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                     style="@style/Common_EditItem_EditText_Style"
-                    android:text="@={vm.screenBrightTime}"
+                    android:text="@={stateVM.screenBrightTime}"
                     app:isCharacterFilter="@{false}"
                     app:isNumberFilter="@{false}"
                     app:lengthFilter="@{4}" />
@@ -72,7 +72,7 @@
 
                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                     style="@style/Common_EditItem_EditText_Style"
-                    android:text="@={vm.screenPowerUpTime}"
+                    android:text="@={stateVM.screenPowerUpTime}"
                     app:isCharacterFilter="@{false}"
                     app:isNumberFilter="@{false}"
                     app:lengthFilter="@{4}" />
@@ -89,7 +89,7 @@
                 <TextView
                     style="@style/Common_EditItem_EditText_Style"
                     android:hint=""
-                    android:text='@{vm.lightness+"%"}'
+                    android:text='@{stateVM.lightness+"%"}'
                     android:textColor="@color/colorPrimary"
                     tools:text="32%" />
 
@@ -99,11 +99,12 @@
                 style="@android:style/Widget.Material.SeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/text_size_15"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:layout_marginBottom="@dimen/dimen_size_15"
                 android:max="100"
                 android:maxHeight="@dimen/dimen_size_8"
                 android:min="10"
-                android:progress="@={vm.lightness}"
+                android:progress="@={stateVM.lightness}"
                 android:progressDrawable="@drawable/seekbar_progress_blue"
                 android:thumb="@drawable/ic_seekbar_thumb"
                 tools:progress="25" />

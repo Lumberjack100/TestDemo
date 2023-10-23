@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="vm"
+            name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.MR702TerminalParameterViewModel" />
 
         <variable
@@ -53,7 +53,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@{vm.reportMethod}"
+                    android:text="@{stateVM.reportMethod}"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17"
                     tools:text="定时定点上报" />
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="请选择时间"
-                    android:text="@{vm.startTime}"
+                    android:text="@{stateVM.startTime}"
                     android:textColor="@color/title_text_color"
                     android:textColorHint="@color/text_color_hint"
                     android:textSize="@dimen/text_size_17" />
@@ -128,7 +128,7 @@
                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                     android:id="@+id/ipET"
                     style="@style/MR702_Terminal_Param_EditText_Style"
-                    android:text="@={vm.interval}"
+                    android:text="@={stateVM.interval}"
                     app:isCharacterFilter="@{false}"
                     app:isNumberFilter="@{false}"
                     app:lengthFilter="@{4}" />

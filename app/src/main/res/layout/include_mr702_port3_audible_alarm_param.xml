@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3SensorParamViewModel" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                android:text="播放时长(s)"
+                tools:textColor="@color/title_text_color" />
+
+            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                style="@style/Common_EditItem_EditText_Style"
+                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                android:hint="请输入"
+                android:text="@={stateVM.duration}"
+                app:isCharacterFilter="@{false}"
+                app:isNumberFilter="@{true}"
+                app:lengthFilter="@{5}" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                android:text="切换间隔(ms)"
+                tools:textColor="@color/title_text_color" />
+
+            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                style="@style/Common_EditItem_EditText_Style"
+                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                android:hint="请输入"
+                android:text="@={stateVM.interval}"
+                app:isCharacterFilter="@{false}"
+                app:isNumberFilter="@{true}"
+                app:lengthFilter="@{5}" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                android:text="音量设置"
+                tools:textColor="@color/title_text_color" />
+
+            <TextView
+                style="@style/Common_EditItem_EditText_Style"
+                android:hint=""
+                android:text='@{stateVM.volume+"%"}'
+                android:textColor="@color/colorPrimary"
+                tools:text="32%" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingBottom="@dimen/dimen_size_25">
+
+            <androidx.appcompat.widget.AppCompatSeekBar
+                style="@android:style/Widget.Material.SeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:max="100"
+                android:maxHeight="@dimen/dimen_size_8"
+                android:min="10"
+                android:progress="@={stateVM.volume}"
+                android:progressDrawable="@drawable/seekbar_progress_blue"
+                android:thumb="@drawable/ic_seekbar_thumb"
+                tools:progress="25" />
+
+        </FrameLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

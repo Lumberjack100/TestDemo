@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.device.model.MRDODIPortItem" />
+    </data>
+
+    <FrameLayout
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@{m.checked?@drawable/mr702_do_port_item_bright_bg:@drawable/mr702_do_port_item_gray_bg}"
+        android:minHeight="100dp"
+        tools:background="@drawable/mr702_do_port_item_bright_bg">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{m.name}"
+                android:textColor="@{m.checked?@color/colorPrimary:@color/title_text_color}"
+                android:textSize="@dimen/text_size_20"
+                android:textStyle="bold"
+                tools:text="K1"
+                tools:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:text='@{m.checked?"开启":"关闭"}'
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17"
+                tools:text="开启" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </FrameLayout>
+</layout>

@@ -33,5 +33,5 @@ class MRRS485Port3SensorParamParser: IOTCommandParser<MRRS485Port3SensorParam> {
             }
         }
 
-        override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_485_PORT3_SENSOR_PARAM
+        override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_PARAM
 }

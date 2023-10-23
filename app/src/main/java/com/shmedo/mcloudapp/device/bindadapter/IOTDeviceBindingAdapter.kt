@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.device.bindadapter
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.blankj.utilcode.util.ColorUtils
+import com.kyleduo.switchbutton.SwitchButton
 import com.shmedo.mcloudapp.R
 
 /**
@@ -49,5 +50,14 @@ object IOTDeviceBindingAdapter {
             if (enabled) ColorUtils.getColor(if (enabledColorRes == 0) R.color.title_text_color else enabledColorRes)
             else ColorUtils.getColor(if (disabledColorRes == 0) R.color.sub_title_text_color else disabledColorRes)
         )
+    }
+
+    @JvmStatic
+    @BindingAdapter(
+        value = ["checkedImmediatelyNoEvent"],
+        requireAll = false
+    )
+    fun setCheckedImmediatelyNoEvent(view: SwitchButton, checked: Boolean) {
+        view.isChecked = checked
     }
 }

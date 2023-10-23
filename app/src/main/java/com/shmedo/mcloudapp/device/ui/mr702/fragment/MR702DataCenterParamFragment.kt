@@ -310,6 +310,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_DATA_CENTER,
             entity.toCommandString()
         )
+        commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -442,6 +443,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MD_MR_SET_DATA_CENTER -> {
+                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -454,7 +456,6 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("保存成功")
-                            setEditable(false)
                         }
                     }
                 }

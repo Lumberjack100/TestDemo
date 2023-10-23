@@ -53,7 +53,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     private val ipModeList by lazy { Utils.getApp().resources.getStringArray(R.array.ip_mode) }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_network_communication, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_mr702_network_communication, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
@@ -318,6 +318,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MD_MR_SET_DATA_NETWORK -> {
+                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -330,13 +331,13 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("保存成功")
-                            setEditable(false)
                         }
                     }
                 }
             }
 
             IOTCommandType.MD_MR_SET_WIRED_NETWORK -> {
+                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -349,7 +350,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("保存成功")
-                            setEditable(false)
                         }
                     }
                 }

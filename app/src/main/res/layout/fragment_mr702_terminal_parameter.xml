@@ -6,13 +6,13 @@
     <data>
 
         <variable
-            name="vm"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702TerminalParameterViewModel" />
-
-        <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
 
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702TerminalParameterViewModel" />
+        
         <variable
             name="click"
             type="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702TerminalParameterFragment.ClickProxy" />
@@ -75,16 +75,16 @@
             <include
                 android:id="@+id/ll_report_method"
                 layout="@layout/include_mr702_report_method"
-                visible="@{vm.isReportMethodVisible }"
+                visible="@{stateVM.isReportMethodVisible }"
                 app:click="@{click}"
-                app:vm="@{vm}"
+                app:stateVM="@{stateVM}"
                 tools:visibility="visible" />
 
             <include
                 layout="@layout/include_mr702_screen"
-                visible="@{!vm.isReportMethodVisible }"
+                visible="@{!stateVM.isReportMethodVisible }"
                 app:click="@{click}"
-                app:vm="@{vm}"
+                app:stateVM="@{stateVM}"
                 tools:visibility="gone" />
 
         </FrameLayout>
@@ -93,7 +93,7 @@
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"
-            visible="@{vm.isEditable }"
+            visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="15dp"
             android:text="保存"

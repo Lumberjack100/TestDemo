@@ -6,7 +6,7 @@
     android:gravity="center"
     android:minWidth="80dp"
     android:minHeight="32dp"
-    tools:background="@drawable/bg_mr702_interface_tab_normal">
+    tools:background="@drawable/bg_mr702_port_tab_normal">
 
     <TextView
         android:id="@+id/tabText"

@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.blankj.utilcode.util.ColorUtils
@@ -44,7 +43,7 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
     private val tabs = arrayOf("基本信息", "运行状态", "接口状态", "模块状态")
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_device_info, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_mr702_device_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -85,7 +84,7 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
                 MR702RunningStatusInfoFragment.newInstance().apply {
                     arguments = bundle
                 },
-                MR702InterfaceStatusInfoFragment.newInstance().apply {
+                MR702PortStatusInfoFragment.newInstance().apply {
                     arguments = bundle
                 },
                 MR702ModuleStatusInfoFragment.newInstance().apply {

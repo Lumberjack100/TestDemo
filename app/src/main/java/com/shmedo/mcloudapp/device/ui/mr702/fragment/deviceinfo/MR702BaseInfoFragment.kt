@@ -25,7 +25,7 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_base_info, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_mr702_base_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {

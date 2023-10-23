@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="homeVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RS232Port2ViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702RS232Port2Fragment.ClickProxy" />
+    </data>
+
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="60dp"
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/include_mr702_port_common_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_8"
+                    app:vm="@{homeVM}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:text="北斗数据终端配置"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="状态" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@null"
+                        android:text="@{stateVM.status}"
+                        android:textSize="17sp"
+                        tools:text="已接入" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <RelativeLayout
+                    style="@style/SwitchButton_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/SwitchButton_TitleStyle"
+                        android:text="开关"
+                        android:textColor="@{homeVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
+
+                    <com.kyleduo.switchbutton.SwitchButton
+                        android:id="@+id/sensorSB"
+                        style="@style/SwitchButton_ButtonStyle"
+                        android:enabled="@{homeVM.isEditable}"
+                        android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                        app:kswAnimationDuration="100"
+                        app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
+                        app:kswThumbHeight="18dp"
+                        app:kswThumbRangeRatio="2.3"
+                        app:kswThumbWidth="18dp" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:text="串口参数"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:text="目的地址"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:hint="请输入"
+                        android:text="@={stateVM.address}"
+                        app:isCharacterFilter="@{false}"
+                        app:isNumberFilter="@{false}"
+                        app:lengthFilter="@{20}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:text="波特率(Bps)"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:hint="请输入"
+                        android:text="@={stateVM.baudRate}"
+                        app:isCharacterFilter="@{false}"
+                        app:isNumberFilter="@{true}"
+                        app:lengthFilter="@{6}" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                    android:onClick="@{()->click.onDataBitChooseClick()}">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:text="数据位" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:drawableEnd="@drawable/ic_arrow_down"
+                        android:text="@{stateVM.dataBit}"
+                        tools:text="5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                    android:onClick="@{()->click.onCheckBitChooseClick()}">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:text="校验位" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:drawableEnd="@drawable/ic_arrow_down"
+                        android:text="@{stateVM.checkBit}"
+                        tools:text="NONE" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                    android:onClick="@{()->click.onStopBitChooseClick()}">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:text="停止位" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:drawableEnd="@drawable/ic_arrow_down"
+                        android:text="@{stateVM.stopBit}"
+                        tools:text="2" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btn_confirm"
+                    style="@style/SubmitButton_ColorPrimary"
+                    onClickWithDebouncing="@{()->click.onSubmitClick()}"
+                    visible="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                    android:layout_marginBottom="15dp"
+                    android:text="保存"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/scrollView" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+    </com.drake.brv.PageRefreshLayout>
+</layout>

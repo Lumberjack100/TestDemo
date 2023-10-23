@@ -16,5 +16,5 @@ class MR485Port2CollectionParamParser : IOTCommandParser<MRCollectionParam> {
             collcycle = keyValueMap.getOrDefault("collcycle", collcycle)
         }
     }
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_485_PORT2_COLL
+    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT2_COLL
 }

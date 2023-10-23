@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="vm"
+            name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel" />
 
     </data>
@@ -39,7 +39,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.productname}"
+                        android:text="@{stateVM.wrapBaseInfo.productname}"
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -54,7 +54,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.producttype}"
+                        android:text="@{stateVM.wrapBaseInfo.producttype}"
                         tools:text="MR702-SL" />
 
                 </LinearLayout>
@@ -69,7 +69,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.regcode}"
+                        android:text="@{stateVM.wrapBaseInfo.regcode}"
                         tools:text="mjkah1882910" />
 
                 </LinearLayout>
@@ -84,7 +84,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.sn}"
+                        android:text="@{stateVM.wrapBaseInfo.sn}"
                         tools:text="modo-1819929190" />
 
                 </LinearLayout>
@@ -99,7 +99,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.ver}"
+                        android:text="@{stateVM.wrapBaseInfo.ver}"
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -114,7 +114,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.imei}"
+                        android:text="@{stateVM.wrapBaseInfo.imei}"
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -129,7 +129,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{vm.wrapBaseInfo.temp+"℃"}'
+                        android:text='@{stateVM.wrapBaseInfo.temp+"℃"}'
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -144,7 +144,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{vm.wrapBaseInfo.hum+"%"}'
+                        android:text='@{stateVM.wrapBaseInfo.hum+"%"}'
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -159,7 +159,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{vm.wrapBaseInfo.volt+"V"}'
+                        android:text='@{stateVM.wrapBaseInfo.volt+"V"}'
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -174,7 +174,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.csq}"
+                        android:text="@{stateVM.wrapBaseInfo.csq}"
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -189,7 +189,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.local}"
+                        android:text="@{stateVM.wrapBaseInfo.local}"
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>
@@ -202,7 +202,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{vm.wrapBaseInfo.regtime}"
+                        android:text="@{stateVM.wrapBaseInfo.regtime}"
                         tools:text="终端遥控测试机" />
 
                 </LinearLayout>

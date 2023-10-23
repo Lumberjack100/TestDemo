@@ -49,7 +49,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_home, BR.vm, mHeadStates)
+        return DataBindingConfig(R.layout.fragment_mr702_home, BR.stateVM, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
@@ -233,7 +233,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     bleDevice
                 )
                 nav().navigate(
-                    R.id.action_mR702HomeFragment_to_mR702InterfaceHomeFragment,
+                    R.id.action_mR702HomeFragment_to_mR702PortHomeFragment,
                     bundle
                 )
             }

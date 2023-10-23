@@ -221,9 +221,9 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 return
             }
             val entity = MRScreenParamEntity(
-                interval = mStates.screenRefreshTime.get().toString(),
-                otime = mStates.screenBrightTime.get().toString(),
-                ptime = mStates.screenPowerUpTime.get().toString(),
+                interval = mStates.screenRefreshTime.get(),
+                otime = mStates.screenBrightTime.get(),
+                ptime = mStates.screenPowerUpTime.get(),
                 bproport = mStates.lightness.get().toString()
             )
             val command = IOTCommandUtil.getCommand(
@@ -308,6 +308,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             }
 
             IOTCommandType.MD_MR_SET_REPORT_METHOD -> {
+                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -320,13 +321,13 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                     else -> {
                         sendCommandFromCmdList{
                             Toaster.show("保存成功")
-                            setEditable(false)
                         }
                     }
                 }
             }
 
             IOTCommandType.MD_MR_SET_SCREEN_PARAM -> {
+                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -339,7 +340,6 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                     else -> {
                         sendCommandFromCmdList{
                             Toaster.show("保存成功")
-                            setEditable(false)
                         }
                     }
                 }

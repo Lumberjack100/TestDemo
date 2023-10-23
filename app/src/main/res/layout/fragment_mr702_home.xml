@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="vm"
+            name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel" />
 
         <variable
@@ -42,7 +42,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
             app:click="@{click}"
-            app:vm="@{vm}" />
+            app:vm="@{stateVM}" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_work_mode"
@@ -72,11 +72,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:drawableStart="@{vm.isWorkModeNormal()?@drawable/ic_radiobutton_checked:@drawable/ic_radiobutton_unchecked}"
+                android:drawableStart="@{stateVM.isWorkModeNormal()?@drawable/ic_radiobutton_checked:@drawable/ic_radiobutton_unchecked}"
                 android:drawablePadding="5dp"
                 android:onClick="@{()->click.onNormalClick()}"
                 android:text="正常"
-                android:textColor="@{vm.isWorkModeNormal()?@color/colorPrimary:@color/sub_title_text_color}"
+                android:textColor="@{stateVM.isWorkModeNormal()?@color/colorPrimary:@color/sub_title_text_color}"
                 android:textSize="@dimen/text_size_15"
                 tools:drawableStart="@drawable/ic_radiobutton_checked"
                 tools:textColor="@color/colorPrimary" />
@@ -86,11 +86,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:drawableStart="@{!vm.isWorkModeNormal()?@drawable/ic_radiobutton_checked:@drawable/ic_radiobutton_unchecked}"
+                android:drawableStart="@{!stateVM.isWorkModeNormal()?@drawable/ic_radiobutton_checked:@drawable/ic_radiobutton_unchecked}"
                 android:drawablePadding="5dp"
                 android:onClick="@{()->click.onLowPowerClick()}"
                 android:text="低功耗"
-                android:textColor="@{!vm.isWorkModeNormal()?@color/colorPrimary:@color/sub_title_text_color}"
+                android:textColor="@{!stateVM.isWorkModeNormal()?@color/colorPrimary:@color/sub_title_text_color}"
                 android:textSize="@dimen/text_size_15"
                 tools:drawableStart="@drawable/ic_radiobutton_unchecked"
                 tools:textColor="@color/sub_title_text_color" />

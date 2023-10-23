@@ -1,0 +1,456 @@
+package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
+
+import android.os.Bundle
+import android.view.View
+import android.widget.CompoundButton
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.Utils
+import com.hjq.toast.Toaster
+import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.kyleduo.switchbutton.SwitchButton
+import com.lxj.xpopup.XPopup
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port3SensorParamEntity
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port3SensorParam
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3SensorParamBinding
+import com.shmedo.mcloudapp.device.BaseClickProxy
+import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommunicateWay
+import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3SensorParamViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import org.koin.android.ext.android.inject
+import timber.log.Timber
+import java.text.DecimalFormat
+
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2023/10/16 <br/>
+ * 描述：     RS485-3接口传感器参数
+ */
+class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentMr702Rs485Port3SensorParamBinding by lazy { getBinding() as FragmentMr702Rs485Port3SensorParamBinding }
+    private val mStates: MR702RS485Port3SensorParamViewModel by viewModels()
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val iotParseManager: IOTParserManager by inject()
+
+    private var sensorType: Int = 0
+    private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
+    private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
+    private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
+    private val ledTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_port3_led_type) }
+    private val decimalFormat = DecimalFormat("#.#")
+
+    override fun getDataBindingConfig(): DataBindingConfig {
+        return DataBindingConfig(
+            R.layout.fragment_mr702_rs485_port3_sensor_param,
+            BR.stateVM,
+            mStates
+        )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding.llToolbar.toolbar.title = "RS485-3"
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            nav().navigateUp()
+        }
+        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
+                nav().navigateUp()
+            }
+        })
+        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
+        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(true)
+        initRefresh()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            queryData()
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        arguments?.let {
+            sensorType = it.getInt(SENSOR_TYPE)
+            mStates.sensorType.set(sensorType)
+            mStates.sensorName.set(if (sensorType == 1) "太阳能控制器" else if (sensorType == 2) "声光报警器" else "LED屏")
+        }
+    }
+
+    private fun setEditable(editable: Boolean) {
+        toolbarViewModel.toolbarIvActionVisible.set(!editable)
+        toolbarViewModel.toolbarTvActionVisible.set(editable)
+        mStates.isEditable.set(editable)
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onToolbarIvClick() {
+            setEditable(true)
+        }
+
+        override fun onToolbarTvClick() {
+            setEditable(false)
+        }
+
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
+                return
+            }
+            mStates.isOpened.set(isChecked)
+            if (!isChecked) {
+                showMessage("确定要关闭吗？", "温馨提示", "确定", {
+                    closeSwitch()
+                }, "取消", {
+                    mStates.isOpened.set(true)
+                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
+                })
+            }
+        }
+
+        fun onDataBitChooseClick() {
+            val selectedIndex = dataBitList.indexOf(mStates.dataBit.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择数据位", dataBitList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.dataBit.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onCheckBitChooseClick() {
+            val selectedIndex = checkBitList.indexOf(mStates.checkBit.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择校验位", checkBitList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.checkBit.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onStopBitChooseClick() {
+            val selectedIndex = stopBitList.indexOf(mStates.stopBit.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择停止位", stopBitList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.stopBit.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onSwitchLedTypeClick() {
+            val selectedIndex = ledTypeList.indexOf(mStates.ledType.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择LED", ledTypeList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.ledType.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onSubmitClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initSaveCommand()
+        }
+    }
+
+    private fun closeSwitch() {
+        commandItems.clear()
+        val entity = MRRS485Port3SensorParamEntity(
+            device = sensorType.toString(),
+            switch = "0"
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_SET_RS485_PORT3_SENSOR_PARAM,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    private fun initSaveCommand() {
+        commandItems.clear()
+        if (mStates.address.get().isEmpty()) {
+            Toaster.show("请输入地址")
+            return
+        }
+        if (mStates.baudRate.get().isEmpty()) {
+            Toaster.show("请输入波特率")
+            return
+        }
+        val entity = MRRS485Port3SensorParamEntity(
+            device = sensorType.toString(),
+            switch = "1",
+            addr = mStates.address.get(),
+            baud = mStates.baudRate.get(),
+            databit = mStates.dataBit.get(),
+            paritybit = (checkBitList.indexOf(mStates.checkBit.get()) + 1).toString(),
+            stopbit = mStates.stopBit.get()
+        )
+        when (sensorType) {
+            1 -> {
+                if (mStates.solarVoltage.get().isEmpty()) {
+                    Toaster.show("请输入太阳能板电压")
+                    return
+                }
+                if (mStates.batteryVoltage.get().isEmpty()) {
+                    Toaster.show("请输入电池电压")
+                    return
+                }
+                if (mStates.solarPower.get().isEmpty()) {
+                    Toaster.show("请输入太阳板能功率")
+                    return
+                }
+                if (mStates.loadPower.get().isEmpty()) {
+                    Toaster.show("请输入负载功率")
+                    return
+                }
+                entity.svolt = mStates.solarVoltage.get()
+                entity.bvolt = mStates.batteryVoltage.get()
+                entity.spower = mStates.solarPower.get()
+                entity.lpower = mStates.loadPower.get()
+            }
+
+            2 -> {
+                if (mStates.duration.get().isEmpty()) {
+                    Toaster.show("请输入播放时长")
+                    return
+                }
+                if (mStates.interval.get().isEmpty()) {
+                    Toaster.show("请输入切换间隔")
+                    return
+                }
+                entity.duration = mStates.duration.get()
+                entity.interval = mStates.interval.get()
+                entity.volume = mStates.volume.get().toString()
+            }
+
+            else -> {
+                if (mStates.duration.get().isEmpty()) {
+                    Toaster.show("请输入显示时长")
+                    return
+                }
+                if (mStates.interval.get().isEmpty()) {
+                    Toaster.show("请输入更新间隔")
+                    return
+                }
+                if (mStates.screenTime.get().isEmpty()) {
+                    Toaster.show("请输入亮屏时长")
+                    return
+                }
+                entity.type = (ledTypeList.indexOf(mStates.ledType.get()) + 1).toString()
+                entity.duration = mStates.duration.get()
+                entity.interval = mStates.interval.get()
+                entity.stime = mStates.screenTime.get()
+            }
+        }
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_SET_RS485_PORT3_SENSOR_PARAM,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
+        testData()
+    }
+
+    private fun queryData() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_PARAM,
+            "device=$sensorType"
+        )
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun setResultData(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_PARAM -> {
+                val result = iotParseManager.parse<MRRS485Port3SensorParam>(
+                    cmdStr,
+                    IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_PARAM
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList()
+                        binding.refreshLayout.finish()
+                        initParamData(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MD_MR_SET_RS485_PORT3_SENSOR_PARAM -> {
+                setEditable(false)
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun initParamData(sensorParam: MRRS485Port3SensorParam) {
+        try {
+            mStates.status.set(if (sensorParam.status == "1") "已接入" else "未接入")
+            binding.sensorSB.setCheckedImmediatelyNoEvent(sensorParam.switch == "1")
+            mStates.isOpened.set(sensorParam.switch == "1")
+            mStates.address.set(sensorParam.addr)
+            mStates.baudRate.set(sensorParam.baud)
+            mStates.dataBit.set(sensorParam.databit)
+            mStates.checkBit.set(checkBitList[sensorParam.paritybit.toInt() - 1])
+            mStates.stopBit.set(sensorParam.stopbit)
+            when (sensorType) {
+                1 -> {
+                    mStates.solarVoltage.set(decimalFormat.format(sensorParam.svolt.toDouble()))
+                    mStates.batteryVoltage.set(decimalFormat.format(sensorParam.bvolt.toDouble()))
+                    mStates.solarPower.set(decimalFormat.format(sensorParam.spower.toDouble()))
+                    mStates.loadPower.set(decimalFormat.format(sensorParam.lpower.toDouble()))
+                }
+
+                2 -> {
+                    mStates.duration.set(sensorParam.duration)
+                    mStates.interval.set(sensorParam.interval)
+                    mStates.volume.set(sensorParam.volume.toInt())
+                }
+
+                else -> {
+                    mStates.ledType.set(ledTypeList[sensorParam.type.toInt() - 1])
+                    mStates.duration.set(sensorParam.duration)
+                    mStates.interval.set(sensorParam.interval)
+                    mStates.screenTime.set(sensorParam.stime)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    companion object {
+        const val SENSOR_TYPE = "sensor_type"
+        fun newBundleArguments(
+            sensorType: Int = 0,
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putInt(SENSOR_TYPE, sensorType)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
+    }
+
+    private fun testData() {
+        val sensorParam = MRRS485Port3SensorParam(
+            switch = "1",
+            addr = "1",
+            baud = "9600",
+            databit = "8",
+            paritybit = "3",
+            stopbit = "1.5",
+            status = "1",
+            svolt = "12.5",
+            bvolt = "12.5",
+            spower = "12.5",
+            lpower = "12.5",
+            duration = "12",
+            interval = "12",
+            volume = "45",
+            type = "1",
+            stime = "12"
+        )
+        initParamData(sensorParam)
+    }
+}
