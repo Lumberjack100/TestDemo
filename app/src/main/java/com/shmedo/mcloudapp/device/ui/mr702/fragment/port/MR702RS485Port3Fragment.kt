@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
@@ -72,10 +73,19 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             }
         }
     }
-
+    override fun createObserver() {
+        super.createObserver()
+        //从编辑页面返回需要刷新事件详情页面
+        setFragmentResultListener(FRAGMENT_RESULT_REQUEST_KEY) { key, bundle ->
+            val refreshData = bundle.getBoolean(REFRESH_DATA)
+            if (refreshData) {
+                binding.refreshLayout.autoRefresh()
+            }
+        }
+    }
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-        testData()
+//        testData()
     }
 
     private fun queryInfo() {
@@ -120,21 +130,21 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         val list = mutableListOf<MRSensorItem>()
         var item = MRSensorItem(
             isPlugin = sensorStatus.solarstatus == "1",
-            name = "太阳能控制器",
+            sensorName = "太阳能控制器",
             addr = sensorStatus.solarid
         )
         list.add(item)
 
         item = MRSensorItem(
             isPlugin = sensorStatus.ysstatus == "1",
-            name = "声光报警器",
+            sensorName = "声光报警器",
             addr = sensorStatus.ysid
         )
         list.add(item)
 
         item = MRSensorItem(
             isPlugin = sensorStatus.ledstatus == "1",
-            name = "LED屏",
+            sensorName = "LED屏",
             addr = sensorStatus.ledid
         )
         list.add(item)
@@ -143,6 +153,8 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
 
     companion object {
         fun newInstance() = MR702RS485Port3Fragment()
+        const val FRAGMENT_RESULT_REQUEST_KEY = "MR702RS485Port3Fragment"
+        const val REFRESH_DATA = "refresh_data"
     }
 
     private fun testData() {

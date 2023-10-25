@@ -11,6 +11,6 @@ open class MR702PortHomeViewModel : ViewModel() {
     val interfaceName = NonNullObservableField("")
     val interfaceDesc = NonNullObservableField("最多支持32支传感器接入")
 
-    val sensorConfig = mutableMapOf<String, List<SensorModel>>() // key: 串口名称，value: 传感器 model列表
-    val sensorModelMap = mutableMapOf<String, SensorModel>() // key: modelToken，value: 传感器 model
+    val portSensorsMap = mutableMapOf<String, List<SensorModel>>() // key: 串口名称，value: 传感器 model列表
+    val sensorMap = mutableMapOf<String, SensorModel>() // key: sensorType，value: 传感器 model
 }

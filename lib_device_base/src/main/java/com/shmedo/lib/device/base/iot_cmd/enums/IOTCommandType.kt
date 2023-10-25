@@ -727,7 +727,7 @@ enum class IOTCommandType(private val value: String) {
     MD_MR_GET_RS485_PORT1_COLL("md_get485port1_coll"),
     MD_MR_SET_RS485_PORT1_COLL("md_set485port1_coll"),
     /**
-     * 传感器获取
+     * 传感器状态获取
      */
     MD_MR_GET_RS485_PORT1_SENSOR("md_get485port1_sensor"),
     MD_MR_DEL_RS485_PORT1_SENSOR("md_del485port1_param"),
@@ -748,9 +748,10 @@ enum class IOTCommandType(private val value: String) {
     MD_MR_GET_RS485_PORT2_UART("md_get485port2_uart"),
     MD_MR_SET_RS485_PORT2_UART("md_set485port2_uart"),
     /**
-     * 传感器获取
+     * 传感器状态获取
      */
     MD_MR_GET_RS485_PORT2_SENSOR("md_get485port2_sensor"),
+    MD_MR_DEL_RS485_PORT2_SENSOR("md_del485port2_param"),
     /**
      * RS485-端口2 传感器参数获取
      */

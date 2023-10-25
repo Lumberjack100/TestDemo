@@ -29,7 +29,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.shmedo.mcloudapp.device
+package com.shmedo.mcloudapp.device.common
 
 import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.service.base.BleManagerResult

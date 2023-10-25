@@ -26,6 +26,13 @@ import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
+import com.shmedo.mcloudapp.device.common.CmdResponseResultError
+import com.shmedo.mcloudapp.device.common.CmdResponseResultSuccess
+import com.shmedo.mcloudapp.device.common.CmdResponseResultTimeOut
+import com.shmedo.mcloudapp.device.common.DispatchFailed
+import com.shmedo.mcloudapp.device.common.DispatchSuccess
+import com.shmedo.mcloudapp.device.common.NoDeviceState
+import com.shmedo.mcloudapp.device.common.WorkingState
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel

@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
-import com.shmedo.mcloudapp.device.MedoViewState
-import com.shmedo.mcloudapp.device.WorkingState
+import com.shmedo.mcloudapp.device.common.MedoViewState
+import com.shmedo.mcloudapp.device.common.WorkingState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

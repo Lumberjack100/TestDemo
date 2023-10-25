@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device
+package com.shmedo.mcloudapp.device.common
 
 import android.widget.CompoundButton
 

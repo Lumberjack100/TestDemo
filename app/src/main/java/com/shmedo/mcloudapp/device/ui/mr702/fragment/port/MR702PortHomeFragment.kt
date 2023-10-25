@@ -27,10 +27,10 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
-import com.shmedo.mcloudapp.device.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
-import com.shmedo.mcloudapp.device.model.MR702InterfaceSensorConfig
+import com.shmedo.mcloudapp.device.model.MR702PortSensorConfig
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702PortSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
@@ -101,7 +101,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             bleDevice
         )
         binding.viewpager.isUserInputEnabled = false
-           //设置缓存数量，对应 RecyclerView 中的 mCachedViews，即屏幕外的视图数量
+        //设置缓存数量，对应 RecyclerView 中的 mCachedViews，即屏幕外的视图数量
 //        ((binding.viewpager.getChildAt(0)) as RecyclerView).setItemViewCacheSize(0)
 //        binding.viewpager.offscreenPageLimit = tabNames.size
         binding.viewpager.adapter = object : FragmentStateAdapter(this) {
@@ -155,8 +155,13 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 super.onPageSelected(position)
 
                 when (position) {
-                    0, 1 -> {
+                    0 -> {
                         mStates.interfaceName.set(tabNames[position] + "Modbus")
+                        mStates.interfaceDesc.set("最多支持32支传感器接入")
+                    }
+
+                    1 -> {
+                        mStates.interfaceName.set(tabNames[position] + "非Modbus")
                         mStates.interfaceDesc.set("最多支持32支传感器接入")
                     }
 
@@ -196,14 +201,14 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     private fun loadSensorConfig() {
         lifecycleScope.launch {
-            val jsonStr = ResourceUtils.readAssets2String("mr702_interface_sensor_config.json")
+            val jsonStr = ResourceUtils.readAssets2String("mr702_port_sensor_config.json")
             if (jsonStr.isNullOrEmpty()) return@launch
             val configList =
-                MoshiUtil.fromJson<List<MR702InterfaceSensorConfig>>(jsonStr) ?: return@launch
-            configList.forEach { mInterface ->
-                mStates.sensorConfig[mInterface.interfaceName] = mInterface.models
-                mInterface.models.forEach { model ->
-                    mStates.sensorModelMap[model.modelToken] = model
+                MoshiUtil.fromJson<List<MR702PortSensorConfig>>(jsonStr) ?: return@launch
+            configList.forEach { mPort ->
+                mStates.portSensorsMap[mPort.portName] = mPort.sensors
+                mPort.sensors.forEach { model ->
+                    mStates.sensorMap[model.sensorType] = model
                 }
             }
         }
@@ -234,6 +239,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         toolbarViewModel.toolbarTvActionVisible.set(editable)
         mStates.isEditable.value = editable
     }
+
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {

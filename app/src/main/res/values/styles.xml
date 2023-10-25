@@ -11,6 +11,11 @@
     </style>
 
     <style name="LightStatusBarActivity" parent="Theme.MaterialComponents.Light.Bridge">
+        <!-- actionbar颜色-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- 状态栏颜色-->
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimary</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowLightStatusBar">true</item>

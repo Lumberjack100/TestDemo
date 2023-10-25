@@ -13,6 +13,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.util.MoshiUtil
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRCollectionParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRCollectionParam
@@ -22,11 +23,12 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1Binding
-import com.shmedo.mcloudapp.device.BaseClickProxy
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
@@ -81,19 +83,48 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 when (itemViewType) {
                     R.layout.item_mr702_port_sensor -> {
                         val item = getModel<MRSensorItem>()
-
+                        val bundle = MR702RS485Port2SensorParamFragment.newBundleArguments(
+                            item,
+                            false,
+                            communicateWay,
+                            deviceInfo,
+                            bleDevice
+                        )
+                        nav().navigate(
+                            R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SensorParamFragment,
+                            bundle
+                        )
                     }
+
                     else -> showAddSensorPopup()
                 }
             }
             R.id.item_del.onClick {
                 val item = getModel<MRSensorItem>()
                 showMessage("确定删除此传感器吗？", "提示", "删除", {
-                    deleteItemIndex = adapterPosition
-                    deleteSensorCommand(item.model)
+                    deleteItemIndex = modelPosition
+                    deleteSensorCommand(item.modelToken)
                 }, "取消")
             }
         }
+    }
+
+    private fun showAddSensorPopup() {
+        val sensorList = mInterfaceHomeViewModel.portSensorsMap["485port1"] ?: listOf()
+        val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
+        selectionPopupView.setData("请选择传感器类型", sensorList)
+            .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
+                override fun onSelect(sensorModel: SensorModel) {
+//                    Toaster.show("选择了${sensorModel.sensorName}")
+                }
+            })
+        XPopup.Builder(context)
+            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+            .enableDrag(false)
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .asCustom(selectionPopupView)
+            .show()
     }
 
     override fun createObserver() {
@@ -104,30 +135,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 (item as MRSensorItem).isShowDel = editable
             }
             binding.rv.models = list
-//            if (editable) {
-//                binding.rv.bindingAdapter.addFooter(RVEmptyFooter(), animation = true)
-//            } else {
-//                binding.rv.bindingAdapter.removeFooterAt(animation = true)
-//            }
         }
-    }
-
-    private fun showAddSensorPopup() {
-        val sensorList = mInterfaceHomeViewModel.sensorConfig["485port1"] ?: listOf()
-        val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
-        selectionPopupView.setData("请选择传感器类型", sensorList)
-            .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
-                override fun onSelect(sensorModel: SensorModel) {
-                   Toaster.show("选择了${sensorModel.modelName}")
-                }
-            })
-        XPopup.Builder(context)
-            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
-            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
-            .enableDrag(false)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(selectionPopupView)
-            .show()
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -160,6 +168,35 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
      */
     private fun initSaveCommand() {
         commandItems.clear()
+        if (mStates.acquisitionFrequency.get().isEmpty()) {
+            Toaster.show("请输入采集频率")
+            return
+        }
+        if (mStates.collectionDuration.get().isEmpty()) {
+            Toaster.show("请输入采集时长")
+            return
+        }
+        if (mStates.collectionInterval.get().isEmpty()) {
+            Toaster.show("请输入采集间隔")
+            return
+        }
+        if (mStates.noResponseTimes.get().isEmpty()) {
+            Toaster.show("请输入无响应次数")
+            return
+        }
+        val entity = MRCollectionParamEntity(
+            collfreq = mStates.acquisitionFrequency.get(),
+            collcycle = mStates.collectionDuration.get(),
+            collgap = mStates.collectionInterval.get(),
+            noresp = mStates.noResponseTimes.get()
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_SET_RS485_PORT2_COLL,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -211,7 +248,11 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询传感器出错: ${result.message}"
+                        if (result.message.contains("index=0")) {
+                            initEmptySensor()
+                            return
+                        }
+                        val errMsg = "查询传感器状态信息出错: ${result.message}"
                         Toaster.show(errMsg)
                         return
                     }
@@ -239,14 +280,25 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                             Toaster.show("移除成功")
                             binding.rv.bindingAdapter.mutable.removeAt(deleteItemIndex)
                             binding.rv.bindingAdapter.notifyItemRemoved(deleteItemIndex)
-                            if (binding.rv.bindingAdapter.modelCount < SENSOR_SIZE) {
-                                binding.rv.bindingAdapter.addFooter(
-                                    RVEmptyFooter(),
-                                    animation = true
-                                )
-                            } else {
-                                binding.rv.bindingAdapter.removeFooterAt(animation = true)
-                            }
+                            updateFooter()
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.MD_MR_SET_RS485_PORT1_COLL -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置采集参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
                         }
                     }
                 }
@@ -271,27 +323,42 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 val list = sensorStatusList.map { sensorStatus ->
                     val strs = sensorStatus.model.split("_").toTypedArray()
                     MRSensorItem(
-                        sensorStatus.sta == "0",
-                        mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.modelName ?: "未知类型",
-                        strs[0],
-                        strs[1],
+                        isPlugin = sensorStatus.sta == "0",
+                        sensorName = mInterfaceHomeViewModel.sensorMap[strs[0]]?.sensorName
+                            ?: "未知类型",
+                        modelToken = strs[0],
+                        addr = strs[1],
+                        addrDesc = "地址-${strs[1]}",
                     )
                 }
                 binding.rv.models = list
-                if (binding.rv.bindingAdapter.modelCount < SENSOR_SIZE) {
-                    binding.rv.bindingAdapter.addFooter(RVEmptyFooter(), animation = true)
-                } else {
-                    binding.rv.bindingAdapter.removeFooterAt(animation = true)
-                }
+                updateFooter()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
+    private fun initEmptySensor() {
+        val list = arrayListOf<MRSensorItem>()
+        binding.rv.models = list
+        updateFooter()
+    }
+
+    private fun updateFooter() {
+        if (binding.rv.bindingAdapter.modelCount < MR702RS485Port2Fragment.SENSOR_SIZE) {
+            if (binding.rv.bindingAdapter.footerCount == 0)
+                binding.rv.bindingAdapter.addFooter(RVEmptyFooter(), animation = true)
+        } else {
+            binding.rv.bindingAdapter.removeFooterAt(animation = true)
+        }
+    }
+
     companion object {
         fun newInstance() = MR702RS485Port1Fragment()
         const val SENSOR_SIZE = 32
+        const val FRAGMENT_RESULT_REQUEST_KEY = "MR702RS485Port1Fragment"
+        const val REFRESH_DATA = "refresh_data"
     }
 
     private fun testData() {

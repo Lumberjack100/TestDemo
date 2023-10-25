@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
@@ -20,7 +21,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterHomeBinding
-import com.shmedo.mcloudapp.device.BaseClickProxy
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -87,6 +88,17 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                     R.id.action_mR702DataCenterHomeFragment_to_mR702DataCenterParamFragment,
                     bundle
                 )
+            }
+        }
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        //从编辑页面返回需要刷新事件详情页面
+        setFragmentResultListener(FRAGMENT_RESULT_REQUEST_KEY) { key, bundle ->
+            val refreshData = bundle.getBoolean(REFRESH_DATA)
+            if (refreshData) {
+                binding.refreshLayout.autoRefresh()
             }
         }
     }
@@ -177,6 +189,11 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                 false
             }
         )
+    }
+
+    companion object {
+        const val FRAGMENT_RESULT_REQUEST_KEY = "MR702DataCenterHomeFragment"
+        const val REFRESH_DATA = "refresh_data"
     }
 
     override fun onResume() {

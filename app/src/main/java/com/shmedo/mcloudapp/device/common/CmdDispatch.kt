@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device
+package com.shmedo.mcloudapp.device.common
 
 import com.shmedo.mcloudapp.device.model.QueryCmdResult
 /**

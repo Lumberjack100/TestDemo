@@ -32,7 +32,7 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
     ): MR702SensorSelectionPopupView {
         this.title = title
         this.sensorList = list.toList()
-        this.data = sensorList.map { it.modelName }
+        this.data = sensorList.map { it.sensorName }
         return this
     }
 

@@ -24,7 +24,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port2Binding
-import com.shmedo.mcloudapp.device.BaseClickProxy
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
@@ -184,7 +184,7 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-        testData()
+//        testData()
     }
 
     private fun queryInfo() {

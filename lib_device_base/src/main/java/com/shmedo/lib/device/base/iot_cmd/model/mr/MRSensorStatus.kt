@@ -9,6 +9,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class MRSensorStatus(
+    var sensortype: String = "",//传感器类型
     var model: String = "",//物模型
     var sta: String = "",//接入状态
     var chl: String = "",//通道号

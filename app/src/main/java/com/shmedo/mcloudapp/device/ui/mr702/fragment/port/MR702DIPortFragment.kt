@@ -59,7 +59,7 @@ class MR702DIPortFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-        testData()
+//        testData()
     }
 
     private fun queryInfo() {

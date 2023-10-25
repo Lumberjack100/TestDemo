@@ -109,7 +109,7 @@ class MR702DOPortFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-        testData()
+//        testData()
     }
 
     private fun queryInfo() {

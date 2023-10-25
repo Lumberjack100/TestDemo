@@ -173,18 +173,19 @@ object CommonBindingAdapter {
         requireAll = false
     )
     fun setLengthFilter(
-        view: AppCompatEditText,
+        editText: AppCompatEditText,
         length: Int,
         isNumberFilter: Boolean = false,
         isCharacterFilter: Boolean = false
     ) {
         val lengthFilter = InputFilter.LengthFilter(length)
         if (isNumberFilter) {
-            view.filters = arrayOf<InputFilter>(lengthFilter, numberFilter)
+            editText.filters = arrayOf<InputFilter>(lengthFilter, numberFilter)
+            editText.inputType = android.text.InputType.TYPE_CLASS_NUMBER
         } else if (isCharacterFilter) {
-            view.filters = arrayOf<InputFilter>(lengthFilter, characterFilter)
+            editText.filters = arrayOf<InputFilter>(lengthFilter, characterFilter)
         } else
-            view.filters = arrayOf<InputFilter>(lengthFilter)
+            editText.filters = arrayOf<InputFilter>(lengthFilter)
     }
 
     @JvmStatic

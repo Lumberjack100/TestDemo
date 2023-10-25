@@ -10,7 +10,7 @@ import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
  */
 class MR485Port1SensorStatusParser: IOTCommandParser<String> {
     override fun parseInstance(keyValueMap: Map<String, String>): String {
-        return keyValueMap["state"]!!
+        return keyValueMap["status"]!!
     }
     override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR
 }

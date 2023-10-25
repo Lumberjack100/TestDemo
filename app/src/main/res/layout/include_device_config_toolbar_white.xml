@@ -12,7 +12,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.BaseClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseClickProxy" />
     </data>
 
     <androidx.appcompat.widget.Toolbar

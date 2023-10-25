@@ -133,7 +133,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/LightStatusBarActivity" />
+            android:theme="@style/LightStatusBarActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
             android:name=".common.activity.WebviewActivity"

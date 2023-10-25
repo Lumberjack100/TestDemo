@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -31,7 +34,7 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterParamBinding
-import com.shmedo.mcloudapp.device.BaseClickProxy
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
@@ -39,6 +42,8 @@ import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DataCenterParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -66,13 +71,11 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         binding.llToolbar.toolbar.title = "数据中心"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            processBack(true)
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-                nav().navigateUp()
+                processBack(true)
             }
         })
         toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
@@ -456,6 +459,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("保存成功")
+                            processBack()
                         }
                     }
                 }
@@ -530,6 +534,23 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    private fun processBack(isPressBackBtn: Boolean = false) {
+        lifecycleScope.launch {
+            if (isPressBackBtn) {
+                mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
+                nav().navigateUp()
+                return@launch
+            }
+            delay(1000)
+            //巡护事件需要给上一级浏览页面传递最新的事件信息
+            setFragmentResult(
+                MR702DataCenterHomeFragment.FRAGMENT_RESULT_REQUEST_KEY,
+                bundleOf(MR702DataCenterHomeFragment.REFRESH_DATA to true)
+            )
+            nav().navigateUp()
+        }
     }
 
     companion object {

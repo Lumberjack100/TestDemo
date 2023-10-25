@@ -21,16 +21,12 @@ interface AppContants {
 
             //与设备通讯方式
             const val COMMUNICATION_WAY = "communication_way"
-
             //产品类型
             const val PRODUCT_TYPE = "product_type"
-
             //4G 设备信息
             const val DEVICE_INFO = "device_info"
-
             //蓝牙设备信息
             const val BLE_DEVICE = "ble_device"
-
             const val SERVER_NUMBER = "server_number"
         }
     }

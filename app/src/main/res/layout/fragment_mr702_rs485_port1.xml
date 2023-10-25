@@ -61,10 +61,12 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集频率(ms)" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.acquisitionFrequency}"
                         app:isNumberFilter="@{true}"
                         app:lengthFilter="@{5}" />
@@ -77,10 +79,12 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集时长(s)" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.collectionDuration}"
                         app:isNumberFilter="@{true}"
                         app:lengthFilter="@{5}" />
@@ -93,10 +97,12 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集间隔(ms)" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.collectionInterval}"
                         app:isNumberFilter="@{true}"
                         app:lengthFilter="@{5}" />
@@ -109,10 +115,12 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="无应答次数" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.noResponseTimes}"
                         app:isNumberFilter="@{true}"
                         app:lengthFilter="@{5}" />
@@ -151,11 +159,7 @@
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"
                     visible="@{homeVM.isEditable }"
                     android:layout_marginBottom="15dp"
-                    android:text="保存"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/scrollView" />
+                    android:text="保存" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
