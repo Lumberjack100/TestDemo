@@ -24,13 +24,19 @@ import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.ConfigModule
+import com.shmedo.mcloudapp.device.model.DataCenterModule
+import com.shmedo.mcloudapp.device.model.DeviceOperationModule
+import com.shmedo.mcloudapp.device.model.MR702PortConfigModule
+import com.shmedo.mcloudapp.device.model.MR702TerminalParameterModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.model.NetworkCommunicationModule
 import com.shmedo.mcloudapp.device.model.PlatformLable
+import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -109,7 +115,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             addType<ConfigModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
                 val module = getModel<ConfigModule>()
-                processItemClick(module.name)
+                processItemClick(module)
             }
         }.models = getModuleList()
     }
@@ -126,17 +132,16 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
                 mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
                 mHeadStates.isConnectOperateVisible.set(false)
-                mHeadStates.isExtendedField3Visible.set(false)
                 mHeadStates.isPlatformConnectionStateVisible.set(false)
             }
 
             BleConnect -> {
                 mHeadStates.isDeviceStateTagHighLight.set(false)
                 mHeadStates.deviceStateTagText.set("未连接")
-                mHeadStates.connectOperateText.set("蓝牙连接")
                 mHeadStates.isConnectOperateVisible.set(true)
-                mHeadStates.isExtendedField3Visible.set(false)
+                mHeadStates.connectOperateText.set("蓝牙连接")
                 mHeadStates.isPlatformConnectionStateVisible.set(true)
+                mHeadStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
             }
 
             else -> {}
@@ -200,9 +205,13 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun processItemClick(moduleName: String) {
-        when (moduleName) {
-            "关于设备" -> {
+    private fun processItemClick(module: ConfigModule) {
+        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+            return
+        }
+        when (module.configModule) {
+            is RunningStatusModule -> {
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     communicateWay,
                     deviceInfo,
@@ -214,7 +223,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            "数据中心" -> {
+            is DataCenterModule -> {
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     communicateWay,
                     deviceInfo,
@@ -226,7 +235,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            "接口配置" -> {
+            is MR702PortConfigModule -> {
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     communicateWay,
                     deviceInfo,
@@ -238,7 +247,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            "终端参数" -> {
+            is MR702TerminalParameterModule -> {
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     communicateWay,
                     deviceInfo,
@@ -250,20 +259,24 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            "设备操作" -> {
+            is DeviceOperationModule -> {
 
             }
 
-            "网络与通信" -> {
+            is NetworkCommunicationModule -> {
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
                 nav().navigate(
                     R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment,
                     bundle
                 )
+            }
+
+            else -> {
+
             }
         }
     }
@@ -357,52 +370,19 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun getModuleList() =
-        arrayListOf<ConfigModule>().apply {
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_running_info,
+        arrayListOf<ConfigModule>(
+            ConfigModule(
+                RunningStatusModule(
                     "关于设备",
-                    "设备基本信息、运行数据"
+                    "设备基本信息、运行数据",
+                    R.drawable.ic_device_running_info,
                 )
-            )
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_terminal_param,
-                    "数据中心",
-                    "连接平台设置"
-                )
-            )
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_sensor_config,
-                    "接口配置",
-                    "串口、ADC、DI、DO配置"
-                )
-            )
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_data_center,
-                    "终端参数",
-                    "本机触摸屏和上报规则设置"
-                )
-            )
-
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_setting,
-                    "设备操作",
-                    "时间校准、人工置数、召测等"
-                )
-            )
-
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_net_communicate,
-                    "网络与通信",
-                    "无线、有线配置"
-                )
-            )
-        }
+            ), ConfigModule(DataCenterModule()),
+            ConfigModule(MR702PortConfigModule()),
+            ConfigModule(MR702TerminalParameterModule()),
+            ConfigModule(DeviceOperationModule()),
+            ConfigModule(NetworkCommunicationModule())
+        )
 
     companion object {
         fun newBundleArguments(

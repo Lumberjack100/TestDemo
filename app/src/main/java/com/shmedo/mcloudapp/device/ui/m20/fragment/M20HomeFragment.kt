@@ -17,14 +17,19 @@ import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentM20HomeBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.ConfigModule
+import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.model.RunningStatusModule
+import com.shmedo.mcloudapp.device.model.SetupWizard
 import com.shmedo.mcloudapp.device.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
+
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2020/8/27 <br></br>
@@ -79,7 +84,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
             addType<ConfigModule>(R.layout.item_device_config_module)
             R.id.item.onClick {
                 val module = getModel<ConfigModule>()
-                processItemClick(module.name)
+                processItemClick(module)
             }
         }.models = getModuleList()
     }
@@ -87,26 +92,25 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mHeadStates.deviceToken.set(String.format("设备编号：%s", deviceInfo.deviceToken))
-        mHeadStates.productName.set(String.format("产品型号：%s", deviceInfo.productName))
-        mHeadStates.firmwareVersion.set(String.format("固件版本：%s", deviceInfo.firmwareVersion))
+        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
+        mHeadStates.productName.set(deviceInfo.productName)
+        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
         when (communicateWay) {
             NetPlatformConnect -> {
                 mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
                 mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
                 mHeadStates.isConnectOperateVisible.set(false)
-                mHeadStates.isExtendedField3Visible.set(false)
                 mHeadStates.isPlatformConnectionStateVisible.set(false)
             }
 
             BleConnect -> {
                 mHeadStates.isDeviceStateTagHighLight.set(false)
                 mHeadStates.deviceStateTagText.set("未连接")
-                mHeadStates.connectOperateText.set("蓝牙连接")
                 mHeadStates.isConnectOperateVisible.set(true)
-                mHeadStates.isExtendedField3Visible.set(false)
+                mHeadStates.connectOperateText.set("蓝牙连接")
                 mHeadStates.isPlatformConnectionStateVisible.set(true)
+                mHeadStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
             }
 
             else -> {}
@@ -121,11 +125,11 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
-        if(isConnected){
+        if (isConnected) {
             mHeadStates.isDeviceStateTagHighLight.set(true)
             mHeadStates.deviceStateTagText.set("已连接")
             mHeadStates.connectOperateText.set("断开连接")
-        }else{
+        } else {
             mHeadStates.isDeviceStateTagHighLight.set(false)
             mHeadStates.deviceStateTagText.set("未连接")
             mHeadStates.connectOperateText.set("蓝牙连接")
@@ -144,28 +148,34 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun processItemClick(moduleName: String) {
-        when (moduleName) {
-            "设置向导" -> {
+    private fun processItemClick(module: ConfigModule) {
+        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+            return
+        }
+        when (module.configModule) {
+            is SetupWizard -> {
 
             }
 
-            "状态" -> {
+            is RunningStatusModule -> {
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
                 nav().navigate(R.id.action_m20HomeFragment_to_m20CurrentStateFragment, bundle)
             }
 
-            "数据中心" -> {
+            is DataCenterModule -> {
 
             }
 
-            "设置" -> {
+            is AdvancedSettingsModule -> {
 
             }
+
+            else -> {}
         }
     }
 
@@ -208,35 +218,11 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
-    private fun getModuleList() =
-        arrayListOf<ConfigModule>().apply {
-            add(
-                ConfigModule(
-                    R.drawable.ic_setup_wizard,
-                    "设置向导",
-                    "一键配置"
-                )
-            )
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_current_state,
-                    "状态",
-                    "获取当前设备状态"
-                )
-            )
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_data_center,
-                    "数据中心",
-                    "基础参数配置"
-                )
-            )
-            add(
-                ConfigModule(
-                    R.drawable.ic_device_setting,
-                    "设置",
-                    "高级设置"
-                )
-            )
-        }
+    private fun getModuleList() = arrayListOf<ConfigModule>(
+        ConfigModule(SetupWizard()),
+        ConfigModule(RunningStatusModule()),
+        ConfigModule(DataCenterModule()),
+        ConfigModule(AdvancedSettingsModule())
+    )
+
 }

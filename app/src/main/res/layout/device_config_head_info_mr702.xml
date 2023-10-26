@@ -189,7 +189,7 @@
                         android:maxLines="1"
                         android:text="@{vm.runningStateText}"
                         android:textColor="@{!vm.isRunningStateNormal()?@color/device_online_platform:@color/device_offline_platform}"
-                        android:textSize="@dimen/text_size_15"
+                        android:textSize="@dimen/text_size_13"
                         tools:text="正常"
                         tools:textColor="@color/device_online_platform" />
 

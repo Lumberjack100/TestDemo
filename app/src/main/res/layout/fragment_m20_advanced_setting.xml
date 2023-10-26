@@ -19,33 +19,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/ll_device_info"
-            layout="@layout/device_config_head_info_common"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_device"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:paddingStart="@dimen/dimen_size_10"
-            android:paddingTop="10dp"
-            android:paddingRight="@dimen/dimen_size_10"
-            android:paddingBottom="@dimen/dimen_size_10"
-            android:splitMotionEvents="false"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_device_info"
-            app:spanCount="2"
-            tools:listitem="@layout/item_device_info" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

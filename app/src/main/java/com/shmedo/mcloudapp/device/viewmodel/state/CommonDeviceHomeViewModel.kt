@@ -9,15 +9,10 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val productName = NonNullObservableField("")
     val firmwareVersion = NonNullObservableField("")
 
-    val deviceStateTagText = NonNullObservableField("在线")
     val isDeviceStateTagHighLight = NonNullObservableField(true)
-
-    val connectOperateText = NonNullObservableField("蓝牙连接")
+    val deviceStateTagText = NonNullObservableField("在线")
     val isConnectOperateVisible = NonNullObservableField(false)
-
-    val extendedField3Text = NonNullObservableField("")
-    val isExtendedField3Visible = NonNullObservableField(false)
-
-    val platformConnectionStateText = NonNullObservableField("")
+    val connectOperateText = NonNullObservableField("蓝牙连接")
     val isPlatformConnectionStateVisible = NonNullObservableField(false)
+    val platformConnectionStateText = NonNullObservableField("")
 }

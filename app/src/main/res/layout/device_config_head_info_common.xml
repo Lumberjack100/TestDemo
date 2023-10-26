@@ -18,143 +18,235 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/dimen_size_10"
+        android:paddingEnd="@dimen/dimen_size_10">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginStart="@dimen/dimen_size_5"
+            android:paddingTop="@dimen/dimen_size_10"
+            android:paddingBottom="@dimen/dimen_size_10">
 
-            <ImageView
-                android:id="@+id/iv_device_logo"
-                android:layout_width="62dp"
-                android:layout_height="62dp"
-                android:src="@drawable/ic_device_logo_def" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_device_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{vm.deviceName}"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_17"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="智能遥测终端机" />
+
+            <TextView
+                android:id="@+id/tv_device_state_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
                 android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_device_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:text="@{vm.deviceName}"
-                        android:textColor="@color/text_color_1f1f1f"
-                        android:textSize="@dimen/text_size_15"
-                        tools:text="DAS-RDS" />
-
-                    <TextView
-                        android:id="@+id/tv_device_state_flag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="5dp"
-                        android:background="@{vm.isDeviceStateTagHighLight()?@drawable/bg_device_online_state_flag:@drawable/bg_device_offline_state_flag}"
-                        android:gravity="center"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:singleLine="true"
-                        android:text="@{vm.deviceStateTagText}"
-                        android:textColor="@{vm.isDeviceStateTagHighLight()?@color/device_online_foreground:@color/device_offline_foreground}"
-                        android:textSize="@dimen/text_size_10"
-                        tools:background="@drawable/bg_device_offline_state_flag"
-                        tools:text="已断开"
-                        tools:textColor="@color/device_offline_foreground" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_device_sn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:singleLine="true"
-                    android:text="@{vm.deviceToken}"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_13"
-                    tools:text="设备编号：21E118L" />
-
-                <TextView
-                    android:id="@+id/tv_product_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:singleLine="true"
-                    android:text="@{vm.productName}"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_13"
-                    tools:text="产品型号：DAS-V1.5-雷达物位采集器" />
-
-                <TextView
-                    android:id="@+id/tv_firmware_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:singleLine="true"
-                    android:text="@{vm.firmwareVersion}"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_13"
-                    tools:text="固件版本：3.1.10_Q12" />
-
-                <TextView
-                    android:id="@+id/tv_extended_field3"
-                    visible="@{vm.isExtendedField3Visible}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:singleLine="true"
-                    android:text="@{vm.extendedField3Text}"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_13"
-                    tools:text="运行状态：等待" />
-
-                <TextView
-                    android:id="@+id/tv_platform_communication_state"
-                    visible="@{vm.isPlatformConnectionStateVisible}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:singleLine="true"
-                    android:text="@{vm.platformConnectionStateText}"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_13"
-                    tools:text="米度平台连接状态：在线" />
-
-            </LinearLayout>
+                android:background="@{vm.isDeviceStateTagHighLight()?@drawable/bg_device_online_state_flag:@drawable/bg_device_offline_state_flag}"
+                android:gravity="center"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@{vm.deviceStateTagText}"
+                android:textColor="@{vm.isDeviceStateTagHighLight()?@color/device_online_foreground:@color/device_offline_foreground}"
+                android:textSize="@dimen/text_size_10"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_device_name"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:background="@drawable/bg_device_offline_state_flag"
+                tools:text="已断开"
+                tools:textColor="@color/device_offline_foreground" />
 
             <TextView
                 android:id="@+id/tv_device_connect_operate"
                 visible="@{vm.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:drawableStart="@{!vm.isDeviceStateTagHighLight()?@drawable/ic_ble_connect:@drawable/ic_ble_disconnect}"
+                android:drawablePadding="@dimen/dimen_size_4"
                 android:onClick="@{()->click.onConnectOperateClick()}"
-                android:singleLine="true"
                 android:text="@{vm.connectOperateText}"
                 android:textColor="@{!vm.isDeviceStateTagHighLight()?@color/connect_ble_foreground:@color/disconnect_ble_foreground}"
                 android:textSize="@dimen/text_size_13"
-                tools:text="断开连接"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:drawableStartCompat="@drawable/ic_ble_connect"
+                tools:text="蓝牙连接"
                 tools:visibility="visible" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/dimen_size_5"
             android:background="@color/divider_line_bg" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dimen_size_8"
+            android:paddingBottom="@dimen/dimen_size_8">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_device_logo"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_mr702"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_5"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_device_logo"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_device_sn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_device_sn_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="设备编号："
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <TextView
+                        android:id="@+id/tv_device_sn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{vm.deviceToken}"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_15"
+                        tools:text="21E118L" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_product_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_product_name_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="产品型号："
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <TextView
+                        android:id="@+id/tv_product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{vm.deviceToken}"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_15"
+                        tools:text="21E118L" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_firmware_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_firmware_version_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="固件版本："
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <TextView
+                        android:id="@+id/tv_firmware_version"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{vm.firmwareVersion}"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_15"
+                        tools:text="21E118L" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    visible="@{vm.isPlatformConnectionStateVisible}"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="平台在线状态："
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{vm.platformConnectionStateText}"
+                        android:textColor='@{vm.platformConnectionStateText=="在线"?@color/device_online_platform:@color/device_offline_platform}'
+                        android:textSize="@dimen/text_size_13"
+                        tools:text="在线"
+                        tools:textColor="@color/device_online_platform" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_platform"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_platform_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="连接平台："
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_platform"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:splitMotionEvents="false"
+                        tools:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                        tools:listitem="@layout/item_platform_label" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </layout>
