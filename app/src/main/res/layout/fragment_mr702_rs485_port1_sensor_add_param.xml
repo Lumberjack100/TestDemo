@@ -394,7 +394,7 @@
                         app:drawable_radius="@{6}"
                         app:drawable_solidColor="@{@color/gray_f5f6f8}"
                         tools:background="@color/gray_f5f6f8"
-                        tools:text="保存此模块" />
+                        tools:text="保存此采集项" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

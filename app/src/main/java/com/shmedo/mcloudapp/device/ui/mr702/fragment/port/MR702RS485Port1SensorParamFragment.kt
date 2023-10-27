@@ -1,19 +1,20 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
-import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
+import com.google.android.material.tabs.TabLayout
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -38,7 +39,6 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.model.SensorModelFieldItem
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1SensorParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -47,7 +47,8 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 
-class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
+class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
+    TabLayout.OnTabSelectedListener {
     private val binding: FragmentMr702Rs485Port1SensorParamBinding by lazy { getBinding() as FragmentMr702Rs485Port1SensorParamBinding }
     private val mStates: MR702RS485Port1SensorParamViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -61,7 +62,11 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
     private val solutionMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_solution_method) }
 
-    private var lastSelectedFieldIndex = 0
+    private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
+    private val normalColor: Int = ColorUtils.getColor(R.color.title_text_color)
+    private val activeSize: Float = 18f
+    private val normalSize: Float = 15f
+    private var selectedFieldIndex = 0
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -84,35 +89,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
                 processBack(true)
             }
         })
-        initModelFieldTabAdapter()
         initRefresh()
-    }
-
-    private fun initModelFieldTabAdapter() {
-        binding.tabs.setup { rv ->
-            rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            addType<SensorModelFieldItem>(R.layout.item_mr702_port_sensor_model_field)
-            R.id.item.onClick {
-                val modelFieldItem = getModel<SensorModelFieldItem>()
-                if (modelFieldItem.isChecked) {
-                    return@onClick
-                }
-                if (lastSelectedFieldIndex != -1) {
-                    getModel<SensorModelFieldItem>(lastSelectedFieldIndex).isChecked = false
-                    notifyItemChanged(lastSelectedFieldIndex)
-                }
-                lastSelectedFieldIndex = modelPosition
-                modelFieldItem.isChecked = true
-                notifyItemChanged(modelPosition)
-                val lastVisibleItemPosition =
-                    (binding.tabs.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                //点击选中最后一个 Item 时,使RecyclerView滚动到底
-                if (modelPosition == lastVisibleItemPosition) {
-                    binding.tabs.scrollToPosition(lastVisibleItemPosition)
-                }
-                binding.refreshLayout.autoRefresh()
-            }
-        }
     }
 
     private fun initRefresh() {
@@ -132,9 +109,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
         toolbarViewModel.toolbarTvActionText.set("取消")
         toolbarViewModel.toolbarIvActionVisible.set(true)
 
-        sensorItem.modelFieldList.map { SensorModelFieldItem(it) }.let {
-            binding.tabs.models = it
-        }
+        initTabLayout()
         mStates.sensorType.set(sensorItem.sensorType)
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
@@ -145,6 +120,42 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
         toolbarViewModel.toolbarTvActionVisible.set(editable)
         mStates.isEditable.set(editable)
     }
+
+    private fun initTabLayout() {
+        val tabLayout = binding.tabs
+        sensorItem.modelFieldList.forEachIndexed { index, fieldName ->
+            val textView = TextView(requireContext())
+            textView.text = fieldName
+            textView.textSize = if (index == 0) activeSize else normalSize
+            textView.typeface = if (index == 0) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            textView.gravity = Gravity.CENTER
+            textView.setTextColor(if (index == 0) activeColor else normalColor)
+            tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
+        }
+        tabLayout.addOnTabSelectedListener(this)
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        val textView = tab.customView as TextView?
+        textView?.apply {
+            textSize = activeSize
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(activeColor)
+        }
+        selectedFieldIndex = tab.position
+        binding.refreshLayout.autoRefresh()
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab) {
+        val textView = tab.customView as TextView?
+        textView?.apply {
+            textSize = normalSize
+            typeface = Typeface.DEFAULT
+            setTextColor(normalColor)
+        }
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab) {}
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
@@ -293,7 +304,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
         }
         val entity = MRRS485Port1SensorParamEntity(
             c_model = "0",
-            num = lastSelectedFieldIndex.toString(),
+            num = selectedFieldIndex.toString(),
             sensoraddr = mStates.sensorAddress.get(),
             model = mStates.modelToken.get() + "_" + mStates.sensorAddress.get(),
             baud = mStates.baudRate.get(),
@@ -321,14 +332,13 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-//        testData()
     }
 
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM,
-            "model=${sensorItem.modelToken}_${sensorItem.addr}&index=${lastSelectedFieldIndex}"
+            "model=${sensorItem.modelToken}_${sensorItem.addr}&index=${selectedFieldIndex}"
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)

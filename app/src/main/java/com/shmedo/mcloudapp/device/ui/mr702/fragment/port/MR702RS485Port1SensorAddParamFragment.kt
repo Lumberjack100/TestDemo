@@ -179,7 +179,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
 
         fun onSaveModelFieldClick() {
             if (mStates.saveModelFieldText.get() == "配置下一采集项") {
-                mStates.saveModelFieldText.set("保存此模块")
+                mStates.saveModelFieldText.set("保存此采集项")
                 mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
             } else {
                 if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
