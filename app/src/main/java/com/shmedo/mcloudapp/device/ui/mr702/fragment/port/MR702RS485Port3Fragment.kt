@@ -130,22 +130,22 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         val list = mutableListOf<MRSensorItem>()
         var item = MRSensorItem(
             isPlugin = sensorStatus.solarstatus == "1",
+            addr = sensorStatus.solarid,
             sensorName = "太阳能控制器",
-            addr = sensorStatus.solarid
         )
         list.add(item)
 
         item = MRSensorItem(
             isPlugin = sensorStatus.ysstatus == "1",
+            addr = sensorStatus.ysid,
             sensorName = "声光报警器",
-            addr = sensorStatus.ysid
         )
         list.add(item)
 
         item = MRSensorItem(
             isPlugin = sensorStatus.ledstatus == "1",
+            addr = sensorStatus.ledid,
             sensorName = "LED屏",
-            addr = sensorStatus.ledid
         )
         list.add(item)
         binding.rv.models = list

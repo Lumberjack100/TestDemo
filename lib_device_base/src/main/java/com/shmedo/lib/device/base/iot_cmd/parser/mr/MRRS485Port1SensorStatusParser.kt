@@ -8,7 +8,7 @@ import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
  * 创建时间:  2023/10/17 <br/>
  * 描述：     TODO
  */
-class MR485Port1SensorStatusParser: IOTCommandParser<String> {
+class MRRS485Port1SensorStatusParser: IOTCommandParser<String> {
     override fun parseInstance(keyValueMap: Map<String, String>): String {
         return keyValueMap["status"]!!
     }

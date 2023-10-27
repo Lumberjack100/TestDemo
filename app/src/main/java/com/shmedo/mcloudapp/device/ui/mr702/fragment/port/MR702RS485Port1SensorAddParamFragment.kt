@@ -7,13 +7,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
-import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -23,7 +20,6 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port1SensorParam
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -31,15 +27,14 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
-import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.model.SensorModelFieldItem
-import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1SensorParamViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1SensorAddParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -47,9 +42,9 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 
-class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702Rs485Port1SensorParamBinding by lazy { getBinding() as FragmentMr702Rs485Port1SensorParamBinding }
-    private val mStates: MR702RS485Port1SensorParamViewModel by viewModels()
+class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentMr702Rs485Port1SensorAddParamBinding by lazy { getBinding() as FragmentMr702Rs485Port1SensorAddParamBinding }
+    private val mStates: MR702RS485Port1SensorAddParamViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
@@ -61,12 +56,11 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
     private val solutionMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_solution_method) }
 
-    private var lastSelectedFieldIndex = 0
-
+    private var modelFieldIndex: Int = 0
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_mr702_rs485_port1_sensor_param,
+            R.layout.fragment_mr702_rs485_port1_sensor_add_param,
             BR.stateVM,
             mStates
         )
@@ -84,43 +78,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
                 processBack(true)
             }
         })
-        initModelFieldTabAdapter()
-        initRefresh()
-    }
-
-    private fun initModelFieldTabAdapter() {
-        binding.tabs.setup { rv ->
-            rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            addType<SensorModelFieldItem>(R.layout.item_mr702_port_sensor_model_field)
-            R.id.item.onClick {
-                val modelFieldItem = getModel<SensorModelFieldItem>()
-                if (modelFieldItem.isChecked) {
-                    return@onClick
-                }
-                if (lastSelectedFieldIndex != -1) {
-                    getModel<SensorModelFieldItem>(lastSelectedFieldIndex).isChecked = false
-                    notifyItemChanged(lastSelectedFieldIndex)
-                }
-                lastSelectedFieldIndex = modelPosition
-                modelFieldItem.isChecked = true
-                notifyItemChanged(modelPosition)
-                val lastVisibleItemPosition =
-                    (binding.tabs.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                //点击选中最后一个 Item 时,使RecyclerView滚动到底
-                if (modelPosition == lastVisibleItemPosition) {
-                    binding.tabs.scrollToPosition(lastVisibleItemPosition)
-                }
-                binding.refreshLayout.autoRefresh()
-            }
-        }
-    }
-
-    private fun initRefresh() {
-        refreshLayout = binding.refreshLayout
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            queryData()
-        }
     }
 
     override fun initData() {
@@ -128,33 +85,13 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             sensorItem = it.getParcelable(MR702RS485Port2SensorParamFragment.SENSOR_MODEL_ITEM)!!
         }
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
-
-        sensorItem.modelFieldList.map { SensorModelFieldItem(it) }.let {
-            binding.tabs.models = it
-        }
+        mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
         mStates.sensorType.set(sensorItem.sensorType)
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
-
         fun onDataBitChooseClick() {
             val selectedIndex = dataBitList.indexOf(mStates.dataBit.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -240,12 +177,21 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
+        fun onSaveModelFieldClick() {
+            if (mStates.saveModelFieldText.get() == "配置下一采集项") {
+                mStates.saveModelFieldText.set("保存此模块")
+                mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
+            } else {
+                if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                    Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                    return
+                }
+                initSaveCommand()
             }
-            initSaveCommand()
+        }
+
+        fun onSubmitClick() {
+            processBack()
         }
     }
 
@@ -292,8 +238,8 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
             return
         }
         val entity = MRRS485Port1SensorParamEntity(
-            c_model = "0",
-            num = lastSelectedFieldIndex.toString(),
+            c_model = "1",
+            num = modelFieldIndex.toString(),
             sensoraddr = mStates.sensorAddress.get(),
             model = mStates.modelToken.get() + "_" + mStates.sensorAddress.get(),
             baud = mStates.baudRate.get(),
@@ -319,47 +265,9 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-//        testData()
-    }
-
-    private fun queryData() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM,
-            "model=${sensorItem.modelToken}_${sensorItem.addr}&index=${lastSelectedFieldIndex}"
-        )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM -> {
-                val result = iotParseManager.parse<MRRS485Port1SensorParam>(
-                    cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        binding.refreshLayout.finish()
-                        initParamData(result.data)
-                    }
-                }
-            }
-
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM -> {
-                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -371,37 +279,19 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
-                            processBack()
+                            Toaster.show("已保存")
+                            modelFieldIndex++
+                            if (modelFieldIndex < sensorItem.modelFieldList.size - 1) {
+                                mStates.saveModelFieldText.set("配置下一个采集项")
+                            } else {
+                                mStates.isConfirmBtnVisible.set(true)
+                            }
                         }
                     }
                 }
             }
 
             else -> {}
-        }
-    }
-
-    private fun initParamData(sensorParam: MRRS485Port1SensorParam) {
-        try {
-            mStates.sensorAddress.set(sensorParam.sensoraddr)
-            mStates.modelToken.set(sensorParam.model.substring(0, sensorParam.model.indexOf("_")))
-
-            mStates.baudRate.set(sensorParam.baud)
-            mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.paritybit.toInt() - 1])
-            mStates.stopBit.set(sensorParam.stopbit)
-            mStates.hydrologicalIdentification.set(sensorParam.swtoken)
-            mStates.collectionInstructions.set(sensorParam.cmd)
-            mStates.ratio.set(sensorParam.ratio)
-            mStates.dataFormat.set(dataFormatList[sensorParam.dataformat.toInt()])
-            mStates.solutionMethod.set(solutionMethodList[sensorParam.calctype.toInt()])
-            mStates.triggerValue.set(sensorParam.gateval)
-            mStates.upperLimit.set(sensorParam.uplimit)
-            mStates.lowerLimit.set(sensorParam.lowlimit)
-            mStates.correctValue.set(sensorParam.corrvalue)
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
@@ -428,8 +318,8 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        fun newInstance() = MR702RS485Port1SensorParamFragment()
-        const val SENSOR_MODEL_ITEM = "sensor_model_item"
+        fun newInstance() = MR702RS485Port1SensorAddParamFragment()
+        private const val SENSOR_MODEL_ITEM = "sensor_model_item"
 
         fun newBundleArguments(
             sensorItem: MRSensorItem,
@@ -445,4 +335,5 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
+
 }

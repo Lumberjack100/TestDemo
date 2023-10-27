@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
@@ -16,7 +15,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRCollectionParamEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRSerialPortParamEntity
@@ -33,11 +31,10 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
-import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2Binding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port2
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
@@ -133,7 +130,8 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         MRSensorItem(
                             sensorType = sensorModel.sensorType,
                             sensorName = sensorModel.sensorName,
-                            modelToken = sensorModel.modelToken
+                            modelToken = sensorModel.modelToken,
+                            modelFieldList = sensorModel.modelFieldList.map { it.fieldName }
                         ),
                         true,
                         communicateWay,
@@ -344,7 +342,12 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private fun refreshSensorInfo() {
         commandItems.clear()
 
-        commandItems.add(IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR, "index=0"))
+        commandItems.add(
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR,
+                "index=0"
+            )
+        )
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -504,13 +507,15 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 val list = sensorStatusList.map { sensorStatus ->
                     MRSensorItem(
                         isPlugin = sensorStatus.sta == "0",
+                        chl = sensorStatus.chl,
+                        addrDesc = "通道-${sensorStatus.chl}",
                         sensorName = mInterfaceHomeViewModel.sensorMap[sensorStatus.sensortype]?.sensorName
                             ?: "未知类型",
                         sensorType = sensorStatus.sensortype,
                         modelToken = mInterfaceHomeViewModel.sensorMap[sensorStatus.sensortype]?.modelToken
                             ?: "",
-                        chl = sensorStatus.chl,
-                        addrDesc = "通道-${sensorStatus.chl}",
+                        modelFieldList = mInterfaceHomeViewModel.sensorMap[sensorStatus.sensortype]?.modelFieldList?.map { it.fieldName }
+                            ?: listOf()
                     )
                 }
                 binding.rv.models = list

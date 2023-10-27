@@ -37,7 +37,7 @@ val Throwable.errorCode: Int
 val Throwable.errorMsg: String
     get() {
         return if (this is UnknownHostException) { //网络异常
-            if (!NetworkUtils.isAvailable())
+            if (!NetworkUtils.isConnected())
                 StringUtils.getString(R.string.network_error_tip)
             else
                 StringUtils.getString(R.string.notify_no_network)

@@ -12,9 +12,9 @@ class MR702RS485Port3SensorParamViewModel : ViewModel() {
     val sensorName = NonNullObservableField("")
     val address = NonNullObservableField("")
     val baudRate = NonNullObservableField("")
-    val dataBit = NonNullObservableField("")
-    val checkBit = NonNullObservableField("")
-    val stopBit = NonNullObservableField("")
+    val dataBit = NonNullObservableField("5")//数据位
+    val checkBit = NonNullObservableField("NONE")//校验位
+    val stopBit = NonNullObservableField("1")//停止位
 
     val solarVoltage = NonNullObservableField("")
     val batteryVoltage = NonNullObservableField("")

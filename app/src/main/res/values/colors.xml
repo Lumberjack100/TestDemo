@@ -96,5 +96,7 @@
     <color name="mr_interface_sensor_flag_in_backround">#0099E9</color>
     <color name="mr_interface_sensor_flag_out_backround">#969696</color>
 
+    <color name="mr702_port_tab_checked_text_color">#FFFFFFFF</color>
+    <color name="mr702_port_tab_unchecked_text_color">#65A2CD</color>
 
 </resources>

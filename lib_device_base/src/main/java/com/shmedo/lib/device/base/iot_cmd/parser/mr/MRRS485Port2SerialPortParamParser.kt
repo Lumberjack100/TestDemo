@@ -9,7 +9,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRSerialPortParam
  * 创建时间:  2023/10/16 <br/>
  * 描述：     TODO
  */
-class MR485Port2SerialPortParamParser : IOTCommandParser<MRSerialPortParam> {
+class MRRS485Port2SerialPortParamParser : IOTCommandParser<MRSerialPortParam> {
     override fun parseInstance(keyValueMap: Map<String, String>): MRSerialPortParam {
         return MRSerialPortParam().apply {
             baud = keyValueMap.getOrDefault("baud", baud)

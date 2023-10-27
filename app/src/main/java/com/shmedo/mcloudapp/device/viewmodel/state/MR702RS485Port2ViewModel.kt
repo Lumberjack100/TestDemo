@@ -12,7 +12,7 @@ class MR702RS485Port2ViewModel : ViewModel() {
     val collectorType = NonNullObservableField("")//采集器类型
     val collectorAddress = NonNullObservableField("")//采集器地址
     val baudRate = NonNullObservableField("")//波特率
-    val dataBit = NonNullObservableField("")//数据位
-    val checkBit = NonNullObservableField("")//校验位
-    val stopBit = NonNullObservableField("")//停止位
+    val dataBit = NonNullObservableField("5")//数据位
+    val checkBit = NonNullObservableField("NONE")//校验位
+    val stopBit = NonNullObservableField("1")//停止位
 }

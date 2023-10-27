@@ -113,9 +113,7 @@
                         android:textSize="@dimen/text_size_13" />
 
                 </LinearLayout>
-
             </LinearLayout>
-
         </LinearLayout>
 
         <FrameLayout
@@ -157,12 +155,7 @@
                         tools:listitem="@layout/item_device_info" />
 
                 </com.drake.brv.PageRefreshLayout>
-
             </LinearLayout>
-
         </FrameLayout>
-
     </LinearLayout>
-
-
 </layout>

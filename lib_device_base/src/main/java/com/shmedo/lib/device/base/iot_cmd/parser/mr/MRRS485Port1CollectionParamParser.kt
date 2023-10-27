@@ -4,8 +4,12 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRCollectionParam
 
-
-class MR485Port2CollectionParamParser : IOTCommandParser<MRCollectionParam> {
+/**
+ * 创建者:   gonghe <br/>
+ * 创建时间:  2023/10/16 <br/>
+ * 描述：     TODO
+ */
+class MRRS485Port1CollectionParamParser : IOTCommandParser<MRCollectionParam> {
     override fun parseInstance(keyValueMap: Map<String, String>): MRCollectionParam {
         return MRCollectionParam().apply {
             colladdr = keyValueMap.getOrDefault("colladdr", colladdr)
@@ -16,5 +20,5 @@ class MR485Port2CollectionParamParser : IOTCommandParser<MRCollectionParam> {
             collcycle = keyValueMap.getOrDefault("collcycle", collcycle)
         }
     }
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT2_COLL
+    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT1_COLL
 }

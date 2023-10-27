@@ -33,14 +33,22 @@
             app:layout_constraintTop_toTopOf="parent"
             app:vm="@{toolbarVM}" />
 
+        <com.shmedo.mcloudapp.common.widget.recyclerview.SlidingConflictRecyclerView
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:layout_marginStart="@dimen/dimen_size_16"
+            android:layout_marginEnd="@dimen/dimen_size_16"
+            app:layout_constraintBottom_toTopOf="@+id/refreshLayout"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar" />
+
         <com.drake.brv.PageRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/tabs">
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scrollView"

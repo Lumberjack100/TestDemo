@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.device.model.SensorModelFieldItem" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimen_size_15"
+        android:background="@{m.checked?@drawable/bg_mr702_port_tab_checked:@drawable/bg_mr702_port_tab_normal}"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:minHeight="32dp"
+        tools:background="@drawable/bg_mr702_port_tab_checked">
+
+        <TextView
+            android:id="@+id/tabText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{m.fieldName}"
+            android:textColor="@{m.checked?@color/mr702_port_tab_checked_text_color:@color/mr702_port_tab_unchecked_text_color}"
+            android:textSize="@dimen/text_size_15"
+            tools:text="全部"
+            tools:textColor="@color/white" />
+
+    </LinearLayout>
+</layout>
