@@ -1,18 +1,21 @@
 package com.shmedo.mcloudapp.device
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.SpannedString
 import android.text.style.AbsoluteSizeSpan
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.PageRefreshLayout
-import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import com.google.android.material.tabs.TabLayout
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
@@ -27,71 +30,36 @@ import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
-import com.shmedo.mcloudapp.databinding.ItemProductBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel
 import java.text.DecimalFormat
 
-class NetDeviceListFragment : BaseFragment() {
+class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val binding: FragmentNetDeviceListBinding by lazy { getBinding() as FragmentNetDeviceListBinding }
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }
     private val mStates: NetDeviceListViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
-    private var lastSelectedProductIndex = 0
+    private val activeBg: Int = R.drawable.bg_mr702_port_tab_checked
+    private val normalBg: Int = R.drawable.bg_mr702_port_tab_normal
+    private val activeColor: Int = ColorUtils.getColor(R.color.white)
+    private val normalColor: Int = Color.parseColor("#65A2CD")
+    private val activeSize: Float = 15f
+    private val normalSize: Float = 15f
+
+    private val productInfoList = mutableListOf<ProductInfo>()
     private var companyID = -100
     private var productID = -1
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_net_device_list, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_net_device_list, BR.stateVM, mStates)
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        initProductAdapter()
         initDeviceInfoAdapter()
         initRefresh()
-        binding.searchPlaceholder.llSearchPlaceholder.setOnClickListener {
-            nav().navigate(
-                R.id.action_mainFragment_to_deviceSearchFragment
-            )
-        }
-    }
-
-    private fun initProductAdapter() {
-        binding.recyclerviewProduct.setup { rv ->
-            rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            addType<ProductInfo>(R.layout.item_product)
-            onBind {
-                val productInfo = getModel<ProductInfo>()
-                if (productInfo.isChecked) {
-                    getBinding<ItemProductBinding>().tvName.setTextAppearance(R.style.Product_Tag_Checked_TitleStyle)
-                } else {
-                    getBinding<ItemProductBinding>().tvName.setTextAppearance(R.style.Product_Tag_UnChecked_TitleStyle)
-                }
-            }
-            R.id.item.onClick {
-                val productInfo = getModel<ProductInfo>()
-                if (productInfo.isChecked) {
-                    return@onClick
-                }
-                if (lastSelectedProductIndex != -1) {
-                    getModel<ProductInfo>(lastSelectedProductIndex).isChecked = false
-                    notifyItemChanged(lastSelectedProductIndex)
-                }
-                lastSelectedProductIndex = modelPosition
-                productInfo.isChecked = true
-                notifyItemChanged(modelPosition)
-                val lastVisibleItemPosition =
-                    (binding.recyclerviewProduct.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                //点击选中最后一个 Item 时,使RecyclerView滚动到底
-                if (modelPosition == lastVisibleItemPosition) {
-                    binding.recyclerviewProduct.scrollToPosition(lastVisibleItemPosition)
-                }
-                productID = productInfo.id
-                binding.refreshLayout.showLoading()
-            }
-        }
     }
 
     private fun initDeviceInfoAdapter() {
@@ -118,6 +86,43 @@ class NetDeviceListFragment : BaseFragment() {
         }
     }
 
+    private fun queryDeviceList() {
+        deviceRequestViewModel.getDeviceList(
+            companyID = userInfo.companyID,
+            productID = productID,
+            currentPage = binding.refreshLayout.index,
+            pageSize = PAGE_SIZE,
+            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
+        )
+    }
+
+    inner class ClickProxy {
+        fun onGoToSearch() {
+            nav().navigate(
+                R.id.action_mainFragment_to_deviceSearchFragment
+            )
+        }
+
+        fun onShowSelectProductPopup() {
+            val selectionPopupView = ProductSelectionPartShadowPopupView(requireContext())
+            selectionPopupView.setData(productInfoList, binding.tabs.selectedTabPosition)
+                .setSelectListener(object : ProductSelectionPartShadowPopupView.OnSelectListener {
+                    override fun onSelect(productInfo: ProductInfo, position: Int) {
+                        binding.tabs.getTabAt(position)?.select()
+                    }
+                })
+            XPopup.Builder(context)
+                .atView(binding.headLine)
+                .isViewMode(true)
+                .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+                .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
+                .enableDrag(false)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asCustom(selectionPopupView)
+                .show()
+        }
+    }
+
     override fun createObserver() {
         deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceStatisticInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
@@ -138,8 +143,9 @@ class NetDeviceListFragment : BaseFragment() {
                 return@observe
             }
             dataResult.result?.let { tempList ->
-                binding.recyclerviewProduct.models = tempList
-                binding.recyclerviewProduct.scrollToPosition(0)
+                productInfoList.clear()
+                productInfoList.addAll(tempList)
+                initTabLayout()
             }
         }
         deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
@@ -157,16 +163,6 @@ class NetDeviceListFragment : BaseFragment() {
         }
     }
 
-    private fun queryDeviceList() {
-        deviceRequestViewModel.getDeviceList(
-            companyID = userInfo.companyID,
-            productID = productID,
-            currentPage = binding.refreshLayout.index,
-            pageSize = PAGE_SIZE,
-            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
-        )
-    }
-
     private fun updateTopView(rate: String) {
         val spannableString = SpannableString(rate)
         val absoluteSizeSpan = AbsoluteSizeSpan(18, true)
@@ -176,8 +172,52 @@ class NetDeviceListFragment : BaseFragment() {
             spannableString.length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        binding.tvOnlineRate.text = SpannedString(spannableString)
+        binding.llStatistics.tvOnlineRate.text = spannableString
+//        binding.tvOnlineRate.text = SpannedString(spannableString)
     }
+
+    private fun initTabLayout() {
+        val tabLayout = binding.tabs
+        productInfoList.forEachIndexed { index, productInfo ->
+            val tabView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.custom_tab_product, null)
+            val textView = tabView.findViewById<TextView>(R.id.tabText)
+            textView.text = productInfo.productName
+            if (index == 0) { // 第一个为默认选中
+                tabView.setBackgroundResource(activeBg)
+                textView.textSize = activeSize
+                textView.setTextColor(activeColor)
+            } else {
+                tabView.setBackgroundResource(normalBg)
+                textView.textSize = normalSize
+                textView.setTextColor(normalColor)
+            }
+            tabLayout.addTab(tabLayout.newTab().setCustomView(tabView))
+        }
+        tabLayout.addOnTabSelectedListener(this)
+    }
+
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        tab.customView?.let {
+            it.setBackgroundResource(activeBg)
+            val textView = it.findViewById<TextView>(R.id.tabText)
+            textView.textSize = activeSize
+            textView.setTextColor(activeColor)
+            productID = productInfoList[tab.position].id
+            binding.refreshLayout.showLoading()
+        }
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab) {
+        tab.customView?.let {
+            it.setBackgroundResource(normalBg)
+            val textView = it.findViewById<TextView>(R.id.tabText)
+            textView.textSize = normalSize
+            textView.setTextColor(normalColor)
+        }
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab) {}
 
     override fun onResume() {
         super.onResume()

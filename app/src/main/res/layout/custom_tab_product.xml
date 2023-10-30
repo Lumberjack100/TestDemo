@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:paddingStart="@dimen/dimen_size_8"
+        android:paddingEnd="@dimen/dimen_size_8"
+        tools:background="@drawable/bg_mr702_port_tab_normal">
+
+        <TextView
+            android:id="@+id/tabText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#65A2CD"
+            android:textSize="@dimen/text_size_15"
+            tools:text="全部" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</FrameLayout>

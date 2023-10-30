@@ -9,32 +9,30 @@
             type="com.shmedo.lib.core.base.model.ProductInfo" />
     </data>
 
-    <LinearLayout
-        android:id="@+id/item"
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:background="@{m.checked?@drawable/bg_device_type_checked:null}"
-        android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        tools:background="@drawable/bg_device_type_checked">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{m.productName}"
-            tools:text="全部"
-            tools:textColor="@color/colorPrimary"
-            tools:textSize="17sp" />
+        <LinearLayout
+            android:id="@+id/item"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_mr702_port_tab_normal"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/dimen_size_6"
+            android:layout_marginBottom="@dimen/dimen_size_5"
+            android:paddingStart="@dimen/dimen_size_8"
+            android:paddingEnd="@dimen/dimen_size_8">
 
-        <TextView
-            android:id="@+id/tv_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_color_b3b3b3"
-            android:textSize="15sp"
-            tools:text="(07)" />
+            <TextView
+                android:id="@+id/tabText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{m.productName}"
+                android:textColor="#65A2CD"
+                android:textSize="@dimen/text_size_15"
+                tools:text="全部" />
 
-    </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
 </layout>
