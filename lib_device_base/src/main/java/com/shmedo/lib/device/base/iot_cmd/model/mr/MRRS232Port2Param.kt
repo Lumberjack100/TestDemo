@@ -11,6 +11,6 @@ data class MRRS232Port2Param(
     var daddr: String = "",//目的地址   数字
     var baud: String = "",//波特率  bps 数字
     var databit: String = "",//数据位   数字(5 6 7 8)
-    var paritybit: String = "",//校验位 1  NONE  2 ODD  3 EVEN  4 MARK 5 SPACE
-    var stopbit: String = "",//停止位   1: 1  2: 1.5  3: 2  或 数字(1 1.5 2)
+    var parity: String = "",//校验位 0  NONE  1 ODD  2 EVEN  3 MARK 4 SPACE
+    var stopbit: String = "",//停止位   0: 1  1: 1.5  2: 2  或 数字(1 1.5 2)
 )

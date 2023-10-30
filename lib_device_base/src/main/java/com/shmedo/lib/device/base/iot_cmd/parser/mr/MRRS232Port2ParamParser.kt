@@ -17,7 +17,7 @@ class MRRS232Port2ParamParser : IOTCommandParser<MRRS232Port2Param> {
             daddr = keyValueMap.getOrDefault("daddr", daddr)
             baud = keyValueMap.getOrDefault("baud", baud)
             databit = keyValueMap.getOrDefault("databit", databit)
-            paritybit = keyValueMap.getOrDefault("paritybit", paritybit)
+            parity = keyValueMap.getOrDefault("parity", parity)
             stopbit = keyValueMap.getOrDefault("stopbit", stopbit)
         }
     }

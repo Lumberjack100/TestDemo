@@ -30,8 +30,7 @@
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.duration}"
-                app:isCharacterFilter="@{false}"
-                app:isNumberFilter="@{true}"
+                app:inputTypeFilter='@{"number"}'
                 app:lengthFilter="@{5}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -51,8 +50,7 @@
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.interval}"
-                app:isCharacterFilter="@{false}"
-                app:isNumberFilter="@{true}"
+                app:inputTypeFilter='@{"number"}'
                 app:lengthFilter="@{5}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

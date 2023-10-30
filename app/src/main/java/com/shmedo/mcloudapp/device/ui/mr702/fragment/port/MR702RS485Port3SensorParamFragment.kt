@@ -32,8 +32,8 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3SensorParamBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -245,9 +245,9 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             switch = "1",
             addr = mStates.address.get(),
             baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            paritybit = (checkBitList.indexOf(mStates.checkBit.get()) + 1).toString(),
-            stopbit = mStates.stopBit.get()
+            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
         when (sensorType) {
             1 -> {
@@ -286,6 +286,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 entity.interval = mStates.interval.get()
                 entity.volume = mStates.volume.get().toString()
             }
+
             else -> {
                 if (mStates.duration.get().isEmpty()) {
                     Toaster.show("请输入显示时长")
@@ -384,9 +385,9 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.isOpened.set(sensorParam.switch == "1")
             mStates.address.set(sensorParam.addr)
             mStates.baudRate.set(sensorParam.baud)
-            mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.paritybit.toInt() - 1])
-            mStates.stopBit.set(sensorParam.stopbit)
+            mStates.dataBit.set(dataBitList[sensorParam.databit.toInt()])
+            mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
+            mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
             when (sensorType) {
                 1 -> {
                     mStates.solarVoltage.set(decimalFormat.format(sensorParam.svolt.toDouble()))
@@ -417,6 +418,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
+
     private fun processBack(isPressBackBtn: Boolean = false) {
         lifecycleScope.launch {
             if (isPressBackBtn) {
@@ -433,6 +435,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             nav().navigateUp()
         }
     }
+
     companion object {
         const val SENSOR_TYPE = "sensor_type"
         fun newBundleArguments(
@@ -456,7 +459,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             addr = "1",
             baud = "9600",
             databit = "8",
-            paritybit = "3",
+            parity = "3",
             stopbit = "1.5",
             status = "1",
             svolt = "12.5",

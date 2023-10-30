@@ -19,7 +19,7 @@ class MRRS232Port1ParamParser: IOTCommandParser<MRRS232Port1Param> {
                 interval = keyValueMap.getOrDefault("interval", interval)
                 baud = keyValueMap.getOrDefault("baud", baud)
                 databit = keyValueMap.getOrDefault("databit", databit)
-                paritybit = keyValueMap.getOrDefault("paritybit", paritybit)
+                parity = keyValueMap.getOrDefault("parity", parity)
                 stopbit = keyValueMap.getOrDefault("stopbit", stopbit)
             }
         }

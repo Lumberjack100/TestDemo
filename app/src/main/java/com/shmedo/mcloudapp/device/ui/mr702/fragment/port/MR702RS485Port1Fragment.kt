@@ -175,7 +175,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
 
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_DEL_RS485_PORT1_SENSOR,
-            "mode=$model&del=1"
+            "model=$model&del=1"
         )
         commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -220,7 +220,6 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-        testData()
     }
 
     private fun queryInfo() {
@@ -283,6 +282,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                             initEmptySensor()
                             return
                         }
+                        initEmptySensor()
                         val errMsg = "查询传感器状态信息出错: ${result.message}"
                         Toaster.show(errMsg)
                         return

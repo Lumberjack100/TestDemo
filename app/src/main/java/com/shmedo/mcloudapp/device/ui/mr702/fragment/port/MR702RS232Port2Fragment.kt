@@ -24,8 +24,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port2Binding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS232Port2ViewModel
@@ -169,9 +169,9 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
             switch = "1",
             daddr = mStates.address.get(),
             baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            paritybit = (checkBitList.indexOf(mStates.checkBit.get()) + 1).toString(),
-            stopbit = mStates.stopBit.get()
+            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS232_PORT2_PARAM,
@@ -249,9 +249,9 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
             mStates.address.set(sensorParam.daddr)
 
             mStates.baudRate.set(sensorParam.baud)
-            mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.paritybit.toInt() - 1])
-            mStates.stopBit.set(sensorParam.stopbit)
+            mStates.dataBit.set(dataBitList[sensorParam.databit.toInt()])
+            mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
+            mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -267,7 +267,7 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
             daddr = "1",
             baud = "9600",
             databit = "8",
-            paritybit = "3",
+            parity = "3",
             stopbit = "1.5"
         )
         initParamData(sensorParam)

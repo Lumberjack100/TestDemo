@@ -45,6 +45,15 @@ object CommonBindingAdapter {
         null
     }
 
+    private val numberDecimalFilter = InputFilter { source, start, end, _, _, _ ->
+        for (i in start until end) {
+            if (!"-.0123456789".contains(source[i].toString())) {
+                return@InputFilter ""
+            }
+        }
+        null
+    }
+
     private val characterFilter = InputFilter { source, start, end, _, _, _ ->
         for (i in start until end) {
             if (!"_0123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM".contains(source[i].toString())) {
@@ -169,23 +178,36 @@ object CommonBindingAdapter {
 
     @JvmStatic
     @BindingAdapter(
-        value = ["lengthFilter", "isNumberFilter", "isCharacterFilter"],
+        value = ["lengthFilter", "inputTypeFilter"],
         requireAll = false
     )
     fun setLengthFilter(
         editText: AppCompatEditText,
         length: Int,
-        isNumberFilter: Boolean = false,
-        isCharacterFilter: Boolean = false
+        textFilter: String? = ""
     ) {
         val lengthFilter = InputFilter.LengthFilter(length)
-        if (isNumberFilter) {
-            editText.filters = arrayOf<InputFilter>(lengthFilter, numberFilter)
-            editText.inputType = android.text.InputType.TYPE_CLASS_NUMBER
-        } else if (isCharacterFilter) {
-            editText.filters = arrayOf<InputFilter>(lengthFilter, characterFilter)
-        } else
+        if(textFilter.isNullOrEmpty()) {
             editText.filters = arrayOf<InputFilter>(lengthFilter)
+            return
+        }
+        when (textFilter) {
+            "number" -> {
+                editText.filters = arrayOf<InputFilter>(lengthFilter, numberFilter)
+                editText.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            }
+
+            "numberDecimal" -> {
+                editText.filters =
+                    arrayOf<InputFilter>(lengthFilter, numberDecimalFilter)
+                editText.inputType =
+                    android.text.InputType.TYPE_NUMBER_FLAG_SIGNED or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+            }
+
+            "character" -> editText.filters = arrayOf<InputFilter>(lengthFilter, characterFilter)
+
+            else -> editText.filters = arrayOf<InputFilter>(lengthFilter)
+        }
     }
 
     @JvmStatic

@@ -37,9 +37,8 @@
                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                     style="@style/Common_EditItem_EditText_Style"
                     android:text="@={stateVM.screenRefreshTime}"
-                    app:isCharacterFilter="@{false}"
-                    app:isNumberFilter="@{false}"
-                    app:lengthFilter="@{4}" />
+                    app:inputTypeFilter='@{"number"}'
+                    app:lengthFilter="@{6}" />
 
             </LinearLayout>
 
@@ -55,9 +54,8 @@
                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                     style="@style/Common_EditItem_EditText_Style"
                     android:text="@={stateVM.screenBrightTime}"
-                    app:isCharacterFilter="@{false}"
-                    app:isNumberFilter="@{false}"
-                    app:lengthFilter="@{4}" />
+                    app:inputTypeFilter='@{"numberDecimal"}'
+                    app:lengthFilter="@{6}" />
 
             </LinearLayout>
 
@@ -73,9 +71,8 @@
                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                     style="@style/Common_EditItem_EditText_Style"
                     android:text="@={stateVM.screenPowerUpTime}"
-                    app:isCharacterFilter="@{false}"
-                    app:isNumberFilter="@{false}"
-                    app:lengthFilter="@{4}" />
+                    app:inputTypeFilter='@{"numberDecimal"}'
+                    app:lengthFilter="@{6}" />
 
             </LinearLayout>
 

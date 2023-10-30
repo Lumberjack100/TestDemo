@@ -179,7 +179,6 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
     override fun lazyLoadData() {
         if (isAdd) return
         binding.refreshLayout.autoRefresh()
-//        testData()
     }
 
     private fun queryData() {
@@ -295,9 +294,5 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
-    }
-
-    private fun testData() {
-
     }
 }

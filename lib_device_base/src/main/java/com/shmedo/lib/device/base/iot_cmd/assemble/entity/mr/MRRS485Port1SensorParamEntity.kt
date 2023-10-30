@@ -13,7 +13,6 @@ import com.squareup.moshi.JsonClass
 data class MRRS485Port1SensorParamEntity(
     val model: String = "",//物模型
     val c_model: String = "",//创建新指令    --创建新指令发1。修改指令发0
-    val sensoraddr: String = "",//传感器地址
     val num: String = "",//物模型变量	--创建新指令时可以传任意值。修改指令根据传指定变量
     val swtoken: String = "",//水文标识
     val cmd: String = "",//传感器采集指令
@@ -26,9 +25,8 @@ data class MRRS485Port1SensorParamEntity(
     val corrvalue: String = "",//修正值
     val baud: String = "",//波特率  bps 数字
     val databit: String = "",//数据位   数字(5 6 7 8)
-    val paritybit: String = "",//校验位 1:NONE  2:ODD  3:EVEN  4:MARK 5:SPACE
-    val stopbit: String = "",//停止位   1: 1  2: 1.5  3: 2  或 数字(1 1.5 2)
-    val show: String = "",//展示指令信息（终端），1：展示，0：不展示
+    val parity: String = "",//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE
+    val stopbit: String = "",//停止位   0: 1  1: 1.5  2: 2  或 数字(1 1.5 2)
 ){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

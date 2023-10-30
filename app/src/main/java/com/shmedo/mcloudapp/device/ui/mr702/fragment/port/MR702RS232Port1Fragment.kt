@@ -25,8 +25,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port1Binding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS232Port1ViewModel
@@ -208,9 +208,9 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
             resolut = (cameraResolutionList.indexOf(mStates.cameraResolution.get()) + 1).toString(),
             interval = mStates.photoInterval.get(),
             baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            paritybit = (checkBitList.indexOf(mStates.checkBit.get()) + 1).toString(),
-            stopbit = mStates.stopBit.get()
+            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS232_PORT1_PARAM,
@@ -288,9 +288,9 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
             mStates.photoInterval.set(sensorParam.interval)
 
             mStates.baudRate.set(sensorParam.baud)
-            mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.paritybit.toInt() - 1])
-            mStates.stopBit.set(sensorParam.stopbit)
+            mStates.dataBit.set(dataBitList[sensorParam.databit.toInt()])
+            mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
+            mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -309,7 +309,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
             interval = "10",
             baud = "9600",
             databit = "8",
-            paritybit = "3",
+            parity = "3",
             stopbit = "1.5"
         )
         initParamData(sensorParam)

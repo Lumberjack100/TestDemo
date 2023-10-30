@@ -6,8 +6,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.core.os.bundleOf
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
@@ -21,10 +19,12 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port1SensorParam
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port1SensorParamWrapper
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -35,6 +35,7 @@ import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.common.MRRS485Port1
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MRSensorItem
@@ -305,12 +306,11 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         val entity = MRRS485Port1SensorParamEntity(
             c_model = "0",
             num = selectedFieldIndex.toString(),
-            sensoraddr = mStates.sensorAddress.get(),
             model = mStates.modelToken.get() + "_" + mStates.sensorAddress.get(),
             baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            paritybit = (checkBitList.indexOf(mStates.checkBit.get()) + 1).toString(),
-            stopbit = mStates.stopBit.get(),
+            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
             swtoken = mStates.hydrologicalIdentification.get(),
             cmd = mStates.collectionInstructions.get(),
             ratio = mStates.ratio.get(),
@@ -347,7 +347,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM -> {
-                val result = iotParseManager.parse<MRRS485Port1SensorParam>(
+                val result = iotParseManager.parse<String>(
                     cmdStr,
                     IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM
                 )
@@ -392,26 +392,33 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         }
     }
 
-    private fun initParamData(sensorParam: MRRS485Port1SensorParam) {
-        try {
-            mStates.sensorAddress.set(sensorParam.sensoraddr)
-            mStates.modelToken.set(sensorParam.model.substring(0, sensorParam.model.indexOf("_")))
-
-            mStates.baudRate.set(sensorParam.baud)
-            mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.paritybit.toInt() - 1])
-            mStates.stopBit.set(sensorParam.stopbit)
-            mStates.hydrologicalIdentification.set(sensorParam.swtoken)
-            mStates.collectionInstructions.set(sensorParam.cmd)
-            mStates.ratio.set(sensorParam.ratio)
-            mStates.dataFormat.set(dataFormatList[sensorParam.dataformat.toInt()])
-            mStates.solutionMethod.set(solutionMethodList[sensorParam.calctype.toInt()])
-            mStates.triggerValue.set(sensorParam.gateval)
-            mStates.upperLimit.set(sensorParam.uplimit)
-            mStates.lowerLimit.set(sensorParam.lowlimit)
-            mStates.correctValue.set(sensorParam.corrvalue)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun initParamData(content: String) {
+        lifecycleScope.launch {
+            try {
+                val sensorParamWrapper =
+                    MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content) ?: return@launch
+                sensorParamWrapper.port1_param.let {
+                    val sensorParam: MRRS485Port1SensorParam = it[0]
+                    val strs = sensorParam.model.split("_").toTypedArray()
+                    mStates.sensorAddress.set(strs[1])
+                    mStates.modelToken.set(strs[0])
+                    mStates.baudRate.set(sensorParam.baud)
+                    mStates.dataBit.set(dataBitList[sensorParam.databit.toInt()])
+                    mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
+                    mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
+                    mStates.hydrologicalIdentification.set(sensorParam.swtoken)
+                    mStates.collectionInstructions.set(sensorParam.cmd)
+                    mStates.ratio.set(sensorParam.ratio)
+                    mStates.dataFormat.set(dataFormatList[sensorParam.dataformat.toInt()])
+                    mStates.solutionMethod.set(solutionMethodList[sensorParam.calctype.toInt()])
+                    mStates.triggerValue.set(sensorParam.gateval)
+                    mStates.upperLimit.set(sensorParam.uplimit)
+                    mStates.lowerLimit.set(sensorParam.lowlimit)
+                    mStates.correctValue.set(sensorParam.corrvalue)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -428,11 +435,8 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 return@launch
             }
             delay(1000)
-            //巡护事件需要给上一级浏览页面传递最新的事件信息
-            setFragmentResult(
-                MR702RS485Port1Fragment.FRAGMENT_RESULT_REQUEST_KEY,
-                bundleOf(MR702RS485Port1Fragment.REFRESH_DATA to true)
-            )
+            //需要给上一级浏览页面传递最新的事件信息
+            mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
             nav().navigateUp()
         }
     }

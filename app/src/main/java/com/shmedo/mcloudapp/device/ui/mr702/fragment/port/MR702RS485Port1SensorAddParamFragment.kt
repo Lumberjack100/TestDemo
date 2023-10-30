@@ -3,8 +3,6 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.core.os.bundleOf
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
@@ -30,6 +28,7 @@ import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.common.MRRS485Port1
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MRSensorItem
@@ -240,12 +239,11 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         val entity = MRRS485Port1SensorParamEntity(
             c_model = "1",
             num = modelFieldIndex.toString(),
-            sensoraddr = mStates.sensorAddress.get(),
             model = mStates.modelToken.get() + "_" + mStates.sensorAddress.get(),
             baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            paritybit = (checkBitList.indexOf(mStates.checkBit.get()) + 1).toString(),
-            stopbit = mStates.stopBit.get(),
+            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
             swtoken = mStates.hydrologicalIdentification.get(),
             cmd = mStates.collectionInstructions.get(),
             ratio = mStates.ratio.get(),
@@ -281,7 +279,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             Toaster.show("已保存")
                             modelFieldIndex++
-                            if (modelFieldIndex < sensorItem.modelFieldList.size - 1) {
+                            if (modelFieldIndex < sensorItem.modelFieldList.size) {
                                 mStates.saveModelFieldText.set("配置下一个采集项")
                             } else {
                                 mStates.isConfirmBtnVisible.set(true)
@@ -308,11 +306,8 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 return@launch
             }
             delay(1000)
-            //巡护事件需要给上一级浏览页面传递最新的事件信息
-            setFragmentResult(
-                MR702RS485Port1Fragment.FRAGMENT_RESULT_REQUEST_KEY,
-                bundleOf(MR702RS485Port1Fragment.REFRESH_DATA to true)
-            )
+            //需要给上一级浏览页面传递最新的事件信息
+            mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
             nav().navigateUp()
         }
     }

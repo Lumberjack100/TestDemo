@@ -68,7 +68,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.acquisitionFrequency}"
-                        app:isNumberFilter="@{true}"
+                        app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
                 </LinearLayout>
@@ -86,7 +86,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.collectionDuration}"
-                        app:isNumberFilter="@{true}"
+                        app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
                 </LinearLayout>
@@ -104,7 +104,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.collectionInterval}"
-                        app:isNumberFilter="@{true}"
+                        app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
                 </LinearLayout>
@@ -122,7 +122,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.noResponseTimes}"
-                        app:isNumberFilter="@{true}"
+                        app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
                 </LinearLayout>

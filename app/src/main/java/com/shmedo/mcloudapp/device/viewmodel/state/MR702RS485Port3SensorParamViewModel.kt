@@ -11,7 +11,7 @@ class MR702RS485Port3SensorParamViewModel : ViewModel() {
     val sensorType = NonNullObservableField(1)
     val sensorName = NonNullObservableField("")
     val address = NonNullObservableField("")
-    val baudRate = NonNullObservableField("")
+    val baudRate = NonNullObservableField("9600")
     val dataBit = NonNullObservableField("5")//数据位
     val checkBit = NonNullObservableField("NONE")//校验位
     val stopBit = NonNullObservableField("1")//停止位

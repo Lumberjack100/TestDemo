@@ -17,7 +17,7 @@ data class MRRS232Port1ParamEntity(
     val interval: String = IOTConstants.NULL_KEY,//拍照间隔  s  数字
     val baud: String = IOTConstants.NULL_KEY,//波特率  bps 数字
     val databit: String = IOTConstants.NULL_KEY,//数据位   数字(5 6 7 8)
-    val paritybit : String = IOTConstants.NULL_KEY,//校验位 1  NONE  2 ODD  3 EVEN  4 MARK 5 SPACE
+    val parity : String = IOTConstants.NULL_KEY,//校验位 1  NONE  2 ODD  3 EVEN  4 MARK 5 SPACE
     val stopbit  : String = IOTConstants.NULL_KEY,//停止位   1: 1  2: 1.5  3: 2  或 数字(1 1.5 2)
 ){
     fun toCommandString(): String {

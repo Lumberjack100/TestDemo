@@ -74,8 +74,6 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="@={stateVM.centerServerAddress}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
                             app:lengthFilter="@{100}" />
 
                     </LinearLayout>
@@ -91,8 +89,8 @@
                             android:id="@+id/et_data_server_port"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isCenterOpened}"
-                            android:inputType="number"
                             android:text="@={stateVM.centerServerPort}"
+                            app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{5}" />
 
                     </LinearLayout>
@@ -297,7 +295,7 @@
                             <com.shmedo.mcloudapp.common.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isCenterOpened}"
-                                android:inputType="number"
+                                app:inputTypeFilter='@{"number"}'
                                 android:text="@={stateVM.registerPort}"
                                 app:lengthFilter="@{5}" />
 
@@ -316,7 +314,7 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.maintainReportInterval}"
-                                app:isNumberFilter="@{true}"
+                                app:inputTypeFilter='@{"number"}'
                                 app:lengthFilter="@{4}" />
 
                         </LinearLayout>
@@ -363,7 +361,7 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.centerStationAddr}"
-                                app:isNumberFilter="@{true}"
+                                app:inputTypeFilter='@{"number"}'
                                 app:lengthFilter="@{3}" />
 
                         </LinearLayout>
@@ -381,7 +379,7 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.password}"
-                                app:isNumberFilter="@{true}"
+                                app:inputTypeFilter='@{"number"}'
                                 app:lengthFilter="@{5}" />
 
                         </LinearLayout>
@@ -399,7 +397,7 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
-                                app:isCharacterFilter="@{true}"
+                                app:inputTypeFilter='@{"number"}'
                                 app:lengthFilter="@{10}" />
 
                         </LinearLayout>
@@ -524,7 +522,7 @@
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:text="@={stateVM.maintainReportInterval}"
-                                    app:isNumberFilter="@{true}"
+                                    app:inputTypeFilter='@{"number"}'
                                     app:lengthFilter="@{3}" />
 
                             </LinearLayout>
@@ -542,7 +540,7 @@
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:text="@={stateVM.reissuingDataValidDays}"
-                                    app:isNumberFilter="@{true}"
+                                    app:inputTypeFilter='@{"number"}'
                                     app:lengthFilter="@{3}" />
 
                             </LinearLayout>
@@ -560,19 +558,15 @@
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:text="@={stateVM.reissuingDataInterval}"
-                                    app:isNumberFilter="@{true}"
+                                    app:inputTypeFilter='@{"number"}'
                                     app:lengthFilter="@{4}" />
 
                             </LinearLayout>
 
                         </LinearLayout>
-
                     </LinearLayout>
-
                 </LinearLayout>
-
             </androidx.core.widget.NestedScrollView>
-
         </com.drake.brv.PageRefreshLayout>
 
         <TextView

@@ -9,7 +9,7 @@ class MR702RS485Port1SensorAddParamViewModel : ViewModel() {
     val sensorType = NonNullObservableField("")
     val sensorName = NonNullObservableField("")
     val modelToken = NonNullObservableField("")
-    val baudRate = NonNullObservableField("")
+    val baudRate = NonNullObservableField("9600")
     val dataBit = NonNullObservableField("5")
     val checkBit = NonNullObservableField("NONE")
     val stopBit = NonNullObservableField("1")

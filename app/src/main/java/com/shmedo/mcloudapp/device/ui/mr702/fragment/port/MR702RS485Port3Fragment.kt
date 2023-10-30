@@ -85,7 +85,6 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
     }
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-//        testData()
     }
 
     private fun queryInfo() {
@@ -155,17 +154,5 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         fun newInstance() = MR702RS485Port3Fragment()
         const val FRAGMENT_RESULT_REQUEST_KEY = "MR702RS485Port3Fragment"
         const val REFRESH_DATA = "refresh_data"
-    }
-
-    private fun testData() {
-        val sensorStatus = MRRS485Port3SensorStatus(
-            solarid = "1",
-            solarstatus = "1",
-            ysid = "2",
-            ysstatus = "1",
-            ledid = "3",
-            ledstatus = "0"
-        )
-        initSensorData(sensorStatus)
     }
 }

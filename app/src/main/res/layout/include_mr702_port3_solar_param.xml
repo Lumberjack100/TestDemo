@@ -30,9 +30,8 @@
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.solarVoltage}"
-                app:isCharacterFilter="@{false}"
-                app:isNumberFilter="@{false}"
-                app:lengthFilter="@{4}" />
+                app:inputTypeFilter='@{"numberDecimal"}'
+                app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -51,9 +50,8 @@
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.batteryVoltage}"
-                app:isCharacterFilter="@{false}"
-                app:isNumberFilter="@{false}"
-                app:lengthFilter="@{4}" />
+                app:inputTypeFilter='@{"numberDecimal"}'
+                app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -72,9 +70,8 @@
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.solarPower}"
-                app:isCharacterFilter="@{false}"
-                app:isNumberFilter="@{false}"
-                app:lengthFilter="@{4}" />
+                app:inputTypeFilter='@{"numberDecimal"}'
+                app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -93,9 +90,8 @@
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.loadPower}"
-                app:isCharacterFilter="@{false}"
-                app:isNumberFilter="@{false}"
-                app:lengthFilter="@{4}" />
+                app:inputTypeFilter='@{"numberDecimal"}'
+                app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

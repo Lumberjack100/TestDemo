@@ -129,8 +129,6 @@
                     android:id="@+id/ipET"
                     style="@style/MR702_Terminal_Param_EditText_Style"
                     android:text="@={stateVM.interval}"
-                    app:isCharacterFilter="@{false}"
-                    app:isNumberFilter="@{false}"
                     app:lengthFilter="@{4}" />
 
                 <TextView

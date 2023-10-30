@@ -116,8 +116,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
                             android:text="@={stateVM.sensorAddress}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{true}"
+                            app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{5}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -137,8 +136,7 @@
                             android:hint="请输入"
                             android:inputType="phone"
                             android:text="@={stateVM.modelToken}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{true}"
+                            app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{8}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -157,8 +155,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="请输入"
                             android:text="@={stateVM.baudRate}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{true}"
+                            app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{6}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -244,8 +241,6 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
                             android:text="@={stateVM.hydrologicalIdentification}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{true}"
                             app:lengthFilter="@{6}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -264,9 +259,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
                             android:text="@={stateVM.collectionInstructions}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{true}"
-                            app:lengthFilter="@{6}" />
+                            app:lengthFilter="@{32}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -282,10 +275,9 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             android:hint="请输入"
                             android:text="@={stateVM.ratio}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
                             app:lengthFilter="@{100}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -343,10 +335,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
-                            android:inputType="numberSigned|numberDecimal"
                             android:text="@={stateVM.triggerValue}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -365,10 +355,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
-                            android:inputType="numberSigned|numberDecimal"
                             android:text="@={stateVM.upperLimit}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -387,10 +375,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
-                            android:inputType="numberSigned|numberDecimal"
                             android:text="@={stateVM.lowerLimit}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -409,10 +395,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
-                            android:inputType="numberSigned|numberDecimal"
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             android:text="@={stateVM.correctValue}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
                             app:lengthFilter="@{10}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

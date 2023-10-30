@@ -97,8 +97,6 @@
                         textViewEnabled="@{stateVM.isWirelessOpened}"
                         android:hint="请输入 (非必填)"
                         android:text="@={stateVM.apnName}"
-                        app:isCharacterFilter="@{false}"
-                        app:isNumberFilter="@{false}"
                         app:lengthFilter="@{20}" />
 
                 </LinearLayout>
@@ -118,8 +116,6 @@
                         textViewEnabled="@{stateVM.isWirelessOpened}"
                         android:hint="请输入 (非必填)"
                         android:text="@={stateVM.userName}"
-                        app:isCharacterFilter="@{false}"
-                        app:isNumberFilter="@{false}"
                         app:lengthFilter="@{20}" />
 
                 </LinearLayout>
@@ -139,8 +135,6 @@
                         textViewEnabled="@{stateVM.isWirelessOpened}"
                         android:hint="请输入 (非必填)"
                         android:text="@={stateVM.pwd}"
-                        app:isCharacterFilter="@{false}"
-                        app:isNumberFilter="@{false}"
                         app:lengthFilter="@{20}" />
 
                 </LinearLayout>
@@ -228,8 +222,6 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEthernetOpened}"
                             android:text="@={stateVM.ip}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
                             app:lengthFilter="@{100}" />
 
                     </LinearLayout>
@@ -248,8 +240,6 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEthernetOpened}"
                             android:text="@={stateVM.subnetMask}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
                             app:lengthFilter="@{15}" />
 
                     </LinearLayout>
@@ -268,8 +258,6 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEthernetOpened}"
                             android:text="@={stateVM.gateway}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
                             app:lengthFilter="@{15}" />
 
                     </LinearLayout>
@@ -288,8 +276,6 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEthernetOpened}"
                             android:text="@={stateVM.preferredDNS}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
                             app:lengthFilter="@{15}" />
 
                     </LinearLayout>
@@ -308,16 +294,12 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEthernetOpened}"
                             android:text="@={stateVM.alternateDNS}"
-                            app:isCharacterFilter="@{false}"
-                            app:isNumberFilter="@{false}"
                             app:lengthFilter="@{15}" />
 
                     </LinearLayout>
 
                 </LinearLayout>
-
             </LinearLayout>
-
         </androidx.core.widget.NestedScrollView>
 
         <TextView

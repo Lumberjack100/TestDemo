@@ -307,9 +307,9 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         }
         val entity2 = MRSerialPortParamEntity(
             baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
+            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
-            stopbit = mStates.stopBit.get()
+            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT2_UART,
@@ -494,9 +494,9 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
     private fun initUartData(serialPortParam: MRSerialPortParam) {
         mStates.baudRate.set(serialPortParam.baud)
-        mStates.dataBit.set(serialPortParam.databit)
+        mStates.dataBit.set(dataBitList[serialPortParam.databit.toInt()])
         mStates.checkBit.set(checkBitList[serialPortParam.parity.toInt()])
-        mStates.stopBit.set(serialPortParam.stopbit)
+        mStates.stopBit.set(stopBitList[serialPortParam.stopbit.toInt()])
     }
 
     private fun initSensorData(content: String) {
