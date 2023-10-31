@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.device
 
-import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -41,10 +40,10 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
-    private val activeBg: Int = R.drawable.bg_mr702_port_tab_checked
-    private val normalBg: Int = R.drawable.bg_mr702_port_tab_normal
+    private val activeBg: Int = R.drawable.bg_product_tab_checked
+    private val normalBg: Int = R.drawable.bg_product_tab_normal
     private val activeColor: Int = ColorUtils.getColor(R.color.white)
-    private val normalColor: Int = Color.parseColor("#65A2CD")
+    private val normalColor: Int =  ColorUtils.getColor(R.color.colorPrimary)
     private val activeSize: Float = 15f
     private val normalSize: Float = 15f
 

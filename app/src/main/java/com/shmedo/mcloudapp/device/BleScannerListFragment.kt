@@ -1,13 +1,11 @@
 package com.shmedo.mcloudapp.device
 
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -23,13 +21,12 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.ble.scanner.repository.ScanningState
 import com.shmedo.lib.ble.scanner.viewmodel.ScannerViewModel
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.UserInfo
-import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.PermissionInterceptor
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentBleScannerListBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -37,7 +34,6 @@ import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.BleScannerListViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class BleScannerListFragment : BaseFragment() {
@@ -46,20 +42,10 @@ class BleScannerListFragment : BaseFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val permissionViewModel: PermissionViewModel by viewModels()
     private val scannerViewModel: ScannerViewModel by viewModels()
-    private val lifecycleScope by lazy { viewLifecycleOwner.lifecycleScope }
 
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val scanResultList = mutableListOf<DiscoveredBluetoothDevice>()
     private var discoveredBluetoothDevice: DiscoveredBluetoothDevice? = null
 
-
-    private val rotationAnimator: ObjectAnimator by lazy {
-        ObjectAnimator.ofFloat(binding.ivBleScanRefresh, "rotation", 0f, 360f)
-            .apply {
-                duration = 500 // 设定旋转所需的时间
-                repeatCount = ObjectAnimator.INFINITE // 设定无限次数的重复
-                repeatMode = ObjectAnimator.RESTART
-            }
-    }
 
     /**
      * 定位需要进行检测的权限数组
@@ -81,10 +67,11 @@ class BleScannerListFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
+        initRefresh()
     }
 
     private fun initAdapter() {
-        binding.recyclerView.setup { rv ->
+        binding.recyclerviewDevice.setup { rv ->
             rv.layoutManager = LinearLayoutManager(context)
             addType<DiscoveredBluetoothDevice>(R.layout.item_ble_device)
             R.id.item.onClick {
@@ -97,8 +84,11 @@ class BleScannerListFragment : BaseFragment() {
         }
     }
 
-    override fun initData() {
-
+    private fun initRefresh() {
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            refreshScan()
+        }
     }
 
     override fun createObserver() {
@@ -106,12 +96,35 @@ class BleScannerListFragment : BaseFragment() {
             permissionViewModel.bluetoothState.collectLatest { state ->
                 Timber.d("bluetoothState: $state")
                 when (state) {
-                    is NotAvailable -> noBluetoothView(state.reason)
+                    is NotAvailable -> {
+                        when (state.reason) {
+                            FeatureNotAvailableReason.NOT_AVAILABLE -> {
+                                mStates.bluetoothNotAvailable.set(true)
+                                mStates.bluetoothMissPermission.set(false)
+                                mStates.bluetoothDisabled.set(false)
+                            }
+
+                            FeatureNotAvailableReason.PERMISSION_REQUIRED -> {
+                                mStates.bluetoothNotAvailable.set(false)
+                                mStates.bluetoothDisabled.set(false)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    mStates.bluetoothMissPermission.set(true)
+                                }
+                            }
+
+                            FeatureNotAvailableReason.DISABLED -> {
+                                mStates.bluetoothNotAvailable.set(false)
+                                mStates.bluetoothMissPermission.set(false)
+                                mStates.bluetoothDisabled.set(true)
+                            }
+                        }
+                    }
+
                     Available -> {
                         mStates.bluetoothNotAvailable.set(false)
                         mStates.bluetoothMissPermission.set(false)
                         mStates.bluetoothDisabled.set(false)
-                        observeScanState()
+                        processScanResult()
                     }
 
                     else -> {}
@@ -130,56 +143,36 @@ class BleScannerListFragment : BaseFragment() {
                 BleConnect
             )
         }
-    }
-
-    private fun noBluetoothView(
-        reason: FeatureNotAvailableReason,
-    ) {
-        when (reason) {
-            FeatureNotAvailableReason.NOT_AVAILABLE -> {
-                mStates.bluetoothNotAvailable.set(true)
-                mStates.bluetoothMissPermission.set(false)
-                mStates.bluetoothDisabled.set(false)
+        mStates.keyWords.observe(viewLifecycleOwner) { keyword ->
+            Timber.i("keyWords 触发")
+            if (keyword.isEmpty()) {
+                binding.recyclerviewDevice.models = scanResultList
+                return@observe
             }
-
-            FeatureNotAvailableReason.PERMISSION_REQUIRED -> {
-                mStates.bluetoothNotAvailable.set(false)
-                mStates.bluetoothDisabled.set(false)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    mStates.bluetoothMissPermission.set(true)
-                }
+            val filterList = scanResultList.filter {
+                it.name?.contains(keyword, ignoreCase = true) == true
             }
-
-            FeatureNotAvailableReason.DISABLED -> {
-                mStates.bluetoothNotAvailable.set(false)
-                mStates.bluetoothMissPermission.set(false)
-                mStates.bluetoothDisabled.set(true)
-            }
+//            binding.recyclerviewDevice.setDifferModels(filterList, false)
+            binding.recyclerviewDevice.models = filterList
         }
     }
 
-    private fun observeScanState() {
-        launchAndRepeatWithViewLifecycle {
-            scannerViewModel.state.collectLatest { state ->
-//                Timber.d("scannerViewModel.state: $state")
-                when (state) {
-                    ScanningState.Loading -> {
-//                        mStates.scanState.set("正在扫描...")
-//                        mStates.deviceCount.set(0)
-                        Timber.i("scannerViewModel.state: Loading")
-                    }
+    private suspend fun processScanResult() {
+        scannerViewModel.scannerState.collectLatest { state ->
+            when (state) {
+                ScanningState.Loading -> {
+                    Timber.i("scannerViewModel.state: Loading")
+                }
 
-                    is ScanningState.Error -> {
-//                        mStates.scanState.set("刷新")
-                        Timber.e("scannerViewModel.state: Error")
-                        mStates.deviceCount.set(0)
-                    }
+                is ScanningState.Error -> {
+                    Timber.e("scannerViewModel.state: Error")
+                }
 
-                    is ScanningState.DevicesDiscovered -> {
-                        Timber.i("scannerViewModel.state: DevicesDiscovered")
-                        mStates.deviceCount.set(state.devices.size)
-                        binding.recyclerView.models = state.devices
-                    }
+                is ScanningState.DevicesDiscovered -> {
+                    Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
+                    scanResultList.clear()
+                    scanResultList.addAll(state.devices)
+                    mStates.keyWords.value = mStates.keyWords.value
                 }
             }
         }
@@ -193,25 +186,16 @@ class BleScannerListFragment : BaseFragment() {
         fun onGrantPermissionClick() {
             requestPermissionForBluetooth()
         }
-
-        fun onCancelSearchClick() {
-
-        }
-
-        fun onRefreshClick() {
-            refresh()
-        }
     }
 
-    fun refresh() = lifecycleScope.launch {
-        rotationAnimator.start()
-        mStates.refreshing.set(true)
-        mStates.scanState.set("正在扫描...")
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
+    }
+
+    private fun refreshScan() = launchWithViewLifecycle {
         scannerViewModel.refresh()
-        delay(5000)
-        rotationAnimator.cancel()
-        mStates.refreshing.set(false)
-        mStates.scanState.set("刷新")
+        delay(3000)
+        binding.refreshLayout.finish()
     }
 
     private fun requestPermissionForBluetooth() {

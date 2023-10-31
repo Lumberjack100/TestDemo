@@ -33,7 +33,7 @@ class ScannerViewModel : ViewModel() {
         )
     )
 
-    val state = filterConfig
+    val scannerState = filterConfig
         .combine(ScannerRepository.instance.getScannerState()) { config, result ->
             when (result) {
                 is ScanningState.DevicesDiscovered -> result.applyFilters(config)

@@ -9,7 +9,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
@@ -24,6 +23,7 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702PortSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
-import kotlinx.coroutines.launch
 
 class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val binding: FragmentMr702PortHomeBinding by lazy { getBinding() as FragmentMr702PortHomeBinding }
@@ -200,11 +199,11 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     private fun loadSensorConfig() {
-        lifecycleScope.launch {
+        launchWithViewLifecycle {
             val jsonStr = ResourceUtils.readAssets2String("mr702_port_sensor_config.json")
-            if (jsonStr.isNullOrEmpty()) return@launch
+            if (jsonStr.isNullOrEmpty()) return@launchWithViewLifecycle
             val configList =
-                MoshiUtil.fromJson<List<MR702PortSensorConfig>>(jsonStr) ?: return@launch
+                MoshiUtil.fromJson<List<MR702PortSensorConfig>>(jsonStr) ?: return@launchWithViewLifecycle
             configList.forEach { mPort ->
                 mStates.portSensorsMap[mPort.portName] = mPort.sensors
                 mPort.sensors.forEach { model ->

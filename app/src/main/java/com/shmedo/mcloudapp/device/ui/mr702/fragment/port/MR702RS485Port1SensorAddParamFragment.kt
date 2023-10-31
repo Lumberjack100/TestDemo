@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -23,6 +22,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBinding
@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1SensorAddParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -299,11 +298,11 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processBack(isPressBackBtn: Boolean = false) {
-        lifecycleScope.launch {
+        launchWithViewLifecycle {
             if (isPressBackBtn) {
                 mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
                 nav().navigateUp()
-                return@launch
+                return@launchWithViewLifecycle
             }
             delay(1000)
             //需要给上一级浏览页面传递最新的事件信息

@@ -9,17 +9,18 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            android:layout_marginBottom="@dimen/dimen_size_10"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipToPadding="false"
+            android:paddingTop="@dimen/dimen_size_10"
+            android:paddingBottom="@dimen/dimen_size_10"
             android:splitMotionEvents="false"
             tools:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
             tools:listitem="@layout/item_product" />
@@ -32,14 +33,14 @@
         <TextView
             android:id="@+id/tv_cancel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dimen_size_40"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:paddingTop="@dimen/dimen_size_10"
             android:paddingBottom="@dimen/dimen_size_10"
             android:text="点击收起"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/text_size_13" />
+            android:textSize="@dimen/text_size_15" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

@@ -17,7 +17,7 @@
             android:id="@+id/item"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:background="@drawable/bg_mr702_port_tab_normal"
+            tools:background="@drawable/bg_product_tab_normal"
             android:gravity="center"
             android:layout_marginStart="@dimen/dimen_size_6"
             android:layout_marginBottom="@dimen/dimen_size_5"
@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{m.productName}"
-                android:textColor="#65A2CD"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size_15"
                 tools:text="全部" />
 

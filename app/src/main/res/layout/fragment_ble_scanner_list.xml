@@ -20,25 +20,20 @@
         android:background="@color/white">
 
         <FrameLayout
-            android:id="@+id/search_layout_group"
+            android:id="@+id/fl_search_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="10dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:paddingStart="@dimen/dimen_size_16"
+            android:paddingTop="@dimen/dimen_size_10"
+            android:paddingEnd="@dimen/dimen_size_16"
+            android:paddingBottom="@dimen/dimen_size_10"
             app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:id="@+id/search_placeholder"
-                visible="@{vm.searchPlaceholderVisible}"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_search_project_device_gray"
-                android:gravity="center_vertical"
-                tools:visibility="visible">
+                android:gravity="center_vertical">
 
                 <ImageView
                     android:layout_width="16dp"
@@ -46,143 +41,43 @@
                     android:layout_marginStart="13dp"
                     android:src="@drawable/ic_search_project" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="设备SN搜索"
-                    android:textColor="#ffb3b3b3"
+                <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    android:id="@+id/et_keywords"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginEnd="7dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="搜索设备"
+                    android:imeOptions="actionSearch"
+                    android:singleLine="true"
+                    android:text="@={vm.keyWords}"
+                    android:textColor="@color/title_text_color"
+                    android:textColorHint="@color/text_color_b3b3b3"
                     android:textSize="@dimen/text_size_13" />
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/search_container"
-                visible="@{!vm.searchPlaceholderVisible}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="36dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_search_project_device_gray"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="13dp"
-                        android:src="@drawable/ic_search_project" />
-
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
-                        android:id="@+id/et_keywords"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="7dp"
-                        android:layout_marginEnd="7dp"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:hint="搜索设备"
-                        android:imeOptions="actionSearch"
-                        android:singleLine="true"
-                        android:text="@={vm.keyWords}"
-                        android:textColor="@color/title_text_color"
-                        android:textColorHint="@color/text_color_b3b3b3"
-                        android:textSize="@dimen/text_size_13" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_cancel"
-                    android:layout_width="60dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="13dp"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:onClick="@{()->click.onCancelSearchClick()}"
-                    android:text="取消"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_15" />
-
-            </LinearLayout>
-
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_refresh"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="31dp"
-            android:layout_marginEnd="31dp"
-            android:gravity="center_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_layout_group">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="已搜索到设备"
-                android:textColor="@color/sub_title_text_color"
-                android:textSize="@dimen/text_size_15" />
-
-            <TextView
-                android:id="@+id/tv_ble_device_count"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:layout_weight="1"
-                android:text='@{vm.deviceCount + ""}'
-                android:textColor="@color/text_color_b3b3b3"
-                android:textSize="@dimen/text_size_15"
-                tools:text="(100)" />
-
-            <LinearLayout
-                android:id="@+id/ll_scan_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:onClick="@{()->click.onRefreshClick()}"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp">
-
-                <ImageView
-                    android:id="@+id/iv_ble_scan_refresh"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_ble_scan_refresh" />
-
-                <TextView
-                    android:id="@+id/tv_ble_scan_state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:enabled="@{!vm.refreshing}"
-                    android:text="@{vm.scanState}"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_15"
-                    tools:text="重新搜索" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            visible="@{!vm.bluetoothMissPermission &amp;&amp; !vm.bluetoothDisabled &amp;&amp; !vm.bluetoothMissPermission}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:paddingBottom="25dp"
-            android:splitMotionEvents="false"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_refresh"
-            tools:listitem="@layout/item_ble_device" />
+            app:layout_constraintTop_toBottomOf="@+id/fl_search_layout">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_device"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="25dp"
+                android:splitMotionEvents="false"
+                tools:listitem="@layout/item_ble_device" />
+
+        </com.drake.brv.PageRefreshLayout>
 
         <include
             android:id="@+id/bluetooth_miss_permission"
@@ -192,8 +87,6 @@
             android:layout_height="wrap_content"
             app:click="@{click}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
@@ -204,10 +97,7 @@
             android:layout_height="wrap_content"
             app:click="@{click}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

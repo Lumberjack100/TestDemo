@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -23,6 +22,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
@@ -38,7 +38,6 @@ import com.shmedo.mcloudapp.device.model.SensorModel
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1ViewModel
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -347,10 +346,10 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSensorData(content: String) {
-        lifecycleScope.launch {
+        launchWithViewLifecycle {
             try {
                 val sensorStatusList =
-                    MoshiUtil.fromJson<List<MRSensorStatus>>(content) ?: return@launch
+                    MoshiUtil.fromJson<List<MRSensorStatus>>(content) ?: return@launchWithViewLifecycle
                 val list = sensorStatusList.map { sensorStatus ->
                     val strs = sensorStatus.model.split("_").toTypedArray()
                     MRSensorItem(
