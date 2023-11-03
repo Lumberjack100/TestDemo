@@ -202,11 +202,16 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             Toaster.show("请输入无响应次数")
             return
         }
+        if (mStates.delayDuration.get().isEmpty()) {
+            Toaster.show("请输入延时时间")
+            return
+        }
         val entity = MRRS485Port1CollectionParamEntity(
             collfreq = mStates.acquisitionFrequency.get(),
             collcycle = mStates.collectionDuration.get(),
             collround = mStates.collectionTimes.get(),
-            noresp = mStates.noResponseTimes.get()
+            noresp = mStates.noResponseTimes.get(),
+            powerontimes = mStates.delayDuration.get()
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT2_COLL,
@@ -343,6 +348,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         mStates.collectionDuration.set(collectionParam.collcycle)
         mStates.collectionTimes.set(collectionParam.collround)
         mStates.noResponseTimes.set(collectionParam.noresp)
+        mStates.delayDuration.set(collectionParam.powerontimes)
     }
 
     private fun initSensorData(content: String) {

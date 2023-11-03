@@ -282,6 +282,10 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             Toaster.show("请输入无响应次数")
             return
         }
+        if (mStates.delayDuration.get().isEmpty()) {
+            Toaster.show("请输入延时时间")
+            return
+        }
         if (mStates.collectorAddress.get().isEmpty()) {
             Toaster.show("请输入采集器地址")
             return
@@ -292,7 +296,8 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             collgap = mStates.collectionInterval.get(),
             noresp = mStates.noResponseTimes.get(),
             colltype = (collectorTypeList.indexOf(mStates.collectorType.get()) + 1).toString(),
-            colladdr = mStates.collectorAddress.get()
+            colladdr = mStates.collectorAddress.get(),
+            powerontimes = mStates.delayDuration.get()
         )
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT2_COLL,
@@ -489,6 +494,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         mStates.noResponseTimes.set(collectionParam.noresp)
         mStates.collectorType.set(collectorTypeList[collectionParam.colltype.toInt() - 1])
         mStates.collectorAddress.set(collectionParam.colladdr)
+        mStates.delayDuration.set(collectionParam.powerontimes)
     }
 
     private fun initUartData(serialPortParam: MRSerialPortParam) {

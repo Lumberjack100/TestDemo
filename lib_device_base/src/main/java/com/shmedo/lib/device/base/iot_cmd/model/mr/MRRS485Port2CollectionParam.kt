@@ -12,4 +12,5 @@ data class MRRS485Port2CollectionParam(
     var collgap: String = "",//采集间隔
     var collfreq: String = "",//采集频率
     var collcycle: String = "",//采集周期
+    var powerontimes: String = "",//延时时间 s
 )

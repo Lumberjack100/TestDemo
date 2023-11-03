@@ -17,6 +17,7 @@ data class MRRS485Port2CollectionParamEntity(
     val collgap: String = "",//采集间隔
     val collfreq: String = "",//采集频率
     val collcycle: String = "",//采集周期
+    val powerontimes: String = "",//延时时间 s
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

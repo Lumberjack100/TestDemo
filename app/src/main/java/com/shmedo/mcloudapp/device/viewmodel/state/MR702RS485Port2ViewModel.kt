@@ -8,6 +8,7 @@ class MR702RS485Port2ViewModel : ViewModel() {
     val collectionDuration = NonNullObservableField("")//采集周期
     val collectionInterval = NonNullObservableField("")//采集间隔
     val noResponseTimes = NonNullObservableField("")//无应答次数
+    val delayDuration = NonNullObservableField("")//延时时间
 
     val collectorType = NonNullObservableField("")//采集器类型
     val collectorAddress = NonNullObservableField("")//采集器地址

@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
-import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -63,7 +61,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         binding.viewpager.offscreenPageLimit = 2
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)
-        ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 
         val tabLayoutMediator =
             TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->

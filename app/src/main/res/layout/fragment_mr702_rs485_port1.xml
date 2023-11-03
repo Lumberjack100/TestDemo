@@ -127,6 +127,24 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        textViewEnabled="@{homeVM.isEditable }"
+                        android:text="延时时间(秒)" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{homeVM.isEditable }"
+                        android:text="@={stateVM.delayDuration}"
+                        app:inputTypeFilter='@{"number"}'
+                        app:lengthFilter="@{5}" />
+
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
