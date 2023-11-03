@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
  * 描述：     TODO
  */
 @JsonClass(generateAdapter = true)
-class MRCollectionParamEntity(
+data class MRRS485Port2CollectionParamEntity(
     val colladdr: String = "",//采集器地址
     val colltype: String = "",//采集器类型
     val noresp: String = "",//超时次数/无应答次数

@@ -12,10 +12,10 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRCollectionParamEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port1CollectionParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.mr.MRCollectionParam
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port1CollectionParam
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRSensorStatus
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -191,10 +191,10 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             return
         }
         if (mStates.collectionDuration.get().isEmpty()) {
-            Toaster.show("请输入采集时长")
+            Toaster.show("请输入采集周期")
             return
         }
-        if (mStates.collectionInterval.get().isEmpty()) {
+        if (mStates.collectionTimes.get().isEmpty()) {
             Toaster.show("请输入采集间隔")
             return
         }
@@ -202,10 +202,10 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             Toaster.show("请输入无响应次数")
             return
         }
-        val entity = MRCollectionParamEntity(
+        val entity = MRRS485Port1CollectionParamEntity(
             collfreq = mStates.acquisitionFrequency.get(),
             collcycle = mStates.collectionDuration.get(),
-            collgap = mStates.collectionInterval.get(),
+            collround = mStates.collectionTimes.get(),
             noresp = mStates.noResponseTimes.get()
         )
         val command = IOTCommandUtil.getCommand(
@@ -250,7 +250,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_RS485_PORT1_COLL -> {
-                val result = iotParseManager.parse<MRCollectionParam>(
+                val result = iotParseManager.parse<MRRS485Port1CollectionParam>(
                     cmdStr,
                     IOTCommandType.MD_MR_GET_RS485_PORT1_COLL
                 )
@@ -338,10 +338,10 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initCollectionData(collectionParam: MRCollectionParam) {
+    private fun initCollectionData(collectionParam: MRRS485Port1CollectionParam) {
         mStates.acquisitionFrequency.set(collectionParam.collfreq)
         mStates.collectionDuration.set(collectionParam.collcycle)
-        mStates.collectionInterval.set(collectionParam.collgap)
+        mStates.collectionTimes.set(collectionParam.collround)
         mStates.noResponseTimes.set(collectionParam.noresp)
     }
 

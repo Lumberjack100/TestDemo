@@ -63,7 +63,7 @@
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
-                        android:text="采集频率(ms)" />
+                        android:text="采集频率(毫秒)" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
@@ -81,7 +81,7 @@
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
-                        android:text="采集时长(s)" />
+                        android:text="采集周期(分钟)" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
@@ -99,7 +99,7 @@
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
-                        android:text="采集间隔(ms)" />
+                        android:text="采集间隔(毫秒)" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"

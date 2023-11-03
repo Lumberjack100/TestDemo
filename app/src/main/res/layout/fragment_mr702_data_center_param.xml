@@ -308,7 +308,7 @@
                             <TextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isCenterOpened}"
-                                android:text="心跳间隔(s)" />
+                                android:text="心跳间隔(秒)" />
 
                             <com.shmedo.mcloudapp.common.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
@@ -516,7 +516,7 @@
                                 <TextView
                                     style="@style/Common_ClickableItem_TitleStyle"
                                     textViewEnabled="@{stateVM.isCenterOpened}"
-                                    android:text="维持上报间隔(s)" />
+                                    android:text="维持上报间隔(秒)" />
 
                                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"

@@ -2,20 +2,18 @@ package com.shmedo.lib.device.base.iot_cmd.parser.mr
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
-import com.shmedo.lib.device.base.iot_cmd.model.mr.MRCollectionParam
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port1CollectionParam
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/10/16 <br/>
  * 描述：     TODO
  */
-class MRRS485Port1CollectionParamParser : IOTCommandParser<MRCollectionParam> {
-    override fun parseInstance(keyValueMap: Map<String, String>): MRCollectionParam {
-        return MRCollectionParam().apply {
-            colladdr = keyValueMap.getOrDefault("colladdr", colladdr)
-            colltype = keyValueMap.getOrDefault("colltype", colltype)
+class MRRS485Port1CollectionParamParser : IOTCommandParser<MRRS485Port1CollectionParam> {
+    override fun parseInstance(keyValueMap: Map<String, String>): MRRS485Port1CollectionParam {
+        return MRRS485Port1CollectionParam().apply {
             noresp = keyValueMap.getOrDefault("noresp", noresp)
-            collgap = keyValueMap.getOrDefault("collgap", collgap)
+            collround = keyValueMap.getOrDefault("collround", collround)
             collfreq = keyValueMap.getOrDefault("collfreq", collfreq)
             collcycle = keyValueMap.getOrDefault("collcycle", collcycle)
         }

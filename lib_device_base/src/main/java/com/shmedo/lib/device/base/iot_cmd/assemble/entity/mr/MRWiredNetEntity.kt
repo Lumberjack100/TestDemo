@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
  * 描述：     TODO
  */
 @JsonClass(generateAdapter = true)
-class MRWiredNetEntity(
+data class MRWiredNetEntity(
     val switch: String = "1",//是否开启以太网 0:关闭 1:开启
     val dhcp: String = IOTConstants.NULL_KEY,//是否开启DHCP 0:关闭 1:开启
     val ipaddr: String = IOTConstants.NULL_KEY,//IP地址

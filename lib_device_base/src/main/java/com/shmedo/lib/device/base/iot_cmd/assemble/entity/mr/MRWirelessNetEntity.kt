@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
  * 描述：     TODO
  */
 @JsonClass(generateAdapter = true)
-class MRWirelessNetEntity(
+data class MRWirelessNetEntity(
     val switch: String = "1",//是否开启4G 0:关闭 1:开启
     val apn: String = IOTConstants.NULL_KEY,
     val username: String = IOTConstants.NULL_KEY,
