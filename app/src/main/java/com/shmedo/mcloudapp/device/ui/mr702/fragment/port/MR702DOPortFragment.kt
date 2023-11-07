@@ -87,17 +87,7 @@ class MR702DOPortFragment : BaseIOTDeviceFragment() {
 
     private fun toggleSwitch(position: Int, isOpen: Boolean = false) {
         commandItems.clear()
-        val entity = MRDOPortParamEntity()
-        when (position) {
-            0 -> entity.kstatus1 = if (isOpen) "1" else "0"
-            1 -> entity.kstatus2 = if (isOpen) "1" else "0"
-            2 -> entity.kstatus3 = if (isOpen) "1" else "0"
-            3 -> entity.kstatus4 = if (isOpen) "1" else "0"
-            4 -> entity.kstatus5 = if (isOpen) "1" else "0"
-            5 -> entity.kstatus6 = if (isOpen) "1" else "0"
-            6 -> entity.kstatus7 = if (isOpen) "1" else "0"
-            7 -> entity.kstatus8 = if (isOpen) "1" else "0"
-        }
+        val entity = MRDOPortParamEntity((position + 1).toString(), if (isOpen) "1" else "0")
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_DO_PORT_PARAM,
             entity.toCommandString()
@@ -109,7 +99,6 @@ class MR702DOPortFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-//        testData()
     }
 
     private fun queryInfo() {
@@ -188,17 +177,4 @@ class MR702DOPortFragment : BaseIOTDeviceFragment() {
         fun newInstance() = MR702DOPortFragment()
     }
 
-    private fun testData() {
-        val doPortParam = MRDOPortParam(
-            kstatus1 = "1",
-            kstatus2 = "1",
-            kstatus3 = "1",
-            kstatus4 = "1",
-            kstatus5 = "1",
-            kstatus6 = "0",
-            kstatus7 = "1",
-            kstatus8 = "0"
-        )
-        initParamData(doPortParam)
-    }
 }

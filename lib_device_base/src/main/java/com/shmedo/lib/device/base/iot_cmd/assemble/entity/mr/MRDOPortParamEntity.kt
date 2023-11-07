@@ -11,15 +11,9 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class MRDOPortParamEntity(
-    var kstatus1: String = IOTConstants.NULL_KEY,//1 开 0关
-    var kstatus2: String = IOTConstants.NULL_KEY,//1 开 0关
-    var kstatus3: String = IOTConstants.NULL_KEY,//1 开 0关
-    var kstatus4: String = IOTConstants.NULL_KEY,//1 开 0关
-    var kstatus5: String = IOTConstants.NULL_KEY,//1 开 0关
-    var kstatus6: String = IOTConstants.NULL_KEY,//1 开 0关
-    var kstatus7: String = IOTConstants.NULL_KEY,//1 开 0关
-    var kstatus8: String = IOTConstants.NULL_KEY,//1 开 0关
-){
+    var ktype: String = "",//数字  1-8
+    var status: String = "",//1 开 0关
+) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)
 

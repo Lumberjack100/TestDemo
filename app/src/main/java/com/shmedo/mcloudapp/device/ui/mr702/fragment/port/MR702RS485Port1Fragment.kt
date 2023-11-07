@@ -214,7 +214,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             powerontimes = mStates.delayDuration.get()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT2_COLL,
+            IOTCommandType.MD_MR_SET_RS485_PORT1_COLL,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -344,18 +344,23 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun initCollectionData(collectionParam: MRRS485Port1CollectionParam) {
-        mStates.acquisitionFrequency.set(collectionParam.collfreq)
-        mStates.collectionDuration.set(collectionParam.collcycle)
-        mStates.collectionTimes.set(collectionParam.collround)
-        mStates.noResponseTimes.set(collectionParam.noresp)
-        mStates.delayDuration.set(collectionParam.powerontimes)
+        try {
+            mStates.acquisitionFrequency.set(collectionParam.collfreq)
+            mStates.collectionDuration.set(collectionParam.collcycle)
+            mStates.collectionTimes.set(collectionParam.collround)
+            mStates.noResponseTimes.set(collectionParam.noresp)
+            mStates.delayDuration.set(collectionParam.powerontimes)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun initSensorData(content: String) {
         launchWithViewLifecycle {
             try {
                 val sensorStatusList =
-                    MoshiUtil.fromJson<List<MRSensorStatus>>(content) ?: return@launchWithViewLifecycle
+                    MoshiUtil.fromJson<List<MRSensorStatus>>(content)
+                        ?: return@launchWithViewLifecycle
                 val list = sensorStatusList.map { sensorStatus ->
                     val strs = sensorStatus.model.split("_").toTypedArray()
                     MRSensorItem(
@@ -396,7 +401,6 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         fun newInstance() = MR702RS485Port1Fragment()
         const val SENSOR_SIZE = 32
         const val FRAGMENT_RESULT_REQUEST_KEY = "MR702RS485Port1Fragment"
-        const val REFRESH_DATA = "refresh_data"
     }
 
     private fun testData() {

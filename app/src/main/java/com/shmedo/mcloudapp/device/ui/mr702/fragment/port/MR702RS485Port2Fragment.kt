@@ -488,27 +488,35 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun initCollectionData(collectionParam: MRRS485Port2CollectionParam) {
-        mStates.acquisitionFrequency.set(collectionParam.collfreq)
-        mStates.collectionDuration.set(collectionParam.collcycle)
-        mStates.collectionInterval.set(collectionParam.collgap)
-        mStates.noResponseTimes.set(collectionParam.noresp)
-        mStates.collectorType.set(collectorTypeList[collectionParam.colltype.toInt() - 1])
-        mStates.collectorAddress.set(collectionParam.colladdr)
-        mStates.delayDuration.set(collectionParam.powerontimes)
+        try {
+            mStates.acquisitionFrequency.set(collectionParam.collfreq)
+            mStates.collectionDuration.set(collectionParam.collcycle)
+            mStates.collectionInterval.set(collectionParam.collgap)
+            mStates.noResponseTimes.set(collectionParam.noresp)
+            mStates.collectorType.set(collectorTypeList[collectionParam.colltype.toInt() - 1])
+            mStates.collectorAddress.set(collectionParam.colladdr)
+            mStates.delayDuration.set(collectionParam.powerontimes)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun initUartData(serialPortParam: MRSerialPortParam) {
-        mStates.baudRate.set(serialPortParam.baud)
-        mStates.dataBit.set(dataBitList[serialPortParam.databit.toInt()])
-        mStates.checkBit.set(checkBitList[serialPortParam.parity.toInt()])
-        mStates.stopBit.set(stopBitList[serialPortParam.stopbit.toInt()])
+        try {
+            mStates.baudRate.set(serialPortParam.baud)
+            mStates.dataBit.set(dataBitList[serialPortParam.databit.toInt()])
+            mStates.checkBit.set(checkBitList[serialPortParam.parity.toInt()])
+            mStates.stopBit.set(stopBitList[serialPortParam.stopbit.toInt()])
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun initSensorData(content: String) {
-        launchWithViewLifecycle{
+        launchWithViewLifecycle {
             try {
-                val sensorStatusList =
-                    MoshiUtil.fromJson<List<MRSensorStatus>>(content) ?: return@launchWithViewLifecycle
+                val sensorStatusList = MoshiUtil.fromJson<List<MRSensorStatus>>(content)
+                        ?: return@launchWithViewLifecycle
                 val list = sensorStatusList.map { sensorStatus ->
                     MRSensorItem(
                         isPlugin = sensorStatus.sta == "0",
