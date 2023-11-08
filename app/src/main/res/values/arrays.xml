@@ -189,15 +189,13 @@
     </string-array>
 
     <string-array name="mr_rs232_port1_camera_model">
-        <item>类型1</item>
-        <item>类型2</item>
-        <item>类型3</item>
+        <item>SXH232-H200</item>
     </string-array>
 
     <string-array name="mr_rs232_port2_camera_resolution">
-        <item>分辨率1</item>
-        <item>分辨率2</item>
-        <item>分辨率3</item>
+        <item>320*240</item>
+        <item>640*480</item>
+        <item>1280*960</item>
     </string-array>
 
     <string-array name="mr_data_bit">

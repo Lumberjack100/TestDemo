@@ -231,6 +231,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:text="@={stateVM.collectionInstructions}"
+                        app:inputTypeFilter='@{"character"}'
                         app:lengthFilter="@{32}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -360,13 +361,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
+                    visible="@{!stateVM.isConfirmBtnVisible}"
                     android:paddingStart="@dimen/dimen_size_15"
                     android:paddingEnd="@dimen/dimen_size_15">
 
                     <TextView
                         android:id="@+id/btn_save_model_field"
                         onClickWithDebouncing="@{()->click.onSaveModelFieldClick()}"
-                        visible="@{!stateVM.isConfirmBtnVisible}"
                         android:layout_width="match_parent"
                         android:layout_height="42dp"
                         android:layout_marginTop="@dimen/dimen_size_10"

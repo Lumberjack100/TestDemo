@@ -251,12 +251,16 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 .show()
         }
 
-        fun onSubmitClick() {
+        fun onSaveModelFieldClick() {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
             initSaveCommand()
+        }
+
+        fun onSubmitClick() {
+            processBack()
         }
     }
 
@@ -381,7 +385,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("保存成功")
-                            processBack()
                         }
                     }
                 }

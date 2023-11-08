@@ -89,6 +89,11 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
     private fun initBaseInfo(baseInfo: MRBaseInfo) {
         val decimalFormat = DecimalFormat("#.#")
         try {
+            baseInfo.productname = deviceInfo.productName
+            baseInfo.producttype = deviceInfo.deviceName
+            baseInfo.regcode = deviceInfo.productKey
+            baseInfo.regtime = deviceInfo.createTime
+            baseInfo.sn = deviceInfo.deviceToken
             baseInfo.temp = decimalFormat.format(baseInfo.temp.toDouble())
             baseInfo.hum = decimalFormat.format(baseInfo.hum.toDouble())
             baseInfo.volt = decimalFormat.format(baseInfo.volt.toDouble())

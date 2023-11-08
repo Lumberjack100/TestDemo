@@ -60,7 +60,6 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-//        testData()
     }
 
     private fun queryInfo() {
@@ -146,46 +145,4 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
     companion object {
         fun newInstance() = MR702ModuleStatusInfoFragment()
     }
-
-    private fun testData() {
-        val list = mutableListOf<MRModuleStatusItem>()
-        list.add(
-            MRModuleStatusItem(
-                "触摸屏",
-                "正常"
-            )
-        )
-        list.add(
-            MRModuleStatusItem(
-                "4G模块",
-                "异常"
-            )
-        )
-        list.add(
-            MRModuleStatusItem(
-                "北斗定位模块",
-                "正常"
-            )
-        )
-        list.add(
-            MRModuleStatusItem(
-                "有线网模块",
-                "异常"
-            )
-        )
-        list.add(
-            MRModuleStatusItem(
-                "Flash",
-                "正常"
-            )
-        )
-        list.add(
-            MRModuleStatusItem(
-                "EMMC存储模块",
-                "正常"
-            )
-        )
-        binding.rv.models = list
-    }
-
 }

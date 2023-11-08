@@ -12,23 +12,25 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 class DeviceInfo(
-    val id: Int = 0,
-    val companyID: Int = 0,
-    val companyName: String = "",
-    val deviceToken: String = "",
-    val deviceName: String = "",
-    val deviceDesc: String = "",
-    val installLocation: String = "",
-    val gpsLocation: String = "",
-    val onlineStatus: Boolean = false,
-    val deviceStatus: String = "",
-    val allowWarn: Boolean = false,
-    val exValues: String = "",
-    val apiKey: String = "",
-    val productID: Int = 0,
-    val productToken: String = "",
-    val productName: String = "",
-    val productType: String = "",
-    val firmwareVersion: String = "",
-    val lastActiveTime: String = "",
+    val id: Int = 0,//设备ID
+    val companyID: Int = 0,//所在公司编号
+    val companyName: String = "",//设备ID
+    val deviceToken: String = "",//设备SN
+    val deviceName: String = "",//设备名称
+    val deviceDesc: String = "",//设备描述信息
+    val installLocation: String = "",//设备安装位置
+    val gpsLocation: String = "",//设备GPS位置
+    val onlineStatus: Boolean = false,//在线状态
+    val deviceStatus: String = "",//启用状态
+    val allowWarn: Boolean = false,//是否推送预警
+    val exValues: String = "",//设备拓展属性
+    val apiKey: String = "",//设备密钥
+    val productID: Int = 0,//所属产品编号
+    val productToken: String = "",//所属产品标识
+    val productName: String = "",//所属产品名称
+    val productType: String = "",//所属产品的产品类型
+    val productKey: String = "",//所属产品密钥（产品注册码）
+    val firmwareVersion: String = "",//固件版本
+    val lastActiveTime: String = "",//最后交互时间
+    val createTime: String = "",//创建时间
 ) : Parcelable

@@ -71,7 +71,7 @@ class MR702DOPortFragment : BaseIOTDeviceFragment() {
                     showMessage("确定要打开 ${item.name} 吗？", "提示", "确定", {
                         item.checked = true
                         notifyItemChanged(modelPosition, true)
-                        toggleSwitch(modelPosition)
+                        toggleSwitch(modelPosition, true)
                     }, "取消", {
                         item.checked = false
                         notifyItemChanged(modelPosition)

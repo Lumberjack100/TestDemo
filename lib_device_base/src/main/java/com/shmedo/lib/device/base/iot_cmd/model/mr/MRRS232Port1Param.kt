@@ -8,8 +8,8 @@ package com.shmedo.lib.device.base.iot_cmd.model.mr
 data class MRRS232Port1Param(
     var status: String = "",//状态  1 已接入 0未接入
     var switch: String = "",//开关  1 开 0关
-    var type: String = "",//摄像头类型   1: 类型1  2: 类型2 3: 类型3
-    var resolut: String = "",//分辨率  1 分辨率1  2 分辨率2 3 分辨率3
+    var type: String = "",// 摄像头类型（默认只有一种SXH232-H200）   0 ：SXH232-H200
+    var resolut: String = "",//分辨率  0：320*240 1：640*480  2：1280*960
     var interval: String = "",//拍照间隔  s  数字
     var baud: String = "",//波特率  bps 数字
     var databit: String = "",//数据位   数字(5 6 7 8)

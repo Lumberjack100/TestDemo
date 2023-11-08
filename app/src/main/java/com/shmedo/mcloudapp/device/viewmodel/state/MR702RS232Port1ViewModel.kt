@@ -6,8 +6,8 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 class MR702RS232Port1ViewModel : ViewModel() {
     val status = NonNullObservableField("已接入")
     val isOpened = NonNullObservableField(true)
-    val cameraResolution = NonNullObservableField("")
-    val cameraModel = NonNullObservableField("")
+    val cameraModel = NonNullObservableField("SXH232-H200")
+    val cameraResolution = NonNullObservableField("320*240")
     val photoInterval = NonNullObservableField("")
 
     val baudRate = NonNullObservableField("9600")

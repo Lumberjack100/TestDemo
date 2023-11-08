@@ -37,8 +37,8 @@
             android:id="@+id/fl_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:layout_marginTop="@dimen/dimen_size_1"
+            android:background="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/refreshLayout"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
@@ -259,6 +259,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
                             android:text="@={stateVM.collectionInstructions}"
+                            app:inputTypeFilter='@{"character"}'
                             app:lengthFilter="@{32}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -275,9 +276,9 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            app:inputTypeFilter='@{"numberDecimal"}'
                             android:hint="请输入"
                             android:text="@={stateVM.ratio}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{100}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -395,9 +396,34 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
-                            app:inputTypeFilter='@{"numberDecimal"}'
                             android:text="@={stateVM.correctValue}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.isEditable}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingStart="@dimen/dimen_size_15"
+                        android:paddingEnd="@dimen/dimen_size_15">
+
+                        <TextView
+                            android:id="@+id/btn_save_model_field"
+                            onClickWithDebouncing="@{()->click.onSaveModelFieldClick()}"
+                            android:layout_width="match_parent"
+                            android:layout_height="42dp"
+                            android:layout_marginTop="@dimen/dimen_size_10"
+                            android:layout_marginBottom="@dimen/dimen_size_20"
+                            android:gravity="center"
+                            android:text="保存此采集项"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/text_size_16"
+                            app:drawable_radius="@{6}"
+                            app:drawable_solidColor="@{@color/gray_f5f6f8}"
+                            tools:background="@color/gray_f5f6f8" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -412,7 +438,7 @@
             visible="@{stateVM.isEditable}"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="15dp"
-            android:text="保存"
+            android:text="完成"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -190,7 +190,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 保存采集参数
+     * 保存摄像头参数
      */
     private fun initSaveCommand() {
         commandItems.clear()
@@ -204,13 +204,13 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
         }
         val entity = MRRS232Port1ParamEntity(
             switch = "1",
-            type = (cameraModelList.indexOf(mStates.cameraModel.get()) + 1).toString(),
-            resolut = (cameraResolutionList.indexOf(mStates.cameraResolution.get()) + 1).toString(),
+            type = cameraModelList.indexOf(mStates.cameraModel.get()).toString(),
+            resolut = cameraResolutionList.indexOf(mStates.cameraResolution.get()).toString(),
             interval = mStates.photoInterval.get(),
             baud = mStates.baudRate.get(),
-            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
-            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
-            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
+            databit = dataBitList.indexOf(mStates.dataBit.get()).toString(),
+            parity = checkBitList.indexOf(mStates.checkBit.get()).toString(),
+            stopbit = stopBitList.indexOf(mStates.stopBit.get()).toString(),
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS232_PORT1_PARAM,
@@ -285,6 +285,8 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
             mStates.status.set(if (sensorParam.status == "1") "已接入" else "未接入")
             binding.sensorSB.setCheckedImmediatelyNoEvent(sensorParam.switch == "1")
             mStates.isOpened.set(sensorParam.switch == "1")
+            mStates.cameraModel.set(cameraModelList[sensorParam.type.toInt()])
+            mStates.cameraResolution.set(cameraResolutionList[sensorParam.resolut.toInt()])
             mStates.photoInterval.set(sensorParam.interval)
 
             mStates.baudRate.set(sensorParam.baud)
@@ -298,20 +300,5 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
 
     companion object {
         fun newInstance() = MR702RS232Port1Fragment()
-    }
-
-    private fun testData() {
-        val sensorParam = MRRS232Port1Param(
-            status = "1",
-            switch = "1",
-            type = "1",
-            resolut = "1",
-            interval = "10",
-            baud = "9600",
-            databit = "8",
-            parity = "3",
-            stopbit = "1.5"
-        )
-        initParamData(sensorParam)
     }
 }

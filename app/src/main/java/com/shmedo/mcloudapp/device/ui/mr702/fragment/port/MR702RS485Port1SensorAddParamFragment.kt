@@ -176,7 +176,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         }
 
         fun onSaveModelFieldClick() {
-            if (mStates.saveModelFieldText.get() == "配置下一采集项") {
+            if (mStates.saveModelFieldText.get() == "配置下一个采集项") {
                 mStates.saveModelFieldText.set("保存此采集项")
                 mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
             } else {
@@ -329,5 +329,4 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
-
 }

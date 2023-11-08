@@ -35,9 +35,9 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{vm.deviceName}"
+                android:text="@{vm.productName}"
                 android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17"
+                android:textSize="@dimen/text_size_16"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -125,7 +125,7 @@
                         android:layout_height="wrap_content"
                         android:text="设备编号："
                         android:textColor="@color/sub_title_text_color"
-                        android:textSize="@dimen/text_size_14" />
+                        android:textSize="@dimen/text_size_13" />
 
                     <TextView
                         android:id="@+id/tv_device_sn"
@@ -135,7 +135,7 @@
                         android:maxLines="1"
                         android:text="@{vm.deviceToken}"
                         android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_15"
+                        android:textSize="@dimen/text_size_13"
                         tools:text="21E118L" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -152,7 +152,7 @@
                         android:layout_height="wrap_content"
                         android:text="产品型号："
                         android:textColor="@color/sub_title_text_color"
-                        android:textSize="@dimen/text_size_14" />
+                        android:textSize="@dimen/text_size_13" />
 
                     <TextView
                         android:id="@+id/tv_product_name"
@@ -160,9 +160,9 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="@{vm.deviceToken}"
+                        android:text="@{vm.deviceName}"
                         android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_15"
+                        android:textSize="@dimen/text_size_13"
                         tools:text="21E118L" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -179,7 +179,7 @@
                         android:layout_height="wrap_content"
                         android:text="运行状态："
                         android:textColor="@color/sub_title_text_color"
-                        android:textSize="@dimen/text_size_14" />
+                        android:textSize="@dimen/text_size_13" />
 
                     <TextView
                         android:id="@+id/tv_running_status"
@@ -207,7 +207,7 @@
                         android:layout_height="wrap_content"
                         android:text="连接平台："
                         android:textColor="@color/sub_title_text_color"
-                        android:textSize="@dimen/text_size_14" />
+                        android:textSize="@dimen/text_size_13" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_platform"

@@ -297,7 +297,8 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
                 val decimalFormat = DecimalFormat("#.#")
                 val ustorage = decimalFormat.format(runningData.ustorage.toDouble())
                 val tstorage = decimalFormat.format(runningData.tstorage.toDouble())
-                val percent = decimalFormat.format(ustorage.toDouble() / tstorage.toDouble() * 100)
+                val percent = if (tstorage == "0") 0
+                else decimalFormat.format(ustorage.toDouble() / tstorage.toDouble() * 100)
                 list.add(
                     MRRunningDataItem(
                         "存储状态",
@@ -354,35 +355,5 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
             getRowHeaderList(),
             getCellDataList(communicationData)
         )
-    }
-
-    private fun testRunningData() {
-        val list = mutableListOf<MRRunningDataItem>()
-        list.add(
-            MRRunningDataItem(
-                "运行时长(小时)",
-                "100"
-            )
-        )
-        list.add(
-            MRRunningDataItem(
-                "单次运行时长(小时)",
-                "72"
-            )
-        )
-        list.add(
-            MRRunningDataItem(
-                "重启次数",
-                "2"
-            )
-        )
-        list.add(
-            MRRunningDataItem(
-                "存储状态",
-                "32.5%",
-                "已用5.2GB/16GB"
-            )
-        )
-        binding.rvRunningData.models = list
     }
 }
