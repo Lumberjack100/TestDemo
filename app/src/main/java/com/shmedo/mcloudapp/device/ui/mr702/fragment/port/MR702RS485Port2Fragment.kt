@@ -311,7 +311,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         }
         val entity2 = MRSerialPortParamEntity(
             baud = mStates.baudRate.get(),
-            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
@@ -504,7 +504,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private fun initUartData(serialPortParam: MRSerialPortParam) {
         try {
             mStates.baudRate.set(serialPortParam.baud)
-            mStates.dataBit.set(dataBitList[serialPortParam.databit.toInt()])
+            mStates.dataBit.set(serialPortParam.databit)
             mStates.checkBit.set(checkBitList[serialPortParam.parity.toInt()])
             mStates.stopBit.set(stopBitList[serialPortParam.stopbit.toInt()])
         } catch (e: Exception) {
@@ -516,7 +516,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val sensorStatusList = MoshiUtil.fromJson<List<MRSensorStatus>>(content)
-                        ?: return@launchWithViewLifecycle
+                    ?: return@launchWithViewLifecycle
                 val list = sensorStatusList.map { sensorStatus ->
                     MRSensorItem(
                         isPlugin = sensorStatus.sta == "0",

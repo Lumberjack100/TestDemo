@@ -311,7 +311,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
             num = selectedFieldIndex.toString(),
             model = mStates.modelToken.get() + "_" + mStates.sensorAddress.get(),
             baud = mStates.baudRate.get(),
-            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
             swtoken = mStates.hydrologicalIdentification.get(),
@@ -405,7 +405,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     mStates.sensorAddress.set(strs[1])
                     mStates.modelToken.set(strs[0])
                     mStates.baudRate.set(sensorParam.baud)
-                    mStates.dataBit.set(dataBitList[sensorParam.databit.toInt()])
+                    mStates.dataBit.set(sensorParam.databit)
                     mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
                     mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
                     mStates.hydrologicalIdentification.set(sensorParam.swtoken)

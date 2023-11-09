@@ -244,7 +244,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             switch = "1",
             addr = mStates.address.get(),
             baud = mStates.baudRate.get(),
-            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
@@ -384,7 +384,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.isOpened.set(sensorParam.switch == "1")
             mStates.address.set(sensorParam.addr)
             mStates.baudRate.set(sensorParam.baud)
-            mStates.dataBit.set(dataBitList[sensorParam.databit.toInt()])
+            mStates.dataBit.set(sensorParam.databit)
             mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
             mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
             when (sensorType) {

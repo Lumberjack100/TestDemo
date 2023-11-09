@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
@@ -14,6 +15,7 @@ import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.WorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.common.WorkModeBean
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRDataCenterStatus
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -21,6 +23,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
@@ -36,6 +39,7 @@ import com.shmedo.mcloudapp.device.model.MR702TerminalParameterModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.NetworkCommunicationModule
 import com.shmedo.mcloudapp.device.model.PlatformLable
+import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -90,17 +94,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         binding.llDeviceInfo.rvPlatform.setup { rv ->
             rv.layoutManager = FlexboxLayoutManager(context)
             addType<PlatformLable>(R.layout.item_platform_label)
-        }.models = testData()
-    }
-
-    private fun testData(): List<PlatformLable> {
-        return listOf(
-            PlatformLable("淘宝", true),
-            PlatformLable("微信"),
-            PlatformLable("QQ"),
-            PlatformLable("UC浏览器"),
-            PlatformLable("京东"),
-        )
+        }
     }
 
     private fun initModuleAdapter() {
@@ -211,72 +205,24 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module.configModule) {
-            is RunningStatusModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    R.id.action_mR702HomeFragment_to_mR702DeviceInfoFragment,
-                    bundle
-                )
-            }
-
-            is DataCenterModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment,
-                    bundle
-                )
-            }
-
-            is MR702PortConfigModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    R.id.action_mR702HomeFragment_to_mR702PortHomeFragment,
-                    bundle
-                )
-            }
-
-            is MR702TerminalParameterModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment,
-                    bundle
-                )
-            }
-
-            is DeviceOperationModule -> {
-
-            }
-
-            is NetworkCommunicationModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment,
-                    bundle
-                )
+            is RebootModule -> {
+                showMessage("确定重启设备吗？", "温馨提示", "确定", {
+                    reboot()
+                }, "取消")
             }
 
             else -> {
-
+                if (module.configModule.navId != 0) {
+                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                    nav().navigate(
+                        module.configModule.navId,
+                        bundle
+                    )
+                }
             }
         }
     }
@@ -284,40 +230,53 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     override fun lazyLoadData() {
         //4G 模式下，直接查询设备工作模式
         if (communicateWay is NetPlatformConnect) {
-            queryWorkMode()
+            queryData()
         }
     }
 
     override fun onBleDeviceReady() {
         //蓝牙模式下，等蓝牙建立连接后查询设备工作模式
-        queryWorkMode()
+        queryData()
     }
 
     /**
-     * 查询设备工作模式
+     *
      */
-    private fun queryWorkMode() {
-        val command: String =
-            IOTCommandUtil.getCommand(IOTCommandType.GET_WORK_MODE)
-        if (communicateWay is NetPlatformConnect) {
-            netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
-        } else {
-            bleViewModel.sendCommand(command, true, deviceInfo.apiKey, 2000)
-        }
+    private fun queryData() {
+        commandItems.clear()
+
+        var command = IOTCommandUtil.getCommand(IOTCommandType.GET_WORK_MODE)
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS)
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.loading))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**
      * 设置设备工作模式
      */
     private fun setWorkMode(mode: String) {
+        commandItems.clear()
         val entity = WorkModeEntity(mode)
-        val command: String =
-            IOTCommandUtil.getCommand(IOTCommandType.SET_WORK_MODE, entity)
-        if (communicateWay is NetPlatformConnect) {
-            netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
-        } else {
-            bleViewModel.sendCommand(command, true, deviceInfo.apiKey)
-        }
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SET_WORK_MODE, entity)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 设置设备工作模式
+     */
+    private fun reboot() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -327,6 +286,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     iotParseManager.parse<WorkModeBean>(cmdStr, IOTCommandType.GET_WORK_MODE)
                 when (result) {
                     is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询设备工作模式出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -334,34 +294,89 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList()
                         val modeBean: WorkModeBean = result.data
                         mHeadStates.isWorkModeNormal.set(modeBean.mode == "1")
                     }
                 }
             }
 
-            IOTCommandType.SET_WORK_MODE -> {
-                val result =
-                    iotParseManager.parse<CommonSettingCmdResult>(
-                        cmdStr,
-                        IOTCommandType.COMMON_SETTING_COMMAND
-                    )
+            IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS -> {
+                val result = iotParseManager.parse<MRDataCenterStatus>(
+                    cmdStr,
+                    IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS
+                )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置设备工作模式出错: ${result.message}"
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询数据中心状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        Toaster.show("设置成功")
+                        sendCommandFromCmdList()
+                        initDataCenterStatus(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.SET_WORK_MODE -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置工作模式出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("设置成功")
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.REBOOT -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "重启失败: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("设备即将重启")
+                        }
                     }
                 }
             }
 
             else -> {}
         }
+    }
+
+
+    private fun initDataCenterStatus(dataCenterStatus: MRDataCenterStatus) {
+        val platformLables = mutableListOf<PlatformLable>()
+        if (dataCenterStatus.status1 != "0")
+            platformLables.add(PlatformLable("中心1", dataCenterStatus.status1 == "1"))
+        if (dataCenterStatus.status2 != "0")
+            platformLables.add(PlatformLable("中心2", dataCenterStatus.status2 == "1"))
+        if (dataCenterStatus.status3 != "0")
+            platformLables.add(PlatformLable("中心3", dataCenterStatus.status3 == "1"))
+        if (dataCenterStatus.status4 != "0")
+            platformLables.add(PlatformLable("中心4", dataCenterStatus.status4 == "1"))
+        if (dataCenterStatus.status5 != "0")
+            platformLables.add(PlatformLable("中心5", dataCenterStatus.status5 == "1"))
+
+        binding.llDeviceInfo.rvPlatform.models = platformLables
     }
 
     override fun onResume() {
@@ -376,12 +391,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     "关于设备",
                     "设备基本信息、运行数据",
                     R.drawable.ic_device_running_info,
+                    navId = R.id.action_mR702HomeFragment_to_mR702DeviceInfoFragment
                 )
-            ), ConfigModule(DataCenterModule()),
-            ConfigModule(MR702PortConfigModule()),
-            ConfigModule(MR702TerminalParameterModule()),
-            ConfigModule(DeviceOperationModule()),
-            ConfigModule(NetworkCommunicationModule())
+            ),
+            ConfigModule(DataCenterModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment)),
+            ConfigModule(MR702PortConfigModule(navId = R.id.action_mR702HomeFragment_to_mR702PortHomeFragment)),
+            ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment)),
+            ConfigModule(DeviceOperationModule(navId = 0)),
+            ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment)),
+            ConfigModule(RebootModule()),
         )
 
     companion object {

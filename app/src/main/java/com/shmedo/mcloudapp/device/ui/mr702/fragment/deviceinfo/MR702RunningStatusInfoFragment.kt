@@ -265,18 +265,25 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initRunningData(runningData: MRRunningData) {
+        val decimalFormat = DecimalFormat("#.#")
         try {
+            val totalRunningTime = if (runningData.ttime.isEmpty()) 0.0
+            else runningData.ttime.toDouble() / 3600
+
+            val singleRunningTime = if (runningData.otime.isEmpty()) 0.0
+            else runningData.otime.toDouble() / 3600
+
             val list = mutableListOf<MRRunningDataItem>()
             list.add(
                 MRRunningDataItem(
                     "运行时长(小时)",
-                    runningData.ttime
+                    decimalFormat.format(totalRunningTime)
                 )
             )
             list.add(
                 MRRunningDataItem(
                     "单次运行时长(小时)",
-                    runningData.otime
+                    decimalFormat.format(singleRunningTime)
                 )
             )
             list.add(
@@ -294,7 +301,6 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             } else {
-                val decimalFormat = DecimalFormat("#.#")
                 val ustorage = decimalFormat.format(runningData.ustorage.toDouble())
                 val tstorage = decimalFormat.format(runningData.tstorage.toDouble())
                 val percent = if (tstorage == "0") 0

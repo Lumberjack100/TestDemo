@@ -97,8 +97,6 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-//        testSerialData()
-//        testIOData()
     }
 
     private fun queryInfo() {
@@ -199,7 +197,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
             )
             binding.rvSerialPortStatus.models = serialPortList
             binding.rvSerialPortStatus.bindingAdapter.run {
-                addHeader(RVEmptyHeader(), animation = true)
+                if (headerCount == 0)
+                    addHeader(RVEmptyHeader(), animation = true)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -209,7 +208,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
     private fun initAnalogInterfaceStatusInfo(interfaceStatusInfo: MRInterfaceStatusInfo) {
         val analogList = mutableListOf<MRInterfaceStatusItem>()
         try {
-            var decimalFormat = DecimalFormat("#.###")
+            val decimalFormat = DecimalFormat("#.###")
             if (interfaceStatusInfo.adc_a1.toDoubleOrNull() == null || interfaceStatusInfo.adc_a1.toDouble() < 4 || interfaceStatusInfo.adc_a1.toDouble() > 20) {
                 analogList.add(
                     MRInterfaceStatusItem(
@@ -315,7 +314,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
             }
             binding.rvAnalogInterfaceStatus.models = analogList
             binding.rvAnalogInterfaceStatus.bindingAdapter.run {
-                addHeader(RVEmptyHeader(), animation = true)
+                if (headerCount == 0)
+                    addHeader(RVEmptyHeader(), animation = true)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -685,47 +685,5 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
 
     companion object {
         fun newInstance() = MR702PortStatusInfoFragment()
-    }
-
-    private fun testSerialData() {
-        val interfaceStatusInfo = MRInterfaceStatusInfo(
-            "1",
-            "1",
-            "0",
-            "1",
-            "0",
-            "25",
-            "5.123",
-            "6.123",
-            "7.123",
-            "6",
-            "2.1"
-        )
-        initSerialPortData(interfaceStatusInfo)
-        initAnalogInterfaceStatusInfo(interfaceStatusInfo)
-    }
-
-    private fun testIOData() {
-        val ioStatusInfo = MRIOStatusInfo(
-            "1",
-            "1",
-            "0",
-            "1",
-            "0",
-            "1",
-            "1",
-            "1",
-            "1",
-            "1",
-            "0",
-            "1",
-            "0",
-            "1",
-            "1",
-            "1",
-            "1",
-            "1",
-        )
-        initIOStatusInfo(ioStatusInfo)
     }
 }

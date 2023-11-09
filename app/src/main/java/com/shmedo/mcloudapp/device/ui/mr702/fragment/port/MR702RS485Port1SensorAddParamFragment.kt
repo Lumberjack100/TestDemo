@@ -240,7 +240,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             num = modelFieldIndex.toString(),
             model = mStates.modelToken.get() + "_" + mStates.sensorAddress.get(),
             baud = mStates.baudRate.get(),
-            databit = (dataBitList.indexOf(mStates.dataBit.get())).toString(),
+            databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
             swtoken = mStates.hydrologicalIdentification.get(),

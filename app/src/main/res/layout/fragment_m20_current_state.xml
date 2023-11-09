@@ -312,7 +312,7 @@
                                 android:textColor="@color/title_text_color"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
-                                tools:text="已连接" />
+                                tools:text="在线" />
 
                         </LinearLayout>
 
@@ -339,7 +339,7 @@
                                 android:textColor="@color/title_text_color"
                                 android:textSize="15sp"
                                 android:textStyle="bold"
-                                tools:text="已连接" />
+                                tools:text="在线" />
 
                         </LinearLayout>
 

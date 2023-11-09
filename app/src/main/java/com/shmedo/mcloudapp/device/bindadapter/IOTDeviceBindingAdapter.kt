@@ -23,12 +23,12 @@ object IOTDeviceBindingAdapter {
             }
 
             "1" -> {
-                view.text = "已连接"
+                view.text = "在线"
                 view.setTextColor(ColorUtils.getColor(R.color.device_online_platform))
             }
 
             "2" -> {
-                view.text = "未连接"
+                view.text = "离线"
                 view.setTextColor(ColorUtils.getColor(R.color.device_offline_platform))
             }
         }
