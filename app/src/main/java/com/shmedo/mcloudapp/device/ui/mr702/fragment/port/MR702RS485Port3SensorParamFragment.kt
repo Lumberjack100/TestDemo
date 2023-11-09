@@ -249,28 +249,28 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
         when (sensorType) {
-            1 -> {
-                if (mStates.solarVoltage.get().isEmpty()) {
-                    Toaster.show("请输入太阳能板电压")
-                    return
-                }
-                if (mStates.batteryVoltage.get().isEmpty()) {
-                    Toaster.show("请输入电池电压")
-                    return
-                }
-                if (mStates.solarPower.get().isEmpty()) {
-                    Toaster.show("请输入太阳板能功率")
-                    return
-                }
-                if (mStates.loadPower.get().isEmpty()) {
-                    Toaster.show("请输入负载功率")
-                    return
-                }
-                entity.svolt = mStates.solarVoltage.get()
-                entity.bvolt = mStates.batteryVoltage.get()
-                entity.spower = mStates.solarPower.get()
-                entity.lpower = mStates.loadPower.get()
-            }
+//            1 -> {
+//                if (mStates.solarVoltage.get().isEmpty()) {
+//                    Toaster.show("请输入太阳能板电压")
+//                    return
+//                }
+//                if (mStates.batteryVoltage.get().isEmpty()) {
+//                    Toaster.show("请输入电池电压")
+//                    return
+//                }
+//                if (mStates.solarPower.get().isEmpty()) {
+//                    Toaster.show("请输入太阳板能功率")
+//                    return
+//                }
+//                if (mStates.loadPower.get().isEmpty()) {
+//                    Toaster.show("请输入负载功率")
+//                    return
+//                }
+//                entity.svolt = mStates.solarVoltage.get()
+//                entity.bvolt = mStates.batteryVoltage.get()
+//                entity.spower = mStates.solarPower.get()
+//                entity.lpower = mStates.loadPower.get()
+//            }
 
             2 -> {
                 if (mStates.duration.get().isEmpty()) {
@@ -316,7 +316,6 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-//        testData()
     }
 
     private fun queryData() {
@@ -450,27 +449,5 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
-    }
-
-    private fun testData() {
-        val sensorParam = MRRS485Port3SensorParam(
-            switch = "1",
-            addr = "1",
-            baud = "9600",
-            databit = "8",
-            parity = "3",
-            stopbit = "1.5",
-            status = "1",
-            svolt = "12.5",
-            bvolt = "12.5",
-            spower = "12.5",
-            lpower = "12.5",
-            duration = "12",
-            interval = "12",
-            volume = "45",
-            type = "1",
-            stime = "12"
-        )
-        initParamData(sensorParam)
     }
 }

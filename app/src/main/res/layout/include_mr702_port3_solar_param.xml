@@ -16,82 +16,70 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="太阳能板电压(V)"
-                tools:textColor="@color/title_text_color" />
+                android:text="太阳能板电压(V)" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
-                style="@style/Common_EditItem_EditText_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:hint="请输入"
-                android:text="@={stateVM.solarVoltage}"
-                app:inputTypeFilter='@{"numberDecimal"}'
-                app:lengthFilter="@{6}" />
+            <TextView
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:drawableEnd="@null"
+                android:text="@{stateVM.solarVoltage}"
+                android:textSize="17sp"
+                tools:text="已接入" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="电池电压(V)"
-                tools:textColor="@color/title_text_color" />
+                android:text="电池电压(V)" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
-                style="@style/Common_EditItem_EditText_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:hint="请输入"
-                android:text="@={stateVM.batteryVoltage}"
-                app:inputTypeFilter='@{"numberDecimal"}'
-                app:lengthFilter="@{6}" />
+            <TextView
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:drawableEnd="@null"
+                android:text="@{stateVM.batteryVoltage}"
+                android:textSize="17sp"
+                tools:text="已接入" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="太阳能板功率(W)"
-                tools:textColor="@color/title_text_color" />
+                android:text="太阳能板功率(W)" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
-                style="@style/Common_EditItem_EditText_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:hint="请输入"
-                android:text="@={stateVM.solarPower}"
-                app:inputTypeFilter='@{"numberDecimal"}'
-                app:lengthFilter="@{6}" />
+            <TextView
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:drawableEnd="@null"
+                android:text="@{stateVM.solarPower}"
+                android:textSize="17sp"
+                tools:text="已接入" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="负载功率(W)"
-                tools:textColor="@color/title_text_color" />
+                android:text="负载功率(W)" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
-                style="@style/Common_EditItem_EditText_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:hint="请输入"
-                android:text="@={stateVM.loadPower}"
-                app:inputTypeFilter='@{"numberDecimal"}'
-                app:lengthFilter="@{6}" />
+            <TextView
+                style="@style/Common_ClickableItem_ValueStyle"
+                android:drawableEnd="@null"
+                android:text="@{stateVM.loadPower}"
+                android:textSize="17sp"
+                tools:text="已接入" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

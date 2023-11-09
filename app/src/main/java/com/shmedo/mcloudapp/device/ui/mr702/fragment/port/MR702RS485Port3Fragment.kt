@@ -130,6 +130,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         var item = MRSensorItem(
             isPlugin = sensorStatus.solarstatus == "1",
             addr = sensorStatus.solarid,
+            addrDesc = "地址-${sensorStatus.solarid}",
             sensorName = "太阳能控制器",
         )
         list.add(item)
@@ -137,6 +138,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         item = MRSensorItem(
             isPlugin = sensorStatus.ysstatus == "1",
             addr = sensorStatus.ysid,
+            addrDesc = "地址-${sensorStatus.ysid}",
             sensorName = "声光报警器",
         )
         list.add(item)
@@ -144,6 +146,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         item = MRSensorItem(
             isPlugin = sensorStatus.ledstatus == "1",
             addr = sensorStatus.ledid,
+            addrDesc = "地址-${sensorStatus.ledid}",
             sensorName = "LED屏",
         )
         list.add(item)

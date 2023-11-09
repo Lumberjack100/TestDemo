@@ -30,8 +30,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702TerminalParameterBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702TerminalParameterViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -60,7 +60,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_terminal_parameter, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_mr702_terminal_parameter, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
@@ -319,7 +319,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                     }
 
                     else -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             Toaster.show("保存成功")
                         }
                     }
@@ -338,7 +338,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                     }
 
                     else -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             Toaster.show("保存成功")
                         }
                     }

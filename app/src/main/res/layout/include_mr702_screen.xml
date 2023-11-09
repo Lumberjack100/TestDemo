@@ -13,101 +13,92 @@
             name="click"
             type="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702TerminalParameterFragment.ClickProxy" />
     </data>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         tools:background="@color/white">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
-            <LinearLayout
-                style="@style/Common_EditItem_LayoutStyle"
-                android:background="@drawable/layer_common_click_item_with_divider">
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="屏幕更新周期(秒)"
+                tools:textColor="@color/title_text_color" />
 
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="屏幕更新周期(秒)"
-                    tools:textColor="@color/title_text_color" />
-
-                <com.shmedo.mcloudapp.common.widget.ClearEditText
-                    style="@style/Common_EditItem_EditText_Style"
-                    android:text="@={stateVM.screenRefreshTime}"
-                    app:inputTypeFilter='@{"number"}'
-                    app:lengthFilter="@{6}" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/Common_EditItem_LayoutStyle"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="亮屏时间(秒)"
-                    tools:textColor="@color/title_text_color" />
-
-                <com.shmedo.mcloudapp.common.widget.ClearEditText
-                    style="@style/Common_EditItem_EditText_Style"
-                    android:text="@={stateVM.screenBrightTime}"
-                    app:inputTypeFilter='@{"numberDecimal"}'
-                    app:lengthFilter="@{6}" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/Common_EditItem_LayoutStyle"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="通电时间(秒)"
-                    tools:textColor="@color/title_text_color" />
-
-                <com.shmedo.mcloudapp.common.widget.ClearEditText
-                    style="@style/Common_EditItem_EditText_Style"
-                    android:text="@={stateVM.screenPowerUpTime}"
-                    app:inputTypeFilter='@{"numberDecimal"}'
-                    app:lengthFilter="@{6}" />
-
-            </LinearLayout>
-
-            <LinearLayout style="@style/Common_EditItem_LayoutStyle">
-
-                <TextView
-                    style="@style/Common_ClickableItem_TitleStyle"
-                    android:text="屏幕亮度设置"
-                    tools:textColor="@color/title_text_color" />
-
-                <TextView
-                    style="@style/Common_EditItem_EditText_Style"
-                    android:hint=""
-                    android:text='@{stateVM.lightness+"%"}'
-                    android:textColor="@color/colorPrimary"
-                    tools:text="32%" />
-
-            </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatSeekBar
-                style="@android:style/Widget.Material.SeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_10"
-                android:layout_marginBottom="@dimen/dimen_size_15"
-                android:max="100"
-                android:maxHeight="@dimen/dimen_size_8"
-                android:min="10"
-                android:progress="@={stateVM.lightness}"
-                android:progressDrawable="@drawable/seekbar_progress_blue"
-                android:thumb="@drawable/ic_seekbar_thumb"
-                tools:progress="25" />
+            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                style="@style/Common_EditItem_EditText_Style"
+                android:text="@={stateVM.screenRefreshTime}"
+                app:inputTypeFilter='@{"number"}'
+                app:lengthFilter="@{6}" />
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+        <LinearLayout
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="亮屏时间(秒)"
+                tools:textColor="@color/title_text_color" />
+
+            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                style="@style/Common_EditItem_EditText_Style"
+                android:text="@={stateVM.screenBrightTime}"
+                app:inputTypeFilter='@{"numberDecimal"}'
+                app:lengthFilter="@{6}" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Common_EditItem_LayoutStyle"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="通电时间(秒)"
+                tools:textColor="@color/title_text_color" />
+
+            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                style="@style/Common_EditItem_EditText_Style"
+                android:text="@={stateVM.screenPowerUpTime}"
+                app:inputTypeFilter='@{"numberDecimal"}'
+                app:lengthFilter="@{6}" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="屏幕亮度设置"
+                tools:textColor="@color/title_text_color" />
+
+            <TextView
+                style="@style/Common_EditItem_EditText_Style"
+                android:hint=""
+                android:text='@{stateVM.lightness+"%"}'
+                android:textColor="@color/colorPrimary"
+                tools:text="32%" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            style="@android:style/Widget.Material.SeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_marginBottom="@dimen/dimen_size_15"
+            android:max="100"
+            android:maxHeight="@dimen/dimen_size_8"
+            android:min="10"
+            android:progress="@={stateVM.lightness}"
+            android:progressDrawable="@drawable/seekbar_progress_blue"
+            android:thumb="@drawable/ic_seekbar_thumb"
+            tools:progress="25" />
+
+    </LinearLayout>
 </layout>
