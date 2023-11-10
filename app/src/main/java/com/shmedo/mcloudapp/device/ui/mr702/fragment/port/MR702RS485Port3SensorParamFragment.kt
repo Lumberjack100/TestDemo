@@ -286,7 +286,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 entity.volume = mStates.volume.get().toString()
             }
 
-            else -> {
+            3 -> {
                 if (mStates.duration.get().isEmpty()) {
                     Toaster.show("请输入显示时长")
                     return

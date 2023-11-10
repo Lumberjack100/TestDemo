@@ -67,6 +67,8 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
         }
+        mStates.productName.set(deviceInfo.productName)
+        mStates.productType.set("型号：${deviceInfo.deviceName}")
         initViewPager()
     }
 

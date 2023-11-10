@@ -171,6 +171,7 @@
         <item>双浮点型ABCDEFGH</item>
         <item>双浮点型BADCFEHG</item>
         <item>双浮点型EFGHABCD</item>
+        <item>AB整数,CD小数</item>
     </string-array>
 
     <!-- 解算方式-->

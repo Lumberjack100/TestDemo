@@ -213,4 +213,17 @@ class DeviceRequestViewModel : BaseViewModel() {
         }
     }
 
+    suspend fun getDeviceDetailInfo(
+        deviceToken: String = "",
+        onCatch: ((Throwable) -> Unit)? = null
+    ): DeviceDetailInfo? {
+        val jsonObjectRequest = JSONObject()
+        try {
+            jsonObjectRequest.put("deviceToken", deviceToken)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString(), onCatch)
+    }
+
 }

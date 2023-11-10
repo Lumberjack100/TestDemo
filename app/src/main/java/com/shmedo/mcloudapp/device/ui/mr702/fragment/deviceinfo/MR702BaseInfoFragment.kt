@@ -13,8 +13,11 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.databinding.FragmentMr702BaseInfoBinding
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
@@ -22,6 +25,7 @@ import java.text.DecimalFormat
 class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMr702BaseInfoBinding by lazy { getBinding() as FragmentMr702BaseInfoBinding }
     private val mStates: MR702DeviceInfoViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -42,6 +46,19 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
+        launchWithViewLifecycle {
+            if (communicateWay is BleConnect)
+                return@launchWithViewLifecycle
+            val deviceDetailInfo =
+                deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
+                } ?: return@launchWithViewLifecycle
+
+            mStates.wrapBaseInfo.get().apply {
+                regcode = deviceDetailInfo.deviceInfo.productKey
+                regtime = deviceDetailInfo.deviceInfo.createTime
+            }
+            mStates.wrapBaseInfo.notifyChange()
+        }
     }
 
     /**
@@ -89,21 +106,28 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
     private fun initBaseInfo(baseInfo: MRBaseInfo) {
         val decimalFormat = DecimalFormat("#.#")
         try {
-            baseInfo.productname = deviceInfo.productName
-            baseInfo.producttype = deviceInfo.deviceName
-            baseInfo.regcode = deviceInfo.productKey
-            baseInfo.regtime = deviceInfo.createTime
-            baseInfo.sn = deviceInfo.deviceToken
-            baseInfo.temp = decimalFormat.format(baseInfo.temp.toDouble())
-            baseInfo.hum = decimalFormat.format(baseInfo.hum.toDouble())
-            baseInfo.volt = decimalFormat.format(baseInfo.volt.toDouble())
-            baseInfo.csq = when (baseInfo.csq.toInt()) {
-                1 -> "优"
-                2 -> "良好"
-                3 -> "较差"
-                else -> "未知"
+            mStates.wrapBaseInfo.get().apply {
+                productname = deviceInfo.productName
+                producttype = deviceInfo.deviceName
+                if (deviceInfo.productKey.isNotEmpty())
+                    regcode = deviceInfo.productKey
+                if (deviceInfo.createTime.isNotEmpty())
+                    regtime = deviceInfo.createTime
+                sn = deviceInfo.deviceToken
+                ver= baseInfo.ver
+                imei = baseInfo.imei
+                temp = decimalFormat.format(baseInfo.temp.toDouble())
+                hum = decimalFormat.format(baseInfo.hum.toDouble())
+                volt = decimalFormat.format(baseInfo.volt.toDouble())
+                csq = when (baseInfo.csq.toInt()) {
+                    1 -> "优"
+                    2 -> "良好"
+                    3 -> "较差"
+                    else -> "未知"
+                }
+                local = baseInfo.local
             }
-            mStates.wrapBaseInfo.set(baseInfo)
+            mStates.wrapBaseInfo.notifyChange()
         } catch (e: Exception) {
             e.printStackTrace()
         }
