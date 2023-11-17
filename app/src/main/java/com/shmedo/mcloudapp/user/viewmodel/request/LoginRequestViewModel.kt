@@ -261,8 +261,20 @@ class LoginRequestViewModel : BaseViewModel() {
 
     fun refreshUserInfo(companyID: Int = 0, userID: Int = 0) {
         viewModelScope.launch {
-            val userWrapperInfo: UserWrapperInfo =
-                queryUserByID(companyID, userID) ?: return@launch
+            val jsonObjectRequest = JSONObject()
+            try {
+                jsonObjectRequest.put("companyID", companyID)
+                jsonObjectRequest.put("userID", userID)
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+            val userWrapperInfo: UserWrapperInfo = NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
+                val responseStatus = ResponseStatus()
+                responseStatus.isSuccess = false
+                responseStatus.errorMessage = error.errorMsg
+                responseStatus.source = ResultSource.NETWORK
+                _userWrapperInfoResult.setValue(DataResult(responseStatus = responseStatus))
+            } ?: return@launch
             MmkvCacheUtil.setUser(userWrapperInfo.user)
 
             val responseStatus = ResponseStatus()

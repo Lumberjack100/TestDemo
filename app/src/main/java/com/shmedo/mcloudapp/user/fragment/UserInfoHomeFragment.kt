@@ -284,8 +284,6 @@ class UserInfoHomeFragment : BaseFragment() {
         val path =
             if (TextUtils.isEmpty(media.compressPath)) media.sandboxPath else media.compressPath
 
-        mStates.imageUrl.set(path)
-//        val uri = UriUtils.file2Uri(File(path))
         uploadAvatar(path)
     }
 

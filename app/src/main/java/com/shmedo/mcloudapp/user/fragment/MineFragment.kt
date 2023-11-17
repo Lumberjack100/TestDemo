@@ -44,11 +44,12 @@ class MineFragment : BaseFragment() {
 
     override fun initData() {
         mStates.appVersion.set(String.format("v%s", AppUtils.getAppVersionName()))
-        updateUserInfo(userInfo)
+        refreshUserInfo(userInfo)
     }
-    private fun updateUserInfo(info: UserInfo) {
-        if (!TextUtils.isEmpty(userInfo.headPhotoPath))
-            mStates.imageUrl.set(userInfo.headPhotoPath)
+
+    private fun refreshUserInfo(info: UserInfo) {
+        if (!TextUtils.isEmpty(info.headPhotoPath))
+            mStates.imageUrl.set(info.headPhotoPath)
         mStates.name.set(info.name)
         mStates.title.set(info.position)
         mStates.company.set(info.companyName)
@@ -60,13 +61,13 @@ class MineFragment : BaseFragment() {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
             }
-            dataResult.result?.user?.let { updateUserInfo(it) }
+            dataResult.result?.user?.let { refreshUserInfo(it) }
         }
         //从编辑页面返回需要刷新事件详情页面
         setFragmentResultListener(requestKey) { key, bundle ->
             val refresh = bundle.getBoolean(AppContants.Extras.IS_REFRESH_USER_INFO)
             if (refresh)
-                loginRequestViewModel.refreshUserInfo(userInfo.userID, userInfo.companyID)
+                loginRequestViewModel.refreshUserInfo(userInfo.companyID, userInfo.userID)
         }
     }
 
