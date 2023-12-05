@@ -207,7 +207,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             return
         }
 
-        val command = commandItems.getFirst()
+        val command = commandItems.first
         commandItems.removeFirst()
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
@@ -240,6 +240,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         if (isDismissLoadingDialog) {
             dismissLoadingDialog()
         }
+        commandItems.clear()
         refreshLayout?.finish(false)
     }
 
@@ -258,6 +259,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         if (isDismissLoadingDialog) {
             dismissLoadingDialog()
         }
+        commandItems.clear()
         refreshLayout?.finish(false)
     }
 

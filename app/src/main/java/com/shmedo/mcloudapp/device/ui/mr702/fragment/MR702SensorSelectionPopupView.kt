@@ -64,12 +64,10 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
 
     private fun initAdapter() {
         if (data.isNotEmpty()) {
-            binding.spinner.setAdapter(
-                ArrayAdapter(
-                    context,
-                    android.R.layout.simple_list_item_1,
-                    data
-                )
+            binding.spinner.adapter = ArrayAdapter(
+                context,
+                android.R.layout.simple_list_item_1,
+                data
             )
         }
         binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

@@ -245,10 +245,11 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             addr = mStates.address.get(),
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
-            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            paritybit = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
         when (sensorType) {
+            //TODO: 太阳能控制器参数不需要设置
 //            1 -> {
 //                if (mStates.solarVoltage.get().isEmpty()) {
 //                    Toaster.show("请输入太阳能板电压")
@@ -384,7 +385,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.address.set(sensorParam.addr)
             mStates.baudRate.set(sensorParam.baud)
             mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
+            mStates.checkBit.set(checkBitList[sensorParam.paritybit.toInt()])
             mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
             when (sensorType) {
                 1 -> {

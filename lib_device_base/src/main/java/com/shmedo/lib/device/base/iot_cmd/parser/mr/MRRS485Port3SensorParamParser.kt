@@ -18,7 +18,7 @@ class MRRS485Port3SensorParamParser: IOTCommandParser<MRRS485Port3SensorParam> {
                 addr = keyValueMap.getOrDefault("addr", addr)
                 baud = keyValueMap.getOrDefault("baud", baud)
                 databit = keyValueMap.getOrDefault("databit", databit)
-                parity = keyValueMap.getOrDefault("parity", parity)
+                paritybit = keyValueMap.getOrDefault("paritybit", paritybit)
                 stopbit = keyValueMap.getOrDefault("stopbit", stopbit)
                 status = keyValueMap.getOrDefault("status", status)
                 duration = keyValueMap.getOrDefault("duration", duration)

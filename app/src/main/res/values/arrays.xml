@@ -81,8 +81,8 @@
 
     <!-- MR702 start-->
     <string-array name="ip_mode">
-        <item>手动</item>
         <item>自动</item>
+        <item>手动</item>
     </string-array>
 
     <string-array name="mr_report_method" tools:ignore="ExtraTranslation">
@@ -134,8 +134,8 @@
     </string-array>
 
     <string-array name="mr_data_protocol">
-        <item>TCP-C</item>
         <item>MQTT</item>
+        <item>TCP-C</item>
         <item>SL651</item>
     </string-array>
 

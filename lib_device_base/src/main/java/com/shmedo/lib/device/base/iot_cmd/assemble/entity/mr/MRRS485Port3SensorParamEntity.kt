@@ -16,7 +16,7 @@ data class MRRS485Port3SensorParamEntity(
     val addr: String = IOTConstants.NULL_KEY,//设置地址  数字
     val baud: String = IOTConstants.NULL_KEY,//波特率  bps 数字
     val databit: String = IOTConstants.NULL_KEY,//数据位   数字(5 6 7 8)
-    val parity: String = IOTConstants.NULL_KEY,//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE
+    val paritybit: String = IOTConstants.NULL_KEY,//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE
     val stopbit: String = IOTConstants.NULL_KEY,//停止位   0: 1  1: 1.5  2: 2  或 数字(1 1.5 2)
     val status: String = IOTConstants.NULL_KEY,//状态  1 接入 0未接入
     var duration: String = IOTConstants.NULL_KEY,//声光报警器(语音播放时长  s 数字)、LED屏(显示时长  s 数字)

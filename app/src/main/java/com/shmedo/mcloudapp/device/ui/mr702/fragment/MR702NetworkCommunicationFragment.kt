@@ -30,8 +30,8 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702NetworkCommunicationBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702NetworkCommunicationViewModel
@@ -141,7 +141,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.ipMode.set(text)
-                        mStates.isManualVisible.set(position == 0)
+                        mStates.isManualVisible.set(text == "手动")
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -239,7 +239,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             }
             val wiredNetEntity = MRWiredNetEntity(
                 switch = "1",
-                dhcp = if (mStates.isManualVisible.get()) "0" else "1",
+                dhcp = if (mStates.ipMode.get() == "自动") "0" else "1",
                 ipaddr = mStates.ip.get(),
                 mask = mStates.subnetMask.get(),
                 gateway = mStates.gateway.get(),
@@ -371,7 +371,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         mStates.isEthernetOpened.set(mrWiredNet.switch == "1")
         binding.ethernetAccessSB.setCheckedImmediatelyNoEvent(mrWiredNet.switch == "1")
         mStates.ipMode.set(ipModeList[if (mrWiredNet.dhcp == "0") 0 else 1])
-        mStates.isManualVisible.set(mrWiredNet.dhcp == "0")
+        mStates.isManualVisible.set(mrWiredNet.dhcp == "1")
         mStates.ip.set(mrWiredNet.ipaddr)
         mStates.subnetMask.set(mrWiredNet.mask)
         mStates.gateway.set(mrWiredNet.gateway)

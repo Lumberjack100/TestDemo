@@ -225,13 +225,13 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     { position, text ->
                         mStates.dataProtocol.set(text)
                         when (position) {
-                            0 -> {//TCP-C
-                                mStates.isMqttItemVisible.set(false)
+                            0 -> {//MQTT
+                                mStates.isMqttItemVisible.set(true)
                                 mStates.isSL651ItemVisible.set(false)
                             }
 
-                            1 -> {//MQTT
-                                mStates.isMqttItemVisible.set(true)
+                            1 -> {//TCP-C
+                                mStates.isMqttItemVisible.set(false)
                                 mStates.isSL651ItemVisible.set(false)
                             }
 
@@ -360,7 +360,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 else -> "5"
             }
         )
-        if (mStates.dataProtocol.get() == dataProtocolList[1]) {//MQTT
+        if (mStates.dataProtocol.get() == dataProtocolList[0]) {//MQTT
             if (mStates.registerAddress.get().isEmpty()) {
                 Toaster.show("请输入设备注册地址")
                 return
@@ -479,14 +479,14 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.transferProtocol.set(if (data.type == "1") transferProtocolList[0] else transferProtocolList[1])
         mStates.dataProtocol.set(
             when (data.datatype) {
-                "1" -> {//TCP-C
-                    mStates.isMqttItemVisible.set(false)
+                "1" -> {//MQTT
+                    mStates.isMqttItemVisible.set(true)
                     mStates.isSL651ItemVisible.set(false)
                     dataProtocolList[0]
                 }
 
-                "2" -> {//MQTT
-                    mStates.isMqttItemVisible.set(true)
+                "2" -> {//TCP-C
+                    mStates.isMqttItemVisible.set(false)
                     mStates.isSL651ItemVisible.set(false)
                     dataProtocolList[1]
                 }

@@ -11,7 +11,7 @@ data class MRRS485Port3SensorParam(
     var addr: String = "",//设置地址  数字
     var baud: String = "",//波特率  bps 数字
     var databit: String = "",//数据位   数字(5 6 7 8)
-    var parity: String = "",//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE
+    var paritybit: String = "",//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE
     var stopbit: String = "",//停止位   0: 1  1: 1.5  2: 2  或 数字(1 1.5 2)
     var status: String = "",//状态  1 接入 0未接入
     var duration: String = "",//声光报警器(语音播放时长  s 数字)、LED屏(显示时长  s 数字)

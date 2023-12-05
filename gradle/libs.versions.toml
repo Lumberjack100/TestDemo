@@ -19,7 +19,7 @@ androidGradlePlugin = "7.4.2"
 agentweb = "v5.0.6-androidx"
 appcompat = "1.6.1"
 amap3dmap = "9.8.2"
-baseRecyclerView = "1.5.2"
+baseRecyclerView = "1.5.7"
 compileSdk = "33"
 constraintLayout = "2.1.4"
 core-ktx = "1.10.1"
@@ -30,7 +30,7 @@ dateTimePicker = "0.6.3"
 dialogX = "0.0.48"
 espresso = "3.5.1"
 flexbox = "3.0.0"
-fragmentKtx = "1.6.0"
+fragmentKtx = "1.6.2"
 getActivityLogcat = "11.8"
 glide = "4.15.1"
 hmsScan = "2.5.0.300"
@@ -41,7 +41,7 @@ kotlin = "1.9.10"
 keyboardvisibilityevent = "3.0.0-RC3"
 ksp = "1.9.10-1.0.13"
 leakcanary = "2.12"
-lifecycle = "2.6.1"
+lifecycle = "2.6.2"
 legacyV4 = "1.0.0"
 material = "1.9.0"
 materialDialogs = "3.3.0"
@@ -51,15 +51,14 @@ mmkv = "1.3.1"
 navigation = "2.6.0"
 nordicsemiBleKtx = "2.6.1"
 nordicsemiScanner = "1.6.0"
-okhttpLogging = "5.0.0-alpha.2"
+okhttpLogging = "5.0.0-alpha.11"
 okhttputils = "2.6.2"
-permissionx = "1.7.1"
 pictureselector = "v3.10.7"
 progressbutton = "2.1.0"
 rangeSeekBar = "v3.0.0"
 recyclerView = "1.3.1"
 retrofit = "2.9.0"
-rxhttp = "3.1.1"
+rxhttp = "3.2.2"
 tableView = "v0.8.9.4"
 xpopup = "2.9.19"
 room = "2.5.2"
@@ -67,15 +66,14 @@ share2 = "0.9.3"
 smoothNavigation = "4.0.0"
 smartRefreshLayout = "2.0.6"
 strictDatabinding = "5.6.0"
-swiperefreshlayout = "1.1.0"
 switchbutton = "2.1.0"
 targetSdk = "33"
 testExtJunit = "1.1.5"
 timber = "5.0.1"
-toastUtils = "12.3"
+toastUtils = "12.5"
 unpeekLivedata = "7.8.0"
 utilcodex = "1.31.1"
-xUpdate = "2.1.2"
+xUpdate = "2.1.4"
 xxPermission = "18.2"
 
 [libraries]
@@ -94,7 +92,6 @@ androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx",
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerView" }
-androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
 agentweb-core = { module = "com.github.Justson.AgentWeb:agentweb-core", version.ref = "agentweb" }
 amap3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
@@ -138,7 +135,6 @@ nordicsemi-ble-ktx = { module = "no.nordicsemi.android:ble-ktx", version.ref = "
 nordicsemi-scanner = { module = "no.nordicsemi.android.support.v18:scanner", version.ref = "nordicsemiScanner" }
 okhttputils = { module = "com.zhy:okhttputils", version.ref = "okhttputils" }
 okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttpLogging" }
-permissionx = { module = "com.guolindev.permissionx:permissionx", version.ref = "permissionx" }
 progressbutton = { module = "com.github.razir.progressbutton:progressbutton", version.ref = "progressbutton" }
 rangeSeekBar = { module = "com.github.Jay-Goo:RangeSeekBar", version.ref = "rangeSeekBar" }
 retrofit2 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
@@ -158,7 +154,7 @@ xuexiangjys-xupdate = { module = "com.github.xuexiangjys:XUpdate", version.ref =
 
 [bundles]
 material-dialogs = ["material-dialogs-lifecycle", "material-dialogs-core", "material-dialogs-datetime", "material-dialogs-bottomsheets"]
-refreshlayout = ["androidx-swiperefreshlayout", "scwang90-refresh-layout-kernel", "scwang90-refresh-header-classics"]
+refreshlayout = ["scwang90-refresh-layout-kernel", "scwang90-refresh-header-classics"]
 pictureselector = ["lucksiege-pictureselector", "lucksiege-compress", "lucksiege-camerax"]
 
 [plugins]

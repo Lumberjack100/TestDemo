@@ -113,7 +113,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 val item = getModel<MRSensorItem>()
                 showMessage("确定删除此传感器吗？", "提示", "删除", {
                     deleteItemIndex = modelPosition
-                    deleteSensorCommand(item.addr)
+                    deleteSensorCommand(item.chl)
                 }, "取消")
             }
         }

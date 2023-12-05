@@ -21,6 +21,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
@@ -43,6 +44,7 @@ import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -144,9 +146,9 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        if (communicateWay is BleConnect) {
-            bleViewModel.launch(bleDevice!!)
-        }
+//        if (communicateWay is BleConnect) {
+//            bleViewModel.launch(bleDevice!!)
+//        }
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
@@ -231,12 +233,17 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         //4G 模式下，直接查询设备工作模式
         if (communicateWay is NetPlatformConnect) {
             queryData()
+        }else{
+            bleViewModel.launch(bleDevice!!)
         }
     }
 
     override fun onBleDeviceReady() {
-        //蓝牙模式下，等蓝牙建立连接后查询设备工作模式
-        queryData()
+        launchWithViewLifecycle {
+            delay(3000) //延迟 timeMillis 秒后，提示超时
+            //蓝牙模式下，等蓝牙建立连接后查询设备工作模式
+            queryData()
+        }
     }
 
     /**
@@ -250,7 +257,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS)
         commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.loading))
+//        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -268,7 +275,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 设置设备工作模式
+     * 重启设备
      */
     private fun reboot() {
         commandItems.clear()
@@ -361,7 +368,6 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             else -> {}
         }
     }
-
 
     private fun initDataCenterStatus(dataCenterStatus: MRDataCenterStatus) {
         val platformLables = mutableListOf<PlatformLable>()
