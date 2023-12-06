@@ -240,7 +240,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     override fun onBleDeviceReady() {
         launchWithViewLifecycle {
-            delay(3000) //延迟 timeMillis 秒后，提示超时
+            delay(0) //延迟 timeMillis 秒后，提示超时
             //蓝牙模式下，等蓝牙建立连接后查询设备工作模式
             queryData()
         }
@@ -403,7 +403,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(DataCenterModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment)),
             ConfigModule(MR702PortConfigModule(navId = R.id.action_mR702HomeFragment_to_mR702PortHomeFragment)),
             ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment)),
-            ConfigModule(DeviceOperationModule(navId = 0)),
+            ConfigModule(DeviceOperationModule(navId = R.id.action_global_mR702EquipmentOperationFragment)),
             ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment)),
             ConfigModule(RebootModule()),
         )

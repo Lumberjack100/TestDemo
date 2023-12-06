@@ -681,17 +681,7 @@ enum class IOTCommandType(private val value: String) {
     MD_MR_GET_DEVICE_BASE_INFO("md_mrgetdevicebase"),
 
     /**
-     * 获取时间
-     */
-    MD_MR_GET_SYSTEM_TIME("md_mrgetsystime"),
-
-    /**
-     * 时间校准
-     */
-    MD_MR_SET_SYSTEM_TIME("md_mrsetsystime"),
-
-    /**
-     * 4G是网络配置
+     * 4G网络配置
      */
     MD_MR_GET_DATA_NETWORK("md_mrgetdatanetwork"),
     MD_MR_SET_DATA_NETWORK("md_mrsetdatanetwork"),
@@ -726,11 +716,13 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_MR_GET_RS485_PORT1_COLL("md_get485port1_coll"),
     MD_MR_SET_RS485_PORT1_COLL("md_set485port1_coll"),
+
     /**
      * 传感器状态获取
      */
     MD_MR_GET_RS485_PORT1_SENSOR("md_get485port1_sensor"),
     MD_MR_DEL_RS485_PORT1_SENSOR("md_del485port1_param"),
+
     /**
      * RS485-端口1 传感器参数获取
      */
@@ -742,16 +734,19 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_MR_GET_RS485_PORT2_COLL("md_get485port2_coll"),
     MD_MR_SET_RS485_PORT2_COLL("md_set485port2_coll"),
+
     /**
      * RS485-端口2 获取串口参数配置
      */
     MD_MR_GET_RS485_PORT2_UART("md_get485port2_uart"),
     MD_MR_SET_RS485_PORT2_UART("md_set485port2_uart"),
+
     /**
      * 传感器状态获取
      */
     MD_MR_GET_RS485_PORT2_SENSOR("md_get485port2_sensor"),
     MD_MR_DEL_RS485_PORT2_SENSOR("md_del485port2_param"),
+
     /**
      * RS485-端口2 传感器参数获取
      */
@@ -762,6 +757,7 @@ enum class IOTCommandType(private val value: String) {
      * RS485-3-模块状态
      */
     MD_MR_GET_RS485_PORT3_SENSOR_STATUS("md_mrgetrs485p3status"),
+
     /**
      * RS485-端口3 传感器参数获取
      */
@@ -796,6 +792,43 @@ enum class IOTCommandType(private val value: String) {
      * DI 参数获取
      */
     MD_MR_GET_DI_PORT_PARAM("md_mrgetdistatus"),
+
+    /**
+     * 获取时间
+     */
+    MD_MR_GET_SYSTEM_TIME("md_mrgetsystime"),
+    MD_MR_SET_SYSTEM_TIME("md_mrsetsystime"),
+
+    /**
+     * 召测
+     */
+    MD_MR_TELEMETRY("md_mrtelemetry"),
+
+    /**
+     * 人工置数
+     */
+    MD_MR_ARTIFICIAL("md_mrartificial"),
+
+    /**
+     * 文件上传
+     */
+    MD_MR_UPLOAD_FILE("md_mruploadfile"),
+
+    /**
+     * 参数导出(上传)
+     */
+    MD_MR_UPLOAD_CONFIG("md_mruploadconfig"),
+
+    /**
+     * 参数导出(上传)
+     */
+    MD_MR_DOWNLOAD_CONFIG("md_mrdownloadconfig"),
+
+    /**
+     * 手动拍照
+     */
+    MD_MR_TAKE_PHOTOS("md_mrtakephotos"),
+
     // </editor-fold>
 
     /**

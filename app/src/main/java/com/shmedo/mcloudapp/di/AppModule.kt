@@ -4,6 +4,7 @@ import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
@@ -25,6 +26,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRRS485Port3SensorStatusPars
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRRainGaugeParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRReportMethodParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRScreenParamParser
+import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRSystemtimeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRWiredNetParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRWirelessNetParser
 import org.koin.dsl.module
@@ -37,6 +39,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     factory { CommonSettingCmdCommandResponseParser() }
+    factory { TelemetryDataParser() }
     factory { WorkModeParser() }
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -61,12 +64,14 @@ val appModule = module {
     factory { MRRainGaugeParamParser() }
     factory { MRDOPortParamParser() }
     factory { MRDIPortParamParser() }
+    factory { MRSystemtimeParser() }
 
 
     // 提供 IOTParseManager 的实例
     single {
         val parsers: List<IOTCommandParser<*>> = listOf(
             get<CommonSettingCmdCommandResponseParser>(),
+            get<TelemetryDataParser>(),
             get<WorkModeParser>(),
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),
@@ -91,6 +96,7 @@ val appModule = module {
             get<MRRainGaugeParamParser>(),
             get<MRDOPortParamParser>(),
             get<MRDIPortParamParser>(),
+            get<MRSystemtimeParser>(),
         )
         IOTParserManager.getInstance(parsers)
     }

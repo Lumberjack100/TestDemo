@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.mr702.fragment
+package com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog
 
 import android.content.Context
 import android.graphics.Color

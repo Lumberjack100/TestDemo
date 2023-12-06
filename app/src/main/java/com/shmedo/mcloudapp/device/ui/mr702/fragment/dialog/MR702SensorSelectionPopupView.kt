@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.mr702.fragment
+package com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog
 
 import android.content.Context
 import android.view.View
@@ -6,7 +6,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import com.lxj.xpopup.core.CenterPopupView
-import com.lxj.xpopup.interfaces.OnSelectListener
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.CustomMr702SensorSelectionPopupBinding
 import com.shmedo.mcloudapp.device.model.SensorModel

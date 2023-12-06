@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewModel" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/popup_head"
+            layout="@layout/custom_popup_head_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginBottom="@dimen/dimen_size_25" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                visible="@{!stateVM.isResponseLoading}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:layout_marginEnd="@dimen/dimen_size_15">
+
+                <ImageView
+                    android:id="@+id/iv_dot"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/ic_dispatch_cmd_response_small_circle"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_response_state"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_response_state" />
+
+                <TextView
+                    android:id="@+id/tv_response_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_6"
+                    android:text='@{stateVM.isResponseSuccess ? "响应成功" : "响应失败"}'
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/iv_dot"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="响应成功" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="@dimen/dimen_size_8"
+                    android:src="@{stateVM.isResponseSuccess?@drawable/ic_success:@drawable/ic_failed}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_response_state"
+                    app:layout_constraintStart_toEndOf="@+id/tv_response_state"
+                    app:layout_constraintTop_toTopOf="@+id/tv_response_state"
+                    tools:src="@drawable/ic_success" />
+
+                <TextView
+                    android:id="@+id/tv_response_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@{stateVM.responseContent}"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="@dimen/text_size_13"
+                    app:layout_constraintStart_toStartOf="@+id/tv_response_state"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_response_state"
+                    tools:text="服务器未响应出错" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <include
+                android:id="@+id/queryCmdResponseResultLoadingView"
+                layout="@layout/query_cmd_response_result_loading_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:visible="@{stateVM.isResponseLoading}" />
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/dimen_size_30"
+            android:background="@color/divider_line_bg" />
+
+        <TextView
+            android:id="@+id/tv_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="好的"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

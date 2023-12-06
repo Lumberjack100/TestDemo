@@ -25,17 +25,17 @@ class RunningStatusModule(
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
-class TerminalTimeModule(
-    name: String = "时间",
+class TimeCalibrationModule(
+    name: String = "时间校准",
     desc: String = "获取当前设备时间",
-    resID: Int = R.drawable.ic_device_current_time,
+    resID: Int = R.drawable.ic_time_calibration,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class TelemetryDataModule(
-    name: String = "遥测",
-    desc: String = "远距离测量",
-    resID: Int = R.drawable.ic_device_telemetry,
+    name: String = "召测",
+    desc: String = "召测当前采集数据",
+    resID: Int = R.drawable.ic_sample,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
@@ -120,5 +120,40 @@ class NetworkCommunicationModule(
     name: String = "网络通信",
     desc: String = "无线、有线配置",
     resID: Int = R.drawable.ic_device_net_communicate,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class ManualSettingModule(
+    name: String = "人工置数",
+    desc: String = "人工录入历史采集数据",
+    resID: Int = R.drawable.ic_manual_setting,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class DeviceLogUploadModule(
+    name: String = "日志读取",
+    desc: String = "可筛选、读取并上传平台",
+    resID: Int = R.drawable.ic_log_upload,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class ParameterExportModule(
+    name: String = "参数导出",
+    desc: String = "当前配置参数，导出并上传",
+    resID: Int = R.drawable.ic_parameter_export,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class ParameterImportModule(
+    name: String = "参数导入",
+    desc: String = "从平台获取参数配置导入",
+    resID: Int = R.drawable.ic_parameter_import,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class ManualPhotoTakingModule(
+    name: String = "手动拍照",
+    desc: String = "确认摄像机已接入",
+    resID: Int = R.drawable.ic_manual_photo_taking,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)

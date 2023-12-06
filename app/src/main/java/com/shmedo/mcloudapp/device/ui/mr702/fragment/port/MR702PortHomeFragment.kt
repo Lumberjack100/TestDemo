@@ -32,7 +32,7 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MR702PortSensorConfig
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702PortSelectionPartShadowPopupView
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702PortSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 

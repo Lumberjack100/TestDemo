@@ -35,7 +35,7 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.model.SensorModel
-import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702SensorSelectionPopupView
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1ViewModel
 import org.koin.android.ext.android.inject
@@ -142,13 +142,6 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        mInterfaceHomeViewModel.isEditable.observe(viewLifecycleOwner) { editable ->
-            val list = binding.rv.bindingAdapter.models ?: return@observe
-            list.forEach { item ->
-                (item as MRSensorItem).isShowDel = editable
-            }
-            binding.rv.models = list
-        }
         mMessenger.mr702Rs485PortSensorRefresh.observe(viewLifecycleOwner) { port ->
             if (port is MRRS485Port1) {
                 refreshSensorInfo()

@@ -397,7 +397,7 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
-                                app:inputTypeFilter='@{"number"}'
+                                app:inputTypeFilter='@{"character"}'
                                 app:lengthFilter="@{10}" />
 
                         </LinearLayout>
