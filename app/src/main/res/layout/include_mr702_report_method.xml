@@ -51,7 +51,6 @@
                 tools:text="定时定点上报" />
 
             <ImageView
-                android:id="@+id/iv_start_time"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="@dimen/dimen_size_8"
@@ -92,6 +91,7 @@
                 android:textSize="@dimen/text_size_17" />
 
             <ImageView
+                android:id="@+id/iv_start_time"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="@dimen/dimen_size_8"

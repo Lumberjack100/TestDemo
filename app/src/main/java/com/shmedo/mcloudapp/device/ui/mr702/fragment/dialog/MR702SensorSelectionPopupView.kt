@@ -48,7 +48,7 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
         super.onCreate()
         binding = DataBindingUtil.bind(popupImplView)!!
         initAdapter()
-        binding.tvConfirm.setOnClickListener {
+        binding.tvOk.setOnClickListener {
             selectedSensor?.let {
                 selectListener.onSelect(it)
             }

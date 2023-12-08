@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil
 import com.lxj.xpopup.core.CenterPopupView
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.CustomMr702ParamExportPopupBinding
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewModel
 
 /**
  * 创建者：gonghe
@@ -15,15 +16,18 @@ import com.shmedo.mcloudapp.databinding.CustomMr702ParamExportPopupBinding
  */
 class MR702ParamExportPopupView(context: Context) : CenterPopupView(context) {
     private lateinit var binding: CustomMr702ParamExportPopupBinding
+    private lateinit var stateVM: MR702EquipmentOperationViewModel
 
     private var title: String = ""
-    private lateinit var clickListener: OnClickListener
+    private var clickListener: OnClickListener? = null
 
 
     fun setTitle(
         title: String = "",
+        vm: MR702EquipmentOperationViewModel
     ): MR702ParamExportPopupView {
         this.title = title
+        this.stateVM = vm
         return this
     }
 
@@ -39,14 +43,20 @@ class MR702ParamExportPopupView(context: Context) : CenterPopupView(context) {
     override fun onCreate() {
         super.onCreate()
         binding = DataBindingUtil.bind(popupImplView)!!
+        binding.stateVM = stateVM
+
         if (title.isNotEmpty())
             binding.popupHead.tvTitle.text = title
 
         binding.popupHead.ivClose.setOnClickListener {
             dismiss()
         }
-        binding.tvConfirm.setOnClickListener {
-            clickListener.onExportClick()
+        binding.tvOk.setOnClickListener {
+            if (binding.tvOk.text == "导出") {
+                clickListener?.onExportClick()
+                return@setOnClickListener
+            }
+            dismiss()
         }
     }
 

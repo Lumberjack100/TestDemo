@@ -17,7 +17,7 @@
             android:layout_centerVertical="true"
             android:text="参数导出"
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_16"
+            android:textSize="@dimen/text_size_17"
             android:textStyle="bold" />
 
         <ImageView

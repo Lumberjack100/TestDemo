@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.databinding.DataBindingUtil
 import com.lxj.xpopup.core.CenterPopupView
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.CustomTelemetryPopupBinding
+import com.shmedo.mcloudapp.databinding.CustomTimeCalibrationPopupBinding
 import com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel
 
 /**
@@ -12,26 +12,32 @@ import com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel
  *
  * 创建时间：2023/12/6
  *
- * 描述： 遥测
- *
- *
+ * 描述： 时间校准
  */
-class TelemetryPopupView(context: Context) : CenterPopupView(context) {
-    private lateinit var binding: CustomTelemetryPopupBinding
+class TimeCalibrationPopupView(context: Context) : CenterPopupView(context) {
+    private lateinit var binding: CustomTimeCalibrationPopupBinding
     private lateinit var stateVM: CommandResponseViewModel
+
     private var title: String = ""
+    private lateinit var clickListener: OnClickListener
+
 
     fun setTitle(
         title: String = "",
         vm: CommandResponseViewModel
-    ): TelemetryPopupView {
+    ): TimeCalibrationPopupView {
         this.title = title
         this.stateVM = vm
         return this
     }
 
+    fun setClickListener(clickListener: OnClickListener): TimeCalibrationPopupView {
+        this.clickListener = clickListener
+        return this
+    }
+
     override fun getImplLayoutId(): Int {
-        return R.layout.custom_telemetry_popup
+        return R.layout.custom_time_calibration_popup
     }
 
     override fun onCreate() {
@@ -48,5 +54,12 @@ class TelemetryPopupView(context: Context) : CenterPopupView(context) {
         binding.popupFooter.tvOk.setOnClickListener {
             dismiss()
         }
+        binding.tvCalibration.setOnClickListener {
+            clickListener.onSettingClick()
+        }
+    }
+
+    interface OnClickListener {
+        fun onSettingClick()
     }
 }

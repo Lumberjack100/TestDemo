@@ -5,6 +5,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.TimeCalibrationDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
@@ -40,6 +41,7 @@ import org.koin.dsl.module
 val appModule = module {
     factory { CommonSettingCmdCommandResponseParser() }
     factory { TelemetryDataParser() }
+    factory { TimeCalibrationDataParser() }
     factory { WorkModeParser() }
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -72,6 +74,7 @@ val appModule = module {
         val parsers: List<IOTCommandParser<*>> = listOf(
             get<CommonSettingCmdCommandResponseParser>(),
             get<TelemetryDataParser>(),
+            get<TimeCalibrationDataParser>(),
             get<WorkModeParser>(),
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),

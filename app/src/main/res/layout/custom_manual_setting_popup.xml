@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewModel" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/popup_head"
+            layout="@layout/cmd_response_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginBottom="@dimen/dimen_size_25" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                visible="@{!stateVM.isManualSetting}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:text="观测时间"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="@dimen/text_size_16" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/MR702_Terminal_Param_LinearLayoutStyle"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_8"
+                    android:layout_marginEnd="@dimen/dimen_size_15"
+                    app:drawable_radius="@{4}"
+                    app:drawable_solidColor="@{@color/gray_f5f6f8}"
+                    tools:background="@color/gray_f5f6f8">
+
+                    <TextView
+                        android:id="@+id/tv_observation_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@{stateVM.observationTime}"
+                        android:textColor="@color/title_text_color"
+                        android:textColorHint="@color/text_color_hint"
+                        android:textSize="@dimen/text_size_16"
+                        tools:text="2020-12-12 12:12:12" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_time_note" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:text="监测要素"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="@dimen/text_size_16" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_8"
+                    android:layout_marginEnd="@dimen/dimen_size_15"
+                    app:drawable_radius="@{4}"
+                    app:drawable_solidColor="@{@color/gray_f5f6f8}"
+                    tools:background="@color/gray_f5f6f8">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:dropDownHorizontalOffset="20dp"
+                        android:dropDownVerticalOffset="41dp" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:text="采集数据"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="@dimen/text_size_16" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/MR702_Terminal_Param_LinearLayoutStyle"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_8"
+                    android:layout_marginEnd="@dimen/dimen_size_15"
+                    app:drawable_radius="@{4}"
+                    app:drawable_solidColor="@{@color/gray_f5f6f8}"
+                    tools:background="@color/gray_f5f6f8">
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        android:id="@+id/et_collect_data"
+                        style="@style/MR702_Terminal_Param_EditText_Style"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{10}" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/text_size_15"
+                        android:text="@{stateVM.unit}"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_15"
+                        tools:text="米" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:background="@color/divider_line_bg" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <TextView
+                        android:id="@+id/tv_cancel"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/xpopup_cancel"
+                        android:textColor="@color/text_color_666666"
+                        android:textSize="@dimen/text_size_16"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/divider_line_bg" />
+
+                    <TextView
+                        android:id="@+id/tv_confirm"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/xpopup_ok"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/text_size_16"
+                        android:textStyle="bold" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <include
+                android:id="@+id/queryCmdResponseResultLoadingView"
+                layout="@layout/query_cmd_response_result_loading_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:visible="@{stateVM.isManualSetting&amp;&amp;stateVM.isResponseLoading}"
+                tools:visibility="gone" />
+
+            <include
+                android:id="@+id/queryCmdResponseResultFailed"
+                layout="@layout/query_cmd_response_result_failed"
+                stateVM="@{stateVM}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:layout_marginEnd="@dimen/dimen_size_15"
+                app:visible="@{stateVM.isManualSetting&amp;&amp;!stateVM.isResponseLoading &amp;&amp;!stateVM.isResponseSuccess}"
+                tools:visibility="gone" />
+
+        </FrameLayout>
+
+        <include
+            android:id="@+id/popup_footer"
+            layout="@layout/cmd_response_dialog_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:visible="@{stateVM.isManualSetting}" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

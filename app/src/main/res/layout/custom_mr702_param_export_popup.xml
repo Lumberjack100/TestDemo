@@ -3,25 +3,60 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewModel" />
+
+    </data>
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <include
             android:id="@+id/popup_head"
-            layout="@layout/custom_popup_head_layout"
+            layout="@layout/cmd_response_dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_size_15"
             android:layout_marginBottom="@dimen/dimen_size_25" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_mr702_param_export" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                visible="@{!stateVM.isParamExporting}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_mr702_param_export" />
+
+            <include
+                android:id="@+id/queryCmdResponseResultLoadingView"
+                layout="@layout/query_cmd_response_result_loading_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:visible="@{stateVM.isParamExporting&amp;&amp;stateVM.isResponseLoading}"
+                tools:visibility="gone" />
+
+            <include
+                android:id="@+id/queryCmdResponseResultFailed"
+                layout="@layout/query_cmd_response_result_failed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:layout_marginEnd="@dimen/dimen_size_15"
+                stateVM="@{stateVM}"
+                app:visible="@{stateVM.isParamExporting&amp;&amp;!stateVM.isResponseLoading &amp;&amp;!stateVM.isResponseSuccess}"
+                tools:visibility="gone" />
+
+        </FrameLayout>
 
         <View
             android:layout_width="match_parent"
@@ -30,14 +65,15 @@
             android:background="@color/divider_line_bg" />
 
         <TextView
-            android:id="@+id/tv_confirm"
+            android:id="@+id/tv_ok"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center"
-            android:text="导出"
+            android:text='@{stateVM.isParamExporting?"好的":"导出"}'
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_16"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="导出" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

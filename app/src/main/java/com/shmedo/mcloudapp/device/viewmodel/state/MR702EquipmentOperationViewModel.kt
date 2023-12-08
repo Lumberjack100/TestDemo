@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.device.viewmodel.state
 
-import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 /**
@@ -12,8 +11,12 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
  *
  *
  */
-class MR702EquipmentOperationViewModel : ViewModel() {
-    val isResponseLoading = NonNullObservableField(true)
-    val isResponseSuccess = NonNullObservableField(true)
-    val responseContent = NonNullObservableField("")
+class MR702EquipmentOperationViewModel : CommandResponseViewModel() {
+    //人工置数
+    val isManualSetting = NonNullObservableField(false)//是否正在下发人工置数指令
+    val observationTime = NonNullObservableField("")//观测时间
+    val unit = NonNullObservableField("")//单位
+
+    //参数导出
+    val isParamExporting = NonNullObservableField(false)//是否正在下发参数导出指令
 }

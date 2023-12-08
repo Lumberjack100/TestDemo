@@ -7,7 +7,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel" />
 
     </data>
 
@@ -19,7 +19,7 @@
 
         <include
             android:id="@+id/popup_head"
-            layout="@layout/custom_popup_head_layout"
+            layout="@layout/cmd_response_dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_size_15"
@@ -92,21 +92,11 @@
 
         </FrameLayout>
 
-        <View
+        <include
+            android:id="@+id/popup_footer"
+            layout="@layout/cmd_response_dialog_footer"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/dimen_size_30"
-            android:background="@color/divider_line_bg" />
-
-        <TextView
-            android:id="@+id/tv_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:text="好的"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/text_size_16"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

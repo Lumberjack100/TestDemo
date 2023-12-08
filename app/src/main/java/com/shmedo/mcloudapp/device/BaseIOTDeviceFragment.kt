@@ -181,7 +181,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     }
 
     open fun doCmdResponseResultTimeOut(errorMsg: String) {
-        Toaster.show("指令响应超时: $errorMsg")
+        Toaster.show("指令响应超时")
         dismissLoadingDialog()
         refreshLayout?.finish(false)
     }
@@ -219,7 +219,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     }
 
     /**
-     * 启动蓝牙通讯/WIFI通信等近场通信超时Job
+     * 启动蓝牙通讯/WIFI通信等近场通信超时 Job
      */
     fun startNearbyCommunicationTimeoutJob(timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS) {
         // 启动一个新的协程作为超时Job
@@ -232,7 +232,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     }
 
     /**
-     * 取消蓝牙通讯/WIFI通信等近场通信超时Job
+     * 取消蓝牙通讯/WIFI通信等近场通信超时 Job
      */
     @CallSuper
     protected open fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean = true) {
