@@ -22,7 +22,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewMo
  *
  *
  */
-class ManualSettingPopupView(context: Context) : CenterPopupView(context) {
+class MR702ManualSettingPopupView(context: Context) : CenterPopupView(context) {
     private lateinit var binding: CustomManualSettingPopupBinding
     private lateinit var stateVM: MR702EquipmentOperationViewModel
 
@@ -37,7 +37,7 @@ class ManualSettingPopupView(context: Context) : CenterPopupView(context) {
         title: String = "",
         list: List<MonitoringElement>,
         vm: MR702EquipmentOperationViewModel
-    ): ManualSettingPopupView {
+    ): MR702ManualSettingPopupView {
         this.title = title
         this.monitoringElementList = list.toList()
         this.data = monitoringElementList.map { it.name }
@@ -45,7 +45,7 @@ class ManualSettingPopupView(context: Context) : CenterPopupView(context) {
         return this
     }
 
-    fun setClickListener(clickListener: OnClickListener): ManualSettingPopupView {
+    fun setClickListener(clickListener: OnClickListener): MR702ManualSettingPopupView {
         this.clickListener = clickListener
         return this
     }
@@ -78,7 +78,7 @@ class ManualSettingPopupView(context: Context) : CenterPopupView(context) {
                 return@setOnClickListener
             }
             clickListener?.onConfirmClick(
-                binding.tvObservationTime.text.toString(),
+                System.currentTimeMillis(),
                 selectedElement!!.code,
                 binding.etCollectData.text.toString(),
                 selectedElement!!.engUnit
@@ -112,8 +112,7 @@ class ManualSettingPopupView(context: Context) : CenterPopupView(context) {
         }
     }
 
-
     interface OnClickListener {
-        fun onConfirmClick(otime: String, type: Int, data: String, unit: String)
+        fun onConfirmClick(otime: Long, type: Int, data: String, unit: String)
     }
 }

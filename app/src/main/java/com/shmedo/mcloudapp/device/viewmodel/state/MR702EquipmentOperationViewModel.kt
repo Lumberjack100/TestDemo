@@ -17,6 +17,12 @@ class MR702EquipmentOperationViewModel : CommandResponseViewModel() {
     val observationTime = NonNullObservableField("")//观测时间
     val unit = NonNullObservableField("")//单位
 
+    //设备数据上传
+    val isDeviceDataUploading = NonNullObservableField(false)//是否正在下发设备数据上传指令
+
     //参数导出
     val isParamExporting = NonNullObservableField(false)//是否正在下发参数导出指令
+
+    //参数导入
+    val isParamImporting = NonNullObservableField(false)//是否正在下发参数导入指令
 }

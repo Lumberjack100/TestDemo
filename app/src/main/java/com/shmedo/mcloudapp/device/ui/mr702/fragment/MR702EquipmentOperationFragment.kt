@@ -34,8 +34,9 @@ import com.shmedo.mcloudapp.device.model.ParameterExportModule
 import com.shmedo.mcloudapp.device.model.ParameterImportModule
 import com.shmedo.mcloudapp.device.model.TelemetryDataModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702DeviceDataUploadPopupView
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702ManualSettingPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702ParamExportPopupView
-import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.ManualSettingPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewModel
@@ -145,7 +146,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             }
 
             is DeviceLogUploadModule -> {
-
+                mStates.isDeviceDataUploading.set(false)
+                showDeviceDataUploadPopup()
             }
 
             is ParameterExportModule -> {
@@ -208,14 +210,40 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
      * 显示人工置数弹窗
      */
     private fun showManualSettingPopup() {
-        val popupView = ManualSettingPopupView(requireContext())
+        val popupView = MR702ManualSettingPopupView(requireContext())
         popupView.setTitle("人工置数", monitoringElementList, mStates)
-            .setClickListener(object : ManualSettingPopupView.OnClickListener {
-                override fun onConfirmClick(otime: String, type: Int, data: String, unit: String) {
+            .setClickListener(object : MR702ManualSettingPopupView.OnClickListener {
+                override fun onConfirmClick(otime: Long, type: Int, data: String, unit: String) {
                     commandItems.clear()
                     val command = IOTCommandUtil.getCommand(
                         IOTCommandType.MD_MR_ARTIFICIAL,
                         "type=$type&data=$data&unit=$unit&otime=$otime"
+                    )
+                    commandItems.add(command)
+                    sendCommandFromCmdList(isStartTimeoutJob = true)
+                }
+            })
+        XPopup.Builder(context)
+            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+            .enableDrag(false)
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .asCustom(popupView)
+            .show()
+    }
+
+    /**
+     * 显示数据上传弹窗
+     */
+    private fun showDeviceDataUploadPopup() {
+        val popupView = MR702DeviceDataUploadPopupView(requireContext())
+        popupView.setTitle("文件上传", mStates)
+            .setClickListener(object : MR702DeviceDataUploadPopupView.OnClickListener {
+                override fun onConfirmClick(type: Int, time: String) {
+                    commandItems.clear()
+                    val command = IOTCommandUtil.getCommand(
+                        IOTCommandType.MD_MR_UPLOAD_FILE,
+                        "typre=$type&timeframe=$time"
                     )
                     commandItems.add(command)
                     sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -275,6 +303,12 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
 
             IOTCommandType.MD_MR_ARTIFICIAL -> {
                 mStates.isManualSetting.set(true)
+                mStates.isResponseLoading.set(true)
+                mStates.isResponseSuccess.set(false)
+            }
+
+            IOTCommandType.MD_MR_UPLOAD_FILE -> {
+                mStates.isDeviceDataUploading.set(true)
                 mStates.isResponseLoading.set(true)
                 mStates.isResponseSuccess.set(false)
             }
@@ -417,6 +451,25 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(true)
                         mStates.responseContent.set("人工置数指令下发成功")
+                    }
+                }
+            }
+
+            IOTCommandType.MD_MR_UPLOAD_FILE -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        mStates.isResponseLoading.set(false)
+                        mStates.isResponseSuccess.set(false)
+                        mStates.responseContent.set(result.message)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                        mStates.isResponseLoading.set(false)
+                        mStates.isResponseSuccess.set(true)
+                        mStates.responseContent.set("文件上传指令下发成功")
                     }
                 }
             }

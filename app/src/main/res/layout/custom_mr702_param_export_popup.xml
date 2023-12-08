@@ -48,12 +48,23 @@
             <include
                 android:id="@+id/queryCmdResponseResultFailed"
                 layout="@layout/query_cmd_response_result_failed"
+                stateVM="@{stateVM}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_15"
                 android:layout_marginEnd="@dimen/dimen_size_15"
-                stateVM="@{stateVM}"
                 app:visible="@{stateVM.isParamExporting&amp;&amp;!stateVM.isResponseLoading &amp;&amp;!stateVM.isResponseSuccess}"
+                tools:visibility="gone" />
+
+            <include
+                android:id="@+id/queryCmdResponseResultSuccess"
+                layout="@layout/query_cmd_response_result_success"
+                stateVM="@{stateVM}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:layout_marginEnd="@dimen/dimen_size_15"
+                app:visible="@{stateVM.isParamExporting&amp;&amp;!stateVM.isResponseLoading &amp;&amp;stateVM.isResponseSuccess}"
                 tools:visibility="gone" />
 
         </FrameLayout>
