@@ -30,14 +30,14 @@
             android:paddingBottom="@dimen/dimen_size_10">
 
             <TextView
-                android:id="@+id/tv_device_name"
+                android:id="@+id/tv_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{vm.deviceName}"
+                android:text="@{vm.productName}"
                 android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17"
+                android:textSize="@dimen/text_size_16"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -56,7 +56,7 @@
                 android:textColor="@{vm.isDeviceStateTagHighLight()?@color/device_online_foreground:@color/device_offline_foreground}"
                 android:textSize="@dimen/text_size_10"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_device_name"
+                app:layout_constraintStart_toEndOf="@+id/tv_product_name"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@drawable/bg_device_offline_state_flag"
                 tools:text="已断开"
@@ -147,7 +147,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/tv_product_name_desc"
+                        android:id="@+id/tv_product_type_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="产品型号："
@@ -155,12 +155,12 @@
                         android:textSize="@dimen/text_size_14" />
 
                     <TextView
-                        android:id="@+id/tv_product_name"
+                        android:id="@+id/tv_product_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="@{vm.deviceToken}"
+                        android:text="@{vm.deviceName}"
                         android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_15"
                         tools:text="21E118L" />
@@ -195,9 +195,37 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ll_running_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_running_status_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="运行状态："
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <TextView
+                        android:id="@+id/tv_running_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{vm.runningStateText}"
+                        android:textColor="@{!vm.isRunningStateNormal()?@color/device_online_platform:@color/device_offline_platform}"
+                        android:textSize="@dimen/text_size_13"
+                        tools:text="正常"
+                        tools:textColor="@color/device_online_platform" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
                     visible="@{vm.isPlatformConnectionStateVisible}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <TextView

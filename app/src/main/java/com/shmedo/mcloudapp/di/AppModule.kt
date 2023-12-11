@@ -2,6 +2,8 @@ package com.shmedo.mcloudapp.di
 
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBaseInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotionStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
@@ -42,6 +44,8 @@ val appModule = module {
     factory { TelemetryDataParser() }
     factory { TimeCalibrationDataParser() }
     factory { WorkModeParser() }
+    factory { AdmeBaseInfoParser() }
+    factory { AdmeMotionStateParser() }
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
     factory { MRWirelessNetParser() }
@@ -74,6 +78,8 @@ val appModule = module {
             get<TelemetryDataParser>(),
             get<TimeCalibrationDataParser>(),
             get<WorkModeParser>(),
+            get<AdmeBaseInfoParser>(),
+            get<AdmeMotionStateParser>(),
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),
             get<MRWirelessNetParser>(),

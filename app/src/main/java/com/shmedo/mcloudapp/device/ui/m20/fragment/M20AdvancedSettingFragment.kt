@@ -18,7 +18,7 @@ import com.shmedo.mcloudapp.databinding.FragmentM20AdvancedSettingBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.M20AdvancedSettingViewModel
 
-class NetM20AdvancedSettingFragment : BaseFragment() {
+class M20AdvancedSettingFragment : BaseFragment() {
 
     private val binding: FragmentM20AdvancedSettingBinding by lazy { getBinding() as FragmentM20AdvancedSettingBinding }
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }

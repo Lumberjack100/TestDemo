@@ -15,4 +15,6 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val connectOperateText = NonNullObservableField("蓝牙连接")
     val isPlatformConnectionStateVisible = NonNullObservableField(false)
     val platformConnectionStateText = NonNullObservableField("")
+    val runningStateText = NonNullObservableField("")
+    val isRunningStateNormal = NonNullObservableField(false)
 }

@@ -18,6 +18,14 @@ sealed class DeviceFunctionModule(
     val navId: Int = 0,
 )
 
+class CommonModule(
+    name: String = "",
+    desc: String = "",
+    resID: Int = R.drawable.ic_device_current_state,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+
 class RunningStatusModule(
     name: String = "状态",
     desc: String = "获取当前设备状态",
@@ -46,6 +54,37 @@ class RebootModule(
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
+class DataCenterModule(
+    name: String = "数据中心",
+    desc: String = "连接平台参数配置",
+    resID: Int = R.drawable.ic_device_data_center,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class AdvancedSettingsModule(
+    name: String = "设置",
+    desc: String = "高级设置",
+    resID: Int = R.drawable.ic_device_setting,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+//<editor-fold desc="ADME 功能模块">
+class BasicConfigModule(
+    name: String = "基础配置",
+    desc: String = "设备基础参数配置",
+    resID: Int = R.drawable.ic_basic_config,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+// </editor-fold>
+
+class SetupWizard(
+    name: String = "设置向导",
+    desc: String = "一键配置",
+    resID: Int = R.drawable.ic_setup_wizard,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+//<editor-fold desc="DAS 功能模块">
 class CollectorConfigModule(
     name: String = "采集器配置",
     desc: String = "采集器参数配置",
@@ -59,42 +98,9 @@ class SensorConfigModule(
     resID: Int = R.drawable.ic_device_sensor_config,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
+// </editor-fold>
 
-class DataCenterModule(
-    name: String = "数据中心",
-    desc: String = "连接平台参数配置",
-    resID: Int = R.drawable.ic_device_data_center,
-    navId: Int = 0,
-) : DeviceFunctionModule(name, desc, resID, navId)
-
-class BasicConfigModule(
-    name: String = "基础配置",
-    desc: String = "设备基础参数配置",
-    resID: Int = R.drawable.ic_basic_config,
-    navId: Int = 0,
-) : DeviceFunctionModule(name, desc, resID, navId)
-
-class AdvancedConfigModule(
-    name: String = "高级配置",
-    desc: String = "设备高级参数配置",
-    resID: Int = R.drawable.ic_device_advanced_setting,
-    navId: Int = 0,
-) : DeviceFunctionModule(name, desc, resID, navId)
-
-class AdvancedSettingsModule(
-    name: String = "设置",
-    desc: String = "高级设置",
-    resID: Int = R.drawable.ic_device_setting,
-    navId: Int = 0,
-) : DeviceFunctionModule(name, desc, resID, navId)
-
-class SetupWizard(
-    name: String = "设置向导",
-    desc: String = "一键配置",
-    resID: Int = R.drawable.ic_setup_wizard,
-    navId: Int = 0,
-) : DeviceFunctionModule(name, desc, resID, navId)
-
+//<editor-fold desc="MR702 功能模块">
 class MR702PortConfigModule(
     name: String = "接口配置",
     desc: String = "串口、ADC、DI、DO配置",
@@ -157,3 +163,4 @@ class ManualPhotoTakingModule(
     resID: Int = R.drawable.ic_manual_photo_taking,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
+// </editor-fold>
