@@ -27,7 +27,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRRS485Port3SensorStatusPars
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRRainGaugeParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRReportMethodParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRScreenParamParser
-import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRSystemtimeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRWiredNetParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRWirelessNetParser
 import org.koin.dsl.module
@@ -66,7 +65,6 @@ val appModule = module {
     factory { MRRainGaugeParamParser() }
     factory { MRDOPortParamParser() }
     factory { MRDIPortParamParser() }
-    factory { MRSystemtimeParser() }
 
 
     // 提供 IOTParseManager 的实例
@@ -99,7 +97,6 @@ val appModule = module {
             get<MRRainGaugeParamParser>(),
             get<MRDOPortParamParser>(),
             get<MRDIPortParamParser>(),
-            get<MRSystemtimeParser>(),
         )
         IOTParserManager.getInstance(parsers)
     }

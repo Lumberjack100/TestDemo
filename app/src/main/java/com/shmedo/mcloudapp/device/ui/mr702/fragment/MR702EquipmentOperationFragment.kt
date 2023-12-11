@@ -16,8 +16,10 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -37,8 +39,10 @@ import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702DeviceDataUploadPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702ManualSettingPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702ParamExportPopupView
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702ParamImportPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -54,6 +58,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMr702EquipmentOperationBinding by lazy { getBinding() as FragmentMr702EquipmentOperationBinding }
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: MR702EquipmentOperationViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val monitoringElementList = arrayListOf<MonitoringElement>()
@@ -156,7 +161,10 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             }
 
             is ParameterImportModule -> {
-
+                mStates.isParamImporting.set(false)
+                mStates.sn.set(deviceInfo.deviceToken)
+                mStates.deviceId.set(deviceInfo.id.toString())
+                showParameterImportPopup()
             }
 
             else -> {
@@ -175,7 +183,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 override fun onSettingClick() {
                     commandItems.clear()
                     val command = IOTCommandUtil.getCommand(
-                        IOTCommandType.MD_MR_SET_SYSTEM_TIME,
+                        IOTCommandType.SET_TERMINAL_TIME,
                         "time=${TimeUtils.getNowString()}"
                     )
                     commandItems.add(command)
@@ -267,7 +275,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             .setClickListener(object : MR702ParamExportPopupView.OnClickListener {
                 override fun onExportClick() {
                     commandItems.clear()
-                    val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_UPLOAD_CONFIG)
+                    val command = IOTCommandUtil.getCommand(IOTCommandType.MD_BACKUP_CONFIG)
                     commandItems.add(command)
                     sendCommandFromCmdList(isStartTimeoutJob = true)
                 }
@@ -281,6 +289,44 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             .show()
     }
 
+    /**
+     * 显示参数导入弹窗
+     */
+    private fun showParameterImportPopup() {
+        val popupView = MR702ParamImportPopupView(requireContext())
+        popupView.setTitle("参数导入", mStates)
+            .setClickListener(object : MR702ParamImportPopupView.OnClickListener {
+                override fun onImportClick(backupID: String) {
+                    applyBackup(backupID)
+                }
+            })
+        XPopup.Builder(context)
+            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+            .enableDrag(false)
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .asCustom(popupView)
+            .show()
+    }
+
+    private fun applyBackup(backupID: String = "") {
+        launchWithViewLifecycle {
+            val msgID = deviceRequestViewModel.applyBackup(
+                backupID,
+                deviceInfo.id.toString()
+            ) { error: Throwable ->
+                mStates.isResponseLoading.set(false)
+                mStates.isResponseSuccess.set(false)
+                mStates.responseContent.set(error.errorMsg)
+            } ?: return@launchWithViewLifecycle
+
+            mStates.isParamImporting.set(true)
+            mStates.isResponseLoading.set(true)
+            mStates.isResponseSuccess.set(false)
+            netIotCommandViewModel.processCmdResult(arrayListOf(msgID))
+        }
+    }
+
     override fun doNetDispatchSuccess(cmdStr: String) {
         super.doNetDispatchSuccess(cmdStr)
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
@@ -290,7 +336,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 showTimeCalibrationPopup()
             }
 
-            IOTCommandType.MD_MR_SET_SYSTEM_TIME -> {
+            IOTCommandType.SET_TERMINAL_TIME -> {
                 mStates.isResponseLoading.set(true)
                 mStates.isResponseSuccess.set(false)
             }
@@ -313,7 +359,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 mStates.isResponseSuccess.set(false)
             }
 
-            IOTCommandType.MD_MR_UPLOAD_CONFIG -> {
+            IOTCommandType.MD_BACKUP_CONFIG -> {
                 mStates.isParamExporting.set(true)
                 mStates.isResponseLoading.set(true)
                 mStates.isResponseSuccess.set(false)
@@ -378,7 +424,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_SYSTEM_TIME -> {
+            IOTCommandType.SET_TERMINAL_TIME -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -474,7 +520,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_UPLOAD_CONFIG -> {
+            IOTCommandType.MD_BACKUP_CONFIG -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -489,6 +535,25 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(true)
                         mStates.responseContent.set("参数导出指令下发成功")
+                    }
+                }
+            }
+
+            IOTCommandType.MD_RESTORE_CONFIG -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        mStates.isResponseLoading.set(false)
+                        mStates.isResponseSuccess.set(false)
+                        mStates.responseContent.set(result.message)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                        mStates.isResponseLoading.set(false)
+                        mStates.isResponseSuccess.set(true)
+                        mStates.responseContent.set("参数导入指令下发成功")
                     }
                 }
             }

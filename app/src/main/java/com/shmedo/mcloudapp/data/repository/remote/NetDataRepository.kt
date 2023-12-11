@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.blankj.utilcode.util.AppUtils
 import com.shmedo.lib.core.base.model.BasicUserInfo
 import com.shmedo.lib.core.base.model.CompanyInfo
+import com.shmedo.lib.core.base.model.DeviceBackupInfo
 import com.shmedo.lib.core.base.model.DeviceDetailInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
@@ -209,6 +210,32 @@ class NetDataRepository private constructor() {
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<DeviceDetailInfo>()
+            .tryAwait(onCatch)
+
+    /**
+     * 分页设备备份记录列表
+     */
+    suspend fun queryDeviceBackupListWithPage(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<DeviceBackupInfo>? =
+        RxHttp.postJson("/QueryDeviceBackup")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<PageList<DeviceBackupInfo>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 给一个设备应用一个备份
+     */
+    suspend fun applyBackup(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/ApplyBackup")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
             .tryAwait(onCatch)
 
     /**

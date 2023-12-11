@@ -33,6 +33,16 @@ enum class IOTCommandType(private val value: String) {
     REBOOT("reboot"),
 
     /**
+     * 参数导出(上传)
+     */
+    MD_BACKUP_CONFIG("md_backupconfig"),
+
+    /**
+     * 参数参数导入(恢复)
+     */
+    MD_RESTORE_CONFIG("md_restoreconfig"),
+
+    /**
      * 获取接入传感器类型
      */
     QUERY_SENSOR_TYPE("getsensorID"),
@@ -794,17 +804,6 @@ enum class IOTCommandType(private val value: String) {
     MD_MR_GET_DI_PORT_PARAM("md_mrgetdistatus"),
 
     /**
-     * 获取时间
-     */
-    MD_MR_GET_SYSTEM_TIME("md_mrgetsystime"),
-    MD_MR_SET_SYSTEM_TIME("md_mrsetsystime"),
-
-    /**
-     * 召测
-     */
-    MD_MR_TELEMETRY("md_mrtelemetry"),
-
-    /**
      * 人工置数
      */
     MD_MR_ARTIFICIAL("md_mrartificial"),
@@ -813,16 +812,6 @@ enum class IOTCommandType(private val value: String) {
      * 文件上传
      */
     MD_MR_UPLOAD_FILE("md_mruploadfile"),
-
-    /**
-     * 参数导出(上传)
-     */
-    MD_MR_UPLOAD_CONFIG("md_mruploadconfig"),
-
-    /**
-     * 参数导出(上传)
-     */
-    MD_MR_DOWNLOAD_CONFIG("md_mrdownloadconfig"),
 
     /**
      * 手动拍照

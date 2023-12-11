@@ -103,6 +103,7 @@ class MR702DeviceDataUploadPopupView(context: Context) : CenterPopupView(context
 
             }
         }
+        binding.spinner.setSelection(0)
     }
 
     interface OnClickListener {

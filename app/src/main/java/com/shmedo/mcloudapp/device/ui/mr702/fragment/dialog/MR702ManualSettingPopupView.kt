@@ -103,13 +103,14 @@ class MR702ManualSettingPopupView(context: Context) : CenterPopupView(context) {
                 id: Long
             ) {
                 selectedElement = monitoringElementList[position]
-                binding.stateVM!!.unit.set(selectedElement!!.engUnit)
+                stateVM.unit.set(selectedElement!!.engUnit)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
 
             }
         }
+        binding.spinner.setSelection(0)
     }
 
     interface OnClickListener {

@@ -78,14 +78,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     @CallSuper
     override fun createObserver() {
-        if (communicateWay is NetPlatformConnect) {
-            processNetData()
-        } else {
-            processBleData()
-        }
+        collectNetData()
+        collectBleData()
     }
 
-    private fun processNetData() {
+    private fun collectNetData() {
         launchAndRepeatWithViewLifecycle {
             netIotCommandViewModel.cmdDispatchFlow.collect {
                 when (it) {
@@ -115,7 +112,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
-    private fun processBleData() {
+    private fun collectBleData() {
         launchAndRepeatWithViewLifecycle {
             bleViewModel.state.collect { state ->
                 Timber.i("$fragmentName Medo BluetoothGatt: $state")

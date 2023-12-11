@@ -47,6 +47,9 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
     override fun onCreate() {
         super.onCreate()
         binding = DataBindingUtil.bind(popupImplView)!!
+        if (title.isNotEmpty())
+            binding.tvTitle.text = title
+
         initAdapter()
         binding.tvOk.setOnClickListener {
             selectedSensor?.let {
@@ -57,8 +60,6 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
         binding.tvCancel.setOnClickListener {
             dismiss()
         }
-        if (title.isNotEmpty())
-            binding.tvTitle.text = title
     }
 
     private fun initAdapter() {
@@ -83,6 +84,7 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
 
             }
         }
+        binding.spinner.setSelection(0)
     }
 
     interface OnSelectListener {

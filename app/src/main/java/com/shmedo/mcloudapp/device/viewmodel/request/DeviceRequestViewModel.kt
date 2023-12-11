@@ -226,4 +226,18 @@ class DeviceRequestViewModel : BaseViewModel() {
         return NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString(), onCatch)
     }
 
+    suspend fun applyBackup(
+        backupID: String = "",
+        deviceID: String = "",
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? {
+        val jsonObjectRequest = JSONObject()
+        try {
+            jsonObjectRequest.put("backupID", backupID)
+            jsonObjectRequest.put("deviceID", deviceID)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return NetDataRepository.instance.applyBackup(jsonObjectRequest.toString(), onCatch)
+    }
 }

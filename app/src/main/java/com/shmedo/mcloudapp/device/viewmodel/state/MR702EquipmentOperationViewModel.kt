@@ -25,4 +25,6 @@ class MR702EquipmentOperationViewModel : CommandResponseViewModel() {
 
     //参数导入
     val isParamImporting = NonNullObservableField(false)//是否正在下发参数导入指令
+    val sn = NonNullObservableField("")
+    val deviceId = NonNullObservableField("")
 }

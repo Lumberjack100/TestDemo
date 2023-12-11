@@ -57,10 +57,11 @@ class NetIOTCommandViewModel : BaseViewModel() {
         }
     }
 
-    fun processCmdResult() {
+    fun processCmdResult(otherMsgIDList: ArrayList<String> = arrayListOf()) {
         viewModelScope.launch {
             try {
-                val parameter = QueryCmdResultParam(msgIDList)
+                val parameter =
+                    QueryCmdResultParam(if (otherMsgIDList.isEmpty()) msgIDList else otherMsgIDList)
                 pollForCommandResult(MoshiUtil.toJson(parameter))
             } catch (e: Exception) {
                 // 错误处理

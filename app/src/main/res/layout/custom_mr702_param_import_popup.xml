@@ -43,6 +43,48 @@
                     android:textColor="@color/text_color_666666"
                     android:textSize="@dimen/text_size_16" />
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/MR702_Terminal_Param_LinearLayoutStyle"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_8"
+                    android:layout_marginEnd="@dimen/dimen_size_15"
+                    app:drawable_radius="@{4}"
+                    app:drawable_solidColor="@{@color/gray_f5f6f8}"
+                    tools:background="@color/gray_f5f6f8">
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        android:id="@+id/et_sn"
+                        style="@style/MR702_Terminal_Param_EditText_Style"
+                        android:text="@={stateVM.sn}"
+                        app:lengthFilter="@{25}" />
+
+                    <TextView
+                        android:id="@+id/tv_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/text_size_10"
+                        android:paddingStart="@dimen/dimen_size_10"
+                        android:paddingTop="@dimen/dimen_size_4"
+                        android:paddingEnd="@dimen/dimen_size_10"
+                        android:paddingBottom="@dimen/dimen_size_4"
+                        android:text="查询"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_14"
+                        app:drawable_radius="@{4}"
+                        app:drawable_solidColor="@{@color/colorPrimary}"
+                        tools:background="@color/colorPrimary" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:text="参数配置文件"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="@dimen/text_size_16" />
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -61,82 +103,6 @@
                         android:dropDownVerticalOffset="41dp" />
 
                 </FrameLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_size_15"
-                    android:layout_marginTop="@dimen/dimen_size_15"
-                    android:text="时间周期"
-                    android:textColor="@color/text_color_666666"
-                    android:textSize="@dimen/text_size_16" />
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/MR702_Terminal_Param_LinearLayoutStyle"
-                    android:layout_marginStart="@dimen/dimen_size_15"
-                    android:layout_marginTop="@dimen/dimen_size_8"
-                    android:layout_marginEnd="@dimen/dimen_size_15"
-                    app:drawable_radius="@{4}"
-                    app:drawable_solidColor="@{@color/gray_f5f6f8}"
-                    tools:background="@color/gray_f5f6f8">
-
-                    <TextView
-                        android:id="@+id/tv_time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/title_text_color"
-                        android:textColorHint="@color/text_color_hint"
-                        android:textSize="@dimen/text_size_16"
-                        tools:text="2020-12-12 12:12:12" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="@dimen/dimen_size_8"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_time_note" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/dimen_size_15"
-                    android:background="@color/divider_line_bg" />
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp">
-
-                    <TextView
-                        android:id="@+id/tv_cancel"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/xpopup_cancel"
-                        android:textColor="@color/text_color_666666"
-                        android:textSize="@dimen/text_size_16"
-                        android:textStyle="bold" />
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/divider_line_bg" />
-
-                    <TextView
-                        android:id="@+id/tv_confirm"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/xpopup_ok"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/text_size_16"
-                        android:textStyle="bold" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <include
@@ -187,7 +153,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_16"
             android:textStyle="bold"
-            tools:text="导出" />
+            tools:text="导入" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
