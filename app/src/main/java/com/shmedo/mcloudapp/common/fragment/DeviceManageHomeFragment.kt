@@ -18,8 +18,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
-import com.shmedo.mcloudapp.device.BleScannerListFragment
-import com.shmedo.mcloudapp.device.NetDeviceListFragment
+import com.shmedo.mcloudapp.device.ui.BleScannerListFragment
+import com.shmedo.mcloudapp.device.ui.NetDeviceListFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DeviceManageHomeViewModel
 
 class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device
+package com.shmedo.mcloudapp.device.ui
 
 import android.os.Bundle
 import android.view.View
@@ -138,5 +138,4 @@ class DeviceSearchResultFragment : BaseFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
-
 }

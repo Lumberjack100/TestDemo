@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
+    android:id="@+id/main_graph"
     app:startDestination="@id/mainFragment">
 
     <fragment
@@ -49,7 +49,7 @@
 
     <fragment
         android:id="@+id/deviceSearchFragment"
-        android:name="com.shmedo.mcloudapp.device.DeviceSearchFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.DeviceSearchFragment"
         android:label="DeviceSearchFragment"
         tools:layout="@layout/fragment_device_search" >
         <action
@@ -63,7 +63,7 @@
 
     <fragment
         android:id="@+id/deviceSearchResultFragment"
-        android:name="com.shmedo.mcloudapp.device.DeviceSearchResultFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.DeviceSearchResultFragment"
         android:label="DeviceSearchResultFragment"
         tools:layout="@layout/fragment_device_search_result" >
 

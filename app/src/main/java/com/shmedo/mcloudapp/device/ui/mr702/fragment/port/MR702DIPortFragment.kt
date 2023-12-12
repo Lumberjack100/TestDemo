@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702DiPortBinding
-import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.MRDODIPortItem
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DIPortViewModel
 import org.koin.android.ext.android.inject

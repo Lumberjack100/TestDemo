@@ -129,7 +129,7 @@
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
 
         <activity
-            android:name=".device.DeviceHomeActivity"
+            android:name=".device.ui.DeviceHomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"

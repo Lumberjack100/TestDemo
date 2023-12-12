@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortStatusInfoBinding
-import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.MRIOStatusItem
 import com.shmedo.mcloudapp.device.model.MRInterfaceStatusItem
 import com.shmedo.mcloudapp.device.model.RVEmptyHeader

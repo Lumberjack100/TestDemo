@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device
+package com.shmedo.mcloudapp.device.ui
 
 import android.content.Context
 import android.content.Intent
@@ -54,7 +54,11 @@ class DeviceHomeActivity : BaseActivity() {
     private fun setGraph() {
         when (productType) {
             ProductType.ADME -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo!!,
+                    bleDevice
+                )
                 findNavController(R.id.device_home_host_fragment)
                     .setGraph(R.navigation.adme_graph, bundle)
             }
@@ -80,7 +84,11 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             ProductType.M20 -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo!!,
+                    bleDevice
+                )
                 findNavController(R.id.device_home_host_fragment)
                     .setGraph(R.navigation.m20_graph, bundle)
             }

@@ -7,7 +7,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.BleScannerListFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.ui.BleScannerListFragment.ClickProxy" />
     </data>
 
     <LinearLayout

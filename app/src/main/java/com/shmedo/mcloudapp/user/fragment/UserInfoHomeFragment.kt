@@ -86,14 +86,14 @@ class UserInfoHomeFragment : BaseFragment() {
 
     override fun initData() {
         if (!TextUtils.isEmpty(userInfo.headPhotoPath))
-            mStates.imageUrl.set(userInfo.headPhotoPath!!)
+            mStates.imageUrl.set(userInfo.headPhotoPath)
     }
 
     private fun updateView() {
-        mStates.name.set(userInfo.name!!)
-        mStates.post.set(userInfo.position!!)
-        mStates.phone.set(userInfo.cellPhone!!)
-        mStates.email.set(userInfo.email!!)
+        mStates.name.set(userInfo.name)
+        mStates.post.set(userInfo.position)
+        mStates.phone.set(userInfo.cellPhone)
+        mStates.email.set(userInfo.email)
     }
 
     override fun createObserver() {

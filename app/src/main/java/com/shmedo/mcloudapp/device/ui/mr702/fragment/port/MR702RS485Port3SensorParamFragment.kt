@@ -32,11 +32,11 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3SensorParamBinding
-import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3SensorParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -147,7 +147,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 .asBottomList(
                     "请选择数据位", dataBitList,
                     null, selectedIndex,
-                    { position, text ->
+                    { _, text ->
                         mStates.dataBit.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
@@ -164,7 +164,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 .asBottomList(
                     "请选择校验位", checkBitList,
                     null, selectedIndex,
-                    { position, text ->
+                    { _, text ->
                         mStates.checkBit.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
@@ -181,7 +181,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 .asBottomList(
                     "请选择停止位", stopBitList,
                     null, selectedIndex,
-                    { position, text ->
+                    { _, text ->
                         mStates.stopBit.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
@@ -198,7 +198,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 .asBottomList(
                     "请选择LED", ledTypeList,
                     null, selectedIndex,
-                    { position, text ->
+                    { _, text ->
                         mStates.ledType.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )

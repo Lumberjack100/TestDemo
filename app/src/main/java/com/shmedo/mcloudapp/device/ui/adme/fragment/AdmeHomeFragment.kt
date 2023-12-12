@@ -27,7 +27,6 @@ import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHomeBinding
-import com.shmedo.mcloudapp.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BasicConfigModule
@@ -37,6 +36,8 @@ import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DeviceOperationModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -142,7 +143,12 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
-            queryEquipmentBaseInfo()
+            val bundle = QueryDeviceDataFragment.newBundleArguments(
+                ""
+            )
+            nav(binding.llToolbar.ivAction).navigate(
+                R.id.action_admeHomeFragment_to_querydevicedata_graph, bundle
+            )
         }
 
         override fun onConnectOperateClick() {

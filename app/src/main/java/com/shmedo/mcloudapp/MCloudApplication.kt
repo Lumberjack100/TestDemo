@@ -13,10 +13,10 @@ import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.shmedo.lib.core.base.BaseApp
 import com.shmedo.lib.core.util.CrashReportingTree
-import com.shmedo.mcloudapp.di.appModule
 import com.shmedo.lib.network.RxHttpManager
 import com.shmedo.mcloudapp.common.activity.ErrorActivity
 import com.shmedo.mcloudapp.common.activity.SplashActivity
+import com.shmedo.mcloudapp.di.appModule
 import com.tencent.bugly.crashreport.CrashReport
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -127,10 +127,10 @@ class MCloudApplication : BaseApp() {
                 // 此生命周期可以拿到LoadingLayout创建的视图对象, 可以进行动画设置或点击事件.
             }
         }
-        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, layout ->
+        SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
             MaterialHeader(context)
         }
-        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, layout ->
+        SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
             ClassicsFooter(context)
         }
     }

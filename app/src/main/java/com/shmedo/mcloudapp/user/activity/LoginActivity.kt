@@ -34,13 +34,6 @@ import com.shmedo.mcloudapp.user.model.ContentType
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel
 import com.tencent.bugly.crashreport.CrashReport
-import java.lang.Boolean
-import kotlin.Long
-import kotlin.String
-import kotlin.arrayOf
-import kotlin.getValue
-import kotlin.lazy
-import kotlin.toString
 
 class LoginActivity : BaseActivity() {
     private val binding: ActivityLoginBinding by lazy { getBinding() as ActivityLoginBinding }
@@ -121,7 +114,7 @@ class LoginActivity : BaseActivity() {
 
     inner class ClickProxy {
         fun eyeClick() {
-            if (Boolean.TRUE == mStates.eyeOpen.get()) {
+            if (mStates.eyeOpen.get()) {
                 mStates.eyeOpen.set(false)
                 binding.passwordET.inputType =
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
@@ -152,7 +145,7 @@ class LoginActivity : BaseActivity() {
 
         fun login() {
             //账号登录
-            if (Boolean.TRUE == mStates.isAccountLogin.get()) {
+            if (mStates.isAccountLogin.get()) {
                 if (TextUtils.isEmpty(mStates.name.get())) {
                     Toaster.show("请输入账号")
                     binding.accountET.requestFocus()

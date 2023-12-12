@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device
+package com.shmedo.mcloudapp.device.ui
 
 import android.os.Bundle
 import android.text.SpannableString
