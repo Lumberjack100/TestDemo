@@ -12,10 +12,12 @@ import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.model.UserPermissionInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.network.parser.CloudPlatformApiResponseParser
 import com.shmedo.lib.network.parser.PgyerApiResponseParser
 import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.common.model.CheckSoftModel
+import com.shmedo.mcloudapp.device.model.CloudDeviceData
 import com.shmedo.mcloudapp.device.model.DispatchCmdItem
 import com.shmedo.mcloudapp.device.model.QueryCmdResult
 import rxhttp.toAwait
@@ -261,6 +263,19 @@ class NetDataRepository private constructor() {
             .addAll(jsonParam)
             .toAwaitResponse<List<QueryCmdResult>>()
             .await()
+
+    /**
+     * 分页查询设备数据列表
+     */
+    suspend fun queryCloudDataExWithPage(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<CloudDeviceData>? =
+        RxHttp.postJson("/QueryCloudDataEx")
+            .setDomainIfAbsent(BaseURL.CLOUD_PLATFORM_DATA_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwait(object : CloudPlatformApiResponseParser<PageList<CloudDeviceData>>() {})
+            .tryAwait(onCatch)
 
     suspend fun checkAppVersion(
         onCatch: ((Throwable) -> Unit)? = null

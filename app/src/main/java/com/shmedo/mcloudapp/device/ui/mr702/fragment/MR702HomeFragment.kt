@@ -42,6 +42,7 @@ import com.shmedo.mcloudapp.device.model.PlatformLable
 import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -67,6 +68,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        toolbarViewModel.toolbarIvActionVisible.set(true)
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -144,13 +146,6 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun createObserver() {
-        super.createObserver()
-//        if (communicateWay is BleConnect) {
-//            bleViewModel.launch(bleDevice!!)
-//        }
-    }
-
     override fun onConnectionStateChanged(isConnected: Boolean) {
         if (isConnected) {
             mHeadStates.isDeviceStateTagHighLight.set(true)
@@ -164,6 +159,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        override fun onToolbarIvClick() {
+            val bundle = QueryDeviceDataFragment.newBundleArguments(
+                deviceInfo.deviceToken
+            )
+            nav(binding.llToolbar.ivAction).navigate(
+                R.id.action_mR702HomeFragment_to_querydevicedata_graph, bundle
+            )
+        }
+
         override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
                 showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
@@ -233,7 +237,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         //4G 模式下，直接查询设备工作模式
         if (communicateWay is NetPlatformConnect) {
             queryData()
-        }else{
+        } else {
             bleViewModel.launch(bleDevice!!)
         }
     }

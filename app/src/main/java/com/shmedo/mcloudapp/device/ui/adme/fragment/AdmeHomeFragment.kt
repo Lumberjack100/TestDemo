@@ -144,7 +144,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
             val bundle = QueryDeviceDataFragment.newBundleArguments(
-                ""
+                deviceInfo.deviceToken
             )
             nav(binding.llToolbar.ivAction).navigate(
                 R.id.action_admeHomeFragment_to_querydevicedata_graph, bundle
@@ -360,13 +360,13 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
 
     private fun updateConfigModuleData() {
         val moduleList = arrayListOf<ConfigModule>()
+        moduleList.add(
+            ConfigModule(RunningStatusModule(navId = R.id.action_admeHomeFragment_to_admeCurrentStateFragment))
+        )
         when (mHeadStates.mode.get()) {
             modeList[0] -> {//设备配置模式
                 moduleList.add(
-                    ConfigModule(RunningStatusModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment))
-                )
-                moduleList.add(
-                    ConfigModule(BasicConfigModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment))
+                    ConfigModule(BasicConfigModule(navId = R.id.action_admeHomeFragment_to_admeAdvancedConfigurationFragment))
                 )
                 if (communicateWay is BleConnect) {
                     moduleList.add(
@@ -375,7 +375,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                                 name = "孔深测量",
                                 desc = "测量测斜管深度",
                                 resID = R.drawable.ic_measuring_hole_depth,
-                                navId = R.id.action_global_mR702EquipmentOperationFragment
+                                navId = 0
                             )
                         )
                     )
@@ -385,7 +385,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                                 name = "指令下发",
                                 desc = "自定义指令下发",
                                 resID = R.drawable.ic_device_instruction_send,
-                                navId = R.id.action_global_mR702EquipmentOperationFragment
+                                navId = 0
                             )
                         )
                     )
@@ -394,32 +394,29 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         DeviceOperationModule(
                             desc = "计米轮、测斜议、执行机构等",
-                            navId = R.id.action_global_mR702EquipmentOperationFragment
+                            navId = R.id.action_admeHomeFragment_to_admeAdvancedConfigurationFragment
                         )
                     )
                 )
                 moduleList.add(
-                    ConfigModule(AdvancedSettingsModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment))
+                    ConfigModule(AdvancedSettingsModule(navId = 0))
                 )
             }
 
             modeList[1] -> {//自动监测模式
                 moduleList.add(
+                    ConfigModule(BasicConfigModule(navId = 0))
+                )
+                moduleList.add(
                     ConfigModule(
                         DeviceOperationModule(
                             desc = "计米轮、测斜议、执行机构等",
-                            navId = R.id.action_global_mR702EquipmentOperationFragment
+                            navId = R.id.action_admeHomeFragment_to_admeAdvancedConfigurationFragment
                         )
                     )
                 )
                 moduleList.add(
-                    ConfigModule(AdvancedSettingsModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment))
-                )
-            }
-
-            modeList[2] -> {//异常保护模式
-                moduleList.add(
-                    ConfigModule(RunningStatusModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment))
+                    ConfigModule(AdvancedSettingsModule(navId = 0))
                 )
             }
         }

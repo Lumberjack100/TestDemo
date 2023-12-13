@@ -240,6 +240,11 @@ class SignalView : View {
         )
     }
 
+    fun setLevelColor(@ColorInt levelColor: Int) {
+        this.levelColor = levelColor
+        this.invalidate()
+    }
+
     fun setSignalLevel(level: Int) {
 //        Log.d("SignalView", "setSignalLevel#$level")
         if (level > signalMaximum) {

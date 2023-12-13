@@ -5,7 +5,8 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 class QueryDeviceDataViewModel : ViewModel() {
     val sn = NonNullObservableField("")
-    val startTime = NonNullObservableField("")
-    val endTime = NonNullObservableField("")
-    val itemCount = NonNullObservableField("")
+    val platformType = NonNullObservableField("")
+    val dataType = NonNullObservableField("")
+    val periodDate = NonNullObservableField("")
+    val regexContent = NonNullObservableField("")
 }

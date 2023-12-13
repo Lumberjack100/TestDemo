@@ -35,64 +35,115 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_sn"
-            style="@style/Common_EditItem_LayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_40"
             android:layout_marginTop="0.5dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dimen_size_10"
+            android:paddingEnd="@dimen/dimen_size_10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                android:text="设备SN号" />
+                android:text="设备SN号"
+                android:textSize="@dimen/text_size_14" />
 
             <com.shmedo.mcloudapp.common.widget.ClearEditText
                 android:id="@+id/snET"
-                style="@style/Common_EditItem_EditText_Style" />
+                style="@style/Common_EditItem_EditText_Style"
+                android:textSize="@dimen/text_size_15"
+                android:text="@={stateVM.sn}"
+                android:textStyle="bold"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/ll_time"
-            style="@style/Common_EditItem_LayoutStyle"
+            android:id="@+id/ll_filter_time"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_40"
             android:layout_marginTop="0.5dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dimen_size_10"
+            android:paddingEnd="@dimen/dimen_size_10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_sn">
 
             <TextView
-                android:id="@+id/tv_start_time"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:drawablePadding="2dp"
                 android:gravity="center"
-                android:hint="开始时间"
-                android:onClick="@{()->click.onStartTimeClick()}"
-                android:singleLine="true"
-                android:text="@{stateVM.startTime}"
+                android:onClick="@{()->click.onChoosePlatformClick()}"
+                android:text="@{stateVM.platformType}"
                 android:textColor="@color/title_text_color"
-                android:textColorHint="@color/text_color_cccccc"
-                android:textSize="@dimen/text_size_15" />
+                android:textSize="@dimen/text_size_14"
+                app:drawableEndCompat="@drawable/ic_arrow_down"
+                tools:text="全部平台" />
 
-            <View
-                android:layout_width="12dp"
-                android:layout_height="2dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@color/colorPrimary" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/tv_end_time"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:drawablePadding="2dp"
                 android:gravity="center"
-                android:hint="结束时间"
-                android:onClick="@{()->click.onEndTimeClick()}"
-                android:text="@{stateVM.endTime}"
-                android:singleLine="true"
+                android:onClick="@{()->click.onChooseDataTypeClick()}"
+                android:text="@{stateVM.dataType}"
                 android:textColor="@color/title_text_color"
-                android:textColorHint="@color/text_color_cccccc"
-                android:textSize="@dimen/text_size_15" />
+                android:textSize="@dimen/text_size_14"
+                app:drawableEndCompat="@drawable/ic_arrow_down"
+                tools:text="全部类型" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawablePadding="2dp"
+                android:gravity="center"
+                android:onClick="@{()->click.onChoosePeriodDateClick()}"
+                android:text="@{stateVM.periodDate}"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_14"
+                app:drawableEndCompat="@drawable/ic_arrow_down"
+                tools:text="当天" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_filter_regexp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_40"
+            android:layout_marginTop="0.5dp"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dimen_size_10"
+            android:paddingEnd="@dimen/dimen_size_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_filter_time">
+
+            <TextView
+                style="@style/Common_ClickableItem_TitleStyle"
+                android:text="数据过滤"
+                android:textSize="@dimen/text_size_14" />
+
+            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                style="@style/Common_EditItem_EditText_Style"
+                android:gravity="center_vertical|start"
+                android:textSize="@dimen/text_size_14"
+                android:text="@={stateVM.regexContent}"/>
 
             <TextView
                 android:id="@+id/tv_search"
@@ -103,45 +154,30 @@
                 android:onClick="@{()->click.onSearchClick()}"
                 android:text="搜索"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_15"
+                android:textSize="@dimen/text_size_14"
                 app:drawable_radius="@{20}"
                 app:drawable_solidColor="@{@color/colorPrimary}"
                 tools:background="@color/colorPrimary" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/itemCountLayout"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:layout_marginTop="@dimen/dimen_size_8"
-            android:onClick="@{()->click.onChooseItemCountClick()}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_time">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="显示条数" />
-
-            <TextView
-                android:id="@+id/tv_item_count"
-                style="@style/Common_ClickableItem_ValueStyle"
-                android:text="@{stateVM.itemCount}"
-                tools:text="30" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_module"
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:padding="@dimen/dimen_size_15"
-            android:splitMotionEvents="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_marginTop="@dimen/dimen_size_8"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/itemCountLayout"
-            tools:listitem="@layout/item_device_config_module" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_filter_regexp">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:splitMotionEvents="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_device_data" />
+
+        </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

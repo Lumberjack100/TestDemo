@@ -28,13 +28,13 @@ import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1Binding
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port1
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.model.SensorModel
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1ViewModel
@@ -64,6 +64,10 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
             queryInfo()
         }
     }
@@ -393,12 +397,5 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     companion object {
         fun newInstance() = MR702RS485Port1Fragment()
         const val SENSOR_SIZE = 32
-        const val FRAGMENT_RESULT_REQUEST_KEY = "MR702RS485Port1Fragment"
-    }
-
-    private fun testData() {
-        val content =
-            "[{\"model\": \"214_1\",\"sta\": \"0\"},{\"model\": \"214_2\",\"sta\": \"0\"},{\"model\": \"214_3\",\"sta\": \"2\"},{\"model\": \"214_3\",\"sta\": \"2\"}]"
-        initSensorData(content)
     }
 }

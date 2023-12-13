@@ -26,7 +26,7 @@ enum class BaseURL(@JvmField var baseUrl: String) {
     /**
      * 云平台原始数据地址
      */
-    CLOUD_PLATFORM_DATA_ADDRESS("https://queryapi.shmedo.cn"),
+    CLOUD_PLATFORM_DATA_ADDRESS("https://queryapi.shmedo.cn/"),
 
     /**
      * 蒲公英服务地址

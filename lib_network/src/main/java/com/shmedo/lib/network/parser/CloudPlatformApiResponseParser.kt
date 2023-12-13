@@ -1,6 +1,8 @@
 package com.shmedo.lib.network.parser
 
-import com.shmedo.lib.network.response.PgyerApiResponse
+import com.shmedo.lib.network.response.CloudPlatformApiResponse
+import com.shmedo.lib.network.response.PageList
+import rxhttp.wrapper.annotation.Parser
 import rxhttp.wrapper.exception.ParseException
 import rxhttp.wrapper.parse.TypeParser
 import rxhttp.wrapper.utils.convertTo
@@ -8,17 +10,25 @@ import java.io.IOException
 import java.lang.reflect.Type
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2022/12/14 <br/>
- * 描述：     TODO
+ * 创建者：gonghe
+ *
+ * 创建时间：2023/12/12
+ *
+ * 描述： TODO
+ *
+ *
  */
-open class PgyerApiResponseParser<T> : TypeParser<T> {
+@Parser(name = "Response", wrappers = [PageList::class])
+open class CloudPlatformApiResponseParser<T> : TypeParser<T> {
     /**
-     * 此构造方法适用于任意Class对象，但更多用于带泛型的Class对象，如：List<Student>
+     * 此构造方法适用于任意Class对象，但更多用于带泛型的Class对象，
+     *
+     * 如:List&lt;Student&gt;
      *
      * 用法:
-     * Java: .asParser(new ResponseParser<List<Student>>(){})
-     * Kotlin: .asParser(object : ResponseParser<List<Student>>() {})
+     * Java: .asParser(new ResponseParser&lt;List&lt;Student&gt;&gt;(){})
+     *
+     * Kotlin: .asParser(object : ResponseParser&lt;List&lt;Student&gt;&gt;() {})
      *
      * 注：此构造方法一定要用protected关键字修饰，否则调用此构造方法将拿不到泛型类型
      */
@@ -35,7 +45,7 @@ open class PgyerApiResponseParser<T> : TypeParser<T> {
 
     @Throws(IOException::class)
     override fun onParse(response: okhttp3.Response): T {
-        val apiResponse: PgyerApiResponse<T> = response.convertTo(PgyerApiResponse::class, *types)
+        val apiResponse: CloudPlatformApiResponse<T> = response.convertTo(CloudPlatformApiResponse::class, *types)
         var data = apiResponse.data //获取data字段
         if (data == null && types[0] === String::class.java) {
             /*
@@ -44,11 +54,16 @@ open class PgyerApiResponseParser<T> : TypeParser<T> {
              * 所以，判断泛型为String类型时，重新赋值，并确保赋值不为null
              */
             @Suppress("UNCHECKED_CAST")
-            data = apiResponse.msg as T
+            data = apiResponse.errCode?.errMessage as T
         }
-        if ((apiResponse.code != 0 && apiResponse.code != 200) || data == null) { //code不等于0，说明数据不正确，抛出异常
-            throw ParseException(apiResponse.code.toString(), apiResponse.msg, response)
+
+        if ((apiResponse.errCode?.code != 0)) { //code不等于200，说明数据不正确，抛出异常
+            throw ParseException(
+                apiResponse.errCode?.code.toString(),
+                apiResponse.errCode?.errMessage,
+                response
+            )
         }
-        return data
+        return data!!
     }
 }

@@ -45,20 +45,20 @@ open class ResponseParser<T> : TypeParser<T> {
 
     @Throws(IOException::class)
     override fun onParse(response: okhttp3.Response): T {
-        val data: ApiResponse<T> = response.convertTo(ApiResponse::class, *types)
-        var t = data.data //获取data字段
-        if (t == null && types[0] === String::class.java) {
+        val apiResponse: ApiResponse<T> = response.convertTo(ApiResponse::class, *types)
+        var data = apiResponse.data //获取data字段
+        if (data == null && types[0] === String::class.java) {
             /*
              * 考虑到有些时候服务端会返回：{"errorCode":0,"errorMsg":"关注成功"}  类似没有data的数据
              * 此时code正确，但是data字段为空，直接返回data的话，会报空指针错误，
              * 所以，判断泛型为String类型时，重新赋值，并确保赋值不为null
              */
             @Suppress("UNCHECKED_CAST")
-            t = data.msg as T
+            data = apiResponse.msg as T
         }
-        if ((data.code != 0 && data.code != 200) || t == null) { //code不等于200，说明数据不正确，抛出异常
-            throw ParseException(data.code.toString(), data.msg, response)
+        if ((apiResponse.code != 0 && apiResponse.code != 200) || data == null) { //code不等于200，说明数据不正确，抛出异常
+            throw ParseException(apiResponse.code.toString(), apiResponse.msg, response)
         }
-        return t
+        return data
     }
 }

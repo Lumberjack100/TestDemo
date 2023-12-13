@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -57,7 +57,7 @@
                         style="@style/DeviceCurrentState_Group_TitleStyle"
                         android:text="基本信息" />
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -69,9 +69,9 @@
                             android:text="@{vm.wrapStateInfo.SN}"
                             tools:text="19F00L" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -83,9 +83,9 @@
                             android:text="@{vm.wrapStateInfo.CCID}"
                             tools:text="3323888131414390" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -97,9 +97,9 @@
                             android:text="@{vm.wrapStateInfo.IMEI}"
                             tools:text="87342999205720X" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -111,9 +111,9 @@
                             android:text="@{vm.wrapStateInfo.sw_version}"
                             tools:text="V01.213.01" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -125,9 +125,9 @@
                             android:text='@{vm.wrapStateInfo.gpsCard +""}'
                             tools:text="M20-A10-1105" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -139,9 +139,9 @@
                             android:text="@{vm.wrapStateInfo.location}"
                             tools:text="127.3255，45.2342" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -153,9 +153,9 @@
                             android:text="@{vm.wrapStateInfo.eMMCFree}"
                             tools:text="60%" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -167,13 +167,13 @@
                             android:text="@{vm.wrapStateInfo.onlinetime}"
                             tools:text="158天13时56分" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
                         style="@style/DeviceCurrentState_Group_TitleStyle"
                         android:text="通讯状态" />
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             android:layout_width="0dp"
@@ -193,12 +193,11 @@
                             android:text='@{vm.wrapStateInfo.starNum +""}'
                             android:textColor="@color/text_color_666666"
                             android:textSize="15sp"
-                            tools:drawableStart="@drawable/signalstrengthfour"
                             tools:text="5" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             android:layout_width="0dp"
@@ -217,12 +216,11 @@
                             android:singleLine="true"
                             android:text="--"
                             android:textColor="@color/text_color_666666"
-                            android:textSize="15sp"
-                            tools:drawableStart="@drawable/signalstrengthfour" />
+                            android:textSize="15sp" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -233,9 +231,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             android:text="--" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -247,9 +245,9 @@
                             android:drawablePadding="10dp"
                             android:text='@{vm.wrapStateInfo._4g_signal + "dBm"}'
                             tools:text="-63dbm" />
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -262,7 +260,7 @@
                         app:drawable_radius="@{3}"
                         app:drawable_solidColor="@{@color/gray_f5f6f8}">
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -287,9 +285,9 @@
                                 tools:text="未开启"
                                 tools:textColor="#BCC0CC" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -314,9 +312,9 @@
                                 android:textStyle="bold"
                                 tools:text="在线" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -341,9 +339,9 @@
                                 android:textStyle="bold"
                                 tools:text="在线" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -368,15 +366,15 @@
                                 android:textStyle="bold"
                                 tools:text="未连接" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
                         style="@style/DeviceCurrentState_Group_TitleStyle"
                         android:text="设备工作信息" />
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -387,9 +385,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="正常" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -400,9 +398,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="X=0.01，Y=1.41，Z=0.0" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -413,9 +411,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="22.6v" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -426,9 +424,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="22.6v" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -439,9 +437,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="22.6v" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -452,9 +450,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="41.5°" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -465,9 +463,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="67%" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -478,9 +476,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="5.62V" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -491,14 +489,9 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             tools:text="3.29W" />
 
-                    </LinearLayout>
-
-                </LinearLayout>
-
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
-
         </com.drake.brv.PageRefreshLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

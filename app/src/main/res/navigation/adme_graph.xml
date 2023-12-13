@@ -21,6 +21,33 @@
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
+        <action
+            android:id="@+id/action_admeHomeFragment_to_admeCurrentStateFragment"
+            app:destination="@id/admeCurrentStateFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeHomeFragment_to_admeAdvancedConfigurationFragment"
+            app:destination="@id/admeAdvancedConfigurationFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
     </fragment>
+
+    <fragment
+        android:id="@+id/admeCurrentStateFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeCurrentStateFragment"
+        android:label="AdmeCurrentStateFragment"
+        tools:layout="@layout/fragment_adme_current_state" />
+
+    <fragment
+        android:id="@+id/admeAdvancedConfigurationFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeAdvancedConfigurationFragment"
+        android:label="AdmeAdvancedConfigurationFragment"
+        tools:layout="@layout/fragment_adme_advanced_configuration" />
 
 </navigation>
