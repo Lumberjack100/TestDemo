@@ -35,7 +35,9 @@ class IOTParserManager private constructor(
         //在调用 parse 进行正式解析前，先对响应指令字符串做个基础检查
         val validationResult = parser.validCheckBeforeParse(result)
         if (!validationResult.isValid) {
-            return IOTCommandResult.Failure(validationResult.errorMessage ?: "指令字符串格式验证失败", cmdType)
+            return IOTCommandResult.Failure(
+                validationResult.errorMessage ?: "指令字符串格式验证失败", cmdType
+            )
         }
         return when (val parseResult = parser.parse(result)) {
             is ParseResult.Success -> {
@@ -49,7 +51,12 @@ class IOTParserManager private constructor(
 
     private fun extractFailureReason(result: String): String {
         val reasonPair = result.split("&").find { it.startsWith("reason=") }
-        return reasonPair?.substringAfter("reason=") ?: "未知错误"
+        val reason = reasonPair?.substringAfter("reason=", "未知错误") ?: "未知错误"
+        //将 reason 中的"unsupported"转换为可读的中文"设备版本不支持","equimodel_err"转换为"设备模式错误"
+        return when (reason) {
+            "unsupported" -> "设备版本不支持"
+            else -> reason
+        }
     }
 
     companion object {

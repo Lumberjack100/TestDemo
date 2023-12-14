@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             drawable_radius="@{10}"
             drawable_shapeMode="@{0}"
             drawable_solidColor="@{@color/white}"
@@ -68,7 +68,7 @@
                 android:textColor="@color/sub_title_text_color"
                 android:textSize="@dimen/text_size_15" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </RelativeLayout>
 

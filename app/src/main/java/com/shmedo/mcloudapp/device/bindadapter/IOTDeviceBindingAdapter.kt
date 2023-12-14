@@ -49,7 +49,7 @@ object IOTDeviceBindingAdapter {
         textView.isEnabled = enabled
         textView.setTextColor(
             if (enabled) ColorUtils.getColor(if (enabledColorRes == 0) R.color.title_text_color else enabledColorRes)
-            else ColorUtils.getColor(if (disabledColorRes == 0) R.color.sub_title_text_color else disabledColorRes)
+            else ColorUtils.getColor(if (disabledColorRes == 0) R.color.text_color_666666 else disabledColorRes)
         )
     }
 

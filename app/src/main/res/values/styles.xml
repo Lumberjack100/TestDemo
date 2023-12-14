@@ -81,7 +81,7 @@
         <item name="android:hint">请输入</item>
         <item name="android:textColorHint">@color/text_color_hint</item>
         <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Common_ClickableItem_LayoutStyle">
@@ -112,7 +112,7 @@
         <item name="android:singleLine">true</item>
         <item name="android:textColorHint">@color/text_color_hint</item>
         <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <!-- Button 样式-->

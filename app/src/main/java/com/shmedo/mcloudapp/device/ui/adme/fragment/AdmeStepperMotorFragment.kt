@@ -7,10 +7,11 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.MessageDialog
+import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeMeterWheelEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMeterWheelInfo
+import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeStepperMotorInfo
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -20,11 +21,11 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
-import com.shmedo.mcloudapp.databinding.FragmentAdmeMeterWheelBinding
+import com.shmedo.mcloudapp.databinding.FragmentAdmeStepperMotorBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.AdmeMeterWheelViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.AdmeStepperMotorViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -34,19 +35,19 @@ import java.util.Locale
 
 /**
  * @author：gonghe
- * @time: 2023/12/13
- * @desc:  ADME 计米轮参数配置页面
+ * @time: 2023/12/14
+ * @desc:  ADME 步进电机参数配置页面
  *
  */
-class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeMeterWheelBinding by lazy { getBinding() as FragmentAdmeMeterWheelBinding }
-    private val mStates: AdmeMeterWheelViewModel by viewModels()
+class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentAdmeStepperMotorBinding by lazy { getBinding() as FragmentAdmeStepperMotorBinding }
+    private val mStates: AdmeStepperMotorViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_adme_meter_wheel,
+            R.layout.fragment_adme_stepper_motor,
             BR.stateVM,
             mStates
         )
@@ -55,7 +56,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.title = "计米轮参数"
+        binding.llToolbar.toolbar.title = "步进电机参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -108,132 +109,60 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        if (mStates.encoderLineNumber.get().isEmpty()) {
-            Toaster.show("请输入编码器线数!")
+        if (mStates.accuracyCorrectionValue.get().isEmpty()) {
+            Toaster.show("请输入绝对精度修正值!")
             return
         }
         try {
-            val value: Int = mStates.encoderLineNumber.get().toInt()
-            if (value < 1) {
-                Toaster.show("请输入正确的编码器线数!")
+            val value = mStates.accuracyCorrectionValue.get().toDouble()
+            if (value < 0) {
+                Toaster.show("请输入正确的绝对精度修正值!")
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的编码器线数!")
+            Toaster.show("请输入正确的绝对精度修正值!")
             return
         }
 
-        if (mStates.outerDiameter.get().isEmpty()) {
-            Toaster.show("请输入外径!")
+        if (mStates.movementSpeed.get().isEmpty()) {
+            Toaster.show("请输入步进电机运动速度!")
             return
         }
         try {
-            val value: Int = mStates.outerDiameter.get().toInt()
-            if (value < 1) {
-                Toaster.show("请输入正确的外径!")
+            val value: Int = mStates.movementSpeed.get().toInt()
+            if (value < 1 || value > 600) {
+                MessageDialog.show("提示", "步进电机运动速度范围[1,600]!", "我已知晓")
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的外径!")
+            MessageDialog.show("提示", "步进电机运动速度范围[1,600]!", "我已知晓")
             return
         }
 
-        if (mStates.upCorrectionParametersOne.get().isEmpty()) {
-            Toaster.show("请输入上拉一次修正参数!")
+        if (mStates.motorTorque.get().isEmpty()) {
+            Toaster.show("请输入步进电机力矩!")
             return
         }
         try {
-            val value = mStates.upCorrectionParametersOne.get().toDouble()
+            val value = mStates.motorTorque.get().toInt()
+            if (value < 0) {
+                Toaster.show("请输入正确的步进电机力矩!")
+                return
+            }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的上拉一次修正参数!")
+            Toaster.show("请输入正确的步进电机力矩!")
             return
         }
-
-        if (mStates.upCorrectionParametersTwo.get().isEmpty()) {
-            Toaster.show("请输入上拉二次修正参数!")
-            return
-        }
-        try {
-            val value = mStates.upCorrectionParametersTwo.get().toDouble()
-        } catch (ex: Exception) {
-            Toaster.show("请输入正确的上拉二次修正参数!")
-            return
-        }
-
-        if (mStates.upConstant.get().isEmpty()) {
-            Toaster.show("请输入上拉常数!")
-            return
-        }
-        try {
-            val value = mStates.upConstant.get().toDouble()
-        } catch (ex: Exception) {
-            Toaster.show("请输入上拉常数!")
-            return
-        }
-        if (mStates.upFilterCoefficient.get().isEmpty()) {
-            Toaster.show("请输入上拉滤波器系数!")
-            return
-        }
-        if (mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
-            MessageDialog.show("提示", "请输入正确的上拉滤波器系数(0-F)!", "我已知晓")
-            return
-        }
-        if (mStates.upCorrectionParametersOne.get().isEmpty()) {
-            Toaster.show("请输入下放一次修正参数!")
-            return
-        }
-        try {
-            val value = mStates.upCorrectionParametersOne.get().toDouble()
-        } catch (ex: Exception) {
-            Toaster.show("请输入正确的下放一次修正参数!")
-            return
-        }
-
-        if (mStates.upCorrectionParametersTwo.get().isEmpty()) {
-            Toaster.show("请输入下放二次修正参数!")
-            return
-        }
-        try {
-            val value = mStates.upCorrectionParametersTwo.get().toDouble()
-        } catch (ex: Exception) {
-            Toaster.show("请输入正确的下放二次修正参数!")
-            return
-        }
-
-        if (mStates.upConstant.get().isEmpty()) {
-            Toaster.show("请输入下放常数!")
-            return
-        }
-        try {
-            val value = mStates.upConstant.get().toDouble()
-        } catch (ex: Exception) {
-            Toaster.show("请输入下放常数!")
-            return
-        }
-        if (mStates.upFilterCoefficient.get().isEmpty()) {
-            Toaster.show("请输入下放滤波器系数!")
-            return
-        }
-        if (mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
-            MessageDialog.show("提示", "请输入正确的下放滤波器系数(0-F)!", "我已知晓")
-            return
-        }
-        val entity = AdmeMeterWheelEntity(
-            enclinenum = mStates.encoderLineNumber.get(),
-            outline = mStates.outerDiameter.get(),
-            uptiona = mStates.upCorrectionParametersOne.get(),
-            uptionb = mStates.upCorrectionParametersTwo.get(),
-            upconstant = mStates.upConstant.get(),
-            upfilter = mStates.upFilterCoefficient.get(),
-            downtiona = mStates.downCorrectionParametersOne.get(),
-            downtionb = mStates.downCorrectionParametersTwo.get(),
-            downconstant = mStates.downConstant.get(),
-            downfilter = mStates.downFilterCoefficient.get()
+        val entity = AdmeStepperMotorEntity(
+            posnegtest = "1",
+            absprsion = mStates.accuracyCorrectionValue.get(),
+            movspeed = mStates.movementSpeed.get(),
+            movesm = mStates.motorTorque.get()
         )
 
         commandItems.clear()
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_SET_METER_WHEEL,
+            IOTCommandType.ADME_MD_SET_STEPPER_MOTOR,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -245,6 +174,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
     }
@@ -252,7 +182,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_METER_WHEEL
+            IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -260,18 +190,18 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.ADME_MD_GET_METER_WHEEL -> {
-                val result = iotParseManager.parse<AdmeMeterWheelInfo>(
+            IOTCommandType.ADME_MD_GET_STEPPER_MOTOR -> {
+                val result = iotParseManager.parse<AdmeStepperMotorInfo>(
                     cmdStr,
-                    IOTCommandType.ADME_MD_GET_METER_WHEEL
+                    IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询计米轮参数出错: ${result.message}"
+                        val errMsg = "查询步进电机参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
-//                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        PopTip.show(errMsg).autoDismiss(4500).iconError()
                         return
                     }
 
@@ -283,11 +213,11 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.ADME_MD_SET_METER_WHEEL -> {//设置ADME的计米轮配置参数
+            IOTCommandType.ADME_MD_SET_STEPPER_MOTOR -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "设置计米轮参数出错: ${result.message}"
+                        val errMsg = "设置步进电机参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
@@ -321,22 +251,12 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(info: AdmeMeterWheelInfo) {
-        val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+    private fun initParamData(info: AdmeStepperMotorInfo) {
+        val decimalFormat = DecimalFormat("#.##", DecimalFormatSymbols(Locale.getDefault()))
         try {
-            mStates.encoderLineNumber.set(info.enclinenum)
-            decimalFormat.applyPattern("#")
-            mStates.outerDiameter.set(decimalFormat.format(info.outline.toDouble()))
-
-            decimalFormat.applyPattern("#.######")
-            mStates.upCorrectionParametersOne.set(decimalFormat.format(info.uptiona.toDouble()))
-            mStates.upCorrectionParametersTwo.set(decimalFormat.format(info.uptionb.toDouble()))
-            mStates.upConstant.set(decimalFormat.format(info.upconstant.toDouble()))
-            mStates.upFilterCoefficient.set(decimalFormat.format(info.upfilter.toDouble()))
-            mStates.downCorrectionParametersOne.set(decimalFormat.format(info.downtiona.toDouble()))
-            mStates.downCorrectionParametersTwo.set(decimalFormat.format(info.downtionb.toDouble()))
-            mStates.downConstant.set(decimalFormat.format(info.downconstant.toDouble()))
-            mStates.downFilterCoefficient.set(decimalFormat.format(info.downfilter.toDouble()))
+            mStates.accuracyCorrectionValue.set(decimalFormat.format(info.absprsion.toDouble()))
+            mStates.movementSpeed.set(info.movspeed)
+            mStates.motorTorque.set(info.movesm)
         } catch (e: Exception) {
             e.printStackTrace()
         }

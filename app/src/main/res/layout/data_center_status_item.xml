@@ -9,7 +9,7 @@
             type="com.shmedo.mcloudapp.device.model.DataCenterStatusItem" />
     </data>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
         style="@style/Common_ClickableItem_LayoutStyle"
         app:drawable_radius="@{6}"
@@ -29,6 +29,6 @@
             android:textSize="17sp"
             tools:text="在线" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>

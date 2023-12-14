@@ -22,13 +22,6 @@
         <item>重庆地灾测试</item>
     </string-array>
 
-    <!--  ADME 执行结构日志输出方式-->
-    <string-array name="adme_device_mode">
-        <item>设备配置模式</item>
-        <item>自动监测模式</item>
-        <item>异常保护模式</item>
-    </string-array>
-
     <string-array name="baud_rates">
         <item>2400</item>
         <item>9600</item>
@@ -221,5 +214,33 @@
         <item>2</item>
     </string-array>
     <!-- MR702 end-->
+
+    <!-- ADME start-->
+    <!-- ADME 设备工作模式-->
+    <string-array name="adme_device_mode">
+        <item>设备配置模式</item>
+        <item>自动监测模式</item>
+        <item>异常保护模式</item>
+    </string-array>
+
+    <!-- ADME 测斜仪版本-->
+    <string-array name="adme_inclinometer_version">
+        <item>V2.1</item>
+        <item>V3.0</item>
+    </string-array>
+
+    <!-- ADME 测斜仪工作模式-->
+    <string-array name="adme_inclinometer_work_mode">
+        <item>蓝牙关测量关</item>
+        <item>蓝牙开测量关</item>
+        <item>蓝牙关测量开</item>
+        <item>蓝牙开测量开</item>
+    </string-array>
+    <!-- ADME 扭转角补偿方式-->
+    <string-array name="adme_inclinometer_twist_angle_compensation">
+        <item>X+Y轴无扭转角补偿</item>
+        <item>X轴扭转角补偿</item>
+    </string-array>
+    <!-- ADME end-->
 
 </resources>

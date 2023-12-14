@@ -107,7 +107,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "测斜仪",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = 0
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
                 )
             ),
             ConfigModule(
@@ -115,7 +115,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "执行机构",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = 0
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
                 )
             ),
             ConfigModule(
@@ -123,7 +123,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "步进电机",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = 0
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeStepperMotorFragment
                 )
             ),
             ConfigModule(
@@ -131,7 +131,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "堵转缓停",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = 0
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeLockedRotorDetectionFragment
                 )
             ),
             ConfigModule(
@@ -139,7 +139,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "智能控制",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = 0
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
                 )
             ),
             ConfigModule(
@@ -147,7 +147,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "阈值设置",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = 0
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
                 )
             ),
         )

@@ -13,7 +13,7 @@
             type="com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice" />
     </data>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,13 +31,13 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_ble_device" />
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -70,9 +70,9 @@
                     tools:text="ADME"
                     android:visibility="gone" />
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -97,10 +97,10 @@
                     android:textColor="@color/title_text_color"
                     android:textSize="13sp"
                     tools:text="-91 dBm" />
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -108,5 +108,5 @@
             android:layout_marginStart="15dp"
             android:src="@drawable/icon_arrow_right" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

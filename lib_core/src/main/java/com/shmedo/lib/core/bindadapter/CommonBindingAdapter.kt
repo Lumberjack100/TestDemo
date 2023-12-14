@@ -187,29 +187,43 @@ object CommonBindingAdapter {
         textFilter: String? = ""
     ) {
         val lengthFilter = InputFilter.LengthFilter(length)
-        if(textFilter.isNullOrEmpty()) {
-            editText.filters = arrayOf<InputFilter>(lengthFilter)
+        if (textFilter.isNullOrEmpty()) {
+            editText.filters = arrayOf(lengthFilter)
             return
         }
+
         when (textFilter) {
             "number" -> {
-                editText.filters = arrayOf<InputFilter>(lengthFilter, numberFilter)
+                editText.filters = arrayOf(lengthFilter, numberFilter)
                 editText.inputType = android.text.InputType.TYPE_CLASS_NUMBER
             }
 
             "numberDecimal" -> {
                 editText.filters =
-                    arrayOf<InputFilter>(lengthFilter, numberDecimalFilter)
+                    arrayOf(lengthFilter, numberDecimalFilter)
                 editText.inputType =
                     android.text.InputType.TYPE_NUMBER_FLAG_SIGNED or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
             }
 
-            "character" -> editText.filters = arrayOf<InputFilter>(lengthFilter, characterFilter)
+            "character" -> editText.filters = arrayOf(lengthFilter, characterFilter)
 
-            else -> editText.filters = arrayOf<InputFilter>(lengthFilter)
+            else -> {
+                val inputFilter = InputFilter { source, start, end, _, _, _ ->
+                    for (i in start until end) {
+                        if (!textFilter.contains(source[i].toString())) {
+                            return@InputFilter ""
+                        }
+                    }
+                    null
+                }
+                editText.filters = arrayOf(lengthFilter, inputFilter)
+            }
         }
     }
 
+    /**
+     * 防止重复点击
+     */
     @JvmStatic
     @BindingAdapter(value = ["onClickWithDebouncing"], requireAll = false)
     fun onClickWithDebouncing(view: View?, clickListener: View.OnClickListener?) {

@@ -14,7 +14,7 @@
             type="com.shmedo.mcloudapp.user.activity.LoginActivity.ClickProxy" />
     </data>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/login_top_bg"
@@ -52,7 +52,7 @@
 
         </FrameLayout>
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="26dp">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_account_login"
                     visible="@{vm.isAccountLogin}"
                     android:layout_width="match_parent"
@@ -95,7 +95,7 @@
                     android:orientation="vertical"
                     tools:visibility="visible">
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="53dp"
                         android:background="@drawable/login_edittext_shape"
@@ -124,9 +124,9 @@
                             android:textColorHint="@color/text_color_cccccc"
                             android:textSize="@dimen/text_size_18" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="53dp"
                         android:layout_marginTop="16dp"
@@ -165,11 +165,11 @@
                             onClickWithDebouncing="@{()->click.eyeClick()}"
                             android:src="@{vm.eyeOpen?@drawable/icon_eye_open:@drawable/icon_eye_close}" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_phone_login"
                     visible="@{!vm.isAccountLogin}"
                     android:layout_width="match_parent"
@@ -177,7 +177,7 @@
                     android:orientation="vertical"
                     tools:visibility="gone">
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="53dp"
                         android:background="@drawable/login_edittext_shape"
@@ -208,9 +208,9 @@
                             android:textColorHint="@color/text_color_cccccc"
                             android:textSize="@dimen/text_size_18" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="53dp"
                         android:layout_marginTop="16dp"
@@ -253,9 +253,9 @@
                             android:textColor="@color/title_text_color"
                             android:textSize="@dimen/text_size_15" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </FrameLayout>
 
@@ -315,8 +315,8 @@
                 android:textColor="@color/text_color_cccccc"
                 android:textSize="11sp" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>

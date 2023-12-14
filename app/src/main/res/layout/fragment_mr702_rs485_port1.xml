@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="60dp"
@@ -55,7 +55,7 @@
                     android:textStyle="bold"
                     app:drawableStartCompat="@drawable/ic_mr702_interface_info_collection_param" />
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -71,9 +71,9 @@
                         app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -89,9 +89,9 @@
                         app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -107,9 +107,9 @@
                         app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -125,9 +125,9 @@
                         app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -143,7 +143,7 @@
                         app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -179,7 +179,7 @@
                     android:layout_marginBottom="15dp"
                     android:text="保存" />
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
     </com.drake.brv.PageRefreshLayout>
 </layout>

@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider"
             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
@@ -36,7 +36,7 @@
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:text="@{stateVM.ledType}"
                 tools:text="P10类型1" />
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_LayoutStyle"

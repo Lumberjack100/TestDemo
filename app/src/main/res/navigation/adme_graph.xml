@@ -59,6 +59,30 @@
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment"
+            app:destination="@id/admeInclinometerFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeLockedRotorDetectionFragment"
+            app:destination="@id/admeLockedRotorDetectionFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeStepperMotorFragment"
+            app:destination="@id/admeStepperMotorFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
     </fragment>
 
     <fragment
@@ -66,4 +90,23 @@
         android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeMeterWheelFragment"
         android:label="AdmeMeterWheelFragment"
         tools:layout="@layout/fragment_adme_meter_wheel" />
+
+    <fragment
+        android:id="@+id/admeInclinometerFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeInclinometerFragment"
+        android:label="AdmeInclinometerFragment"
+        tools:layout="@layout/fragment_adme_inclinometer" />
+
+    <fragment
+        android:id="@+id/admeLockedRotorDetectionFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeLockedRotorDetectionFragment"
+        android:label="AdmeLockedRotorDetectionFragment"
+        tools:layout="@layout/fragment_adme_locked_rotor_detection" />
+
+    <fragment
+        android:id="@+id/admeStepperMotorFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeStepperMotorFragment"
+        android:label="AdmeStepperMotorFragment"
+        tools:layout="@layout/fragment_adme_stepper_motor" />
+
 </navigation>

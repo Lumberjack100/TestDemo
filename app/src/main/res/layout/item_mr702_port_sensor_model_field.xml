@@ -9,7 +9,7 @@
             type="com.shmedo.mcloudapp.device.model.SensorModelFieldItem" />
     </data>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,5 +31,5 @@
             tools:text="全部"
             tools:textColor="@color/white" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

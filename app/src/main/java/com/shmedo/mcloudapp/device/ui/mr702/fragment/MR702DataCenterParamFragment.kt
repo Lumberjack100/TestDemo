@@ -141,7 +141,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         /**
          * 通信方式
          */
-        fun onCommunicateWaySwitchClick() {
+        fun onCommunicateWayChooseClick() {
             val selectedIndex = communicateWayList.indexOf(mStates.communicateWay.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -176,7 +176,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         /**
          * 网络协议
          */
-        fun onIPTypeSwitchClick() {
+        fun onIPTypeChooseClick() {
             val selectedIndex = ipLevelList.indexOf(mStates.ipType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -196,7 +196,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         /**
          * 传输协议
          */
-        fun onTransferProtocolSwitchClick() {
+        fun onTransferProtocolChooseClick() {
             val selectedIndex = transferProtocolList.indexOf(mStates.transferProtocol.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -216,7 +216,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         /**
          * 数据协议
          */
-        fun onDataProtocolSwitchClick() {
+        fun onDataProtocolChooseClick() {
             val selectedIndex = dataProtocolList.indexOf(mStates.dataProtocol.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -252,7 +252,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         /**
          * 平台类型
          */
-        fun onPlatformTypeSwitchClick() {
+        fun onPlatformTypeChooseClick() {
             val selectedIndex = platformList.indexOf(mStates.platformType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -272,7 +272,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         /**
          * 测站分类
          */
-        fun onStationClassificationSwitchClick() {
+        fun onStationClassificationChooseClick() {
             val codeList = StationCode.entries.map { it.description }
             val selectedIndex = codeList.indexOf(mStates.stationType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))

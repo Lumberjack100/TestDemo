@@ -23,13 +23,13 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimen_size_50"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -42,9 +42,9 @@
                         android:text="@{stateVM.wrapBaseInfo.productname}"
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -57,9 +57,9 @@
                         android:text="@{stateVM.wrapBaseInfo.producttype}"
                         tools:text="MR702-SL" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -72,9 +72,9 @@
                         android:text="@{stateVM.wrapBaseInfo.regcode}"
                         tools:text="mjkah1882910" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -87,9 +87,9 @@
                         android:text="@{stateVM.wrapBaseInfo.sn}"
                         tools:text="modo-1819929190" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -102,9 +102,9 @@
                         android:text="@{stateVM.wrapBaseInfo.ver}"
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -117,9 +117,9 @@
                         android:text="@{stateVM.wrapBaseInfo.imei}"
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -132,9 +132,9 @@
                         android:text='@{stateVM.wrapBaseInfo.temp+"℃"}'
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -147,9 +147,9 @@
                         android:text='@{stateVM.wrapBaseInfo.hum+"%"}'
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -162,9 +162,9 @@
                         android:text='@{stateVM.wrapBaseInfo.volt+"V"}'
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -177,9 +177,9 @@
                         android:text="@{stateVM.wrapBaseInfo.csq}"
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -192,9 +192,9 @@
                         android:text="@{stateVM.wrapBaseInfo.local}"
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout style="@style/DeviceCurrentState_SingleItem_Style">
+                <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -205,9 +205,9 @@
                         android:text="@{stateVM.wrapBaseInfo.regtime}"
                         tools:text="终端遥控测试机" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.core.widget.NestedScrollView>
 

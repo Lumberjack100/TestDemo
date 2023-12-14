@@ -10,7 +10,7 @@
             type="com.shmedo.mcloudapp.device.model.CloudDeviceData" />
     </data>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -43,5 +43,5 @@
 //return : 返回0代表成功,-1代表失败
 int offset_encrypt(char *_string, const char *ip, const int port, int random_base);" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

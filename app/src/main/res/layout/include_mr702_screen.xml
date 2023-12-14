@@ -13,13 +13,13 @@
             name="click"
             type="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702TerminalParameterFragment.ClickProxy" />
     </data>
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:background="@color/white">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -34,9 +34,9 @@
                 app:inputTypeFilter='@{"number"}'
                 app:lengthFilter="@{6}" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -51,9 +51,9 @@
                 app:inputTypeFilter='@{"numberDecimal"}'
                 app:lengthFilter="@{6}" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_EditItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -68,9 +68,9 @@
                 app:inputTypeFilter='@{"numberDecimal"}'
                 app:lengthFilter="@{6}" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+        <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
@@ -84,7 +84,7 @@
                 android:textColor="@color/colorPrimary"
                 tools:text="32%" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatSeekBar
             style="@android:style/Widget.Material.SeekBar"
@@ -100,5 +100,5 @@
             android:thumb="@drawable/ic_seekbar_thumb"
             tools:progress="25" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

@@ -35,12 +35,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:layout_height="53dp"
                     android:layout_marginTop="@dimen/dimen_size_8"
@@ -55,9 +55,9 @@
                         android:drawableEnd="@null"
                         android:text="@{vm.companyName}"
                         tools:text="上海米度测控科技有限公司" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
@@ -71,9 +71,9 @@
                         android:drawableEnd="@null"
                         android:text="@{vm.companyType}"
                         tools:text="私营企业" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
@@ -87,9 +87,9 @@
                         android:drawableEnd="@null"
                         android:text="@{vm.industryName}"
                         tools:text="互联网" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
@@ -103,9 +103,9 @@
                         android:drawableEnd="@null"
                         android:text="@{vm.companyPhone}"
                         tools:text="021-33923621" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
@@ -122,9 +122,9 @@
                         android:singleLine="false"
                         android:text="@{vm.companyAddress}"
                         tools:text="上海浦东新区张江镇博云路111号爱酷空间上海米度测控科技有限公司" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
@@ -138,9 +138,9 @@
                         android:drawableEnd="@null"
                         android:text="@{vm.companyWebsite}"
                         tools:text="http://www.shmedo.cn" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -165,9 +165,9 @@
                         android:textSize="@dimen/text_size_16"
                         tools:text="@string/company_intro" />
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.core.widget.NestedScrollView>
 

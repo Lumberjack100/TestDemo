@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -57,7 +57,7 @@
                         app:click="@{click}"
                         app:vm="@{stateVM}" />
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider">
@@ -74,9 +74,9 @@
                             android:text="@={stateVM.centerServerAddress}"
                             app:lengthFilter="@{100}" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout style="@style/Common_EditItem_LayoutStyle">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -91,14 +91,14 @@
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{5}" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onCommunicateWaySwitchClick()}">
+                        android:onClick="@{()->click.onCommunicateWayChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -111,12 +111,12 @@
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.communicateWay}"
                             tools:text="无线" />
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onIPTypeSwitchClick()}">
+                        android:onClick="@{()->click.onIPTypeChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -129,14 +129,14 @@
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.ipType}"
                             tools:text="IPV6" />
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onTransferProtocolSwitchClick()}">
+                        android:onClick="@{()->click.onTransferProtocolChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -149,13 +149,13 @@
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.transferProtocol}"
                             tools:text="TCP" />
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onDataProtocolSwitchClick()}">
+                        android:onClick="@{()->click.onDataProtocolChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -168,12 +168,12 @@
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.dataProtocol}"
                             tools:text="MQTT" />
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onPlatformTypeSwitchClick()}">
+                        android:onClick="@{()->click.onPlatformTypeChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -187,16 +187,16 @@
                             android:text="@{stateVM.platformType}"
                             tools:text="成都理工平台" />
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_mqtt"
                         visible="@{stateVM.isMqttItemVisible}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:layout_marginTop="@dimen/dimen_size_8"
                             android:background="@drawable/layer_common_click_item_with_divider">
@@ -212,9 +212,9 @@
                                 android:text="@={stateVM.productId}"
                                 app:lengthFilter="@{100}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -229,9 +229,9 @@
                                 android:text="@={stateVM.deviceId}"
                                 app:lengthFilter="@{100}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -246,9 +246,9 @@
                                 android:text="@={stateVM.deviceKey}"
                                 app:lengthFilter="@{100}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -263,9 +263,9 @@
                                 android:text="@={stateVM.registerCode}"
                                 app:lengthFilter="@{100}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -280,9 +280,9 @@
                                 android:text="@={stateVM.registerAddress}"
                                 app:lengthFilter="@{100}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout style="@style/Common_EditItem_LayoutStyle"
+                        <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <TextView
@@ -297,9 +297,9 @@
                                 android:text="@={stateVM.registerPort}"
                                 app:lengthFilter="@{5}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -315,23 +315,23 @@
                                 app:inputTypeFilter='@{"number"}'
                                 app:lengthFilter="@{4}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    </LinearLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <LinearLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_sl651"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         visible="@{stateVM.isSL651ItemVisible}"
                         android:orientation="vertical">
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_ClickableItem_LayoutStyle"
                             android:layout_marginTop="@dimen/dimen_size_8"
                             android:background="@drawable/layer_common_click_item_with_divider"
                             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:onClick="@{()->click.onStationClassificationSwitchClick()}">
+                            android:onClick="@{()->click.onStationClassificationChooseClick()}">
 
                             <TextView
                                 style="@style/Common_ClickableItem_TitleStyle"
@@ -344,9 +344,9 @@
                                 android:drawableEnd="@drawable/ic_arrow_down"
                                 android:text="@{stateVM.stationType}"
                                 tools:text="降水" />
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -362,9 +362,9 @@
                                 app:inputTypeFilter='@{"number"}'
                                 app:lengthFilter="@{3}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -380,9 +380,9 @@
                                 app:inputTypeFilter='@{"number"}'
                                 app:lengthFilter="@{5}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -398,9 +398,9 @@
                                 app:inputTypeFilter='@{"character"}'
                                 app:lengthFilter="@{10}" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_ClickableItem_LayoutStyle"
                             android:layout_marginTop="@dimen/dimen_size_8"
                             android:background="@drawable/layer_common_click_item_with_divider"
@@ -420,9 +420,9 @@
                                 tools:drawableEnd="@drawable/ic_arrow_down_blue"
                                 tools:text="展开" />
 
-                        </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <LinearLayout
+                        <androidx.appcompat.widget.LinearLayoutCompat
                             android:id="@+id/ll_advanced_items"
                             visible="@{stateVM.isAdvancedItemVisible}"
                             android:layout_width="match_parent"
@@ -507,7 +507,7 @@
                                 android:layout_marginEnd="@dimen/dimen_size_16"
                                 android:background="@color/divider_line_bg" />
 
-                            <LinearLayout
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 style="@style/Common_EditItem_LayoutStyle"
                                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -523,9 +523,9 @@
                                     app:inputTypeFilter='@{"number"}'
                                     app:lengthFilter="@{3}" />
 
-                            </LinearLayout>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                            <LinearLayout
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 style="@style/Common_EditItem_LayoutStyle"
                                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -541,9 +541,9 @@
                                     app:inputTypeFilter='@{"number"}'
                                     app:lengthFilter="@{3}" />
 
-                            </LinearLayout>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                            <LinearLayout
+                            <androidx.appcompat.widget.LinearLayoutCompat
                                 style="@style/Common_EditItem_LayoutStyle"
                                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -559,11 +559,11 @@
                                     app:inputTypeFilter='@{"number"}'
                                     app:lengthFilter="@{4}" />
 
-                            </LinearLayout>
+                            </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 

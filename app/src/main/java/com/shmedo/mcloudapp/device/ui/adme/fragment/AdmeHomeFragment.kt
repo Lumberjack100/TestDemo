@@ -338,7 +338,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "保存指令出错: ${result.message}"
+                        val errMsg = "保存出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return

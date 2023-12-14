@@ -88,7 +88,7 @@
                     android:src="@{stateVM.isOpened?@drawable/ic_mr702_rain_gauge_bright:@drawable/ic_mr702_rain_gauge_gray}"
                     tools:src="@drawable/ic_mr702_rain_gauge_bright" />
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
@@ -105,7 +105,7 @@
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.rainResolution}"
                         tools:text="0.2" />
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"

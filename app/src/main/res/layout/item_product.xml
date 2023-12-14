@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/item"
             android:layout_width="match_parent"
             android:layout_height="32dp"
@@ -33,6 +33,6 @@
                 android:textSize="@dimen/text_size_15"
                 tools:text="全部" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </FrameLayout>
 </layout>

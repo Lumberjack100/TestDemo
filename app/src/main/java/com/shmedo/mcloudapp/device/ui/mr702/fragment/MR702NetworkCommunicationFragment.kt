@@ -129,7 +129,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             }
         }
 
-        fun onIPModeSwitchClick() {
+        fun onIPModeChooseClick() {
             val selectedIndex = ipModeList.indexOf(mStates.ipMode.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
