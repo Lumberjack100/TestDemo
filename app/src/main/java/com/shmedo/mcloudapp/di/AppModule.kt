@@ -4,6 +4,7 @@ import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeCurrentStateInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMeterWheelInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotionStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
@@ -48,6 +49,8 @@ val appModule = module {
     factory { AdmeBaseInfoParser() }
     factory { AdmeMotionStateParser() }
     factory { AdmeCurrentStateInfoParser() }
+    factory { AdmeMeterWheelInfoParser() }
+
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
     factory { MRWirelessNetParser() }
@@ -83,6 +86,8 @@ val appModule = module {
             get<AdmeBaseInfoParser>(),
             get<AdmeMotionStateParser>(),
             get<AdmeCurrentStateInfoParser>(),
+            get<AdmeMeterWheelInfoParser>(),
+
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),
             get<MRWirelessNetParser>(),

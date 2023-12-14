@@ -208,7 +208,7 @@
                             app:shadow_open="false"
                             app:signal_maximum="4"
                             app:spacing="1"
-                            app:unit_width="5" />
+                            app:unit_width="8" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -433,7 +433,7 @@
                             app:shadow_open="false"
                             app:signal_maximum="4"
                             app:spacing="1"
-                            app:unit_width="5" />
+                            app:unit_width="8" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -459,7 +459,7 @@
                             app:shadow_open="false"
                             app:signal_maximum="4"
                             app:spacing="1"
-                            app:unit_width="5" />
+                            app:unit_width="8" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

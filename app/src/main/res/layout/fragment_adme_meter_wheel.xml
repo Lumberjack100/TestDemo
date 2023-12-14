@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702NetworkCommunicationFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeMeterWheelFragment.ClickProxy" />
 
     </data>
 
@@ -38,8 +38,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -47,14 +45,216 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dimen_size_25">
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
-                </LinearLayout>
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="编码器线数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.encoderLineNumber}"
+                            app:inputTypeFilter='@{"number"}'
+                            app:lengthFilter="@{3}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="外径(mm)" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.outerDiameter}"
+                            app:inputTypeFilter='@{"number"}'
+                            app:lengthFilter="@{5}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="@dimen/dimen_size_16"
+                        android:text="上拉参数配置"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_15"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="一次修正参数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.upCorrectionParametersOne}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{15}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="二次修正参数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.upCorrectionParametersTwo}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{15}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="常数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.upConstant}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{15}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="滤波器系数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.upFilterCoefficient}"
+                            app:inputTypeFilter='@{"characterFilter"}'
+                            app:lengthFilter="@{1}"
+                            android:hint="0-F"/>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="@dimen/dimen_size_16"
+                        android:text="下放参数配置"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_15"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="一次修正参数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.downCorrectionParametersOne}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{15}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="二次修正参数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.downCorrectionParametersTwo}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{15}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="常数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.downConstant}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{15}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="滤波器系数" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.downFilterCoefficient}"
+                            app:inputTypeFilter='@{"characterFilter"}'
+                            app:lengthFilter="@{1}"
+                            android:hint="0-F"/>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
@@ -72,5 +272,4 @@
             app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

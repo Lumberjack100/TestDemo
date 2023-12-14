@@ -43,6 +43,12 @@ import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+/**
+ * @author：gonghe
+ * @time: 2023/12/13
+ * @desc: ADME 主页面
+ *
+ */
 class AdmeHomeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentAdmeHomeBinding by lazy { getBinding() as FragmentAdmeHomeBinding }
     private val mHeadStates: AdmeHomeViewModel by viewModels()
@@ -178,8 +184,16 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                         }
                         mHeadStates.mode.set(
                             when (position) {
-                                0 -> modeList[0]
-                                1 -> modeList[1]
+                                0 -> {
+                                    mMessenger.admeDeviceMode.set("0")
+                                    modeList[0]
+                                }
+
+                                1 -> {
+                                    mMessenger.admeDeviceMode.set("1")
+                                    modeList[1]
+                                }
+
                                 else -> modeList[2]
                             }
                         )
@@ -275,6 +289,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                                 else -> modeList[2]
                             }
                         )
+                        mMessenger.admeDeviceMode.set(baseInfo.equimodel)
                         mHeadStates.deviceName.set(baseInfo.productid)
                         updateConfigModuleData()
                     }

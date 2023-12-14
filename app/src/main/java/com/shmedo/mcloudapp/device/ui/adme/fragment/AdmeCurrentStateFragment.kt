@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
+import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -17,6 +17,7 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.databinding.FragmentAdmeCurrentStateBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -29,7 +30,12 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 import kotlin.math.abs
-
+/**
+ * @author：gonghe
+ * @time: 2023/12/13
+ * @desc: ADME 运行状态页面
+ *
+ */
 class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentAdmeCurrentStateBinding by lazy { getBinding() as FragmentAdmeCurrentStateBinding }
     private val mStates: AdmeCurrentStateViewModel by viewModels()
@@ -46,16 +52,14 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding.llToolbar.toolbar.title = "运行状态"
-        binding.llToolbar.toolbar.setNavigationOnClickListener {
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
+        registerOnBackPressedDispatcher {
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-                nav().navigateUp()
-            }
-        })
+            nav().navigateUp()
+        }
         initRefresh()
     }
 

@@ -21,6 +21,12 @@ import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 
+/**
+ * @author：gonghe
+ * @time: 2023/12/13
+ * @desc: ADME 高级配置页面
+ *
+ */
 class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentAdmeAdvancedConfigurationBinding by lazy { getBinding() as FragmentAdmeAdvancedConfigurationBinding }
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -93,7 +99,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "计米轮",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = 0
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeMeterWheelFragment
                 )
             ),
             ConfigModule(

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.common.viewmodel.state
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.device.common.MRPortSensorRefreshResult
 
 /**
@@ -26,6 +27,9 @@ class PageMessenger : BaseViewModel(){
     // 是否同意隐私政策
     private val _isAgreePolicy = MutableResult<Boolean>()
     val isAgreePolicy: Result<Boolean> = _isAgreePolicy
+
+    //ADME 设备模式 0：设备配置模式，1：自动检测模式，2：异常保护模式
+    val admeDeviceMode = NonNullObservableField("0")
 
     fun requestStatusBarColor(resId: Int) {
         _statusBarColor.postValue(resId)
