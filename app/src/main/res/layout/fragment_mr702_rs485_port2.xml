@@ -163,7 +163,7 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable }"
-                    android:onClick="@{()->click.onCollectorTypeChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onCollectorTypeChooseClick()}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -221,7 +221,7 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable }"
-                    android:onClick="@{()->click.onDataBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onDataBitChooseClick()}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -240,7 +240,7 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable }"
-                    android:onClick="@{()->click.onCheckBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -259,7 +259,7 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable }"
-                    android:onClick="@{()->click.onStopBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onStopBitChooseClick()}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"

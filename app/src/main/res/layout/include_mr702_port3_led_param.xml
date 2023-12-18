@@ -23,7 +23,7 @@
             style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider"
             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-            android:onClick="@{()->click.onSwitchLedTypeClick()}">
+            onClickWithDebouncing="@{()->click.onSwitchLedTypeClick()}">
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"

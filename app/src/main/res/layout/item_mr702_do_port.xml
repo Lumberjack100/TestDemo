@@ -57,10 +57,7 @@
                     android:layout_marginStart="@dimen/dimen_size_15"
                     app:kswAnimationDuration="100"
                     app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                    app:kswThumbHeight="18dp"
-                    app:kswThumbRangeRatio="2.3"
-                    app:kswThumbWidth="18dp" />
+                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>

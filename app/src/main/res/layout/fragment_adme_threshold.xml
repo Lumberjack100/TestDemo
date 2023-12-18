@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeInclinometerViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeThresholdViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeInclinometerFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeThresholdFragment.ClickProxy" />
 
     </data>
 
@@ -52,102 +52,20 @@
                     android:paddingBottom="@dimen/dimen_size_25">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_EditItem_LayoutStyle"
                         android:layout_marginTop="@dimen/dimen_size_8"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }"
-                        onClickWithDebouncing="@{()->click.onVersionChooseClick()}">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="测斜仪版本" />
-
-                        <TextView
-                            style="@style/Common_ClickableItem_ValueStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.inclinometerVersion }"
-                            tools:text="V4.1" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }"
-                        onClickWithDebouncing="@{()->click.onModeChooseClick()}">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="测量工作模式" />
-
-                        <TextView
-                            style="@style/Common_ClickableItem_ValueStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.mode }"
-                            tools:text="蓝牙关测量关" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
-                        visible="@{stateVM.isCompensateWayVisible}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }"
-                        onClickWithDebouncing="@{()->click.onCompensateWayChooseClick()}"
-                        tools:visibility="visible">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="补偿方式" />
-
-                        <TextView
-                            style="@style/Common_ClickableItem_ValueStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.compensateWay }"
-                            tools:text="X+Y轴无扭转角补偿" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
-                        visible="@{stateVM.isCompensateWayVisible &amp;&amp; stateVM.isTorsionAngleVisible}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        tools:visibility="visible">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable}"
-                            android:text="扭转角γ" />
-
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:hint="请输入 [-90,90] 之间的值"
-                            android:text="@={stateVM.torsionAngle}"
-                            app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{9}" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="Mac地址" />
+                            android:text="驱动器标压阈值(V)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.address}"
-                            app:inputTypeFilter='@{"0123456789ABCDEF"}'
+                            android:text="@={stateVM.driveStandardVoltageThreshold}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{12}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -159,14 +77,14 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="采集器采集间隔(s)" />
+                            android:text="驱动器低压阈值(V)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.collectionInterval}"
-                            app:inputTypeFilter='@{"number"}'
-                            app:lengthFilter="@{5}" />
+                            android:text="@={stateVM.driveLowVoltageThreshold}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{12}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -177,14 +95,14 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="采集器解算间隔(s)" />
+                            android:text="驱动器欠压阈值(V)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.solvingInterval}"
-                            app:inputTypeFilter='@{"number"}'
-                            app:lengthFilter="@{5}" />
+                            android:text="@={stateVM.driveUnderVoltageThreshold}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{12}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -195,14 +113,14 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="休眠时间(s)" />
+                            android:text="测斜仪标压阈值(V)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.sleepTime}"
-                            app:inputTypeFilter='@{"number"}'
-                            app:lengthFilter="@{5}" />
+                            android:text="@={stateVM.inclinometerStandardVoltageThreshold}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{12}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -213,12 +131,58 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="测斜仪修正值(mm)" />
+                            android:text="测斜仪低压阈值(V)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.correctionValue}"
+                            android:text="@={stateVM.inclinometerLowVoltageThreshold}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{12}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="测斜仪欠压阈值(V)" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.inclinometerUnderVoltageThreshold}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{12}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:text="钢丝绳阈值参数配置"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_16"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="钢丝绳长度(m)" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.wireRopeLength}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{12}" />
 

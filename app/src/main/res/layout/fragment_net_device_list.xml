@@ -71,7 +71,7 @@
                 android:layout_height="56dp"
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="@dimen/dimen_size_10"
-                android:onClick="@{() -> click.onShowSelectProductPopup()}"
+                onClickWithDebouncing="@{() -> click.onShowSelectProductPopup()}"
                 android:src="@drawable/all_img" />
 
         </FrameLayout>

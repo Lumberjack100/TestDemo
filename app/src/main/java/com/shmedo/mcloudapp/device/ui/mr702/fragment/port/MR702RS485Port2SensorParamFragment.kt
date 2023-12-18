@@ -23,13 +23,13 @@ import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2SensorParamBinding
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port2
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port2SensorParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -211,8 +211,9 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        binding.refreshLayout.finish()
+                        sendCommandFromCmdList{
+                            binding.refreshLayout.finish()
+                        }
                         initParamData(result.data)
                     }
                 }

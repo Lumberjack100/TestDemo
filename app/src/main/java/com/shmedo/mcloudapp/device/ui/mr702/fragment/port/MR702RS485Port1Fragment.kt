@@ -208,7 +208,8 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             collcycle = mStates.collectionDuration.get(),
             collround = mStates.collectionTimes.get(),
             noresp = mStates.noResponseTimes.get(),
-            powerontimes = mStates.delayDuration.get()
+            powerontimes = mStates.delayDuration.get(),
+            ngateval = mStates.ngateval.get()
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_COLL,
@@ -290,8 +291,9 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        binding.refreshLayout.finish()
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
                         initSensorData(result.data)
                     }
                 }
@@ -347,6 +349,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             mStates.collectionTimes.set(collectionParam.collround)
             mStates.noResponseTimes.set(collectionParam.noresp)
             mStates.delayDuration.set(collectionParam.powerontimes)
+            mStates.ngateval.set(collectionParam.ngateval)
         } catch (e: Exception) {
             e.printStackTrace()
         }

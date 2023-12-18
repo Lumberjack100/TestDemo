@@ -98,7 +98,7 @@
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onCommunicateWayChooseClick()}">
+                        onClickWithDebouncing="@{()->click.onCommunicateWayChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -116,7 +116,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onIPTypeChooseClick()}">
+                        onClickWithDebouncing="@{()->click.onIPTypeChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -136,7 +136,7 @@
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onTransferProtocolChooseClick()}">
+                        onClickWithDebouncing="@{()->click.onTransferProtocolChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -155,7 +155,7 @@
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onDataProtocolChooseClick()}">
+                        onClickWithDebouncing="@{()->click.onDataProtocolChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -173,7 +173,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        android:onClick="@{()->click.onPlatformTypeChooseClick()}">
+                        onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -331,7 +331,7 @@
                             android:layout_marginTop="@dimen/dimen_size_8"
                             android:background="@drawable/layer_common_click_item_with_divider"
                             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:onClick="@{()->click.onStationClassificationChooseClick()}">
+                            onClickWithDebouncing="@{()->click.onStationClassificationChooseClick()}">
 
                             <TextView
                                 style="@style/Common_ClickableItem_TitleStyle"
@@ -405,7 +405,7 @@
                             android:layout_marginTop="@dimen/dimen_size_8"
                             android:background="@drawable/layer_common_click_item_with_divider"
                             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:onClick="@{()->click.onToggleAdvancedClick()}">
+                            onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}">
 
                             <TextView
                                 style="@style/Common_ClickableItem_TitleStyle"

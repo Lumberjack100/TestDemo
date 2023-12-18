@@ -94,9 +94,6 @@
                 app:kswAnimationDuration="100"
                 app:kswBackDrawable="@drawable/sl_switchbutton_back"
                 app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                app:kswThumbHeight="18dp"
-                app:kswThumbRangeRatio="2.3"
-                app:kswThumbWidth="18dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_line" />

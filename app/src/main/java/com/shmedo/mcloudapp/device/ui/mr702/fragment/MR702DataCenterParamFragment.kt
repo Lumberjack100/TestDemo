@@ -441,8 +441,9 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        binding.refreshLayout.finish()
+                        sendCommandFromCmdList{
+                            binding.refreshLayout.finish()
+                        }
                         initDataCenterParam(result.data)
                     }
                 }

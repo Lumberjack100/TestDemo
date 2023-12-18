@@ -2,12 +2,17 @@ package com.shmedo.mcloudapp.di
 
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeAnthropomorphicMovementInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBaseInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBrakePadControlInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeCurrentStateInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeInclinometerInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeLowEnergyModeInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMeterWheelInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotionStateParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotorPowerInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeStepperMotorInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeVoltageConfigInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
@@ -54,6 +59,11 @@ val appModule = module {
     factory { AdmeMeterWheelInfoParser() }
     factory { AdmeInclinometerInfoParser() }
     factory { AdmeStepperMotorInfoParser() }
+    factory { AdmeLowEnergyModeInfoParser() }
+    factory { AdmeAnthropomorphicMovementInfoParser() }
+    factory { AdmeBrakePadControlInfoParser() }
+    factory { AdmeMotorPowerInfoParser() }
+    factory { AdmeVoltageConfigInfoParser() }
 
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -93,6 +103,11 @@ val appModule = module {
             get<AdmeMeterWheelInfoParser>(),
             get<AdmeInclinometerInfoParser>(),
             get<AdmeStepperMotorInfoParser>(),
+            get<AdmeLowEnergyModeInfoParser>(),
+            get<AdmeAnthropomorphicMovementInfoParser>(),
+            get<AdmeBrakePadControlInfoParser>(),
+            get<AdmeMotorPowerInfoParser>(),
+            get<AdmeVoltageConfigInfoParser>(),
 
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),

@@ -24,7 +24,7 @@
             android:layout_marginEnd="@dimen/dimen_size_16"
             android:background="@drawable/bg_search_project_device_gray"
             android:gravity="center_vertical"
-            android:onClick="@{() -> click.onGoToSearch()}">
+            onClickWithDebouncing="@{() -> click.onGoToSearch()}">
 
             <ImageView
                 android:layout_width="16dp"

@@ -221,7 +221,7 @@
                         style="@style/Common_ClickableItem_LayoutStyle"
                         android:layout_height="44dp"
                         android:enabled="@{!stateVM.deviceNormal}"
-                        android:onClick="@{()->click.onShowErrorModulesInfoClick()}">
+                        onClickWithDebouncing="@{()->click.onShowErrorModulesInfoClick()}">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"

@@ -11,4 +11,5 @@ data class MRRS485Port1CollectionParam(
     var collfreq: String = "",//采集频率
     var collcycle: String = "",//采集周期 min
     var powerontimes: String = "",//延时时间 s
+    var ngateval: String = "",//阈值次数
 )

@@ -5,7 +5,6 @@ package com.shmedo.lib.device.base.iot_cmd.model.adme
  * 创建时间:  2022/1/25 <br></br>
  * 描述：     ADME 电机电源使能
  */
-class AdmeMotorPowerInfo {
-    var mode //（0:关闭，1:开启）
-            : String? = null
-}
+data class AdmeMotorPowerInfo(
+    var mode: String = "",//0:关闭，1:开启）
+)

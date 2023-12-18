@@ -170,8 +170,9 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        binding.refreshLayout.finish()
+                        sendCommandFromCmdList{
+                            binding.refreshLayout.finish()
+                        }
                         initDataCenterStatus(result.data)
                     }
                 }

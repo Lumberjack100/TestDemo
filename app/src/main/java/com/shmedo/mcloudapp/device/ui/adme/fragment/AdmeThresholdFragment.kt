@@ -8,9 +8,9 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeMeterWheelEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeVoltageConfigEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMeterWheelInfo
+import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeVoltageConfigInfo
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -20,11 +20,11 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
-import com.shmedo.mcloudapp.databinding.FragmentAdmeMeterWheelBinding
+import com.shmedo.mcloudapp.databinding.FragmentAdmeThresholdBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.AdmeMeterWheelViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.AdmeThresholdViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -34,19 +34,19 @@ import java.util.Locale
 
 /**
  * @author：gonghe
- * @time: 2023/12/13
- * @desc:  ADME 计米轮参数配置页面
+ * @time: 2023/12/18
+ * @desc:  ADME 阈值参数配置页面
  *
  */
-class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeMeterWheelBinding by lazy { getBinding() as FragmentAdmeMeterWheelBinding }
-    private val mStates: AdmeMeterWheelViewModel by viewModels()
+class AdmeThresholdFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentAdmeThresholdBinding by lazy { getBinding() as FragmentAdmeThresholdBinding }
     private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeThresholdViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_adme_meter_wheel,
+            R.layout.fragment_adme_threshold,
             BR.stateVM,
             mStates
         )
@@ -55,7 +55,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.title = "计米轮参数"
+        binding.llToolbar.toolbar.title = "阈值参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -108,132 +108,120 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        if (mStates.encoderLineNumber.get().isEmpty()) {
-            Toaster.show("请输入编码器线数!")
+        if (mStates.driveStandardVoltageThreshold.get().isEmpty()) {
+            Toaster.show("请输入驱动器标压阈值!")
             return
         }
         try {
-            val value: Int = mStates.encoderLineNumber.get().toInt()
+            val value = mStates.driveStandardVoltageThreshold.get().toDouble()
             if (value < 1) {
-                Toaster.show("请输入正确的编码器线数!")
+                MessageDialog.show("提示", "驱动器标压阈值不能小于 1!", "我已知晓")
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的编码器线数!")
+            Toaster.show("请输入正确的驱动器标压阈值!")
             return
         }
 
-        if (mStates.outerDiameter.get().isEmpty()) {
-            Toaster.show("请输入外径!")
+        if (mStates.driveLowVoltageThreshold.get().isEmpty()) {
+            Toaster.show("请输入驱动器低压阈值!")
             return
         }
         try {
-            val value: Int = mStates.outerDiameter.get().toInt()
+            val value = mStates.driveLowVoltageThreshold.get().toDouble()
             if (value < 1) {
-                Toaster.show("请输入正确的外径!")
+                MessageDialog.show("提示", "驱动器低压阈值不能小于 1!", "我已知晓")
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的外径!")
+            Toaster.show("请输入正确的驱动器低压阈值!")
             return
         }
 
-        if (mStates.upCorrectionParametersOne.get().isEmpty()) {
-            Toaster.show("请输入上拉一次修正参数!")
+        if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
+            Toaster.show("请输入驱动器欠压阈值!")
             return
         }
         try {
-            val value = mStates.upCorrectionParametersOne.get().toDouble()
+            val value = mStates.driveUnderVoltageThreshold.get().toDouble()
+            if (value < 1) {
+                MessageDialog.show("提示", "驱动器欠压阈值不能小于 1!", "我已知晓")
+                return
+            }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的上拉一次修正参数!")
+            Toaster.show("请输入正确的驱动器欠压阈值!")
             return
         }
 
-        if (mStates.upCorrectionParametersTwo.get().isEmpty()) {
-            Toaster.show("请输入上拉二次修正参数!")
+        if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
+            Toaster.show("请输入测斜仪标压阈值!")
             return
         }
         try {
-            val value = mStates.upCorrectionParametersTwo.get().toDouble()
+            val value = mStates.driveUnderVoltageThreshold.get().toDouble()
+            if (value < 1) {
+                MessageDialog.show("提示", "测斜仪标压阈值不能小于 1!", "我已知晓")
+                return
+            }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的上拉二次修正参数!")
+            Toaster.show("请输入正确的测斜仪标压阈值!")
             return
         }
 
-        if (mStates.upConstant.get().isEmpty()) {
-            Toaster.show("请输入上拉常数!")
+        if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
+            Toaster.show("请输入测斜仪低压阈值!")
             return
         }
         try {
-            val value = mStates.upConstant.get().toDouble()
+            val value = mStates.driveUnderVoltageThreshold.get().toDouble()
+            if (value < 1) {
+                MessageDialog.show("提示", "测斜仪低压阈值不能小于 1!", "我已知晓")
+                return
+            }
         } catch (ex: Exception) {
-            Toaster.show("请输入上拉常数!")
-            return
-        }
-        if (mStates.upFilterCoefficient.get().isEmpty()) {
-            Toaster.show("请输入上拉滤波器系数!")
-            return
-        }
-        if (mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
-            MessageDialog.show("提示", "请输入正确的上拉滤波器系数(0-F)!", "我已知晓")
-            return
-        }
-        if (mStates.upCorrectionParametersOne.get().isEmpty()) {
-            Toaster.show("请输入下放一次修正参数!")
-            return
-        }
-        try {
-            val value = mStates.upCorrectionParametersOne.get().toDouble()
-        } catch (ex: Exception) {
-            Toaster.show("请输入正确的下放一次修正参数!")
+            Toaster.show("请输入正确的测斜仪低压阈值!")
             return
         }
 
-        if (mStates.upCorrectionParametersTwo.get().isEmpty()) {
-            Toaster.show("请输入下放二次修正参数!")
+        if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
+            Toaster.show("请输入测斜仪欠压阈值!")
             return
         }
         try {
-            val value = mStates.upCorrectionParametersTwo.get().toDouble()
+            val value = mStates.driveUnderVoltageThreshold.get().toDouble()
+            if (value < 1) {
+                MessageDialog.show("提示", "测斜仪欠压于不能小于  1!", "我已知晓")
+                return
+            }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的下放二次修正参数!")
+            Toaster.show("请输入正确的测斜仪欠压阈值!")
             return
         }
 
-        if (mStates.upConstant.get().isEmpty()) {
-            Toaster.show("请输入下放常数!")
+        if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
+            Toaster.show("请输入钢丝绳长度!")
             return
         }
         try {
-            val value = mStates.upConstant.get().toDouble()
+            val value = mStates.driveUnderVoltageThreshold.get().toDouble()
+
         } catch (ex: Exception) {
-            Toaster.show("请输入下放常数!")
+            Toaster.show("请输入正确的钢丝绳长度!")
             return
         }
-        if (mStates.upFilterCoefficient.get().isEmpty()) {
-            Toaster.show("请输入下放滤波器系数!")
-            return
-        }
-        if (mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
-            MessageDialog.show("提示", "请输入正确的下放滤波器系数(0-F)!", "我已知晓")
-            return
-        }
-        val entity = AdmeMeterWheelEntity(
-            enclinenum = mStates.encoderLineNumber.get(),
-            outline = mStates.outerDiameter.get(),
-            uptiona = mStates.upCorrectionParametersOne.get(),
-            uptionb = mStates.upCorrectionParametersTwo.get(),
-            upconstant = mStates.upConstant.get(),
-            upfilter = mStates.upFilterCoefficient.get(),
-            downtiona = mStates.downCorrectionParametersOne.get(),
-            downtionb = mStates.downCorrectionParametersTwo.get(),
-            downconstant = mStates.downConstant.get(),
-            downfilter = mStates.downFilterCoefficient.get()
+
+        val entity = AdmeVoltageConfigEntity(
+            volt_power_standard = mStates.driveStandardVoltageThreshold.get(),
+            volt_power_low = mStates.driveLowVoltageThreshold.get(),
+            volt_power_under = mStates.driveUnderVoltageThreshold.get(),
+            volt_sensor_standard = mStates.inclinometerStandardVoltageThreshold.get(),
+            volt_sensor_low = mStates.inclinometerLowVoltageThreshold.get(),
+            volt_sensor_under = mStates.inclinometerUnderVoltageThreshold.get(),
+            rope_length = mStates.wireRopeLength.get()
         )
-
         commandItems.clear()
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_SET_METER_WHEEL,
+            IOTCommandType.ADME_MD_SET_VOLTAGE,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -252,7 +240,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_METER_WHEEL
+            IOTCommandType.ADME_MD_GET_VOLTAGE
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -260,23 +248,24 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.ADME_MD_GET_METER_WHEEL -> {
-                val result = iotParseManager.parse<AdmeMeterWheelInfo>(
+            IOTCommandType.ADME_MD_GET_VOLTAGE -> {
+                val result = iotParseManager.parse<AdmeVoltageConfigInfo>(
                     cmdStr,
-                    IOTCommandType.ADME_MD_GET_METER_WHEEL
+                    IOTCommandType.ADME_MD_GET_VOLTAGE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询计米轮参数出错: ${result.message}"
+                        val errMsg = "查询阈值参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
-//                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        //设备版本不支持，隐藏编辑按钮
+                        toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)
@@ -284,11 +273,11 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.ADME_MD_SET_METER_WHEEL -> {//设置ADME的计米轮配置参数
+            IOTCommandType.ADME_MD_SET_VOLTAGE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "设置计米轮参数出错: ${result.message}"
+                        val errMsg = "设置阈值参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
@@ -322,22 +311,19 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(info: AdmeMeterWheelInfo) {
-        val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+    private fun initParamData(info: AdmeVoltageConfigInfo) {
+        val decimalFormat = DecimalFormat("#.##", DecimalFormatSymbols(Locale.getDefault()))
         try {
-            mStates.encoderLineNumber.set(info.enclinenum)
-            decimalFormat.applyPattern("#")
-            mStates.outerDiameter.set(decimalFormat.format(info.outline.toDouble()))
+            mStates.driveStandardVoltageThreshold.set(decimalFormat.format(info.volt_power_standard.toDouble()))
+            mStates.driveLowVoltageThreshold.set(decimalFormat.format(info.volt_power_low.toDouble()))
+            mStates.driveUnderVoltageThreshold.set(decimalFormat.format(info.volt_power_under.toDouble()))
+            mStates.inclinometerStandardVoltageThreshold.set(decimalFormat.format(info.volt_sensor_standard.toDouble()))
+            mStates.inclinometerLowVoltageThreshold.set(decimalFormat.format(info.volt_sensor_low.toDouble()))
+            mStates.inclinometerUnderVoltageThreshold.set(decimalFormat.format(info.volt_sensor_under.toDouble()))
 
-            decimalFormat.applyPattern("#.######")
-            mStates.upCorrectionParametersOne.set(decimalFormat.format(info.uptiona.toDouble()))
-            mStates.upCorrectionParametersTwo.set(decimalFormat.format(info.uptionb.toDouble()))
-            mStates.upConstant.set(decimalFormat.format(info.upconstant.toDouble()))
-            mStates.upFilterCoefficient.set(decimalFormat.format(info.upfilter.toDouble()))
-            mStates.downCorrectionParametersOne.set(decimalFormat.format(info.downtiona.toDouble()))
-            mStates.downCorrectionParametersTwo.set(decimalFormat.format(info.downtionb.toDouble()))
-            mStates.downConstant.set(decimalFormat.format(info.downconstant.toDouble()))
-            mStates.downFilterCoefficient.set(decimalFormat.format(info.downfilter.toDouble()))
+            decimalFormat.applyPattern("#.###")
+            mStates.wireRopeLength.set(decimalFormat.format(info.rope_length.toDouble()))
+
         } catch (e: Exception) {
             e.printStackTrace()
         }

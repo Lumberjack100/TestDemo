@@ -139,7 +139,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "智能控制",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeIntelligentControlFragment
                 )
             ),
             ConfigModule(
@@ -147,7 +147,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "阈值设置",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeThresholdFragment
                 )
             ),
         )

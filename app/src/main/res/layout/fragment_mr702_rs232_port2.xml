@@ -85,10 +85,7 @@
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"
                         app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                        app:kswThumbHeight="18dp"
-                        app:kswThumbRangeRatio="2.3"
-                        app:kswThumbWidth="18dp" />
+                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
 
                 </RelativeLayout>
 
@@ -144,7 +141,7 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
-                    android:onClick="@{()->click.onDataBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onDataBitChooseClick()}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -163,7 +160,7 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
-                    android:onClick="@{()->click.onCheckBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -182,7 +179,7 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
-                    android:onClick="@{()->click.onStopBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onStopBitChooseClick()}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"

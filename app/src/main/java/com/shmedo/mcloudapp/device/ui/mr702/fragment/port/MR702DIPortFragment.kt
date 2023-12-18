@@ -93,8 +93,9 @@ class MR702DIPortFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        binding.refreshLayout.finish()
+                        sendCommandFromCmdList{
+                            binding.refreshLayout.finish()
+                        }
                         initParamData(result.data)
                     }
                 }

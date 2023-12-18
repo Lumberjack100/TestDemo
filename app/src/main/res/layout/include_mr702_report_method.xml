@@ -36,7 +36,7 @@
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:onClick="@{()->click.onReportingMethodClick()}"
+            onClickWithDebouncing="@{()->click.onReportingMethodClick()}"
             app:drawable_radius="@{4}"
             app:drawable_solidColor="@{@color/gray_f5f6f8}"
             tools:background="@color/gray_f5f6f8">
@@ -75,7 +75,7 @@
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:onClick="@{()->click.onReportingStartTimeClick()}"
+            onClickWithDebouncing="@{()->click.onReportingStartTimeClick()}"
             app:drawable_radius="@{4}"
             app:drawable_solidColor="@{@color/gray_f5f6f8}"
             tools:background="@color/gray_f5f6f8">

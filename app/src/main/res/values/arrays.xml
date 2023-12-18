@@ -236,10 +236,17 @@
         <item>蓝牙关测量开</item>
         <item>蓝牙开测量开</item>
     </string-array>
+
     <!-- ADME 扭转角补偿方式-->
     <string-array name="adme_inclinometer_twist_angle_compensation">
         <item>X+Y轴无扭转角补偿</item>
         <item>X轴扭转角补偿</item>
+    </string-array>
+
+    <!-- ADME 刹车片控制方式-->
+    <string-array name="adme_brakepad_control">
+        <item>手动</item>
+        <item>自动</item>
     </string-array>
     <!-- ADME end-->
 

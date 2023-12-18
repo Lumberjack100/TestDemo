@@ -40,7 +40,7 @@
                 visible="@{vm.toolbarIvActionVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{()->click.onToolbarIvClick()}"
+                onClickWithDebouncing="@{()->click.onToolbarIvClick()}"
                 android:padding="5dp"
                 tools:src="@drawable/ic_query_device_data"
                 tools:visibility="visible" />
@@ -50,7 +50,7 @@
                 visible="@{vm.toolbarTvActionVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{()->click.onToolbarTvClick()}"
+                onClickWithDebouncing="@{()->click.onToolbarTvClick()}"
                 android:singleLine="true"
                 android:text="@{vm.toolbarTvActionText}"
                 android:textColor="@color/colorPrimary"

@@ -100,8 +100,9 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        binding.refreshLayout.finish()
+                        sendCommandFromCmdList{
+                            binding.refreshLayout.finish()
+                        }
                         val content: String = result.data
                         initStatusInfo(content)
                     }

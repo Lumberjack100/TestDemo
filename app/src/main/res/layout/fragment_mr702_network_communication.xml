@@ -74,10 +74,7 @@
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"
                         app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                        app:kswThumbHeight="18dp"
-                        app:kswThumbRangeRatio="2.3"
-                        app:kswThumbWidth="18dp" />
+                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
 
                 </RelativeLayout>
 
@@ -175,7 +172,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
-                    android:onClick="@{()->click.onIPModeChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onIPModeChooseClick()}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"

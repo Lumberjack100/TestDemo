@@ -7,19 +7,22 @@ import com.squareup.moshi.JsonClass
 /**
  * 创建者：gonghe
  *
- * 创建时间：2023/12/14
+ * 创建时间：2023/12/18
  *
  * 描述： TODO
  *
  *
  */
 @JsonClass(generateAdapter = true)
-data class AdmeStepperMotorEntity(
-    val posnegtest: String = "", //正反测（0:关闭，1:开启）
-    val absprsion: String = IOTConstants.NULL_KEY, //绝对精度修正值
-    val movspeed: String = IOTConstants.NULL_KEY, //步进电机运动速度
-    val movesm: String = IOTConstants.NULL_KEY, //步进电机力矩
-) {
+data class AdmeVoltageConfigEntity (
+    val volt_power_standard: String = "", //驱动器标压阈值
+    val volt_power_low: String = "", //驱动器低压阈值
+    val volt_power_under: String = "", //驱动器欠压阈值
+    val volt_sensor_standard: String = "", //测斜仪标压阈值
+    val volt_sensor_low: String = "", //测斜仪低压阈值
+    val volt_sensor_under: String = "", //测斜仪欠压阈值
+    val rope_length: String = "", //钢丝绳长
+){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)
 

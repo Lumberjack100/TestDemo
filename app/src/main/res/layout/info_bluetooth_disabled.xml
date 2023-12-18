@@ -41,7 +41,7 @@
             android:layout_marginTop="23dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/btn_select"
-            android:onClick="@{() -> click.onEnableBluetoothClick()}"
+            onClickWithDebouncing="@{() -> click.onEnableBluetoothClick()}"
             android:text="打开蓝牙"
             android:textColor="@color/white"
             android:textSize="17sp" />

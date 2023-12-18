@@ -96,8 +96,9 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        binding.refreshLayout.finish()
+                        sendCommandFromCmdList{
+                            binding.refreshLayout.finish()
+                        }
                         initData(result.data.moduleStatusInfo)
                     }
                 }

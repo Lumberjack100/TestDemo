@@ -50,7 +50,7 @@
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
-            android:onClick="@{()->click.onSwitchConfigModel()}"
+            onClickWithDebouncing="@{()->click.onSwitchConfigModel()}"
             android:paddingStart="@dimen/dimen_size_15"
             android:paddingTop="@dimen/dimen_size_15"
             android:paddingEnd="@dimen/dimen_size_15"

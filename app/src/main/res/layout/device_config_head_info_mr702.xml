@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@{!vm.isDeviceStateTagHighLight()?@drawable/ic_ble_connect:@drawable/ic_ble_disconnect}"
                 android:drawablePadding="@dimen/dimen_size_4"
-                android:onClick="@{()->click.onConnectOperateClick()}"
+                onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
                 android:text="@{vm.connectOperateText}"
                 android:textColor="@{!vm.isDeviceStateTagHighLight()?@color/connect_ble_foreground:@color/disconnect_ble_foreground}"
                 android:textSize="@dimen/text_size_13"

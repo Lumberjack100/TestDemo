@@ -9,4 +9,5 @@ class MR702RS485Port1ViewModel : ViewModel() {
     val collectionTimes = NonNullObservableField("")//采集次数
     val noResponseTimes = NonNullObservableField("")//无应答次数
     val delayDuration = NonNullObservableField("")//延时时间
+    val ngateval = NonNullObservableField("")//阈值次数
 }

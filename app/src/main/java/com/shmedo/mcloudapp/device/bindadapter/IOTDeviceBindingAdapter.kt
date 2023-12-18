@@ -72,8 +72,8 @@ object IOTDeviceBindingAdapter {
         value = ["checkedImmediatelyNoEvent"],
         requireAll = false
     )
-    fun setCheckedImmediatelyNoEvent(view: SwitchButton, checked: Boolean) {
-        view.isChecked = checked
+    fun setCheckedImmediatelyNoEvent(switchButton: SwitchButton, checked: Boolean) {
+        switchButton.setCheckedImmediatelyNoEvent(checked)
     }
 
     @JvmStatic

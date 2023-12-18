@@ -140,8 +140,9 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        binding.refreshLayout.finish()
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList{
+                            binding.refreshLayout.finish()
+                        }
                         updateMotionState(result.data)
                     }
                 }
