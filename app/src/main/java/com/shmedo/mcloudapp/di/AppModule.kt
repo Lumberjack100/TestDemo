@@ -7,6 +7,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBrakePadControlInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeCurrentStateInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeInclinometerInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeLockedRotorDetectionInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeLowEnergyModeInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMeterWheelInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotionStateParser
@@ -64,6 +65,7 @@ val appModule = module {
     factory { AdmeBrakePadControlInfoParser() }
     factory { AdmeMotorPowerInfoParser() }
     factory { AdmeVoltageConfigInfoParser() }
+    factory { AdmeLockedRotorDetectionInfoParser() }
 
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -108,6 +110,7 @@ val appModule = module {
             get<AdmeBrakePadControlInfoParser>(),
             get<AdmeMotorPowerInfoParser>(),
             get<AdmeVoltageConfigInfoParser>(),
+            get<AdmeLockedRotorDetectionInfoParser>(),
 
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),

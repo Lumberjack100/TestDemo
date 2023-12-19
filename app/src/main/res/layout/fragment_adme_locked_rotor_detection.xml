@@ -122,6 +122,7 @@
                             android:text="下放加速距离(mm)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            android:id="@+id/et_down_slow_start_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="@={stateVM.downSlowStartIntervalEndValue}"
@@ -140,6 +141,7 @@
                             android:text="下放减速距离(mm)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            android:id="@+id/et_down_slow_stop_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="@={stateVM.downSlowStopIntervalStartValue}"
@@ -165,12 +167,13 @@
                             app:rsb_indicator_background_color="@color/text_color_51B4F8"
                             app:rsb_indicator_height="wrap_content"
                             app:rsb_indicator_padding_bottom="5dp"
-                            app:rsb_indicator_padding_left="10dp"
-                            app:rsb_indicator_padding_right="10dp"
+                            app:rsb_indicator_padding_left="6dp"
+                            app:rsb_indicator_padding_right="6dp"
                             app:rsb_indicator_padding_top="5dp"
                             app:rsb_indicator_radius="3dp"
                             app:rsb_indicator_show_mode="alwaysShow"
                             app:rsb_indicator_width="wrap_content"
+                            app:rsb_indicator_text_size="12sp"
                             app:rsb_max="100"
                             app:rsb_min="0"
                             app:rsb_min_interval="0"
@@ -178,8 +181,8 @@
                             app:rsb_progress_color="#EDEDED"
                             app:rsb_progress_default_color="@color/text_color_51B4F8"
                             app:rsb_thumb_drawable="@drawable/thumb_blue"
-                            app:rsb_thumb_height="20dp"
-                            app:rsb_thumb_width="20dp"
+                            app:rsb_thumb_height="13dp"
+                            app:rsb_thumb_width="13dp"
                             app:rsb_tick_mark_mode="other"
                             app:rsb_tick_mark_text_array="@array/seekBar_array"
                             app:rsb_tick_mark_text_color="@color/text_color_51B4F8" />
@@ -198,6 +201,7 @@
                             android:id="@+id/tv_down_stall_detection_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
+                            android:hint=""
                             android:text="@{stateVM.downStallDetectionInterval}"
                             tools:text="17%-55%" />
 
@@ -216,15 +220,17 @@
                             android:layout_marginTop="@dimen/dimen_size_8"
                             android:layout_marginEnd="16dp"
                             android:layout_marginBottom="@dimen/dimen_size_8"
+                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             app:rsb_gravity="bottom"
                             app:rsb_indicator_background_color="@color/text_color_51B4F8"
                             app:rsb_indicator_height="wrap_content"
                             app:rsb_indicator_padding_bottom="5dp"
-                            app:rsb_indicator_padding_left="10dp"
-                            app:rsb_indicator_padding_right="10dp"
+                            app:rsb_indicator_padding_left="6dp"
+                            app:rsb_indicator_padding_right="6dp"
                             app:rsb_indicator_padding_top="5dp"
                             app:rsb_indicator_radius="3dp"
                             app:rsb_indicator_show_mode="alwaysShow"
+                            app:rsb_indicator_text_size="12sp"
                             app:rsb_indicator_width="wrap_content"
                             app:rsb_max="100"
                             app:rsb_min="0"
@@ -247,8 +253,8 @@
 
                         <TextView
                             style="@style/SwitchButton_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="下放堵转力矩检测"
-                            android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
@@ -259,12 +265,12 @@
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="力矩堵转阈值(A)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:hint="[0.00,2.00]"
                             android:text="@={stateVM.downTorqueStallThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
@@ -278,12 +284,12 @@
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="力矩检测判断时间(s)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:hint="[0.01,5.00]"
                             android:text="@={stateVM.downTorqueDetectionTime}"
                             app:inputTypeFilter='@{"numberDecimal"}'
@@ -298,14 +304,14 @@
 
                         <TextView
                             style="@style/SwitchButton_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="上拉堵转计米检测"
-                            android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}"
                             android:textStyle="bold" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/pullUpEnableSBtn"
                             style="@style/SwitchButton_ButtonStyle"
-                            checkedImmediatelyNoEvent="@{stateVM.upEnable}"
+                            checkedImmediatelyNoEvent="@{stateVM.pullUpEnable}"
                             android:enabled="@{stateVM.isEditable}"
                             android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"
@@ -320,12 +326,13 @@
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.upEnable}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="上拉加速距离(mm)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            android:id="@+id/et_pull_up_slow_start_interval"
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.upEnable}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="@={stateVM.pullUpSlowStartIntervalEndValue}"
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{5}" />
@@ -338,12 +345,13 @@
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.upEnable}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="上拉减速距离(mm)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            android:id="@+id/et_pull_up_slow_stop_interval"
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.upEnable}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="@={stateVM.pullUpSlowStopIntervalStartValue}"
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{5}" />
@@ -367,12 +375,13 @@
                             app:rsb_indicator_background_color="@color/text_color_51B4F8"
                             app:rsb_indicator_height="wrap_content"
                             app:rsb_indicator_padding_bottom="5dp"
-                            app:rsb_indicator_padding_left="10dp"
-                            app:rsb_indicator_padding_right="10dp"
+                            app:rsb_indicator_padding_left="6dp"
+                            app:rsb_indicator_padding_right="6dp"
                             app:rsb_indicator_padding_top="5dp"
                             app:rsb_indicator_radius="3dp"
                             app:rsb_indicator_show_mode="alwaysShow"
                             app:rsb_indicator_width="wrap_content"
+                            app:rsb_indicator_text_size="12sp"
                             app:rsb_max="100"
                             app:rsb_min="0"
                             app:rsb_min_interval="0"
@@ -395,8 +404,8 @@
 
                         <TextView
                             style="@style/SwitchButton_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="上拉堵转力矩检测"
-                            android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
@@ -407,12 +416,12 @@
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.upEnable}"
+                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="力矩堵转阈值(A)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.upEnable}"
+                            textViewEnabled="@{stateVM.isEditable }"
                             android:hint="[1.00,6.00]"
                             android:text="@={stateVM.pullUpTorqueStallThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
@@ -426,12 +435,12 @@
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.upEnable}"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="力矩检测判断时间(s)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.upEnable}"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:hint="[0.01,5.00]"
                             android:text="@={stateVM.pullUpTorqueDetectionTime}"
                             app:inputTypeFilter='@{"numberDecimal"}'
