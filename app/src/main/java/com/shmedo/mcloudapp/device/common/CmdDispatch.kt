@@ -16,7 +16,7 @@ data class Loading(val isLoading: Boolean) : CmdDispatch()
 
 data class DispatchFailed(val cmdStr: String, val errorMsg: String) : CmdDispatch()
 data class DispatchSuccess(val cmdStr: String) : CmdDispatch()
-data class CmdResponseResultError(val errorMsg: String) : CmdDispatch()
-data class CmdResponseResultTimeOut(val errorMsg: String = "") : CmdDispatch()
+data class CmdResponseResultError(val cmdStr: String, val errorMsg: String) : CmdDispatch()
+data class CmdResponseResultTimeOut(val cmdStr: String, val errorMsg: String = "") : CmdDispatch()
 data class CmdResponseResultSuccess(val cmdResult: QueryCmdResult) : CmdDispatch()
 

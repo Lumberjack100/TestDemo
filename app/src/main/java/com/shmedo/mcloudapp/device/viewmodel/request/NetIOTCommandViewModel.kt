@@ -57,15 +57,20 @@ class NetIOTCommandViewModel : BaseViewModel() {
         }
     }
 
-    fun processCmdResult(otherMsgIDList: ArrayList<String> = arrayListOf()) {
+    fun processCmdResult(cmdStr: String = "", otherMsgIDList: ArrayList<String> = arrayListOf()) {
         viewModelScope.launch {
             try {
                 val parameter =
                     QueryCmdResultParam(if (otherMsgIDList.isEmpty()) msgIDList else otherMsgIDList)
-                pollForCommandResult(MoshiUtil.toJson(parameter))
+                pollForCommandResult(cmdStr = cmdStr, jsonParam = MoshiUtil.toJson(parameter))
             } catch (e: Exception) {
                 // 错误处理
-                _cmdDispatchFlow.emit(CmdResponseResultError(e.message ?: "Error"))
+                _cmdDispatchFlow.emit(
+                    CmdResponseResultError(
+                        cmdStr = cmdStr,
+                        errorMsg = e.message ?: "Error"
+                    )
+                )
             }
         }
     }
@@ -73,7 +78,7 @@ class NetIOTCommandViewModel : BaseViewModel() {
     /**
      * 轮询指令响应结果 10次
      */
-    private suspend fun pollForCommandResult(jsonParam: String) {
+    private suspend fun pollForCommandResult(cmdStr: String = "", jsonParam: String) {
         repeat(20) {
             delay(500) // 延迟1秒
             val cmdResult: QueryCmdResult = queryCmdResultByMsgID(jsonParam)
@@ -82,7 +87,7 @@ class NetIOTCommandViewModel : BaseViewModel() {
                 return
             }
         }
-        _cmdDispatchFlow.emit(CmdResponseResultTimeOut())
+        _cmdDispatchFlow.emit(CmdResponseResultTimeOut(cmdStr))
         return
     }
 

@@ -95,11 +95,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     }
 
                     is CmdResponseResultError -> {
-                        doCmdResponseResultError(it.errorMsg)
+                        doCmdResponseResultError(it.cmdStr, it.errorMsg)
                     }
 
                     is CmdResponseResultTimeOut -> {
-                        doCmdResponseResultTimeOut(it.errorMsg)
+                        doCmdResponseResultTimeOut(it.cmdStr, it.errorMsg)
                     }
 
                     is CmdResponseResultSuccess -> {
@@ -168,16 +168,16 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     }
 
     open fun doNetDispatchSuccess(cmdStr: String) {
-        netIotCommandViewModel.processCmdResult()
+        netIotCommandViewModel.processCmdResult(cmdStr = cmdStr)
     }
 
-    open fun doCmdResponseResultError(errorMsg: String) {
+    open fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
         Toaster.show("指令响应错误: $errorMsg")
         dismissLoadingDialog()
         refreshLayout?.finish(false)
     }
 
-    open fun doCmdResponseResultTimeOut(errorMsg: String) {
+    open fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
         Toaster.show("指令响应超时")
         dismissLoadingDialog()
         refreshLayout?.finish(false)
@@ -211,19 +211,22 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         } else {
             bleViewModel.sendCommand(command, true, deviceInfo.apiKey, delaySendMillis)
             if (isStartTimeoutJob)
-                startNearbyCommunicationTimeoutJob(timeoutMillis)
+                startNearbyCommunicationTimeoutJob(command, timeoutMillis)
         }
     }
 
     /**
      * 启动蓝牙通讯/WIFI通信等近场通信超时 Job
      */
-    fun startNearbyCommunicationTimeoutJob(timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS) {
+    fun startNearbyCommunicationTimeoutJob(
+        cmdStr: String = "",
+        timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS
+    ) {
         // 启动一个新的协程作为超时Job
         timeoutJob = launchWithViewLifecycle {
             delay(timeMillis) // 延迟 timeMillis 秒后，提示超时
             withContext(Dispatchers.Main) {
-                showNearbyCommunicationTimeoutAlert()
+                showNearbyCommunicationTimeoutAlert(cmdStr = cmdStr)
             }
         }
     }
@@ -245,6 +248,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
      * 显示近场通信超时提示
      */
     protected open fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String = "",
         isDismissLoadingDialog: Boolean = true,
         isShowMsg: Boolean = true,
         msg: String = ""

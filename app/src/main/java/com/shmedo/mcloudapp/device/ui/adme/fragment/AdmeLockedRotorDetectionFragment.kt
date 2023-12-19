@@ -157,9 +157,8 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                         rightProgress
                     )
 
-                    val downStallDetectionEndValue: Float =
-                        binding.seekBarDownStallDetectionInterval.rightSeekBar.progress
-                    if (downStallDetectionEndValue >= rightProgress) {
+                    //堵转检测区间右边进度条大于下放减速距离的值
+                    if (binding.seekBarDownStallDetectionInterval.rightSeekBar.progress >= rightProgress) {
                         binding.seekBarDownStallDetectionInterval.setProgress(
                             binding.seekBarDownStallDetectionInterval.leftSeekBar.progress,
                             if (rightProgress < 50) 50f else rightProgress - 1
@@ -244,12 +243,10 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
     private fun initSeekBarListener() {
         //下放缓起缓停区间
         binding.seekBarDownSlowStopInterval.setIndicatorTextStringFormat("%s%%")
-//        binding.seekBarDownSlowStopInterval.setIndicatorTextDecimalFormat("0")
         binding.seekBarDownSlowStopInterval.isEnabled = false
 
         //堵转检测区间
         binding.seekBarDownStallDetectionInterval.setIndicatorTextStringFormat("%s%%")
-//        binding.seekBarDownStallDetectionInterval.setIndicatorTextDecimalFormat("0")
         binding.seekBarDownStallDetectionInterval.setOnRangeChangedListener(object :
             OnRangeChangedListener {
             override fun onRangeChanged(
@@ -590,6 +587,36 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowMsg: Boolean,
+        msg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, isShowMsg, msg)
+        if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION) {
+            //隐藏编辑按钮
+            toolbarViewModel.toolbarIvActionVisible.set(false)
+        }
+    }
+
+    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
+        super.doCmdResponseResultError(cmdStr, errorMsg)
+        if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION) {
+            //隐藏编辑按钮
+            toolbarViewModel.toolbarIvActionVisible.set(false)
+        }
+    }
+
+    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
+        super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
+        if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION) {
+            //隐藏编辑按钮
+            toolbarViewModel.toolbarIvActionVisible.set(false)
+        }
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION -> {
@@ -658,6 +685,9 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(info: AdmeLockedRotorDetectionInfo) {
         try {
+            holedepth = info.holedepth.toInt()//下放距离
+            measpacing = info.measpacing.toInt()//上拉测量间距
+
             mStates.downEnable.set(info.lowtbtss == "1")
             mStates.downPulsesPerUnitTime.set(info.numpput)//下放单位时间脉冲数
             mStates.downPulseDetectionTime.set(decimalFormat.format(info.pdajtime.toDouble()))//下放脉冲检测判断时间
@@ -675,14 +705,36 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     ""
                 )
             )
+            var leftProgress1: Float = if (holedepth == 0) 0f
+            else mStates.downSlowStartIntervalEndValue.get()
+                .toFloat() / holedepth.toFloat() * 100f
+
+            var rightProgress1: Float = if (holedepth == 0) 0f
+            else (1 - mStates.downSlowStopIntervalStartValue.get()
+                .toFloat() / holedepth.toFloat()) * 100f
+
+            decimalFormat.applyPattern("#.#")
+            leftProgress1 =
+                if (leftProgress1 > 50) 49f else decimalFormat.format(leftProgress1).toFloat()
+            rightProgress1 =
+                if (rightProgress1 < 50) 50f else decimalFormat.format(rightProgress1).toFloat()
+            binding.seekBarDownSlowStopInterval.setProgress(
+                leftProgress1,
+                rightProgress1
+            )
 
             mStates.downStallDetectionIntervalStartValue.set(info.detintiona)//堵转检测区间起始值
             mStates.downStallDetectionIntervalEndValue.set(info.detintionb)//堵转检测区间终值
             decimalFormat.applyPattern("#.#")
+            val leftProgress2: Float = decimalFormat.format(info.detintiona.toFloat()).toFloat()
+            var rightProgress2: Float = decimalFormat.format(info.detintionb.toFloat()).toFloat()
+            //TODO 堵转检测区间右边进度条必须小于下放缓停区间的右边进度条数值
+            rightProgress2 =
+                if (rightProgress2 >= rightProgress1) rightProgress1 - 1 else rightProgress2
             //堵转检测区间
             binding.seekBarDownStallDetectionInterval.setProgress(
-                decimalFormat.format(info.detintiona.toFloat()).toFloat(),
-                decimalFormat.format(info.detintionb.toFloat()).toFloat()
+                leftProgress2,
+                rightProgress2
             )
 
             decimalFormat.applyPattern("#.##")
@@ -711,38 +763,22 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             decimalFormat.applyPattern("#.#")
             mStates.pullUpTorqueDetectionTime.set(decimalFormat.format(info.uptordetime.toDouble()))//下放力矩检测判断时间
 
-            holedepth = info.holedepth.toInt()//下放距离
-            measpacing = info.measpacing.toInt()//上拉测量间距
-            var leftProgress: Float = if (holedepth == 0) 0f
-            else mStates.downSlowStartIntervalEndValue.get()
-                .toFloat() / holedepth.toFloat() * 100f
-
-            var rightProgress: Float = if (holedepth == 0) 0f
-            else (1 - mStates.downSlowStopIntervalStartValue.get()
-                .toFloat() / holedepth.toFloat()) * 100f
-
-            leftProgress = if (leftProgress > 50) 49f else leftProgress
-            rightProgress = if (rightProgress < 50) 50f else rightProgress
-            decimalFormat.applyPattern("#.#")
-            binding.seekBarDownSlowStopInterval.setProgress(
-                decimalFormat.format(leftProgress).toFloat(),
-                decimalFormat.format(rightProgress).toFloat()
-            )
-
-            leftProgress = if (measpacing == 0) 0f
+            var leftProgress3: Float = if (measpacing == 0) 0f
             else mStates.pullUpSlowStartIntervalEndValue.get()
                 .toFloat() / holedepth.toFloat() * 100f
 
-            rightProgress = if (measpacing == 0) 100f
+            var rightProgress3 = if (measpacing == 0) 100f
             else (1 - mStates.pullUpSlowStopIntervalStartValue.get()
                 .toFloat() / holedepth.toFloat()) * 100f
 
-            leftProgress = if (leftProgress > 50) 49f else leftProgress
-            rightProgress = if (rightProgress < 50) 50f else rightProgress
             decimalFormat.applyPattern("#.#")
+            leftProgress3 =
+                if (leftProgress3 > 50) 49f else decimalFormat.format(leftProgress3).toFloat()
+            rightProgress3 =
+                if (rightProgress3 < 50) 50f else decimalFormat.format(rightProgress3).toFloat()
             binding.seekBarPullUpSlowStopInterval.setProgress(
-                decimalFormat.format(leftProgress).toFloat(),
-                decimalFormat.format(rightProgress).toFloat()
+                leftProgress3,
+                rightProgress3
             )
         } catch (e: Exception) {
             e.printStackTrace()

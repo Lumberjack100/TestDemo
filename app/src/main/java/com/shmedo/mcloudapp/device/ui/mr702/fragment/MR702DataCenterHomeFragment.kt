@@ -22,10 +22,10 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterHomeBinding
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -126,30 +126,12 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
         isDismissLoadingDialog: Boolean,
         isShowMsg: Boolean,
         msg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(isDismissLoadingDialog, isShowMsg, msg)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        super.doNetDispatchFailed(cmdStr, errorMsg)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        netIotCommandViewModel.processCmdResult()
-    }
-
-    override fun doCmdResponseResultError(errorMsg: String) {
-        super.doCmdResponseResultError(errorMsg)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun doCmdResponseResultTimeOut(errorMsg: String) {
-        super.doCmdResponseResultTimeOut(errorMsg)
+        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, isShowMsg, msg)
         binding.refreshLayout.finish(false)
     }
 
@@ -170,7 +152,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initDataCenterStatus(result.data)

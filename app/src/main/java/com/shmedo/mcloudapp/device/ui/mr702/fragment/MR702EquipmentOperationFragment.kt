@@ -24,7 +24,6 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702EquipmentOperationBinding
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.ConfigModule
@@ -36,6 +35,7 @@ import com.shmedo.mcloudapp.device.model.ParameterExportModule
 import com.shmedo.mcloudapp.device.model.ParameterImportModule
 import com.shmedo.mcloudapp.device.model.TelemetryDataModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702DeviceDataUploadPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702ManualSettingPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702ParamExportPopupView
@@ -323,7 +323,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             mStates.isParamImporting.set(true)
             mStates.isResponseLoading.set(true)
             mStates.isResponseSuccess.set(false)
-            netIotCommandViewModel.processCmdResult(arrayListOf(msgID))
+            netIotCommandViewModel.processCmdResult("", arrayListOf(msgID))
         }
     }
 
@@ -369,14 +369,14 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun doCmdResponseResultError(errorMsg: String) {
+    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
 //        super.doCmdResponseResultError(errorMsg)
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
         mStates.responseContent.set(errorMsg)
     }
 
-    override fun doCmdResponseResultTimeOut(errorMsg: String) {
+    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
 //        super.doCmdResponseResultTimeOut(errorMsg)
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
@@ -384,11 +384,12 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
         isDismissLoadingDialog: Boolean,
         isShowMsg: Boolean,
         msg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(isDismissLoadingDialog, false, msg)
+        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
         mStates.responseContent.set("指令响应超时")

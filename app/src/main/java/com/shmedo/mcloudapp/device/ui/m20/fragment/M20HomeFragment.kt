@@ -196,7 +196,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     override fun doNetDispatchSuccess(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.M20_MD_LEVEL_INITIAL -> {
-                netIotCommandViewModel.processCmdResult()
+                netIotCommandViewModel.processCmdResult(cmdStr = cmdStr)
             }
 
             else -> {}
