@@ -49,7 +49,7 @@
                     tools:text="19D95B"
                     tools:textColor="@color/title_text_color" />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_signal"
                     android:layout_width="15dp"
                     android:layout_height="13dp"
@@ -65,7 +65,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center_vertical">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_battery"
                     android:layout_width="26dp"
                     android:layout_height="15dp"

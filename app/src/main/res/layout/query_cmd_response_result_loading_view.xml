@@ -9,7 +9,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="99dp"
             android:layout_height="99dp"
             android:src="@drawable/cmd_response_loading" />

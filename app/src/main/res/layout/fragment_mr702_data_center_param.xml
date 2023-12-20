@@ -550,7 +550,7 @@
                                 <TextView
                                     style="@style/Common_ClickableItem_TitleStyle"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                    android:text="数据补发间隔(min)" />
+                                    android:text="数据补发间隔(分钟)" />
 
                                 <com.shmedo.mcloudapp.common.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"

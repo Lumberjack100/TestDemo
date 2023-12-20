@@ -1,4 +1,4 @@
-package com.shmedo.wysmobilepatrol.ui.view
+package com.shmedo.mcloudapp.common.widget
 
 import android.content.Context
 import android.content.res.TypedArray

@@ -183,10 +183,11 @@ object CommonBindingAdapter {
     )
     fun setLengthFilter(
         editText: AppCompatEditText,
-        length: Int,
+        length: Int? = null,
         textFilter: String? = ""
     ) {
-        val lengthFilter = InputFilter.LengthFilter(length)
+        val effectiveLength = length ?: 20 // 如果length为null，则使用-1作为默认值
+        val lengthFilter = InputFilter.LengthFilter(effectiveLength)
         if (textFilter.isNullOrEmpty()) {
             editText.filters = arrayOf(lengthFilter)
             return

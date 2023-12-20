@@ -129,7 +129,7 @@
                             style="@style/SwitchButton_TitleStyle"
                             android:text="力矩电机断电重启" />
 
-                        <ImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_reboot"
                             onClickWithDebouncing="@{()->click.onTorqueMotorRebootClick()}"
                             android:layout_width="30dp"

@@ -42,7 +42,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_27" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="211dp"
                 android:layout_height="207dp"
                 android:layout_gravity="top|end"
@@ -101,7 +101,7 @@
                         android:background="@drawable/login_edittext_shape"
                         android:gravity="center_vertical">
 
-                        <ImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_marginStart="23dp"
@@ -133,7 +133,7 @@
                         android:background="@drawable/login_edittext_shape"
                         android:gravity="center_vertical">
 
-                        <ImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_marginStart="23dp"
@@ -157,7 +157,7 @@
                             android:textColorHint="@color/text_color_cccccc"
                             android:textSize="@dimen/text_size_18" />
 
-                        <ImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_eye_password"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
@@ -183,7 +183,7 @@
                         android:background="@drawable/login_edittext_shape"
                         android:gravity="center_vertical">
 
-                        <ImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_marginStart="23dp"
@@ -285,7 +285,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_login_way"
                 android:layout_width="56dp"
                 android:layout_height="56dp"

@@ -65,7 +65,7 @@
                 app:tabPaddingStart="0dp"
                 app:tabRippleColor="@null" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_select_product"
                 android:layout_width="33dp"
                 android:layout_height="56dp"

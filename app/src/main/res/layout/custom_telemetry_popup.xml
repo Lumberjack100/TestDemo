@@ -36,7 +36,7 @@
                 android:layout_marginStart="@dimen/dimen_size_15"
                 android:layout_marginEnd="@dimen/dimen_size_15">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_dot"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
@@ -58,7 +58,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="响应成功" />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_marginStart="@dimen/dimen_size_8"

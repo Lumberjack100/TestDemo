@@ -82,8 +82,8 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
+                            android:hint="数值范围[1,600]"
                             android:text="@={stateVM.movementSpeed}"
-                            android:hint="请输入 [1,600] 之间的值"
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{10}" />
 

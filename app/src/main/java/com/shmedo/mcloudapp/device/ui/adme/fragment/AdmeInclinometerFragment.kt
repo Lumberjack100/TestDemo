@@ -10,6 +10,7 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
+import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.util.IOTRegexContants
@@ -188,7 +189,11 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.torsionAngle.get().toDouble()
             if (value < -90 || value > 90) {
-                Toaster.show("请输入正确的扭转角γ!")
+                MessageDialog.show(
+                    "提示",
+                    "扭转角γ数值范围[-90,90]!",
+                    "我已知晓"
+                )
                 return
             }
         } catch (ex: Exception) {

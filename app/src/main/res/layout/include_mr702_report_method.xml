@@ -50,7 +50,7 @@
                 android:textSize="@dimen/text_size_17"
                 tools:text="定时定点上报" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="@dimen/dimen_size_8"
@@ -90,7 +90,7 @@
                 android:textColorHint="@color/text_color_hint"
                 android:textSize="@dimen/text_size_17" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_start_time"
                 android:layout_width="16dp"
                 android:layout_height="16dp"

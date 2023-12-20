@@ -106,12 +106,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     val rightValue = if (mStates.downSlowStopIntervalStartValue.get().isEmpty()) 0f
                     else mStates.downSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > holedepth) {
-                        PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "mm)")
+                        PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "毫米)")
                             .autoDismiss(4000).iconWarning()
                         return@setOnFocusChangeListener
                     }
                     if (leftValue > holedepth / 2) {
-                        PopTip.show("下放加速距离不能超过下放总距离(" + holedepth + "mm) 的 50%")
+                        PopTip.show("下放加速距离不能超过下放总距离(" + holedepth + "毫米) 的 50%")
                             .autoDismiss(4000).iconWarning()
                         return@setOnFocusChangeListener
                     }
@@ -140,7 +140,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     else mStates.downSlowStartIntervalEndValue.get().toFloat()
                     val rightValue = mStates.downSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > holedepth) {
-                        PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "mm)")
+                        PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "毫米)")
                             .autoDismiss(4000).iconWarning()
                         return@setOnFocusChangeListener
                     }
@@ -183,7 +183,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                         if (mStates.pullUpSlowStopIntervalStartValue.get().isEmpty()) 0f
                         else mStates.pullUpSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > measpacing) {
-                        PopTip.show("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "mm)")
+                        PopTip.show("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "毫米)")
                             .autoDismiss(4000).iconWarning()
                         return@setOnFocusChangeListener
                     }
@@ -217,7 +217,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     else mStates.pullUpSlowStartIntervalEndValue.get().toFloat()
                     val rightValue = mStates.pullUpSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > measpacing) {
-                        PopTip.show("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "mm)")
+                        PopTip.show("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "毫米)")
                             .autoDismiss(4000).iconWarning()
                         return@setOnFocusChangeListener
                     }
@@ -438,7 +438,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 if (value < 0.1 || value > 10) {
                     MessageDialog.show(
                         "提示",
-                        "下放脉冲检测判断时间不能小于0.1或大于10!",
+                        "电机驱动器地址数值范围[0.1,10]!",
                         "我已知晓"
                     )
                     return

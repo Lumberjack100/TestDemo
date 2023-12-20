@@ -56,7 +56,7 @@
             android:paddingEnd="@dimen/dimen_size_15"
             app:layout_constraintTop_toBottomOf="@+id/ll_device_info">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_switch_adme_config_model" />
@@ -72,7 +72,7 @@
                 android:textSize="@dimen/text_size_17"
                 tools:text="设备配置模式" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_adme_home_down_triangle" />

@@ -34,7 +34,7 @@
             android:layout_gravity="center_vertical|end"
             android:layout_marginEnd="15dp">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_action"
                 imageResId="@{vm.toolbarIvActionResId}"
                 visible="@{vm.toolbarIvActionVisible}"

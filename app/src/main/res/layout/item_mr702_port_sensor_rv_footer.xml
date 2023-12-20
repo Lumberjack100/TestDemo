@@ -19,7 +19,7 @@
         app:drawable_solidColor="@{@color/search_bg_gray_color}"
         tools:background="@color/search_bg_gray_color">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center"

@@ -64,7 +64,7 @@
                         android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_14" />
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/userAvatar"
                         circleImageUrl="@{vm.imageUrl}"
                         placeHolder="@{vm.placeHolder}"
@@ -75,7 +75,7 @@
                         android:layout_toStartOf="@+id/iv_arrow_right"
                         android:src="@drawable/ic_account" />
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_arrow_right"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

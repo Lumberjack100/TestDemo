@@ -255,7 +255,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 "3" -> {
                     val msg = if (measurePoint.isNotEmpty() && !measurePoint.contains("|"))
                         String.format(
-                            "管底等待-位置(%s m)-剩余时间(%s s)",
+                            "管底等待-位置(%s 米)-剩余时间(%s 秒)",
                             measurePoint,
                             admeMotionState.waittime
                         )
@@ -269,7 +269,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                         val points = measurePoint.split("|")
                         val msg = if (points[0].isNotEmpty() && points[1].isNotEmpty())
                             String.format(
-                                "测点测量-测斜仪位置(%s m)-测点序列(%s)",
+                                "测点测量-测斜仪位置(%s 米)-测点序列(%s)",
                                 points[1],
                                 points[0]
                             )

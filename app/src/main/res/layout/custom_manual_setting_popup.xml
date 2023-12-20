@@ -63,7 +63,7 @@
                         android:textSize="@dimen/text_size_16"
                         tools:text="2020-12-12 12:12:12" />
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_marginStart="@dimen/dimen_size_8"

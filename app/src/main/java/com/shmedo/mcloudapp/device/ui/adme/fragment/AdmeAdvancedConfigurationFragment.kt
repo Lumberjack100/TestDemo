@@ -115,7 +115,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     name = "执行机构",
                     desc = "参数配置",
                     resID = R.drawable.ic_basic_config,
-                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeExecutiveAgencyFragment
                 )
             ),
             ConfigModule(

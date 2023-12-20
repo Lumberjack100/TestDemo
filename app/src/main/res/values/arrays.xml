@@ -248,6 +248,37 @@
         <item>手动</item>
         <item>自动</item>
     </string-array>
+
+    <!-- ADME 测量方式-->
+    <string-array name="adme_measure_method">
+        <item>实时测量</item>
+        <item>整时整点测量</item>
+        <item>定时定点测量</item>
+    </string-array>
+
+    <!-- ADME 数据解算方式-->
+    <string-array name="adme_settlement_method">
+        <item>顶部固定法</item>
+        <item>底部固定法</item>
+    </string-array>
+
+    <!-- ADME 数据应答-->
+    <string-array name="adme_data_response_type">
+        <item>关闭</item>
+        <item>启用</item>
+    </string-array>
+
+    <!-- ADME 每轮测量间隔-->
+    <string-array name="adme_measure_interval_per_rounds">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
+        <item>12</item>
+        <item>24</item>
+    </string-array>
     <!-- ADME end-->
 
 </resources>

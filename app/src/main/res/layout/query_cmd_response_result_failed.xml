@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_dot"
             android:layout_width="10dp"
             android:layout_height="10dp"
@@ -36,7 +36,7 @@
             app:layout_constraintStart_toEndOf="@+id/iv_dot"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="@dimen/dimen_size_8"

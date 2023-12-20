@@ -9,7 +9,7 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_image"
         android:layout_width="22dp"
         android:layout_height="22dp"
