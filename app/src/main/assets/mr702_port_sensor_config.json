@@ -48,50 +48,11 @@
         ]
       },
       {
-        "sensorName": "自定义",
+        "sensorName": "自定义传感器",
         "sensorType": "000",
         "modelToken": "000",
         "modelFieldList": [
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          },
-          {
-            "fieldName": "自定义采集项",
-            "engUnit": "m"
-          }
+
         ]
       }
     ]

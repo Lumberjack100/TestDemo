@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -165,16 +166,12 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initDataCenterStatus(dataCenterStatus: MRDataCenterStatus) {
-        binding.refreshLayout.addData(
-            mutableListOf(
-                DataCenterStatusItem(1, "数据中心01", dataCenterStatus.status1),
-                DataCenterStatusItem(2, "数据中心02", dataCenterStatus.status2),
-                DataCenterStatusItem(3, "数据中心03", dataCenterStatus.status3),
-                DataCenterStatusItem(4, "数据中心04", dataCenterStatus.status4),
-                DataCenterStatusItem(5, "数据中心05", dataCenterStatus.status5),
-            ), hasMore = {
-                false
-            }
+        binding.recyclerView.models = mutableListOf(
+            DataCenterStatusItem(1, "数据中心01", dataCenterStatus.status1),
+            DataCenterStatusItem(2, "数据中心02", dataCenterStatus.status2),
+            DataCenterStatusItem(3, "数据中心03", dataCenterStatus.status3),
+            DataCenterStatusItem(4, "数据中心04", dataCenterStatus.status4),
+            DataCenterStatusItem(5, "数据中心05", dataCenterStatus.status5),
         )
     }
 

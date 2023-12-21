@@ -67,7 +67,6 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.title = "RS485-1"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -83,9 +82,16 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             sensorItem = it.getParcelable(SENSOR_MODEL_ITEM)!!
         }
-        mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
+        mStates.modelField.set(
+            if (sensorItem.modelFieldList.isNotEmpty()) {
+                sensorItem.modelFieldList[0]
+            } else {
+                "采集项${modelFieldIndex + 1}"
+            }
+        )
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
+        binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -196,7 +202,13 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
      * 重置采集项
      */
     private fun resetModelField() {
-        mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
+        mStates.modelField.set(
+            if (sensorItem.modelFieldList.isNotEmpty()) {
+                sensorItem.modelFieldList[modelFieldIndex]
+            } else {
+                "采集项${modelFieldIndex + 1}"
+            }
+        )
         mStates.hydrologicalIdentification.set("")
         mStates.collectionInstructions.set("")
         mStates.ratio.set("")

@@ -55,7 +55,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
-    private val decimalFormat = DecimalFormat("#.#")
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
@@ -67,6 +66,9 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private val activeSize: Float = 18f
     private val normalSize: Float = 15f
     private var selectedFieldIndex = 0
+
+    private val tabList: MutableList<String> = arrayListOf()
+    private val decimalFormat = DecimalFormat("#.#")
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -80,7 +82,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.title = "RS485-1"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -89,7 +90,16 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 processBack(true)
             }
         })
+        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
+        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(true)
         initRefresh()
+    }
+
+    private fun setEditable(editable: Boolean) {
+        toolbarViewModel.toolbarIvActionVisible.set(!editable)
+        toolbarViewModel.toolbarTvActionVisible.set(editable)
+        mStates.isEditable.set(editable)
     }
 
     private fun initRefresh() {
@@ -107,29 +117,23 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     override fun initData() {
         super.initData()
         arguments?.let {
-            sensorItem = it.getParcelable(MR702RS485Port2SensorParamFragment.SENSOR_MODEL_ITEM)!!
+            sensorItem = it.getParcelable(SENSOR_MODEL_ITEM)!!
         }
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
-
-        initTabLayout()
-        mStates.sensorType.set(sensorItem.sensorType)
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
-    }
-
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
+        binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
+        if (sensorItem.modelFieldList.isNotEmpty()) {
+            tabList.clear()
+            tabList.addAll(sensorItem.modelFieldList)
+            initTabLayout()
+        }
     }
 
     private fun initTabLayout() {
         val tabLayout = binding.tabs
-        sensorItem.modelFieldList.forEachIndexed { index, fieldName ->
+        tabList.forEachIndexed { index, name ->
             val textView = TextView(requireContext())
-            textView.text = fieldName
+            textView.text = name
             textView.textSize = if (index == 0) activeSize else normalSize
             textView.typeface = if (index == 0) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
             textView.gravity = Gravity.CENTER
@@ -368,7 +372,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)
@@ -402,8 +406,15 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private fun initParamData(content: String) {
         launchWithViewLifecycle {
             try {
-                val sensorParamWrapper =
-                    MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content) ?: return@launchWithViewLifecycle
+                val sensorParamWrapper = MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content)
+                    ?: return@launchWithViewLifecycle
+                if (mStates.sensorName.get().contains("自定义") && selectedFieldIndex == 0) {
+                    tabList.clear()
+                    for (i in 0..sensorParamWrapper.indexnum.toInt()) {
+                        tabList.add("采集项${i + 1}")
+                    }
+                    initTabLayout()
+                }
                 sensorParamWrapper.port1_param.let {
                     val sensorParam: MRRS485Port1SensorParam = it[0]
                     val strs = sensorParam.model.split("_").toTypedArray()

@@ -368,7 +368,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         addr = strs[1],
                         addrDesc = "地址-${strs[1]}",
                         sensorName = mInterfaceHomeViewModel.sensorMap[strs[0]]?.sensorName
-                            ?: "自定义",
+                            ?: "自定义传感器",
                         modelToken = strs[0],
                         modelFieldList = mInterfaceHomeViewModel.sensorMap[strs[0]]?.modelFieldList?.map { it.fieldName }
                             ?: listOf()
