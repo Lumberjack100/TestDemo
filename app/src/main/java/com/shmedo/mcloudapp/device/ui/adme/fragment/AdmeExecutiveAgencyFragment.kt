@@ -756,10 +756,10 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             }
             mStates.dataReadingInterval.set(info.datainval)
             mStates.measurementCompensationTime.set(info.compensatetime)
-            mStates.motorDriveAddress.set(info.driveaddress)
-            mStates.decentralizationSpeed.set(info.downspeed)
             decimalFormat.applyPattern("#.##")
             mStates.inclinometerTubeHoleDepth.set(decimalFormat.format(info.interdeep.toDouble()))
+            mStates.motorDriveAddress.set(info.driveaddress)
+            mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
             mStates.pullUpSpeed.set(info.upspeed)
             decimalFormat.applyPattern("#.##")

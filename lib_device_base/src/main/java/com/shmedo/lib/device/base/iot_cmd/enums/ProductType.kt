@@ -20,14 +20,14 @@ enum class ProductType(
     BHY("BHY", "H", "崩滑仪"),
     DAS("DAS", "L", "智能采集器"),
     DMS("DMS", "F", "数字式采集仪"),
-    E40("E40|E60", "B", "GNSS"),
+    E40("E40,E60", "B", "GNSS"),
     HAC("ADME_HAC10", "T", "半自动化测斜机器人"),
     INCLINOMETER_DEBUG_BOX("INCLINOMETER", "#", "蓝牙测斜仪调试盒子"),
     LR200("LR200", "Z", "一体式裂缝计"),
     M20("M20", "V", "M20-GNSS"),
-    MR702("SL651", "L", "水利遥测终端机"),
+    MR702("SL651,MR702", "L", "水利遥测终端机"),
     RN20("RN20", "Y", "轴力计"),
-    VMS("VMS|GW300", "G", "振弦式采集仪"),
+    VMS("VMS,GW300", "G", "振弦式采集仪"),
 
     UnKnown("UnKnown", "#", "未知类型");
 
@@ -47,7 +47,7 @@ enum class ProductType(
             if (TextUtils.isEmpty(productToken))
                 return UnKnown
             for (productType in values()) {
-                val tags = productType.prefix.split("\\|").toTypedArray()
+                val tags = productType.prefix.split(",").toTypedArray()
                 for (tag in tags) {
                     if (productToken.uppercase(Locale.getDefault()).startsWith(tag))
                         return productType

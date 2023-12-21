@@ -4,18 +4,18 @@ pluginManagement {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        maven {url 'https://developer.huawei.com/repo/'}// 华为仓
+        maven {url 'https://developer.huawei.com/repo/'}
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        jcenter()
         mavenCentral()
+        jcenter()
         maven { url 'https://jitpack.io' }
         maven { url "https://maven.aliyun.com/repository/public" }
-        maven {url 'https://developer.huawei.com/repo/'}// 华为仓
+        maven {url 'https://developer.huawei.com/repo/'}
     }
 }
 

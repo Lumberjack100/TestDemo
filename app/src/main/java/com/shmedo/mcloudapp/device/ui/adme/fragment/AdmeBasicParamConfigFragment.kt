@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -20,6 +21,10 @@ import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.util.IOTRegexContants
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeBasicConfigEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeExecutiveAgencyInfoEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeBasicConfigInfo
@@ -35,7 +40,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
-import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeBasicParamConfigBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -245,17 +249,11 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             when (button.id) {
                 R.id.downEnableSBtn -> { //下放使能
                     mStates.downEnable.set(isChecked)
-                    if (!isChecked) {
-                        showMessage("确定使下放计米堵转检测不生效？", "温馨提示", "确定", {
-                            closeDownOrPullUpEnable()
-                        }, "取消", {
-                            mStates.downEnable.set(true)
-                            (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
-                        })
-                    }
+                    enableOrDisableLockRotorParam(isChecked)
                 }
 
                 R.id.positiveAndNegativeSB -> { //正反测使能
+                    mStates.positiveAndNegativeTest.set(isChecked)
                     enableOrDisableStepperMotorParam(isChecked)
                 }
             }
@@ -269,6 +267,40 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
+    }
+
+    /**
+     *
+     */
+    private fun enableOrDisableLockRotorParam(isChecked: Boolean) {
+        commandItems.clear()
+        val entity = AdmeLockedRotorDetectionEntity(
+            lowtbtss = if (isChecked) "1" else "0",//下放堵转缓停（0:关闭，1:开启）
+            numpput = mStates.lockedRotorDetectionInfoWrapper.get().numpput,//单位时间脉冲数
+            pdajtime = mStates.lockedRotorDetectionInfoWrapper.get().pdajtime,//脉冲检测判断时间
+            lowsusranb = mStates.lockedRotorDetectionInfoWrapper.get().lowsusranb,//下放缓起区间终值(加速阶段)
+            lowsusrana = mStates.lockedRotorDetectionInfoWrapper.get().lowsusrana,//下放缓停区间起始值(减速阶段)
+            detintiona = mStates.lockedRotorDetectionInfoWrapper.get().detintiona,//堵转检测区间起始值
+            detintionb = mStates.lockedRotorDetectionInfoWrapper.get().detintionb,//堵转检测区间终值
+            lowtorblothr = mStates.lockedRotorDetectionInfoWrapper.get().lowtorblothr,//下放力矩堵转阈值
+            lowtordetime = mStates.lockedRotorDetectionInfoWrapper.get().lowtordetime,//下放力矩检测判断时间
+            uptbtss = mStates.lockedRotorDetectionInfoWrapper.get().uptbtss,//上拉堵转缓停（0:关闭，1:开启）
+            upsusranb = mStates.lockedRotorDetectionInfoWrapper.get().upsusranb,//上拉缓起区间终值(加速阶段)
+            upsusrana = mStates.lockedRotorDetectionInfoWrapper.get().upsusrana,//上拉缓停区间起始值(减速阶段)
+            uptorblothr = mStates.lockedRotorDetectionInfoWrapper.get().uptorblothr,//下放力矩堵转阈值
+            uptordetime = mStates.lockedRotorDetectionInfoWrapper.get().uptordetime,//下放力矩检测判断时间
+        )
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**
@@ -293,7 +325,170 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
+        if (mStates.address.get().isEmpty()) {
+            Toaster.show("请输入Mac地址!")
+            return
+        }
+        if (!RegexUtils.isMatch(
+                IOTRegexContants.REGEX_MAC_ADDRESS_NO_COLON,
+                mStates.address.get()
+            )
+        ) {
+            Toaster.show("请输入正确的Mac地址!")
+            return
+        }
 
+        if (mStates.measureMethod.get() == 0) {
+            if (mStates.waitingIntervalPerRound.get().isEmpty()) {
+                Toaster.show("请输入每轮等待时间!")
+                return
+            }
+            try {
+                val value = mStates.waitingIntervalPerRound.get().toDouble()
+                if (value < 1) {
+                    Toaster.show("请输入正确的每轮等待时间!")
+                    return
+                }
+            } catch (ex: Exception) {
+                Toaster.show("请输入正确的每轮等待时间!")
+                return
+            }
+        }
+
+        if (mStates.measureMethod.get() == 2) {
+            if (mStates.intervalDays.get().isEmpty()) {
+                Toaster.show("请输入间隔时间!")
+                return
+            }
+            try {
+                val value = mStates.intervalDays.get().toDouble()
+                if (value < 0) {
+                    Toaster.show("请输入正确的间隔时间!")
+                    return
+                }
+            } catch (ex: Exception) {
+                Toaster.show("请输入正确的间隔时间!")
+                return
+            }
+            if (mAdapter.data.size < 1) {
+                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓")
+                return
+            }
+        }
+
+        if (mStates.inclinometerTubeHoleDepth.get().isEmpty()) {
+            Toaster.show("请输入测斜管孔深!")
+            return
+        }
+        try {
+            val value = mStates.inclinometerTubeHoleDepth.get().toDouble()
+        } catch (ex: Exception) {
+            MessageDialog.show(
+                "提示",
+                "请输入正确的测斜管孔深!",
+                "我已知晓"
+            )
+            return
+        }
+
+        if (mStates.decentralizationSpeed.get().isEmpty()) {
+            Toaster.show("请输入电机下放速度!")
+            return
+        }
+        try {
+            val value = mStates.decentralizationSpeed.get().toDouble()
+            if (value < 1 || value > 180) {
+                MessageDialog.show(
+                    "提示",
+                    "电机下放速度数值范围[1,180]!",
+                    "我已知晓"
+                )
+                return
+            }
+        } catch (ex: Exception) {
+            MessageDialog.show(
+                "提示",
+                "电机下放速度数值范围[1,180]!",
+                "我已知晓"
+            )
+            return
+        }
+
+        if (mStates.decentralizationWaitingTime.get().isEmpty()) {
+            Toaster.show("请输入下放等待时间!")
+            return
+        }
+        try {
+            val value = mStates.decentralizationWaitingTime.get().toDouble()
+            if (value < 1 || value > 32) {
+                MessageDialog.show(
+                    "提示",
+                    "下放等待时间数值范围[1,32]!",
+                    "我已知晓"
+                )
+                return
+            }
+        } catch (ex: Exception) {
+            MessageDialog.show(
+                "提示",
+                "下放等待时间数值范围[1,32]!",
+                "我已知晓"
+            )
+            return
+        }
+
+        val basicConfigEntity = AdmeBasicConfigEntity(
+            inctype = mStates.basicConfigInfoWrapper.get().inctype,
+            address = mStates.address.get(),
+            interdeep = mStates.inclinometerTubeHoleDepth.get(),
+            downspeed = mStates.decentralizationSpeed.get(),
+            downwaitetime = mStates.decentralizationWaitingTime.get(),
+            datatype = if (mStates.dataSettlementMethod.get() == settlementMethodList[0]) "0" else "1",
+        )
+        commandItems.clear()
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_SET_BASIC,
+            basicConfigEntity.toCommandString()
+        )
+        commandItems.add(command)
+
+        val executiveAgencyInfoEntity = AdmeExecutiveAgencyInfoEntity(
+            meastype = mStates.measureMethod.get().toString(),
+            datatype = if (mStates.dataSettlementMethod.get() == settlementMethodList[0]) "0" else "1",
+            datareply = mStates.executiveAgencyInfoWrapper.get().datareply,
+            roundwaitetime = mStates.waitingIntervalPerRound.get(),
+            roundmeasinval = mStates.measurementIntervalPerRound.get(),
+            invalday = mStates.intervalDays.get(),
+            roundmeasstart = if (mStates.measureMethod.get() == 2)
+                mAdapter.data.joinToString("|") { it.time.substring(0, 2) }
+            else
+                mStates.startTimePerRound.get(),
+            datainval = mStates.executiveAgencyInfoWrapper.get().datainval,
+            compensatetime = mStates.executiveAgencyInfoWrapper.get().compensatetime,
+            interdeep = mStates.inclinometerTubeHoleDepth.get(),
+            driveaddress = mStates.executiveAgencyInfoWrapper.get().driveaddress,
+            downspeed = mStates.decentralizationSpeed.get(),
+            downwaitetime = mStates.decentralizationWaitingTime.get(),
+            upspeed = mStates.executiveAgencyInfoWrapper.get().upspeed,
+            measpacing = mStates.executiveAgencyInfoWrapper.get().measpacing,
+            meaintertime = mStates.executiveAgencyInfoWrapper.get().meaintertime,
+            meabaseth = mStates.executiveAgencyInfoWrapper.get().meabaseth,
+            interval_compensation = mStates.executiveAgencyInfoWrapper.get().interval_compensation,
+            bottom_safe_distance = mStates.executiveAgencyInfoWrapper.get().bottom_safe_distance,
+            interval_fitting = mStates.executiveAgencyInfoWrapper.get().interval_fitting,
+            point_offset = mStates.executiveAgencyInfoWrapper.get().point_offset,
+        )
+        command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY,
+            executiveAgencyInfoEntity.toCommandString()
+        )
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -351,7 +546,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initLockedRotorDetectionInfo(result.data)
+                        initBasicConfigInfo(result.data)
                     }
                 }
             }
@@ -401,7 +596,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        admeLockedRotorDetectionInfo = result.data
+//                        admeLockedRotorDetectionInfo = result.data
                         initLockedRotorDetectionInfo(result.data)
                     }
                 }
@@ -429,7 +624,21 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
+            IOTCommandType.ADME_MD_SET_BASIC -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置基础配置参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
 
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
             IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -442,6 +651,38 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                                 "一轮测量时间不能少于"
                             ) + "小时"
                         MessageDialog.show("提示", errMsg, "我已知晓")
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置堵转参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_SET_STEPPER_MOTOR -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置步进电机参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
                         return
                     }
 
@@ -474,19 +715,20 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initBasicConfigInfo(info: AdmeBasicConfigInfo) {
-
+        mStates.basicConfigInfoWrapper.set(info)
+        mStates.address.set(info.address)
     }
 
     /**
      * 初始化执行结构参数
      */
     private fun initExecutiveAgencyInfo(info: AdmeExecutiveAgencyInfo) {
+        mStates.executiveAgencyInfoWrapper.set(info)
         val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
         try {
             mStates.measureMethodText.set(if (info.meastype == "0") measureMethodList[0] else measureMethodList[1])
             mStates.measureMethod.set(info.meastype.toInt())
             mStates.dataSettlementMethod.set(if (info.datatype == "0") settlementMethodList[0] else settlementMethodList[1])
-            mStates.dataResponse.set(if (info.datareply == "0") dataResponseTypeList[0] else dataResponseTypeList[1])
             mStates.waitingIntervalPerRound.set(info.roundwaitetime)
             mStates.measurementIntervalPerRound.set(info.roundmeasinval)
             mStates.modifiedDate.set(
@@ -514,27 +756,10 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 }
                 mAdapter.notifyDataSetChanged()
             }
-            mStates.dataReadingInterval.set(info.datainval)
-            mStates.measurementCompensationTime.set(info.compensatetime)
-            mStates.motorDriveAddress.set(info.driveaddress)
-            mStates.decentralizationSpeed.set(info.downspeed)
             decimalFormat.applyPattern("#.##")
             mStates.inclinometerTubeHoleDepth.set(decimalFormat.format(info.interdeep.toDouble()))
+            mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
-            mStates.pullUpSpeed.set(info.upspeed)
-            decimalFormat.applyPattern("#.##")
-            mStates.measuringDistance.set(decimalFormat.format(info.measpacing.toDouble()))
-            mStates.measurementIntervalTime.set(info.meaintertime)
-            decimalFormat.applyPattern("#.##")
-            mStates.measuringReferenceDepth.set(decimalFormat.format(info.meabaseth.toDouble()))
-            decimalFormat.applyPattern("#.###")
-            mStates.intervalCompensation.set(decimalFormat.format(info.interval_compensation.toDouble()))
-            decimalFormat.applyPattern("#.###")
-            mStates.bottomSafetyDistance.set(decimalFormat.format(info.bottom_safe_distance.toDouble()))
-            decimalFormat.applyPattern("#.#")
-            mStates.intervalFitting.set(decimalFormat.format(info.interval_fitting.toDouble()))
-            decimalFormat.applyPattern("#.###")
-            mStates.pointOffset.set(decimalFormat.format(info.point_offset.toDouble()))
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -544,14 +769,15 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
      * 初始化堵转检测参数
      */
     private fun initLockedRotorDetectionInfo(info: AdmeLockedRotorDetectionInfo) {
-
+        mStates.lockedRotorDetectionInfoWrapper.set(info)
+        mStates.downEnable.set(info.lowtbtss == "1")
     }
 
     /**
      * 初始化正反测使能参数
      */
     private fun initPositiveAndNegativeInfo(info: AdmeStepperMotorInfo) {
-
+        mStates.positiveAndNegativeTest.set(info.posnegtest == "1")
     }
 
     override fun onResume() {

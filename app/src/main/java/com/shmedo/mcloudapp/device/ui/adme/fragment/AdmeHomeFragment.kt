@@ -381,7 +381,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
         when (mHeadStates.mode.get()) {
             modeList[0] -> {//设备配置模式
                 moduleList.add(
-                    ConfigModule(BasicConfigModule(navId = R.id.action_admeHomeFragment_to_admeAdvancedConfigurationFragment))
+                    ConfigModule(BasicConfigModule(navId = R.id.action_admeHomeFragment_to_admeBasicParamConfigFragment))
                 )
                 if (communicateWay is BleConnect) {
                     moduleList.add(
@@ -420,7 +420,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
 
             modeList[1] -> {//自动监测模式
                 moduleList.add(
-                    ConfigModule(BasicConfigModule(navId = 0))
+                    ConfigModule(BasicConfigModule(navId = R.id.action_admeHomeFragment_to_admeBasicParamConfigFragment))
                 )
                 moduleList.add(
                     ConfigModule(

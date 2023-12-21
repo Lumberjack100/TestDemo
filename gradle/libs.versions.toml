@@ -27,7 +27,7 @@ coroutines = "1.7.3"
 crashreport = "4.1.9.2"
 customactivityoncrash = "2.4.0"
 dateTimePicker = "0.6.3"
-dialogX = "0.0.49"
+dialogX = "0.0.48"
 espresso = "3.5.1"
 flexbox = "3.0.0"
 fragmentKtx = "1.6.2"
@@ -97,7 +97,7 @@ amap3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
 bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "crashreport" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 datetime-picker = { module = "com.github.loper7:DateTimePicker", version.ref = "dateTimePicker" }
-dialogx = { module = "com.github.dialogx:DialogX", version.ref = "dialogX" }
+dialogx = { module = "com.kongzue.dialogx:DialogX", version.ref = "dialogX" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 getActivity-logcat = { module = "com.github.getActivity:Logcat", version.ref = "getActivityLogcat" }
 getActivity-toastutils = { module = "com.github.getActivity:ToastUtils", version.ref = "toastUtils" }
@@ -156,3 +156,4 @@ pictureselector = ["lucksiege-pictureselector", "lucksiege-compress", "lucksiege
 
 [plugins]
 android-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
