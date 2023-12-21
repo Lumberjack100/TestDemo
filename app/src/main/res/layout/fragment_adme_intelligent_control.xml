@@ -54,7 +54,7 @@
                     <RelativeLayout
                         style="@style/SwitchButton_LayoutStyle"
                         visible="@{stateVM.isPositiveAndNegativeTestSupport}"
-                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView

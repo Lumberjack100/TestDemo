@@ -39,7 +39,7 @@
                     layout="@layout/include_mr702_port_common_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_8"
+                    android:layout_marginTop="@dimen/dimen_size_1"
                     app:vm="@{homeVM}" />
 
                 <TextView

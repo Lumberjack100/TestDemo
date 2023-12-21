@@ -91,7 +91,8 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             productID = productID,
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE,
-            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
+            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission(),
+            onlineStatus = ""
         )
     }
 

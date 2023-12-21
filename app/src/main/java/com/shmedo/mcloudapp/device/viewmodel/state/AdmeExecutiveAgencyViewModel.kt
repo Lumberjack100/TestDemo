@@ -17,9 +17,9 @@ class AdmeExecutiveAgencyViewModel : ViewModel() {
     val startTimePerRound = NonNullObservableField("")//每轮开始时间
     val dataReadingInterval = NonNullObservableField("")//数据读取间隔
     val measurementCompensationTime = NonNullObservableField("")//测量补偿时间
+    val inclinometerTubeHoleDepth = NonNullObservableField("")//测斜管孔深(m)
     val motorDriveAddress = NonNullObservableField("")//电机驱动器地址
     val decentralizationSpeed = NonNullObservableField("")//下放速度(r/min)
-    val inclinometerTubeHoleDepth = NonNullObservableField("")//测斜管孔深(m)
     val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(min)
     val pullUpSpeed = NonNullObservableField("")//电机上拉速度
     val measuringDistance = NonNullObservableField("")//测量间距

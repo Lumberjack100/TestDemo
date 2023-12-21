@@ -32,7 +32,7 @@
         android:layout_height="22dp"
         android:layout_gravity="end|top"
         android:layout_marginTop="@dimen/dimen_size_5"
-        android:layout_marginEnd="@dimen/dimen_size_5"
+        android:layout_marginEnd="@dimen/dimen_size_15"
         android:src="@drawable/item_del_btn2"
         android:visibility="gone"
         tools:visibility="visible" />

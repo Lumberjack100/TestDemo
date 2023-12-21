@@ -1,9 +1,9 @@
 package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.app.TimePickerDialog
-import android.app.TimePickerDialog.OnTimeSetListener
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
@@ -18,10 +18,14 @@ import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeExecutiveAgencyInfoEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeBasicConfigInfo
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeExecutiveAgencyInfo
+import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInfo
+import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeStepperMotorInfo
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -31,14 +35,15 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
-import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
+import com.shmedo.mcloudapp.databinding.FragmentAdmeBasicParamConfigBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.AdmeTimeItem
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.adme.adapter.AdmeTimeAdapter
-import com.shmedo.mcloudapp.device.viewmodel.state.AdmeExecutiveAgencyViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.AdmeBasicParamConfigViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -47,15 +52,14 @@ import java.text.DecimalFormatSymbols
 import java.util.Date
 import java.util.Locale
 
-class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeExecutiveAgencyBinding by lazy { getBinding() as FragmentAdmeExecutiveAgencyBinding }
+class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentAdmeBasicParamConfigBinding by lazy { getBinding() as FragmentAdmeBasicParamConfigBinding }
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeExecutiveAgencyViewModel by viewModels()
+    private val mStates: AdmeBasicParamConfigViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_method) }
     private val settlementMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_settlement_method) }
-    private val dataResponseTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_data_response_type) }
     private val measIntervalPerRoundList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_interval_per_rounds) }
 
     private val mData: MutableList<AdmeTimeItem> = ArrayList()
@@ -65,11 +69,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             mData
         )
     }
-
+    val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_adme_executive_agency,
+            R.layout.fragment_adme_basic_param_config,
             BR.stateVM,
             mStates
         )
@@ -78,7 +82,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.title = "执行机构参数"
+        binding.llToolbar.toolbar.title = "基础参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -131,7 +135,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     }
 
     private fun showTimePickerDialog() {
-        TimePickerDialog(context, OnTimeSetListener { view, hourOfDay, minute ->
+        TimePickerDialog(context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
             val time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay)
             for (item in mAdapter.data) {
                 if (item.time.contains(time)) {
@@ -150,7 +154,6 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         mStates.measureMethod.set(0)
         mStates.measureMethodText.set(measureMethodList[0])
         mStates.dataSettlementMethod.set(settlementMethodList[1])
-        mStates.dataResponse.set(dataResponseTypeList[0])
         mStates.measurementIntervalPerRound.set(measIntervalPerRoundList[0])
     }
 
@@ -213,26 +216,6 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 数据应答方式
-         */
-        fun onDataResponseClick() {
-            val selectedIndex = dataResponseTypeList.indexOf(mStates.dataResponse.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", dataResponseTypeList,
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.dataResponse.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
          * 每轮测量间隔
          */
         fun onMeasIntervalPerRoundsClick() {
@@ -253,6 +236,31 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
+                return
+            }
+            when (button.id) {
+                R.id.downEnableSBtn -> { //下放使能
+                    mStates.downEnable.set(isChecked)
+                    if (!isChecked) {
+                        showMessage("确定使下放计米堵转检测不生效？", "温馨提示", "确定", {
+                            closeDownOrPullUpEnable()
+                        }, "取消", {
+                            mStates.downEnable.set(true)
+                            (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
+                        })
+                    }
+                }
+
+                R.id.positiveAndNegativeSB -> { //正反测使能
+                    enableOrDisableStepperMotorParam(isChecked)
+                }
+            }
+        }
+
         fun onSubmitClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
@@ -263,369 +271,16 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initSaveCommand() {
-        if (mStates.measureMethod.get() == 0) {
-            if (mStates.waitingIntervalPerRound.get().isEmpty()) {
-                Toaster.show("请输入每轮等待时间!")
-                return
-            }
-            try {
-                val value = mStates.waitingIntervalPerRound.get().toDouble()
-                if (value < 1) {
-                    Toaster.show("请输入正确的每轮等待时间!")
-                    return
-                }
-            } catch (ex: Exception) {
-                Toaster.show("请输入正确的每轮等待时间!")
-                return
-            }
-        }
-
-        if (mStates.measureMethod.get() == 2) {
-            if (mStates.intervalDays.get().isEmpty()) {
-                Toaster.show("请输入间隔时间!")
-                return
-            }
-            try {
-                val value = mStates.intervalDays.get().toDouble()
-                if (value < 0) {
-                    Toaster.show("请输入正确的间隔时间!")
-                    return
-                }
-            } catch (ex: Exception) {
-                Toaster.show("请输入正确的间隔时间!")
-                return
-            }
-            if (mAdapter.data.size < 1) {
-                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓")
-                return
-            }
-        }
-
-        if (mStates.dataReadingInterval.get().isEmpty()) {
-            Toaster.show("请输入数据读取间隔!")
-            return
-        }
-        try {
-            val value = mStates.dataReadingInterval.get().toDouble()
-            if (value < 1) {
-                Toaster.show("请输入正确的数据读取间隔!")
-                return
-            }
-        } catch (ex: Exception) {
-            Toaster.show("请输入正确的数据读取间隔!")
-            return
-        }
-
-        if (mStates.measurementCompensationTime.get().isEmpty()) {
-            Toaster.show("请输入测量补偿时间!")
-            return
-        }
-        try {
-            val value = mStates.measurementCompensationTime.get().toDouble()
-            if (value < 1) {
-                Toaster.show("请输入正确的测量补偿时间!")
-                return
-            }
-        } catch (ex: Exception) {
-            Toaster.show("请输入正确的测量补偿时间!")
-            return
-        }
-
-        if (mStates.inclinometerTubeHoleDepth.get().isEmpty()) {
-            Toaster.show("请输入测斜管孔深!")
-            return
-        }
-        try {
-            val value = mStates.inclinometerTubeHoleDepth.get().toDouble()
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测斜管孔深!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.motorDriveAddress.get().isEmpty()) {
-            Toaster.show("请输入电机驱动器地址!")
-            return
-        }
-        try {
-            val value = mStates.motorDriveAddress.get().toDouble()
-            if (value < 0 || value > 99) {
-                MessageDialog.show(
-                    "提示",
-                    "电机驱动器地址数值范围[0,99]!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机驱动器地址数值范围[0,99]!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.decentralizationSpeed.get().isEmpty()) {
-            Toaster.show("请输入电机下放速度!")
-            return
-        }
-        try {
-            val value = mStates.decentralizationSpeed.get().toDouble()
-            if (value < 1 || value > 180) {
-                MessageDialog.show(
-                    "提示",
-                    "电机下放速度数值范围[1,180]!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机下放速度数值范围[1,180]!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.decentralizationWaitingTime.get().isEmpty()) {
-            Toaster.show("请输入下放等待时间!")
-            return
-        }
-        try {
-            val value = mStates.decentralizationWaitingTime.get().toDouble()
-            if (value < 1 || value > 32) {
-                MessageDialog.show(
-                    "提示",
-                    "下放等待时间数值范围[1,32]!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "下放等待时间数值范围[1,32]!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.pullUpSpeed.get().isEmpty()) {
-            Toaster.show("请输入电机上拉速度!")
-            return
-        }
-        try {
-            val value = mStates.pullUpSpeed.get().toDouble()
-            if (value < 1 || value > 180) {
-                MessageDialog.show(
-                    "提示",
-                    "电机上拉速度数值范围[1,180]!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机上拉速度数值范围[1,180]!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.measuringDistance.get().isEmpty()) {
-            Toaster.show("请输入测量间距!")
-            return
-        }
-        try {
-            val value = mStates.measuringDistance.get().toDouble()
-            if (value < 1) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的测量间距!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测量间距!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.measurementIntervalTime.get().isEmpty()) {
-            Toaster.show("请输入测量间隔时间!")
-            return
-        }
-        try {
-            val value = mStates.measurementIntervalTime.get().toDouble()
-            if (value < 1) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的测量间隔时间!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测量间隔时间!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.measuringReferenceDepth.get().isEmpty()) {
-            Toaster.show("请输入测量基准深度!")
-            return
-        }
-        try {
-            val value = mStates.measuringReferenceDepth.get().toDouble()
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测量基准深度!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.intervalCompensation.get().isEmpty()) {
-            Toaster.show("请输入管口安全距离!")
-            return
-        }
-        try {
-            val value = mStates.intervalCompensation.get().toDouble()
-            if (value < -10 || value > 10) {
-                MessageDialog.show(
-                    "提示",
-                    "管口安全距离数值范围[-10,10]!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "管口安全距离数值范围[-10,10]!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.bottomSafetyDistance.get().isEmpty()) {
-            Toaster.show("请输入管底安全距离!")
-            return
-        }
-        try {
-            val value = mStates.bottomSafetyDistance.get().toDouble()
-            if (value < -10 || value > 10) {
-                MessageDialog.show(
-                    "提示",
-                    "管底安全距离数值范围[-10,10]!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "管底安全距离数值范围[-10,10]!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.intervalFitting.get().isEmpty()) {
-            Toaster.show("请输入数据拟合区间!")
-            return
-        }
-        try {
-            val value = mStates.intervalFitting.get().toDouble()
-            if (value < 0 || value > 10) {
-                MessageDialog.show(
-                    "提示",
-                    "数据拟合区间数值范围[0,10]!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "数据拟合区间数值范围[0,10]!",
-                "我已知晓"
-            )
-            return
-        }
-
-        if (mStates.pointOffset.get().isEmpty()) {
-            Toaster.show("请输入测点偏移距离!")
-            return
-        }
-        try {
-            val value = mStates.pointOffset.get().toDouble()
-            if (value < 0 || value > 0.5) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入测点偏移距离数值范围[0,0.5]!",
-                    "我已知晓"
-                )
-                return
-            }
-        } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入测点偏移距离数值范围[0,0.5]!",
-                "我已知晓"
-            )
-            return
-        }
-        val entity = AdmeExecutiveAgencyInfoEntity(
-            meastype = mStates.measureMethod.get().toString(),
-            datatype = if (mStates.dataSettlementMethod.get() == settlementMethodList[0]) "0" else "1",
-            datareply = if (mStates.dataResponse.get() == dataResponseTypeList[0]) "0" else "1",
-            roundwaitetime = mStates.waitingIntervalPerRound.get(),
-            roundmeasinval = mStates.measurementIntervalPerRound.get(),
-            invalday = mStates.intervalDays.get(),
-            roundmeasstart = if (mStates.measureMethod.get() == 2)
-                mAdapter.data.joinToString("|") { it.time.substring(0, 2) }
-            else
-                mStates.startTimePerRound.get(),
-            datainval = mStates.dataReadingInterval.get(),
-            compensatetime = mStates.measurementCompensationTime.get(),
-            interdeep = mStates.inclinometerTubeHoleDepth.get(),
-            driveaddress = mStates.motorDriveAddress.get(),
-            downspeed = mStates.decentralizationSpeed.get(),
-            downwaitetime = mStates.decentralizationWaitingTime.get(),
-            upspeed = mStates.pullUpSpeed.get(),
-            measpacing = mStates.measuringDistance.get(),
-            meaintertime = mStates.measurementIntervalTime.get(),
-            meabaseth = mStates.measuringReferenceDepth.get(),
-//            dwonblocked = "0",
-//            untimenum = "0",
-//            detectiontime = "0",
-//            detectionstart = "0",
-//            detectionend = "0",
-            interval_compensation = mStates.intervalCompensation.get(),
-            bottom_safe_distance = mStates.bottomSafetyDistance.get(),
-            interval_fitting = mStates.intervalFitting.get(),
-            point_offset = mStates.pointOffset.get()
-        )
-
+    /**
+     * 步进电机正反测使能
+     */
+    private fun enableOrDisableStepperMotorParam(isChecked: Boolean) {
         commandItems.clear()
+        val entity = AdmeStepperMotorEntity(
+            posnegtest = if (isChecked) "1" else "0",
+        )
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY,
+            IOTCommandType.ADME_MD_SET_STEPPER_MOTOR,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -637,14 +292,38 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun initSaveCommand() {
+
+    }
+
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
     }
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
+
+        //获取设备的基础配置参数
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_GET_BASIC
+        )
+        commandItems.add(command)
+
+        //获取执行机构参数
+        command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY
+        )
+        commandItems.add(command)
+
+        //获取堵转检测参数
+        command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION
+        )
+        commandItems.add(command)
+
+        //获取设备的步进电机正反测使能信息
+        command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -652,6 +331,31 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_MD_GET_BASIC -> {
+                val result = iotParseManager.parse<AdmeBasicConfigInfo>(
+                    cmdStr,
+                    IOTCommandType.ADME_MD_GET_BASIC
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询基础配置参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        //设备版本不支持，隐藏编辑按钮
+                        toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initLockedRotorDetectionInfo(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY -> {
                 val result = iotParseManager.parse<AdmeExecutiveAgencyInfo>(
                     cmdStr,
@@ -672,7 +376,56 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initParamData(result.data)
+                        initExecutiveAgencyInfo(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION -> {
+                val result = iotParseManager.parse<AdmeLockedRotorDetectionInfo>(
+                    cmdStr,
+                    IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询堵转参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        //设备版本不支持，隐藏编辑按钮
+                        toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        admeLockedRotorDetectionInfo = result.data
+                        initLockedRotorDetectionInfo(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_GET_STEPPER_MOTOR -> {
+                val result = iotParseManager.parse<AdmeStepperMotorInfo>(
+                    cmdStr,
+                    IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询步进电机参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initPositiveAndNegativeInfo(result.data)
                     }
                 }
             }
@@ -720,7 +473,14 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(info: AdmeExecutiveAgencyInfo) {
+    private fun initBasicConfigInfo(info: AdmeBasicConfigInfo) {
+
+    }
+
+    /**
+     * 初始化执行结构参数
+     */
+    private fun initExecutiveAgencyInfo(info: AdmeExecutiveAgencyInfo) {
         val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
         try {
             mStates.measureMethodText.set(if (info.meastype == "0") measureMethodList[0] else measureMethodList[1])
@@ -780,8 +540,23 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 初始化堵转检测参数
+     */
+    private fun initLockedRotorDetectionInfo(info: AdmeLockedRotorDetectionInfo) {
+
+    }
+
+    /**
+     * 初始化正反测使能参数
+     */
+    private fun initPositiveAndNegativeInfo(info: AdmeStepperMotorInfo) {
+
+    }
+
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
+
 }

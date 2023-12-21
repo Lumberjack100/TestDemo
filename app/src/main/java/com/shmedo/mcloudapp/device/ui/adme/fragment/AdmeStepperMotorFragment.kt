@@ -200,7 +200,6 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询步进电机参数出错: ${result.message}"
                         Timber.e(errMsg)
-                        Toaster.show(errMsg)
                         PopTip.show(errMsg).autoDismiss(4500).iconError()
                         return
                     }
