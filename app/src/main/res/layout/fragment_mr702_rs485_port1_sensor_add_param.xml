@@ -59,7 +59,6 @@
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@null"
                         android:text="@{stateVM.modelField}"
-                        android:textSize="17sp"
                         tools:text="水位" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -86,7 +85,6 @@
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@null"
                         android:text="@{stateVM.sensorName}"
-                        android:textSize="17sp"
                         tools:text="MODO渗压计" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -361,7 +359,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    visible="@{!stateVM.isConfirmBtnVisible}"
                     android:paddingStart="@dimen/dimen_size_15"
                     android:paddingEnd="@dimen/dimen_size_15">
 
@@ -375,6 +372,7 @@
                         android:gravity="center"
                         android:text="@{stateVM.saveModelFieldText}"
                         android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
                         android:textSize="@dimen/text_size_16"
                         app:drawable_radius="@{6}"
                         app:drawable_solidColor="@{@color/gray_f5f6f8}"

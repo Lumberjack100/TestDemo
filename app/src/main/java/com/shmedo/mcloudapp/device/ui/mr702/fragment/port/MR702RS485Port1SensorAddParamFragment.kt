@@ -26,13 +26,13 @@ import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBinding
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port1
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1SensorAddParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -81,10 +81,9 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            sensorItem = it.getParcelable(MR702RS485Port2SensorParamFragment.SENSOR_MODEL_ITEM)!!
+            sensorItem = it.getParcelable(SENSOR_MODEL_ITEM)!!
         }
         mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
-        mStates.sensorType.set(sensorItem.sensorType)
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
     }
@@ -178,7 +177,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         fun onSaveModelFieldClick() {
             if (mStates.saveModelFieldText.get() == "配置下一个采集项") {
                 mStates.saveModelFieldText.set("保存此采集项")
-                mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
+                resetModelField()
             } else {
                 if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -191,6 +190,20 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         fun onSubmitClick() {
             processBack()
         }
+    }
+
+    /**
+     * 重置采集项
+     */
+    private fun resetModelField() {
+        mStates.modelField.set(sensorItem.modelFieldList[modelFieldIndex])
+        mStates.hydrologicalIdentification.set("")
+        mStates.collectionInstructions.set("")
+        mStates.ratio.set("")
+        mStates.triggerValue.set("")
+        mStates.upperLimit.set("")
+        mStates.lowerLimit.set("")
+        mStates.correctValue.set("")
     }
 
     private fun initSaveCommand() {
@@ -278,11 +291,8 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             Toaster.show("已保存")
                             modelFieldIndex++
-                            if (modelFieldIndex < sensorItem.modelFieldList.size) {
-                                mStates.saveModelFieldText.set("配置下一个采集项")
-                            } else {
-                                mStates.isConfirmBtnVisible.set(true)
-                            }
+                            mStates.saveModelFieldText.set("配置下一个采集项")
+                            mStates.isConfirmBtnVisible.set(modelFieldIndex > 0)
                         }
                     }
                 }
