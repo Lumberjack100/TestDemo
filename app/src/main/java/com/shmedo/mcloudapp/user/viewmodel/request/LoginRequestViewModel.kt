@@ -13,7 +13,6 @@ import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.response.ResponseStatus
@@ -351,12 +350,12 @@ class LoginRequestViewModel : BaseViewModel() {
                 val date2 = TimeUtils.string2Date(localAppConfigInfo.lastTime)
                 if (date1.after(date2)) {
                     //更新本地配置
-                    MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
+                    MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo.configPara)
                 } else {
                     //更新远程配置
                     updateConfigInfoItem(
                         remoteAppConfigInfo.id,
-                        MoshiUtil.toJson(localAppConfigInfo.configPara)
+                        localAppConfigInfo.configPara.replace("\\", "")
                     )
                 }
             } catch (e: Exception) {
@@ -369,8 +368,8 @@ class LoginRequestViewModel : BaseViewModel() {
         val jsonObjectRequest = JSONObject()//接口请求参数
         jsonObjectRequest.put("appKey", AppContants.AMS_APP_KEY)
         jsonObjectRequest.put("appSecret", AppContants.AMS_APP_SECRET)
-        jsonObjectRequest.put("account", "medo_gh")
-        jsonObjectRequest.put("password", "medo123456")
+        jsonObjectRequest.put("account", MmkvCacheUtil.getUserName())
+        jsonObjectRequest.put("password", MmkvCacheUtil.getPassword())
         return NetDataRepository.instance.appConfigLogin(jsonObjectRequest.toString()) { error: Throwable ->
         }
     }

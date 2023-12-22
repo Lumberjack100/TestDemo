@@ -363,6 +363,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
+                    visible="@{stateVM.isSaveModelBtnVisible}"
                     android:paddingStart="@dimen/dimen_size_15"
                     android:paddingEnd="@dimen/dimen_size_15">
 
@@ -384,7 +385,6 @@
                         tools:text="保存此采集项" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
 

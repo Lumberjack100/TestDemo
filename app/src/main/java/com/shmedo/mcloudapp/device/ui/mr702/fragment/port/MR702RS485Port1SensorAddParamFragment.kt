@@ -323,8 +323,17 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                             Toaster.show("已保存")
                             updateUnnamedSensorModel()
                             modelFieldIndex++
-                            mStates.saveModelFieldText.set("配置下一个采集项")
-                            mStates.isConfirmBtnVisible.set(modelFieldIndex > 0)
+                            if (!mStates.isUnnamedSensor.get()) {
+                                mStates.saveModelFieldText.set("配置下一个采集项")
+                                mStates.isConfirmBtnVisible.set(modelFieldIndex > 0)
+                                return@sendCommandFromCmdList
+                            }
+                            if (modelFieldIndex < sensorItem.modelFieldList.size) {
+                                mStates.saveModelFieldText.set("配置下一个采集项")
+                            } else {
+                                mStates.isSaveModelBtnVisible.set(false)
+                                mStates.isConfirmBtnVisible.set(true)
+                            }
                         }
                     }
                 }
@@ -395,6 +404,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                     //将 " 转换为 \"
                     localAppConfigInfo.configPara =
                         MoshiUtil.toJson(appConfigContent).replace("\"", "\\\"")
+                    Timber.d("configPara = ${localAppConfigInfo.configPara}")
                     localAppConfigInfo.lastTime = TimeUtils.getNowString()
                     MmkvCacheUtil.setAppConfigInfo(localAppConfigInfo)
                 }

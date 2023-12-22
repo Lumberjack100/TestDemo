@@ -27,6 +27,7 @@ class MR702RS485Port1SensorAddParamViewModel : ViewModel() {
     val lowerLimit = NonNullObservableField("")//下限
     val correctValue = NonNullObservableField("")//修正值
 
+    val isSaveModelBtnVisible = NonNullObservableField(true)
     val isConfirmBtnVisible = NonNullObservableField(false)
     val saveModelFieldText = NonNullObservableField("保存此采集项")//下限
 
