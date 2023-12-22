@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702PortSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import timber.log.Timber
 
 class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val binding: FragmentMr702PortHomeBinding by lazy { getBinding() as FragmentMr702PortHomeBinding }
@@ -204,6 +205,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         try {
             val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
             val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
+            Timber.d("configPara = $jsonStr")
             val appConfigContent: AppConfigContent =
                 MoshiUtil.fromJson(jsonStr) ?: return@launchWithViewLifecycle
             appConfigContent.mr702.forEach { mPort ->

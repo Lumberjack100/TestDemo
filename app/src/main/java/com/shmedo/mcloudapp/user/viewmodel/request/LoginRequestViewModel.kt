@@ -350,7 +350,7 @@ class LoginRequestViewModel : BaseViewModel() {
                 val date2 = TimeUtils.string2Date(localAppConfigInfo.lastTime)
                 if (date1.after(date2)) {
                     //更新本地配置
-                    MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo.configPara)
+                    MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
                 } else {
                     //更新远程配置
                     updateConfigInfoItem(

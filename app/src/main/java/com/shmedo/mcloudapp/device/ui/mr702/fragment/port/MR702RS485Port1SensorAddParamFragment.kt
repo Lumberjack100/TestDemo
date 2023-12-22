@@ -372,7 +372,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 nav().navigateUp()
                 return@launchWithViewLifecycle
             }
-            delay(1000)
+            delay(500)
             //需要给上一级浏览页面传递最新的事件信息
             mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
             nav().navigateUp()
