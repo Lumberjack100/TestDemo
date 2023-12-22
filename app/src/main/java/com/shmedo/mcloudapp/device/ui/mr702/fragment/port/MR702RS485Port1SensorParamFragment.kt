@@ -131,6 +131,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
 
     private fun initTabLayout() {
         val tabLayout = binding.tabs
+        tabLayout.removeAllTabs()
         tabList.forEachIndexed { index, name ->
             val textView = TextView(requireContext())
             textView.text = name
@@ -408,7 +409,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
             try {
                 val sensorParamWrapper = MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content)
                     ?: return@launchWithViewLifecycle
-                if (mStates.sensorName.get().contains("自定义") && selectedFieldIndex == 0) {
+                if (sensorItem.modelFieldList.isEmpty() && selectedFieldIndex == 0) {
                     tabList.clear()
                     for (i in 0..sensorParamWrapper.indexnum.toInt()) {
                         tabList.add("采集项${i + 1}")

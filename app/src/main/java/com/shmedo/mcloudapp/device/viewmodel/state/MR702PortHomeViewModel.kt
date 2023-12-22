@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 import androidx.lifecycle.ViewModel
 import com.kunminx.architecture.domain.message.MutableResult
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
+import com.shmedo.mcloudapp.device.model.AppConfigContent
 import com.shmedo.mcloudapp.device.model.SensorModel
 
 open class MR702PortHomeViewModel : ViewModel() {
@@ -11,6 +12,8 @@ open class MR702PortHomeViewModel : ViewModel() {
     val interfaceName = NonNullObservableField("")
     val interfaceDesc = NonNullObservableField("最多支持32支传感器接入")
 
-    val portSensorsMap = mutableMapOf<String, List<SensorModel>>() // key: 串口名称，value: 传感器 model列表
-    val sensorMap = mutableMapOf<String, SensorModel>() // key: sensorType，value: 传感器 model
+    var appConfigContent: AppConfigContent = AppConfigContent()
+    val portSensorsMap =
+        mutableMapOf<String, MutableList<SensorModel>>() // key: 串口名称，value: 传感器 model列表
+    val sensorTypeMap = mutableMapOf<String, SensorModel>() // key: sensorType，value: 传感器 model
 }

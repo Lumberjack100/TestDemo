@@ -1,14 +1,19 @@
 package com.shmedo.mcloudapp.user.viewmodel.request
 
 import androidx.lifecycle.viewModelScope
+import com.blankj.utilcode.util.ResourceUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
+import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.BasicUserInfo
 import com.shmedo.lib.core.base.model.CompanyInfo
 import com.shmedo.lib.core.base.model.UserPermissionInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.response.ResponseStatus
@@ -94,7 +99,8 @@ class LoginRequestViewModel : BaseViewModel() {
                 queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
             MmkvCacheUtil.setUser(userWrapperInfo.user)
 
-            val iotPermissionList = queryAllPermissionInService(basicUserInfo.companyID)?: return@launch
+            val iotPermissionList =
+                queryAllPermissionInService(basicUserInfo.companyID) ?: return@launch
             MmkvCacheUtil.setUserPermissionList(iotPermissionList)
             iotPermissionList.forEach {
                 if (it.permissionToken == "ListSuperInfo") {
@@ -126,7 +132,8 @@ class LoginRequestViewModel : BaseViewModel() {
                 queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
             MmkvCacheUtil.setUser(userWrapperInfo.user)
 
-            val iotPermissionList = queryAllPermissionInService(basicUserInfo.companyID)?: return@launch
+            val iotPermissionList =
+                queryAllPermissionInService(basicUserInfo.companyID) ?: return@launch
             MmkvCacheUtil.setUserPermissionList(iotPermissionList)
             iotPermissionList.forEach {
                 if (it.permissionToken == "ListSuperInfo") {
@@ -268,13 +275,14 @@ class LoginRequestViewModel : BaseViewModel() {
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-            val userWrapperInfo: UserWrapperInfo = NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
-                val responseStatus = ResponseStatus()
-                responseStatus.isSuccess = false
-                responseStatus.errorMessage = error.errorMsg
-                responseStatus.source = ResultSource.NETWORK
-                _userWrapperInfoResult.setValue(DataResult(responseStatus = responseStatus))
-            } ?: return@launch
+            val userWrapperInfo: UserWrapperInfo =
+                NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
+                    val responseStatus = ResponseStatus()
+                    responseStatus.isSuccess = false
+                    responseStatus.errorMessage = error.errorMsg
+                    responseStatus.source = ResultSource.NETWORK
+                    _userWrapperInfoResult.setValue(DataResult(responseStatus = responseStatus))
+                } ?: return@launch
             MmkvCacheUtil.setUser(userWrapperInfo.user)
 
             val responseStatus = ResponseStatus()
@@ -320,4 +328,65 @@ class LoginRequestViewModel : BaseViewModel() {
             )
         }
     }
+
+
+    //<editor-fold desc="孙建伟通用配置接口">
+    /**
+     * 加载外部配置
+     */
+    fun loadExternalConfig() {
+        viewModelScope.launch {
+            try {
+                val originalConfigJson = ResourceUtils.readAssets2String("app_config.json")
+                if (MmkvCacheUtil.getAppConfigInfo() == null) {
+                    MmkvCacheUtil.setAppConfigInfo(originalConfigJson)
+                }
+                val amsToken: String = appConfigLogin() ?: return@launch
+                MmkvCacheUtil.setAmsToken(amsToken)
+
+                val remoteAppConfigInfo: AppConfigInfo = queryConfigInfoItem() ?: return@launch
+                val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+
+                val date1 = TimeUtils.string2Date(remoteAppConfigInfo.lastTime)
+                val date2 = TimeUtils.string2Date(localAppConfigInfo.lastTime)
+                if (date1.after(date2)) {
+                    //更新本地配置
+                    MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
+                } else {
+                    //更新远程配置
+                    updateConfigInfoItem(
+                        remoteAppConfigInfo.id,
+                        MoshiUtil.toJson(localAppConfigInfo.configPara)
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private suspend fun appConfigLogin(): String? {
+        val jsonObjectRequest = JSONObject()//接口请求参数
+        jsonObjectRequest.put("appKey", AppContants.AMS_APP_KEY)
+        jsonObjectRequest.put("appSecret", AppContants.AMS_APP_SECRET)
+        jsonObjectRequest.put("account", "medo_gh")
+        jsonObjectRequest.put("password", "medo123456")
+        return NetDataRepository.instance.appConfigLogin(jsonObjectRequest.toString()) { error: Throwable ->
+        }
+    }
+
+    private suspend fun queryConfigInfoItem(): AppConfigInfo? =
+        NetDataRepository.instance.queryConfigInfoItem { error: Throwable ->
+        }
+
+    private suspend fun updateConfigInfoItem(id: Int, configPara: String): String? {
+        val jsonObjectRequest = JSONObject()//接口请求参数
+        jsonObjectRequest.put("id", id)
+        jsonObjectRequest.put("configPara", configPara)
+        jsonObjectRequest.put("desc", "")
+        return NetDataRepository.instance.updateConfigInfoItem(jsonObjectRequest.toString()) { error: Throwable ->
+        }
+    }
+
+    // </editor-fold>
 }

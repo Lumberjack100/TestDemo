@@ -520,12 +520,12 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         isPlugin = sensorStatus.sta == "0",
                         chl = sensorStatus.chl,
                         addrDesc = "通道-${sensorStatus.chl}",
-                        sensorName = mInterfaceHomeViewModel.sensorMap[sensorStatus.sensortype]?.sensorName
+                        sensorName = mInterfaceHomeViewModel.sensorTypeMap[sensorStatus.sensortype]?.sensorName
                             ?: "未知类型",
                         sensorType = sensorStatus.sensortype,
-                        modelToken = mInterfaceHomeViewModel.sensorMap[sensorStatus.sensortype]?.modelToken
+                        modelToken = mInterfaceHomeViewModel.sensorTypeMap[sensorStatus.sensortype]?.modelToken
                             ?: "",
-                        modelFieldList = mInterfaceHomeViewModel.sensorMap[sensorStatus.sensortype]?.modelFieldList?.map { it.fieldName }
+                        modelFieldList = mInterfaceHomeViewModel.sensorTypeMap[sensorStatus.sensortype]?.modelFieldList?.map { it.fieldName }
                             ?: listOf()
                     )
                 }

@@ -1,0 +1,9 @@
+{
+  "id": 59,
+  "appName": "米易通设备连接服务",
+  "userName": " 宫贺",
+  "configPara": "{\"mr702\": [{\"sensors\": [{\"modelToken\": \"104\", \"sensorName\": \"泥位计\", \"sensorType\": \"104\", \"modelFieldList\": [{\"engUnit\": \"m\", \"fieldName\": \"高度\"}]}, {\"modelToken\": \"214\", \"sensorName\": \"水位计\", \"sensorType\": \"214\", \"modelFieldList\": [{\"engUnit\": \"℃\", \"fieldName\": \"温度\"}, {\"engUnit\": \"m\", \"fieldName\": \"水位\"}]}, {\"modelToken\": \"304\", \"sensorName\": \"精波雷达\", \"sensorType\": \"304\", \"modelFieldList\": [{\"engUnit\": \"m\", \"fieldName\": \"水位\"}, {\"engUnit\": \"m/s\", \"fieldName\": \"流速\"}, {\"engUnit\": \"m3/s\", \"fieldName\": \"瞬时流量\"}]}], \"portName\": \"485port1\"}, {\"sensors\": [{\"modelToken\": \"10066\", \"sensorName\": \"振弦式传感器\", \"sensorType\": \"1\", \"modelFieldList\": []}, {\"modelToken\": \"213\", \"sensorName\": \"测斜仪\", \"sensorType\": \"2\", \"modelFieldList\": []}, {\"modelToken\": \"60006\", \"sensorName\": \"量水堰计\", \"sensorType\": \"3\", \"modelFieldList\": []}, {\"modelToken\": \"214\", \"sensorName\": \"水位计\", \"sensorType\": \"4\", \"modelFieldList\": []}], \"portName\": \"485port2\"}]}",
+  "identyID": 48,
+  "desc": "米易通通用配置",
+  "lastTime": "2023-12-22 13:06:58"
+}

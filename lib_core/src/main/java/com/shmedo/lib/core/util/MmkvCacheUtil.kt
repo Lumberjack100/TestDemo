@@ -1,5 +1,6 @@
 package com.shmedo.lib.core.util
 
+import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.base.model.UserPermissionInfo
 import com.tencent.mmkv.MMKV
@@ -147,6 +148,40 @@ object MmkvCacheUtil {
     fun setSearchHistoryData(searchResponseStr: String) {
         val kv = MMKV.defaultMMKV()
         kv.encode("device_search_history", searchResponseStr)
+    }
+
+
+    fun getAmsToken(): String {
+        val kv = MMKV.defaultMMKV()
+        val token = kv.decodeString("ams_token")
+        return token ?: ""
+    }
+
+    fun setAmsToken(token: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("ams_token", token)
+    }
+
+    fun getAppConfigInfo(): AppConfigInfo? {
+        val kv = MMKV.defaultMMKV()
+        val userStr = kv.decodeString("ams_app_config_info")
+
+        return if (userStr.isNullOrEmpty()) null
+        else MoshiUtil.fromJson<AppConfigInfo>(userStr)
+    }
+
+    fun setAppConfigInfo(info: AppConfigInfo?) {
+        val kv = MMKV.defaultMMKV()
+        info?.let {
+            kv.encode("ams_app_config_info", MoshiUtil.toJson(it))
+        }
+    }
+
+    fun setAppConfigInfo(jsonParam: String?) {
+        val kv = MMKV.defaultMMKV()
+        jsonParam?.let {
+            kv.encode("ams_app_config_info", jsonParam)
+        }
     }
 
 }

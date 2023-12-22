@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.InputFilter
 import android.text.InputType
 import android.text.SpannableString
 import android.text.Spanned
@@ -50,19 +49,6 @@ class LoginActivity : BaseActivity() {
     }
 
     override fun initData() {
-        val filter = InputFilter { source, start, end, dest, dstart, dend ->
-            for (i in start until end) {
-                if (!"_0123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM".contains(
-                        source[i].toString() + ""
-                    )
-                ) {
-                    return@InputFilter ""
-                }
-            }
-            null
-        }
-        binding.accountET.filters = arrayOf(InputFilter.LengthFilter(20), filter)
-//        binding.passwordET.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(25))
         val mAccount = MmkvCacheUtil.getUserName()
         //自动登录
         if (!TextUtils.isEmpty(mAccount)) {

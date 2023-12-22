@@ -12,14 +12,15 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ResourceUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -27,11 +28,11 @@ import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.AppConfigContent
 import com.shmedo.mcloudapp.device.model.CommunicateWay
-import com.shmedo.mcloudapp.device.model.MR702PortSensorConfig
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702PortSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -90,7 +91,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         mStates.interfaceName.set("RS485-1 Modbus")
         mStates.interfaceDesc.set("最多支持32支传感器接入")
         initViewPager()
-        loadSensorConfig()
+        loadSensorModeConfig()
     }
 
     private fun initViewPager() {
@@ -198,18 +199,23 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         mLayoutMediator?.attach()
     }
 
-    private fun loadSensorConfig() {
+    private fun loadSensorModeConfig() {
         launchWithViewLifecycle {
-            val jsonStr = ResourceUtils.readAssets2String("mr702_port_sensor_config.json")
-            if (jsonStr.isNullOrEmpty()) return@launchWithViewLifecycle
-            val configList =
-                MoshiUtil.fromJson<List<MR702PortSensorConfig>>(jsonStr) ?: return@launchWithViewLifecycle
-            configList.forEach { mPort ->
-                mStates.portSensorsMap[mPort.portName] = mPort.sensors
+        try {
+            val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+            val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
+            val appConfigContent: AppConfigContent =
+                MoshiUtil.fromJson(jsonStr) ?: return@launchWithViewLifecycle
+            appConfigContent.mr702.forEach { mPort ->
+                mStates.portSensorsMap[mPort.portName] = mPort.sensors.toMutableList()
                 mPort.sensors.forEach { model ->
-                    mStates.sensorMap[model.sensorType] = model
+                    mStates.sensorTypeMap[model.sensorType] = model
                 }
             }
+            mStates.appConfigContent = appConfigContent
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         }
     }
 

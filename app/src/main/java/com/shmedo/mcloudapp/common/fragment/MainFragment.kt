@@ -12,11 +12,13 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentMainBinding
 import com.shmedo.mcloudapp.user.fragment.MineFragment
+import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 
 
 class MainFragment : BaseFragment() {
     private val binding: FragmentMainBinding by lazy { getBinding() as FragmentMainBinding }
     private val mStates: EmptyViewModel by viewModels()
+    private val loginRequestViewModel: LoginRequestViewModel by viewModels()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_main, BR.vm, mStates)
@@ -71,6 +73,11 @@ class MainFragment : BaseFragment() {
 
     override fun createObserver() {
 
+    }
+
+    override fun lazyLoadData() {
+        //加载外部配置
+        loginRequestViewModel.loadExternalConfig()
     }
 
 }

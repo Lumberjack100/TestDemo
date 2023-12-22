@@ -10,6 +10,9 @@ interface AppContants {
     companion object {
         const val PGY_API_KEY = "64454bf76fe2abd8dec45200c11fc93b"
         const val PGY_APP_KEY = "b8a852c106c6cc532332081e22f218a9"
+
+        const val AMS_APP_KEY = "b80dd379-5256-48c8-947a-2208872c8a8f"
+        const val AMS_APP_SECRET = "3dc8e0ec1f673325c6694b4da534dabe"
     }
 
     interface Extras {

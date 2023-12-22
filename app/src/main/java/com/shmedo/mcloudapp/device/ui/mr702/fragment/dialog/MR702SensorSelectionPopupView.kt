@@ -18,19 +18,25 @@ import com.shmedo.mcloudapp.device.model.SensorModel
 class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context) {
     private lateinit var binding: CustomMr702SensorSelectionPopupBinding
 
-    private lateinit var title: String
-    private lateinit var sensorList: List<SensorModel>
+    private var title: String = ""
+    private val sensorList: MutableList<SensorModel> = mutableListOf()
     private lateinit var data: List<String>
     private var selectedSensor: SensorModel? = null
-
-    private lateinit var selectListener: OnSelectListener
+    private var selectListener: OnSelectListener? = null
 
     fun setData(
         title: String = "",
         list: List<SensorModel>
     ): MR702SensorSelectionPopupView {
         this.title = title
-        this.sensorList = list.toList()
+        this.sensorList.addAll(list)
+        this.sensorList.add(
+            SensorModel(
+                sensorName = "自定义传感器",
+                sensorType = "000",
+                modelToken = "000"
+            )
+        )
         this.data = sensorList.map { it.sensorName }
         return this
     }
@@ -53,7 +59,7 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
         initAdapter()
         binding.tvOk.setOnClickListener {
             selectedSensor?.let {
-                selectListener.onSelect(it)
+                selectListener?.onSelect(it)
             }
             dismiss()
         }

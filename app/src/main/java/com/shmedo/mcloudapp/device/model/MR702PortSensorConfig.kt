@@ -15,9 +15,9 @@ data class MR702PortSensorConfig(
 
 @JsonClass(generateAdapter = true)
 data class SensorModel(
-    val sensorName: String = "",
-    val sensorType: String = "",
-    val modelToken: String = "",
+    var sensorName: String = "",
+    var sensorType: String = "",
+    var modelToken: String = "",
     var modelFieldList: List<ModelField> = listOf(),
 )
 

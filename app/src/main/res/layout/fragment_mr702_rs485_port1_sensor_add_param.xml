@@ -55,17 +55,19 @@
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="采集项" />
 
-                    <TextView
-                        style="@style/Common_ClickableItem_ValueStyle"
-                        android:drawableEnd="@null"
-                        android:text="@{stateVM.modelField}"
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:enabled="@{stateVM.isUnnamedSensor}"
+                        android:hint="请输入"
+                        android:text="@={stateVM.modelField}"
+                        app:lengthFilter="@{40}"
                         tools:text="水位" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:gravity="center_vertical"
                     android:paddingStart="16dp"
                     android:text="采集指令"
@@ -81,10 +83,12 @@
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="传感器" />
 
-                    <TextView
-                        style="@style/Common_ClickableItem_ValueStyle"
-                        android:drawableEnd="@null"
-                        android:text="@{stateVM.sensorName}"
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:enabled="@{stateVM.isUnnamedSensor}"
+                        android:hint="请输入"
+                        android:text="@={stateVM.sensorName}"
+                        app:lengthFilter="@{40}"
                         tools:text="MODO渗压计" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -143,8 +147,8 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
-                    android:background="@drawable/layer_common_click_item_with_divider"
-                    onClickWithDebouncing="@{()->click.onDataBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onDataBitChooseClick()}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -159,8 +163,8 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
-                    android:background="@drawable/layer_common_click_item_with_divider"
-                    onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -175,8 +179,8 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
-                    android:background="@drawable/layer_common_click_item_with_divider"
-                    onClickWithDebouncing="@{()->click.onStopBitChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -191,7 +195,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:gravity="center_vertical"
                     android:paddingStart="16dp"
                     android:text="采集数据处理"
@@ -251,8 +255,8 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
-                    android:background="@drawable/layer_common_click_item_with_divider"
-                    onClickWithDebouncing="@{()->click.onDataFormatChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onDataFormatChooseClick()}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -268,8 +272,8 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
-                    android:background="@drawable/layer_common_click_item_with_divider"
-                    onClickWithDebouncing="@{()->click.onSolutionMethodChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onSolutionMethodChooseClick()}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -372,8 +376,8 @@
                         android:gravity="center"
                         android:text="@{stateVM.saveModelFieldText}"
                         android:textColor="@color/colorPrimary"
-                        android:textStyle="bold"
                         android:textSize="@dimen/text_size_16"
+                        android:textStyle="bold"
                         app:drawable_radius="@{6}"
                         app:drawable_solidColor="@{@color/gray_f5f6f8}"
                         tools:background="@color/gray_f5f6f8"

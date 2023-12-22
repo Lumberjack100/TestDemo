@@ -2,8 +2,11 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
+import com.shmedo.mcloudapp.device.model.ModelField
+import com.shmedo.mcloudapp.device.model.SensorModel
 
 class MR702RS485Port1SensorAddParamViewModel : ViewModel() {
+    val isUnnamedSensor = NonNullObservableField(false)//是否未命名传感器
     val modelField = NonNullObservableField("")
     val sensorAddress = NonNullObservableField("")
     val sensorType = NonNullObservableField("")
@@ -26,4 +29,7 @@ class MR702RS485Port1SensorAddParamViewModel : ViewModel() {
 
     val isConfirmBtnVisible = NonNullObservableField(false)
     val saveModelFieldText = NonNullObservableField("保存此采集项")//下限
+
+    val curSensorModel: SensorModel = SensorModel()
+    val curModelFieldList: MutableList<ModelField> = mutableListOf()
 }

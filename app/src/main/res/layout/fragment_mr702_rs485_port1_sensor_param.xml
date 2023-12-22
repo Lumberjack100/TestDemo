@@ -76,7 +76,7 @@
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="40dp"
                         android:gravity="center_vertical"
                         android:paddingStart="16dp"
                         android:text="采集指令"
@@ -217,7 +217,7 @@
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="40dp"
                         android:gravity="center_vertical"
                         android:paddingStart="16dp"
                         android:text="采集数据处理"

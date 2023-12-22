@@ -3,17 +3,22 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -28,11 +33,14 @@ import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port1
+import com.shmedo.mcloudapp.device.model.AppConfigContent
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MRSensorItem
+import com.shmedo.mcloudapp.device.model.ModelField
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1SensorAddParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -42,8 +50,9 @@ import java.text.DecimalFormat
 
 class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentMr702Rs485Port1SensorAddParamBinding by lazy { getBinding() as FragmentMr702Rs485Port1SensorAddParamBinding }
-    private val mStates: MR702RS485Port1SensorAddParamViewModel by viewModels()
     private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702RS485Port1SensorAddParamViewModel by viewModels()
+    private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
@@ -82,16 +91,18 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             sensorItem = it.getParcelable(SENSOR_MODEL_ITEM)!!
         }
+        binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
+
+        mStates.isUnnamedSensor.set(sensorItem.modelFieldList.isEmpty())
         mStates.modelField.set(
             if (sensorItem.modelFieldList.isNotEmpty()) {
                 sensorItem.modelFieldList[0]
             } else {
-                "采集项${modelFieldIndex + 1}"
+                ""//采集项${modelFieldIndex + 1}
             }
         )
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
-        binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -206,7 +217,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             if (sensorItem.modelFieldList.isNotEmpty()) {
                 sensorItem.modelFieldList[modelFieldIndex]
             } else {
-                "采集项${modelFieldIndex + 1}"
+                ""//采集项${modelFieldIndex + 1}
             }
         )
         mStates.hydrologicalIdentification.set("")
@@ -220,6 +231,14 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         commandItems.clear()
+        if (mStates.modelField.get().isEmpty()) {
+            Toaster.show("请输入采集项名称")
+            return
+        }
+        if (mStates.sensorName.get().isEmpty()) {
+            Toaster.show("请输入传感器名称")
+            return
+        }
         if (mStates.sensorAddress.get().isEmpty()) {
             Toaster.show("请输入传感器地址")
             return
@@ -302,6 +321,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("已保存")
+                            updateUnnamedSensorModel()
                             modelFieldIndex++
                             mStates.saveModelFieldText.set("配置下一个采集项")
                             mStates.isConfirmBtnVisible.set(modelFieldIndex > 0)
@@ -314,13 +334,30 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
+    /**
+     * 更新未命名传感器的物模型,需要保存到本地配置中
+     */
+    private fun updateUnnamedSensorModel() {
+        if (!mStates.isUnnamedSensor.get())
+            return
+
+        if (modelFieldIndex == 0) {
+            mStates.curSensorModel.sensorName = mStates.sensorName.get()
+            mStates.curSensorModel.modelToken = mStates.modelToken.get()
+            mStates.curSensorModel.sensorType = mStates.modelToken.get()
+            mStates.curModelFieldList.clear()
+        }
+        mStates.curModelFieldList.add(
+            ModelField(
+                fieldName = mStates.modelField.get(),
+                engUnit = ""
+            )
+        )
     }
 
     private fun processBack(isPressBackBtn: Boolean = false) {
         launchWithViewLifecycle {
+            updateSensorModeConfig()
             if (isPressBackBtn) {
                 mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
                 nav().navigateUp()
@@ -331,6 +368,44 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
             nav().navigateUp()
         }
+    }
+
+    /**
+     * 更新传感器配置信息
+     */
+    private fun updateSensorModeConfig() {
+        try {
+            if (!mStates.isUnnamedSensor.get())
+                return
+
+            mStates.curSensorModel.modelFieldList = mStates.curModelFieldList
+            mInterfaceHomeViewModel.portSensorsMap["485port1"]?.add(mStates.curSensorModel)
+            mInterfaceHomeViewModel.sensorTypeMap[mStates.curSensorModel.sensorType] =
+                mStates.curSensorModel
+
+            val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+            val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
+            MoshiUtil.fromJson<AppConfigContent>(jsonStr)
+                ?.let { appConfigContent: AppConfigContent ->
+                    appConfigContent.mr702.forEach { mPort ->
+                        if (mPort.portName == "485port1") {
+                            mPort.sensors = mInterfaceHomeViewModel.portSensorsMap["485port1"]!!
+                        }
+                    }
+                    //将 " 转换为 \"
+                    localAppConfigInfo.configPara =
+                        MoshiUtil.toJson(appConfigContent).replace("\"", "\\\"")
+                    localAppConfigInfo.lastTime = TimeUtils.getNowString()
+                    MmkvCacheUtil.setAppConfigInfo(localAppConfigInfo)
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     companion object {
