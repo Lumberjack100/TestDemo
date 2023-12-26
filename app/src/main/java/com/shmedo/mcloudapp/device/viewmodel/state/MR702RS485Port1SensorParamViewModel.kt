@@ -2,8 +2,11 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
+import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port1SensorParam
 
 class MR702RS485Port1SensorParamViewModel : ViewModel() {
+    val sensorParamWrapper= NonNullObservableField(MRRS485Port1SensorParam())
+
     val isEditable = NonNullObservableField(false)
     val sensorAddress = NonNullObservableField("")
     val sensorType = NonNullObservableField("")

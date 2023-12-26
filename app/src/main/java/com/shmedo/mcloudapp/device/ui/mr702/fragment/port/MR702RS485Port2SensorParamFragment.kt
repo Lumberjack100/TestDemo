@@ -17,6 +17,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port2SensorParam
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
@@ -163,12 +164,12 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             sensortype = mStates.sensorType.get(),
             model = mStates.modelToken.get() + "_" + mStates.sensorType.get(),
             chl = mStates.channelNumber.get(),
-            swtoken = mStates.hydrologicalIdentification.get(),
-            filtercnt = mStates.filterCoefficient.get(),
-            gateval = mStates.triggerValue.get(),
-            uplimit = mStates.upperLimit.get(),
-            lowlimit = mStates.lowerLimit.get(),
-            corrvalue = mStates.correctValue.get()
+            swtoken = if (mStates.sensorParamWrapper.get().swtoken == mStates.hydrologicalIdentification.get()) IOTConstants.NULL_KEY else mStates.hydrologicalIdentification.get(),
+            filtercnt = if (mStates.sensorParamWrapper.get().filtercnt == mStates.filterCoefficient.get()) IOTConstants.NULL_KEY else mStates.filterCoefficient.get(),
+            gateval = if (mStates.sensorParamWrapper.get().gateval == mStates.triggerValue.get()) IOTConstants.NULL_KEY else mStates.triggerValue.get(),
+            uplimit = if (mStates.sensorParamWrapper.get().uplimit == mStates.upperLimit.get()) IOTConstants.NULL_KEY else mStates.upperLimit.get(),
+            lowlimit = if (mStates.sensorParamWrapper.get().lowlimit == mStates.lowerLimit.get()) IOTConstants.NULL_KEY else mStates.lowerLimit.get(),
+            corrvalue = if (mStates.sensorParamWrapper.get().corrvalue == mStates.correctValue.get()) IOTConstants.NULL_KEY else mStates.correctValue.get(),
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT2_SENSOR_PARAM,
@@ -211,7 +212,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)
@@ -245,6 +246,8 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(sensorParam: MRRS485Port2SensorParam) {
         try {
+            mStates.sensorParamWrapper.set(sensorParam)
+
             mStates.sensorAddress.set(sensorParam.sensoraddr)
             mStates.sensorType.set(sensorParam.sensortype)
             mStates.modelToken.set(sensorParam.model.substring(0, sensorParam.model.indexOf("_")))

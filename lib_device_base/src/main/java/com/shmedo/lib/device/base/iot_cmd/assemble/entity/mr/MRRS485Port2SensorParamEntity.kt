@@ -13,14 +13,14 @@ import com.squareup.moshi.JsonClass
 data class MRRS485Port2SensorParamEntity(
     val chl: String = "",//通道编号 根据设备来最多到通道15
     val model: String = "",//物模型
-    val swtoken: String = "",//水文标识
-    val sensoraddr: String = "",//传感器地址
-    val sensortype: String = "",//传感器类型
-    val filtercnt: String = "",//滤波次数
-    val gateval: String = "",//触发值
-    val uplimit: String = "",//上限值
-    val lowlimit: String = "",//下限值
-    val corrvalue: String = "",//修正值
+    val swtoken: String = IOTConstants.NULL_KEY,//水文标识
+    val sensoraddr: String = IOTConstants.NULL_KEY,//传感器地址
+    val sensortype: String = IOTConstants.NULL_KEY,//传感器类型
+    val filtercnt: String = IOTConstants.NULL_KEY,//滤波次数
+    val gateval: String = IOTConstants.NULL_KEY,//触发值
+    val uplimit: String = IOTConstants.NULL_KEY,//上限值
+    val lowlimit: String = IOTConstants.NULL_KEY,//下限值
+    val corrvalue: String = IOTConstants.NULL_KEY,//修正值
 ){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)
