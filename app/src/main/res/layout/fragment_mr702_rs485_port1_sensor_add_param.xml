@@ -360,10 +360,26 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="阈值次数" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:text="@={stateVM.ngateval}"
+                        app:inputTypeFilter='@{"number"}'
+                        app:lengthFilter="@{5}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    visible="@{stateVM.isSaveModelBtnVisible}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    visible="@{stateVM.isSaveModelBtnVisible}"
                     android:paddingStart="@dimen/dimen_size_15"
                     android:paddingEnd="@dimen/dimen_size_15">
 

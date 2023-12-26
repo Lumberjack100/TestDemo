@@ -279,6 +279,10 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             Toaster.show("请输入修正值")
             return
         }
+        if (mStates.ngateval.get().isEmpty()) {
+            Toaster.show("请输入阈值次数")
+            return
+        }
         val entity = MRRS485Port1SensorParamEntity(
             c_model = "1",
             num = modelFieldIndex.toString(),
@@ -295,7 +299,8 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             gateval = mStates.triggerValue.get(),
             uplimit = mStates.upperLimit.get(),
             lowlimit = mStates.lowerLimit.get(),
-            corrvalue = mStates.correctValue.get()
+            corrvalue = mStates.correctValue.get(),
+            ngateval = mStates.ngateval.get(),
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,

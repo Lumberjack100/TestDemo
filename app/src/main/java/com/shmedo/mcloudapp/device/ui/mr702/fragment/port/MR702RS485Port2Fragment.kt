@@ -271,8 +271,8 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             Toaster.show("请输入采集周期")
             return
         }
-        if (mStates.collectionInterval.get().isEmpty()) {
-            Toaster.show("请输入采集间隔")
+        if (mStates.collectionTimes.get().isEmpty()) {
+            Toaster.show("请输入采集次数")
             return
         }
         if (mStates.noResponseTimes.get().isEmpty()) {
@@ -290,7 +290,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         val entity = MRRS485Port2CollectionParamEntity(
             collfreq = mStates.acquisitionFrequency.get(),
             collcycle = mStates.collectionDuration.get(),
-            collgap = mStates.collectionInterval.get(),
+            collround = mStates.collectionTimes.get(),
             noresp = mStates.noResponseTimes.get(),
             colltype = (collectorTypeList.indexOf(mStates.collectorType.get()) + 1).toString(),
             colladdr = mStates.collectorAddress.get(),
@@ -489,7 +489,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         try {
             mStates.acquisitionFrequency.set(collectionParam.collfreq)
             mStates.collectionDuration.set(collectionParam.collcycle)
-            mStates.collectionInterval.set(collectionParam.collgap)
+            mStates.collectionTimes.set(collectionParam.collround)
             mStates.noResponseTimes.set(collectionParam.noresp)
             mStates.collectorType.set(collectorTypeList[collectionParam.colltype.toInt() - 1])
             mStates.collectorAddress.set(collectionParam.colladdr)

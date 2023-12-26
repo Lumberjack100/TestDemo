@@ -9,7 +9,7 @@ data class MRRS485Port2CollectionParam(
     var colladdr: String = "",//采集器地址
     var colltype: String = "",//采集器类型
     var noresp: String = "",//超时次数/无应答次数
-    var collgap: String = "",//采集间隔
+    var collround: String = "",//采集次数
     var collfreq: String = "",//采集频率
     var collcycle: String = "",//采集周期
     var powerontimes: String = "",//延时时间 s

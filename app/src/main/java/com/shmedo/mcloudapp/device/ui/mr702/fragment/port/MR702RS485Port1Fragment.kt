@@ -192,11 +192,11 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             return
         }
         if (mStates.collectionTimes.get().isEmpty()) {
-            Toaster.show("请输入采集间隔")
+            Toaster.show("请输入采集次数")
             return
         }
         if (mStates.noResponseTimes.get().isEmpty()) {
-            Toaster.show("请输入无响应次数")
+            Toaster.show("请输入无应答次数")
             return
         }
         if (mStates.delayDuration.get().isEmpty()) {
@@ -209,7 +209,6 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             collround = mStates.collectionTimes.get(),
             noresp = mStates.noResponseTimes.get(),
             powerontimes = mStates.delayDuration.get(),
-            ngateval = mStates.ngateval.get()
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_COLL,
@@ -349,7 +348,6 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             mStates.collectionTimes.set(collectionParam.collround)
             mStates.noResponseTimes.set(collectionParam.noresp)
             mStates.delayDuration.set(collectionParam.powerontimes)
-            mStates.ngateval.set(collectionParam.ngateval)
         } catch (e: Exception) {
             e.printStackTrace()
         }

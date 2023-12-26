@@ -99,12 +99,12 @@
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
-                        android:text="采集间隔(毫秒)" />
+                        android:text="采集次数(N)" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
-                        android:text="@={stateVM.collectionInterval}"
+                        android:text="@={stateVM.collectionTimes}"
                         app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
 

@@ -23,6 +23,7 @@ data class MRRS485Port1SensorParamEntity(
     val uplimit: String = "",//上限值
     val lowlimit: String = "",//下限值
     val corrvalue: String = "",//修正值
+    val ngateval: String = "",//阈值次数
     val baud: String = "",//波特率  bps 数字
     val databit: String = "",//数据位   数字(5 6 7 8)
     val parity: String = "",//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE

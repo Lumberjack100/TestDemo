@@ -17,7 +17,6 @@ class MRRS485Port1CollectionParamParser : IOTCommandParser<MRRS485Port1Collectio
             collfreq = keyValueMap.getOrDefault("collfreq", collfreq)
             collcycle = keyValueMap.getOrDefault("collcycle", collcycle)
             powerontimes = keyValueMap.getOrDefault("powerontimes", powerontimes)
-            ngateval = keyValueMap.getOrDefault("ngateval", ngateval)
         }
     }
     override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT1_COLL

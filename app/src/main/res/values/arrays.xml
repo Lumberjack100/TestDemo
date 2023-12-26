@@ -173,8 +173,8 @@
     </string-array>
 
     <string-array name="mr_rs485_port2_collector_type">
+        <item>MCU-8通道</item>
         <item>MCU-16通道</item>
-        <item>MCU-32通道</item>
     </string-array>
 
     <string-array name="mr_rs485_port3_led_type">
