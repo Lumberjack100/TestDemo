@@ -11,9 +11,8 @@ class MRRS485Port2CollectionParamParser : IOTCommandParser<MRRS485Port2Collectio
             colladdr = keyValueMap.getOrDefault("colladdr", colladdr)
             colltype = keyValueMap.getOrDefault("colltype", colltype)
             noresp = keyValueMap.getOrDefault("noresp", noresp)
-            collround = keyValueMap.getOrDefault("collround", collround)
-            collfreq = keyValueMap.getOrDefault("collfreq", collfreq)
             collcycle = keyValueMap.getOrDefault("collcycle", collcycle)
+            collfreq = keyValueMap.getOrDefault("collfreq", collfreq)
             powerontimes = keyValueMap.getOrDefault("powerontimes", powerontimes)
         }
     }

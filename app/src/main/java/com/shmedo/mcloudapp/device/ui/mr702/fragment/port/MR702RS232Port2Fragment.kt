@@ -64,6 +64,11 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        mStates.dataBit.set(dataBitList[3])
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
@@ -216,7 +221,7 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)

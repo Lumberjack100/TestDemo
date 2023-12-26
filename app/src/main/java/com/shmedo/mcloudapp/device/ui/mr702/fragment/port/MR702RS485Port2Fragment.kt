@@ -70,6 +70,11 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         initSensorAdapter()
     }
 
+    override fun initData() {
+        super.initData()
+        mStates.dataBit.set(dataBitList[3])
+    }
+
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
@@ -267,10 +272,6 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             Toaster.show("请输入采集频率")
             return
         }
-        if (mStates.collectionDuration.get().isEmpty()) {
-            Toaster.show("请输入采集周期")
-            return
-        }
         if (mStates.collectionTimes.get().isEmpty()) {
             Toaster.show("请输入采集次数")
             return
@@ -289,8 +290,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         }
         val entity = MRRS485Port2CollectionParamEntity(
             collfreq = mStates.acquisitionFrequency.get(),
-            collcycle = mStates.collectionDuration.get(),
-            collround = mStates.collectionTimes.get(),
+            collcycle = mStates.collectionTimes.get(),
             noresp = mStates.noResponseTimes.get(),
             colltype = (collectorTypeList.indexOf(mStates.collectorType.get()) + 1).toString(),
             colladdr = mStates.collectorAddress.get(),
@@ -416,7 +416,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initSensorData(result.data)
@@ -488,8 +488,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private fun initCollectionData(collectionParam: MRRS485Port2CollectionParam) {
         try {
             mStates.acquisitionFrequency.set(collectionParam.collfreq)
-            mStates.collectionDuration.set(collectionParam.collcycle)
-            mStates.collectionTimes.set(collectionParam.collround)
+            mStates.collectionTimes.set(collectionParam.collcycle)
             mStates.noResponseTimes.set(collectionParam.noresp)
             mStates.collectorType.set(collectorTypeList[collectionParam.colltype.toInt() - 1])
             mStates.collectorAddress.set(collectionParam.colladdr)

@@ -103,6 +103,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         )
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
+        mStates.dataBit.set(dataBitList[3])
     }
 
     inner class ClickProxy : BaseClickProxy() {

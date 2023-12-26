@@ -67,6 +67,11 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        mStates.dataBit.set(dataBitList[3])
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {

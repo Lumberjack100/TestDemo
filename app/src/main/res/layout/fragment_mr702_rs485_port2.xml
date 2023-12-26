@@ -81,24 +81,6 @@
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
-                        android:text="采集周期(分钟)" />
-
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
-                        style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
-                        android:text="@={stateVM.collectionDuration}"
-                        app:inputTypeFilter='@{"number"}'
-                        app:lengthFilter="@{5}" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/Common_ClickableItem_TitleStyle"
-                        textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集次数(N)" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText

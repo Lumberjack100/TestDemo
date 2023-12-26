@@ -119,14 +119,16 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         arguments?.let {
             sensorItem = it.getParcelable(SENSOR_MODEL_ITEM)!!
         }
-        mStates.sensorName.set(sensorItem.sensorName)
-        mStates.modelToken.set(sensorItem.modelToken)
         binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
+
         if (sensorItem.modelFieldList.isNotEmpty()) {
             tabList.clear()
             tabList.addAll(sensorItem.modelFieldList)
             initTabLayout()
         }
+        mStates.sensorName.set(sensorItem.sensorName)
+        mStates.modelToken.set(sensorItem.modelToken)
+        mStates.dataBit.set(dataBitList[3])
     }
 
     private fun initTabLayout() {

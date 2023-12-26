@@ -107,6 +107,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.sensorType.set(sensorType)
             mStates.sensorName.set(if (sensorType == 1) "太阳能控制器" else if (sensorType == 2) "声光报警器" else "LED屏")
         }
+        mStates.dataBit.set(dataBitList[3])
     }
 
     private fun setEditable(editable: Boolean) {
