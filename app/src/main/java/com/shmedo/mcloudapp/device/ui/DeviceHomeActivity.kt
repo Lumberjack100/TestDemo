@@ -5,11 +5,15 @@ import android.content.Intent
 import android.os.Parcelable
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
+import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.base.model.SessionInfo
+import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -24,6 +28,7 @@ import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702HomeFragment
 class DeviceHomeActivity : BaseActivity() {
     private val binding: ActivityDeviceHomeBinding by lazy { getBinding() as ActivityDeviceHomeBinding }
     private val mStates: EmptyViewModel by viewModels()
+    private val logViewModel: LogViewModel by viewModels()
 
     private var productType = ProductType.UnKnown
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -41,9 +46,23 @@ class DeviceHomeActivity : BaseActivity() {
             communicateWay = bundle.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
             deviceInfo = bundle.getParcelable(AppContants.Extras.DEVICE_INFO)
             bleDevice = bundle.getParcelable(AppContants.Extras.BLE_DEVICE)
+            addLogSession()
         }
         binding.deviceHomeHostFragment.post {
             setGraph()
+        }
+    }
+
+    private fun addLogSession() {
+        deviceInfo?.let {
+            val sessionInfo = SessionInfo(
+                key = it.firmwareVersion,
+                name = it.deviceToken,
+                createBy = MmkvCacheUtil.getUserName(),
+                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
+                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
+            )
+            logViewModel.insertSession(sessionInfo)
         }
     }
 
@@ -94,7 +113,8 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             ProductType.MR702 -> {
-                val bundle = MR702HomeFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
+                val bundle =
+                    MR702HomeFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
                 findNavController(R.id.device_home_host_fragment)
                     .setGraph(R.navigation.mr702_graph, bundle)
             }

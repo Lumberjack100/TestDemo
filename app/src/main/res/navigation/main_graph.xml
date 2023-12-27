@@ -5,6 +5,8 @@
     android:id="@+id/main_graph"
     app:startDestination="@id/mainFragment">
 
+    <include app:graph="@navigation/included_log_session_graph" />
+
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.shmedo.mcloudapp.common.fragment.MainFragment"
@@ -21,6 +23,14 @@
         <action
             android:id="@+id/action_mainFragment_to_companyHomeFragment"
             app:destination="@id/companyHomeFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_mainFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -48,10 +58,26 @@
         tools:layout="@layout/fragment_company_home" />
 
     <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.shmedo.mcloudapp.user.fragment.AboutFragment"
+        android:label="AboutFragment"
+        tools:layout="@layout/fragment_about">
+
+        <action
+            android:id="@+id/action_aboutFragment_to_logSessionListFragment"
+            app:destination="@id/log_session_graph"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+    </fragment>
+
+    <fragment
         android:id="@+id/deviceSearchFragment"
         android:name="com.shmedo.mcloudapp.device.ui.DeviceSearchFragment"
         android:label="DeviceSearchFragment"
-        tools:layout="@layout/fragment_device_search" >
+        tools:layout="@layout/fragment_device_search">
         <action
             android:id="@+id/action_deviceSearchFragment_to_deviceSearchResultFragment"
             app:destination="@id/deviceSearchResultFragment"
@@ -65,8 +91,6 @@
         android:id="@+id/deviceSearchResultFragment"
         android:name="com.shmedo.mcloudapp.device.ui.DeviceSearchResultFragment"
         android:label="DeviceSearchResultFragment"
-        tools:layout="@layout/fragment_device_search_result" >
-
-    </fragment>
+        tools:layout="@layout/fragment_device_search_result"/>
 
 </navigation>

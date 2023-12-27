@@ -61,7 +61,7 @@ class MedoBleManager(
 ) : BleManager(context) {
 
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
-    private var writeCharac: BluetoothGattCharacteristic? = null
+    private var writeCharacteristic: BluetoothGattCharacteristic? = null
 
     private val data = MutableStateFlow(CommandData())
     val dataHolder = ConnectionObserverAdapter<CommandData>()
@@ -108,7 +108,7 @@ class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 ESP32ASpec.ESP32_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharac = getCharacteristic(
+            writeCharacteristic = getCharacteristic(
                 ESP32ASpec.ESP32_WRITABLE_CHARACTERISTIC_UUID
             )
         }
@@ -116,7 +116,7 @@ class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 ESP32BSpec.ESP32B_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharac = getCharacteristic(
+            writeCharacteristic = getCharacteristic(
                 ESP32BSpec.ESP32B_WRITABLE_CHARACTERISTIC_UUID
             )
         }
@@ -124,7 +124,7 @@ class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 GOC400Spec.GOC400_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharac = getCharacteristic(
+            writeCharacteristic = getCharacteristic(
                 GOC400Spec.GOC400_WRITABLE_CHARACTERISTIC_UUID
             )
         }
@@ -132,7 +132,7 @@ class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 GOCW91200Spec.GOCW91200_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharac = getCharacteristic(
+            writeCharacteristic = getCharacteristic(
                 GOCW91200Spec.GOCW91200_WRITABLE_CHARACTERISTIC_UUID
             )
         }
@@ -140,14 +140,14 @@ class MedoBleManager(
             notifyCharacteristic = getCharacteristic(
                 USRSpec.USR_NOTIFY_CHARACTERISTIC_UUID
             )
-            writeCharac = getCharacteristic(
+            writeCharacteristic = getCharacteristic(
                 USRSpec.USR_WRITABLE_CHARACTERISTIC_UUID
             )
         }
 
         var writeRequest = false
         var writeCommand = false
-        writeCharac?.let {
+        writeCharacteristic?.let {
             val rxProperties = it.properties
             writeRequest = rxProperties and BluetoothGattCharacteristic.PROPERTY_WRITE > 0
             writeCommand =
@@ -155,24 +155,24 @@ class MedoBleManager(
         }
 
         val supported =
-            notifyCharacteristic != null && writeCharac != null && (writeRequest || writeCommand)
+            notifyCharacteristic != null && writeCharacteristic != null && (writeRequest || writeCommand)
         return supported
     }
 
     override fun onServicesInvalidated() {
-        writeCharac = null
+        writeCharacteristic = null
         notifyCharacteristic = null
     }
 
     suspend fun sendData(command: String) {
-        writeCharac?.let {
+        writeCharacteristic?.let {
             Timber.v(
                 "发送数据: length=%s bytes;content: %s",
                 command.toByteArray().size,
                 command
             )
             writeCharacteristic(
-                writeCharac,
+                writeCharacteristic,
                 Data.from(command),
                 it.writeType
             )

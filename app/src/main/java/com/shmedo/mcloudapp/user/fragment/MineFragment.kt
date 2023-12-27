@@ -112,7 +112,7 @@ class MineFragment : BaseFragment() {
          * 关于我们
          */
         fun onAboutUsClick() {
-//            nav().navigate(R.id.action_mainFragment_to_AboutFragment)
+            nav().navigate(R.id.action_mainFragment_to_aboutFragment)
         }
 
         fun logout() {

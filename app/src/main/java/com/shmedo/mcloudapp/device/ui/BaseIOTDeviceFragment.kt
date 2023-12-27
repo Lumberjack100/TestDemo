@@ -2,8 +2,10 @@ package com.shmedo.mcloudapp.device.ui
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
@@ -17,6 +19,9 @@ import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.base.model.LogInfo
+import com.shmedo.lib.core.base.model.LogLevel
+import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.R
@@ -54,6 +59,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected val mMessenger: PageMessenger by lazy { getAppViewModel() }
     protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModels()
     protected val bleViewModel: BleViewModel by viewModels()
+    protected val logViewModel: LogViewModel by activityViewModels()
 
     protected var refreshLayout: PageRefreshLayout? = null
 
@@ -87,6 +93,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             netIotCommandViewModel.cmdDispatchFlow.collect {
                 when (it) {
                     is DispatchFailed -> {
+                        addLogItem(priority = LogLevel.ERROR, data = "DispatchFailed: ${it.errorMsg}")
                         doNetDispatchFailed(it.cmdStr, it.errorMsg)
                     }
 
@@ -95,14 +102,17 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     }
 
                     is CmdResponseResultError -> {
+                        addLogItem(priority = LogLevel.ERROR, data = "Response Error: ${it.errorMsg}")
                         doCmdResponseResultError(it.cmdStr, it.errorMsg)
                     }
 
                     is CmdResponseResultTimeOut -> {
+                        addLogItem(priority = LogLevel.ERROR, data = "Response TimeOut")
                         doCmdResponseResultTimeOut(it.cmdStr, it.errorMsg)
                     }
 
                     is CmdResponseResultSuccess -> {
+                        addLogItem(priority = LogLevel.INFO, data = it.cmdResult.responseContent)
                         setResultData(it.cmdResult.responseContent)
                     }
 
@@ -121,38 +131,46 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     is WorkingState -> when (state.result) {
                         is IdleResult,
                         is ConnectingResult -> {
+                            addLogItem(priority = LogLevel.VERBOSE, data = "Connecting")
                             showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                         }
 
                         is ConnectedResult -> {
+                            addLogItem(priority = LogLevel.INFO, data = "Connected")
                             dismissLoadingDialog()
                             onConnectionStateChanged(true)
                         }
 
                         is ReadyResult -> {
+                            addLogItem(priority = LogLevel.INFO, data = "Ready")
                             onBleDeviceReady()
                         }
 
                         is SuccessResult -> {
+                            addLogItem(priority = LogLevel.INFO, data = state.result.data.response)
                             setResultData(state.result.data.response)
                         }
 
                         is DisconnectedResult -> {
+                            addLogItem(priority = LogLevel.INFO, data = "Disconnected")
                             dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is LinkLossResult -> {
+                            addLogItem(priority = LogLevel.ERROR, data = "LinkLoss")
                             dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is MissingServiceResult -> {
+                            addLogItem(priority = LogLevel.ERROR, data = "MissingService")
                             dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is UnknownErrorResult -> {
+                            addLogItem(priority = LogLevel.ERROR, data = "UnknownError")
                             dismissLoadingDialog()
                         }
                     }
@@ -206,6 +224,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
         val command = commandItems.first
         commandItems.removeFirst()
+        addLogItem(priority = LogLevel.INFO, data = command)
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
@@ -254,6 +273,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         msg: String = ""
     ) {
         Timber.i("$fragmentName 发送指令超时")
+        addLogItem(priority = LogLevel.ERROR, data = "Response TimeOut")
         if (isShowMsg) {
             Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
         }
@@ -267,6 +287,16 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         timeoutJob?.cancel() // 在Fragment销毁时取消timeoutJob
+    }
+
+    fun addLogItem(priority: Int, data: String) {
+        val logInfo = LogInfo(
+            sessionId = logViewModel.getLogSession()?.id ?: "",
+            logLevel = LogLevel.fromPriority(priority),
+            data = data,
+            createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
+        )
+        logViewModel.insertLog(logInfo)
     }
 
     companion object {
