@@ -1,6 +1,6 @@
 <resources xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.Bridge">
         <!-- actionbar颜色-->
         <item name="colorPrimary">@color/colorPrimary</item>
         <!-- 状态栏颜色-->
@@ -8,6 +8,8 @@
         <item name="colorAccent">@color/storage_ring_progress_abnormal</item>
         <!--设置窗体切换动画-->
         <item name="android:windowAnimationStyle">@style/ActivityAnimation</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="LightStatusBarActivity" parent="Theme.MaterialComponents.Light.Bridge">
@@ -31,6 +33,10 @@
     <style name="Toolbar_TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/text_size_16</item>
+    </style>
+
+    <style name="Toolbar_SubTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/text_size_14</item>
     </style>
 
     <!--Activity进入和退出动画-->

@@ -54,9 +54,12 @@ class LocalDataRepository private constructor() {
 
 
     //<editor-fold desc="日志数据信息">
-    suspend fun getLogListBySessionId(session_id: String): List<LogInfo>? =
+    suspend fun getLogListBySessionId(
+        sessionId: String,
+        level: Int
+    ): List<LogInfo>? =
         withContext(Dispatchers.IO) {
-            AppDatabase.INSTANCE.logInfoDao().getLogListBySessionId(session_id)
+            AppDatabase.INSTANCE.logInfoDao().getLogListBySessionId(sessionId, level)
         }
 
     suspend fun insertLog(info: LogInfo) = withContext(Dispatchers.IO) {

@@ -6,6 +6,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.TimeUtils
+import com.drake.brv.PageRefreshLayout
 import com.drake.brv.listener.OnHoverAttachListener
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
@@ -21,13 +22,13 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
+import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentLogSessionListBinding
 import com.shmedo.mcloudapp.user.model.HoverHeaderModel
-import com.shmedo.mcloudapp.user.viewmodel.state.LogSessionListViewModel
 
 class LogSessionListFragment : BaseFragment() {
     private val binding: FragmentLogSessionListBinding by lazy { getBinding() as FragmentLogSessionListBinding }
-    private val mStates: LogSessionListViewModel by viewModels()
+    private val mStates: EmptyViewModel by viewModels()
     private val loginViewModel: LogViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
@@ -48,7 +49,14 @@ class LogSessionListFragment : BaseFragment() {
                 nav().navigateUp()
             }
         })
+        initRefresh()
         initAdapter()
+    }
+
+    private fun initRefresh() {
+        PageRefreshLayout.startIndex = 1
+        binding.refreshLayout.setEnableRefresh(false)
+        binding.refreshLayout.setEnableLoadMore(false)
     }
 
     private fun initAdapter() {
@@ -60,7 +68,11 @@ class LogSessionListFragment : BaseFragment() {
                     R.layout.item_log_session_group -> Toaster.show("悬停条目")
                     else -> {
                         val item = getModel<SessionInfo>()
-                        Toaster.show("普通条目")
+                        val bundle = LogDataFragment.newBundleArguments(item)
+                        nav().navigate(
+                            R.id.action_logSessionListFragment_to_logDataFragment,
+                            bundle
+                        )
                     }
                 }
             }
@@ -79,14 +91,8 @@ class LogSessionListFragment : BaseFragment() {
     }
 
     override fun initData() {
-//        loadLogSessionList()
+        loadLogSessionList()
     }
-
-
-    override fun lazyLoadData() {
-        binding.recyclerview.models = getTestData()
-    }
-
 
     inner class ClickProxy {
 
@@ -96,19 +102,24 @@ class LogSessionListFragment : BaseFragment() {
         launchWithViewLifecycle {
             loginViewModel.getSessionListByUser(MmkvCacheUtil.getUserName())
                 ?.let { logSessionList ->
-                    //将 createTime 转换为 yyyy-MM-dd，然后按照日期分组
-                    val groupMap: Map<String, List<SessionInfo>> =
-                        logSessionList.groupBy { it.createDate }
-                    val groupList = mutableListOf<Any>()
-                    groupMap.forEach { (key, value) ->
-                        groupList.add(HoverHeaderModel(key))
-                        groupList.addAll(value)
+                    if (logSessionList.isEmpty()) {
+                        binding.refreshLayout.showEmpty()
+                    } else {
+                        binding.refreshLayout.showContent()
+                        //将 createTime 转换为 yyyy-MM-dd，然后按照日期分组
+                        val groupMap: Map<String, List<SessionInfo>> =
+                            logSessionList.groupBy { it.createDate }
+                        val groupList = mutableListOf<Any>()
+                        groupMap.forEach { (key, value) ->
+                            groupList.add(HoverHeaderModel(key))
+                            groupList.addAll(value)
+                        }
+                        binding.recyclerview.models = groupList
                     }
-                    binding.recyclerview.models = groupList
                 }
-
         }
     }
+
     private fun getTestData(): List<Any> {
         return listOf(
             HoverHeaderModel("2021-08-10"),
@@ -201,7 +212,6 @@ class LogSessionListFragment : BaseFragment() {
                 createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
                 createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
             ),
-
         )
     }
 
@@ -209,5 +219,4 @@ class LogSessionListFragment : BaseFragment() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
-
 }

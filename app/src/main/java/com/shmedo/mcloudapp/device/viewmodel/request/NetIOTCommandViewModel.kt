@@ -24,12 +24,8 @@ import kotlinx.coroutines.withContext
 
 /**
  * 创建者：gonghe
- *
  * 创建时间：2023/9/4
- *
  * 描述： 物联网平台透传指令
- *
- *
  */
 class NetIOTCommandViewModel : BaseViewModel() {
     private val _cmdDispatchFlow: MutableSharedFlow<CmdDispatch> = MutableSharedFlow()

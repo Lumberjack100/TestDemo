@@ -21,7 +21,7 @@ interface SessionInfoDao {
     @Query("select * from sessions  where create_by = :userId")
     fun getSessionListByUserLiveData(userId: String): LiveData<List<SessionInfo>?>
 
-    @Query("select * from sessions  where create_by = :userId")
+    @Query("select * from sessions  where create_by = :userId order by create_time desc")
     suspend fun getSessionListByUser(userId: String): List<SessionInfo>?
 
     @Query("select * from sessions  where id = :id")

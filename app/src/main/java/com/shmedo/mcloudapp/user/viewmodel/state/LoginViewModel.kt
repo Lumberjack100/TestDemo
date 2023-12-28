@@ -8,23 +8,10 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
  * 描述：     TODO
  */
 class LoginViewModel : BaseViewModel() {
-
-
     val name = NonNullObservableField("")
-
-
     val password = NonNullObservableField("")
-
-
     val phone = NonNullObservableField("")
-
-
     val code = NonNullObservableField("")
-
-
     val eyeOpen = NonNullObservableField(false)
-
-
     val isAccountLogin = NonNullObservableField(true)
-
 }

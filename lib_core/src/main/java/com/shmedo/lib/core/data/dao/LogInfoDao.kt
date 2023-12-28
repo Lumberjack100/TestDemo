@@ -18,8 +18,8 @@ import com.shmedo.lib.core.base.model.LogInfo
 @Dao
 interface LogInfoDao {
 
-    @Query("select * from log_info  where session_id = :session_id")
-    suspend fun getLogListBySessionId(session_id: String): List<LogInfo>?
+    @Query("select * from log_info  where session_id = :sessionId and log_level>= :level")
+    suspend fun getLogListBySessionId(sessionId: String, level: Int): List<LogInfo>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLog(record: LogInfo)
@@ -30,6 +30,6 @@ interface LogInfoDao {
     @Query("DELETE FROM log_info WHERE id = :id")
     suspend fun deleteById(id: String)
 
-    @Query("DELETE FROM log_info WHERE session_id = :session_id")
-    suspend fun deleteBySessionId(session_id: String)
+    @Query("DELETE FROM log_info WHERE session_id = :sessionId")
+    suspend fun deleteBySessionId(sessionId: String)
 }

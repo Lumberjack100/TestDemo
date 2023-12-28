@@ -15,10 +15,12 @@
  */
 package com.shmedo.lib.core.bindadapter;
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.InputFilter
 import android.util.Pair
+import android.util.SparseIntArray
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -30,12 +32,24 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.shmedo.lib.core.base.model.LogLevel
 
 
 /**
  * Create by KunMinX at 19/9/18
  */
 object CommonBindingAdapter {
+    private val mColors = SparseIntArray()
+
+    init {
+        mColors.put(LogLevel.DEBUG, -0xff6322)
+        mColors.put(LogLevel.VERBOSE, -0x474faa)
+        mColors.put(LogLevel.INFO, Color.BLACK)
+        mColors.put(LogLevel.WARNING, -0x2886da)
+        mColors.put(LogLevel.ERROR, Color.RED)
+    }
+
+
     private val numberFilter = InputFilter { source, start, end, _, _, _ ->
         for (i in start until end) {
             if (!"0123456789".contains(source[i].toString())) {
@@ -156,6 +170,25 @@ object CommonBindingAdapter {
     @BindingAdapter(value = ["alpha"], requireAll = false)
     fun alpha(view: View, alpha: Float) {
         view.alpha = alpha
+    }
+
+    @JvmStatic
+    @BindingAdapter(value = ["logLevelTag"], requireAll = false)
+    fun setLogTextTag(textView: TextView, level: Int) {
+        textView.setTextColor(mColors[level])
+        when (level) {
+            LogLevel.DEBUG -> textView.text = "D"
+            LogLevel.VERBOSE -> textView.text = "V"
+            LogLevel.INFO -> textView.text = "I"
+            LogLevel.WARNING -> textView.text = "W"
+            LogLevel.ERROR -> textView.text = "E"
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter(value = ["logLevelColor"], requireAll = false)
+    fun setLogTextColor(textView: TextView, level: Int) {
+        textView.setTextColor(mColors[level])
     }
 
     @JvmStatic

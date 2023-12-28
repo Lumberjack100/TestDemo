@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="vm"
-            type="com.shmedo.mcloudapp.user.viewmodel.state.LogSessionListViewModel" />
-
-        <variable
             name="click"
             type="com.shmedo.mcloudapp.user.fragment.LogSessionListFragment.ClickProxy" />
     </data>
@@ -26,12 +22,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:splitMotionEvents="false" />
+        </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

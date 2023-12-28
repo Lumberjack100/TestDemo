@@ -3,18 +3,15 @@ package com.shmedo.lib.core.base.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.core.base.model.LogInfo
+import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.data.repository.LocalDataRepository
 import kotlinx.coroutines.launch
 
 /**
  * 创建者：gonghe
- *
  * 创建时间：2023/12/27
- *
  * 描述： TODO
- *
- *
  */
 class LogViewModel : ViewModel() {
     private var logSession: SessionInfo? = null
@@ -36,6 +33,10 @@ class LogViewModel : ViewModel() {
     }
 
 
+    suspend fun getLogListBySessionId(
+        sessionId: String, level: Int = LogLevel.DEBUG
+    ): List<LogInfo>? = LocalDataRepository.instance.getLogListBySessionId(sessionId, level)
+
     fun insertLog(info: LogInfo) = viewModelScope.launch {
         LocalDataRepository.instance.insertLog(info)
     }
@@ -43,4 +44,6 @@ class LogViewModel : ViewModel() {
     fun insertLogList(list: List<LogInfo>) = viewModelScope.launch {
         LocalDataRepository.instance.insertLogList(list)
     }
+
+
 }
