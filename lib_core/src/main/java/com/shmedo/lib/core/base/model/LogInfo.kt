@@ -23,5 +23,6 @@ data class LogInfo(
     @ColumnInfo(name = "session_id") val sessionId: String,
     @ColumnInfo(name = "log_level") val logLevel: Int = LogLevel.DEBUG,
     var data: String = "",//
+    @ColumnInfo(name = "create_date") var createDate: String,//
     @ColumnInfo(name = "create_time") var createTime: String,//
 ) : Parcelable

@@ -29,16 +29,19 @@
                 android:id="@+id/status_bar_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@color/white"/>
+                android:background="@color/white" />
 
             <RelativeLayout
                 android:id="@+id/userLayout"
+                onClickWithDebouncing="@{()->click.onUpdateUserClick()}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:foreground="?attr/selectableItemBackground"
-                onClickWithDebouncing="@{()->click.onUpdateUserClick()}"
-                android:padding="@dimen/dimen_size_20">
+                android:paddingStart="@dimen/dimen_size_15"
+                android:paddingTop="@dimen/dimen_size_5"
+                android:paddingEnd="@dimen/dimen_size_15"
+                android:paddingBottom="@dimen/dimen_size_5">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/userAvatar"
@@ -89,11 +92,11 @@
 
             </RelativeLayout>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/companyLayout"
+            <LinearLayout
                 style="@style/Common_ClickableItem_LayoutStyle"
-                android:layout_marginTop="@dimen/dimen_size_14"
-                onClickWithDebouncing="@{()->click.onCompanyClick()}">
+                onClickWithDebouncing="@{()->click.onVersionCheckClick()}"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="20dp"
@@ -102,41 +105,22 @@
                     android:src="@drawable/icon_userinfo_company" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
-                    android:text="所属企业"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_16" />
+                    android:text="所属企业" />
 
                 <TextView
-                    android:id="@+id/tv_companyName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableEnd="@drawable/icon_arrow_right"
-                    android:drawablePadding="@dimen/dimen_size_5"
-                    android:ellipsize="end"
-                    android:gravity="right"
-                    android:maxLines="1"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="@{vm.company}"
-                    android:textColor="@color/gray_818182"
-                    android:textSize="@dimen/text_size_15"
+                    android:textColor="@color/sub_title_text_color"
                     tools:text="上海米度测控科技有限公司" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
-                android:background="@color/divider_line_bg" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/updatePwdLayout"
+            <LinearLayout
                 style="@style/Common_ClickableItem_LayoutStyle"
-                onClickWithDebouncing="@{()->click.onModifyPasswordClick()}">
+                onClickWithDebouncing="@{()->click.onModifyPasswordClick()}"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="20dp"
@@ -145,32 +129,19 @@
                     android:src="@drawable/icon_userinfo_setting" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
-                    android:text="修改密码"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_16" />
+                    android:text="修改密码" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableEnd="@drawable/icon_arrow_right"
-                    android:drawablePadding="@dimen/dimen_size_5"
-                    android:ellipsize="end"
-                    android:gravity="right"
-                    android:maxLines="1"
-                    android:textColor="@color/gray_818182"
-                    android:textSize="@dimen/text_size_16" />
+                <TextView style="@style/Common_ClickableItem_ValueStyle" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/checkVersionLayout"
+            <LinearLayout
                 style="@style/Common_ClickableItem_LayoutStyle"
-                android:layout_marginTop="@dimen/dimen_size_14"
-                onClickWithDebouncing="@{()->click.onVersionCheckClick()}">
+                onClickWithDebouncing="@{()->click.onVersionCheckClick()}"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="20dp"
@@ -179,77 +150,45 @@
                     android:src="@drawable/icon_userinfo_check_version" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
-                    android:text="版本检测"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_16" />
+                    android:text="版本检测" />
 
                 <TextView
-                    android:id="@+id/tv_versionName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableEnd="@drawable/icon_arrow_right"
-                    android:drawablePadding="@dimen/dimen_size_5"
-                    android:ellipsize="end"
-                    android:gravity="right"
-                    android:maxLines="1"
+                    style="@style/Common_ClickableItem_ValueStyle"
                     android:text="@{vm.appVersion}"
-                    android:textColor="@color/gray_818182"
-                    android:textSize="@dimen/text_size_15"
+                    android:textColor="@color/sub_title_text_color"
                     tools:text="1.1.0" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="18dp"
-                android:background="@color/divider_line_bg" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/aboutLayout"
+            <LinearLayout
                 style="@style/Common_ClickableItem_LayoutStyle"
-                onClickWithDebouncing="@{()->click.onAboutUsClick()}">
+                onClickWithDebouncing="@{()->click.onSettingClick()}"
+                android:background="@drawable/layer_common_click_item_with_divider">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/icon_userinfo_about" />
+                    android:src="@drawable/icon_userinfo_setting" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
-                    android:text="关于"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_16" />
+                    android:text="设置" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:drawableEnd="@drawable/icon_arrow_right"
-                    android:drawablePadding="@dimen/dimen_size_5"
-                    android:ellipsize="end"
-                    android:gravity="right"
-                    android:maxLines="1"
-                    android:textColor="@color/gray_818182"
-                    android:textSize="@dimen/text_size_16" />
+                <TextView style="@style/Common_ClickableItem_ValueStyle" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/loginOutLayout"
                 style="@style/Common_ClickableItem_LayoutStyle"
+                onClickWithDebouncing="@{()->click.logout()}"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
-                android:gravity="center"
-                onClickWithDebouncing="@{()->click.logout()}">
+                android:gravity="center">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -261,7 +200,5 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
     </androidx.core.widget.NestedScrollView>
-
 </layout>

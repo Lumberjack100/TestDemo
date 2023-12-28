@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702RainPortBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -126,7 +127,7 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.debounceCoefficient.get().isEmpty()) {
-            Toaster.show("请输入消抖系数")
+            showMessageDialog("请输入消抖系数")
             return
         }
         val entity = MRRainGaugeParamEntity(

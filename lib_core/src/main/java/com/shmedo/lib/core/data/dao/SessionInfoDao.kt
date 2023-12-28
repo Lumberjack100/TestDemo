@@ -38,4 +38,7 @@ interface SessionInfoDao {
 
     @Query("DELETE FROM sessions WHERE id = :id")
     suspend fun deleteById(id: String)
+
+    @Query("DELETE FROM sessions WHERE create_date != :excludeDate")
+    suspend fun clearHistoryData(excludeDate: String)
 }

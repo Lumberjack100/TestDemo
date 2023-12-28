@@ -110,22 +110,38 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.accuracyCorrectionValue.get().isEmpty()) {
-            Toaster.show("请输入绝对精度修正值!")
+            MessageDialog.show(
+                "提示",
+                "请输入绝对精度修正值!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.accuracyCorrectionValue.get().toDouble()
             if (value < 0) {
-                Toaster.show("请输入正确的绝对精度修正值!")
+                MessageDialog.show(
+                    "提示",
+                    "请输入正确的绝对精度修正值!",
+                    "我已知晓"
+                )
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的绝对精度修正值!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的绝对精度修正值!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.movementSpeed.get().isEmpty()) {
-            Toaster.show("请输入步进电机运动速度!")
+            MessageDialog.show(
+                "提示",
+                "请输入步进电机运动速度!",
+                "我已知晓"
+            )
             return
         }
         try {
@@ -140,17 +156,29 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
         }
 
         if (mStates.motorTorque.get().isEmpty()) {
-            Toaster.show("请输入步进电机力矩!")
+            MessageDialog.show(
+                "提示",
+                "请输入步进电机力矩!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.motorTorque.get().toInt()
             if (value < 0) {
-                Toaster.show("请输入正确的步进电机力矩!")
+                MessageDialog.show(
+                    "提示",
+                    "请输入正确的步进电机力矩!",
+                    "我已知晓"
+                )
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的步进电机力矩!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的步进电机力矩!",
+                "我已知晓"
+            )
             return
         }
         val entity = AdmeStepperMotorEntity(

@@ -108,11 +108,8 @@ class MineFragment : BaseFragment() {
             shareRequestViewModel.requestCheckAppVersion(true)
         }
 
-        /**
-         * 关于我们
-         */
-        fun onAboutUsClick() {
-            nav().navigate(R.id.action_mainFragment_to_aboutFragment)
+        fun onSettingClick() {
+            nav().navigate(R.id.action_mainFragment_to_settingFragment)
         }
 
         fun logout() {

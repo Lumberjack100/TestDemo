@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentAdmeInclinometerBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -183,7 +184,11 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.torsionAngle.get().isEmpty()) {
-            Toaster.show("请输入扭转角γ!")
+            MessageDialog.show(
+                "提示",
+                "请输入扭转角γ!",
+                "我已知晓"
+            )
             return
         }
         try {
@@ -197,12 +202,12 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的扭转角γ!")
+            showMessageDialog("请输入正确的扭转角γ!")
             return
         }
 
         if (mStates.address.get().isEmpty()) {
-            Toaster.show("请输入Mac地址!")
+            showMessageDialog("请输入Mac地址!")
             return
         }
         if (!RegexUtils.isMatch(
@@ -210,63 +215,63 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
                 mStates.address.get()
             )
         ) {
-            Toaster.show("请输入正确的Mac地址!")
+            showMessageDialog("请输入正确的Mac地址!")
             return
         }
 
         if (mStates.collectionInterval.get().isEmpty()) {
-            Toaster.show("请输入采集器采集间隔!")
+            showMessageDialog("请输入采集器采集间隔!")
             return
         }
         try {
             val value = mStates.collectionInterval.get().toInt()
             if (value < 1) {
-                Toaster.show("请输入正确的采集器采集间隔!")
+                showMessageDialog("请输入正确的采集器采集间隔!")
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的采集器采集间隔!")
+            showMessageDialog("请输入正确的采集器采集间隔!")
             return
         }
 
         if (mStates.solvingInterval.get().isEmpty()) {
-            Toaster.show("请输入采集器解算间隔!")
+            showMessageDialog("请输入采集器解算间隔!")
             return
         }
         try {
             val value = mStates.solvingInterval.get().toInt()
             if (value < 1) {
-                Toaster.show("请输入正确的采集器解算间隔!")
+                showMessageDialog("请输入正确的采集器解算间隔!")
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的采集器解算间隔!")
+            showMessageDialog("请输入正确的采集器解算间隔!")
             return
         }
 
         if (mStates.sleepTime.get().isEmpty()) {
-            Toaster.show("请输入休眠时间!")
+            showMessageDialog("请输入休眠时间!")
             return
         }
         try {
             val value = mStates.sleepTime.get().toInt()
             if (value < 1) {
-                Toaster.show("请输入正确的休眠时间!")
+                showMessageDialog("请输入正确的休眠时间!")
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的休眠时间!")
+            showMessageDialog("请输入正确的休眠时间!")
             return
         }
 
         if (mStates.correctionValue.get().isEmpty()) {
-            Toaster.show("请输入测斜仪修正值!")
+            showMessageDialog("请输入测斜仪修正值!")
             return
         }
         try {
             val value = mStates.correctionValue.get().toDouble()
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的测斜仪修正值!")
+            showMessageDialog("请输入正确的测斜仪修正值!")
             return
         }
 

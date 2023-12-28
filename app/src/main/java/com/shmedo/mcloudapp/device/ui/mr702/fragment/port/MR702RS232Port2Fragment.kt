@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port2Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -167,11 +168,11 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.address.get().isEmpty()) {
-            Toaster.show("请输入地址")
+            showMessageDialog("请输入地址")
             return
         }
         if (mStates.baudRate.get().isEmpty()) {
-            Toaster.show("请输入波特率")
+            showMessageDialog("请输入波特率")
             return
         }
         val entity = MRRS232Port2ParamEntity(

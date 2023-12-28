@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -266,34 +267,34 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         if (mStates.measureMethod.get() == 0) {
             if (mStates.waitingIntervalPerRound.get().isEmpty()) {
-                Toaster.show("请输入每轮等待时间!")
+                showMessageDialog("请输入每轮等待时间!")
                 return
             }
             try {
                 val value = mStates.waitingIntervalPerRound.get().toDouble()
                 if (value < 1) {
-                    Toaster.show("请输入正确的每轮等待时间!")
+                    showMessageDialog("请输入正确的每轮等待时间!")
                     return
                 }
             } catch (ex: Exception) {
-                Toaster.show("请输入正确的每轮等待时间!")
+                showMessageDialog("请输入正确的每轮等待时间!")
                 return
             }
         }
 
         if (mStates.measureMethod.get() == 2) {
             if (mStates.intervalDays.get().isEmpty()) {
-                Toaster.show("请输入间隔时间!")
+                showMessageDialog("请输入间隔时间!")
                 return
             }
             try {
                 val value = mStates.intervalDays.get().toDouble()
                 if (value < 0) {
-                    Toaster.show("请输入正确的间隔时间!")
+                    showMessageDialog("请输入正确的间隔时间!")
                     return
                 }
             } catch (ex: Exception) {
-                Toaster.show("请输入正确的间隔时间!")
+                showMessageDialog("请输入正确的间隔时间!")
                 return
             }
             if (mAdapter.data.size < 1) {
@@ -303,13 +304,13 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
 
         if (mStates.dataReadingInterval.get().isEmpty()) {
-            Toaster.show("请输入数据读取间隔!")
+            showMessageDialog("请输入数据读取间隔!")
             return
         }
         try {
             val value = mStates.dataReadingInterval.get().toDouble()
             if (value < 1) {
-                Toaster.show("请输入正确的数据读取间隔!")
+                showMessageDialog("请输入正确的数据读取间隔!")
                 return
             }
         } catch (ex: Exception) {

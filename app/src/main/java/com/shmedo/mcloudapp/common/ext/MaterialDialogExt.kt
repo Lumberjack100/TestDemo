@@ -9,6 +9,7 @@ import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.blankj.utilcode.util.ColorUtils
+import com.kongzue.dialogx.dialogs.MessageDialog
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.utils.SettingUtil
 
@@ -168,4 +169,35 @@ fun Fragment.showItemsMultiChoiceDialog(
                 positiveButton(text = positiveButtonText)
             }
     }
+}
+
+
+/**
+ * 提示对话框
+ */
+fun AppCompatActivity.showMessageDialog(
+    message: String,
+    title: String = "提示",
+    positiveButtonText: String = "我已知晓"
+) {
+    MessageDialog.show(
+        title,
+        message,
+        positiveButtonText
+    )
+}
+
+/**
+ * 提示对话框
+ */
+fun Fragment.showMessageDialog(
+    message: String,
+    title: String = "提示",
+    positiveButtonText: String = "我已知晓"
+) {
+    MessageDialog.show(
+        title,
+        message,
+        positiveButtonText
+    )
 }

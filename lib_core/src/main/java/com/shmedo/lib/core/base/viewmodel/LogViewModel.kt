@@ -32,7 +32,6 @@ class LogViewModel : ViewModel() {
         LocalDataRepository.instance.deleteSessionById(primaryId)
     }
 
-
     suspend fun getLogListBySessionId(
         sessionId: String, level: Int = LogLevel.DEBUG
     ): List<LogInfo>? = LocalDataRepository.instance.getLogListBySessionId(sessionId, level)
@@ -45,5 +44,11 @@ class LogViewModel : ViewModel() {
         LocalDataRepository.instance.insertLogList(list)
     }
 
+    /**
+     * 清除历史日志,保留当天的日志
+     */
+    fun clearHistoryLog() = viewModelScope.launch {
+        LocalDataRepository.instance.clearHistoryLog()
+    }
 
 }

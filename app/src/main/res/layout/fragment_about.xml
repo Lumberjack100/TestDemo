@@ -28,8 +28,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivLogo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_marginTop="@dimen/dimen_size_30"
             android:scaleType="centerCrop"
             android:src="@mipmap/logo"
@@ -50,43 +50,18 @@
             app:layout_constraintTop_toBottomOf="@+id/ivLogo"
             tools:text="米易通 v3.2.0" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/ll_user_protocol"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:layout_marginTop="@dimen/dimen_size_35"
-            android:background="@drawable/layer_common_click_item_with_divider"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_caseNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_3"
+            android:text="@{vm.caseNumber}"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_version"
-            onClickWithDebouncing="@{()->click.onViewUserProtocolClick()}">
+            tools:text="沪 ICP 备 06060176 号-24A" />
 
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="用户协议和免责条款" />
-
-            <TextView
-                style="@style/Common_ClickableItem_ValueStyle"
-                app:drawableEndCompat="@drawable/icon_arrow_right" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/ll_log_viewer"
-            style="@style/Common_ClickableItem_LayoutStyle"
-            android:background="@drawable/layer_common_click_item_with_divider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_user_protocol"
-            onClickWithDebouncing="@{()->click.onViewLogClick()}">
-
-            <TextView
-                style="@style/Common_ClickableItem_TitleStyle"
-                android:text="应用日志查看器" />
-
-            <TextView
-                style="@style/Common_ClickableItem_ValueStyle"
-                app:drawableEndCompat="@drawable/icon_arrow_right" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2SensorParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port2
@@ -129,35 +130,35 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.modelToken.get().isEmpty()) {
-            Toaster.show("请输入物模型")
+            showMessageDialog("请输入物模型")
             return
         }
         if (mStates.channelNumber.get().isEmpty()) {
-            Toaster.show("请输入通道编号")
+            showMessageDialog("请输入通道编号")
             return
         }
         if (mStates.hydrologicalIdentification.get().isEmpty()) {
-            Toaster.show("请输入水文标识")
+            showMessageDialog("请输入水文标识")
             return
         }
         if (mStates.filterCoefficient.get().isEmpty()) {
-            Toaster.show("请输入滤波系数")
+            showMessageDialog("请输入滤波系数")
             return
         }
         if (mStates.triggerValue.get().isEmpty()) {
-            Toaster.show("请输入触发值")
+            showMessageDialog("请输入触发值")
             return
         }
         if (mStates.upperLimit.get().isEmpty()) {
-            Toaster.show("请输入上限值")
+            showMessageDialog("请输入上限值")
             return
         }
         if (mStates.lowerLimit.get().isEmpty()) {
-            Toaster.show("请输入下限值")
+            showMessageDialog("请输入下限值")
             return
         }
         if (mStates.correctValue.get().isEmpty()) {
-            Toaster.show("请输入修正值")
+            showMessageDialog("请输入修正值")
             return
         }
         val entity = MRRS485Port2SensorParamEntity(

@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentAdmeLockedRotorDetectionBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -98,7 +99,11 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             //失去焦点时
             if (hasFocus) {
                 if (mStates.downSlowStartIntervalEndValue.get().isEmpty()) {
-                    Toaster.show("请输入下放加速距离")
+                    MessageDialog.show(
+                        "提示",
+                        "请输入下放加速距离!",
+                        "我已知晓"
+                    )
                     return@setOnFocusChangeListener
                 }
                 try {
@@ -132,7 +137,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             //失去焦点时
             if (hasFocus) {
                 if (mStates.downSlowStopIntervalStartValue.get().isEmpty()) {
-                    Toaster.show("请输入下放减速距离")
+                    showMessageDialog("请输入下放减速距离")
                     return@setOnFocusChangeListener
                 }
                 try {
@@ -174,7 +179,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             //失去焦点时
             if (hasFocus) {
                 if (mStates.pullUpSlowStartIntervalEndValue.get().isEmpty()) {
-                    Toaster.show("请输入上拉加速距离")
+                    showMessageDialog("请输入上拉加速距离")
                     return@setOnFocusChangeListener
                 }
                 try {
@@ -209,7 +214,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             //失去焦点时
             if (hasFocus) {
                 if (mStates.pullUpSlowStopIntervalStartValue.get().isEmpty()) {
-                    Toaster.show("请输入上拉减速距离")
+                    showMessageDialog("请输入上拉减速距离")
                     return@setOnFocusChangeListener
                 }
                 try {
@@ -411,7 +416,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         if (mStates.downEnable.get()) {
             if (mStates.downPulsesPerUnitTime.get().isEmpty()) {
-                Toaster.show("请输入下放单位时间脉冲数!")
+                showMessageDialog("请输入下放单位时间脉冲数!")
                 return
             }
             try {
@@ -425,12 +430,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     return
                 }
             } catch (ex: Exception) {
-                Toaster.show("请输入正确的下放单位时间脉冲数!")
+                showMessageDialog("请输入正确的下放单位时间脉冲数!")
                 return
             }
 
             if (mStates.downPulseDetectionTime.get().isEmpty()) {
-                Toaster.show("请输入下放脉冲检测判断时间!")
+                showMessageDialog("请输入下放脉冲检测判断时间!")
                 return
             }
             try {
@@ -444,23 +449,23 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     return
                 }
             } catch (ex: Exception) {
-                Toaster.show("请输入正确的下放单位时间脉冲数!")
+                showMessageDialog("请输入正确的下放单位时间脉冲数!")
                 return
             }
 
             if (mStates.downSlowStartIntervalEndValue.get().isEmpty()) {
-                Toaster.show("请输入下放加速距离!")
+                showMessageDialog("请输入下放加速距离!")
                 return
             }
 
             if (mStates.downSlowStopIntervalStartValue.get().isEmpty()) {
-                Toaster.show("请输入下放减速距离!")
+                showMessageDialog("请输入下放减速距离!")
                 return
             }
         }
 
         if (mStates.downTorqueStallThreshold.get().isEmpty()) {
-            Toaster.show("请输入下放力矩堵转阈值!")
+            showMessageDialog("请输入下放力矩堵转阈值!")
             return
         }
         try {

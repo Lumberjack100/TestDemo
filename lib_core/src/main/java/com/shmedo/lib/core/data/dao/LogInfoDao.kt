@@ -32,4 +32,7 @@ interface LogInfoDao {
 
     @Query("DELETE FROM log_info WHERE session_id = :sessionId")
     suspend fun deleteBySessionId(sessionId: String)
+
+    @Query("DELETE FROM log_info WHERE create_date != :excludeDate")
+    suspend fun clearHistoryData(excludeDate: String)
 }

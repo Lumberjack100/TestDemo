@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -184,23 +185,23 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.acquisitionFrequency.get().isEmpty()) {
-            Toaster.show("请输入采集频率")
+            showMessageDialog("请输入采集频率")
             return
         }
         if (mStates.collectionDuration.get().isEmpty()) {
-            Toaster.show("请输入采集周期")
+            showMessageDialog("请输入采集周期")
             return
         }
         if (mStates.collectionTimes.get().isEmpty()) {
-            Toaster.show("请输入采集次数")
+            showMessageDialog("请输入采集次数")
             return
         }
         if (mStates.noResponseTimes.get().isEmpty()) {
-            Toaster.show("请输入无应答次数")
+            showMessageDialog("请输入无应答次数")
             return
         }
         if (mStates.delayDuration.get().isEmpty()) {
-            Toaster.show("请输入延时时间")
+            showMessageDialog("请输入延时时间")
             return
         }
         val entity = MRRS485Port1CollectionParamEntity(

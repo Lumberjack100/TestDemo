@@ -24,7 +24,6 @@ import java.util.UUID
  *
  */
 class BleViewModel : BaseViewModel() {
-
     //    private val _state = MutableStateFlow<MedoViewState>(NoDeviceState)
 //    val state = _state.asStateFlow()
     private val _state: MutableSharedFlow<MedoViewState> = MutableSharedFlow()
@@ -58,15 +57,14 @@ class BleViewModel : BaseViewModel() {
     ) {
         viewModelScope.launch {
             delay(timeMillis)
-            if (needApiKey) {
-                val command = cmdStr.plus(
+            val command = if (needApiKey) {
+                cmdStr.plus(
                     "&apikey=${apiKey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" }}&msgid=${
                         UUID.randomUUID().toString().substring(30)
                     }"
                 )
-                MedoBleRepository.instance.sendData(command + "\r\n")
-            } else
-                MedoBleRepository.instance.sendData(cmdStr + "\r\n")
+            } else cmdStr
+            MedoBleRepository.instance.sendData(command + "\r\n")
         }
     }
 }

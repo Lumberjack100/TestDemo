@@ -8,7 +8,6 @@ import com.blankj.utilcode.util.AppUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.activity.WebviewActivity
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentAboutBinding
@@ -42,20 +41,7 @@ class AboutFragment : BaseFragment() {
     }
 
     inner class ClickProxy {
-        /**
-         * 用户协议
-         */
-        fun onViewUserProtocolClick() {
-            val url = "file:///android_asset/private/UserProtocol.html"
-            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
-        }
 
-        /**
-         * 应用日志
-         */
-        fun onViewLogClick() {
-            nav().navigate(R.id.action_aboutFragment_to_logSessionListFragment)
-        }
     }
 
     override fun onResume() {

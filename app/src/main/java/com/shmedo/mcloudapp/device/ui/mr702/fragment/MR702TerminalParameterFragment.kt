@@ -13,6 +13,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.google.android.material.tabs.TabLayout
 import com.hjq.toast.Toaster
+import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRReportMethodEntity
@@ -28,6 +29,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702TerminalParameterBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -84,6 +86,8 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
     override fun initData() {
         super.initData()
         initTabLayout()
+        mStates.reportMethod.set(reportMethodList[0])
+        mStates.startTime.set(reportStartTimeList[0])
     }
 
     private fun initTabLayout() {
@@ -153,6 +157,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                     null, selectedIndex,
                     { position, text ->
                         mStates.reportMethod.set(text)
+                        mStates.isStartTimeItemVisible.set(position == 0)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -189,11 +194,19 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             if (mStates.reportMethod.get().contains("定时定点") && mStates.startTime.get()
                     .isEmpty()
             ) {
-                Toaster.show("请选择上报起始时间")
+                MessageDialog.show(
+                    "提示",
+                    "请选择上报起始时间!",
+                    "我已知晓"
+                )
                 return
             }
             if (mStates.interval.get().isEmpty()) {
-                Toaster.show("请输入上报间隔")
+                MessageDialog.show(
+                    "提示",
+                    "请输入上报间隔!",
+                    "我已知晓"
+                )
                 return
             }
             val entity = MRReportMethodEntity(
@@ -208,15 +221,23 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             commandItems.add(command)
         } else {
             if (mStates.screenRefreshTime.get().isEmpty()) {
-                Toaster.show("请输入屏幕更新周期")
+                MessageDialog.show(
+                    "提示",
+                    "请输入屏幕更新周期!",
+                    "我已知晓"
+                )
                 return
             }
             if (mStates.screenBrightTime.get().isEmpty()) {
-                Toaster.show("请输入屏幕亮屏时间")
+                MessageDialog.show(
+                    "提示",
+                    "请输入屏幕亮屏时间!",
+                    "我已知晓"
+                )
                 return
             }
             if (mStates.screenPowerUpTime.get().isEmpty()) {
-                Toaster.show("请输入屏幕通电时间")
+                showMessageDialog("请输入屏幕通电时间")
                 return
             }
             val entity = MRScreenParamEntity(

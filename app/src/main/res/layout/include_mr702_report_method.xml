@@ -32,11 +32,11 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/MR702_Terminal_Param_LinearLayoutStyle"
+            onClickWithDebouncing="@{()->click.onReportingMethodClick()}"
             android:layout_marginTop="@dimen/dimen_size_14"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
-            onClickWithDebouncing="@{()->click.onReportingMethodClick()}"
             app:drawable_radius="@{4}"
             app:drawable_solidColor="@{@color/gray_f5f6f8}"
             tools:background="@color/gray_f5f6f8">
@@ -60,6 +60,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <TextView
+            visible="@{stateVM.isStartTimeItemVisible }"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_size_20"
@@ -71,11 +72,12 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/MR702_Terminal_Param_LinearLayoutStyle"
+            onClickWithDebouncing="@{()->click.onReportingStartTimeClick()}"
+            visible="@{stateVM.isStartTimeItemVisible }"
             android:layout_marginTop="@dimen/dimen_size_14"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
-            onClickWithDebouncing="@{()->click.onReportingStartTimeClick()}"
             app:drawable_radius="@{4}"
             app:drawable_solidColor="@{@color/gray_f5f6f8}"
             tools:background="@color/gray_f5f6f8">

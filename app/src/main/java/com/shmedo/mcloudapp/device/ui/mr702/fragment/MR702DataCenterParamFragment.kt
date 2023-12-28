@@ -12,6 +12,7 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
+import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
@@ -324,21 +325,37 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.centerServerAddress.get().isEmpty()) {
-            Toaster.show("请输入数据中心地址")
+            MessageDialog.show(
+                "提示",
+                "请输入数据中心地址!",
+                "我已知晓"
+            )
             return
         }
         if (mStates.centerServerPort.get().isEmpty()) {
-            Toaster.show("请输入数据中心端口号")
+            MessageDialog.show(
+                "提示",
+                "请输入数据中心端口号!",
+                "我已知晓"
+            )
             return
         }
         try {
             val port: Int = mStates.centerServerPort.get().toInt()
             if (port < 0 || port > 65535) {
-                Toaster.show("请输入正确的数据中心端口号!")
+                MessageDialog.show(
+                    "提示",
+                    "数据中心端口号数值范围[0,65535]!",
+                    "我已知晓"
+                )
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的数据中心端口号!")
+            MessageDialog.show(
+                "提示",
+                "数据中心端口号数值范围[0,65535]!",
+                "我已知晓"
+            )
             return
         }
 
@@ -365,23 +382,52 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             }
         )
         if (mStates.dataProtocol.get() == dataProtocolList[0]) {//MQTT
-            if (mStates.registerAddress.get().isEmpty()) {
-                Toaster.show("请输入设备注册地址")
-                return
-            }
-            if (mStates.registerPort.get().isEmpty()) {
-                Toaster.show("请输入设备注册端口号")
-                return
-            }
-            try {
-                val port: Int = mStates.centerServerPort.get().toInt()
-                if (port < 0 || port > 65535) {
-                    Toaster.show("请输入正确的设备注册端口号!")
+            //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
+            if (mStates.deviceId.get().isEmpty() && mStates.deviceKey.get().isEmpty()) {
+                if (mStates.registerCode.get().isEmpty()) {
+                    MessageDialog.show(
+                        "提示",
+                        "请输入设备注册码!",
+                        "我已知晓"
+                    )
                     return
                 }
-            } catch (ex: Exception) {
-                Toaster.show("请输入正确的设备注册端口号!")
-                return
+                if (mStates.registerAddress.get().isEmpty()) {
+                    MessageDialog.show(
+                        "提示",
+                        "请输入设备注册地址!",
+                        "我已知晓"
+                    )
+                    return
+                }
+                if (mStates.centerServerPort.get().isEmpty()) {
+                    MessageDialog.show(
+                        "提示",
+                        "请输入设备注册端口号!",
+                        "我已知晓"
+                    )
+                    return
+                }
+            }
+            if (mStates.registerPort.get().isNotEmpty()) {
+                try {
+                    val port: Int = mStates.centerServerPort.get().toInt()
+                    if (port < 0 || port > 65535) {
+                        MessageDialog.show(
+                            "提示",
+                            "设备注册端口号数值范围[0,65535]!",
+                            "我已知晓"
+                        )
+                        return
+                    }
+                } catch (ex: Exception) {
+                    MessageDialog.show(
+                        "提示",
+                        "设备注册端口号数值范围[0,65535]!",
+                        "我已知晓"
+                    )
+                    return
+                }
             }
             entity.projid = mStates.productId.get()
             entity.deviceid = mStates.deviceId.get()
@@ -441,7 +487,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initDataCenterParam(result.data)

@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentQueryDeviceDataBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceDataBinding
@@ -254,7 +255,7 @@ class QueryDeviceDataFragment : BaseFragment() {
 
         fun onSearchClick() {
             if (mHeadStates.sn.get().isEmpty()) {
-                Toaster.show("请输入 SN 号")
+                showMessageDialog("请输入 SN 号")
                 return
             }
             binding.refreshLayout.autoRefresh()

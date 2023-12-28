@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port1
@@ -233,51 +234,51 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.modelField.get().isEmpty()) {
-            Toaster.show("请输入采集项名称")
+            showMessageDialog("请输入采集项名称")
             return
         }
         if (mStates.sensorName.get().isEmpty()) {
-            Toaster.show("请输入传感器名称")
+            showMessageDialog("请输入传感器名称")
             return
         }
         if (mStates.sensorAddress.get().isEmpty()) {
-            Toaster.show("请输入传感器地址")
+            showMessageDialog("请输入传感器地址")
             return
         }
         if (mStates.modelToken.get().isEmpty()) {
-            Toaster.show("请输入物模型")
+            showMessageDialog("请输入物模型")
             return
         }
         if (mStates.baudRate.get().isEmpty()) {
-            Toaster.show("请输入波特率")
+            showMessageDialog("请输入波特率")
             return
         }
         if (mStates.hydrologicalIdentification.get().isEmpty()) {
-            Toaster.show("请输入水文标识")
+            showMessageDialog("请输入水文标识")
             return
         }
         if (mStates.collectionInstructions.get().isEmpty()) {
-            Toaster.show("请输入采集指令")
+            showMessageDialog("请输入采集指令")
             return
         }
         if (mStates.ratio.get().isEmpty()) {
-            Toaster.show("请输入倍率")
+            showMessageDialog("请输入倍率")
             return
         }
         if (mStates.triggerValue.get().isEmpty()) {
-            Toaster.show("请输入触发值")
+            showMessageDialog("请输入触发值")
             return
         }
         if (mStates.upperLimit.get().isEmpty()) {
-            Toaster.show("请输入上限值")
+            showMessageDialog("请输入上限值")
             return
         }
         if (mStates.lowerLimit.get().isEmpty()) {
-            Toaster.show("请输入下限值")
+            showMessageDialog("请输入下限值")
             return
         }
         if (mStates.correctValue.get().isEmpty()) {
-            Toaster.show("请输入修正值")
+            showMessageDialog("请输入修正值")
             return
         }
         if (mStates.ngateval.get().isEmpty()) {

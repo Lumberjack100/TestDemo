@@ -109,69 +109,121 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.encoderLineNumber.get().isEmpty()) {
-            Toaster.show("请输入编码器线数!")
+            MessageDialog.show(
+                "提示",
+                "请输入编码器线数!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value: Int = mStates.encoderLineNumber.get().toInt()
             if (value < 1) {
-                Toaster.show("请输入正确的编码器线数!")
+                MessageDialog.show(
+                    "提示",
+                    "请输入正确的编码器线数!",
+                    "我已知晓"
+                )
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的编码器线数!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的编码器线数!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.outerDiameter.get().isEmpty()) {
-            Toaster.show("请输入外径!")
+            MessageDialog.show(
+                "提示",
+                "请输入外径!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value: Int = mStates.outerDiameter.get().toInt()
             if (value < 1) {
-                Toaster.show("请输入正确的外径!")
+                MessageDialog.show(
+                    "提示",
+                    "请输入正确的外径!",
+                    "我已知晓"
+                )
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的外径!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的外径!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.upCorrectionParametersOne.get().isEmpty()) {
-            Toaster.show("请输入上拉一次修正参数!")
+            MessageDialog.show(
+                "提示",
+                "请输入上拉一次修正参数!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.upCorrectionParametersOne.get().toDouble()
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的上拉一次修正参数!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的上拉一次修正参数!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.upCorrectionParametersTwo.get().isEmpty()) {
-            Toaster.show("请输入上拉二次修正参数!")
+            MessageDialog.show(
+                "提示",
+                "请输入上拉二次修正参数!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.upCorrectionParametersTwo.get().toDouble()
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的上拉二次修正参数!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的上拉二次修正参数!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.upConstant.get().isEmpty()) {
-            Toaster.show("请输入上拉常数!")
+            MessageDialog.show(
+                "提示",
+                "请输入上拉常数!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.upConstant.get().toDouble()
         } catch (ex: Exception) {
-            Toaster.show("请输入上拉常数!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的上拉常数!",
+                "我已知晓"
+            )
             return
         }
         if (mStates.upFilterCoefficient.get().isEmpty()) {
-            Toaster.show("请输入上拉滤波器系数!")
+            MessageDialog.show(
+                "提示",
+                "请输入上拉滤波器系数!",
+                "我已知晓"
+            )
             return
         }
         if (mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
@@ -179,39 +231,67 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
             return
         }
         if (mStates.upCorrectionParametersOne.get().isEmpty()) {
-            Toaster.show("请输入下放一次修正参数!")
+            MessageDialog.show(
+                "提示",
+                "请输入下放一次修正参数!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.upCorrectionParametersOne.get().toDouble()
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的下放一次修正参数!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的下放一次修正参数!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.upCorrectionParametersTwo.get().isEmpty()) {
-            Toaster.show("请输入下放二次修正参数!")
+            MessageDialog.show(
+                "提示",
+                "请输入下放二次修正参数!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.upCorrectionParametersTwo.get().toDouble()
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的下放二次修正参数!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的下放二次修正参数!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.upConstant.get().isEmpty()) {
-            Toaster.show("请输入下放常数!")
+            MessageDialog.show(
+                "提示",
+                "请输入下放常数!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.upConstant.get().toDouble()
         } catch (ex: Exception) {
-            Toaster.show("请输入下放常数!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的下放常数!",
+                "我已知晓"
+            )
             return
         }
         if (mStates.upFilterCoefficient.get().isEmpty()) {
-            Toaster.show("请输入下放滤波器系数!")
+            MessageDialog.show(
+                "提示",
+                "请输入下放滤波器系数!",
+                "我已知晓"
+            )
             return
         }
         if (mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {

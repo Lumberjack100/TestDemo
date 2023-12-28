@@ -40,6 +40,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeBasicParamConfigBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -326,7 +327,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.address.get().isEmpty()) {
-            Toaster.show("请输入Mac地址!")
+            showMessageDialog("请输入Mac地址!")
             return
         }
         if (!RegexUtils.isMatch(
@@ -334,40 +335,40 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 mStates.address.get()
             )
         ) {
-            Toaster.show("请输入正确的Mac地址!")
+            showMessageDialog("请输入正确的Mac地址!")
             return
         }
 
         if (mStates.measureMethod.get() == 0) {
             if (mStates.waitingIntervalPerRound.get().isEmpty()) {
-                Toaster.show("请输入每轮等待时间!")
+                showMessageDialog("请输入每轮等待时间!")
                 return
             }
             try {
                 val value = mStates.waitingIntervalPerRound.get().toDouble()
                 if (value < 1) {
-                    Toaster.show("请输入正确的每轮等待时间!")
+                    showMessageDialog("请输入正确的每轮等待时间!")
                     return
                 }
             } catch (ex: Exception) {
-                Toaster.show("请输入正确的每轮等待时间!")
+                showMessageDialog("请输入正确的每轮等待时间!")
                 return
             }
         }
 
         if (mStates.measureMethod.get() == 2) {
             if (mStates.intervalDays.get().isEmpty()) {
-                Toaster.show("请输入间隔时间!")
+                showMessageDialog("请输入间隔时间!")
                 return
             }
             try {
                 val value = mStates.intervalDays.get().toDouble()
                 if (value < 0) {
-                    Toaster.show("请输入正确的间隔时间!")
+                    showMessageDialog("请输入正确的间隔时间!")
                     return
                 }
             } catch (ex: Exception) {
-                Toaster.show("请输入正确的间隔时间!")
+                showMessageDialog("请输入正确的间隔时间!")
                 return
             }
             if (mAdapter.data.size < 1) {
@@ -377,7 +378,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         }
 
         if (mStates.inclinometerTubeHoleDepth.get().isEmpty()) {
-            Toaster.show("请输入测斜管孔深!")
+            showMessageDialog("请输入测斜管孔深!")
             return
         }
         try {
@@ -392,7 +393,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         }
 
         if (mStates.decentralizationSpeed.get().isEmpty()) {
-            Toaster.show("请输入电机下放速度!")
+            showMessageDialog("请输入电机下放速度!")
             return
         }
         try {
@@ -415,7 +416,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         }
 
         if (mStates.decentralizationWaitingTime.get().isEmpty()) {
-            Toaster.show("请输入下放等待时间!")
+            showMessageDialog("请输入下放等待时间!")
             return
         }
         try {

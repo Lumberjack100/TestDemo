@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3SensorParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -237,11 +238,11 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.address.get().isEmpty()) {
-            Toaster.show("请输入地址")
+            showMessageDialog("请输入地址")
             return
         }
         if (mStates.baudRate.get().isEmpty()) {
-            Toaster.show("请输入波特率")
+            showMessageDialog("请输入波特率")
             return
         }
         val entity = MRRS485Port3SensorParamEntity(
@@ -257,19 +258,19 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             //TODO: 太阳能控制器参数不需要设置
 //            1 -> {
 //                if (mStates.solarVoltage.get().isEmpty()) {
-//                    Toaster.show("请输入太阳能板电压")
+//                    showMessageDialog("请输入太阳能板电压")
 //                    return
 //                }
 //                if (mStates.batteryVoltage.get().isEmpty()) {
-//                    Toaster.show("请输入电池电压")
+//                    showMessageDialog("请输入电池电压")
 //                    return
 //                }
 //                if (mStates.solarPower.get().isEmpty()) {
-//                    Toaster.show("请输入太阳板能功率")
+//                    showMessageDialog("请输入太阳板能功率")
 //                    return
 //                }
 //                if (mStates.loadPower.get().isEmpty()) {
-//                    Toaster.show("请输入负载功率")
+//                    showMessageDialog("请输入负载功率")
 //                    return
 //                }
 //                entity.svolt = mStates.solarVoltage.get()
@@ -280,11 +281,11 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
 
             2 -> {
                 if (mStates.duration.get().isEmpty()) {
-                    Toaster.show("请输入播放时长")
+                    showMessageDialog("请输入播放时长")
                     return
                 }
                 if (mStates.interval.get().isEmpty()) {
-                    Toaster.show("请输入切换间隔")
+                    showMessageDialog("请输入切换间隔")
                     return
                 }
                 entity.duration = mStates.duration.get()
@@ -294,15 +295,15 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
 
             3 -> {
                 if (mStates.duration.get().isEmpty()) {
-                    Toaster.show("请输入显示时长")
+                    showMessageDialog("请输入显示时长")
                     return
                 }
                 if (mStates.interval.get().isEmpty()) {
-                    Toaster.show("请输入更新间隔")
+                    showMessageDialog("请输入更新间隔")
                     return
                 }
                 if (mStates.screenTime.get().isEmpty()) {
-                    Toaster.show("请输入亮屏时长")
+                    showMessageDialog("请输入亮屏时长")
                     return
                 }
                 entity.type = (ledTypeList.indexOf(mStates.ledType.get()) + 1).toString()

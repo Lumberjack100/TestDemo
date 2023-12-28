@@ -109,7 +109,11 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.driveStandardVoltageThreshold.get().isEmpty()) {
-            Toaster.show("请输入驱动器标压阈值!")
+            MessageDialog.show(
+                "提示",
+                "请输入驱动器标压阈值!",
+                "我已知晓"
+            )
             return
         }
         try {
@@ -119,12 +123,20 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的驱动器标压阈值!")
+            MessageDialog.show(
+                "提示",
+                "驱动器标压阈值不能小于 1!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.driveLowVoltageThreshold.get().isEmpty()) {
-            Toaster.show("请输入驱动器低压阈值!")
+            MessageDialog.show(
+                "提示",
+                "请输入驱动器低压阈值!",
+                "我已知晓"
+            )
             return
         }
         try {
@@ -134,12 +146,20 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的驱动器低压阈值!")
+            MessageDialog.show(
+                "提示",
+                "驱动器低压阈值不能小于 1!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            Toaster.show("请输入驱动器欠压阈值!")
+            MessageDialog.show(
+                "提示",
+                "请输入驱动器欠压阈值!",
+                "我已知晓"
+            )
             return
         }
         try {
@@ -149,12 +169,20 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的驱动器欠压阈值!")
+            MessageDialog.show(
+                "提示",
+                "驱动器欠压阈值不能小于 1!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            Toaster.show("请输入测斜仪标压阈值!")
+            MessageDialog.show(
+                "提示",
+                "请输入测斜仪标压阈值!",
+                "我已知晓"
+            )
             return
         }
         try {
@@ -164,12 +192,20 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的测斜仪标压阈值!")
+            MessageDialog.show(
+                "提示",
+                "测斜仪标压阈值不能小于 1!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            Toaster.show("请输入测斜仪低压阈值!")
+            MessageDialog.show(
+                "提示",
+                "请输入测斜仪低压阈值!",
+                "我已知晓"
+            )
             return
         }
         try {
@@ -179,12 +215,20 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的测斜仪低压阈值!")
+            MessageDialog.show(
+                "提示",
+                "测斜仪低压阈值不能小于 1!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            Toaster.show("请输入测斜仪欠压阈值!")
+            MessageDialog.show(
+                "提示",
+                "请输入测斜仪欠压阈值!",
+                "我已知晓"
+            )
             return
         }
         try {
@@ -194,19 +238,31 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的测斜仪欠压阈值!")
+            MessageDialog.show(
+                "提示",
+                "测斜仪欠压于不能小于  1!",
+                "我已知晓"
+            )
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            Toaster.show("请输入钢丝绳长度!")
+            MessageDialog.show(
+                "提示",
+                "请输入钢丝绳长度!",
+                "我已知晓"
+            )
             return
         }
         try {
             val value = mStates.driveUnderVoltageThreshold.get().toDouble()
 
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的钢丝绳长度!")
+            MessageDialog.show(
+                "提示",
+                "请输入正确的钢丝绳长度!",
+                "我已知晓"
+            )
             return
         }
 
