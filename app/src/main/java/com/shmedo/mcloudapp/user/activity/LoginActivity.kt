@@ -15,11 +15,13 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.addSystemLogSession
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -49,6 +51,7 @@ class LoginActivity : BaseActivity() {
     }
 
     override fun initData() {
+        addSystemLogSession(mStates.viewModelScope)
         val mAccount = MmkvCacheUtil.getUserName()
         //自动登录
         if (!TextUtils.isEmpty(mAccount)) {
@@ -206,5 +209,4 @@ class LoginActivity : BaseActivity() {
             context.startActivity(intent)
         }
     }
-
 }

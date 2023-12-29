@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.annotation.CallSuper
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
@@ -20,9 +20,8 @@ import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.LogInfo
-import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
+import com.shmedo.lib.core.ext.addIOTDeviceLogItem
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.R
@@ -94,7 +93,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             netIotCommandViewModel.cmdDispatchFlow.collect {
                 when (it) {
                     is DispatchFailed -> {
-                        addLogItem(priority = Log.ERROR, data = "DispatchFailed: ${it.errorMsg}")
+                        addIOTDeviceLogItem(
+                            priority = Log.ERROR,
+                            data = "DispatchFailed: ${it.errorMsg}",
+                            logViewModel.viewModelScope
+                        )
                         doNetDispatchFailed(it.cmdStr, it.errorMsg)
                     }
 
@@ -103,17 +106,29 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     }
 
                     is CmdResponseResultError -> {
-                        addLogItem(priority = Log.ERROR, data = "Response Error: ${it.errorMsg}")
+                        addIOTDeviceLogItem(
+                            priority = Log.ERROR,
+                            data = "Response Error: ${it.errorMsg}",
+                            logViewModel.viewModelScope
+                        )
                         doCmdResponseResultError(it.cmdStr, it.errorMsg)
                     }
 
                     is CmdResponseResultTimeOut -> {
-                        addLogItem(priority = Log.ERROR, data = "Response TimeOut")
+                        addIOTDeviceLogItem(
+                            priority = Log.ERROR,
+                            data = "Response TimeOut",
+                            logViewModel.viewModelScope
+                        )
                         doCmdResponseResultTimeOut(it.cmdStr, it.errorMsg)
                     }
 
                     is CmdResponseResultSuccess -> {
-                        addLogItem(priority = Log.INFO, data = it.cmdResult.responseContent)
+                        addIOTDeviceLogItem(
+                            priority = Log.INFO,
+                            data = it.cmdResult.responseContent,
+                            logViewModel.viewModelScope
+                        )
                         setResultData(it.cmdResult.responseContent)
                     }
 
@@ -126,53 +141,49 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     private fun collectBleData() {
         launchAndRepeatWithViewLifecycle {
             bleViewModel.state.collect { state ->
-                Timber.i("$fragmentName Medo BluetoothGatt: $state")
+                Timber.v("$fragmentName Medo BluetoothGatt: $state")
+//                if (isRestrictHiddenMode() && isHidden) {
+//                    return@collect
+//                }
                 when (state) {
                     NoDeviceState -> {}
                     is WorkingState -> when (state.result) {
                         is IdleResult,
                         is ConnectingResult -> {
-                            addLogItem(priority = Log.VERBOSE, data = "Connecting")
                             showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                         }
 
                         is ConnectedResult -> {
-                            addLogItem(priority = Log.INFO, data = "Connected")
                             dismissLoadingDialog()
                             onConnectionStateChanged(true)
                         }
 
                         is ReadyResult -> {
-                            addLogItem(priority = Log.INFO, data = "Ready")
                             onBleDeviceReady()
                         }
 
                         is SuccessResult -> {
-                            addLogItem(priority = Log.INFO, data = state.result.data.response)
                             setResultData(state.result.data.response)
                         }
 
                         is DisconnectedResult -> {
-                            addLogItem(priority = Log.INFO, data = "Disconnected")
                             dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is LinkLossResult -> {
-                            addLogItem(priority = Log.ERROR, data = "LinkLoss")
                             dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is MissingServiceResult -> {
-                            addLogItem(priority = Log.ERROR, data = "MissingService")
                             dismissLoadingDialog()
                             onConnectionStateChanged(false)
                         }
 
                         is UnknownErrorResult -> {
-                            addLogItem(priority = Log.ERROR, data = "UnknownError")
                             dismissLoadingDialog()
+                            onConnectionStateChanged(false)
                         }
                     }
                 }
@@ -225,7 +236,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
         val command = commandItems.first
         commandItems.removeFirst()
-        addLogItem(priority = Log.INFO, data = command)
+        addIOTDeviceLogItem(priority = Log.INFO, data = command, logViewModel.viewModelScope)
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
@@ -274,7 +285,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         msg: String = ""
     ) {
         Timber.i("$fragmentName 发送指令超时")
-        addLogItem(priority = Log.ERROR, data = "Response TimeOut")
+        addIOTDeviceLogItem(
+            priority = Log.ERROR,
+            data = "Response TimeOut",
+            logViewModel.viewModelScope
+        )
         if (isShowMsg) {
             Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
         }
@@ -290,17 +305,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         timeoutJob?.cancel() // 在Fragment销毁时取消timeoutJob
     }
 
-    fun addLogItem(priority: Int, data: String) {
-        val logInfo = LogInfo(
-            sessionId = logViewModel.getLogSession()?.id ?: "",
-            logLevel = LogLevel.fromPriority(priority),
-            data = data,
-            createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-            createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
-        )
-        logViewModel.insertLog(logInfo)
-    }
-
     companion object {
         fun newBundleArguments(
             communicateWay: CommunicateWay = NetPlatformConnect,
@@ -314,4 +318,12 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
+
+    /**
+     *
+     */
+    override fun isRestrictHiddenMode(): Boolean {
+        return true
+    }
+
 }

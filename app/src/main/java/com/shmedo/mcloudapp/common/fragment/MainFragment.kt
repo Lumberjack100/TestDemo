@@ -6,7 +6,11 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
+import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.util.PermissionInterceptor
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
@@ -76,8 +80,24 @@ class MainFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
+        requestPermission()
         //加载外部配置
         loginRequestViewModel.loadExternalConfig()
+    }
+
+    /**
+     * 申请通知权限
+     */
+    private fun requestPermission() {
+        // 申请通知栏权限
+        XXPermissions.with(this)
+            .permission(Permission.POST_NOTIFICATIONS)
+            .interceptor(PermissionInterceptor())
+            .request(OnPermissionCallback { permissions, allGranted ->
+                if (!allGranted) {
+                    return@OnPermissionCallback
+                }
+            })
     }
 
 }

@@ -63,6 +63,7 @@ class DeviceHomeActivity : BaseActivity() {
                 createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
             )
             logViewModel.insertSession(sessionInfo)
+            MmkvCacheUtil.setIOTDeviceLogSessionId(sessionInfo.id)
         }
     }
 

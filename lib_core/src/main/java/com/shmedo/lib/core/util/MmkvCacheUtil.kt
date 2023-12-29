@@ -184,4 +184,31 @@ object MmkvCacheUtil {
         }
     }
 
+    /**
+     * 获取保存的应用日志 session id
+     */
+    fun getAppLogSessionId(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("app_log_session_id")
+        return value ?: ""
+    }
+
+    fun setAppLogSessionId(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("app_log_session_id", value)
+    }
+
+    /**
+     * 获取保存的物联网设备日志 session id
+     */
+    fun getIOTDeviceLogSessionId(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("iot_device_log_session_id")
+        return value ?: ""
+    }
+
+    fun setIOTDeviceLogSessionId(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("iot_device_log_session_id", value)
+    }
 }

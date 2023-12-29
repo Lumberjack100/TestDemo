@@ -5,9 +5,12 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import androidx.activity.viewModels
+import androidx.lifecycle.viewModelScope
 import com.amap.api.maps.MapsInitializer
 import com.gyf.immersionbar.ktx.immersionBar
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.base.viewmodel.LogViewModel
+import com.shmedo.lib.core.ext.addSystemLogSession
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil.getPassword
 import com.shmedo.lib.core.util.MmkvCacheUtil.getUserName
@@ -26,6 +29,7 @@ class SplashActivity : BaseActivity() {
     private val mMessenger: PageMessenger by lazy { getAppViewModel() }
     private val mStates: EmptyViewModel by viewModels()
     private val loginRequestViewModel: LoginRequestViewModel by viewModels()
+    private val logViewModel: LogViewModel by viewModels()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_splash, BR.vm, mStates)
@@ -42,6 +46,7 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initData() {
+        addSystemLogSession(mStates.viewModelScope)
         if (!isAgreePrivate()) {
             showPrivateDialog()
         } else {

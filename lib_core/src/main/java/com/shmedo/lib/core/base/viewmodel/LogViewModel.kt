@@ -14,17 +14,11 @@ import kotlinx.coroutines.launch
  * 描述： TODO
  */
 class LogViewModel : ViewModel() {
-    private var logSession: SessionInfo? = null
-    fun getLogSession(): SessionInfo? {
-        return logSession
-    }
-
     suspend fun getSessionListByUser(
         userId: String
     ): List<SessionInfo>? = LocalDataRepository.instance.getSessionListByUser(userId)
 
     fun insertSession(info: SessionInfo) = viewModelScope.launch {
-        logSession = info
         LocalDataRepository.instance.insertSession(info)
     }
 

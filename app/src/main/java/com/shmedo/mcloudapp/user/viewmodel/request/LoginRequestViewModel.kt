@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.user.viewmodel.request
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -11,6 +12,7 @@ import com.shmedo.lib.core.base.model.CompanyInfo
 import com.shmedo.lib.core.base.model.UserPermissionInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.ext.addSystemLogItem
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.ext.errorMsg
@@ -65,6 +67,11 @@ class LoginRequestViewModel : BaseViewModel() {
             }
             val data: String =
                 NetDataRepository.instance.sendSmsCode(jsonObjectRequest.toString()) { error: Throwable ->
+                    error.printStackTrace()
+                    val msg =
+                        "https://mdiotbff.shmedo.cn/api/v1/auth/SendSmsCode error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+                    addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -157,6 +164,11 @@ class LoginRequestViewModel : BaseViewModel() {
             e.printStackTrace()
         }
         return NetDataRepository.instance.loginByAccount(jsonObjectRequest.toString()) { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "https://mdiotbff.shmedo.cn/api/v1/auth/SignIn error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
+
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = false
             responseStatus.errorMessage = error.errorMsg
@@ -174,6 +186,11 @@ class LoginRequestViewModel : BaseViewModel() {
             e.printStackTrace()
         }
         return NetDataRepository.instance.loginByPhone(jsonObjectRequest.toString()) { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "https://mdiotbff.shmedo.cn/api/v1/auth/SmsLogin error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
+
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = false
             responseStatus.errorMessage = error.errorMsg
@@ -184,6 +201,11 @@ class LoginRequestViewModel : BaseViewModel() {
 
     private suspend fun getUserByToken(): BasicUserInfo? =
         NetDataRepository.instance.getUserByToken { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "https://mdiotbff.shmedo.cn/api/v1/auth/GetUserByToken error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
+
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = false
             responseStatus.errorMessage = error.errorMsg
@@ -201,6 +223,11 @@ class LoginRequestViewModel : BaseViewModel() {
         }
 
         return NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "https://mdiotbff.shmedo.cn/api/v1/auth/QueryUserByID error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
+
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = false
             responseStatus.errorMessage = error.errorMsg
@@ -219,6 +246,11 @@ class LoginRequestViewModel : BaseViewModel() {
         }
 
         return NetDataRepository.instance.queryAllPermissionInService(jsonObjectRequest.toString()) { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "https://mdiotbff.shmedo.cn/api/v1/auth/QueryAllPermissionInService error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
+
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = false
             responseStatus.errorMessage = error.errorMsg
@@ -231,6 +263,11 @@ class LoginRequestViewModel : BaseViewModel() {
         viewModelScope.launch {
             val data: String =
                 NetDataRepository.instance.updateUserInfo(jsonParam) { error: Throwable ->
+                    error.printStackTrace()
+                    val msg =
+                        "https://mdiotbff.shmedo.cn/api/v1/auth/UpdateUser error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+                    addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -250,6 +287,11 @@ class LoginRequestViewModel : BaseViewModel() {
         viewModelScope.launch {
             val data: String =
                 NetDataRepository.instance.uploadUserAvatar(jsonParam) { error: Throwable ->
+                    error.printStackTrace()
+                    val msg =
+                        "https://mdiotbff.shmedo.cn/api/v1/auth/UploadUserAvatar error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+                    addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -276,6 +318,10 @@ class LoginRequestViewModel : BaseViewModel() {
             }
             val userWrapperInfo: UserWrapperInfo =
                 NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
+                    error.printStackTrace()
+                    val msg =
+                        "https://mdiotbff.shmedo.cn/api/v1/auth/QueryUserByID error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+                    addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -308,6 +354,10 @@ class LoginRequestViewModel : BaseViewModel() {
 
             val companyInfo: CompanyInfo =
                 NetDataRepository.instance.queryCompanyInfoByID(jsonObjectRequest.toString()) { error: Throwable ->
+                    error.printStackTrace()
+                    val msg =
+                        "https://mdiotbff.shmedo.cn/api/v1/auth/GetCompanyInfo error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+                    addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -327,7 +377,6 @@ class LoginRequestViewModel : BaseViewModel() {
             )
         }
     }
-
 
     //<editor-fold desc="孙建伟通用配置接口">
     /**
@@ -360,6 +409,8 @@ class LoginRequestViewModel : BaseViewModel() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                val msg = "call loadExternalConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
+                addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
             }
         }
     }
@@ -371,6 +422,10 @@ class LoginRequestViewModel : BaseViewModel() {
         jsonObjectRequest.put("account", MmkvCacheUtil.getUserName())
         jsonObjectRequest.put("password", MmkvCacheUtil.getPassword())
         return NetDataRepository.instance.appConfigLogin(jsonObjectRequest.toString()) { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "http://ams4.shmedo.com:22000/api/v1/Login error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
         }
     }
 
@@ -384,8 +439,11 @@ class LoginRequestViewModel : BaseViewModel() {
         jsonObjectRequest.put("configPara", configPara)
         jsonObjectRequest.put("desc", "")
         return NetDataRepository.instance.updateConfigInfoItem(jsonObjectRequest.toString()) { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "http://ams4.shmedo.com:22000/api/v1/UpdateConfigInfoItem error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
         }
     }
-
     // </editor-fold>
 }

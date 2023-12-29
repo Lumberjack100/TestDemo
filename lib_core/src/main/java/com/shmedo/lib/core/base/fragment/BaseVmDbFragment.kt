@@ -123,10 +123,20 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
         return false
     }
 
+    /**
+     * TODO 由于使用了 navigation 组件，用 Hidden 来替代 fragment 的生命周期 onPause 和 onResume
+     *
+     * @return
+     */
+    open fun isRestrictHiddenMode(): Boolean {
+        return false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.i("onCreate,Fragment=%s", javaClass.simpleName)
         super.onCreate(savedInstanceState)
     }
+
     override fun onPause() {
         Timber.i("onPause,Fragment=%s", javaClass.simpleName)
         super.onPause()
@@ -151,5 +161,10 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         Timber.i("onSaveInstanceState,Fragment=%s", javaClass.simpleName)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+//        Timber.i(if (hidden) "${javaClass.simpleName} 隐藏了" else "${javaClass.simpleName} 显示了")
     }
 }

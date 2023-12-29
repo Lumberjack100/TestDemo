@@ -49,12 +49,12 @@ private const val CHANNEL_ID = "FOREGROUND_BLE_SERVICE"
 abstract class NotificationService : LifecycleService() {
 
     override fun onCreate() {
-        Timber.d("Medo BluetoothGatt NotificationService onCreate")
+        Timber.v("Medo BluetoothGatt NotificationService onCreate")
         super.onCreate()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Timber.d("Medo BluetoothGatt NotificationService onStartCommand")
+        Timber.v("Medo BluetoothGatt NotificationService onStartCommand")
         val result = super.onStartCommand(intent, flags, startId)
         startForegroundService()
         return result
@@ -135,7 +135,7 @@ abstract class NotificationService : LifecycleService() {
     }
 
     override fun onDestroy() {
-        Timber.d("Medo BluetoothGatt NotificationService onDestroy")
+        Timber.v("Medo BluetoothGatt NotificationService onDestroy")
         // when user has disconnected from the sensor, we have to cancel the notification that we've created some milliseconds before using unbindService
         cancelNotification()
         stopForegroundService()

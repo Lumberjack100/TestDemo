@@ -64,7 +64,7 @@ class MedoBleManager(
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
 
     private val data = MutableStateFlow(CommandData())
-    val dataHolder = ConnectionObserverAdapter<CommandData>()
+    val dataHolder = ConnectionObserverAdapter<CommandData>(scope)
 
     init {
         connectionObserver = dataHolder
