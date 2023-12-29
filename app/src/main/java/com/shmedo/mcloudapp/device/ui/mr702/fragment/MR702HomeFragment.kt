@@ -45,7 +45,6 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -244,9 +243,9 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     override fun onBleDeviceReady() {
         launchWithViewLifecycle {
-            delay(0) //延迟 timeMillis 秒后，提示超时
+//            delay(2000) //延迟 timeMillis 秒后，提示超时
             //蓝牙模式下，等蓝牙建立连接后查询设备工作模式
-            queryData()
+//            queryData()
         }
     }
 

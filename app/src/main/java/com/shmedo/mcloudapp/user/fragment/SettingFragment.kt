@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.user.fragment
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.CleanUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
@@ -51,12 +52,16 @@ class SettingFragment : BaseFragment() {
 
     inner class ClickProxy {
         /**
-         * 日志清理
+         * 清除缓存和历史日志
          */
         fun onClearLogClick() {
             launchWithViewLifecycle {
+                //清除缓存
+                CleanUtils.cleanInternalCache()
+                CleanUtils.cleanExternalCache()
+                //清除历史日志
                 loginViewModel.clearHistoryLog()
-                Toaster.show("日志清理成功")
+                Toaster.show("清除缓存成功")
             }
         }
 

@@ -411,7 +411,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                     //将 " 转换为 \"
                     localAppConfigInfo.configPara =
                         MoshiUtil.toJson(appConfigContent).replace("\"", "\\\"")
-                    Timber.d("configPara = ${localAppConfigInfo.configPara}")
+//                    Timber.d("configPara = ${localAppConfigInfo.configPara}")
                     localAppConfigInfo.lastTime = TimeUtils.getNowString()
                     MmkvCacheUtil.setAppConfigInfo(localAppConfigInfo)
                 }

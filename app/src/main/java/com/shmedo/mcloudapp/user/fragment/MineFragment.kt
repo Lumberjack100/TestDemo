@@ -102,9 +102,6 @@ class MineFragment : BaseFragment() {
          * 版本检查
          */
         fun onVersionCheckClick() {
-            //清除缓存
-//            CleanUtils.cleanInternalCache();
-//            CleanUtils.cleanExternalCache();
             shareRequestViewModel.requestCheckAppVersion(true)
         }
 

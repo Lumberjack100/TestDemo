@@ -94,7 +94,7 @@
 
             <LinearLayout
                 style="@style/Common_ClickableItem_LayoutStyle"
-                onClickWithDebouncing="@{()->click.onVersionCheckClick()}"
+                onClickWithDebouncing="@{()->click.onCompanyClick()}"
                 android:layout_marginTop="@dimen/dimen_size_10"
                 android:background="@drawable/layer_common_click_item_with_divider">
 

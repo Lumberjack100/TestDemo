@@ -39,7 +39,6 @@ import timber.log.Timber
 
 class ConnectionObserverAdapter<T> : ConnectionObserver {
 
-
     private val _status = MutableStateFlow<BleManagerResult<T>>(IdleResult())
     val status = _status.asStateFlow()
 
@@ -82,7 +81,6 @@ class ConnectionObserverAdapter<T> : ConnectionObserver {
             else -> UnknownErrorResult(device)
         }
     }
-
 
     fun setValue(value: T) {
         lastValue = value

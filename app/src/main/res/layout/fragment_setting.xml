@@ -42,33 +42,15 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
-                    onClickWithDebouncing="@{()->click.onViewLogClick()}"
-                    android:layout_marginTop="1dp"
-                    app:drawable_radiusLT="@{6}"
-                    app:drawable_radiusRT="@{6}"
-                    app:drawable_solidColor="@{@color/white}"
-                    tools:background="@color/white">
-
-                    <TextView
-                        style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="日志浏览" />
-
-                    <TextView style="@style/Common_ClickableItem_ValueStyle" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
                     onClickWithDebouncing="@{()->click.onClearLogClick()}"
-                    android:layout_marginTop="1dp"
-                    app:drawable_radiusLB="@{6}"
-                    app:drawable_radiusRB="@{6}"
+                    android:layout_marginTop="@dimen/dimen_size_10"
+                    app:drawable_radius="@{6}"
                     app:drawable_solidColor="@{@color/white}"
                     tools:background="@color/white">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="历史日志清理" />
+                        android:text="清除缓存" />
 
                     <TextView style="@style/Common_ClickableItem_ValueStyle" />
 
@@ -78,7 +60,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     onClickWithDebouncing="@{()->click.onUserProtocolClick()}"
-                    android:layout_marginTop="@dimen/dimen_size_10"
+                    android:layout_marginTop="@dimen/dimen_size_20"
                     app:drawable_radiusLT="@{6}"
                     app:drawable_radiusRT="@{6}"
                     app:drawable_solidColor="@{@color/white}"
@@ -132,6 +114,22 @@
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="关于" />
+
+                    <TextView style="@style/Common_ClickableItem_ValueStyle" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    onClickWithDebouncing="@{()->click.onViewLogClick()}"
+                    android:layout_marginTop="@dimen/dimen_size_20"
+                    app:drawable_radius="@{6}"
+                    app:drawable_solidColor="@{@color/white}"
+                    tools:background="@color/white">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="日志浏览" />
 
                     <TextView style="@style/Common_ClickableItem_ValueStyle" />
 
