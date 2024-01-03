@@ -87,7 +87,6 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                 mActivity.finish()
         }
         initModuleAdapter()
-        updateConfigModuleData()
     }
 
     private fun initModuleAdapter() {
@@ -133,6 +132,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
 
             else -> {}
         }
+        updateConfigModuleData()
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {

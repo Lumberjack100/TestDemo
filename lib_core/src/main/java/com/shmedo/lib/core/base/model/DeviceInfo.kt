@@ -24,7 +24,7 @@ class DeviceInfo(
     val deviceStatus: String = "",//启用状态
     val allowWarn: Boolean = false,//是否推送预警
     val exValues: String = "",//设备拓展属性
-    val apiKey: String = "",//设备密钥
+    val apikey: String = "",//设备密钥
     val productID: Int = 0,//所属产品编号
     val productToken: String = "",//所属产品标识
     val productName: String = "",//所属产品名称

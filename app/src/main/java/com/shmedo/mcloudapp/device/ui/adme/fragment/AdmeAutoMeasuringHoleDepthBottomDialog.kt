@@ -69,12 +69,8 @@ class AdmeAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
         }
 
         fun onExitClick() {
-            dismiss()
+            fragmentClickListener?.onExitClick()
         }
-    }
-
-    fun updateStopState() {
-        mStates.isExitButtonVisible.set(true)
     }
 
     private var fragmentClickListener: OnDialogFragmentClickListener? = null
@@ -85,6 +81,7 @@ class AdmeAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
     interface OnDialogFragmentClickListener {
         fun onCloseClick()
         fun onStopClick()
+        fun onExitClick()
     }
 
     companion object {

@@ -201,6 +201,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 )
             )
             mStates.deviceDropNumber.set(currentStateInfo.downnum)
+            decimalFormat.applyPattern("#.###")
             mStates.deviceMileage.set(
                 String.format(
                     "%sm",
@@ -211,6 +212,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
             mStates.inclinometerType.set(if (currentStateInfo.inctype == "0") "433测斜仪" else "蓝牙测斜仪")
             mStates.inclinometerChannelNumber.set(currentStateInfo.incnum)
             mStates.inclinometerLocationInfo.set(currentStateInfo.incloc)
+            decimalFormat.applyPattern("#.#")
             mStates.inclinometerVoltage.set(
                 String.format(
                     "%sV",

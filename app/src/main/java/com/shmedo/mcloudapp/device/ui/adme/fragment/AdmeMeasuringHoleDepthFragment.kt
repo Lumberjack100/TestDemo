@@ -60,8 +60,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_motor_motion_type) }
 
     private var safeDistance: String = "" //安全距离补偿
-    private var lastDistance: String = "0" //上次停止时运动距离
-    private var continueDistanceGoal: String = "0" //继续运动时的目标距离
+    private var lastMotionDistance: String = "" //上次停止时运动距离
+    private var continueDistanceGoal: Double = 0.0 //继续运动时的目标距离
     private var repeatPollNum = 0 //当查询电机脉冲数重复超过一定次数时，判定电机停止
 
     private var autoMeasuringHoleDepthBottomDialog: AdmeAutoMeasuringHoleDepthBottomDialog? = null
@@ -124,8 +124,12 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        mStates.isAutoMode.set(true)
         mStates.measureWay.set(measureWayList[0])
         mStates.motionType.set(motionTypeList[0])
+        mStates.downEnable.set(true)//进入页面默认自动测孔深，需要打开堵转检测使能
+        mStates.isClearMotionDataVisible.set(true)
+        loadAutoLastHistoryData()
     }
 
     private fun setEditable(editable: Boolean) {
@@ -159,6 +163,15 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     { position, text ->
                         mStates.measureWay.set(text)
                         mStates.isAutoMode.set(position == 0)
+                        if (position == 0) {
+                            loadAutoLastHistoryData()
+                            //自动测量孔深模式，需要打开堵转检测
+                            if (mStates.lockedRotorDetectionInfoWrapper.get().lowtbtss == "0") {
+                                mStates.downEnable.set(true)
+                                enableOrDisableLockRotorParam(true)
+                            }
+                        } else
+                            loadManualLastHistoryData()
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -198,6 +211,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.motionType.set(text)
+                        loadManualLastHistoryData()
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -225,7 +239,27 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     *
+     * 自动测孔深模式加载本地缓存的参数
+     */
+    private fun loadAutoLastHistoryData() {
+        mStates.speed.set(MmkvCacheUtil.getAdmeAutoLastMotorDropSpeed())
+    }
+
+    /**
+     * 手动测孔深模式加载本地缓存的参数
+     */
+    private fun loadManualLastHistoryData() {
+        if (mStates.motionType.get() == motionTypeList[0]) {//上拉
+            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpSpeed())
+            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpDistance())
+        } else {
+            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorDropSpeed())
+            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorDropDistance())
+        }
+    }
+
+    /**
+     * ADME的电机运动堵转检测使能
      */
     private fun enableOrDisableLockRotorParam(isChecked: Boolean) {
         commandItems.clear()
@@ -429,17 +463,17 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         try {
             val distanceTotalGoal = abs(mStates.distanceGoal.get().toDouble())
             val distanceDiff =
-                abs(mStates.motionDistance.get().toDouble()) - abs(lastDistance.toDouble())
+                abs(mStates.motionDistance.get().toDouble()) - abs(lastMotionDistance.toDouble())
             //已达到设定运动目标
             if (distanceTotalGoal - distanceDiff <= 0) {
-                manualMeasuringHoleDepthBottomDialog?.updateStopState()
+                mStates.isExitButtonVisible.set(true)
                 Toaster.show("无法继续电机运动操作")
                 return
             }
-            continueDistanceGoal = (distanceTotalGoal - distanceDiff).toString()
+            continueDistanceGoal = distanceTotalGoal - distanceDiff
             val entity = AdmeMeasuringHoleDepthEntity(
                 movementway = if (mStates.motionType.get() == motionTypeList[0]) "0" else "1",
-                movedistance = continueDistanceGoal
+                movedistance = continueDistanceGoal.toString()
             )
             commandItems.clear()
             val command = IOTCommandUtil.getCommand(
@@ -508,7 +542,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initPositiveAndNegativeInfo(result.data)
+                        mStates.positiveAndNegativeTest.set(result.data.posnegtest == "1")
                     }
                 }
             }
@@ -524,8 +558,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         val errMsg = "查询堵转参数出错: ${result.message}"
                         Timber.e(errMsg)
                         PopTip.show(errMsg).autoDismiss(4500).iconError()
-                        //设备版本不支持，隐藏编辑按钮
-                        toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
                     }
 
@@ -533,7 +565,11 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initLockedRotorDetectionInfo(result.data)
+                        mStates.lockedRotorDetectionInfoWrapper.set(result.data)
+                        //进入页面默认自动测量孔深模式，需要打开堵转检测
+                        if (result.data.lowtbtss == "0") {
+                            enableOrDisableLockRotorParam(true)
+                        }
                     }
                 }
             }
@@ -581,9 +617,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("保存成功")
-                        }
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -678,11 +712,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         if (!manualMeasuringHoleDepthBottomDialog?.isVisible!! && !autoMeasuringHoleDepthBottomDialog?.isVisible!!) {
                             return
                         }
-                        if (mStates.isAutoMode.get()) {
-                            updateMotionData(result.data)
-                        } else {
-//                            manualMeasuringHoleDepthBottomDialog?.updateData(result.data)
-                        }
+                        updateMotionData(result.data)
                     }
                 }
             }
@@ -706,10 +736,10 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             return
                         }
                         if (mStates.isAutoMode.get()) {
-                            autoMeasuringHoleDepthBottomDialog?.updateStopState()
+                            mStates.isExitButtonVisible.set(true)
                         } else {
                             if (mStates.pauseButtonText.get() != "继续")//不是暂停按钮操作，是停止按钮操作
-                                manualMeasuringHoleDepthBottomDialog?.updateStopState()
+                                mStates.isExitButtonVisible.set(true)
                         }
                     }
                 }
@@ -737,27 +767,10 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 初始化正反测使能参数
-     */
-    private fun initPositiveAndNegativeInfo(info: AdmeStepperMotorInfo) {
-        mStates.positiveAndNegativeTest.set(info.posnegtest == "1")
-    }
-
-    /**
-     * 初始化堵转检测参数
-     */
-    private fun initLockedRotorDetectionInfo(info: AdmeLockedRotorDetectionInfo) {
-        mStates.lockedRotorDetectionInfoWrapper.set(info)
-        //进入页面默认自动测量孔深模式，需要打开堵转检测
-        if (info.lowtbtss == "0") {
-            enableOrDisableLockRotorParam(true)
-        }
-    }
-
     private fun initMotorMotionDistance(motorMotionDistanceInfo: AdmeMotorMotionDistanceInfo) {
         try {
-            lastDistance = motorMotionDistanceInfo.realmovedistance
+            if (lastMotionDistance.isEmpty())
+                lastMotionDistance = motorMotionDistanceInfo.realmovedistance
             if (safeDistance.isEmpty())
                 safeDistance = motorMotionDistanceInfo.realholedepth
             if (motorMotionDistanceInfo.realholedepth.isNotEmpty() && safeDistance.isNotEmpty()) {
@@ -780,13 +793,14 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 setOnDialogFragmentClickListener(object :
                     AdmeAutoMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
-                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                            //蓝牙未断开时先发送停止电机指令
-                            if (bleViewModel.isConnected()) {
-                                stopMotorMotion()
-                            }
-                            dismiss()
-                        }, "取消")
+                        //蓝牙未断开时先发送停止电机指令
+                        if (bleViewModel.isConnected()) {
+                            stopMotorMotion()
+                        }
+                        dismiss()
+                        autoMeasuringHoleDepthBottomDialog = null
+                        lastMotionDistance = ""
+                        safeDistance = ""
                     }
 
                     override fun onStopClick() {
@@ -795,6 +809,13 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             return
                         }
                         stopMotorMotion()
+                    }
+
+                    override fun onExitClick() {
+                        dismiss()
+                        autoMeasuringHoleDepthBottomDialog = null
+                        lastMotionDistance = ""
+                        safeDistance = ""
                     }
                 })
                 show(childFragmentManager, "dialog")
@@ -808,7 +829,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog!!.isVisible) {
             Timber.d(
                 "Continue Motion: lastDistance=%s,curDistance=%s,curPulse=%s,continueDistanceGoal=%s",
-                lastDistance,
+                lastMotionDistance,
                 mStates.motionDistance.get(),
                 mStates.motionPulse.get(),
                 continueDistanceGoal,
@@ -818,7 +839,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
         Timber.d(
             "start Motion: lastDistance=%s,totalDistanceGoal=%s",
-            lastDistance,
+            lastMotionDistance,
             mStates.distanceGoal.get()
         )
         manualMeasuringHoleDepthBottomDialog =
@@ -826,13 +847,14 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 setOnDialogFragmentClickListener(object :
                     AdmeManualMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
-                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                            //蓝牙未断开时先发送停止电机指令
-                            if (bleViewModel.isConnected()) {
-                                stopMotorMotion()
-                            }
-                            dismiss()
-                        }, "取消")
+                        //蓝牙未断开时先发送停止电机指令
+                        if (bleViewModel.isConnected()) {
+                            stopMotorMotion()
+                        }
+                        dismiss()
+                        manualMeasuringHoleDepthBottomDialog = null
+                        lastMotionDistance = ""
+                        safeDistance = ""
                     }
 
                     override fun onStopClick() {
@@ -855,6 +877,13 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             mStates.pauseButtonText.set("继续")
                             stopMotorMotion()
                         }
+                    }
+
+                    override fun onExitClick() {
+                        dismiss()
+                        manualMeasuringHoleDepthBottomDialog = null
+                        lastMotionDistance = ""
+                        safeDistance = ""
                     }
                 })
                 show(childFragmentManager, "dialog")
@@ -886,6 +915,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
             mStates.motionPulse.set(motorMotionDistanceInfo.pulsenumber)
             mStates.motionDistance.set(motorMotionDistanceInfo.realmovedistance)
+            //继续轮询电机脉冲数据
             getMotorMotionData(800)
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -901,12 +931,13 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         //虽然轮询了 N 次电机脉冲数据没有见变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
         if (measuringHoleDepthInfo.morunstate == "1") {
             repeatPollNum = 0
+            //继续轮询电机脉冲数据
             getMotorMotionData(800)
             return
         }
         repeatPollNum = 0
         //电机停止,更新运动状态页面
-        autoMeasuringHoleDepthBottomDialog?.updateStopState()
+        mStates.isExitButtonVisible.set(true)
     }
 
     /**
@@ -918,6 +949,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         //虽然轮询了 N 次电机脉冲数据没有见变化，但是电机状态为"1",表示还在运动，则清空计数，继续轮询电机脉冲数据
         if (measuringHoleDepthInfo.morunstate == "1") {
             repeatPollNum = 0
+            //继续轮询电机脉冲数据
             getMotorMotionData(800)
             return
         }
@@ -925,14 +957,14 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         try {
             val distanceTotalGoal = abs(mStates.distanceGoal.get().toDouble())
             val distanceDiff =
-                abs(mStates.motionDistance.get().toDouble()) - abs(lastDistance.toDouble())
+                abs(mStates.motionDistance.get().toDouble()) - abs(lastMotionDistance.toDouble())
             //设定的运动距离目标值小于等于运动距离变化量时,电机停止
             if (distanceTotalGoal - distanceDiff <= 0) {
                 //电机停止,更新运动状态页面
-                manualMeasuringHoleDepthBottomDialog?.updateStopState()
+                mStates.isExitButtonVisible.set(true)
             } else {
                 //电机暂停
-                manualMeasuringHoleDepthBottomDialog?.updatePauseState()
+                mStates.pauseButtonText.set("继续")
             }
         } catch (ex: Exception) {
             ex.printStackTrace()

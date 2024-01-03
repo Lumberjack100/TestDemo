@@ -240,7 +240,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
-            bleViewModel.sendCommand(command, true, deviceInfo.apiKey, delaySendMillis)
+            bleViewModel.sendCommand(command, true, deviceInfo.apikey, delaySendMillis)
             if (isStartTimeoutJob)
                 startNearbyCommunicationTimeoutJob(command, timeoutMillis)
         }

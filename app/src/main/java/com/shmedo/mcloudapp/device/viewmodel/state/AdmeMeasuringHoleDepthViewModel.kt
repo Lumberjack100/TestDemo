@@ -10,7 +10,7 @@ class AdmeMeasuringHoleDepthViewModel : ViewModel() {
     val isEditable = NonNullObservableField(false)
     val isAutoMode = NonNullObservableField(true)
     val measureWay = NonNullObservableField("")//测量方式
-    val downEnable = NonNullObservableField(true)///进入页面默认自动测孔深，需要打开堵转检测使能
+    val downEnable = NonNullObservableField(true)//进入页面默认自动测孔深，需要打开堵转检测使能
     val positiveAndNegativeTest = NonNullObservableField(false)//正反测使能
     val speed = NonNullObservableField("")//下放速度(r/min)
 
