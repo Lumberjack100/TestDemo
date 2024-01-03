@@ -151,6 +151,92 @@ object MmkvCacheUtil {
     }
 
 
+    //<editor-fold desc="ADME ">
+    /**
+     * 获取 ADME 自动测孔深上一次电机下放速度
+     */
+    fun getAdmeAutoLastMotorDropSpeed(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("auto_last_motor_drop_speed")
+        return value ?: ""
+    }
+
+    fun setAdmeAutoLastMotorDropSpeed(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("auto_last_motor_drop_speed", value)
+    }
+
+    /**
+     * 获取 ADME 自动测孔深上一次管底安全补偿距离
+     */
+    fun getAdmeAutoLastBottomSafeDistance(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("auto_last_bottom_safe_distance")
+        return value ?: ""
+    }
+
+    fun setAdmeAutoLastBottomSafeDistance(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("auto_last_bottom_safe_distance", value)
+    }
+
+    /**
+     * 获取 ADME 手动测孔深上一次电机上拉速度
+     */
+    fun getAdmeManualLastMotorPullUpSpeed(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("manual_last_motor_pull_up_speed")
+        return value ?: ""
+    }
+
+    fun setAdmeManualLastMotorPullUpSpeed(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("manual_last_motor_pull_up_speed", value)
+    }
+
+    /**
+     * 获取 ADME 手动测孔深上一次电机上拉距离
+     */
+    fun getAdmeManualLastMotorPullUpDistance(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("manual_last_motor_pull_up_distance")
+        return value ?: ""
+    }
+
+    fun setAdmeManualLastMotorPullUpDistance(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("manual_last_motor_pull_up_distance", value)
+    }
+
+    /**
+     * 获取 ADME 手动测孔深上一次电机下放速度
+     */
+    fun getAdmeManualLastMotorDropSpeed(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("manual_last_motor_drop_speed")
+        return value ?: ""
+    }
+
+    fun setAdmeManualLastMotorDropSpeed(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("manual_last_motor_drop_speed", value)
+    }
+
+    /**
+     * 获取 ADME 手动测孔深上一次电机下放距离
+     */
+    fun getAdmeManualLastMotorDropDistance(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("manual_last_motor_drop_distance")
+        return value ?: ""
+    }
+
+    fun setAdmeManualLastMotorDropDistance(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("manual_last_motor_drop_distance", value)
+    }
+    // </editor-fold>
+
     fun getAmsToken(): String {
         val kv = MMKV.defaultMMKV()
         val token = kv.decodeString("ams_token")

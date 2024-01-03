@@ -390,7 +390,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                                 name = "孔深测量",
                                 desc = "测量测斜管深度",
                                 resID = R.drawable.ic_measuring_hole_depth,
-                                navId = 0
+                                navId = R.id.action_global_to_admeMeasuringHoleDepthFragment
                             )
                         )
                     )

@@ -287,6 +287,18 @@
         <item>12</item>
         <item>24</item>
     </string-array>
+
+    <!-- ADME 孔深测量方式-->
+    <string-array name="adme_measure_hole_depth_method">
+        <item>自动测孔深</item>
+        <item>手动测孔深</item>
+    </string-array>
+
+    <!-- ADME 电机运动方式-->
+    <string-array name="adme_motor_motion_type">
+        <item>上拉</item>
+        <item>下放</item>
+    </string-array>
     <!-- ADME end-->
 
 </resources>

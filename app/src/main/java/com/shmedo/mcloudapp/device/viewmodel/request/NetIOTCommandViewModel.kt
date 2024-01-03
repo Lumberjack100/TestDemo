@@ -76,7 +76,7 @@ class NetIOTCommandViewModel : BaseViewModel() {
      */
     private suspend fun pollForCommandResult(cmdStr: String = "", jsonParam: String) {
         repeat(20) {
-            delay(500) // 延迟1秒
+            delay(500) //延迟 500 毫秒
             val cmdResult: QueryCmdResult = queryCmdResultByMsgID(jsonParam)
             if (cmdResult.cmdStatus == 2) {
                 _cmdDispatchFlow.emit(CmdResponseResultSuccess(cmdResult))

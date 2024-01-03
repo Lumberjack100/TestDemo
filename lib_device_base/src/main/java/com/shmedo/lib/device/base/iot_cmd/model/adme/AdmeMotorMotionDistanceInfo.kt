@@ -8,7 +8,7 @@ package com.shmedo.lib.device.base.iot_cmd.model.adme
 data class AdmeMotorMotionDistanceInfo(
     var pulsenumber: String = "",//脉冲数
     var realmovedistance: String = "",//实时运动距离
-    var realholedepth: String = "",// 实时测量孔深
-    var recoholedepth: String = "",//  推荐测量孔深
-    var realmoveangle: String = "",// 实时运动角度
+    var realholedepth: String = "",//实时测量孔深
+    var recoholedepth: String = "",//推荐测量孔深
+    var realmoveangle: String = "",//实时运动角度
 )

@@ -11,8 +11,10 @@ import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeExecutiveAgencyInfoPar
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeInclinometerInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeLockedRotorDetectionInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeLowEnergyModeInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMeasuringHoleDepthInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMeterWheelInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotionStateParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotorMotionDistanceInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotorPowerInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeStepperMotorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeVoltageConfigInfoParser
@@ -70,6 +72,8 @@ val appModule = module {
     factory { AdmeLockedRotorDetectionInfoParser() }
     factory { AdmeExecutiveAgencyInfoParser() }
     factory { AdmeBasicConfigInfoParser() }
+    factory { AdmeMeasuringHoleDepthInfoParser() }
+    factory { AdmeMotorMotionDistanceInfoParser() }
 
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -117,6 +121,8 @@ val appModule = module {
             get<AdmeLockedRotorDetectionInfoParser>(),
             get<AdmeExecutiveAgencyInfoParser>(),
             get<AdmeBasicConfigInfoParser>(),
+            get<AdmeMeasuringHoleDepthInfoParser>(),
+            get<AdmeMotorMotionDistanceInfoParser>(),
 
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),

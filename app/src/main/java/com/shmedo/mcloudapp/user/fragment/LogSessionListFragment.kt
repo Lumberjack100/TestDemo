@@ -108,13 +108,15 @@ class LogSessionListFragment : BaseFragment() {
                         binding.refreshLayout.showContent()
                         //将 createTime 转换为 yyyy-MM-dd，然后按照日期分组
                         val groupMap: Map<String, List<SessionInfo>> =
-                            logSessionList.groupBy { it.createDate }
+                            logSessionList.reversed().groupBy { it.createDate }
                         val groupList = mutableListOf<Any>()
                         groupMap.forEach { (key, value) ->
                             groupList.add(HoverHeaderModel(key))
                             groupList.addAll(value)
                         }
                         binding.recyclerview.models = groupList
+
+
                     }
                 }
         }
