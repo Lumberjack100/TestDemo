@@ -7,7 +7,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentAdmeAutoMeasuringHoleDepthBottomDialogBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
@@ -47,7 +47,7 @@ class AdmeAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
 //    }
 
     private fun startQueryMotorMotionData() {
-        queryJob = launchAndRepeatWithViewLifecycle {
+        queryJob = launchWithViewLifecycle {
 
 
         }

@@ -27,7 +27,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessageDialog
@@ -372,12 +372,12 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processBack(isPressBackBtn: Boolean = false) {
-        launchWithViewLifecycle {
+        launchAndRepeatWithViewLifecycle {
             updateSensorModeConfig()
             if (isPressBackBtn) {
                 mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
                 nav().navigateUp()
-                return@launchWithViewLifecycle
+                return@launchAndRepeatWithViewLifecycle
             }
             delay(500)
             //需要给上一级浏览页面传递最新的事件信息

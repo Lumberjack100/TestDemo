@@ -26,7 +26,6 @@ import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -84,107 +83,107 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     @CallSuper
     override fun createObserver() {
-        collectNetData()
-        collectBleData()
+        launchWithViewLifecycle {
+            if (communicateWay is NetPlatformConnect)
+                collectNetData()
+            else
+                collectBleData()
+        }
     }
 
-    private fun collectNetData() {
-        launchAndRepeatWithViewLifecycle {
-            netIotCommandViewModel.cmdDispatchFlow.collect {
-                when (it) {
-                    is DispatchFailed -> {
-                        addIOTDeviceLogItem(
-                            priority = Log.ERROR,
-                            data = "DispatchFailed: ${it.errorMsg}",
-                            logViewModel.viewModelScope
-                        )
-                        doNetDispatchFailed(it.cmdStr, it.errorMsg)
-                    }
-
-                    is DispatchSuccess -> {
-                        doNetDispatchSuccess(it.cmdStr)
-                    }
-
-                    is CmdResponseResultError -> {
-                        addIOTDeviceLogItem(
-                            priority = Log.ERROR,
-                            data = "Response Error: ${it.errorMsg}",
-                            logViewModel.viewModelScope
-                        )
-                        doCmdResponseResultError(it.cmdStr, it.errorMsg)
-                    }
-
-                    is CmdResponseResultTimeOut -> {
-                        addIOTDeviceLogItem(
-                            priority = Log.ERROR,
-                            data = "Response TimeOut",
-                            logViewModel.viewModelScope
-                        )
-                        doCmdResponseResultTimeOut(it.cmdStr, it.errorMsg)
-                    }
-
-                    is CmdResponseResultSuccess -> {
-                        addIOTDeviceLogItem(
-                            priority = Log.INFO,
-                            data = it.cmdResult.responseContent,
-                            logViewModel.viewModelScope
-                        )
-                        setResultData(it.cmdResult.responseContent)
-                    }
-
-                    else -> {}
+    private suspend fun collectNetData() {
+        netIotCommandViewModel.cmdDispatchFlow.collect {
+            when (it) {
+                is DispatchFailed -> {
+                    addIOTDeviceLogItem(
+                        priority = Log.ERROR,
+                        data = "DispatchFailed: ${it.errorMsg}",
+                        logViewModel.viewModelScope
+                    )
+                    doNetDispatchFailed(it.cmdStr, it.errorMsg)
                 }
+
+                is DispatchSuccess -> {
+                    doNetDispatchSuccess(it.cmdStr)
+                }
+
+                is CmdResponseResultError -> {
+                    addIOTDeviceLogItem(
+                        priority = Log.ERROR,
+                        data = "Response Error: ${it.errorMsg}",
+                        logViewModel.viewModelScope
+                    )
+                    doCmdResponseResultError(it.cmdStr, it.errorMsg)
+                }
+
+                is CmdResponseResultTimeOut -> {
+                    addIOTDeviceLogItem(
+                        priority = Log.ERROR,
+                        data = "Response TimeOut",
+                        logViewModel.viewModelScope
+                    )
+                    doCmdResponseResultTimeOut(it.cmdStr, it.errorMsg)
+                }
+
+                is CmdResponseResultSuccess -> {
+                    addIOTDeviceLogItem(
+                        priority = Log.INFO,
+                        data = it.cmdResult.responseContent,
+                        logViewModel.viewModelScope
+                    )
+                    setResultData(it.cmdResult.responseContent)
+                }
+
+                else -> {}
             }
         }
     }
 
-    private fun collectBleData() {
-        launchAndRepeatWithViewLifecycle {
-            bleViewModel.state.collect { state ->
-                Timber.v("$fragmentName Medo BluetoothGatt: $state")
+    private suspend fun collectBleData() {
+        bleViewModel.state.collect { state ->
+            Timber.v("$fragmentName Medo BluetoothGatt: $state")
 //                if (isRestrictHiddenMode() && isHidden) {
 //                    return@collect
 //                }
-                when (state) {
-                    NoDeviceState -> {}
-                    is WorkingState -> when (state.result) {
-                        is IdleResult,
-                        is ConnectingResult -> {
-                            showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
-                        }
+            when (state) {
+                NoDeviceState -> {}
+                is WorkingState -> when (state.result) {
+                    is IdleResult,
+                    is ConnectingResult -> {
+                        showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
+                    }
 
-                        is ConnectedResult -> {
-                            dismissLoadingDialog()
-                            onConnectionStateChanged(true)
-                        }
+                    is ConnectedResult -> {
+                        dismissLoadingDialog()
+                        onConnectionStateChanged(true)
+                    }
 
-                        is ReadyResult -> {
-                            onBleDeviceReady()
-                        }
+                    is ReadyResult -> {
+                        onBleDeviceReady()
+                    }
 
-                        is SuccessResult -> {
-                            setResultData(state.result.data.response)
-                        }
+                    is SuccessResult -> {
+                        setResultData(state.result.data.response)
+                    }
 
-                        is DisconnectedResult -> {
-                            dismissLoadingDialog()
-                            onConnectionStateChanged(false)
-                        }
+                    is DisconnectedResult -> {
+                        dismissLoadingDialog()
+                        onConnectionStateChanged(false)
+                    }
 
-                        is LinkLossResult -> {
-                            dismissLoadingDialog()
-                            onConnectionStateChanged(false)
-                        }
+                    is LinkLossResult -> {
+                        dismissLoadingDialog()
+                        onConnectionStateChanged(false)
+                    }
 
-                        is MissingServiceResult -> {
-                            dismissLoadingDialog()
-                            onConnectionStateChanged(false)
-                        }
+                    is MissingServiceResult -> {
+                        dismissLoadingDialog()
+                        onConnectionStateChanged(false)
+                    }
 
-                        is UnknownErrorResult -> {
-                            dismissLoadingDialog()
-                            onConnectionStateChanged(false)
-                        }
+                    is UnknownErrorResult -> {
+                        dismissLoadingDialog()
+                        onConnectionStateChanged(false)
                     }
                 }
             }

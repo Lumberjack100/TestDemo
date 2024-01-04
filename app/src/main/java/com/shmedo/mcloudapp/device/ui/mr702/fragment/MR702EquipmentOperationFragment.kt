@@ -19,7 +19,7 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -310,7 +310,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun applyBackup(backupID: String = "") {
-        launchWithViewLifecycle {
+        launchAndRepeatWithViewLifecycle {
             val msgID = deviceRequestViewModel.applyBackup(
                 backupID,
                 deviceInfo.id.toString()
@@ -318,7 +318,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 mStates.isResponseLoading.set(false)
                 mStates.isResponseSuccess.set(false)
                 mStates.responseContent.set(error.errorMsg)
-            } ?: return@launchWithViewLifecycle
+            } ?: return@launchAndRepeatWithViewLifecycle
 
             mStates.isParamImporting.set(true)
             mStates.isResponseLoading.set(true)

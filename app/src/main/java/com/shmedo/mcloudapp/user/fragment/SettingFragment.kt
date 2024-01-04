@@ -11,7 +11,7 @@ import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
@@ -55,7 +55,7 @@ class SettingFragment : BaseFragment() {
          * 清除缓存和历史日志
          */
         fun onClearLogClick() {
-            launchWithViewLifecycle {
+            launchAndRepeatWithViewLifecycle {
                 //清除缓存
                 CleanUtils.cleanInternalCache()
                 CleanUtils.cleanExternalCache()

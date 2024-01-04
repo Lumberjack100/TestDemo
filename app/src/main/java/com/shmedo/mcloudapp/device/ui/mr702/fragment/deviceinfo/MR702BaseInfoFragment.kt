@@ -14,7 +14,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.databinding.FragmentMr702BaseInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
@@ -51,12 +51,12 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-        launchWithViewLifecycle {
+        launchAndRepeatWithViewLifecycle {
             if (communicateWay is BleConnect)
-                return@launchWithViewLifecycle
+                return@launchAndRepeatWithViewLifecycle
             val deviceDetailInfo =
                 deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
-                } ?: return@launchWithViewLifecycle
+                } ?: return@launchAndRepeatWithViewLifecycle
 
             mStates.wrapBaseInfo.get().apply {
                 regcode = deviceDetailInfo.deviceInfo.productKey

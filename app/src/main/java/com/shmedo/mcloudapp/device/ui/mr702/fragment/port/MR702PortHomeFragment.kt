@@ -24,7 +24,7 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
@@ -200,23 +200,23 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     private fun loadSensorModeConfig() {
-        launchWithViewLifecycle {
-        try {
-            val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
-            val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
+        launchAndRepeatWithViewLifecycle {
+            try {
+                val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
 //            Timber.d("configPara = $jsonStr")
-            val appConfigContent: AppConfigContent =
-                MoshiUtil.fromJson(jsonStr) ?: return@launchWithViewLifecycle
-            appConfigContent.mr702.forEach { mPort ->
-                mStates.portSensorsMap[mPort.portName] = mPort.sensors.toMutableList()
-                mPort.sensors.forEach { model ->
-                    mStates.sensorTypeMap[model.sensorType] = model
+                val appConfigContent: AppConfigContent =
+                    MoshiUtil.fromJson(jsonStr) ?: return@launchAndRepeatWithViewLifecycle
+                appConfigContent.mr702.forEach { mPort ->
+                    mStates.portSensorsMap[mPort.portName] = mPort.sensors.toMutableList()
+                    mPort.sensors.forEach { model ->
+                        mStates.sensorTypeMap[model.sensorType] = model
+                    }
                 }
+                mStates.appConfigContent = appConfigContent
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            mStates.appConfigContent = appConfigContent
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
         }
     }
 

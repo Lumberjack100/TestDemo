@@ -25,7 +25,7 @@ import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
+import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
@@ -87,7 +87,7 @@ class LogDataFragment : BaseFragment() {
     }
 
     private fun loadLogList(level: Int = LogLevel.DEBUG) {
-        launchWithViewLifecycle {
+        launchAndRepeatWithViewLifecycle {
             loginViewModel.getLogListBySessionId(
                 sessionInfo.id,
                 level
@@ -144,7 +144,7 @@ class LogDataFragment : BaseFragment() {
      * 分享日志
      */
     private fun shareLog() {
-        launchWithViewLifecycle {
+        launchAndRepeatWithViewLifecycle {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
