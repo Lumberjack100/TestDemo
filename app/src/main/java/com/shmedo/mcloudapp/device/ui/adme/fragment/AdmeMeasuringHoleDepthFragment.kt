@@ -57,7 +57,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureWayList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_hole_depth_method) }
-    private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_motor_motion_type) }
+    private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_hole_depth_motor_motion_type) }
 
     private var safeDistance: String = "" //安全距离补偿
     private var lastMotionDistance: String = "" //上次停止时运动距离
@@ -493,11 +493,11 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private fun clearMotorMotionData() {
         commandItems.clear()
 
-        //获取设备的步进电机正反测使能信息
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA
         )
         commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 

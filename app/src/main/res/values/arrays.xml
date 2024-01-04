@@ -294,10 +294,16 @@
         <item>手动测孔深</item>
     </string-array>
 
-    <!-- ADME 电机运动方式-->
-    <string-array name="adme_motor_motion_type">
+    <!-- ADME 孔深测量电机运动方式-->
+    <string-array name="adme_measure_hole_depth_motor_motion_type">
         <item>上拉</item>
         <item>下放</item>
+    </string-array>
+
+    <!-- ADME 导槽校准电机运动方式-->
+    <string-array name="adme_guide_groove_calibration_motor_motion_type">
+        <item>正转</item>
+        <item>反转</item>
     </string-array>
     <!-- ADME end-->
 

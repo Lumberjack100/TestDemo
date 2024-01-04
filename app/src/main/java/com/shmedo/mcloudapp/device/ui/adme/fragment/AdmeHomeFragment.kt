@@ -409,7 +409,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         DeviceOperationModule(
                             desc = "计米轮、测斜议、执行机构等",
-                            navId = R.id.action_admeHomeFragment_to_admeAdvancedConfigurationFragment
+                            navId = R.id.action_global_to_admeAdvancedConfigurationFragment
                         )
                     )
                 )
@@ -426,7 +426,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         DeviceOperationModule(
                             desc = "计米轮、测斜议、执行机构等",
-                            navId = R.id.action_admeHomeFragment_to_admeAdvancedConfigurationFragment
+                            navId = R.id.action_global_to_admeAdvancedConfigurationFragment
                         )
                     )
                 )

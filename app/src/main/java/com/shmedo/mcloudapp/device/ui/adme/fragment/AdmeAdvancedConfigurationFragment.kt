@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -67,7 +68,12 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 val module = getModel<ConfigModule>()
                 processItemClick(module)
             }
-        }.models = getModuleList()
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        initModuleList()
     }
 
     private fun processItemClick(module: ConfigModule) {
@@ -88,12 +94,9 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun setResultData(cmdStr: String) {
-
-    }
-
-    private fun getModuleList() =
-        arrayListOf<ConfigModule>(
+    private fun initModuleList() {
+        val moduleList = arrayListOf<ConfigModule>()
+        moduleList.add(
             ConfigModule(
                 CommonModule(
                     name = "计米轮",
@@ -101,7 +104,9 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeMeterWheelFragment
                 )
-            ),
+            )
+        )
+        moduleList.add(
             ConfigModule(
                 CommonModule(
                     name = "测斜仪",
@@ -109,7 +114,9 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment
                 )
-            ),
+            )
+        )
+        moduleList.add(
             ConfigModule(
                 CommonModule(
                     name = "执行机构",
@@ -117,7 +124,9 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeExecutiveAgencyFragment
                 )
-            ),
+            )
+        )
+        moduleList.add(
             ConfigModule(
                 CommonModule(
                     name = "步进电机",
@@ -125,7 +134,9 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeStepperMotorFragment
                 )
-            ),
+            )
+        )
+        moduleList.add(
             ConfigModule(
                 CommonModule(
                     name = "堵转缓停",
@@ -133,7 +144,21 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeLockedRotorDetectionFragment
                 )
-            ),
+            )
+        )
+        if (communicateWay is BleConnect) {
+            moduleList.add(
+                ConfigModule(
+                    CommonModule(
+                        name = "导槽校准",
+                        desc = "正反测起点校准",
+                        resID = R.drawable.ic_basic_config,
+                        navId = R.id.action_admeAdvancedConfigurationFragment_to_admeGuideGrooveCalibrationFragment
+                    )
+                )
+            )
+        }
+        moduleList.add(
             ConfigModule(
                 CommonModule(
                     name = "智能控制",
@@ -141,7 +166,9 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeIntelligentControlFragment
                 )
-            ),
+            )
+        )
+        moduleList.add(
             ConfigModule(
                 CommonModule(
                     name = "阈值设置",
@@ -149,8 +176,14 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                     resID = R.drawable.ic_basic_config,
                     navId = R.id.action_admeAdvancedConfigurationFragment_to_admeThresholdFragment
                 )
-            ),
+            )
         )
+        binding.rvModule.models = moduleList
+    }
+
+    override fun setResultData(cmdStr: String) {
+
+    }
 
     override fun onResume() {
         super.onResume()

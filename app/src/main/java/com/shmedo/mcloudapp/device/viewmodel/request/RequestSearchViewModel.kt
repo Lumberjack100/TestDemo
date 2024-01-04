@@ -7,8 +7,8 @@ import com.shmedo.lib.core.ext.launch
 import com.shmedo.lib.core.util.MmkvCacheUtil
 
 /**
- * 作者　: hegaojian
- * 时间　: 2020/2/29
+ * 作者　:
+ * 时间　:
  * 描述　:
  */
 class RequestSearchViewModel : BaseViewModel() {

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeGuideGrooveCalibrationViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeMotorMotionAngleBottomDialog.ClickProxy" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:drawable_radiusLT="@{10}"
+        app:drawable_radiusRT="@{10}"
+        app:drawable_solidColor="@{@color/white}"
+        tools:background="@color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="34dp"
+            android:paddingStart="15dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_close"
+                onClickWithDebouncing="@{()->click.onCloseClick()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="6dp"
+                android:src="@drawable/ic_dispatch_cmd_dialog_close" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="数据运行"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_18"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingTop="24dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="24dp"
+                app:drawable_radius="@{3}"
+                app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
+                tools:background="@color/main_bg_gray_f9f9f9">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_data_left_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_motor_motion_pulse"
+                    android:drawablePadding="8dp"
+                    android:text="脉冲数(次)"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="15sp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_motion_pulse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@{stateVM.motionPulse}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    tools:text="2359482" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="10dp"
+                android:paddingTop="24dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="24dp"
+                app:drawable_radius="@{3}"
+                app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
+                tools:background="@color/main_bg_gray_f9f9f9">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_motor_motion_distance"
+                    android:drawablePadding="8dp"
+                    android:text="运动角度(°)"
+                    android:textColor="@color/text_color_666666"
+                    android:textSize="15sp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_motion_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="@{stateVM.motionAngle}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    tools:text="162345" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="34dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_stop"
+                onClickWithDebouncing="@{()->click.onStopClick()}"
+                visible="@{!stateVM.isExitButtonVisible }"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_stop_motor_motion"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="停止"
+                android:textColor="@color/title_text_color"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_pause"
+                onClickWithDebouncing="@{()->click.onPauseClick()}"
+                visible="@{!stateVM.isExitButtonVisible }"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="15dp"
+                android:layout_weight="1"
+                android:background='@{stateVM.pauseButtonText=="暂停"? @drawable/bg_btn_pause_motor_motion:@drawable/bg_btn_continue_motor_motion}'
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="@{stateVM.pauseButtonText}"
+                android:textColor="@color/title_text_color"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_exit"
+                onClickWithDebouncing="@{()->click.onExitClick()}"
+                visible="@{stateVM.isExitButtonVisible }"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_exit_motor_motion"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="退出"
+                android:textColor="@color/title_text_color"
+                android:textSize="17sp"
+                android:visibility="gone" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

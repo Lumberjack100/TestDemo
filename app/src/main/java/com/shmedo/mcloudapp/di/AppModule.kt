@@ -8,12 +8,14 @@ import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBasicConfigInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBrakePadControlInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeCurrentStateInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeExecutiveAgencyInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeGuideGrooveCalibrationInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeInclinometerInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeLockedRotorDetectionInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeLowEnergyModeInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMeasuringHoleDepthInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMeterWheelInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotionStateParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotorMotionAngleInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotorMotionDistanceInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotorPowerInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeStepperMotorInfoParser
@@ -74,6 +76,8 @@ val appModule = module {
     factory { AdmeBasicConfigInfoParser() }
     factory { AdmeMeasuringHoleDepthInfoParser() }
     factory { AdmeMotorMotionDistanceInfoParser() }
+    factory { AdmeGuideGrooveCalibrationInfoParser() }
+    factory { AdmeMotorMotionAngleInfoParser() }
 
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -123,6 +127,8 @@ val appModule = module {
             get<AdmeBasicConfigInfoParser>(),
             get<AdmeMeasuringHoleDepthInfoParser>(),
             get<AdmeMotorMotionDistanceInfoParser>(),
+            get<AdmeGuideGrooveCalibrationInfoParser>(),
+            get<AdmeMotorMotionAngleInfoParser>(),
 
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),
