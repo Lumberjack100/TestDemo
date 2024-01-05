@@ -54,14 +54,8 @@
                     android:paddingBottom="@dimen/dimen_size_25">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="16dp"
-                        android:text="串口参数"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_17"
-                        android:textStyle="bold" />
+                        style="@style/Common_GroupName_Style"
+                        android:text="串口参数" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
@@ -156,9 +150,9 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onDataBitChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                        onClickWithDebouncing="@{()->click.onDataBitChooseClick()}">
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -175,9 +169,9 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                        onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}">
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -194,9 +188,9 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                        onClickWithDebouncing="@{()->click.onStopBitChooseClick()}">
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -212,14 +206,8 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="16dp"
-                        android:text="设备参数"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_17"
-                        android:textStyle="bold" />
+                        style="@style/Common_GroupName_Style"
+                        android:text="设备参数" />
 
                     <include
                         android:id="@+id/ll_port3_solar_param"
@@ -232,6 +220,7 @@
                         android:id="@+id/ll_port3_audible_param"
                         layout="@layout/include_mr702_port3_audible_alarm_param"
                         visible="@{stateVM.sensorType==2 }"
+                        app:click="@{click}"
                         app:stateVM="@{stateVM}"
                         tools:visibility="gone" />
 

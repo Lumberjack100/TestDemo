@@ -161,14 +161,8 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="16dp"
-                        android:text="钢丝绳阈值参数配置"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16"
-                        android:textStyle="bold" />
+                        style="@style/Common_GroupName_Style"
+                        android:text="钢丝绳阈值参数配置" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"

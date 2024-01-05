@@ -11,6 +11,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port1CollectionParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -22,7 +23,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
@@ -114,7 +114,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun showAddSensorPopup() {
-        val sensorList = mInterfaceHomeViewModel.portSensorsMap["485port1"] ?: listOf()
+        val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port1"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
         selectionPopupView.setData("请选择传感器类型", sensorList)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
@@ -366,10 +366,10 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         isPlugin = sensorStatus.sta == "0",
                         addr = strs[1],
                         addrDesc = "地址-${strs[1]}",
-                        sensorName = mInterfaceHomeViewModel.sensorTypeMap[strs[0]]?.sensorName
+                        sensorName = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.sensorName
                             ?: "自定义传感器",
                         modelToken = strs[0],
-                        modelFieldList = mInterfaceHomeViewModel.sensorTypeMap[strs[0]]?.modelFieldList?.map { it.fieldName }
+                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.modelFieldList?.map { it.fieldName }
                             ?: listOf()
                     )
                 }

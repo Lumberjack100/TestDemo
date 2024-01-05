@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
@@ -14,6 +15,7 @@ import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -24,6 +26,7 @@ import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.TcpConnect
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702HomeFragment
+import kotlinx.coroutines.launch
 
 class DeviceHomeActivity : BaseActivity() {
     private val binding: ActivityDeviceHomeBinding by lazy { getBinding() as ActivityDeviceHomeBinding }
@@ -48,6 +51,7 @@ class DeviceHomeActivity : BaseActivity() {
             bleDevice = bundle.getParcelable(AppContants.Extras.BLE_DEVICE)
             addLogSession()
         }
+        addHistoryList()
         binding.deviceHomeHostFragment.post {
             setGraph()
         }
@@ -67,8 +71,18 @@ class DeviceHomeActivity : BaseActivity() {
         }
     }
 
-    override fun createObserver() {
-
+    private fun addHistoryList() {
+        lifecycleScope.launch {
+            deviceInfo?.let {
+                val historyList = arrayListOf<String>()
+                historyList.addAll(MmkvCacheUtil.getSearchHistoryData())
+                if (historyList.contains(it.deviceToken)) {
+                    historyList.remove(it.deviceToken)
+                }
+                historyList.add(0, it.deviceToken)
+                MmkvCacheUtil.setSearchHistoryData(MoshiUtil.toJson(historyList.toList()))
+            }
+        }
     }
 
     private fun setGraph() {

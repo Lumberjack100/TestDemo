@@ -52,16 +52,9 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dimen_size_25">
-
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="16dp"
-                        android:text="通道参数"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_17"
-                        android:textStyle="bold" />
+                        style="@style/Common_GroupName_Style"
+                        android:text="通道参数" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
@@ -137,14 +130,8 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="16dp"
-                        android:text="通道采集数据处理"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_17"
-                        android:textStyle="bold" />
+                        style="@style/Common_GroupName_Style"
+                        android:text="通道采集数据处理" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"

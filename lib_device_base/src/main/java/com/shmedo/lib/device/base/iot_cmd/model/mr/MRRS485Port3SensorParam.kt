@@ -25,6 +25,10 @@ data class MRRS485Port3SensorParam(
 
     //声光报警器
     var volume: String = "",//音量   数字  百分比
+    var alarmtype: String = "", //报警项   0  降雨量  1 水位
+    var level1: String = "",//一级报警值 mm 数字
+    var level2: String = "",//二级报警值 mm 数字
+    var level3: String = "",//三级报警值 mm 数字
 
     //LED屏
     var type: String = "",//显示配置   1 类型1  2 类型2

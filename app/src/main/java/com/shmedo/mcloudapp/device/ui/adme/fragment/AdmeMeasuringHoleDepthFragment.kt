@@ -33,7 +33,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
@@ -423,7 +423,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             delay(timeMillis)
 
             commandItems.clear()
-            //获取设备的步进电机正反测使能信息
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE
             )

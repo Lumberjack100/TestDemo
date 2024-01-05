@@ -12,6 +12,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeEquipModelEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeBaseInfo
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMotionState
@@ -21,6 +22,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
@@ -35,11 +37,13 @@ import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DeviceOperationModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -210,16 +214,26 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        if (module.configModule.navId != 0) {
-            val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                communicateWay,
-                deviceInfo,
-                bleDevice
-            )
-            nav().navigate(
-                module.configModule.navId,
-                bundle
-            )
+        when (module.configModule) {
+            is RebootModule -> {
+                showMessage("确定重启设备吗？", "温馨提示", "确定", {
+                    reboot()
+                }, "取消")
+            }
+
+            else -> {
+                if (module.configModule.navId != 0) {
+                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                    nav().navigate(
+                        module.configModule.navId,
+                        bundle
+                    )
+                }
+            }
         }
     }
 
@@ -249,13 +263,50 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    private fun setEquipModel() {
-        commandItems.clear()
+    /**
+     * 获取电机的运行状态
+     */
+    private fun getMotorMotionData(timeMillis: Long = 0L) {
+        launchWithViewLifecycle {
+            delay(timeMillis)
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_SET_EQUIPMENT_MODEL)
+            commandItems.clear()
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_GET_MOTION_STATE
+            )
+            commandItems.add(command)
+            sendCommandFromCmdList(isStartTimeoutJob = true)
+        }
+    }
+
+    private fun setEquipModel() {
+        val entity = AdmeEquipModelEntity(
+            when (mHeadStates.mode.get()) {
+                modeList[0] -> "0"
+                modeList[1] -> "1"
+                else -> "2"
+            }
+        )
+        commandItems.clear()
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_SET_EQUIPMENT_MODEL,
+            entity.toCommandString()
+        )
         commandItems.add(command)
 
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 重启设备
+     */
+    private fun reboot() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -280,7 +331,10 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList {
+                            //获取设备的运行状态
+                            getMotorMotionData()
+                        }
                         val baseInfo: AdmeBaseInfo = result.data
                         mHeadStates.mode.set(
                             when (baseInfo.equimodel) {
@@ -290,7 +344,6 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                             }
                         )
                         mMessenger.admeDeviceMode.set(baseInfo.equimodel)
-                        mHeadStates.deviceName.set(baseInfo.productid)
                         updateConfigModuleData()
                     }
                 }
@@ -311,9 +364,11 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        val admeMotionState: AdmeMotionState = result.data
-                        updateMotionState(admeMotionState)
+                        sendCommandFromCmdList {
+                            //获取设备的运行状态
+                            getMotorMotionData(20000)
+                        }
+                        updateMotionState(result.data)
                     }
                 }
             }
@@ -330,6 +385,24 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.REBOOT -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
+                        }
                     }
                 }
             }
@@ -361,14 +434,14 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
      */
     private fun updateMotionState(admeMotionState: AdmeMotionState) {
         when (admeMotionState.motionstate) {
-            "0" -> mHeadStates.runningStateText.set("运行状态：管口停止")
-            "1" -> mHeadStates.runningStateText.set("运行状态：管底停止")
-            "2" -> mHeadStates.runningStateText.set("运行状态：管口测量")
-            "3" -> mHeadStates.runningStateText.set("运行状态：管口测试")
-            "4" -> mHeadStates.runningStateText.set("运行状态：上拉测量")
-            "5" -> mHeadStates.runningStateText.set("运行状态：上拉测试")
-            "6" -> mHeadStates.runningStateText.set("运行状态：下放测量")
-            "7" -> mHeadStates.runningStateText.set("运行状态：下放测试")
+            "0" -> mHeadStates.runningStateText.set("管口停止")
+            "1" -> mHeadStates.runningStateText.set("管底停止")
+            "2" -> mHeadStates.runningStateText.set("管口测量")
+            "3" -> mHeadStates.runningStateText.set("管口测试")
+            "4" -> mHeadStates.runningStateText.set("上拉测量")
+            "5" -> mHeadStates.runningStateText.set("上拉测试")
+            "6" -> mHeadStates.runningStateText.set("下放测量")
+            "7" -> mHeadStates.runningStateText.set("下放测试")
             else -> {}
         }
     }
@@ -414,7 +487,10 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                     )
                 )
                 moduleList.add(
-                    ConfigModule(AdvancedSettingsModule(navId = 0))
+                    ConfigModule(RebootModule())
+                )
+                moduleList.add(
+                    ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment))
                 )
             }
 
@@ -431,7 +507,10 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                     )
                 )
                 moduleList.add(
-                    ConfigModule(AdvancedSettingsModule(navId = 0))
+                    ConfigModule(RebootModule())
+                )
+                moduleList.add(
+                    ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment))
                 )
             }
         }

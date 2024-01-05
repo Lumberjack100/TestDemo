@@ -14,6 +14,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port2CollectionParamEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRSerialPortParamEntity
@@ -27,7 +28,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
@@ -73,7 +73,10 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        mStates.collectorType.set(collectorTypeList[0])
         mStates.dataBit.set(dataBitList[3])
+        mStates.checkBit.set(checkBitList[0])
+        mStates.stopBit.set(stopBitList[0])
     }
 
     private fun initRefresh() {
@@ -130,7 +133,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun showAddSensorPopup() {
-        val sensorList = mInterfaceHomeViewModel.portSensorsMap["485port2"] ?: listOf()
+        val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port2"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
         selectionPopupView.setData("请选择传感器类型", sensorList)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
@@ -520,12 +523,12 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         isPlugin = sensorStatus.sta == "0",
                         chl = sensorStatus.chl,
                         addrDesc = "通道-${sensorStatus.chl}",
-                        sensorName = mInterfaceHomeViewModel.sensorTypeMap[sensorStatus.sensortype]?.sensorName
+                        sensorName = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.sensorName
                             ?: "未知类型",
                         sensorType = sensorStatus.sensortype,
-                        modelToken = mInterfaceHomeViewModel.sensorTypeMap[sensorStatus.sensortype]?.modelToken
+                        modelToken = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelToken
                             ?: "",
-                        modelFieldList = mInterfaceHomeViewModel.sensorTypeMap[sensorStatus.sensortype]?.modelFieldList?.map { it.fieldName }
+                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelFieldList?.map { it.fieldName }
                             ?: listOf()
                     )
                 }

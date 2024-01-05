@@ -49,14 +49,8 @@
                 android:paddingBottom="@dimen/dimen_size_25">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:text="无线配置"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold" />
+                    style="@style/Common_GroupName_Style"
+                    android:text="无线配置" />
 
                 <RelativeLayout
                     style="@style/SwitchButton_LayoutStyle"
@@ -137,14 +131,8 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:text="以太网配置"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold" />
+                    style="@style/Common_GroupName_Style"
+                    android:text="以太网配置" />
 
                 <RelativeLayout
                     style="@style/SwitchButton_LayoutStyle"
@@ -171,8 +159,8 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
-                    android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
-                    onClickWithDebouncing="@{()->click.onIPModeChooseClick()}">
+                    onClickWithDebouncing="@{()->click.onIPModeChooseClick()}"
+                    android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"

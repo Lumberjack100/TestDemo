@@ -23,10 +23,10 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.addIOTDeviceLogItem
 import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
@@ -83,12 +83,12 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     @CallSuper
     override fun createObserver() {
-        launchWithViewLifecycle {
+        launchWithViewLifecycle(block = {
             if (communicateWay is NetPlatformConnect)
                 collectNetData()
             else
                 collectBleData()
-        }
+        })
     }
 
     private suspend fun collectNetData() {

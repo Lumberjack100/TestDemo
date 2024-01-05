@@ -305,6 +305,14 @@
         <item>正转</item>
         <item>反转</item>
     </string-array>
+
+    <!-- ADME 设备测量工作模式-->
+    <string-array name="adme_measure_work_mode">
+        <item>常规测量模式</item>
+        <item>特定点位模式</item>
+        <item>静态测量模式</item>
+        <item>设备停用模式</item>
+    </string-array>
     <!-- ADME end-->
 
 </resources>

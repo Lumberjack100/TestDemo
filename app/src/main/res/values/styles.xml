@@ -52,20 +52,19 @@
         <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
     </style>
 
-    <style name="UserInfo_LinearLayoutStyle">
+    <!--通用分组标题样式-->
+    <style name="Common_GroupName_Style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:paddingLeft">16dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:background">@color/white</item>
-        <item name="android:paddingLeft">@dimen/dimen_size_20</item>
-        <item name="android:paddingRight">@dimen/dimen_size_20</item>
-        <item name="android:paddingTop">@dimen/dimen_size_15</item>
-        <item name="android:paddingBottom">@dimen/dimen_size_15</item>
+        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textSize">@dimen/text_size_16</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:singleLine">true</item>
     </style>
 
+    <!-- 通用编辑项单条目样式 -->
     <style name="Common_EditItem_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
@@ -74,7 +73,7 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
     </style>
-
+    <!-- 通用编辑项单条目中 EditText 样式 -->
     <style name="Common_EditItem_EditText_Style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -89,7 +88,7 @@
         <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">15sp</item>
     </style>
-
+    <!-- 通用选择项条目样式 -->
     <style name="Common_ClickableItem_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
@@ -99,14 +98,14 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
     </style>
-
+    <!-- 通用选择项单条目中 Title TextView 样式 -->
     <style name="Common_ClickableItem_TitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">15sp</item>
     </style>
-
+    <!-- 通用选择项单条目中 Value TextView 样式 -->
     <style name="Common_ClickableItem_ValueStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -121,7 +120,7 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <!-- Button 样式-->
+    <!-- 通用提交 Button 样式-->
     <style name="SubmitButton_ColorPrimary" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">46dp</item>
@@ -137,7 +136,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <!-- SwitchButton 样式-->
+    <!--通用开关项单条目样式 SwitchButton 样式-->
     <style name="SwitchButton_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
@@ -145,7 +144,7 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
     </style>
-
+    <!--通用开关项单条目中 Title TextView 样式-->
     <style name="SwitchButton_TitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -154,7 +153,7 @@
         <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">@dimen/dimen_size_16</item>
     </style>
-
+    <!--通用开关项单条目中 SwitchButton 样式-->
     <style name="SwitchButton_ButtonStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -165,20 +164,8 @@
         <item name="kswThumbRangeRatio">2.3</item>
     </style>
 
-    <style name="Product_Tag_Checked_TitleStyle">
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:textSize">17sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Product_Tag_UnChecked_TitleStyle">
-        <item name="android:textColor">@color/text_color_666666</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <!--设备当前运行状态分组标题样式-->
-    <style name="DeviceCurrentState_Group_TitleStyle">
+    <!--设备运行状态分组标题样式-->
+    <style name="DeviceCurrentState_GroupName_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/main_bg_gray</item>
@@ -190,7 +177,7 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <!--设备当前运行状态单条基本信息样式-->
+    <!--设备运行状态单条基本信息样式-->
     <style name="DeviceCurrentState_SingleItem_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40dp</item>
@@ -201,7 +188,7 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
-    <!--设备当前运行状态单条项目标题样式-->
+    <!--设备运行状态单条项目标题样式-->
     <style name="DeviceCurrentState_SingleItem_NameStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -209,7 +196,7 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <!--设备当前运行状态单条项目值样式-->
+    <!--设备运行状态单条项目值样式-->
     <style name="DeviceCurrentState_SingleItem_ValueStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -221,7 +208,7 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <!--MR702 终端参数单条项目值样式-->
+    <!--MR702 终端参数页面单条项目值样式-->
     <style name="MR702_Terminal_Param_LinearLayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40dp</item>
@@ -229,7 +216,7 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
     </style>
-
+    <!--MR702 终端参数页面单条项目中 EditText 样式-->
     <style name="MR702_Terminal_Param_EditText_Style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>

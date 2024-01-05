@@ -16,6 +16,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
@@ -27,7 +28,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessageDialog
@@ -105,6 +105,10 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
         mStates.dataBit.set(dataBitList[3])
+        mStates.checkBit.set(checkBitList[0])
+        mStates.stopBit.set(stopBitList[0])
+        mStates.dataFormat.set(dataFormatList[0])
+        mStates.solutionMethod.set(solutionMethodList[0])
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -373,12 +377,12 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
 
     private fun processBack(isPressBackBtn: Boolean = false) {
         launchAndRepeatWithViewLifecycle {
-            updateSensorModeConfig()
             if (isPressBackBtn) {
                 mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
                 nav().navigateUp()
                 return@launchAndRepeatWithViewLifecycle
             }
+            updateSensorModeConfig()
             delay(500)
             //需要给上一级浏览页面传递最新的事件信息
             mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
@@ -395,24 +399,21 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 return
 
             mStates.curSensorModel.modelFieldList = mStates.curModelFieldList
-            mInterfaceHomeViewModel.portSensorsMap["485port1"]?.add(mStates.curSensorModel)
-            mInterfaceHomeViewModel.sensorTypeMap[mStates.curSensorModel.sensorType] =
+            mInterfaceHomeViewModel.portSensorModelListMap["485port1"]?.add(mStates.curSensorModel)
+            mInterfaceHomeViewModel.sensorModelMap[mStates.curSensorModel.sensorType] =
                 mStates.curSensorModel
 
             val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
             val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
             MoshiUtil.fromJson<AppConfigContent>(jsonStr)
                 ?.let { appConfigContent: AppConfigContent ->
-                    appConfigContent.mr702.forEach { mPort ->
-                        if (mPort.portName == "485port1") {
-                            mPort.sensors = mInterfaceHomeViewModel.portSensorsMap["485port1"]!!
-                        }
-                    }
+                    appConfigContent.mr702.first { it.portName == "485port1" }.sensors =
+                        mInterfaceHomeViewModel.portSensorModelListMap["485port1"]!!
                     //将 " 转换为 \"
                     localAppConfigInfo.configPara =
                         MoshiUtil.toJson(appConfigContent).replace("\"", "\\\"")
-//                    Timber.d("configPara = ${localAppConfigInfo.configPara}")
                     localAppConfigInfo.lastTime = TimeUtils.getNowString()
+                    //Timber.d("configPara = ${localAppConfigInfo.configPara}")
                     MmkvCacheUtil.setAppConfigInfo(localAppConfigInfo)
                 }
         } catch (e: Exception) {

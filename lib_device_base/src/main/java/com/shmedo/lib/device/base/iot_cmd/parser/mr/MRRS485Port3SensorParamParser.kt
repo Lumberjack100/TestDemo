@@ -28,6 +28,10 @@ class MRRS485Port3SensorParamParser: IOTCommandParser<MRRS485Port3SensorParam> {
                 spower = keyValueMap.getOrDefault("spower", spower)
                 lpower = keyValueMap.getOrDefault("lpower", lpower)
                 volume = keyValueMap.getOrDefault("volume", volume)
+                alarmtype = keyValueMap.getOrDefault("alarmtype", alarmtype)
+                level1 = keyValueMap.getOrDefault("level1", level1)
+                level2 = keyValueMap.getOrDefault("level2", level2)
+                level3 = keyValueMap.getOrDefault("level3", level3)
                 type = keyValueMap.getOrDefault("type", type)
                 stime = keyValueMap.getOrDefault("stime", stime)
             }

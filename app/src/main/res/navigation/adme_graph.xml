@@ -177,6 +177,12 @@
         android:label="AdmeMeasuringHoleDepthFragment"
         tools:layout="@layout/fragment_adme_measuring_hole_depth" />
 
+    <fragment
+        android:id="@+id/admeAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeAdvancedSettingFragment"
+        android:label="AdmeAdvancedSettingFragment"
+        tools:layout="@layout/fragment_adme_advanced_setting" />
+
     <action
         android:id="@+id/action_global_to_admeMeasuringHoleDepthFragment"
         app:destination="@id/admeMeasuringHoleDepthFragment"
@@ -188,6 +194,14 @@
     <action
         android:id="@+id/action_global_to_admeAdvancedConfigurationFragment"
         app:destination="@id/admeAdvancedConfigurationFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_admeAdvancedSettingFragment"
+        app:destination="@id/admeAdvancedSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

@@ -7,7 +7,6 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentAdmeAutoMeasuringHoleDepthBottomDialogBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
@@ -39,18 +38,6 @@ class AdmeAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
         mStates.isExitButtonVisible.set(false)
         mStates.motionPulse.set("0")
         mStates.motionDistance.set("0")
-    }
-
-//    override fun onResume() {
-//        super.onResume()
-//        startQueryMotorMotionData()
-//    }
-
-    private fun startQueryMotorMotionData() {
-        queryJob = launchWithViewLifecycle {
-
-
-        }
     }
 
     inner class ClickProxy {

@@ -27,14 +27,8 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:text="DI-开关状态"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold" />
+                    style="@style/Common_GroupName_Style"
+                    android:text="DI-开关状态" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv"

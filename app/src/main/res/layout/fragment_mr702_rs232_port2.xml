@@ -43,14 +43,8 @@
                     app:vm="@{homeVM}" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:text="北斗数据终端配置"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold" />
+                    style="@style/Common_GroupName_Style"
+                    android:text="北斗数据终端配置" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
@@ -90,14 +84,8 @@
                 </RelativeLayout>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:text="串口参数"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold" />
+                    style="@style/Common_GroupName_Style"
+                    android:text="串口参数" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
@@ -139,9 +127,9 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
+                    onClickWithDebouncing="@{()->click.onDataBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
-                    onClickWithDebouncing="@{()->click.onDataBitChooseClick()}">
+                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -158,9 +146,9 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
+                    onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
-                    onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}">
+                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
@@ -177,9 +165,9 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
+                    onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
-                    onClickWithDebouncing="@{()->click.onStopBitChooseClick()}">
+                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"

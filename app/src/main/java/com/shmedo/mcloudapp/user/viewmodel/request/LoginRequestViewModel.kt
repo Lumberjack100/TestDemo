@@ -385,8 +385,8 @@ class LoginRequestViewModel : BaseViewModel() {
     fun loadExternalConfig() {
         viewModelScope.launch {
             try {
-                val originalConfigJson = ResourceUtils.readAssets2String("app_config.json")
                 if (MmkvCacheUtil.getAppConfigInfo() == null) {
+                    val originalConfigJson = ResourceUtils.readAssets2String("app_config.json")
                     MmkvCacheUtil.setAppConfigInfo(originalConfigJson)
                 }
                 val amsToken: String = appConfigLogin() ?: return@launch
@@ -395,21 +395,24 @@ class LoginRequestViewModel : BaseViewModel() {
                 val remoteAppConfigInfo: AppConfigInfo = queryConfigInfoItem() ?: return@launch
                 val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
 
-                val date1 = TimeUtils.string2Date(remoteAppConfigInfo.lastTime)
-                val date2 = TimeUtils.string2Date(localAppConfigInfo.lastTime)
-                if (date1.after(date2)) {
-                    //更新本地配置
-                    MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
-                } else {
+                val remoteDate = TimeUtils.string2Date(remoteAppConfigInfo.lastTime)
+                val localDate = TimeUtils.string2Date(localAppConfigInfo.lastTime)
+                if (remoteAppConfigInfo.configPara.isEmpty() || remoteAppConfigInfo.configPara == "{}"
+                    || remoteDate.before(localDate)
+                ) {
                     //更新远程配置
                     updateConfigInfoItem(
                         remoteAppConfigInfo.id,
                         localAppConfigInfo.configPara.replace("\\", "")
                     )
+                    return@launch
                 }
+                //更新本地配置
+                MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
             } catch (e: Exception) {
                 e.printStackTrace()
-                val msg = "call loadExternalConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
+                val msg =
+                    "call loadExternalConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
                 addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
             }
         }
@@ -431,6 +434,10 @@ class LoginRequestViewModel : BaseViewModel() {
 
     private suspend fun queryConfigInfoItem(): AppConfigInfo? =
         NetDataRepository.instance.queryConfigInfoItem { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "http://ams4.shmedo.com:22000/api/v1/QueryConfigInfoItem error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addSystemLogItem(priority = Log.ERROR, data = msg, viewModelScope)
         }
 
     private suspend fun updateConfigInfoItem(id: Int, configPara: String): String? {

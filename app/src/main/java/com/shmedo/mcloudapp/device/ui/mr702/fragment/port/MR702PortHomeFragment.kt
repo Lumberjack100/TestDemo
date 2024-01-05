@@ -19,12 +19,12 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
@@ -208,9 +208,9 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 val appConfigContent: AppConfigContent =
                     MoshiUtil.fromJson(jsonStr) ?: return@launchAndRepeatWithViewLifecycle
                 appConfigContent.mr702.forEach { mPort ->
-                    mStates.portSensorsMap[mPort.portName] = mPort.sensors.toMutableList()
+                    mStates.portSensorModelListMap[mPort.portName] = mPort.sensors.toMutableList()
                     mPort.sensors.forEach { model ->
-                        mStates.sensorTypeMap[model.sensorType] = model
+                        mStates.sensorModelMap[model.sensorType] = model
                     }
                 }
                 mStates.appConfigContent = appConfigContent

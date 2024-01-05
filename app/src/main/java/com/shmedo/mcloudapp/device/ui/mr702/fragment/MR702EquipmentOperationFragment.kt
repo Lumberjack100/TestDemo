@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -19,7 +20,6 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -88,9 +88,9 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         monitoringElementList.apply {
-            add(MonitoringElement(32, "当前降雨量", "mm"))
-            add(MonitoringElement(31, "日降雨量", "mm"))
-            add(MonitoringElement(59, "库）闸、站）上水位", "mm"))
+            add(MonitoringElement(32, "当前降水量", "mm"))
+            add(MonitoringElement(31, "日降水量", "mm"))
+            add(MonitoringElement(59, "库(闸、站)上水位", "mm"))
             add(MonitoringElement(250, "渗流", "mm"))
             add(MonitoringElement(251, "渗压", "KPa"))
         }
