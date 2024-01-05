@@ -100,11 +100,12 @@ class AdmeAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
 
         fun onFirmWareSelectClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().navigate(R.id.action_global_to_firmwareUpgradeFragment, bundle)
         }
 
         fun onResetClick() {

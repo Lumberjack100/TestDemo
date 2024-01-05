@@ -21,6 +21,7 @@ import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.common.model.CheckSoftModel
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
 import com.shmedo.mcloudapp.device.model.DispatchCmdItem
+import com.shmedo.mcloudapp.device.model.FirmWareInfo
 import com.shmedo.mcloudapp.device.model.QueryCmdResult
 import rxhttp.toAwait
 import rxhttp.tryAwait
@@ -295,6 +296,34 @@ class NetDataRepository private constructor() {
     ): String? =
         RxHttp.postJson("/ApplyBackup")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+    /**
+     * 根据产品ID查询固件列表
+     */
+    suspend fun queryFirmwareListByProductIDWithPage(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<FirmWareInfo>? =
+        RxHttp.postJson("/GetFirmwareListByProductID")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<PageList<FirmWareInfo>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 对单个设备进行固件升级
+     */
+    suspend fun applyFirmwareUpgrade(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/FirmwareUpgrade")
+            .setDomainIfAbsent(BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
             .toAwaitResponse<String>()

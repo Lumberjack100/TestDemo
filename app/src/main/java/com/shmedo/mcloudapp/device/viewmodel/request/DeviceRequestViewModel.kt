@@ -16,6 +16,7 @@ import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
+import com.shmedo.mcloudapp.device.model.FirmWareInfo
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -50,6 +51,10 @@ class DeviceRequestViewModel : BaseViewModel() {
     val cloudDeviceDataListResult: Result<DataResult<List<CloudDeviceData>>> =
         _cloudDeviceDataListResult
 
+    private val _firmWareListResult = MutableResult<DataResult<List<FirmWareInfo>>>()
+    val firmWareListResult: Result<DataResult<List<FirmWareInfo>>> =
+        _firmWareListResult
+
     /**
      * 查询公司设备在线统计信息
      */
@@ -66,6 +71,8 @@ class DeviceRequestViewModel : BaseViewModel() {
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
+                    error.printStackTrace()
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -96,6 +103,8 @@ class DeviceRequestViewModel : BaseViewModel() {
             }
             val data: PageList<ProductInfo> =
                 NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString()) { error: Throwable ->
+                    error.printStackTrace()
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -168,6 +177,8 @@ class DeviceRequestViewModel : BaseViewModel() {
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
+                    error.printStackTrace()
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -284,6 +295,8 @@ class DeviceRequestViewModel : BaseViewModel() {
                 NetDataRepository.instance.queryCloudDataExWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
+                    error.printStackTrace()
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -304,5 +317,78 @@ class DeviceRequestViewModel : BaseViewModel() {
                 )
             )
         }
+    }
+
+    /**
+     * 根据产品ID查询固件列表
+     */
+    fun queryFirmwareListByProductIDWithPage(
+        productID: Int,//
+        companyID: Int,//
+        fwStatus: String = "",//固件环境代码
+        fwName: String = "",//固件名称，支持模糊查询
+        fwVersion: String = "",//固件版本号,支持模糊查询
+        nameAndVersion: Boolean = false,//固件名和版本号之间关系
+        currentPage: Int = 1,
+        pageSize: Int = 20,
+    ) {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject()
+            try {
+                jsonObjectRequest.put("productID", productID)
+                jsonObjectRequest.put("companyID", companyID)
+                jsonObjectRequest.put("fwStatus", fwStatus)
+                jsonObjectRequest.put("fwName", fwName)
+                jsonObjectRequest.put("fwVersion", fwVersion)
+                jsonObjectRequest.put("nameAndVersion", nameAndVersion)
+                jsonObjectRequest.put("currentPage", currentPage)
+                jsonObjectRequest.put("pageSize", pageSize)
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+            val data: PageList<FirmWareInfo> =
+                NetDataRepository.instance.queryFirmwareListByProductIDWithPage(
+                    jsonObjectRequest.toString()
+                ) { error: Throwable ->
+                    error.printStackTrace()
+
+                    val responseStatus = ResponseStatus()
+                    responseStatus.isSuccess = false
+                    responseStatus.errorMessage = error.errorMsg
+                    responseStatus.source = ResultSource.NETWORK
+                    _firmWareListResult.setValue(DataResult(responseStatus = responseStatus))
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _firmWareListResult.setValue(
+                DataResult(
+                    data.currentPageData,
+                    responseStatus = responseStatus,
+                    totalCount = data.totalCount,
+                    totalPage = data.totalPage
+                )
+            )
+        }
+    }
+
+    suspend fun applyFirmwareUpgrade(
+        deviceToken: String,
+        firmwareID: Int,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? {
+        val jsonObjectRequest = JSONObject()
+        try {
+            jsonObjectRequest.put("deviceToken", deviceToken)
+            jsonObjectRequest.put("firmwareID", firmwareID)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return NetDataRepository.instance.applyFirmwareUpgrade(
+            jsonObjectRequest.toString(),
+            onCatch
+        )
     }
 }
