@@ -31,9 +31,12 @@ data class MRRS485Port3SensorParamEntity(
     //声光报警器
     var volume: String = IOTConstants.NULL_KEY,//音量   数字  百分比
     var alarmtype: String = IOTConstants.NULL_KEY, //报警项   0  降雨量  1 水位
-    var level1: String = IOTConstants.NULL_KEY,//一级报警值 mm 数字
-    var level2: String = IOTConstants.NULL_KEY,//二级报警值 mm 数字
-    var level3: String = IOTConstants.NULL_KEY,//三级报警值 mm 数字
+    var rlevel1: String = IOTConstants.NULL_KEY,//降雨量一级报警值 mm 数字
+    var rlevel2: String = IOTConstants.NULL_KEY,//降雨量二级报警值 mm 数字
+    var rlevel3: String = IOTConstants.NULL_KEY,//降雨量三级报警值 mm 数字
+    var wlevel1: String = IOTConstants.NULL_KEY,//水位一级报警值 mm 数字
+    var wlevel2: String = IOTConstants.NULL_KEY,//水位二级报警值 mm 数字
+    var wlevel3: String = IOTConstants.NULL_KEY,//水位三级报警值 mm 数字
 
     //LED屏
     var type: String = IOTConstants.NULL_KEY,//显示配置   1 类型1  2 类型2

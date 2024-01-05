@@ -61,7 +61,6 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val ledTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_port3_led_type) }
-    private val alarmTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.alarm_type) }
 
     private val decimalFormat = DecimalFormat("#.#")
 
@@ -114,10 +113,6 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
         mStates.checkBit.set(checkBitList[0])
         mStates.stopBit.set(stopBitList[0])
         mStates.ledType.set(ledTypeList[0])
-        mStates.alarmType.set(alarmTypeList[0])
-//        mStates.triggerLevel1Hint.set("数值范围[0-1000]")
-//        mStates.triggerLevel2Hint.set("数值范围[0-1000]")
-//        mStates.triggerLevel3Hint.set("数值范围[0-1000]")
     }
 
     private fun setEditable(editable: Boolean) {
@@ -220,35 +215,6 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        /**
-         * 选择触发项
-         */
-        fun onTriggerChooseClick() {
-            val selectedIndex = alarmTypeList.indexOf(mStates.alarmType.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "请选择触发项", alarmTypeList,
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.alarmType.set(text)
-//                        if (position == 0) {
-//                            mStates.triggerLevel1Hint.set("数值范围[0-1000]")
-//                            mStates.triggerLevel2Hint.set("数值范围[0-1000]")
-//                            mStates.triggerLevel3Hint.set("数值范围[0-1000]")
-//                        } else {
-//                            mStates.triggerLevel1Hint.set("数值范围[0-100000]")
-//                            mStates.triggerLevel2Hint.set("数值范围[0-100000]")
-//                            mStates.triggerLevel3Hint.set("数值范围[0-100000]")
-//                        }
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
         fun onSubmitClick() {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -326,25 +292,39 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                     showMessageDialog("请输入切换间隔")
                     return
                 }
-                if (mStates.triggerValueLevel1.get().isEmpty()) {
-                    showMessageDialog("请输入一级报警")
+                if (mStates.rainTriggerValueLevel1.get().isEmpty()) {
+                    showMessageDialog("请输入降雨量一级报警")
                     return
                 }
-                if (mStates.triggerValueLevel2.get().isEmpty()) {
-                    showMessageDialog("请输入二级报警")
+                if (mStates.rainTriggerValueLevel2.get().isEmpty()) {
+                    showMessageDialog("请输入降雨量二级报警")
                     return
                 }
-                if (mStates.triggerValueLevel3.get().isEmpty()) {
-                    showMessageDialog("请输入三级报警")
+                if (mStates.rainTriggerValueLevel3.get().isEmpty()) {
+                    showMessageDialog("请输入降雨量三级报警")
+                    return
+                }
+                if (mStates.waterTriggerValueLevel1.get().isEmpty()) {
+                    showMessageDialog("请输入水位一级报警")
+                    return
+                }
+                if (mStates.waterTriggerValueLevel2.get().isEmpty()) {
+                    showMessageDialog("请输入水位二级报警")
+                    return
+                }
+                if (mStates.waterTriggerValueLevel3.get().isEmpty()) {
+                    showMessageDialog("请输入水位三级报警")
                     return
                 }
                 entity.duration = mStates.duration.get()
                 entity.interval = mStates.interval.get()
                 entity.volume = mStates.volume.get().toString()
-                entity.alarmtype = (alarmTypeList.indexOf(mStates.alarmType.get())).toString()
-                entity.level1 = mStates.triggerValueLevel1.get()
-                entity.level2 = mStates.triggerValueLevel2.get()
-                entity.level3 = mStates.triggerValueLevel3.get()
+                entity.rlevel1 = mStates.rainTriggerValueLevel1.get()
+                entity.rlevel2 = mStates.rainTriggerValueLevel2.get()
+                entity.rlevel3 = mStates.rainTriggerValueLevel3.get()
+                entity.wlevel1 = mStates.waterTriggerValueLevel1.get()
+                entity.wlevel2 = mStates.waterTriggerValueLevel2.get()
+                entity.wlevel3 = mStates.waterTriggerValueLevel3.get()
             }
 
             3 -> {
@@ -460,20 +440,12 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                     mStates.duration.set(sensorParam.duration)
                     mStates.interval.set(sensorParam.interval)
                     mStates.volume.set(sensorParam.volume.toInt())
-                    mStates.triggerValueLevel1.set(sensorParam.level1)
-                    mStates.triggerValueLevel2.set(sensorParam.level2)
-                    mStates.triggerValueLevel3.set(sensorParam.level3)
-                    if (sensorParam.alarmtype == "0") {
-                        mStates.alarmType.set(alarmTypeList[0])
-//                        mStates.triggerLevel1Hint.set("数值范围[0-1000]")
-//                        mStates.triggerLevel2Hint.set("数值范围[0-1000]")
-//                        mStates.triggerLevel3Hint.set("数值范围[0-1000]")
-                    } else {
-                        mStates.alarmType.set(alarmTypeList[1])
-//                        mStates.triggerLevel1Hint.set("数值范围[0-100000]")
-//                        mStates.triggerLevel2Hint.set("数值范围[0-100000]")
-//                        mStates.triggerLevel3Hint.set("数值范围[0-100000]")
-                    }
+                    mStates.rainTriggerValueLevel1.set(sensorParam.rlevel1)
+                    mStates.rainTriggerValueLevel2.set(sensorParam.rlevel2)
+                    mStates.rainTriggerValueLevel3.set(sensorParam.rlevel3)
+                    mStates.waterTriggerValueLevel1.set(sensorParam.wlevel1)
+                    mStates.waterTriggerValueLevel2.set(sensorParam.wlevel2)
+                    mStates.waterTriggerValueLevel3.set(sensorParam.wlevel3)
                 }
 
                 else -> {

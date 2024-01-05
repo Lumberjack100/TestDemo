@@ -16,7 +16,10 @@
         android:layout_height="wrap_content"
         android:background="@drawable/layer_common_click_item_with_divider"
         android:foreground="?attr/selectableItemBackground"
-        android:padding="@dimen/dimen_size_8">
+        android:paddingStart="@dimen/dimen_size_15"
+        android:paddingEnd="@dimen/dimen_size_15"
+        android:paddingTop="@dimen/dimen_size_8"
+        android:paddingBottom="@dimen/dimen_size_8">
 
         <TextView
             android:id="@+id/tv_name"
@@ -27,6 +30,7 @@
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_14"
             android:textStyle="bold"
+            android:text="@{m.fwName}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="灾害类型-改变林地用途滥盗滥伐破坏林业设施非法采药" />

@@ -119,9 +119,6 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        if (viewLifecycleOwner.lifecycle.currentState < androidx.lifecycle.Lifecycle.State.RESUMED) {
-            return
-        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO -> {
                 val result = iotParseManager.parse<MRDeviceInfo>(

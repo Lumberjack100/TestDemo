@@ -27,13 +27,12 @@ class MR702RS485Port3SensorParamViewModel : ViewModel() {
     val duration = NonNullObservableField("")//报警器语音播放时长、LED屏显示时长
     val interval = NonNullObservableField("")//报警器切换间隔、LED屏更新间隔
     val volume = NonNullObservableField(20)
-    val alarmType = NonNullObservableField("")//报警类型
-    val triggerLevel1Hint = NonNullObservableField("请输入")//一级报警提示
-    val triggerLevel2Hint = NonNullObservableField("请输入")//二级报警提示
-    val triggerLevel3Hint = NonNullObservableField("请输入")//三级报警提示
-    val triggerValueLevel1 = NonNullObservableField("")//一级报警值
-    val triggerValueLevel2 = NonNullObservableField("")//二级报警值
-    val triggerValueLevel3 = NonNullObservableField("")//三级报警值
+    val rainTriggerValueLevel1 = NonNullObservableField("")//降雨量一级报警值
+    val rainTriggerValueLevel2 = NonNullObservableField("")//降雨量二级报警值
+    val rainTriggerValueLevel3 = NonNullObservableField("")//降雨量三级报警值
+    val waterTriggerValueLevel1 = NonNullObservableField("")//水位一级报警值
+    val waterTriggerValueLevel2 = NonNullObservableField("")//水位二级报警值
+    val waterTriggerValueLevel3 = NonNullObservableField("")//水位三级报警值
 
     //LED屏特有参数
     val ledType = NonNullObservableField("")

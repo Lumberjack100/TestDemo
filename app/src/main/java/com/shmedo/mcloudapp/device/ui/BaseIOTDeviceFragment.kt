@@ -83,12 +83,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     @CallSuper
     override fun createObserver() {
-        launchWithViewLifecycle(block = {
-            if (communicateWay is NetPlatformConnect)
-                collectNetData()
-            else
-                collectBleData()
-        })
+        launchWithViewLifecycle{
+            collectNetData()
+            collectBleData()
+        }
     }
 
     private suspend fun collectNetData() {

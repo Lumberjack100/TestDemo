@@ -102,9 +102,6 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        if (viewLifecycleOwner.lifecycle.currentState < androidx.lifecycle.Lifecycle.State.RESUMED) {
-            return
-        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_STATUS -> {
                 val result = iotParseManager.parse<MRRS485Port3SensorStatus>(

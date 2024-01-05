@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/text_size_15"
-                android:text="秒"
+                android:text="分钟"
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_17" />
 
