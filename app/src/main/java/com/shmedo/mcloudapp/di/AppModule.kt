@@ -26,6 +26,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TimeCalibrationDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasCollectorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDOPortParamParser
@@ -80,6 +81,8 @@ val appModule = module {
     factory { AdmeGuideGrooveCalibrationInfoParser() }
     factory { AdmeMotorMotionAngleInfoParser() }
     factory { AdmeWorkModeInfoParser() }
+    factory { DasCollectorInfoParser() }
+
 
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -132,6 +135,7 @@ val appModule = module {
             get<AdmeGuideGrooveCalibrationInfoParser>(),
             get<AdmeMotorMotionAngleInfoParser>(),
             get<AdmeWorkModeInfoParser>(),
+            get<DasCollectorInfoParser>(),
 
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),

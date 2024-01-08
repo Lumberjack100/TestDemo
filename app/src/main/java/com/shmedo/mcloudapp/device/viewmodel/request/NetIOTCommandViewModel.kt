@@ -60,6 +60,7 @@ class NetIOTCommandViewModel : BaseViewModel() {
                     QueryCmdResultParam(if (otherMsgIDList.isEmpty()) msgIDList else otherMsgIDList)
                 pollForCommandResult(cmdStr = cmdStr, jsonParam = MoshiUtil.toJson(parameter))
             } catch (e: Exception) {
+                e.printStackTrace()
                 // 错误处理
                 _cmdDispatchFlow.emit(
                     CmdResponseResultError(

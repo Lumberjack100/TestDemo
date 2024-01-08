@@ -117,13 +117,6 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun createObserver() {
-        super.createObserver()
-        if (communicateWay is BleConnect) {
-            bleViewModel.launch(bleDevice!!)
-        }
-    }
-
     override fun onConnectionStateChanged(isConnected: Boolean) {
         if (isConnected) {
             mHeadStates.isDeviceStateTagHighLight.set(true)
@@ -176,6 +169,12 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {}
+        }
+    }
+
+    override fun lazyLoadData() {
+        if (communicateWay is BleConnect) {
+            bleViewModel.launch(bleDevice!!)
         }
     }
 

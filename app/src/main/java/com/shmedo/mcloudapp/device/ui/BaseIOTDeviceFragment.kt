@@ -85,6 +85,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     override fun createObserver() {
         launchWithViewLifecycle{
             collectNetData()
+        }
+        launchWithViewLifecycle{
             collectBleData()
         }
     }

@@ -9,8 +9,6 @@ import com.drake.brv.utils.setup
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.WorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -31,7 +29,6 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommonModule
-import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceOperationModule
@@ -419,18 +416,4 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
-
-    companion object {
-        fun newBundleArguments(
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            statusBarColor: Int = R.color.white
-        ): Bundle = BaseIOTDeviceFragment.newBundleArguments(
-            communicateWay,
-            deviceInfo,
-            bleDevice,
-            statusBarColor
-        )
-    }
 }

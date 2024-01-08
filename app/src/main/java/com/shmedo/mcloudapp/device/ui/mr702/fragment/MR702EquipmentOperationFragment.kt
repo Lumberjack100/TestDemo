@@ -7,7 +7,6 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.setup
-import com.google.gson.GsonBuilder
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -464,10 +463,10 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         mStates.isResponseSuccess.set(true)
                         try {
                             //String content = "{\"20001_1\":{\"device_id\":\"13230\",\"time\":\"2022-07-20 17:32:05\",\"level\":\"warn\",\"msg\":\"iot_cmd:$cmd=md_getworkmode \"}}\u0000\u0000\u0000";
-                            val gson = GsonBuilder()
-                                .setPrettyPrinting()
-                                .disableHtmlEscaping()
-                                .create()
+//                            val gson = GsonBuilder()
+//                                .setPrettyPrinting()
+//                                .disableHtmlEscaping()
+//                                .create()
 //                            var content: String = result.data
 //                            content = content.replace("\u0000", "") // removes NUL chars
 //                            content = content.replace("\\u0000", "") // removes backslash+u0000
