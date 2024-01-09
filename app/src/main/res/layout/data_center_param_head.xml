@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.DataCenterParamViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.BaseDataCenterParamViewModel" />
 
         <variable
             name="click"
@@ -88,6 +88,7 @@
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/statusSB"
                 style="@style/SwitchButton_ButtonStyle"
+                checkedImmediatelyNoEvent="@{vm.isCenterOpened}"
                 android:layout_marginTop="@dimen/dimen_size_10"
                 android:enabled="@{vm.isEditable}"
                 android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"

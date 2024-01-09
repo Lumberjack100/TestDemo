@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CollectorConfigModule
+import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -36,7 +37,7 @@ import com.shmedo.mcloudapp.device.model.SensorConfigModule
 import com.shmedo.mcloudapp.device.model.TelemetryDataModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.QueryDeviceDataFragment
+import com.shmedo.mcloudapp.device.ui.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel
@@ -479,7 +480,17 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(SensorConfigModule(navId = 0))
         )
         moduleList.add(
-            ConfigModule(DataCenterModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment))
+            ConfigModule(DataCenterModule(navId = R.id.action_dasHomeFragment_to_dasDataCenterHomeFragment))
+        )
+        moduleList.add(
+            ConfigModule(
+                CommonModule(
+                    name = "终端参数",
+                    desc = "上报规则设置",
+                    resID = R.drawable.ic_device_data_center,
+                    navId = R.id.action_dasHomeFragment_to_dasTerminalParameterFragment
+                )
+            )
         )
         moduleList.add(
             ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment))

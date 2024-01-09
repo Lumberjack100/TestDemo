@@ -8,26 +8,15 @@
         <item>ERROR</item>
     </string-array>
 
-    <string-array name="rain_value">
-        <item>0.1</item>
-        <item>0.2</item>
-        <item>0.5</item>
-    </string-array>
-
-    <!-- 注册协议-->
-    <string-array name="register_protocol">
-        <item>MDM协议</item>
-        <item>MQTT自动注册</item>
-        <item>MQTT手动注册</item>
-    </string-array>
-
     <!-- 注册平台-->
-    <string-array name="register_platform">
+    <string-array name="data_center_register_platform">
         <item>地灾一期</item>
         <item>成都理工平台</item>
-        <item>MDNET</item>
+        <item>米度平台</item>
         <item>地灾二期</item>
-        <item>重庆地灾测试</item>
+        <item>河南水利平台</item>
+        <item>米度水文平台</item>
+        <item>AMS平台</item>
     </string-array>
 
     <string-array name="baud_rates">
@@ -79,6 +68,20 @@
         <item>25</item>
         <item>30</item>
     </string-array>
+    <!-- DAS start-->
+    <!-- 注册协议-->
+    <string-array name="register_protocol">
+        <item>MDM协议</item>
+        <item>MQTT自动注册</item>
+        <item>MQTT手动注册</item>
+    </string-array>
+
+    <string-array name="rain_value">
+        <item>0.1</item>
+        <item>0.2</item>
+        <item>0.5</item>
+    </string-array>
+    <!-- DAS end-->
 
     <!-- MR702 start-->
     <string-array name="ip_mode">

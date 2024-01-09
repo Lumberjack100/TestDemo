@@ -219,9 +219,9 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_device_abnormal_diagnosis"
                         style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onShowErrorModulesInfoClick()}"
                         android:layout_height="44dp"
-                        android:enabled="@{!stateVM.deviceNormal}"
-                        onClickWithDebouncing="@{()->click.onShowErrorModulesInfoClick()}">
+                        android:enabled="@{!stateVM.deviceNormal}">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -334,6 +334,19 @@
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             android:text="@{stateVM.deviceMileage}"
                             tools:text="12.1m" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+
+                        <TextView
+                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                            android:text="预计下次测量时间" />
+
+                        <TextView
+                            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                            android:text="@{stateVM.nextMeasureTime}"
+                            tools:text="2024-01-12 12:23" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

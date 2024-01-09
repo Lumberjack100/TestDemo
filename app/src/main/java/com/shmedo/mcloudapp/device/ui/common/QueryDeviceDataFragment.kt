@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui
+package com.shmedo.mcloudapp.device.ui.common
 
 import android.os.Bundle
 import android.view.View

@@ -26,6 +26,7 @@ class AdmeCurrentStateViewModel : ViewModel() {
     val deviceHumidity = NonNullObservableField("")
     val deviceDropNumber = NonNullObservableField("")
     val deviceMileage = NonNullObservableField("")
+    val nextMeasureTime = NonNullObservableField("")
 
     val inclinometerType = NonNullObservableField("")
     val inclinometerChannelNumber = NonNullObservableField("")

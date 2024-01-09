@@ -30,12 +30,56 @@
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
+        <action
+            android:id="@+id/action_dasHomeFragment_to_dasTerminalParameterFragment"
+            app:destination="@id/dasTerminalParameterFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_dasHomeFragment_to_dasDataCenterHomeFragment"
+            app:destination="@id/dasDataCenterHomeFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
     </fragment>
 
     <fragment
         android:id="@+id/dasCollectorSettingFragment"
         android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasCollectorSettingFragment"
         android:label="DasCollectorSettingFragment"
-        tools:layout="@layout/fragment_das_collector_setting"/>
+        tools:layout="@layout/fragment_das_collector_setting" />
+
+    <fragment
+        android:id="@+id/dasTerminalParameterFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasTerminalParameterFragment"
+        android:label="DasTerminalParameterFragment"
+        tools:layout="@layout/fragment_das_terminal_parameter" />
+
+    <fragment
+        android:id="@+id/dasDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasDataCenterHomeFragment"
+        android:label="DasDataCenterHomeFragment"
+        tools:layout="@layout/fragment_das_data_center_home">
+
+        <action
+            android:id="@+id/action_dasDataCenterHomeFragment_to_dataCenterParamFragment"
+            app:destination="@id/dataCenterParamFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/dataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment"
+        android:label="DataCenterParamFragment"
+        tools:layout="@layout/fragment_data_center_param" />
 
 </navigation>

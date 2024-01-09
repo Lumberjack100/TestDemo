@@ -34,6 +34,7 @@ class AdmeCurrentStateInfoParser: IOTCommandParser<AdmeCurrentStateInfo> {
             abndiasis = keyValueMap.getOrDefault("abndiasis", abndiasis)
             downnum = keyValueMap.getOrDefault("downnum", downnum)
             runmileage = keyValueMap.getOrDefault("runmileage", runmileage)
+            nexttime = keyValueMap.getOrDefault("nexttime", nexttime)
             testway = keyValueMap.getOrDefault("testway", testway)
             scsq = keyValueMap.getOrDefault("scsq", scsq)
             bcsq = keyValueMap.getOrDefault("bcsq", bcsq)

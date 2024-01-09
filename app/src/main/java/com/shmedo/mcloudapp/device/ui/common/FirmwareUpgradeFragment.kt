@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui
+package com.shmedo.mcloudapp.device.ui.common
 
 import android.os.Bundle
 import android.view.View
@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentFirmwareUpgradeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.FirmwareUpgradeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel

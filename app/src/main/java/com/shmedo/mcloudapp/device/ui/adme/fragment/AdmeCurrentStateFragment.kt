@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -30,6 +31,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 import kotlin.math.abs
+
 /**
  * @author：gonghe
  * @time: 2023/12/13
@@ -140,7 +142,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         updateMotionState(result.data)
@@ -209,6 +211,16 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 )
             )
 
+            currentStateInfo.nexttime.toULongOrNull()?.let {
+                if (it > 0u) {
+                    mStates.nextMeasureTime.set(
+                        TimeUtils.millis2String(
+                            it.toLong(),
+                            "yyyy-MM-dd HH:mm"
+                        )
+                    )
+                }
+            }
             mStates.inclinometerType.set(if (currentStateInfo.inctype == "0") "433测斜仪" else "蓝牙测斜仪")
             mStates.inclinometerChannelNumber.set(currentStateInfo.incnum)
             mStates.inclinometerLocationInfo.set(currentStateInfo.incloc)

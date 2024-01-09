@@ -32,6 +32,11 @@ object IOTDeviceBindingAdapter {
                 view.text = "离线"
                 view.setTextColor(ColorUtils.getColor(R.color.device_offline_platform))
             }
+
+            else -> {
+                view.text = "离线"
+                view.setTextColor(ColorUtils.getColor(R.color.device_offline_platform))
+            }
         }
     }
 

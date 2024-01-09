@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
-class MR702DataCenterParamViewModel : DataCenterParamViewModel() {
+class MR702DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val isDataNetOpened = NonNullObservableField(true)//4G 是否开启
     val isWiredNetOpened = NonNullObservableField(true)//有线 是否开启
 

@@ -22,11 +22,15 @@ import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeStepperMotorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeVoltageConfigInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeWorkModeInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandResponseParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TimeCalibrationDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasBdTerminalInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasCollectorInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasReportInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDOPortParamParser
@@ -62,6 +66,8 @@ val appModule = module {
     factory { TelemetryDataParser() }
     factory { TimeCalibrationDataParser() }
     factory { WorkModeParser() }
+    factory { DataCenterStatusParser() }
+    factory { DataCenterInfoParser() }
     factory { AdmeBaseInfoParser() }
     factory { AdmeMotionStateParser() }
     factory { AdmeCurrentStateInfoParser() }
@@ -82,7 +88,8 @@ val appModule = module {
     factory { AdmeMotorMotionAngleInfoParser() }
     factory { AdmeWorkModeInfoParser() }
     factory { DasCollectorInfoParser() }
-
+    factory { DasReportInfoParser() }
+    factory { DasBdTerminalInfoParser() }
 
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -116,6 +123,8 @@ val appModule = module {
             get<TelemetryDataParser>(),
             get<TimeCalibrationDataParser>(),
             get<WorkModeParser>(),
+            get<DataCenterStatusParser>(),
+            get<DataCenterInfoParser>(),
             get<AdmeBaseInfoParser>(),
             get<AdmeMotionStateParser>(),
             get<AdmeCurrentStateInfoParser>(),
@@ -136,6 +145,8 @@ val appModule = module {
             get<AdmeMotorMotionAngleInfoParser>(),
             get<AdmeWorkModeInfoParser>(),
             get<DasCollectorInfoParser>(),
+            get<DasReportInfoParser>(),
+            get<DasBdTerminalInfoParser>(),
 
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),
