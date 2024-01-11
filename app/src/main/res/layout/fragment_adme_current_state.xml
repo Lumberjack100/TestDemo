@@ -428,32 +428,6 @@
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                            android:text="测斜仪4G信号强度" />
-
-                        <TextView
-                            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.inclinometer4gSignal}"
-                            tools:text="-51dBm" />
-
-                        <com.shmedo.mcloudapp.common.widget.SignalView
-                            android:layout_width="wrap_content"
-                            android:layout_height="22dp"
-                            android:layout_marginStart="3dp"
-                            app:bind_signal_value="@{stateVM.inclinometer4gSignalValue}"
-                            app:connected="true"
-                            app:primary_color="@color/text_color_cccccc"
-                            app:shadow_color="@color/text_color_3AD094"
-                            app:shadow_open="false"
-                            app:signal_maximum="4"
-                            app:spacing="1"
-                            app:unit_width="8" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
-
-                        <TextView
-                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="测斜仪蓝牙信号强度" />
 
                         <TextView

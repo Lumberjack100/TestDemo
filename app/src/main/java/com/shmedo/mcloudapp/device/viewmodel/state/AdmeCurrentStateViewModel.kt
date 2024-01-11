@@ -33,8 +33,6 @@ class AdmeCurrentStateViewModel : ViewModel() {
     val inclinometerLocationInfo = NonNullObservableField("")
     val inclinometerVoltage = NonNullObservableField("")
     val inclinometerTemperature = NonNullObservableField("")
-    val inclinometer4gSignal = NonNullObservableField("")
-    val inclinometer4gSignalValue = NonNullObservableField(0)
     val inclinometerBluetoothSignal = NonNullObservableField("")
     val inclinometerBluetoothSignalValue = NonNullObservableField(0)
 }

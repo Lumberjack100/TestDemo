@@ -162,8 +162,8 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
             mStates.sim.set(currentStateInfo.simid)
             mStates.imei.set(currentStateInfo.imeid)
             mStates.firmwareVersion.set(currentStateInfo.firversion)
-            mStates.signal.set(String.format("%sdBm", currentStateInfo.signalstr))
-            mStates.signalValue.set(abs(currentStateInfo.signalstr.toInt()))
+            mStates.signal.set(String.format("%sdBm", currentStateInfo.scsq))
+            mStates.signalValue.set(abs(currentStateInfo.scsq.toInt()))
 
             if (currentStateInfo.abndiasis == "0") {
                 mStates.deviceNormal.set(true)

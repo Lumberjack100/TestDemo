@@ -26,6 +26,6 @@ data class AdmeCurrentStateInfo(
     var runmileage: String = "0", //设备里程
     var nexttime: String = "0",//预计下次测量时间
     var testway: String = "", //工作模式(0:常规测量模式，1：特定点位模式，2：静态测量模式，3：设备停用模式)）
-    var scsq: String = "0", //测斜仪4G信号强度
+    var scsq: String = "0", //4G信号强度
     var bcsq: String = "0", //测斜仪蓝牙信号强度
 )
