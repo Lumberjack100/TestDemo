@@ -63,6 +63,11 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        mStates.rainResolution.set(rainResolutionList[0])
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
@@ -132,8 +137,8 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
         }
         val entity = MRRainGaugeParamEntity(
             switch = "1",
-            rainaccuracy = mStates.debounceCoefficient.get(),
-            rainelim = mStates.rainResolution.get()
+            rainaccuracy = mStates.rainResolution.get(),
+            rainelim = mStates.debounceCoefficient.get()
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RAIN_GAUGE_PORT_PARAM,
@@ -173,7 +178,7 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)
@@ -208,8 +213,8 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
             mStates.status.set(if (rainGaugeParam.status == "1") "已接入" else "未接入")
             binding.sensorSB.setCheckedImmediatelyNoEvent(rainGaugeParam.switch == "1")
             mStates.isOpened.set(rainGaugeParam.switch == "1")
-            mStates.rainResolution.set(rainGaugeParam.rainelim)
-            mStates.debounceCoefficient.set(rainGaugeParam.rainaccuracy)
+            mStates.rainResolution.set(rainGaugeParam.rainaccuracy)
+            mStates.debounceCoefficient.set(rainGaugeParam.rainelim)
         } catch (e: Exception) {
             e.printStackTrace()
         }
