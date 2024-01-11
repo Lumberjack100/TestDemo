@@ -11,10 +11,9 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class MRRS485Port2SensorParamEntity(
-    val chl: String = "",//通道编号 根据设备来最多到通道15
+    val chl: String = "",//通道编号 [1,16]
     val model: String = "",//物模型
     val swtoken: String = IOTConstants.NULL_KEY,//水文标识
-    val sensoraddr: String = IOTConstants.NULL_KEY,//传感器地址
     val sensortype: String = IOTConstants.NULL_KEY,//传感器类型
     val filtercnt: String = IOTConstants.NULL_KEY,//滤波次数
     val gateval: String = IOTConstants.NULL_KEY,//触发值

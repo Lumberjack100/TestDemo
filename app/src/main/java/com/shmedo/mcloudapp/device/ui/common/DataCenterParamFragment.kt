@@ -22,7 +22,6 @@ import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.DataCenterParamEntity
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRDataCenterParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.enums.StationCode
@@ -43,7 +42,6 @@ import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702DataCenterHomeFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -111,7 +109,7 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.isDataProtocolVisible.set(productType != ProductType.DAS && productType != ProductType.ADME && productType != ProductType.VMS)
         mStates.transferProtocol.set(transferProtocolList[2])
-        mStates.dataProtocol.set(dataProtocolList[0])
+        mStates.dataProtocol.set(dataProtocolList[5])
         mStates.platformType.set(platformList[0])
     }
 
@@ -267,9 +265,10 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private fun closeDataServer() {
         commandItems.clear()
-        val entity = MRDataCenterParamEntity(
+        val entity = DataCenterParamEntity(
             centerid = statusItem.centerid.toString(),
-            switch = "0"
+            addr = "",
+            port = "",
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_DATA_CENTER,
@@ -328,8 +327,7 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                 dataProtocolList[2] -> "3"
                 dataProtocolList[3] -> "4"
                 dataProtocolList[4] -> "5"
-                dataProtocolList[5] -> "6"
-                else -> "7"
+                else -> "6"
             },
             plattype = when (mStates.platformType.get()) {
                 platformList[0] -> "0"
@@ -524,12 +522,8 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                     dataProtocolList[4]
                 }
 
-                "6" -> {
-                    dataProtocolList[5]
-                }
-
                 else -> {
-                    dataProtocolList[6]
+                    dataProtocolList[5]
                 }
             }
         )
@@ -579,8 +573,8 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
             delay(1000)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
             setFragmentResult(
-                MR702DataCenterHomeFragment.FRAGMENT_RESULT_REQUEST_KEY,
-                bundleOf(MR702DataCenterHomeFragment.REFRESH_DATA to true)
+                AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
+                bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
             )
             nav().navigateUp()
         }

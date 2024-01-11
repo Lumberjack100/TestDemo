@@ -26,17 +26,20 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
 
     fun setData(
         title: String = "",
-        list: List<SensorModel>
+        list: List<SensorModel>,
+        isSupportedCustom: Boolean = false
     ): MR702SensorSelectionPopupView {
         this.title = title
         this.sensorList.addAll(list)
-        this.sensorList.add(
-            SensorModel(
-                sensorName = "自定义传感器",
-                sensorType = "000",
-                modelToken = "000"
+        if (isSupportedCustom) {
+            this.sensorList.add(
+                SensorModel(
+                    sensorName = "自定义传感器",
+                    sensorType = "000",
+                    modelToken = "000"
+                )
             )
-        )
+        }
         this.data = sensorList.map { it.sensorName }
         return this
     }

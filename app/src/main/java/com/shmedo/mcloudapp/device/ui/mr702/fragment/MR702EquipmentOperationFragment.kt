@@ -415,6 +415,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(true)
+                        mStates.isCalibratingSuccess.set(false)
                         mStates.deviceTime.set(result.data)
                         mStates.systemTime.set(TimeUtils.getNowString())
                     }
@@ -436,8 +437,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(true)
-//                        mStates.deviceTime.set(result.data)
-//                        mStates.systemTime.set(TimeUtils.getNowString())
+                        mStates.isCalibratingSuccess.set(true)
                     }
                 }
             }

@@ -382,6 +382,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(true)
+                        mCommandResponseStates.isCalibratingSuccess.set(false)
                         mCommandResponseStates.deviceTime.set(result.data)
                         mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
                     }
@@ -403,8 +404,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(true)
-//                        mCommandResponseStates.deviceTime.set(result.data)
-//                        mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
+                        mCommandResponseStates.isCalibratingSuccess.set(true)
                     }
                 }
             }
@@ -477,10 +477,20 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(CollectorConfigModule(navId = R.id.action_dasHomeFragment_to_dasCollectorSettingFragment))
         )
         moduleList.add(
+            ConfigModule(DataCenterModule(navId = R.id.action_dasHomeFragment_to_dasDataCenterHomeFragment))
+        )
+        moduleList.add(
             ConfigModule(SensorConfigModule(navId = 0))
         )
         moduleList.add(
-            ConfigModule(DataCenterModule(navId = R.id.action_dasHomeFragment_to_dasDataCenterHomeFragment))
+            ConfigModule(
+                CommonModule(
+                    name = "内置传感器配置",
+                    desc = "雨量计、断线报警器等参数配置",
+                    resID = R.drawable.ic_device_sensor_config,
+                    navId = R.id.action_dasHomeFragment_to_dasInternalSensorFragment
+                )
+            )
         )
         moduleList.add(
             ConfigModule(

@@ -46,25 +46,6 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/dimen_size_25">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
-                    android:layout_marginTop="@dimen/dimen_size_1"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="采集项" />
-
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
-                        style="@style/Common_EditItem_EditText_Style"
-                        android:enabled="@{stateVM.isUnnamedSensor}"
-                        android:hint="请输入"
-                        android:text="@={stateVM.modelField}"
-                        app:lengthFilter="@{40}"
-                        tools:text="水位" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -85,7 +66,7 @@
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        android:enabled="@{stateVM.isUnnamedSensor}"
+                        android:enabled="@{stateVM.isCustomSensor &amp;&amp; stateVM.isFirstField}"
                         android:hint="请输入"
                         android:text="@={stateVM.sensorName}"
                         app:lengthFilter="@{40}"
@@ -99,15 +80,17 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="传感器地址"
+                        android:text="物模型"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
+                        android:enabled="@{stateVM.isCustomSensor&amp;&amp; stateVM.isFirstField}"
                         android:hint="请输入"
-                        android:text="@={stateVM.sensorAddress}"
+                        android:inputType="phone"
+                        android:text="@={stateVM.modelToken}"
                         app:inputTypeFilter='@{"number"}'
-                        app:lengthFilter="@{5}" />
+                        app:lengthFilter="@{8}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -116,16 +99,16 @@
 
                     <TextView
                         style="@style/Common_ClickableItem_TitleStyle"
-                        android:text="物模型"
+                        android:text="地址"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.common.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
+                        android:enabled="@{ stateVM.isFirstField}"
                         android:hint="请输入"
-                        android:inputType="phone"
-                        android:text="@={stateVM.modelToken}"
+                        android:text="@={stateVM.sensorAddress}"
                         app:inputTypeFilter='@{"number"}'
-                        app:lengthFilter="@{8}" />
+                        app:lengthFilter="@{5}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -202,6 +185,25 @@
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17"
                     android:textStyle="bold" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="采集项" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:enabled="@{stateVM.isCustomSensor}"
+                        android:hint="请输入"
+                        android:text="@={stateVM.modelFieldName}"
+                        android:textColor="@color/colorPrimary"
+                        app:lengthFilter="@{40}"
+                        tools:text="水位" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
@@ -376,7 +378,7 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    visible="@{stateVM.isSaveModelBtnVisible}"
+                    visible="@{stateVM.isSaveFieldBtnVisible}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
@@ -391,7 +393,7 @@
                         android:layout_marginTop="@dimen/dimen_size_10"
                         android:layout_marginBottom="@dimen/dimen_size_20"
                         android:gravity="center"
-                        android:text="@{stateVM.saveModelFieldText}"
+                        android:text="@{stateVM.saveFiledFieldText}"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/text_size_16"
                         android:textStyle="bold"

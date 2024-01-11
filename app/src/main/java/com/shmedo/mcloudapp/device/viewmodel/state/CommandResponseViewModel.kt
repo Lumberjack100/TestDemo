@@ -19,5 +19,5 @@ open class CommandResponseViewModel : ViewModel() {
 
     val deviceTime = NonNullObservableField("")
     val systemTime = NonNullObservableField("")
-    val isCalibratingSuccess = NonNullObservableField(false)
+    val isCalibratingSuccess = NonNullObservableField(false)//是否校准时间成功
 }

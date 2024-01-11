@@ -106,32 +106,11 @@
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="传感器地址"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="物模型" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
-                            android:hint="请输入"
-                            android:text="@={stateVM.sensorAddress}"
-                            app:inputTypeFilter='@{"number"}'
-                            app:lengthFilter="@{5}" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <TextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="物模型"
-                            tools:textColor="@color/title_text_color" />
-
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
+                            android:enabled="false"
                             android:hint="请输入"
                             android:inputType="phone"
                             android:text="@={stateVM.modelToken}"
@@ -145,9 +124,25 @@
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="地址" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:enabled="false"
+                            android:hint="请输入"
+                            android:text="@={stateVM.sensorAddress}"
+                            app:inputTypeFilter='@{"number"}'
+                            app:lengthFilter="@{5}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="波特率(Bps)"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="波特率(Bps)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -232,8 +227,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="水文标识"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="水文标识" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -250,8 +244,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="采集指令"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="采集指令" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -269,8 +262,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="倍率(精度)"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="倍率(精度)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -328,8 +320,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="触发值"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="触发值" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -348,8 +339,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="上限值"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="上限值" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -368,8 +358,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="下限值"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="下限值" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -388,8 +377,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="修正值"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="修正值" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -408,8 +396,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="阈值次数"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="阈值次数" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"

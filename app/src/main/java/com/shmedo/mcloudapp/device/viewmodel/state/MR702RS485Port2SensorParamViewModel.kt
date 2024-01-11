@@ -7,9 +7,9 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port2SensorParam
 class MR702RS485Port2SensorParamViewModel : ViewModel() {
     val sensorParamWrapper= NonNullObservableField(MRRS485Port2SensorParam())
 
+    val isAdd = NonNullObservableField(false)
     val isEditable = NonNullObservableField(false)
     val channelNumber = NonNullObservableField("")
-    val sensorAddress = NonNullObservableField("")
     val sensorType = NonNullObservableField("")
     val sensorName = NonNullObservableField("")
     val modelToken = NonNullObservableField("")

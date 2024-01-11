@@ -57,12 +57,12 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
-    private val decimalFormat = DecimalFormat("#.#")
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
     private val solutionMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_solution_method) }
+    private val decimalFormat = DecimalFormat("#.#")
 
     private var modelFieldIndex: Int = 0
 
@@ -94,8 +94,11 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         }
         binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
 
-        mStates.isUnnamedSensor.set(sensorItem.modelFieldList.isEmpty())
-        mStates.modelField.set(
+        mStates.isCustomSensor.set(sensorItem.modelFieldList.isEmpty())
+        mStates.isFirstField.set(true)
+        mStates.isSaveFieldBtnVisible.set(true)
+        mStates.isConfirmBtnVisible.set(false)
+        mStates.modelFieldName.set(
             if (sensorItem.modelFieldList.isNotEmpty()) {
                 sensorItem.modelFieldList[0]
             } else {
@@ -198,8 +201,8 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         }
 
         fun onSaveModelFieldClick() {
-            if (mStates.saveModelFieldText.get() == "配置下一个采集项") {
-                mStates.saveModelFieldText.set("保存此采集项")
+            if (mStates.saveFiledFieldText.get() == "配置下一个采集项") {
+                mStates.saveFiledFieldText.set("保存此采集项")
                 resetModelField()
             } else {
                 if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
@@ -219,7 +222,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
      * 重置采集项
      */
     private fun resetModelField() {
-        mStates.modelField.set(
+        mStates.modelFieldName.set(
             if (sensorItem.modelFieldList.isNotEmpty()) {
                 sensorItem.modelFieldList[modelFieldIndex]
             } else {
@@ -237,24 +240,24 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         commandItems.clear()
-        if (mStates.modelField.get().isEmpty()) {
-            showMessageDialog("请输入采集项名称")
-            return
-        }
         if (mStates.sensorName.get().isEmpty()) {
             showMessageDialog("请输入传感器名称")
-            return
-        }
-        if (mStates.sensorAddress.get().isEmpty()) {
-            showMessageDialog("请输入传感器地址")
             return
         }
         if (mStates.modelToken.get().isEmpty()) {
             showMessageDialog("请输入物模型")
             return
         }
+        if (mStates.sensorAddress.get().isEmpty()) {
+            showMessageDialog("请输入传感器地址")
+            return
+        }
         if (mStates.baudRate.get().isEmpty()) {
             showMessageDialog("请输入波特率")
+            return
+        }
+        if (mStates.modelFieldName.get().isEmpty()) {
+            showMessageDialog("请输入采集项名称")
             return
         }
         if (mStates.hydrologicalIdentification.get().isEmpty()) {
@@ -333,16 +336,19 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             Toaster.show("已保存")
                             updateUnnamedSensorModel()
+                            mStates.isFirstField.set(false)
                             modelFieldIndex++
-                            if (!mStates.isUnnamedSensor.get()) {
-                                mStates.saveModelFieldText.set("配置下一个采集项")
+                            //自定义传感器
+                            if (mStates.isCustomSensor.get()) {
+                                mStates.saveFiledFieldText.set("配置下一个采集项")
                                 mStates.isConfirmBtnVisible.set(modelFieldIndex > 0)
                                 return@sendCommandFromCmdList
                             }
+                            //非自定义传感器
                             if (modelFieldIndex < sensorItem.modelFieldList.size) {
-                                mStates.saveModelFieldText.set("配置下一个采集项")
+                                mStates.saveFiledFieldText.set("配置下一个采集项")
                             } else {
-                                mStates.isSaveModelBtnVisible.set(false)
+                                mStates.isSaveFieldBtnVisible.set(false)
                                 mStates.isConfirmBtnVisible.set(true)
                             }
                         }
@@ -358,7 +364,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
      * 更新未命名传感器的物模型,需要保存到本地配置中
      */
     private fun updateUnnamedSensorModel() {
-        if (!mStates.isUnnamedSensor.get())
+        if (!mStates.isCustomSensor.get())
             return
 
         if (modelFieldIndex == 0) {
@@ -369,7 +375,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         }
         mStates.curModelFieldList.add(
             ModelField(
-                fieldName = mStates.modelField.get(),
+                fieldName = mStates.modelFieldName.get(),
                 engUnit = ""
             )
         )
@@ -395,7 +401,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
      */
     private fun updateSensorModeConfig() {
         try {
-            if (!mStates.isUnnamedSensor.get())
+            if (!mStates.isCustomSensor.get())
                 return
 
             mStates.curSensorModel.modelFieldList = mStates.curModelFieldList

@@ -13,15 +13,15 @@ class MR702RS485Port1SensorParamViewModel : ViewModel() {
     val sensorName = NonNullObservableField("")
     val modelToken = NonNullObservableField("")
     val baudRate = NonNullObservableField("")
-    val dataBit = NonNullObservableField("5")
-    val checkBit = NonNullObservableField("NONE")
-    val stopBit = NonNullObservableField("1")
+    val dataBit = NonNullObservableField("")
+    val checkBit = NonNullObservableField("")
+    val stopBit = NonNullObservableField("")
 
     val hydrologicalIdentification = NonNullObservableField("")//水文识别
     val collectionInstructions= NonNullObservableField("")//采集指令
-    val ratio = NonNullObservableField("")// 倍率
-    val dataFormat = NonNullObservableField("无符号单字节")//数据类型
-    val solutionMethod = NonNullObservableField("加权平均")//解算方法
+    val ratio = NonNullObservableField("9600")// 倍率
+    val dataFormat = NonNullObservableField("")//数据类型
+    val solutionMethod = NonNullObservableField("")//解算方法
     val triggerValue = NonNullObservableField("")//触发值
     val upperLimit = NonNullObservableField("")//上限
     val lowerLimit = NonNullObservableField("")//下限

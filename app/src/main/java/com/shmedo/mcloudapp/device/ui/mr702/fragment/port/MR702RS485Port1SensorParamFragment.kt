@@ -284,12 +284,12 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
 
     private fun initSaveCommand() {
         commandItems.clear()
-        if (mStates.sensorAddress.get().isEmpty()) {
-            showMessageDialog("请输入传感器地址")
-            return
-        }
         if (mStates.modelToken.get().isEmpty()) {
             showMessageDialog("请输入物模型")
+            return
+        }
+        if (mStates.sensorAddress.get().isEmpty()) {
+            showMessageDialog("请输入传感器地址")
             return
         }
         if (mStates.baudRate.get().isEmpty()) {

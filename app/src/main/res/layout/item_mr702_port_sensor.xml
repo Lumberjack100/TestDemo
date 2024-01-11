@@ -66,9 +66,11 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_del"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="end|top"
+            android:layout_marginTop="@dimen/dimen_size_6"
+            android:layout_marginEnd="@dimen/dimen_size_6"
             android:src="@drawable/item_del_btn2" />
 
     </FrameLayout>

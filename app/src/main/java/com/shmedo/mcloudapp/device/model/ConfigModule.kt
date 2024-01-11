@@ -93,7 +93,7 @@ class CollectorConfigModule(
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class SensorConfigModule(
-    name: String = "传感器配置",
+    name: String = "外接传感器配置",
     desc: String = "传感器参数配置",
     resID: Int = R.drawable.ic_device_sensor_config,
     navId: Int = 0,

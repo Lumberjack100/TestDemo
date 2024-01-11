@@ -116,7 +116,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     private fun showAddSensorPopup() {
         val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port1"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
-        selectionPopupView.setData("请选择传感器类型", sensorList)
+        selectionPopupView.setData("请选择传感器类型", sensorList, true)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port1SensorAddParamFragment.newBundleArguments(
@@ -277,7 +277,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        if (result.message.contains("index=0")) {
+                        if (result.message.contains("index")) {
                             initEmptySensor()
                             return
                         }

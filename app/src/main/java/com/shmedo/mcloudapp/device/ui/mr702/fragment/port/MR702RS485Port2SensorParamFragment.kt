@@ -6,9 +6,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
+import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port2SensorParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -20,7 +22,6 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessageDialog
@@ -91,6 +92,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             isAdd = it.getBoolean(ADD_SENSOR)
             sensorItem = it.getParcelable(SENSOR_MODEL_ITEM)!!
         }
+        mStates.isAdd.set(isAdd)
         if (isAdd) {
             binding.refreshLayout.setEnableRefresh(false)
             mStates.isEditable.set(true)
@@ -137,6 +139,20 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入通道编号")
             return
         }
+        try {
+            val value = mStates.channelNumber.get().toInt()
+            if (value < 1 || value >16) {
+                MessageDialog.show(
+                    "提示",
+                    "通道编号数值范围[1,16]!",
+                    "我已知晓"
+                )
+                return
+            }
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的通道编号!")
+            return
+        }
         if (mStates.hydrologicalIdentification.get().isEmpty()) {
             showMessageDialog("请输入水文标识")
             return
@@ -163,8 +179,8 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         }
         val entity = MRRS485Port2SensorParamEntity(
             sensortype = mStates.sensorType.get(),
-            model = mStates.modelToken.get() + "_" + mStates.sensorType.get(),
             chl = mStates.channelNumber.get(),
+            model = mStates.modelToken.get() + "_" + mStates.channelNumber.get(),
             swtoken = if (mStates.sensorParamWrapper.get().swtoken == mStates.hydrologicalIdentification.get()) IOTConstants.NULL_KEY else mStates.hydrologicalIdentification.get(),
             filtercnt = if (mStates.sensorParamWrapper.get().filtercnt == mStates.filterCoefficient.get()) IOTConstants.NULL_KEY else mStates.filterCoefficient.get(),
             gateval = if (mStates.sensorParamWrapper.get().gateval == mStates.triggerValue.get()) IOTConstants.NULL_KEY else mStates.triggerValue.get(),
@@ -249,7 +265,6 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         try {
             mStates.sensorParamWrapper.set(sensorParam)
 
-            mStates.sensorAddress.set(sensorParam.sensoraddr)
             mStates.sensorType.set(sensorParam.sensortype)
             mStates.modelToken.set(sensorParam.model.substring(0, sensorParam.model.indexOf("_")))
             mStates.channelNumber.set(sensorParam.chl)

@@ -12,6 +12,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
@@ -26,6 +27,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -108,11 +110,19 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(FRAGMENT_RESULT_REQUEST_KEY) { key, bundle ->
-            val refreshData = bundle.getBoolean(REFRESH_DATA)
-            if (refreshData) {
-                binding.refreshLayout.autoRefresh()
-            }
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+            val centerNumber =
+                bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerid)
+            commandItems.clear()
+
+            val entity = CenterNumberEntity(centerNumber.toString())
+            val command =
+                IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
+            commandItems.add(command)
+
+            showLoadingDialog(StringUtils.getString(R.string.loading))
+            sendCommandFromCmdList(isStartTimeoutJob = true)
+
         }
     }
 
@@ -208,11 +218,6 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
         DataCenterStatusItem(2, "数据中心02", "0"),
         DataCenterStatusItem(3, "数据中心03", "0"),
     )
-
-    companion object {
-        const val FRAGMENT_RESULT_REQUEST_KEY = "DasDataCenterHomeFragment"
-        const val REFRESH_DATA = "refresh_data"
-    }
 
     override fun onResume() {
         super.onResume()
