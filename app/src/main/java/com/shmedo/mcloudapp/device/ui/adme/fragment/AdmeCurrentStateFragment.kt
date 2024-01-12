@@ -237,8 +237,6 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                     decimalFormat.format(currentStateInfo.intertempe.toDouble())
                 )
             )
-            mStates.inclinometer4gSignal.set(String.format("%sdBm", currentStateInfo.scsq))
-            mStates.inclinometer4gSignalValue.set(abs(currentStateInfo.scsq.toInt()))
             mStates.inclinometerBluetoothSignal.set(String.format("%sdBm", currentStateInfo.bcsq))
             mStates.inclinometerBluetoothSignalValue.set(abs(currentStateInfo.bcsq.toInt()))
         } catch (e: Exception) {

@@ -226,7 +226,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
             )
             return
         }
-        if (mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
+        if (!mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
             MessageDialog.show("提示", "请输入正确的上拉滤波器系数(0-F)!", "我已知晓")
             return
         }
@@ -294,7 +294,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
             )
             return
         }
-        if (mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
+        if (!mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
             MessageDialog.show("提示", "请输入正确的下放滤波器系数(0-F)!", "我已知晓")
             return
         }

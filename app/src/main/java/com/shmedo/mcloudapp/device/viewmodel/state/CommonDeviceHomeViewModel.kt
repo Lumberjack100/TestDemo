@@ -2,8 +2,11 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
+import com.shmedo.mcloudapp.R
 
 open class CommonDeviceHomeViewModel : ViewModel() {
+    val productResId = NonNullObservableField(R.drawable.ic_device_logo_def)
+
     val productName = NonNullObservableField("")
     val deviceName = NonNullObservableField("")
     val deviceToken = NonNullObservableField("")

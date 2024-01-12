@@ -12,6 +12,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeEquipModelEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeBaseInfo
@@ -22,7 +23,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
@@ -112,6 +112,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+//        mHeadStates.productResId.set(R.drawable.ic_adme)
         mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.productName.set(deviceInfo.productName)
