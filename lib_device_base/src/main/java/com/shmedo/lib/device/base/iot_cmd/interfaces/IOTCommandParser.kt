@@ -23,7 +23,9 @@ interface IOTCommandParser<T> {
     fun parse(result: String): ParseResult<T> {
         return try {
             val keyValueMap = result.split("&").associate { keyValue ->
-                keyValue.split("=").let { pair -> pair[0] to pair.getOrElse(1) { "" } }
+                keyValue.split("=").let { pair ->
+                    pair[0] to if (pair.size == 1) "" else keyValue.substring(pair[0].length + 1)
+                }
             }
             // 子类实现
             ParseResult.Success(parseInstance(keyValueMap))
