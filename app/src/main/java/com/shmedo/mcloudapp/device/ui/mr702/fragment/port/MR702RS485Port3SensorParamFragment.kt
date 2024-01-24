@@ -430,19 +430,34 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
             when (sensorType) {
                 1 -> {
-                    mStates.solarVoltage.set(decimalFormat.format(sensorParam.svolt.toDouble()))
-                    mStates.batteryVoltage.set(decimalFormat.format(sensorParam.bvolt.toDouble()))
-                    mStates.solarPower.set(decimalFormat.format(sensorParam.spower.toDouble()))
-                    mStates.loadPower.set(decimalFormat.format(sensorParam.lpower.toDouble()))
+                    sensorParam.svolt.toDoubleOrNull()?.let {
+                        mStates.solarVoltage.set(decimalFormat.format(it))
+                    }
+                    sensorParam.bvolt.toDoubleOrNull()?.let {
+                        mStates.batteryVoltage.set(decimalFormat.format(it))
+                    }
+                    sensorParam.spower.toDoubleOrNull()?.let {
+                        mStates.solarPower.set(decimalFormat.format(it))
+                    }
+                    sensorParam.lpower.toDoubleOrNull()?.let {
+                        mStates.loadPower.set(decimalFormat.format(it))
+                    }
                 }
 
                 2 -> {
                     mStates.duration.set(sensorParam.duration)
                     mStates.interval.set(sensorParam.interval)
                     mStates.volume.set(sensorParam.volume.toInt())
-                    mStates.rainTriggerValueLevel1.set(sensorParam.rlevel1)
-                    mStates.rainTriggerValueLevel2.set(sensorParam.rlevel2)
-                    mStates.rainTriggerValueLevel3.set(sensorParam.rlevel3)
+                    //判断 sensorParam.rlevel1 是否可以转为 double
+                    sensorParam.rlevel1.toDoubleOrNull()?.let {
+                        mStates.rainTriggerValueLevel1.set(decimalFormat.format(it))
+                    }
+                    sensorParam.rlevel2.toDoubleOrNull()?.let {
+                        mStates.rainTriggerValueLevel2.set(decimalFormat.format(it))
+                    }
+                    sensorParam.rlevel3.toDoubleOrNull()?.let {
+                        mStates.rainTriggerValueLevel3.set(decimalFormat.format(it))
+                    }
                     mStates.waterTriggerValueLevel1.set(sensorParam.wlevel1)
                     mStates.waterTriggerValueLevel2.set(sensorParam.wlevel2)
                     mStates.waterTriggerValueLevel3.set(sensorParam.wlevel3)
