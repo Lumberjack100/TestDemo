@@ -51,9 +51,12 @@
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dimen_size_25">
 
+                    <TextView
+                        style="@style/Common_GroupName_Style"
+                        android:text="驱动器" />
+
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
-                        android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -105,6 +108,10 @@
                             app:lengthFilter="@{12}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <TextView
+                        style="@style/Common_GroupName_Style"
+                        android:text="测斜仪" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
@@ -162,7 +169,7 @@
 
                     <TextView
                         style="@style/Common_GroupName_Style"
-                        android:text="钢丝绳阈值参数配置" />
+                        android:text="钢丝绳" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
@@ -179,6 +186,31 @@
                             android:text="@={stateVM.wireRopeLength}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{12}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <TextView
+                        style="@style/Common_GroupName_Style"
+                        visible="@{stateVM.isAntifreezeSupport}"
+                        android:text="防冻" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        visible="@{stateVM.isAntifreezeSupport}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="防冻距离(毫米)" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:hint="0 表示关闭防冻"
+                            android:text="@={stateVM.antifreezeDistance}"
+                            app:inputTypeFilter='@{"number"}'
+                            app:lengthFilter="@{8}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

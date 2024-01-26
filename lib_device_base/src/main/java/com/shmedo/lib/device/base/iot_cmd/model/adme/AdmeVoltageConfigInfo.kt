@@ -13,4 +13,5 @@ data class AdmeVoltageConfigInfo(
     var volt_sensor_low: String = "", //测斜仪低压阈值
     var volt_sensor_under: String = "", //测斜仪欠压阈值
     var rope_length: String = "", //钢丝绳长
+    var antifdis: String = "", //防冻距离
 )

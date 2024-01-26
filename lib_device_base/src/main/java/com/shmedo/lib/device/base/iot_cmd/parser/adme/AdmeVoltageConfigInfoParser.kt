@@ -3,6 +3,7 @@ package com.shmedo.lib.device.base.iot_cmd.parser.adme
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeVoltageConfigInfo
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 
 /**
  * 创建者：gonghe
@@ -25,6 +26,7 @@ class AdmeVoltageConfigInfoParser : IOTCommandParser<AdmeVoltageConfigInfo> {
             volt_sensor_low = keyValueMap.getOrDefault("volt_sensor_low", volt_sensor_low)
             volt_sensor_under = keyValueMap.getOrDefault("volt_sensor_under", volt_sensor_under)
             rope_length = keyValueMap.getOrDefault("rope_length", rope_length)
+            antifdis = keyValueMap.getOrDefault("antifdis", IOTConstants.NULL_KEY)
         }
     }
 

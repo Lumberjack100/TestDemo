@@ -15,6 +15,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -273,7 +274,8 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
             volt_sensor_standard = mStates.inclinometerStandardVoltageThreshold.get(),
             volt_sensor_low = mStates.inclinometerLowVoltageThreshold.get(),
             volt_sensor_under = mStates.inclinometerUnderVoltageThreshold.get(),
-            rope_length = mStates.wireRopeLength.get()
+            rope_length = mStates.wireRopeLength.get(),
+            antifdis = if (mStates.isAntifreezeSupport.get()) mStates.antifreezeDistance.get() else IOTConstants.NULL_KEY
         )
         commandItems.clear()
         var command = IOTCommandUtil.getCommand(
@@ -379,7 +381,12 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
 
             decimalFormat.applyPattern("#.###")
             mStates.wireRopeLength.set(decimalFormat.format(info.rope_length.toDouble()))
-
+            if (info.antifdis == IOTConstants.NULL_KEY) {
+                mStates.isAntifreezeSupport.set(false)
+            } else {
+                mStates.isAntifreezeSupport.set(true)
+                mStates.antifreezeDistance.set(info.antifdis)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

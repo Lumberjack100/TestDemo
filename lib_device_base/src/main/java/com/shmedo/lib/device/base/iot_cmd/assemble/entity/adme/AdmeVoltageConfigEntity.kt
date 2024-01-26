@@ -22,6 +22,7 @@ data class AdmeVoltageConfigEntity (
     val volt_sensor_low: String = "", //测斜仪低压阈值
     val volt_sensor_under: String = "", //测斜仪欠压阈值
     val rope_length: String = "", //钢丝绳长
+    val antifdis: String = IOTConstants.NULL_KEY, //防冻距离
 ){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)
