@@ -24,7 +24,8 @@ enum class AdmeModuleErrorType(val code: String, val description: String) {
     XF_TIME_OUT("14", "下放超时"),
     READ_DATA_FAIL("15", "测斜仪读数据失败"),
     CX_FALL("16", "钢丝绳断裂"),
-    CX_NON_REVERSE("17", "测斜仪未反转");
+    CX_NON_REVERSE("17", "测斜仪未反转"),
+    XF_EXCEED_ROPE_LENGTH("18", "下放距离超过绳长");
 
     companion object {
         @JvmStatic

@@ -52,9 +52,9 @@ abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
                 }
             } else if (cmdContent.contains("\$cmd")) {
                 val index = cmdContent.lastIndexOf("\$cmd")
-                onResponseReceived(device, cmdContent.substring(index))
+                onResponseReceived(device, cmdResult = cmdContent.substring(index))
             } else {
-                onResponseReceived(device, cmdContent)
+                onResponseReceived(device, cmdResult = cmdContent)
             }
         }
     }

@@ -17,6 +17,7 @@ import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeAutoMeasuringHoleDepthEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
@@ -33,7 +34,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
@@ -89,9 +89,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarIvActionVisible.set(mMessenger.admeDeviceMode.get() == "0")
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(false)
         initRefresh()
         initTextChangedListener()
     }
@@ -633,7 +631,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
-                        showManualMotorMotionBottomDialog()
+                        showAutoMotorMotionBottomDialog()
                     }
                 }
             }
@@ -650,7 +648,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
-                        showAutoMotorMotionBottomDialog()
+                        showManualMotorMotionBottomDialog()
                     }
                 }
             }
@@ -673,9 +671,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         //初次进入页面，初始化测量孔深配置参数
                         if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null) {
-                            return
-                        }
-                        if (!manualMeasuringHoleDepthBottomDialog?.isVisible!! && !autoMeasuringHoleDepthBottomDialog?.isVisible!!) {
                             return
                         }
                         //当轮询 N 次电机脉冲数据没有变化时，根据电机运动状态进行后续处理
@@ -705,13 +700,19 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
                         initMotorMotionDistance(result.data)
-                        if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null) {
-                            return
+                        if (mStates.isAutoMode.get()) {
+                            autoMeasuringHoleDepthBottomDialog?.let { dialog ->
+                                if (dialog.isResumed) {
+                                    updateMotionData(result.data)
+                                }
+                            }
+                        } else {
+                            manualMeasuringHoleDepthBottomDialog?.let { dialog ->
+                                if (dialog.isResumed) {
+                                    updateMotionData(result.data)
+                                }
+                            }
                         }
-                        if (!manualMeasuringHoleDepthBottomDialog?.isVisible!! && !autoMeasuringHoleDepthBottomDialog?.isVisible!!) {
-                            return
-                        }
-                        updateMotionData(result.data)
                     }
                 }
             }
@@ -729,9 +730,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList()
                         if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null) {
-                            return
-                        }
-                        if (!manualMeasuringHoleDepthBottomDialog?.isVisible!! && !autoMeasuringHoleDepthBottomDialog?.isVisible!!) {
                             return
                         }
                         if (mStates.isAutoMode.get()) {
@@ -817,8 +815,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         safeDistance = ""
                     }
                 })
-                show(childFragmentManager, "dialog")
             }
+        autoMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isClearMotionDataVisible.set(true)
         getMotorMotionData(800)
     }

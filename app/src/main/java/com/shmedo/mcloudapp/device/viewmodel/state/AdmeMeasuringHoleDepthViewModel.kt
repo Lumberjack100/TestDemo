@@ -7,7 +7,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInf
 class AdmeMeasuringHoleDepthViewModel : ViewModel() {
     val lockedRotorDetectionInfoWrapper = NonNullObservableField(AdmeLockedRotorDetectionInfo())
     val isClearMotionDataVisible = NonNullObservableField(false)
-    val isEditable = NonNullObservableField(false)
+    val isEditable = NonNullObservableField(true)
     val isAutoMode = NonNullObservableField(true)
     val measureWay = NonNullObservableField("")//测量方式
     val downEnable = NonNullObservableField(true)//进入页面默认自动测孔深，需要打开堵转检测使能

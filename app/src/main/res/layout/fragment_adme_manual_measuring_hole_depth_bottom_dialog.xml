@@ -158,7 +158,7 @@
                 android:textColor="@color/title_text_color"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:visibility="visible" />
+                tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/btn_pause"
@@ -175,7 +175,8 @@
                 android:textColor="@color/title_text_color"
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:visibility="visible" />
+                tools:text="暂停"
+                tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/btn_exit"
@@ -190,7 +191,7 @@
                 android:text="退出"
                 android:textColor="@color/title_text_color"
                 android:textSize="17sp"
-                android:visibility="gone" />
+                tools:visibility="gone" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

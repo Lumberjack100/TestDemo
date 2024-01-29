@@ -25,9 +25,12 @@ class PacketMerger : DataMerger {
         output.write(lastPacket)
 
         //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
-        return  if(lastPacket.size < 2)  false
+        val mergeDataPacket = output.toByteArray()
+
+        //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
+        return  if(mergeDataPacket.size < 2)  false
         else
-            (lastPacket[lastPacket.size - 1].toInt() == 38 && lastPacket[lastPacket.size - 2].toInt() == 38)
-                    || (lastPacket[lastPacket.size - 1].toInt() == 10 && lastPacket[lastPacket.size - 2].toInt() == 13)
+            (mergeDataPacket[mergeDataPacket.size - 1].toInt() == 38 && mergeDataPacket[mergeDataPacket.size - 2].toInt() == 38)
+                    || (mergeDataPacket[mergeDataPacket.size - 1].toInt() == 10 && mergeDataPacket[mergeDataPacket.size - 2].toInt() == 13)
     }
 }

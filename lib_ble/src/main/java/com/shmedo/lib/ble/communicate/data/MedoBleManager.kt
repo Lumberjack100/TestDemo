@@ -45,6 +45,7 @@ import com.shmedo.lib.ble.communicate.spec.USRSpec
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -59,7 +60,6 @@ class MedoBleManager(
     context: Context,
     private val scope: CoroutineScope
 ) : BleManager(context) {
-
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
 
@@ -82,6 +82,7 @@ class MedoBleManager(
     override fun getMinLogPriority(): Int {
         return Log.VERBOSE
     }
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun initialize() {
@@ -172,12 +173,14 @@ class MedoBleManager(
                 command
             )
             writeCharacteristic(
-                writeCharacteristic,
+                it,
                 Data.from(command),
                 it.writeType
             )
                 .split()
                 .suspend()
+
+            delay(250)
         }
     }
 
