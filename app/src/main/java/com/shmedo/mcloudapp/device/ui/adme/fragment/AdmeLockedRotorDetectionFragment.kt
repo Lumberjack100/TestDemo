@@ -154,7 +154,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                             .autoDismiss(4000).iconWarning()
                         return@setOnFocusChangeListener
                     }
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#")
                     val rightProgress: Float =
                         decimalFormat.format((1 - rightValue / holedepth) * 100).toFloat()
                     binding.seekBarDownSlowStopInterval.setProgress(
@@ -197,7 +197,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                             .autoDismiss(4000).iconWarning()
                         return@setOnFocusChangeListener
                     }
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#")
                     val leftProgress: Float =
                         decimalFormat.format(leftValue.toFloat() / measpacing * 100).toFloat()
                     binding.seekBarPullUpSlowStopInterval.setProgress(
@@ -231,7 +231,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                             .autoDismiss(4000).iconWarning()
                         return@setOnFocusChangeListener
                     }
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#")
                     val rightProgress: Float =
                         decimalFormat.format((1 - rightValue / measpacing) * 100).toFloat()
                     binding.seekBarPullUpSlowStopInterval.setProgress(
@@ -247,10 +247,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
 
     private fun initSeekBarListener() {
         //下放缓起缓停区间
+        binding.seekBarDownSlowStopInterval.setIndicatorTextDecimalFormat("0");
         binding.seekBarDownSlowStopInterval.setIndicatorTextStringFormat("%s%%")
         binding.seekBarDownSlowStopInterval.isEnabled = false
 
         //堵转检测区间
+        binding.seekBarDownStallDetectionInterval.setIndicatorTextDecimalFormat("0");
         binding.seekBarDownStallDetectionInterval.setIndicatorTextStringFormat("%s%%")
         binding.seekBarDownStallDetectionInterval.setOnRangeChangedListener(object :
             OnRangeChangedListener {
@@ -307,8 +309,8 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         })
 
         //上拉缓起缓停区间
+        binding.seekBarPullUpSlowStopInterval.setIndicatorTextDecimalFormat("0");
         binding.seekBarPullUpSlowStopInterval.setIndicatorTextStringFormat("%s%%")
-//        binding.seekBarPullUpSlowStopInterval.setIndicatorTextDecimalFormat("0")
         binding.seekBarPullUpSlowStopInterval.isEnabled = false
     }
 
@@ -718,7 +720,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             else (1 - mStates.downSlowStopIntervalStartValue.get()
                 .toFloat() / holedepth.toFloat()) * 100f
 
-            decimalFormat.applyPattern("#.#")
+            decimalFormat.applyPattern("#")
             leftProgress1 =
                 if (leftProgress1 > 50) 49f else decimalFormat.format(leftProgress1).toFloat()
             rightProgress1 =
@@ -730,7 +732,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
 
             mStates.downStallDetectionIntervalStartValue.set(info.detintiona)//堵转检测区间起始值
             mStates.downStallDetectionIntervalEndValue.set(info.detintionb)//堵转检测区间终值
-            decimalFormat.applyPattern("#.#")
+            decimalFormat.applyPattern("#")
             val leftProgress2: Float = decimalFormat.format(info.detintiona.toFloat()).toFloat()
             var rightProgress2: Float = decimalFormat.format(info.detintionb.toFloat()).toFloat()
             //TODO 堵转检测区间右边进度条必须小于下放缓停区间的右边进度条数值
@@ -776,7 +778,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             else (1 - mStates.pullUpSlowStopIntervalStartValue.get()
                 .toFloat() / holedepth.toFloat()) * 100f
 
-            decimalFormat.applyPattern("#.#")
+            decimalFormat.applyPattern("#")
             leftProgress3 =
                 if (leftProgress3 > 50) 49f else decimalFormat.format(leftProgress3).toFloat()
             rightProgress3 =
