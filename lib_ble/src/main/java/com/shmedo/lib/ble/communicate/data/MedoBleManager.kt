@@ -45,7 +45,6 @@ import com.shmedo.lib.ble.communicate.spec.USRSpec
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -179,8 +178,6 @@ class MedoBleManager(
             )
                 .split()
                 .suspend()
-
-            delay(250)
         }
     }
 

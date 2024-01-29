@@ -315,29 +315,13 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
             )
             return
         }
-
         val entity = DataCenterParamEntity(
             centerid = statusItem.centerid.toString(),
             addr = mStates.centerServerAddress.get(),
             port = mStates.centerServerPort.get(),
             protocol = mStates.transferProtocol.get(),
-            datatype = when (mStates.dataProtocol.get()) {
-                dataProtocolList[0] -> "1"
-                dataProtocolList[1] -> "2"
-                dataProtocolList[2] -> "3"
-                dataProtocolList[3] -> "4"
-                dataProtocolList[4] -> "5"
-                else -> "6"
-            },
-            plattype = when (mStates.platformType.get()) {
-                platformList[0] -> "0"
-                platformList[1] -> "1"
-                platformList[2] -> "2"
-                platformList[3] -> "3"
-                platformList[4] -> "4"
-                platformList[5] -> "5"
-                else -> "6"
-            }
+            datatype = (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString(),
+            plattype = platformList.indexOf(mStates.platformType.get()).toString()
         )
         if (mStates.transferProtocol.get() == "MQTT") {//MQTT
             //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
@@ -499,46 +483,16 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                 mStates.isSL651ItemVisible.set(true)
             }
         }
-
-        mStates.dataProtocol.set(
-            when (data.datatype) {
-                "1" -> {
-                    dataProtocolList[0]
-                }
-
-                "2" -> {
-                    dataProtocolList[1]
-                }
-
-                "3" -> {
-                    dataProtocolList[2]
-                }
-
-                "4" -> {
-                    dataProtocolList[3]
-                }
-
-                "5" -> {
-                    dataProtocolList[4]
-                }
-
-                else -> {
-                    dataProtocolList[5]
-                }
+        data.datatype.toIntOrNull()?.let {
+            if (it <= dataProtocolList.size) {
+                mStates.dataProtocol.set(dataProtocolList[it - 1])
             }
-        )
-        mStates.platformType.set(
-            when (data.plattype) {
-                "0" -> platformList[0]
-                "1" -> platformList[1]
-                "2" -> platformList[2]
-                "3" -> platformList[3]
-                "4" -> platformList[4]
-                "5" -> platformList[5]
-                else -> platformList[6]
+        }
+        data.plattype.toIntOrNull()?.let {
+            if (it < platformList.size) {
+                mStates.platformType.set(platformList[it])
             }
-        )
-
+        }
         //MQTT 协议参数
         mStates.productId.set(data.projid)
         mStates.deviceId.set(data.deviceid)

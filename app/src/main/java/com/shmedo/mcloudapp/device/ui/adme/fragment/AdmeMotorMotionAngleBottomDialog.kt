@@ -33,6 +33,7 @@ class AdmeMotorMotionAngleBottomDialog : BaseVmDbDialogFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         mStates.isExitButtonVisible.set(false)
+        mStates.isStopAction.set(false)
         mStates.pauseButtonText.set("暂停")
         mStates.motionPulse.set("0")
         mStates.motionAngle.set("0")
@@ -50,10 +51,12 @@ class AdmeMotorMotionAngleBottomDialog : BaseVmDbDialogFragment() {
         }
 
         fun onStopClick() {
+            mStates.isStopAction.set(true)
             fragmentClickListener?.onStopClick()
         }
 
         fun onPauseClick() {
+            mStates.isStopAction.set(false)
             fragmentClickListener?.onPauseClick()
         }
 

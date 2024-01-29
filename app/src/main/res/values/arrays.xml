@@ -17,6 +17,8 @@
         <item>河南水利平台</item>
         <item>米度水文平台</item>
         <item>AMS平台</item>
+        <item>重庆地灾</item>
+        <item>广东水利地灾</item>
     </string-array>
 
     <string-array name="baud_rates">

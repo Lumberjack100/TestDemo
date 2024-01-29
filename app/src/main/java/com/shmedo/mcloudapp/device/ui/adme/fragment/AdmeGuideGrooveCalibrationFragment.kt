@@ -13,6 +13,7 @@ import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeGuideGrooveCalibrationEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeGuideGrooveCalibrationInfo
@@ -23,7 +24,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
@@ -83,9 +83,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarIvActionVisible.set(mMessenger.admeDeviceMode.get() == "0")
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(false)
         initRefresh()
     }
 
@@ -392,8 +390,12 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
-                        if (motorMotionAngleFragmentBottomDialog == null || motorMotionAngleFragmentBottomDialog!!.isVisible)
+                        if (mStates.isStopAction.get()) {
+                            mStates.isStopAction.set(false)
+                            mStates.isExitButtonVisible.set(true)
                             return
+                        }
+
                         if (mStates.pauseButtonText.get() != "继续")//不是暂停按钮操作，是停止按钮操作
                             mStates.isExitButtonVisible.set(true)
                     }
@@ -490,8 +492,9 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                         resetData()
                     }
                 })
-                show(childFragmentManager, "dialog")
+
             }
+        motorMotionAngleFragmentBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isClearMotionDataVisible.set(true)
         getMotorMotionData(800)
     }

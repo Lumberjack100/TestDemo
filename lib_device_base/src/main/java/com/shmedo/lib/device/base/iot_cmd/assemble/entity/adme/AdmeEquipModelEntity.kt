@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class AdmeEquipModelEntity(
-    val model: String = "", //工作模式(0:设备配置模式，1:自动检测模式，2:异常保护模式)
+    val equimodel: String = "", //工作模式(0:设备配置模式，1:自动检测模式，2:异常保护模式)
 ){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

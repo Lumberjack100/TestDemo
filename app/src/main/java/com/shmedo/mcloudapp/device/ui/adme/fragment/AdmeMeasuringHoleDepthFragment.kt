@@ -729,12 +729,14 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
-                        if (manualMeasuringHoleDepthBottomDialog == null && autoMeasuringHoleDepthBottomDialog == null) {
-                            return
-                        }
                         if (mStates.isAutoMode.get()) {
                             mStates.isExitButtonVisible.set(true)
                         } else {
+                            if (mStates.isStopAction.get()) {
+                                mStates.isStopAction.set(false)
+                                mStates.isExitButtonVisible.set(true)
+                                return
+                            }
                             if (mStates.pauseButtonText.get() != "继续")//不是暂停按钮操作，是停止按钮操作
                                 mStates.isExitButtonVisible.set(true)
                         }
@@ -790,14 +792,14 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 setOnDialogFragmentClickListener(object :
                     AdmeAutoMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
+                        autoMeasuringHoleDepthBottomDialog = null
+                        lastMotionDistance = ""
+                        safeDistance = ""
                         //蓝牙未断开时先发送停止电机指令
                         if (bleViewModel.isConnected()) {
                             stopMotorMotion()
                         }
                         dismiss()
-                        autoMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
                     }
 
                     override fun onStopClick() {
@@ -809,10 +811,10 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onExitClick() {
-                        dismiss()
                         autoMeasuringHoleDepthBottomDialog = null
                         lastMotionDistance = ""
                         safeDistance = ""
+                        dismiss()
                     }
                 })
             }
@@ -844,14 +846,14 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 setOnDialogFragmentClickListener(object :
                     AdmeManualMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
+                        manualMeasuringHoleDepthBottomDialog = null
+                        lastMotionDistance = ""
+                        safeDistance = ""
                         //蓝牙未断开时先发送停止电机指令
                         if (bleViewModel.isConnected()) {
                             stopMotorMotion()
                         }
                         dismiss()
-                        manualMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
                     }
 
                     override fun onStopClick() {
@@ -877,14 +879,14 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onExitClick() {
-                        dismiss()
                         manualMeasuringHoleDepthBottomDialog = null
                         lastMotionDistance = ""
                         safeDistance = ""
+                        dismiss()
                     }
                 })
-                show(childFragmentManager, "dialog")
             }
+        manualMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isClearMotionDataVisible.set(true)
         getMotorMotionData(800)
     }

@@ -24,6 +24,7 @@ class AdmeMeasuringHoleDepthViewModel : ViewModel() {
 
     //自动/手动测孔深底部弹窗
     val isExitButtonVisible = NonNullObservableField(false)
+    val isStopAction = NonNullObservableField(false)
     val pauseButtonText = NonNullObservableField("暂停")
     val motionPulse = NonNullObservableField("0")
     val motionDistance = NonNullObservableField("0")

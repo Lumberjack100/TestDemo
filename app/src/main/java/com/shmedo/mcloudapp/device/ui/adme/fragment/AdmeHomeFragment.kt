@@ -367,7 +367,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList {
                             //获取设备的运行状态
-                            getMotorMotionData(20000)
+//                            getMotorMotionData(20000)
                         }
                         updateMotionState(result.data)
                     }
@@ -443,7 +443,8 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
             "5" -> mHeadStates.runningStateText.set("上拉测试")
             "6" -> mHeadStates.runningStateText.set("下放测量")
             "7" -> mHeadStates.runningStateText.set("下放测试")
-            else -> {}
+            "8" -> mHeadStates.runningStateText.set("防冻下放完成")
+            else -> mHeadStates.runningStateText.set("未知状态:${admeMotionState.motionstate}")
         }
     }
 
