@@ -11,7 +11,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
@@ -30,6 +29,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702NetworkCommunicationBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -218,42 +218,23 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         if (mStates.isEthernetOpened.get()) {
             if (mStates.isManualVisible.get()) {
                 if (!RegexUtils.isIP(mStates.ip.get())) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入有效的IP地址!"
-                    )
+                    showMessageDialog("请输入有效的IP地址!")
                     return
                 }
                 if (!RegexUtils.isIP(mStates.subnetMask.get())) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入有效的子网掩码!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("请输入有效的子网掩码!")
                     return
                 }
                 if (!RegexUtils.isIP(mStates.gateway.get())) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入有效的网关!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("请输入有效的网关!")
                     return
                 }
                 if (!RegexUtils.isIP(mStates.preferredDNS.get())) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入有效的首选DNS!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("请输入有效的首选DNS!")
                     return
                 }
                 if (!RegexUtils.isIP(mStates.alternateDNS.get())) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入有效的备用DNS!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("请输入有效的备用DNS!")
                     return
                 }
             }

@@ -14,7 +14,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.google.android.material.tabs.TabLayout
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
@@ -32,6 +31,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasTerminalParameterBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -244,20 +244,12 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
             if (mStates.reportMethod.get().contains("定时定点") && mStates.startTime.get()
                     .isEmpty()
             ) {
-                MessageDialog.show(
-                    "提示",
-                    "请选择上报起始时间!",
-                    "我已知晓"
-                )
+                showMessageDialog("请选择上报起始时间!")
                 return
             }
 
             if (mStates.interval.get().isEmpty()) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入上报时间间隔!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入上报时间间隔!")
                 return
             }
             val entity = DasReportEntity(
@@ -273,11 +265,7 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
 
         } else {
             if (mStates.address.get().isEmpty()) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入目标地址!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入目标地址!")
                 return
             }
             val entity = DasBdTerminalEntity(

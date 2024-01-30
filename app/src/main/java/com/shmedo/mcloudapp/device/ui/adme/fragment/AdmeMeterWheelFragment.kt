@@ -6,7 +6,6 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeMeterWheelEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -20,6 +19,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentAdmeMeterWheelBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -109,193 +109,113 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.encoderLineNumber.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入编码器线数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入编码器线数!")
             return
         }
         try {
             val value: Int = mStates.encoderLineNumber.get().toInt()
             if (value < 1) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的编码器线数!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入正确的编码器线数!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的编码器线数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的编码器线数!")
             return
         }
 
         if (mStates.outerDiameter.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入外径!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入外径!")
             return
         }
         try {
             val value: Int = mStates.outerDiameter.get().toInt()
             if (value < 1) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的外径!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入正确的外径!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的外径!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的外径!")
             return
         }
 
         if (mStates.upCorrectionParametersOne.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入上拉一次修正参数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入上拉一次修正参数!")
             return
         }
         try {
             val value = mStates.upCorrectionParametersOne.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的上拉一次修正参数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的上拉一次修正参数!")
             return
         }
 
         if (mStates.upCorrectionParametersTwo.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入上拉二次修正参数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入上拉二次修正参数!")
             return
         }
         try {
             val value = mStates.upCorrectionParametersTwo.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的上拉二次修正参数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的上拉二次修正参数!")
             return
         }
 
         if (mStates.upConstant.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入上拉常数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入上拉常数!")
             return
         }
         try {
             val value = mStates.upConstant.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的上拉常数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的上拉常数!")
             return
         }
         if (mStates.upFilterCoefficient.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入上拉滤波器系数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入上拉滤波器系数!")
             return
         }
         if (!mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
-            MessageDialog.show("提示", "请输入正确的上拉滤波器系数(0-F)!", "我已知晓")
+            showMessageDialog("上拉滤波器系数数值范围(0-F)!")
             return
         }
-        if (mStates.upCorrectionParametersOne.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入下放一次修正参数!",
-                "我已知晓"
-            )
+        if (mStates.downCorrectionParametersOne.get().isEmpty()) {
+            showMessageDialog("请输入下放一次修正参数!")
             return
         }
         try {
-            val value = mStates.upCorrectionParametersOne.get().toDouble()
+            val value = mStates.downCorrectionParametersOne.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的下放一次修正参数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的下放一次修正参数!")
             return
         }
 
-        if (mStates.upCorrectionParametersTwo.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入下放二次修正参数!",
-                "我已知晓"
-            )
+        if (mStates.downCorrectionParametersTwo.get().isEmpty()) {
+            showMessageDialog("请输入下放二次修正参数!")
             return
         }
         try {
-            val value = mStates.upCorrectionParametersTwo.get().toDouble()
+            val value = mStates.downCorrectionParametersTwo.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的下放二次修正参数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的下放二次修正参数!")
             return
         }
 
-        if (mStates.upConstant.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入下放常数!",
-                "我已知晓"
-            )
+        if (mStates.downConstant.get().isEmpty()) {
+            showMessageDialog("请输入下放常数!")
             return
         }
         try {
-            val value = mStates.upConstant.get().toDouble()
+            val value = mStates.downConstant.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的下放常数!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的下放常数!")
             return
         }
-        if (mStates.upFilterCoefficient.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入下放滤波器系数!",
-                "我已知晓"
-            )
+        if (mStates.downFilterCoefficient.get().isEmpty()) {
+            showMessageDialog("请输入下放滤波器系数!")
             return
         }
-        if (!mStates.upFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
-            MessageDialog.show("提示", "请输入正确的下放滤波器系数(0-F)!", "我已知晓")
+        if (!mStates.downFilterCoefficient.get().matches(Regex("[A-F0-9]"))) {
+            showMessageDialog("下放滤波器系数数值范围(0-F)!")
             return
         }
         val entity = AdmeMeterWheelEntity(

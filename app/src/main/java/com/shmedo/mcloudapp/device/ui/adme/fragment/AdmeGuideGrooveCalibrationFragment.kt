@@ -9,7 +9,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -169,19 +168,11 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.speed.get().toDouble()
             if (value < 1 || value > 600) {
-                MessageDialog.show(
-                    "提示",
-                    "电机速度数值范围[1,600]!",
-                    "我已知晓"
-                )
+                showMessageDialog("电机速度数值范围[1,600]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机速度数值范围[1,600]!",
-                "我已知晓"
-            )
+            showMessageDialog("电机速度数值范围[1,600]!")
             return
         }
 
@@ -192,19 +183,11 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.pulseGoal.get().toDouble()
             if (value < 0) {
-                MessageDialog.show(
-                    "提示",
-                    "运动脉冲不能小于 0!",
-                    "我已知晓"
-                )
+                showMessageDialog("运动脉冲不能小于 0!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的运动脉冲!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的运动脉冲!")
             return
         }
         val entity = AdmeGuideGrooveCalibrationEntity(

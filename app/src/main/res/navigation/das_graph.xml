@@ -47,8 +47,15 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_dasHomeFragment_to_dasInternalSensorFragment"
-            app:destination="@id/dasInternalSensorFragment"
+            android:id="@+id/action_dasHomeFragment_to_dasIOSensorFragment"
+            app:destination="@id/dasIOSensorFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+        <action
+            android:id="@+id/action_dasHomeFragment_to_dasDigitalOsmometerFragment"
+            app:destination="@id/dasDigitalOsmometerFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -90,10 +97,14 @@
         tools:layout="@layout/fragment_data_center_param" />
 
     <fragment
-        android:id="@+id/dasInternalSensorFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasInternalSensorFragment"
-        android:label="DasInternalSensorFragment"
-        tools:layout="@layout/fragment_das_internal_sensor" />
+        android:id="@+id/dasIOSensorFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasIOSensorFragment"
+        android:label="DasIOSensorFragment"
+        tools:layout="@layout/fragment_das_io_sensor" />
 
-
+    <fragment
+        android:id="@+id/dasDigitalOsmometerFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasDigitalOsmometerFragment"
+        android:label="DasDigitalOsmometerFragment"
+        tools:layout="@layout/fragment_das_digital_osmometer" />
 </navigation>

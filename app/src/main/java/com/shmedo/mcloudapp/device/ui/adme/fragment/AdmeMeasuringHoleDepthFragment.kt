@@ -12,7 +12,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
@@ -114,7 +113,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             if (mStates.motionType.get() == motionTypeList[0]) {
                 val speed = text.toString().toInt()
                 if (speed > 10) {
-                    MessageDialog.show("提示", "上拉触发磁开关最大速度为 10！", "我已知晓")
+                    showMessageDialog("上拉触发磁开关最大速度为 10！")
                 }
             }
         })
@@ -319,19 +318,11 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.speed.get().toDouble()
             if (value < 1 || value > 100) {
-                MessageDialog.show(
-                    "提示",
-                    "电机速度数值范围[1,100]!",
-                    "我已知晓"
-                )
+                showMessageDialog("电机速度数值范围[1,100]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机速度数值范围[1,100]!",
-                "我已知晓"
-            )
+            showMessageDialog("电机速度数值范围[1,100]!")
             return
         }
         if (!mStates.isAutoMode.get()) {//手动测量孔深模式
@@ -342,19 +333,11 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             try {
                 val value = mStates.distanceGoal.get().toDouble()
                 if (value < 0) {
-                    MessageDialog.show(
-                        "提示",
-                        "运动距离不能小于 0!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("运动距离不能小于 0!")
                     return
                 }
             } catch (ex: Exception) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的运动距离!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入正确的运动距离!")
                 return
             }
         }

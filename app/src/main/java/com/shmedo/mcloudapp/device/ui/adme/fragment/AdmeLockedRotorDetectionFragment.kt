@@ -9,7 +9,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.jaygoo.widget.OnRangeChangedListener
 import com.jaygoo.widget.RangeSeekBar
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
@@ -35,7 +34,6 @@ import com.shmedo.mcloudapp.device.viewmodel.state.AdmeLockedRotorDetectionViewM
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
-
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -99,11 +97,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             //失去焦点时
             if (hasFocus) {
                 if (mStates.downSlowStartIntervalEndValue.get().isEmpty()) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入下放加速距离!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("请输入下放加速距离")
                     return@setOnFocusChangeListener
                 }
                 try {
@@ -424,11 +418,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             try {
                 val value = mStates.downPulsesPerUnitTime.get().toInt()
                 if (value < 1 || value > 10000) {
-                    MessageDialog.show(
-                        "提示",
-                        "下放单位时间脉冲数不能小于1或大于10000!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("下放单位时间脉冲数不能小于1或大于10000!")
                     return
                 }
             } catch (ex: Exception) {
@@ -443,15 +433,11 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             try {
                 val value = mStates.downPulseDetectionTime.get().toDouble()
                 if (value < 0.1 || value > 10) {
-                    MessageDialog.show(
-                        "提示",
-                        "电机驱动器地址数值范围[0.1,10]!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("下放脉冲检测判断时间范围[0.1,10]!")
                     return
                 }
             } catch (ex: Exception) {
-                showMessageDialog("请输入正确的下放单位时间脉冲数!")
+                showMessageDialog("请输入正确的下放脉冲检测判断时间!")
                 return
             }
 
@@ -473,11 +459,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.downTorqueStallThreshold.get().toDouble()
             if (value < 0.00 || value > 2.00) {
-                MessageDialog.show(
-                    "提示",
-                    "下放力矩堵转阈值不能小于0或大于2!",
-                    "我已知晓"
-                )
+                showMessageDialog("下放力矩堵转阈值不能小于0或大于2!")
                 return
             }
         } catch (ex: Exception) {
@@ -492,11 +474,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.downTorqueDetectionTime.get().toDouble()
             if (value < 0.01 || value > 5.00) {
-                MessageDialog.show(
-                    "提示",
-                    "下放力矩检测判断时间不能小于0.01或大于5!",
-                    "我已知晓"
-                )
+                showMessageDialog("下放力矩检测判断时间不能小于0.01或大于5!")
                 return
             }
         } catch (ex: Exception) {
@@ -521,11 +499,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.pullUpTorqueStallThreshold.get().toDouble()
             if (value < 1.00 || value > 6.00) {
-                MessageDialog.show(
-                    "提示",
-                    "上拉力矩堵转阈值不能小于1或大于6!",
-                    "我已知晓"
-                )
+                showMessageDialog("上拉力矩堵转阈值不能小于1或大于6!")
                 return
             }
         } catch (ex: Exception) {
@@ -539,11 +513,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.pullUpTorqueDetectionTime.get().toDouble()
             if (value < 0.01 || value > 5.00) {
-                MessageDialog.show(
-                    "提示",
-                    "上拉力矩检测判断时间不能小于0.01或大于5!",
-                    "我已知晓"
-                )
+                showMessageDialog("上拉力矩检测判断时间不能小于0.01或大于5!")
                 return
             }
         } catch (ex: Exception) {

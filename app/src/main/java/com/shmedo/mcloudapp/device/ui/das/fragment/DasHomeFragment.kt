@@ -3,8 +3,10 @@ package com.shmedo.mcloudapp.device.ui.das.fragment
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
@@ -30,6 +32,7 @@ import com.shmedo.mcloudapp.device.model.CollectorConfigModule
 import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
+import com.shmedo.mcloudapp.device.model.InternalSensorConfigModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
@@ -52,6 +55,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     private val mHeadStates: CommonDeviceHomeViewModel by viewModels()
     private val mCommandResponseStates: CommandResponseViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
+    private val internalSensorTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.internal_sensor_type) }
 
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -203,6 +207,10 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
                 }, "取消")
             }
 
+            is InternalSensorConfigModule -> {//内置传感器配置
+                showChooseInternalSensorDialog()
+            }
+
             else -> {
                 if (module.configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
@@ -272,6 +280,36 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun showChooseInternalSensorDialog() {
+        XPopup.Builder(context)
+            .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .asCenterList(
+                "请选择传感器", internalSensorTypeList,
+                null, 0,
+                { position, _ ->
+                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+
+                    if (position == 0) {
+                        nav().navigate(
+                            R.id.action_dasHomeFragment_to_dasIOSensorFragment,
+                            bundle
+                        )
+                    } else {
+                        nav().navigate(
+                            R.id.action_dasHomeFragment_to_dasDigitalOsmometerFragment,
+                            bundle
+                        )
+                    }
+                }, 0, R.layout.custom_xpopup_adapter_text_center
+            )
+            .show()
+    }
+
     override fun lazyLoadData() {
         if (communicateWay is BleConnect) {
             bleViewModel.launch(bleDevice!!)
@@ -281,7 +319,6 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     override fun onBleDeviceReady() {
 
     }
-
 
     override fun doNetDispatchSuccess(cmdStr: String) {
         super.doNetDispatchSuccess(cmdStr)
@@ -484,12 +521,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
         )
         moduleList.add(
             ConfigModule(
-                CommonModule(
-                    name = "内置传感器配置",
-                    desc = "雨量计、断线报警器等参数配置",
-                    resID = R.drawable.ic_device_sensor_config,
-                    navId = R.id.action_dasHomeFragment_to_dasInternalSensorFragment
-                )
+                InternalSensorConfigModule(navId = 0)
             )
         )
         moduleList.add(

@@ -13,7 +13,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.google.android.material.tabs.TabLayout
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRReportMethodEntity
@@ -167,13 +166,12 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
          * 上报起始时间
          */
         fun onReportingStartTimeClick() {
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .hasShadowBg(false)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.4f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .atView(binding.llReportMethod.ivStartTime) // 依附于所点击的View，内部会自动判断在上方或者下方显示
-                .asAttachList(reportStartTimeList, null, { position, text ->
+                .asAttachList(reportStartTimeList, null, { _, text ->
                     mStates.startTime.set(text)
                 }, 0, 0)
                 .show()
@@ -194,19 +192,11 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             if (mStates.reportMethod.get().contains("定时定点") && mStates.startTime.get()
                     .isEmpty()
             ) {
-                MessageDialog.show(
-                    "提示",
-                    "请选择上报起始时间!",
-                    "我已知晓"
-                )
+                showMessageDialog("请选择上报起始时间!")
                 return
             }
             if (mStates.interval.get().isEmpty()) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入上报间隔!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入上报间隔!")
                 return
             }
             val entity = MRReportMethodEntity(
@@ -221,19 +211,11 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             commandItems.add(command)
         } else {
             if (mStates.screenRefreshTime.get().isEmpty()) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入屏幕更新周期!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入屏幕更新周期!")
                 return
             }
             if (mStates.screenBrightTime.get().isEmpty()) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入屏幕亮屏时间!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入屏幕亮屏时间!")
                 return
             }
             if (mStates.screenPowerUpTime.get().isEmpty()) {

@@ -15,7 +15,6 @@ import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -298,7 +297,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 return
             }
             if (mAdapter.data.size < 1) {
-                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓")
+                showMessageDialog("请设置测量时间点!")
                 return
             }
         }
@@ -340,11 +339,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.inclinometerTubeHoleDepth.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测斜管孔深!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的测斜管孔深!")
             return
         }
 
@@ -355,19 +350,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.motorDriveAddress.get().toDouble()
             if (value < 0 || value > 99) {
-                MessageDialog.show(
-                    "提示",
-                    "电机驱动器地址数值范围[0,99]!",
-                    "我已知晓"
-                )
+                showMessageDialog("电机驱动器地址数值范围[0,99]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机驱动器地址数值范围[0,99]!",
-                "我已知晓"
-            )
+            showMessageDialog("电机驱动器地址数值范围[0,99]!")
             return
         }
 
@@ -378,19 +365,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.decentralizationSpeed.get().toDouble()
             if (value < 1 || value > 180) {
-                MessageDialog.show(
-                    "提示",
-                    "电机下放速度数值范围[1,180]!",
-                    "我已知晓"
-                )
+                showMessageDialog("电机下放速度数值范围[1,180]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机下放速度数值范围[1,180]!",
-                "我已知晓"
-            )
+            showMessageDialog("电机下放速度数值范围[1,180]!")
             return
         }
 
@@ -401,19 +380,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.decentralizationWaitingTime.get().toDouble()
             if (value < 1 || value > 32) {
-                MessageDialog.show(
-                    "提示",
-                    "下放等待时间数值范围[1,32]!",
-                    "我已知晓"
-                )
+                showMessageDialog("下放等待时间数值范围[1,32]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "下放等待时间数值范围[1,32]!",
-                "我已知晓"
-            )
+            showMessageDialog("下放等待时间数值范围[1,32]!")
             return
         }
 
@@ -424,19 +395,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.pullUpSpeed.get().toDouble()
             if (value < 1 || value > 180) {
-                MessageDialog.show(
-                    "提示",
-                    "电机上拉速度数值范围[1,180]!",
-                    "我已知晓"
-                )
+                showMessageDialog("电机上拉速度数值范围[1,180]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机上拉速度数值范围[1,180]!",
-                "我已知晓"
-            )
+            showMessageDialog("电机上拉速度数值范围[1,180]!")
             return
         }
 
@@ -447,19 +410,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.measuringDistance.get().toDouble()
             if (value < 1) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的测量间距!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入正确的测量间距!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测量间距!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的测量间距!")
             return
         }
 
@@ -470,19 +425,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.measurementIntervalTime.get().toDouble()
             if (value < 1) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的测量间隔时间!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入正确的测量间隔时间!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测量间隔时间!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的测量间隔时间!")
             return
         }
 
@@ -493,11 +440,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.measuringReferenceDepth.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测量基准深度!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的测量基准深度!")
             return
         }
 
@@ -508,19 +451,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.intervalCompensation.get().toDouble()
             if (value < -10 || value > 10) {
-                MessageDialog.show(
-                    "提示",
-                    "管口安全距离数值范围[-10,10]!",
-                    "我已知晓"
-                )
+                showMessageDialog("管口安全距离数值范围[-10,10]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "管口安全距离数值范围[-10,10]!",
-                "我已知晓"
-            )
+            showMessageDialog("管口安全距离数值范围[-10,10]!")
             return
         }
 
@@ -531,19 +466,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.bottomSafetyDistance.get().toDouble()
             if (value < -10 || value > 10) {
-                MessageDialog.show(
-                    "提示",
-                    "管底安全距离数值范围[-10,10]!",
-                    "我已知晓"
-                )
+                showMessageDialog("管底安全距离数值范围[-10,10]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "管底安全距离数值范围[-10,10]!",
-                "我已知晓"
-            )
+            showMessageDialog("管底安全距离数值范围[-10,10]!")
             return
         }
 
@@ -554,19 +481,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.intervalFitting.get().toDouble()
             if (value < 0 || value > 10) {
-                MessageDialog.show(
-                    "提示",
-                    "数据拟合区间数值范围[0,10]!",
-                    "我已知晓"
-                )
+                showMessageDialog("数据拟合区间数值范围[0,10]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "数据拟合区间数值范围[0,10]!",
-                "我已知晓"
-            )
+            showMessageDialog("数据拟合区间数值范围[0,10]!")
             return
         }
 
@@ -577,19 +496,11 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.pointOffset.get().toDouble()
             if (value < 0 || value > 0.5) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入测点偏移距离数值范围[0,0.5]!",
-                    "我已知晓"
-                )
+                showMessageDialog("测点偏移距离数值范围[0,0.5]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入测点偏移距离数值范围[0,0.5]!",
-                "我已知晓"
-            )
+            showMessageDialog("测点偏移距离数值范围[0,0.5]!")
             return
         }
         val entity = AdmeExecutiveAgencyInfoEntity(
@@ -689,7 +600,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                                 "(time_err)(:?)".toRegex(),
                                 "一轮测量时间不能少于"
                             ) + "小时"
-                        MessageDialog.show("提示", errMsg, "我已知晓")
+                        showMessageDialog(errMsg)
                         return
                     }
 

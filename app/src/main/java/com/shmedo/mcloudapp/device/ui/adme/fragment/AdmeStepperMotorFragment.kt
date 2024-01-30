@@ -6,7 +6,6 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
@@ -21,6 +20,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentAdmeStepperMotorBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -110,75 +110,47 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.accuracyCorrectionValue.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入绝对精度修正值!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入绝对精度修正值!")
             return
         }
         try {
             val value = mStates.accuracyCorrectionValue.get().toDouble()
             if (value < 0) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的绝对精度修正值!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入正确的绝对精度修正值!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的绝对精度修正值!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的绝对精度修正值!")
             return
         }
 
         if (mStates.movementSpeed.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入步进电机运动速度!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入步进电机运动速度!")
             return
         }
         try {
             val value: Int = mStates.movementSpeed.get().toInt()
             if (value < 1 || value > 600) {
-                MessageDialog.show("提示", "步进电机运动速度范围[1,600]!", "我已知晓")
+                showMessageDialog("步进电机运动速度范围[1,600]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show("提示", "步进电机运动速度范围[1,600]!", "我已知晓")
+            showMessageDialog("步进电机运动速度范围[1,600]!")
             return
         }
 
         if (mStates.motorTorque.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入步进电机力矩!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入步进电机力矩!")
             return
         }
         try {
             val value = mStates.motorTorque.get().toInt()
             if (value < 0) {
-                MessageDialog.show(
-                    "提示",
-                    "请输入正确的步进电机力矩!",
-                    "我已知晓"
-                )
+                showMessageDialog("请输入正确的步进电机力矩!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的步进电机力矩!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的步进电机力矩!")
             return
         }
         val entity = AdmeStepperMotorEntity(

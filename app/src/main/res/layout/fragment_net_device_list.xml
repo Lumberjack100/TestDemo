@@ -15,87 +15,96 @@
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator"
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_bg_gray">
+        android:background="@color/main_bg_gray"
+        app:srlEnableRefresh="false"
+        app:srlEnableLoadMore="false">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            app:elevation="0dp">
-
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include
-                        android:id="@+id/search_placeholder"
-                        layout="@layout/search_device_placeholder_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:click="@{click}" />
-
-                    <include
-                        android:id="@+id/ll_statistics"
-                        layout="@layout/include_net_device_list_statistics"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:vm="@{stateVM}" />
-
-                    <View
-                        android:id="@+id/head_line"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-            <FrameLayout
-                android:id="@+id/fl_tab"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:paddingHorizontal="@dimen/dimen_size_15"
-                android:paddingVertical="@dimen/dimen_size_3">
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/dimen_size_40"
-                    app:tabGravity="start"
-                    app:tabIndicatorHeight="0dp"
-                    app:tabMode="scrollable"
-                    app:tabPaddingEnd="@dimen/dimen_size_8"
-                    app:tabPaddingStart="0dp"
-                    app:tabRippleColor="@null" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_select_product"
-                    onClickWithDebouncing="@{() -> click.onShowSelectProductPopup()}"
-                    android:layout_width="33dp"
-                    android:layout_height="56dp"
-                    android:layout_gravity="center_vertical|end"
-                    android:src="@drawable/all_img" />
-
-            </FrameLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewpager"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:background="@color/main_bg_gray">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                app:elevation="0dp">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|enterAlways">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <include
+                            android:id="@+id/search_placeholder"
+                            layout="@layout/search_device_placeholder_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:click="@{click}" />
+
+                        <include
+                            android:id="@+id/ll_statistics"
+                            layout="@layout/include_net_device_list_statistics"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:vm="@{stateVM}" />
+
+                        <View
+                            android:id="@+id/head_line"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+                <FrameLayout
+                    android:id="@+id/fl_tab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:paddingHorizontal="@dimen/dimen_size_15"
+                    android:paddingVertical="@dimen/dimen_size_3">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/dimen_size_40"
+                        app:tabGravity="start"
+                        app:tabIndicatorHeight="0dp"
+                        app:tabMode="scrollable"
+                        app:tabPaddingEnd="@dimen/dimen_size_8"
+                        app:tabPaddingStart="0dp"
+                        app:tabRippleColor="@null" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_select_product"
+                        onClickWithDebouncing="@{() -> click.onShowSelectProductPopup()}"
+                        android:layout_width="33dp"
+                        android:layout_height="56dp"
+                        android:layout_gravity="center_vertical|end"
+                        android:src="@drawable/all_img" />
+
+                </FrameLayout>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </com.drake.brv.PageRefreshLayout>
 </layout>

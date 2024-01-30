@@ -6,7 +6,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
@@ -142,11 +141,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.channelNumber.get().toInt()
             if (value < 1 || value >16) {
-                MessageDialog.show(
-                    "提示",
-                    "通道编号数值范围[1,16]!",
-                    "我已知晓"
-                )
+                showMessageDialog("通道编号数值范围[1,16]!")
                 return
             }
         } catch (ex: Exception) {

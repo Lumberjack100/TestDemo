@@ -6,7 +6,6 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeVoltageConfigEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -21,6 +20,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentAdmeThresholdBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -110,160 +110,104 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.driveStandardVoltageThreshold.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入驱动器标压阈值!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入驱动器标压阈值!")
             return
         }
         try {
             val value = mStates.driveStandardVoltageThreshold.get().toDouble()
             if (value < 1) {
-                MessageDialog.show("提示", "驱动器标压阈值不能小于 1!", "我已知晓")
+                showMessageDialog("驱动器标压阈值不能小于 1!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "驱动器标压阈值不能小于 1!",
-                "我已知晓"
-            )
+            showMessageDialog("驱动器标压阈值不能小于 1!")
             return
         }
 
         if (mStates.driveLowVoltageThreshold.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入驱动器低压阈值!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入驱动器低压阈值!")
             return
         }
         try {
             val value = mStates.driveLowVoltageThreshold.get().toDouble()
             if (value < 1) {
-                MessageDialog.show("提示", "驱动器低压阈值不能小于 1!", "我已知晓")
+                showMessageDialog("驱动器低压阈值不能小于 1!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "驱动器低压阈值不能小于 1!",
-                "我已知晓"
-            )
+            showMessageDialog("驱动器低压阈值不能小于 1!")
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入驱动器欠压阈值!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入驱动器欠压阈值!")
             return
         }
         try {
             val value = mStates.driveUnderVoltageThreshold.get().toDouble()
             if (value < 1) {
-                MessageDialog.show("提示", "驱动器欠压阈值不能小于 1!", "我已知晓")
+                showMessageDialog("驱动器欠压阈值不能小于 1!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "驱动器欠压阈值不能小于 1!",
-                "我已知晓"
-            )
+            showMessageDialog("驱动器欠压阈值不能小于 1!")
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入测斜仪标压阈值!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入测斜仪标压阈值!")
             return
         }
         try {
             val value = mStates.driveUnderVoltageThreshold.get().toDouble()
             if (value < 1) {
-                MessageDialog.show("提示", "测斜仪标压阈值不能小于 1!", "我已知晓")
+                showMessageDialog("测斜仪标压阈值不能小于 1!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "测斜仪标压阈值不能小于 1!",
-                "我已知晓"
-            )
+            showMessageDialog("测斜仪标压阈值不能小于 1!")
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入测斜仪低压阈值!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入测斜仪低压阈值!")
             return
         }
         try {
             val value = mStates.driveUnderVoltageThreshold.get().toDouble()
             if (value < 1) {
-                MessageDialog.show("提示", "测斜仪低压阈值不能小于 1!", "我已知晓")
+                showMessageDialog("测斜仪低压阈值不能小于 1!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "测斜仪低压阈值不能小于 1!",
-                "我已知晓"
-            )
+            showMessageDialog("测斜仪低压阈值不能小于 1!")
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入测斜仪欠压阈值!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入测斜仪欠压阈值!")
             return
         }
         try {
             val value = mStates.driveUnderVoltageThreshold.get().toDouble()
             if (value < 1) {
-                MessageDialog.show("提示", "测斜仪欠压于不能小于  1!", "我已知晓")
+                showMessageDialog("测斜仪欠压阈值不能小于 1!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "测斜仪欠压于不能小于  1!",
-                "我已知晓"
-            )
+            showMessageDialog("测斜仪欠压阈值不能小于 1!")
             return
         }
 
         if (mStates.driveUnderVoltageThreshold.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入钢丝绳长度!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入钢丝绳长度!")
             return
         }
         try {
             val value = mStates.driveUnderVoltageThreshold.get().toDouble()
 
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的钢丝绳长度!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的钢丝绳长度!")
             return
         }
 

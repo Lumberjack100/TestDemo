@@ -59,6 +59,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         companyID = userInfo.companyID
         productID = -1
         deviceRequestViewModel.getProductList(userInfo.companyID)
+        binding.page.showLoading(false)
     }
 
     inner class ClickProxy {
@@ -104,6 +105,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         }
         deviceRequestViewModel.productListResult.observe(viewLifecycleOwner) { dataResult: DataResult<List<ProductInfo>> ->
             if (!dataResult.responseStatus.isSuccess) {
+                binding.page.showError()
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
             }
@@ -156,6 +158,8 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             }
         tabLayoutMediator.attach()
         binding.tabs.addOnTabSelectedListener(this)
+
+        binding.page.showContent(false)
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {

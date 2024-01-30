@@ -16,7 +16,6 @@ import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
@@ -372,7 +371,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 return
             }
             if (mAdapter.data.size < 1) {
-                MessageDialog.show("提示", "请设置测量时间点!", "我已知晓")
+                showMessageDialog("请设置测量时间点!")
                 return
             }
         }
@@ -384,11 +383,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.inclinometerTubeHoleDepth.get().toDouble()
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "请输入正确的测斜管孔深!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入正确的测斜管孔深!")
             return
         }
 
@@ -399,19 +394,11 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.decentralizationSpeed.get().toDouble()
             if (value < 1 || value > 180) {
-                MessageDialog.show(
-                    "提示",
-                    "电机下放速度数值范围[1,180]!",
-                    "我已知晓"
-                )
+                showMessageDialog("电机下放速度数值范围[1,180]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "电机下放速度数值范围[1,180]!",
-                "我已知晓"
-            )
+            showMessageDialog("电机下放速度数值范围[1,180]!")
             return
         }
 
@@ -422,19 +409,11 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         try {
             val value = mStates.decentralizationWaitingTime.get().toDouble()
             if (value < 1 || value > 32) {
-                MessageDialog.show(
-                    "提示",
-                    "下放等待时间数值范围[1,32]!",
-                    "我已知晓"
-                )
+                showMessageDialog("下放等待时间数值范围[1,32]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "下放等待时间数值范围[1,32]!",
-                "我已知晓"
-            )
+            showMessageDialog("下放等待时间数值范围[1,32]!")
             return
         }
 
@@ -651,7 +630,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                                 "(time_err)(:?)".toRegex(),
                                 "一轮测量时间不能少于"
                             ) + "小时"
-                        MessageDialog.show("提示", errMsg, "我已知晓")
+                        showMessageDialog(errMsg)
                         return
                     }
 

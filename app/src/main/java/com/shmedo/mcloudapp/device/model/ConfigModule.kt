@@ -25,7 +25,6 @@ class CommonModule(
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
-
 class RunningStatusModule(
     name: String = "状态",
     desc: String = "获取当前设备状态",
@@ -89,6 +88,13 @@ class CollectorConfigModule(
     name: String = "采集器配置",
     desc: String = "采集器参数配置",
     resID: Int = R.drawable.ic_device_collector_config,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class InternalSensorConfigModule(
+    name: String = "内置传感器配置",
+    desc: String = "雨量计、断线报警器等参数配置",
+    resID: Int =  R.drawable.ic_device_sensor_config,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 

@@ -12,7 +12,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
@@ -35,6 +34,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentDataCenterParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -282,37 +282,21 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.centerServerAddress.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入数据中心地址!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入数据中心地址!")
             return
         }
         if (mStates.centerServerPort.get().isEmpty()) {
-            MessageDialog.show(
-                "提示",
-                "请输入数据中心端口号!",
-                "我已知晓"
-            )
+            showMessageDialog("请输入数据中心端口号!")
             return
         }
         try {
             val port: Int = mStates.centerServerPort.get().toInt()
             if (port < 0 || port > 65535) {
-                MessageDialog.show(
-                    "提示",
-                    "数据中心端口号数值范围[0,65535]!",
-                    "我已知晓"
-                )
+                showMessageDialog("数据中心端口号数值范围[0,65535]!")
                 return
             }
         } catch (ex: Exception) {
-            MessageDialog.show(
-                "提示",
-                "数据中心端口号数值范围[0,65535]!",
-                "我已知晓"
-            )
+            showMessageDialog("数据中心端口号数值范围[0,65535]!")
             return
         }
         val entity = DataCenterParamEntity(
@@ -327,27 +311,15 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
             //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.deviceId.get().isEmpty() && mStates.deviceKey.get().isEmpty()) {
                 if (mStates.registerCode.get().isEmpty()) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入设备注册码!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("请输入设备注册码!")
                     return
                 }
                 if (mStates.registerAddress.get().isEmpty()) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入设备注册地址!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("请输入设备注册地址!")
                     return
                 }
                 if (mStates.centerServerPort.get().isEmpty()) {
-                    MessageDialog.show(
-                        "提示",
-                        "请输入设备注册端口号!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("请输入设备注册端口号!")
                     return
                 }
             }
@@ -355,19 +327,11 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                 try {
                     val port: Int = mStates.centerServerPort.get().toInt()
                     if (port < 0 || port > 65535) {
-                        MessageDialog.show(
-                            "提示",
-                            "设备注册端口号数值范围[0,65535]!",
-                            "我已知晓"
-                        )
+                        showMessageDialog("设备注册端口号数值范围[0,65535]!")
                         return
                     }
                 } catch (ex: Exception) {
-                    MessageDialog.show(
-                        "提示",
-                        "设备注册端口号数值范围[0,65535]!",
-                        "我已知晓"
-                    )
+                    showMessageDialog("设备注册端口号数值范围[0,65535]!")
                     return
                 }
             }

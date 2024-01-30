@@ -1,31 +1,32 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment
+package com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor
 
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasCollectorEntity
+import com.kyleduo.switchbutton.SwitchButton
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasDigitalPiezometerEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasDigitalPiezometerInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessageDialog
-import com.shmedo.mcloudapp.databinding.FragmentDasCollectorSettingBinding
+import com.shmedo.mcloudapp.databinding.FragmentDasDigitalOsmometerBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.DasCollectorSettingViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.DasDigitalOsmometerViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -33,23 +34,16 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
-/**
- * @author：gonghe
- * @time: 2024/1/8
- * @desc: DAS 采集器参数配置页面
- *
- */
-class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentDasCollectorSettingBinding by lazy { getBinding() as FragmentDasCollectorSettingBinding }
+class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentDasDigitalOsmometerBinding by lazy { getBinding() as FragmentDasDigitalOsmometerBinding }
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: DasCollectorSettingViewModel by viewModels()
+    private val mStates: DasDigitalOsmometerViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
     val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_das_collector_setting,
+            R.layout.fragment_das_digital_osmometer,
             BR.stateVM,
             mStates
         )
@@ -58,7 +52,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.title = "采集器参数"
+        binding.llToolbar.toolbar.title = "数字式水位计"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -83,19 +77,17 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
+                return
+            }
+            mStates.isOpened.set(isChecked)
+            if (!isChecked) {
+                disableDigitalPiezometer()
+            }
         }
 
         fun onSubmitClick() {
@@ -108,61 +100,16 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initSaveCommand() {
-        if (mStates.collectorAddress.get().isEmpty()) {
-            showMessageDialog("请输入采集器地址!")
-            return
-        }
-        try {
-            val value = mStates.collectorAddress.get().toDouble()
-            if (value < 0 || value > 255) {
-                showMessageDialog("采集器地址数值范围[0,255]!")
-                return
-            }
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的采集器地址!")
-            return
-        }
-        if (mStates.solvingInterval.get().isEmpty()) {
-            showMessageDialog("请输入解算间隔!")
-            return
-        }
-        if (mStates.standbyTime.get().isEmpty()) {
-            showMessageDialog("请输入待机时长!")
-            return
-        }
-        if (mStates.collectionInterval.get().isEmpty()) {
-            showMessageDialog("请输入采集间隔!")
-            return
-        }
-        if (mStates.isShowSensitivity.get()) {
-            if (mStates.sensitivity.get().isEmpty()) {
-                showMessageDialog("请输入灵敏度!")
-                return
-            }
-            try {
-                val value = mStates.sensitivity.get().toDouble()
-                if (value < 30 || value > 150) {
-                    showMessageDialog("灵敏度数值范围[30,150]!")
-                    return
-                }
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的灵敏度!")
-                return
-            }
-        }
-
-        val entity = DasCollectorEntity(
-            type = mStates.infoWrapper.get().type,
-            addr = mStates.collectorAddress.get(),
-            collgap = mStates.collectionInterval.get(),
-            calcgap = mStates.solvingInterval.get(),
-            standbygap = mStates.standbyTime.get(),
-            sensitivity = if (mStates.isShowSensitivity.get()) mStates.sensitivity.get() else IOTConstants.NULL_KEY
+    /**
+     * 关闭水位计
+     */
+    private fun disableDigitalPiezometer() {
+        val entity = DasDigitalPiezometerEntity(
+            sw = "0"
         )
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL,
+            IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -171,6 +118,79 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun initSaveCommand() {
+        if (mStates.address.get().isEmpty()) {
+            showMessageDialog("请输入水位计地址!")
+            return
+        }
+        try {
+            val value = mStates.address.get().toDouble()
+            if (value < 0 || value > 255) {
+                showMessageDialog("水位计地址数值范围[0,255]!")
+                return
+            }
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的水位计地址!")
+            return
+        }
+
+        if (mStates.triggerValue.get().isEmpty()) {
+            showMessageDialog("请输入水位报警值!")
+            return
+        }
+        try {
+            val value = mStates.triggerValue.get().toInt()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的水位报警值!")
+            return
+        }
+
+        if (mStates.correctValue.get().isEmpty()) {
+            showMessageDialog("请输入水深修正值!")
+            return
+        }
+        try {
+            val value = mStates.correctValue.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的水深修正值!")
+            return
+        }
+        if (mStates.wireRopeLength.get().isEmpty()) {
+            showMessageDialog("请输入水位计绳长!")
+            return
+        }
+        try {
+            val value = mStates.nozzelHeight.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入安装高程值!")
+            return
+        }
+
+        try {
+            val value = mStates.nozzelHeight.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的安装高程值!")
+            return
+        }
+
+        val entity = DasDigitalPiezometerEntity(
+            sw = "1",
+            addr = mStates.address.get(),
+            threshold = mStates.triggerValue.get(),
+            corrval = mStates.correctValue.get(),
+            ropelen = mStates.wireRopeLength.get(),
+            tubealti = mStates.nozzelHeight.get()
+        )
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
@@ -179,7 +199,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL
+            IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -187,19 +207,17 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL -> {
-                val result = iotParseManager.parse<DasCollectorInfo>(
+            IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO -> {//
+                val result = iotParseManager.parse<DasDigitalPiezometerInfo>(
                     cmdStr,
-                    IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL
+                    IOTCommandType.DAS_MD_GET_DIGITAL_PIEZOMETER_INFO
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询采集器参数出错: ${result.message}"
+                        val errMsg = "查询数字水位计参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
-                        //设备版本不支持，隐藏编辑按钮
-                        toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
                     }
 
@@ -212,11 +230,11 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL -> {//
+            IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "设置采集器参数出错: ${result.message}"
+                        val errMsg = "设置数字水位计参数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
@@ -234,17 +252,23 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(collectorInfo: DasCollectorInfo) {
+    private fun initParamData(digitalPiezometerInfo: DasDigitalPiezometerInfo) {
         try {
-            mStates.infoWrapper.set(collectorInfo)
-            mStates.collectorAddress.set(collectorInfo.addr)
-            mStates.solvingInterval.set(collectorInfo.calcgap)
-            mStates.standbyTime.set(collectorInfo.standbygap)
-            mStates.collectionInterval.set(collectorInfo.collgap)
-            mStates.sensitivity.set(collectorInfo.sensitivity)
-            mStates.isShowSensitivity.set(collectorInfo.sensitivity != IOTConstants.NULL_KEY)
-            if (mStates.isShowSensitivity.get()) {
-                mStates.sensitivity.set(decimalFormat.format(collectorInfo.sensitivity.toDouble()))
+            mStates.address.set(digitalPiezometerInfo.addr)
+            mStates.triggerValue.set(digitalPiezometerInfo.threshold)
+            mStates.correctValue.set(digitalPiezometerInfo.corrval)
+            mStates.wireRopeLength.set(digitalPiezometerInfo.ropelen)
+            mStates.nozzelHeight.set(digitalPiezometerInfo.tubealti)
+
+            decimalFormat.applyPattern("#.###")
+            digitalPiezometerInfo.corrval.toDoubleOrNull()?.let {
+                mStates.correctValue.set(decimalFormat.format(it))
+            }
+            digitalPiezometerInfo.ropelen.toDoubleOrNull()?.let {
+                mStates.wireRopeLength.set(decimalFormat.format(it))
+            }
+            digitalPiezometerInfo.tubealti.toDoubleOrNull()?.let {
+                mStates.nozzelHeight.set(decimalFormat.format(it))
             }
         } catch (e: Exception) {
             e.printStackTrace()

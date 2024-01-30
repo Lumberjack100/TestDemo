@@ -49,6 +49,11 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dimen_size_25">
+                    <TextView
+                        style="@style/Common_GroupName_Style"
+                        android:text="开关量类型传感器" />
+
+
 
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

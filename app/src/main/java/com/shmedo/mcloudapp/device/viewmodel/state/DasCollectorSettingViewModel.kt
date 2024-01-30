@@ -7,7 +7,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
 class DasCollectorSettingViewModel : ViewModel() {
     val infoWrapper = NonNullObservableField<DasCollectorInfo>(DasCollectorInfo())
 
-    val isEditable = NonNullObservableField(false)
+    val isEditable = NonNullObservableField(true)
     val isShowSensitivity = NonNullObservableField(false)
     val collectorAddress = NonNullObservableField("")//采集器地址
     val solvingInterval = NonNullObservableField("")//采集器解算间隔
