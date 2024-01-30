@@ -65,16 +65,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:paddingTop="@dimen/dimen_size_3"
-                android:paddingBottom="@dimen/dimen_size_3">
+                android:paddingHorizontal="@dimen/dimen_size_15"
+                android:paddingVertical="@dimen/dimen_size_3">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/dimen_size_16"
-                    android:layout_marginEnd="@dimen/dimen_size_20"
+                    android:layout_marginEnd="@dimen/dimen_size_40"
                     app:tabGravity="start"
                     app:tabIndicatorHeight="0dp"
                     app:tabMode="scrollable"
@@ -88,32 +87,15 @@
                     android:layout_width="33dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_vertical|end"
-                    android:layout_marginEnd="@dimen/dimen_size_10"
                     android:src="@drawable/all_img" />
 
             </FrameLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.drake.brv.PageRefreshLayout
-            android:id="@+id/refreshLayout"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerview_device"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingStart="@dimen/dimen_size_10"
-                android:paddingTop="10dp"
-                android:paddingRight="@dimen/dimen_size_10"
-                android:paddingBottom="@dimen/dimen_size_10"
-                android:splitMotionEvents="false"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:listitem="@layout/item_device_info" />
-
-        </com.drake.brv.PageRefreshLayout>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

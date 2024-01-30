@@ -8,26 +8,22 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
-import com.drake.brv.PageRefreshLayout
-import com.drake.brv.utils.setup
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.model.UserInfo
-import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.ext.withArguments
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
-import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel
@@ -35,7 +31,6 @@ import java.text.DecimalFormat
 
 class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val binding: FragmentNetDeviceListBinding by lazy { getBinding() as FragmentNetDeviceListBinding }
-    private val mMessenger: PageMessenger by lazy { getAppViewModel() }
     private val mStates: NetDeviceListViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
@@ -43,7 +38,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val activeBg: Int = R.drawable.bg_product_tab_checked
     private val normalBg: Int = R.drawable.bg_product_tab_normal
     private val activeColor: Int = ColorUtils.getColor(R.color.white)
-    private val normalColor: Int =  ColorUtils.getColor(R.color.colorPrimary)
+    private val normalColor: Int = ColorUtils.getColor(R.color.colorPrimary)
     private val activeSize: Float = 15f
     private val normalSize: Float = 15f
 
@@ -57,43 +52,13 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        initDeviceInfoAdapter()
-        initRefresh()
+
     }
 
-    private fun initDeviceInfoAdapter() {
-        binding.recyclerviewDevice.setup { rv ->
-            rv.addItemDecoration(
-                MyGridSpacingItemDecoration(
-                    2,
-                    ConvertUtils.dp2px(10f),
-                    false
-                )
-            )
-            addType<DeviceInfo>(R.layout.item_device_info)
-            R.id.item.onClick {
-                val deviceInfo = getModel<DeviceInfo>()
-                DeviceHomeActivity.start(mActivity, deviceInfo)
-            }
-        }
-    }
-
-    private fun initRefresh() {
-        PageRefreshLayout.startIndex = 1
-        binding.refreshLayout.onRefresh {
-            queryDeviceList()
-        }
-    }
-
-    private fun queryDeviceList() {
-        deviceRequestViewModel.getDeviceList(
-            companyID = userInfo.companyID,
-            productID = productID,
-            currentPage = binding.refreshLayout.index,
-            pageSize = PAGE_SIZE,
-            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission(),
-            onlineStatus = ""
-        )
+    override fun initData() {
+        companyID = userInfo.companyID
+        productID = -1
+        deviceRequestViewModel.getProductList(userInfo.companyID)
     }
 
     inner class ClickProxy {
@@ -145,20 +110,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             dataResult.result?.let { tempList ->
                 productInfoList.clear()
                 productInfoList.addAll(tempList)
-                initTabLayout()
-            }
-        }
-        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
-            if (!listDataResult.responseStatus.isSuccess) {
-                Toaster.show(listDataResult.responseStatus.errorMessage)
-                return@observe
-            }
-            listDataResult.result?.let {
-                binding.refreshLayout.addData(it, isEmpty = {
-                    binding.refreshLayout.index == 1 && it.isEmpty()
-                }, hasMore = {
-                    binding.refreshLayout.index < listDataResult.totalPage
-                })
+                initViewPager()
             }
         }
     }
@@ -176,25 +128,34 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 //        binding.tvOnlineRate.text = SpannedString(spannableString)
     }
 
-    private fun initTabLayout() {
-        val tabLayout = binding.tabs
-        productInfoList.forEachIndexed { index, productInfo ->
-            val tabView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.custom_tab_product, null)
-            val textView = tabView.findViewById<TextView>(R.id.tabText)
-            textView.text = productInfo.productName
-            if (index == 0) { // 第一个为默认选中
-                tabView.setBackgroundResource(activeBg)
-                textView.textSize = activeSize
-                textView.setTextColor(activeColor)
-            } else {
-                tabView.setBackgroundResource(normalBg)
-                textView.textSize = normalSize
-                textView.setTextColor(normalColor)
-            }
-            tabLayout.addTab(tabLayout.newTab().setCustomView(tabView))
+    private fun initViewPager() {
+        val mTabFragments = productInfoList.map {
+            NetProductDeviceListFragment.newInstance()
+                .withArguments(NetProductDeviceListFragment.TAB_PRODUCT_ID to it.id)
         }
-        tabLayout.addOnTabSelectedListener(this)
+        binding.viewpager.adapter = PageAdapter(this, mTabFragments)
+        binding.viewpager.offscreenPageLimit = mTabFragments.size
+        binding.viewpager.isUserInputEnabled = false
+        val tabLayoutMediator =
+            TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
+                val tabView = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.custom_tab_product, null)
+                val textView = tabView.findViewById<TextView>(R.id.tabText)
+                textView.text = productInfoList[position].productName
+                if (position == 0) {
+                    textView.textSize = activeSize
+                    textView.setTextColor(activeColor)
+                    tabView.setBackgroundResource(activeBg)
+                    tab.setCustomView(tabView)
+                } else {
+                    textView.textSize = normalSize
+                    textView.setTextColor(normalColor)
+                    tabView.setBackgroundResource(normalBg)
+                    tab.setCustomView(tabView)
+                }
+            }
+        tabLayoutMediator.attach()
+        binding.tabs.addOnTabSelectedListener(this)
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
@@ -204,7 +165,6 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             textView.textSize = activeSize
             textView.setTextColor(activeColor)
             productID = productInfoList[tab.position].id
-            binding.refreshLayout.showLoading()
         }
     }
 
@@ -219,23 +179,24 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     override fun onTabReselected(tab: TabLayout.Tab) {}
 
+//    override fun lazyLoadData() {
+//        deviceRequestViewModel.getProductList(userInfo.companyID)
+//    }
+
     override fun onResume() {
         super.onResume()
         if (companyID != userInfo.companyID) {
             companyID = userInfo.companyID
             productID = -1
-            deviceRequestViewModel.getDeviceStatByCompanyID(
-                userInfo.companyID,
-                MmkvCacheUtil.isHasListSuperInfoPermission()
-            )
             deviceRequestViewModel.getProductList(userInfo.companyID)
-            binding.refreshLayout.showLoading()
         }
+        deviceRequestViewModel.getDeviceStatByCompanyID(
+            userInfo.companyID,
+            MmkvCacheUtil.isHasListSuperInfoPermission()
+        )
     }
 
     companion object {
-        private const val PAGE_SIZE = 20
         fun newInstance() = NetDeviceListFragment()
     }
-
 }

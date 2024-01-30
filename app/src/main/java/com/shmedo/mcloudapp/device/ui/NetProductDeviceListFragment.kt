@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.PageRefreshLayout
@@ -10,50 +9,29 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.UserInfo
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchResultBinding
+import com.shmedo.mcloudapp.databinding.FragmentNetProductDeviceListBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 
-/**
- * 创建者：gonghe
- *
- * 创建时间：2023/8/31
- *
- * 描述： 设备搜索结果展示页面
- *
- *
- */
-class DeviceSearchResultFragment : BaseFragment() {
-    private val binding: FragmentDeviceSearchResultBinding by lazy { getBinding() as FragmentDeviceSearchResultBinding }
+class NetProductDeviceListFragment : BaseFragment() {
+    private val binding: FragmentNetProductDeviceListBinding by lazy { getBinding() as FragmentNetProductDeviceListBinding }
     private val mStates: EmptyViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
-    private var statusBarColor = 0
-    private lateinit var keyWord: String
+    private var productID = -1
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_device_search_result, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_net_product_device_list, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
-        registerOnBackPressedDispatcher {
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
         initDeviceInfoAdapter()
         initRefresh()
     }
@@ -84,9 +62,7 @@ class DeviceSearchResultFragment : BaseFragment() {
 
     override fun initData() {
         arguments?.let {
-            keyWord = it.getString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
-            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
-            binding.llToolbar.toolbar.title = keyWord
+            productID = it.getInt(TAB_PRODUCT_ID, -1)
         }
     }
 
@@ -96,13 +72,13 @@ class DeviceSearchResultFragment : BaseFragment() {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe
             }
-            if (listDataResult.result.isNullOrEmpty()) {
-                binding.refreshLayout.showEmpty()
-                return@observe
+            listDataResult.result?.let {
+                binding.refreshLayout.addData(it, isEmpty = {
+                    binding.refreshLayout.index == 1 && it.isEmpty()
+                }, hasMore = {
+                    binding.refreshLayout.index < listDataResult.totalPage
+                })
             }
-            binding.refreshLayout.addData(listDataResult.result, hasMore = {
-                binding.refreshLayout.index < listDataResult.totalPage
-            })
         }
     }
 
@@ -113,26 +89,17 @@ class DeviceSearchResultFragment : BaseFragment() {
     private fun queryDeviceList() {
         deviceRequestViewModel.getDeviceList(
             companyID = userInfo.companyID,
-            deviceToken = keyWord,
+            productID = productID,
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE,
-            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
+            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission(),
+            onlineStatus = ""
         )
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     companion object {
         private const val PAGE_SIZE = 20
-        fun newBundleArguments(
-            keyWord: String,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, keyWord)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
+        const val TAB_PRODUCT_ID = "tab_product_id"
+        fun newInstance() = NetProductDeviceListFragment()
     }
 }
