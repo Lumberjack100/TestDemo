@@ -13,9 +13,9 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
+import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showWaitDialog
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentCompanyHomeBinding
@@ -59,7 +59,7 @@ class CompanyHomeFragment : BaseFragment() {
 
     override fun createObserver() {
         loginRequestViewModel.companyInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<CompanyInfo> ->
-            dismissWaitDialog()
+            dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -69,7 +69,7 @@ class CompanyHomeFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        showWaitDialog("加载中...")
+        showLoadingDialog("加载中...")
         loginRequestViewModel.queryCompanyInfoByID(userInfo.companyID)
     }
 

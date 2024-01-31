@@ -29,6 +29,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.BaseActivity
 import com.shmedo.mcloudapp.common.activity.MainActivity
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
+import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.widget.MyCountDownTimer
 import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
 import com.shmedo.mcloudapp.user.model.ContentType
@@ -80,7 +82,7 @@ class LoginActivity : BaseActivity() {
 
     override fun createObserver() {
         loginRequestViewModel.sendCodeResult.observe(this) { dataResult: DataResult<String> ->
-            dismissLoading()
+            dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -91,7 +93,7 @@ class LoginActivity : BaseActivity() {
             timer.start()
         }
         loginRequestViewModel.loginResult.observe(this) { dataResult: DataResult<String> ->
-            dismissLoading()
+            dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show("登录失败: " + dataResult.responseStatus.errorMessage)
                 return@observe
@@ -128,7 +130,7 @@ class LoginActivity : BaseActivity() {
                 Toaster.show("手机号格式错误！")
                 return
             }
-            showLoading("处理中...")
+            showLoadingDialog("处理中...")
             loginRequestViewModel.requestSendSmsCode(mStates.phone.get())
         }
 
@@ -145,7 +147,7 @@ class LoginActivity : BaseActivity() {
                     binding.passwordET.requestFocus()
                     return
                 }
-                showLoading("正在登录...")
+                showLoadingDialog("正在登录...")
                 loginRequestViewModel.requestLogin(mStates.name.get(), mStates.password.get())
             } else {
                 //验证码登录
@@ -163,7 +165,7 @@ class LoginActivity : BaseActivity() {
                     binding.codeET.requestFocus()
                     return
                 }
-                showLoading("正在登录...")
+                showLoadingDialog("正在登录...")
                 loginRequestViewModel.requestQuickLogin(mStates.phone.get(), mStates.code.get())
             }
         }

@@ -29,9 +29,9 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
+import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showWaitDialog
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.utils.GlideEngine
 import com.shmedo.mcloudapp.common.utils.ImageFileCompressEngine
@@ -98,7 +98,7 @@ class UserInfoHomeFragment : BaseFragment() {
 
     override fun createObserver() {
         loginRequestViewModel.uploadUserAvataResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
-            dismissWaitDialog()
+            dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -110,7 +110,7 @@ class UserInfoHomeFragment : BaseFragment() {
             )
         }
         loginRequestViewModel.updateUserInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
-            dismissWaitDialog()
+            dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -166,7 +166,7 @@ class UserInfoHomeFragment : BaseFragment() {
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-            showWaitDialog("处理中...")
+            showLoadingDialog("处理中...")
             loginRequestViewModel.requestUpdateUserInfo(jsonObjectRequest.toString())
         }
     }
@@ -186,7 +186,7 @@ class UserInfoHomeFragment : BaseFragment() {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        showWaitDialog("正在上传...")
+        showLoadingDialog("正在上传...")
         loginRequestViewModel.uploadUserAvatar(jsonObjectRequest.toString())
     }
 

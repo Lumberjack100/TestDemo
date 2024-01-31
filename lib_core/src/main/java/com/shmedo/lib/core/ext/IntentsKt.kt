@@ -49,12 +49,6 @@ inline fun <reified T : Activity> Activity.openActivityForResult(
 ) = startActivityForResult(intentOf<T>(*params), requestCode)
 
 
-inline fun <reified T : Activity> Fragment.openActivityForResult(
-    requestCode: Int,
-    vararg params: Pair<String, Any?>
-) = startActivityForResult(intentOf<T>(*params), requestCode)
-
-
 inline fun <reified T : Service> Context.startService(vararg params: Pair<String, Any?>) =
     startService(intentOf<T>(*params))
 

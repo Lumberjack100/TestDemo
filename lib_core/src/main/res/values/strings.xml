@@ -62,4 +62,10 @@
     <string name="common_permission_picture_in_picture">画中画权限</string>
     <string name="common_permission_vpn">\tVPN\t权限</string>
 
+
+
+    <string name="ble_channel_connected_devices_title">蓝牙连接</string>
+    <string name="ble_channel_connected_devices_description">Shows a notification when a device is connected in background.</string>
+    <string name="ble_notification_connected_message">%s is connected.</string>
+
 </resources>

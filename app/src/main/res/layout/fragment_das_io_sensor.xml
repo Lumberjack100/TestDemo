@@ -90,6 +90,7 @@
                         android:layout_weight="1" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/ll_rain_resolution"
                         onClickWithDebouncing="@{()->click.onChooseResolutionClick()}"
                         visible='@{stateVM.checkMode==1}'
                         android:layout_width="wrap_content"

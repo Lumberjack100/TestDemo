@@ -1,4 +1,4 @@
-package com.shmedo.lib.core.ext.lifecycle
+package com.shmedo.lib.core.util
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver

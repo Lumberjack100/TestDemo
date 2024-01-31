@@ -20,7 +20,6 @@ import com.shmedo.mcloudapp.common.utils.SettingUtil
  * 描述：     TODO
  */
 
-
 /**
  * @param message 显示对话框的内容 必填项
  * @param title 显示对话框的标题 默认 温馨提示

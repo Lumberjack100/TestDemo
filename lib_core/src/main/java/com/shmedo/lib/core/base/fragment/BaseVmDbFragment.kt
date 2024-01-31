@@ -110,10 +110,6 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
         return 300
     }
 
-    abstract fun showLoading(message: String = "请求网络中...")
-
-    abstract fun dismissLoading()
-
     /**
      * TODO 覆盖 DataBindingActivity 中的 isDebug 方法,一直返回 false
      *

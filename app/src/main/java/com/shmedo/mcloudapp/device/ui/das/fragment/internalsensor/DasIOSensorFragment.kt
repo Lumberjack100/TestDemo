@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
-import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
@@ -111,9 +110,8 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .hasShadowBg(false)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.4f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .atView(binding.ivRainResolution) // 依附于所点击的View，内部会自动判断在上方或者下方显示
+                .atView(binding.llRainResolution) // 依附于所点击的View，内部会自动判断在上方或者下方显示
                 .asAttachList(rainResolutionList, null, { _, text ->
                     mStates.rainResolution.set(text)
                 }, 0, 0)

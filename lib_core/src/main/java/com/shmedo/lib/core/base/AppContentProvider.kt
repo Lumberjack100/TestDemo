@@ -8,7 +8,7 @@ import android.database.Cursor
 import android.net.ConnectivityManager
 import android.net.Uri
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.shmedo.lib.core.ext.lifecycle.AppLifeObserver
+import com.shmedo.lib.core.util.AppLifeObserver
 import com.shmedo.lib.core.network.manager.NetworkStateReceive
 import com.tencent.mmkv.MMKV
 

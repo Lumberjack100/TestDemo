@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 class DasDigitalOsmometerViewModel : ViewModel() {
-    val isOpened = NonNullObservableField(true)
+    val isOpened = NonNullObservableField(false)
     val address = NonNullObservableField("")//地址
     val triggerValue = NonNullObservableField("")//触发值
     val correctValue = NonNullObservableField("")//修正值

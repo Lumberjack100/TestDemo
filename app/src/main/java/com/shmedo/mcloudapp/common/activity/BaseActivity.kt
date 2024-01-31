@@ -8,8 +8,6 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.shmedo.lib.core.base.activity.BaseVmDbActivity
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissWaitDialog
-import com.shmedo.mcloudapp.common.ext.showWaitDialog
 
 /**
  * 创建者:   gonghe <br></br>
@@ -40,22 +38,6 @@ abstract class BaseActivity : BaseVmDbActivity() {
 
     open fun hideTitleBar() {
         supportActionBar?.hide()
-    }
-
-    /**
-     * 打开等待框
-     */
-    fun showLoading(message: String) {
-//        showLoadingExt(message)
-        showWaitDialog(message)
-    }
-
-    /**
-     * 关闭等待框
-     */
-    fun dismissLoading() {
-//        dismissLoadingExt()
-        dismissWaitDialog()
     }
 
     open fun initImmersionBar(

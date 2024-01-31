@@ -18,6 +18,7 @@ import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.user.activity.LoginActivity
@@ -64,7 +65,7 @@ class SplashActivity : BaseActivity() {
         }
         loginRequestViewModel.loginResult.observe(this) { dataResult: DataResult<String> ->
             if (!dataResult.responseStatus.isSuccess) {
-                dismissLoading()
+                dismissLoadingDialog()
                 redirectToLoginActivity(500)
                 return@observe
             }

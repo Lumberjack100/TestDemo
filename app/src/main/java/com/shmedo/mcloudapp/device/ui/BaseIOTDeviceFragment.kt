@@ -141,7 +141,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     private suspend fun collectBleData() {
         bleViewModel.state.collect { state ->
-            Timber.v("$fragmentName Medo BluetoothGatt: $state")
+            Timber.v("$fragmentName MedoBle: $state")
 //                if (isRestrictHiddenMode() && isHidden) {
 //                    return@collect
 //                }

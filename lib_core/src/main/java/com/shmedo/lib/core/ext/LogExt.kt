@@ -9,6 +9,7 @@ import com.shmedo.lib.core.data.repository.LocalDataRepository
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * 创建者：gonghe
@@ -54,4 +55,18 @@ fun addIOTDeviceLogItem(priority: Int, data: String, scope: CoroutineScope) {
         )
         LocalDataRepository.instance.insertLog(logInfo)
     }
+}
+
+
+/**
+ * 控制台输出带协程信息的log
+ */
+fun logX(any: Any?) {
+    Timber.d(
+        """
+================================
+$any
+${TimeUtils.getNowString()} Thread:${Thread.currentThread().name}
+""".trimIndent()
+    )
 }
