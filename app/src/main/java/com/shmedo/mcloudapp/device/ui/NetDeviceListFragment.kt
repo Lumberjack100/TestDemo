@@ -7,6 +7,7 @@ import android.text.style.AbsoluteSizeSpan
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.fragment.app.viewModels
+import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -136,7 +137,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 .withArguments(NetProductDeviceListFragment.TAB_PRODUCT_ID to it.id)
         }
         binding.viewpager.adapter = PageAdapter(this, mTabFragments)
-        binding.viewpager.offscreenPageLimit = mTabFragments.size
+        binding.viewpager.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
         binding.viewpager.isUserInputEnabled = false
         val tabLayoutMediator =
             TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->

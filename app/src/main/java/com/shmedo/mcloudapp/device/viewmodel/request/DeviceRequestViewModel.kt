@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.device.model.FirmWareInfo
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 
 /**
  * 创建者：gonghe
@@ -390,5 +391,10 @@ class DeviceRequestViewModel : BaseViewModel() {
             jsonObjectRequest.toString(),
             onCatch
         )
+    }
+
+    override fun onCleared() {
+        Timber.i("DeviceRequestViewModel onCleared")
+        super.onCleared()
     }
 }

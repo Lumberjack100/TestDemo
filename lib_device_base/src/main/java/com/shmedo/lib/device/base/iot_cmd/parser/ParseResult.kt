@@ -9,7 +9,7 @@ package com.shmedo.lib.device.base.iot_cmd.parser
 
 sealed class ParseResult<out T> {
 
-    data class Success<out T>(val info: T) : ParseResult<T>()
+    data class Success<out T>(val data: T) : ParseResult<T>()
 
-    data class Failure(val error: String) : ParseResult<Nothing>()
+    data class Failure(val errorMsg: String) : ParseResult<Nothing>()
 }

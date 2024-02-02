@@ -9,7 +9,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
@@ -25,6 +24,7 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
@@ -100,55 +100,36 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             deviceInfo,
             bleDevice
         )
-        binding.viewpager.isUserInputEnabled = false
-        //设置缓存数量，对应 RecyclerView 中的 mCachedViews，即屏幕外的视图数量
-//        ((binding.viewpager.getChildAt(0)) as RecyclerView).setItemViewCacheSize(0)
-//        binding.viewpager.offscreenPageLimit = tabNames.size
-        binding.viewpager.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount(): Int {
-                return tabNames.size
-            }
-
-            override fun createFragment(position: Int): Fragment {
-                when (position) {
-                    0 -> return MR702RS485Port1Fragment.newInstance().apply {
-                        arguments = bundle
-                    }
-
-                    1 -> return MR702RS485Port2Fragment.newInstance().apply {
-                        arguments = bundle
-                    }
-
-                    2 -> return MR702RS485Port3Fragment.newInstance().apply {
-                        arguments = bundle
-                    }
-
-                    3 -> return MR702RS232Port1Fragment.newInstance().apply {
-                        arguments = bundle
-                    }
-
-                    4 -> return MR702RS232Port2Fragment.newInstance().apply {
-                        arguments = bundle
-                    }
-
-                    5 -> return MR702RainPortFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-
-                    6 -> return MR702DOPortFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-
-                    7 -> return MR702DIPortFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-
-                    else -> return MR702RS485Port1Fragment.newInstance().apply {
-                        arguments = bundle
-                    }
+        val mFragments =
+            listOf<Fragment>(
+                MR702RS485Port1Fragment.newInstance().apply {
+                    arguments = bundle
+                },
+                MR702RS485Port2Fragment.newInstance().apply {
+                    arguments = bundle
+                },
+                MR702RS485Port3Fragment.newInstance().apply {
+                    arguments = bundle
+                },
+                MR702RS232Port1Fragment.newInstance().apply {
+                    arguments = bundle
+                },
+                MR702RS232Port2Fragment.newInstance().apply {
+                    arguments = bundle
+                },
+                MR702RainPortFragment.newInstance().apply {
+                    arguments = bundle
+                },
+                MR702DOPortFragment.newInstance().apply {
+                    arguments = bundle
+                },
+                MR702DIPortFragment.newInstance().apply {
+                    arguments = bundle
                 }
-            }
-        }
+            )
+        binding.viewpager.adapter = PageAdapter(this, mFragments)
+        binding.viewpager.offscreenPageLimit = 1
+        binding.viewpager.isUserInputEnabled = false
         binding.viewpager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {

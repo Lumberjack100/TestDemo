@@ -2,7 +2,6 @@ package com.shmedo.lib.device.base.iot_cmd.parser
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil.extractCommandType
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 
 /**
@@ -21,10 +20,9 @@ class IOTParserManager private constructor(
         cmdType: IOTCommandType = IOTCommandType.COMMON_SETTING_COMMAND
     ): IOTCommandResult<T> {
 
-        // 检查是否包含表示失败的字段
+        //检查响应指令是否包含表示错误的字段
         if (result.contains(IOTConstants.ERROR_FLAG)) {
             val reason = extractFailureReason(result)
-            val cmdType = extractCommandType(result)
             return IOTCommandResult.Failure(reason, cmdType)
         }
 
@@ -42,13 +40,16 @@ class IOTParserManager private constructor(
         return when (val parseResult = parser.parse(result)) {
             is ParseResult.Success -> {
                 @Suppress("UNCHECKED_CAST")
-                IOTCommandResult.Success(parseResult.info as T, cmdType)
+                IOTCommandResult.Success(parseResult.data as T, cmdType)
             }
 
-            is ParseResult.Failure -> IOTCommandResult.Failure(parseResult.error, cmdType)
+            is ParseResult.Failure -> IOTCommandResult.Failure(parseResult.errorMsg, cmdType)
         }
     }
 
+    /**
+     * 从响应指令中提取错误原因
+     */
     private fun extractFailureReason(result: String): String {
         val reasonPair = result.split("&").find { it.startsWith("reason=") }
         val reason = reasonPair?.substringAfter("reason=", "未知错误") ?: "未知错误"

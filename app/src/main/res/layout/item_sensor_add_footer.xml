@@ -14,7 +14,7 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="88dp"
+        android:paddingVertical="@dimen/dimen_size_15"
         app:drawable_radius="@{6}"
         app:drawable_solidColor="@{@color/search_bg_gray_color}"
         tools:background="@color/search_bg_gray_color">

@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.common.fragment
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.hjq.permissions.OnPermissionCallback
@@ -13,6 +12,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.util.PermissionInterceptor
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentMainBinding
 import com.shmedo.mcloudapp.user.fragment.MineFragment
@@ -29,18 +29,14 @@ class MainFragment : BaseFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val viewPagerAdapter = object : FragmentStateAdapter(this) {
-            override fun createFragment(position: Int): Fragment {
-                return if (position == 0)
-                    DeviceManageHomeFragment()
-                else MineFragment()
-            }
-
-            override fun getItemCount() = 2
-        }
+        val mFragments =
+            listOf<Fragment>(
+                DeviceManageHomeFragment(),
+                MineFragment()
+            )
+        binding.mainViewpager.adapter = PageAdapter(this, mFragments)
+        binding.mainViewpager.offscreenPageLimit = mFragments.size
         binding.mainViewpager.isUserInputEnabled = false
-        binding.mainViewpager.offscreenPageLimit = 2
-        binding.mainViewpager.adapter = viewPagerAdapter
         binding.mainViewpager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
