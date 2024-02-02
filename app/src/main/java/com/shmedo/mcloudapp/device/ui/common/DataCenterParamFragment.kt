@@ -80,9 +80,10 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                 processBack(true)
             }
         })
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
+//        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
+//        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(false)
+        mStates.isEditable.set(true)
         initRefresh()
     }
 
@@ -113,20 +114,20 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.platformType.set(platformList[0])
     }
 
-    private fun setEditable(editable: Boolean) {
+   /* private fun setEditable(editable: Boolean) {
         toolbarViewModel.toolbarIvActionVisible.set(!editable)
         toolbarViewModel.toolbarTvActionVisible.set(editable)
         mStates.isEditable.set(editable)
-    }
+    }*/
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
+//        override fun onToolbarIvClick() {
+//            setEditable(true)
+//        }
+//
+//        override fun onToolbarTvClick() {
+//            setEditable(false)
+//        }
 
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
@@ -399,7 +400,7 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MD_SET_DATA_CENTER -> {
-                setEditable(false)
+//                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()

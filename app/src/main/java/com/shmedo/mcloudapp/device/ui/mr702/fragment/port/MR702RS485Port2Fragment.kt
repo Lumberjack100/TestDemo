@@ -101,7 +101,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 )
             )
             addType<MRSensorItem>(R.layout.item_mr702_port_sensor)
-            addType<RVEmptyFooter>(R.layout.item_mr702_port_sensor_rv_footer)
+            addType<RVEmptyFooter>(R.layout.item_sensor_add_footer)
             R.id.item.onClick {
                 when (itemViewType) {
                     R.layout.item_mr702_port_sensor -> {

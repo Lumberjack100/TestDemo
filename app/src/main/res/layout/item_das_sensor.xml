@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.MRSensorItem" />
+            type="com.shmedo.mcloudapp.device.model.DASSensorItem" />
     </data>
 
     <FrameLayout
@@ -29,6 +29,7 @@
             android:text='@{m.isPlugin?"已接入":"未接入"}'
             android:textColor="@color/white"
             android:textSize="12sp"
+            android:visibility="gone"
             app:drawable_radiusLT="@{6}"
             app:drawable_radiusRB="@{6}"
             app:drawable_solidColor='@{m.isPlugin?@color/mr_interface_sensor_flag_in_backround:@color/mr_interface_sensor_flag_out_backround}'
@@ -65,8 +66,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_del"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="end|top"
             android:layout_marginTop="@dimen/dimen_size_6"
             android:layout_marginEnd="@dimen/dimen_size_6"

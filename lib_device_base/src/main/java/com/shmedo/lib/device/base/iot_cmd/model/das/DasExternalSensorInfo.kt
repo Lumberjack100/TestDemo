@@ -1,6 +1,6 @@
 package com.shmedo.lib.device.base.iot_cmd.model.das
 
-import android.text.TextUtils
+import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
@@ -8,93 +8,41 @@ import java.io.Serializable
  * 创建时间:  2021/4/21 <br></br>
  * 描述：    DAS 扩展传感器参数
  */
-class DasExternalSensorInfo : Serializable {
-    var index //传感器接入顺序（第一支、第二支...）
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var type //传感器类型
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var addr //传感器地址/通道
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var threshold //触发值
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var corrval //修正值
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var spacing //测段长
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var holenum //测孔编号
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var tubealti //安装高程
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var ropelen //安装绳长
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var poly_a //多项式系数A
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var poly_b //多项式系数B
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var poly_c //多项式系数C
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var temp_k //温度系数K
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var temp_t0 //初始温度T0
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var sens_k //灵敏度K
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var temp_b //温度系数b
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var referval_f //基准值F
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var elastic_mod //膨胀系数(应力计)
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
+@JsonClass(generateAdapter = true)
+data class DasExternalSensorInfo  (
+    var index : String = "",//传感器接入顺序（第一支、第二支...）
+    var type : String = "",//传感器类型
+    var addr : String = "",//传感器地址/通道
+    var threshold : String = "",//触发值
+    var corrval : String = "",//修正值
+    var spacing : String = "",//测段长
+    var holenum : String = "",//测孔编号
+    var tubealti : String = "",//安装高程
+    var ropelen : String = "",//安装绳长
+    var poly_a : String = "",//多项式系数A
+    var poly_b : String = "",//多项式系数B
+    var poly_c : String = "",//多项式系数C
+    var temp_k : String = "",//温度系数K
+    var temp_t0 : String = "",//初始温度T0
+    var sens_k : String = "",//灵敏度K
+    var temp_b : String = "",//温度系数b
+    var referval_f : String = "",//基准值F
+    var elastic_mod : String = "",//膨胀系数(应力计)
 
-    //量水堰计特有
-    var lsycsds //初始读数
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var lsyysst //初始堰上水头
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-
+     //量水堰计特有
+    var lsycsds : String = "",//初始读数
+    var lsyysst : String = "",//初始堰上水头
+            
     //倾角仪特有
-    var initvalx //X轴初始值
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var initvaly //Y轴初始值
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var initvalz //z轴初始值
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
+    var initvalx : String = "",//X轴初始值
+    var initvaly : String = "",//Y轴初始值
+    var initvalz : String = "",//z轴初始值
 
-    var child_type //子传感器类型/采集器类型
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "0" else field
+    var child_type : String = "",//子传感器类型/采集器类型
 
     //阵列测斜仪特有
-    var datatype // 解算方式 0:顶部  1: 底部
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var measinval // 测量间隔
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-    var model_type // 模型切换 0:坐标模型  1: ADME 模型
-            : String? = null
-        get() = if (TextUtils.isEmpty(field)) "" else field
-}
+    var datatype : String = "",// 解算方式 0:顶部  1: 底部
+    var measinval : String = "",// 测量间隔
+    var model_type : String = "",// 模型切换 0:坐标模型  1: ADME 模型
+    var initval: String = "", // 初始值
+): Serializable

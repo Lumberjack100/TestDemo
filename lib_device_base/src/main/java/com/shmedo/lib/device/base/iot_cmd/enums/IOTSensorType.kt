@@ -89,6 +89,9 @@ enum class IOTSensorType(val code: String, val description: String) {
     WATER_QUALITY_METER("28", "多参数水质仪"),
 
     WATER_LEVEL_GAUGE("29", "水位(液位)计"),
+
+    SEDIMENTATION_METER("30", "沉降仪"),
+
     /**
      * 基康渗压计 BGK-4500
      */
@@ -148,6 +151,6 @@ enum class IOTSensorType(val code: String, val description: String) {
         }
 
         @JvmStatic
-        fun getSensorTypeByCollectorCode(code: String) =  value(code)
+        fun getSensorTypeByCollectorCode(code: String) = value(code)
     }
 }

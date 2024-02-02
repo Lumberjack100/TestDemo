@@ -12,10 +12,10 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class DasCollectorEntity(
     var type: String = "",//采集器型号
-    var addr: String = "",//采集器地址
-    var collgap: String = "",//采集间隔
-    var calcgap: String = "",//解算间隔
-    var standbygap: String = "",//待机时长
+    var addr: String = IOTConstants.NULL_KEY,//采集器地址
+    var collgap: String = IOTConstants.NULL_KEY,//采集间隔
+    var calcgap: String = IOTConstants.NULL_KEY,//解算间隔
+    var standbygap: String = IOTConstants.NULL_KEY,//待机时长
     var sensornum: String = IOTConstants.NULL_KEY,//接入传感器个数
     var sensitivity: String = IOTConstants.NULL_KEY,//灵敏度
 ) {

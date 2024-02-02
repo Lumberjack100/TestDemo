@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 class DasTerminalParameterViewModel : ViewModel() {
-    val isEditable = NonNullObservableField(false)
+    val isEditable = NonNullObservableField(true)
     val isReportMethodVisible = NonNullObservableField(true)//
     val isStartTimeItemVisible = NonNullObservableField(false)//
 

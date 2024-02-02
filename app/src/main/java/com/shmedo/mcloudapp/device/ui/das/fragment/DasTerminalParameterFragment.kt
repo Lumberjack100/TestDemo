@@ -76,9 +76,9 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
                 nav().navigateUp()
             }
         })
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
+//        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
+//        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(false)
     }
 
     override fun initData() {
@@ -132,20 +132,20 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
 
     override fun onTabReselected(tab: TabLayout.Tab) {}
 
-    private fun setEditable(editable: Boolean) {
+   /* private fun setEditable(editable: Boolean) {
         toolbarViewModel.toolbarIvActionVisible.set(!editable)
         toolbarViewModel.toolbarTvActionVisible.set(editable)
         mStates.isEditable.set(editable)
-    }
+    }*/
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
+//        override fun onToolbarIvClick() {
+//            setEditable(true)
+//        }
+//
+//        override fun onToolbarTvClick() {
+//            setEditable(false)
+//        }
 
         /**
          * 上报方式
@@ -346,7 +346,7 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
             }
 
             IOTCommandType.DAS_MD_SET_DATA_REPORT_TYPE -> {
-                setEditable(false)
+//                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -365,7 +365,7 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
             }
 
             IOTCommandType.DAS_MD_SET_BD_TERMINAL -> {
-                setEditable(false)
+//                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()

@@ -225,11 +225,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         delaySendMillis: Long = 0,//默认不延迟发送
         isStartTimeoutJob: Boolean = false,//默认不启动超时Job
         timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
-        crossinline block: () -> Unit = {}
+        crossinline finishAction: () -> Unit = {}
     ) {
         if (commandItems.size <= 0) {
             cancelNearbyCommunicationTimeoutJob()
-            block()
+            finishAction()
             return
         }
 

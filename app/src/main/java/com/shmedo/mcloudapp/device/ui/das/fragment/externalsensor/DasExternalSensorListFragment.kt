@@ -1,32 +1,507 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
+import com.drake.brv.utils.setup
+import com.hjq.toast.Toaster
+import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasCollectorEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.DASSensorItem
+import com.shmedo.mcloudapp.device.model.RVEmptyFooter
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import org.koin.android.ext.android.inject
+import timber.log.Timber
 
-class DasExternalSensorListFragment : Fragment() {
+class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
+    private val binding: FragmentDasExternalSensorListBinding by lazy { getBinding() as FragmentDasExternalSensorListBinding }
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: DasExternalSensorListViewModel by viewModels()
+    private val iotParseManager: IOTParserManager by inject()
+
+    private val addressList = ArrayList<String>()
+    private val collectorInfo: DasCollectorInfo? = null
+    private var sensorIndex = 0 //接入的传感器索引号
+    private var deleteItemIndex = 0
+
+
+    override fun getDataBindingConfig(): DataBindingConfig {
+        return DataBindingConfig(
+            R.layout.fragment_das_external_sensor_list,
+            BR.stateVM,
+            mStates
+        )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding.llToolbar.toolbar.title = "扩展传感器"
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            nav().navigateUp()
+        }
+        registerOnBackPressedDispatcher {
+//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            nav().navigateUp()
+        }
+        toolbarViewModel.toolbarIvActionVisible.set(false)
+        initRefresh()
+        initSensorAdapter()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            resetData()
+            queryCollectorInfo()
+        }
+    }
+
+    private fun initSensorAdapter() {
+        binding.rv.setup { rv ->
+            rv.addItemDecoration(
+                MyGridSpacingItemDecoration(
+                    2,
+                    ConvertUtils.dp2px(8f),
+                    false
+                )
+            )
+            addType<DASSensorItem>(R.layout.item_das_sensor)
+            addType<RVEmptyFooter>(R.layout.item_sensor_add_footer)
+            R.id.item.onClick {
+                when (itemViewType) {
+                    R.layout.item_das_sensor -> {
+                        val item = getModel<DASSensorItem>()
+
+                    }
+
+                    else -> processAddSensor()
+                }
+            }
+            R.id.item_del.onClick {
+                //最少保留一个传感器
+                if (binding.rv.models!!.size <= 1) {
+                    Toaster.show("至少保留一个传感器")
+                    return@onClick
+                }
+                showMessage("确定删除此传感器吗？", "提示", "删除", {
+                    deleteItemIndex = modelPosition
+                    deleteSensorCommand()
+                }, "取消")
+            }
+        }
+    }
+
+    private fun processAddSensor() {
+
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        fun onSubmitClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            setCollectorCommand()
+        }
+    }
+
+    /**
+     * 删除传感器
+     */
+    private fun deleteSensorCommand() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR,
+            "index=$deleteItemIndex"
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    private fun setCollectorCommand() {
+        val entity = DasCollectorEntity(
+            type = mStates.collectorType.get(),
+            sensornum = mStates.sensorModelMap.size.toString(),
+        )
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(
+            isStartTimeoutJob = true,
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+        )
+    }
+
+    /**
+     * 设置采集器接入的传感器配置信息
+     */
+    private fun setExtendSensorConfigInfo() {
+        commandItems.clear()
+        mStates.sensorModelMap.values.forEachIndexed { mIndex, dasExternalSensorInfo ->
+            val entity = DasExternalSensorEntity().apply {
+                index = mIndex.toString()
+                type = dasExternalSensorInfo.type
+                addr = dasExternalSensorInfo.addr
+                threshold = dasExternalSensorInfo.threshold
+                corrval = dasExternalSensorInfo.corrval
+                when (IOTSensorType.value(dasExternalSensorInfo.type)) {
+                    IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
+                        tubealti = dasExternalSensorInfo.tubealti
+                        ropelen = dasExternalSensorInfo.ropelen
+                        poly_a = dasExternalSensorInfo.poly_a
+                        poly_b = dasExternalSensorInfo.poly_b
+                        poly_c = dasExternalSensorInfo.poly_c
+                        temp_k = dasExternalSensorInfo.temp_k
+                        temp_t0 = dasExternalSensorInfo.temp_t0
+                    }
+
+                    IOTSensorType.GUDAN_PERCOLATE -> {//葛南渗压计
+                        tubealti = dasExternalSensorInfo.tubealti
+                        ropelen = dasExternalSensorInfo.ropelen
+                        sens_k = dasExternalSensorInfo.sens_k
+                        temp_b = dasExternalSensorInfo.temp_b
+                        temp_t0 = dasExternalSensorInfo.temp_t0
+                        referval_f = dasExternalSensorInfo.referval_f
+                    }
+
+                    IOTSensorType.GUDAN_SOIL_PRESSURE -> {//葛南土压力计
+                        sens_k = dasExternalSensorInfo.sens_k
+                        temp_b = dasExternalSensorInfo.temp_b
+                        temp_t0 = dasExternalSensorInfo.temp_t0
+                        referval_f = dasExternalSensorInfo.referval_f
+                    }
+
+                    IOTSensorType.GUDAN_STRESS -> {//葛南应力计
+                        sens_k = dasExternalSensorInfo.sens_k
+                        temp_b = dasExternalSensorInfo.temp_b
+                        temp_t0 = dasExternalSensorInfo.temp_t0
+                        referval_f = dasExternalSensorInfo.referval_f
+                        elastic_mod = dasExternalSensorInfo.elastic_mod
+                    }
+
+                    IOTSensorType.JUNXING_ZLJ_300T -> {//轴力计
+                        sens_k = dasExternalSensorInfo.sens_k
+                        temp_b = dasExternalSensorInfo.temp_b
+                        temp_t0 = dasExternalSensorInfo.temp_t0
+                        referval_f = dasExternalSensorInfo.referval_f
+                    }
+
+                    IOTSensorType.INCLINOMETER -> {//固定测斜仪
+                        spacing = dasExternalSensorInfo.spacing
+                        model_type = dasExternalSensorInfo.model_type
+                    }
+
+                    IOTSensorType.LUYAN_INCLINOMETER -> {//倾角仪
+                        initvalx = dasExternalSensorInfo.initvalx
+                        initvaly = dasExternalSensorInfo.initvaly
+                        initvalz = dasExternalSensorInfo.initvalz
+                    }
+
+                    IOTSensorType.WEIR -> {//量水堰计
+                        lsycsds = dasExternalSensorInfo.lsycsds
+                        lsyysst = dasExternalSensorInfo.lsyysst
+                    }
+
+                    IOTSensorType.STATIC_LEVEL,//静力水准
+                    IOTSensorType.SEDIMENTATION_METER -> {//沉降仪
+                        initval = dasExternalSensorInfo.initval
+                    }
+
+                    IOTSensorType.VW08 -> {//MCU 振弦传感器
+                        if (dasExternalSensorInfo.sens_k != IOTConstants.NULL_KEY) {
+                            sens_k = dasExternalSensorInfo.sens_k
+                            temp_b = dasExternalSensorInfo.temp_b
+                            temp_t0 = dasExternalSensorInfo.temp_t0
+                            referval_f = dasExternalSensorInfo.referval_f
+                        }
+                    }
+
+                    IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE,//数字式水位计
+                    IOTSensorType.WATER_LEVEL_GAUGE -> {//MCU 水位(液位)计
+                        tubealti = dasExternalSensorInfo.tubealti
+                        ropelen = dasExternalSensorInfo.ropelen
+                    }
+
+                    IOTSensorType.RADAR_LEVEL_GAUGE -> {//雷达液(物)位计 设置子雷达传感器型号
+                        child_type = dasExternalSensorInfo.child_type
+                    }
+
+                    else -> {}
+                }
+            }
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR,
+                entity.toCommandString()
+            )
+            commandItems.add(command)
+        }
+
+        sendCommandFromCmdList()
+    }
+
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
+    }
+
+    /**
+     * 查询采集器配置信息
+     */
+    private fun queryCollectorInfo() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL)
+        commandItems.add(command)
+
+        sendCommandFromCmdList(
+            isStartTimeoutJob = true,
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+        )
+    }
+
+    /**
+     * 查询采集器接入的传感器配置信息
+     */
+    private fun queryExtendSensorConfigInfo(sensorNum: Int) {
+        commandItems.clear()
+        for (i in 0 until sensorNum) {
+            val command =
+                IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR, "index=$i")
+            commandItems.add(command)
+        }
+        sendCommandFromCmdList()
+    }
+
+    override fun setResultData(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL -> {
+                val result = iotParseManager.parse<DasCollectorInfo>(
+                    cmdStr,
+                    IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询采集器参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        initCollectorInfo(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR -> {
+                val result = iotParseManager.parse<DasExternalSensorInfo>(
+                    cmdStr,
+                    IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        initEmptySensor()
+                        val errMsg = "查询传感器参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        //处理此通道的传感器配置参数
+                        processSensorParamsInfo(result.data)
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                            updateFooter()
+                            mStates.isSubmitBtnVisible.set(mStates.sensorModelMap.isNotEmpty())
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR -> {//移除传感器
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "移除传感器出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("移除成功")
+                            binding.rv.bindingAdapter.mutable[deleteItemIndex].let {
+                                if (it is DASSensorItem) {
+                                    mStates.sensorModelMap.remove(it.addr)
+                                }
+                            }
+                            binding.rv.bindingAdapter.mutable.removeAt(deleteItemIndex)
+                            binding.rv.bindingAdapter.notifyItemRemoved(deleteItemIndex)
+                            updateFooter()
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置采集器参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            setExtendSensorConfigInfo()
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "保存传感器参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
+
+            else -> {}
+        }
+    }
+
+    /**
+     * 初始化采集器信息
+     */
+    private fun initCollectorInfo(collectorInfo: DasCollectorInfo) {
+        try {
+            //采集器地址为 0 时，表示采集器未启用，不允许配置传感器，退出页面
+            if (collectorInfo.addr == "0") {
+                cancelNearbyCommunicationTimeoutJob()
+                showMessage(
+                    "采集器地址为0,无法配置扩展传感器,请先修改采集器地址!",
+                    "温馨提示",
+                    "确定",
+                    {
+                        nav().navigateUp()
+                    })
+                return
+            }
+            mStates.collectorType.set(collectorInfo.type)
+            mStates.isVibratingWireSensor.set(collectorInfo.type == "0")
+            if (collectorInfo.sensornum.isEmpty() || collectorInfo.sensornum.toInt() == 0) {
+                cancelNearbyCommunicationTimeoutJob()
+                return
+            }
+            queryExtendSensorConfigInfo(collectorInfo.sensornum.toInt())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            cancelNearbyCommunicationTimeoutJob()
+        }
+    }
+
+    /**
+     *  处理获取到的单个传感器参数信息
+     */
+    private fun processSensorParamsInfo(sensorInfo: DasExternalSensorInfo) {
+        mStates.sensorModelMap[sensorInfo.addr] = sensorInfo
+        val item = DASSensorItem(
+            isPlugin = true,
+            addr = sensorInfo.addr,
+            addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr}" else "地址-${sensorInfo.addr}",
+            sensorType = sensorInfo.type,
+            sensorName = IOTSensorType.value(sensorInfo.type).description,
+        )
+        if (binding.rv.models.isNullOrEmpty())
+            binding.rv.models = arrayListOf()
+        binding.rv.mutable.add(item)
+        binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.itemCount - 1)
+    }
+
+    private fun initEmptySensor() {
+        val list = arrayListOf<DASSensorItem>()
+        binding.rv.models = list
+        updateFooter()
+    }
+
+    private fun updateFooter() {
+        if (binding.rv.bindingAdapter.modelCount < MAX_SENSOR_COUNT) {
+            if (binding.rv.bindingAdapter.footerCount == 0)
+                binding.rv.bindingAdapter.addFooter(RVEmptyFooter(), animation = true)
+        } else {
+            binding.rv.bindingAdapter.removeFooterAt(animation = true)
+        }
+    }
+    private fun resetData() {
+        deleteItemIndex = 0
+        mStates.sensorModelMap.clear()
+        binding.rv.models = arrayListOf()
+        mStates.isSubmitBtnVisible.set(false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
 
     companion object {
-        fun newInstance() = DasExternalSensorListFragment()
+        const val MAX_SENSOR_COUNT = 16
     }
-
-    private lateinit var viewModel: DasExternalSensorListViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_das_external_sensor_list, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DasExternalSensorListViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
 }

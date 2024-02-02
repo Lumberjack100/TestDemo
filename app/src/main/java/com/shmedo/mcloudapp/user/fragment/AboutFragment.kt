@@ -37,7 +37,8 @@ class AboutFragment : BaseFragment() {
     }
 
     override fun initData() {
-        mStates.appVersion.set(String.format("v%s", AppUtils.getAppVersionName()))
+        mStates.appVersion.set(String.format("米易通 V%s", AppUtils.getAppVersionName()))
+        mStates.caseNumber.set("沪ICP备12047248号-4A")
     }
 
     inner class ClickProxy {

@@ -79,6 +79,8 @@ class DeviceHomeActivity : BaseActivity() {
                     historyList.remove(it.deviceToken)
                 }
                 historyList.add(0, it.deviceToken)
+                if (historyList.size > 10)
+                    historyList.removeAt(10)
                 MmkvCacheUtil.setSearchHistoryData(MoshiUtil.toJson(historyList.toList()))
             }
         }
@@ -134,7 +136,11 @@ class DeviceHomeActivity : BaseActivity() {
 
             ProductType.MR702 -> {
                 val bundle =
-                    BaseIOTDeviceFragment.newBundleArguments(communicateWay, deviceInfo!!, bleDevice)
+                    BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo!!,
+                        bleDevice
+                    )
                 findNavController(R.id.device_home_host_fragment)
                     .setGraph(R.navigation.mr702_graph, bundle)
             }

@@ -17,28 +17,30 @@
         android:background="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:paddingHorizontal="@dimen/dimen_size_15"
+        android:paddingVertical="@dimen/dimen_size_10">
 
         <TextView
             android:id="@+id/item_history_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/text_color_666666"
-            android:textSize="15dp"
             android:text="@{m}"
-            tools:text="反编译" />
+            android:textColor="@color/text_color_666666"
+            android:textSize="@dimen/text_size_15"
+            tools:text="23B149T" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_history_del"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:background="@drawable/item_imgselector"
+            android:padding="@dimen/dimen_size_2"
             android:src="@drawable/ic_delete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/text_color_666666" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
