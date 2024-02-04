@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -12,6 +11,7 @@ import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeGuideGrooveCalibrationEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -49,9 +49,9 @@ import kotlin.math.abs
  *
  */
 class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeGuideGrooveCalibrationBinding by lazy { getBinding() as FragmentAdmeGuideGrooveCalibrationBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeGuideGrooveCalibrationViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeGuideGrooveCalibrationBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeGuideGrooveCalibrationViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_guide_groove_calibration_motor_motion_type) }
@@ -61,6 +61,13 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 
     private var motorMotionAngleFragmentBottomDialog: AdmeMotorMotionAngleBottomDialog? = null
     val decimalFormat = DecimalFormat("#", DecimalFormatSymbols(Locale.getDefault()))
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -73,6 +80,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeGuideGrooveCalibrationBinding
         binding.llToolbar.toolbar.title = "导槽校准"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

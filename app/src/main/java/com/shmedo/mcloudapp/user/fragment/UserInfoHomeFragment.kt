@@ -11,7 +11,6 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ThreadUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -23,7 +22,7 @@ import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.PictureFileUtils
 import com.shmedo.lib.core.base.model.UserInfo
-import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
@@ -37,7 +36,6 @@ import com.shmedo.mcloudapp.common.utils.GlideEngine
 import com.shmedo.mcloudapp.common.utils.ImageFileCompressEngine
 import com.shmedo.mcloudapp.common.utils.MeOnCameraInterceptListener
 import com.shmedo.mcloudapp.common.utils.MeSandboxFileEngine
-import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentUserInfoHomeBinding
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.UserInfoHomeViewModel
@@ -48,12 +46,16 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 class UserInfoHomeFragment : BaseFragment() {
-    private val binding: FragmentUserInfoHomeBinding by lazy { getBinding() as FragmentUserInfoHomeBinding }
-    private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: UserInfoHomeViewModel by viewModels()
-    private val loginRequestViewModel: LoginRequestViewModel by viewModels()
+    private lateinit var binding: FragmentUserInfoHomeBinding
+    private lateinit var mStates: UserInfoHomeViewModel
+    private lateinit var loginRequestViewModel: LoginRequestViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
+
+    override fun initViewModel() {
+        mStates = getFragmentScopeViewModel()
+        loginRequestViewModel = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_user_info_home, BR.vm, mStates)
@@ -61,6 +63,7 @@ class UserInfoHomeFragment : BaseFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentUserInfoHomeBinding
         binding.llToolbar.toolbar.title = "个人资料"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

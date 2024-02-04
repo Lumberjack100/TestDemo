@@ -2,11 +2,11 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeVoltageConfigEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeVoltageConfigInfo
@@ -40,10 +40,17 @@ import java.util.Locale
  *
  */
 class AdmeThresholdFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeThresholdBinding by lazy { getBinding() as FragmentAdmeThresholdBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeThresholdViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeThresholdBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeThresholdViewModel
     private val iotParseManager: IOTParserManager by inject()
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -56,6 +63,7 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeThresholdBinding
         binding.llToolbar.toolbar.title = "阈值参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

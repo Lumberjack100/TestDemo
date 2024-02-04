@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.setup
@@ -10,6 +9,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.UserInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
@@ -33,19 +33,26 @@ import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
  *
  */
 class DeviceSearchResultFragment : BaseFragment() {
-    private val binding: FragmentDeviceSearchResultBinding by lazy { getBinding() as FragmentDeviceSearchResultBinding }
-    private val mStates: EmptyViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
+    private lateinit var binding: FragmentDeviceSearchResultBinding
+    private lateinit var mStates: EmptyViewModel
+    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private var statusBarColor = 0
     private lateinit var keyWord: String
+
+
+    override fun initViewModel() {
+        mStates =  getFragmentScopeViewModel()
+        deviceRequestViewModel =  getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_device_search_result, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDeviceSearchResultBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()

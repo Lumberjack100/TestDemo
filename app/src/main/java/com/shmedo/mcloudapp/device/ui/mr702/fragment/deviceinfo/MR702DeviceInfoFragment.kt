@@ -7,14 +7,13 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.viewpager2.widget.ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -22,14 +21,14 @@ import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702DeviceInfoBinding
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 
 class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private val binding: FragmentMr702DeviceInfoBinding by lazy { getBinding() as FragmentMr702DeviceInfoBinding }
-    private val mStates: MR702DeviceInfoViewModel by viewModels()
+    private lateinit var binding: FragmentMr702DeviceInfoBinding
+    private lateinit var mStates: MR702DeviceInfoViewModel
 
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -42,11 +41,17 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
     private val normalSize: Float = 15f
     private val tabs = arrayOf("基本信息", "运行状态", "接口状态", "模块状态")
 
+
+    override fun initViewModel() {
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_device_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702DeviceInfoBinding
         binding.toolbar.title = "关于设备"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -94,7 +99,7 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
                 }
             )
         binding.viewpager.adapter = PageAdapter(this, mFragments)
-        binding.viewpager.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT_DEFAULT
+        binding.viewpager.offscreenPageLimit = 1
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)
 

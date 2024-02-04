@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.device.ui.das.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
@@ -12,6 +12,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -40,10 +41,15 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentDasDataCenterHomeBinding by lazy { getBinding() as FragmentDasDataCenterHomeBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentDasDataCenterHomeBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
     private val iotParseManager: IOTParserManager by inject()
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -55,6 +61,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDasDataCenterHomeBinding
         binding.llToolbar.toolbar.title = "数据中心"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

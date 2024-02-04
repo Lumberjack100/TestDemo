@@ -2,12 +2,12 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeStepperMotorInfo
@@ -40,11 +40,17 @@ import java.util.Locale
  *
  */
 class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeStepperMotorBinding by lazy { getBinding() as FragmentAdmeStepperMotorBinding }
-    private val mStates: AdmeStepperMotorViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeStepperMotorBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeStepperMotorViewModel
     private val iotParseManager: IOTParserManager by inject()
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_adme_stepper_motor,
@@ -56,6 +62,7 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeStepperMotorBinding
         binding.llToolbar.toolbar.title = "步进电机参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

@@ -2,13 +2,13 @@ package com.shmedo.mcloudapp.common.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.PermissionInterceptor
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -20,15 +20,22 @@ import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 
 
 class MainFragment : BaseFragment() {
-    private val binding: FragmentMainBinding by lazy { getBinding() as FragmentMainBinding }
-    private val mStates: EmptyViewModel by viewModels()
-    private val loginRequestViewModel: LoginRequestViewModel by viewModels()
+    private lateinit var binding: FragmentMainBinding
+    private lateinit var mStates: EmptyViewModel
+    private lateinit var loginRequestViewModel: LoginRequestViewModel
+
+
+    override fun initViewModel() {
+        mStates = getFragmentScopeViewModel()
+        loginRequestViewModel = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_main, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMainBinding
         val mFragments =
             listOf<Fragment>(
                 DeviceManageHomeFragment(),

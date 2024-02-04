@@ -1,13 +1,13 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRDIPortParam
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -25,15 +25,21 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MR702DIPortFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702DiPortBinding by lazy { getBinding() as FragmentMr702DiPortBinding }
-    private val mStates: MR702DIPortViewModel by viewModels()
+    private lateinit var binding: FragmentMr702DiPortBinding
+    private lateinit var mStates: MR702DIPortViewModel
     private val iotParseManager: IOTParserManager by inject()
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_di_port, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702DiPortBinding
         initRefresh()
         initAdapter()
     }
@@ -93,7 +99,7 @@ class MR702DIPortFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)
@@ -128,7 +134,7 @@ class MR702DIPortFragment : BaseIOTDeviceFragment() {
     }
 
     private fun testData() {
-        val diPortParam= MRDIPortParam(
+        val diPortParam = MRDIPortParam(
             dstatus1 = "1",
             dstatus2 = "0",
             dstatus3 = "1",

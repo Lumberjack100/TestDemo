@@ -2,11 +2,11 @@ package com.shmedo.mcloudapp.device.ui.m20.fragment
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.m20.M20CurrentStateInfo
@@ -31,11 +31,18 @@ import timber.log.Timber
  * 描述：   运行状态页面
  */
 class M20CurrentStateFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentM20CurrentStateBinding by lazy { getBinding() as FragmentM20CurrentStateBinding }
-    private val mStates: M20CurrentStateViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentM20CurrentStateBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: M20CurrentStateViewModel
     private val iotParseManager: IOTParserManager by inject()
 
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_m20_current_state, BR.vm, mStates)
@@ -44,6 +51,7 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentM20CurrentStateBinding
         binding.llToolbar.toolbar.title = "运行状态"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

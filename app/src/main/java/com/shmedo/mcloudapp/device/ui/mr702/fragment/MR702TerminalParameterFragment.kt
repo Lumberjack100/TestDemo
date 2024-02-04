@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -15,6 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRReportMethodEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRScreenParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -44,9 +44,9 @@ import timber.log.Timber
  * 描述：   终端参数页面
  */
 class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSelectedListener {
-    private val binding: FragmentMr702TerminalParameterBinding by lazy { getBinding() as FragmentMr702TerminalParameterBinding }
-    private val mStates: MR702TerminalParameterViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentMr702TerminalParameterBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: MR702TerminalParameterViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
@@ -59,6 +59,12 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
     private val reportStartTimeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_start_time) }
 
 
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_terminal_parameter, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
@@ -66,6 +72,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702TerminalParameterBinding
         binding.llToolbar.toolbar.title = "终端参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

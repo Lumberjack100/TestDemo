@@ -1,13 +1,13 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRDOPortParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -29,15 +29,22 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MR702DOPortFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702DoPortBinding by lazy { getBinding() as FragmentMr702DoPortBinding }
-    private val mStates: MR702DOPortViewModel by viewModels()
+    private lateinit var binding: FragmentMr702DoPortBinding
+    private lateinit var mStates: MR702DOPortViewModel
     private val iotParseManager: IOTParserManager by inject()
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_do_port, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702DoPortBinding
         initRefresh()
         initAdapter()
     }
@@ -130,7 +137,7 @@ class MR702DOPortFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)

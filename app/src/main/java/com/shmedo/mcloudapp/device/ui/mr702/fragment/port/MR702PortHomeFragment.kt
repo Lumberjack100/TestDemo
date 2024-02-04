@@ -7,8 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
@@ -18,6 +16,8 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
@@ -38,9 +38,9 @@ import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 
 class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private val binding: FragmentMr702PortHomeBinding by lazy { getBinding() as FragmentMr702PortHomeBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: MR702PortHomeViewModel by activityViewModels()
+    private lateinit var binding: FragmentMr702PortHomeBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: MR702PortHomeViewModel
 
     private var mLayoutMediator: TabLayoutMediator? = null
 
@@ -58,6 +58,12 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val tabNames =
         arrayOf("RS485-1", "RS485-2", "RS485-3", "RS232-1", "RS232-2", "雨量", "DO", "DI")
 
+
+    override fun initViewModel() {
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getActivityScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_port_home, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
@@ -65,6 +71,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702PortHomeBinding
         binding.llToolbar.toolbar.title = "接口配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

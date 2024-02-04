@@ -6,7 +6,6 @@ import android.widget.CompoundButton
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -17,6 +16,7 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
@@ -48,9 +48,9 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702DataCenterParamBinding by lazy { getBinding() as FragmentMr702DataCenterParamBinding }
-    private val mStates: MR702DataCenterParamViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentMr702DataCenterParamBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: MR702DataCenterParamViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var statusItem: DataCenterStatusItem
@@ -62,6 +62,12 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_register_platform) }
 
 
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_data_center_param, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
@@ -69,6 +75,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702DataCenterParamBinding
         binding.llToolbar.toolbar.title = "数据中心"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)

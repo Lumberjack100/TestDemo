@@ -2,11 +2,11 @@ package com.shmedo.mcloudapp.device.ui.das.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasCollectorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -40,12 +40,18 @@ import java.util.Locale
  *
  */
 class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentDasCollectorSettingBinding by lazy { getBinding() as FragmentDasCollectorSettingBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: DasCollectorSettingViewModel by viewModels()
+    private lateinit var binding: FragmentDasCollectorSettingBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: DasCollectorSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
     val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -58,6 +64,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDasCollectorSettingBinding
         binding.llToolbar.toolbar.title = "采集器参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

@@ -2,13 +2,13 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -29,8 +29,14 @@ import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
  *
  */
 class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeAdvancedConfigurationBinding by lazy { getBinding() as FragmentAdmeAdvancedConfigurationBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeAdvancedConfigurationBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -42,6 +48,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeAdvancedConfigurationBinding
         binding.llToolbar.toolbar.title = "高级配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.listener.OnHoverAttachListener
@@ -14,12 +13,12 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.model.SessionInfo
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
@@ -27,10 +26,15 @@ import com.shmedo.mcloudapp.databinding.FragmentLogSessionListBinding
 import com.shmedo.mcloudapp.user.model.HoverHeaderModel
 
 class LogSessionListFragment : BaseFragment() {
-    private val binding: FragmentLogSessionListBinding by lazy { getBinding() as FragmentLogSessionListBinding }
-    private val mStates: EmptyViewModel by viewModels()
-    private val loginViewModel: LogViewModel by viewModels()
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private lateinit var binding: FragmentLogSessionListBinding
+    private lateinit var mStates: EmptyViewModel
+    private lateinit var loginViewModel: LogViewModel
+
+
+    override fun initViewModel() {
+        mStates = getFragmentScopeViewModel()
+        loginViewModel = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_log_session_list, BR.vm, mStates)
@@ -38,6 +42,7 @@ class LogSessionListFragment : BaseFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentLogSessionListBinding
         binding.llToolbar.toolbar.title = "应用日志"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

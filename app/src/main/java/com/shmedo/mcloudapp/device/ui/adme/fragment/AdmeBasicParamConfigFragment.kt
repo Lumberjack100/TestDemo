@@ -4,7 +4,6 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
@@ -20,6 +19,7 @@ import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.IOTRegexContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeBasicConfigEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeExecutiveAgencyInfoEntity
@@ -57,9 +57,9 @@ import java.util.Date
 import java.util.Locale
 
 class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeBasicParamConfigBinding by lazy { getBinding() as FragmentAdmeBasicParamConfigBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeBasicParamConfigViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeBasicParamConfigBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeBasicParamConfigViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_method) }
@@ -75,6 +75,13 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
     }
     val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_adme_basic_param_config,
@@ -86,6 +93,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeBasicParamConfigBinding
         binding.llToolbar.toolbar.title = "基础参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -604,6 +612,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
+
             IOTCommandType.ADME_MD_SET_BASIC -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -619,6 +628,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
+
             IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {

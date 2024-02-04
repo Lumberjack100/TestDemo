@@ -1,12 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.m20.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -36,10 +36,17 @@ import org.koin.android.ext.android.inject
  * 描述：   配置主页
  */
 class M20HomeFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentM20HomeBinding by lazy { getBinding() as FragmentM20HomeBinding }
-    private val mHeadStates: CommonDeviceHomeViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentM20HomeBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mHeadStates: CommonDeviceHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mHeadStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_m20_home, BR.vm, mHeadStates)
@@ -48,6 +55,7 @@ class M20HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentM20HomeBinding
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

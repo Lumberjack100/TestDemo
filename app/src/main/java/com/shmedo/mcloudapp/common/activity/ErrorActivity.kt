@@ -2,12 +2,12 @@ package com.shmedo.mcloudapp.common.activity
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.lifecycle.viewModelScope
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 import com.blankj.utilcode.util.ClickUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.addSystemLogItem
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
@@ -20,14 +20,20 @@ import com.shmedo.mcloudapp.databinding.ActivityErrorBinding
  * 描述　:
  */
 class ErrorActivity : BaseActivity() {
-    private val binding: ActivityErrorBinding by lazy { getBinding() as ActivityErrorBinding }
-    private val mStates: EmptyViewModel by viewModels()
+    private lateinit var binding: ActivityErrorBinding
+    private lateinit var mStates: EmptyViewModel
+
+
+    override fun initViewModel() {
+        mStates =  getActivityScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_error, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as ActivityErrorBinding
         binding.llToolbar.toolbar.title = "发生错误"
         val config = CustomActivityOnCrash.getConfigFromIntent(intent)
 //        binding.errorSendError.clickNoRepeat {

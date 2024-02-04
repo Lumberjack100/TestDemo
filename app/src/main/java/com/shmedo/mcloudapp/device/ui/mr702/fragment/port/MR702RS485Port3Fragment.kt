@@ -1,15 +1,15 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port3SensorStatus
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -28,10 +28,17 @@ import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3ViewModel
 import org.koin.android.ext.android.inject
 
 class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702Rs485Port3Binding by lazy { getBinding() as FragmentMr702Rs485Port3Binding }
-    private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
-    private val mStates: MR702RS485Port3ViewModel by viewModels()
+    private lateinit var binding: FragmentMr702Rs485Port3Binding
+    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
+    private lateinit var mStates: MR702RS485Port3ViewModel
     private val iotParseManager: IOTParserManager by inject()
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+        mInterfaceHomeViewModel = getActivityScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rs485_port3, BR.stateVM, mStates)
@@ -39,6 +46,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702Rs485Port3Binding
         initRefresh()
         initSensorAdapter()
     }
@@ -79,6 +87,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             }
         }
     }
+
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
@@ -89,6 +98,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             }
         }
     }
+
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
     }
@@ -117,7 +127,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initSensorData(result.data)

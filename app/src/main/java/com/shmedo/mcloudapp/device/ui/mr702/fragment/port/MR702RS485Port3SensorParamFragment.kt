@@ -6,7 +6,6 @@ import android.widget.CompoundButton
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -17,6 +16,7 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port3SensorParamEntity
@@ -51,9 +51,9 @@ import java.text.DecimalFormat
  * 描述：     RS485-3接口传感器参数
  */
 class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702Rs485Port3SensorParamBinding by lazy { getBinding() as FragmentMr702Rs485Port3SensorParamBinding }
-    private val mStates: MR702RS485Port3SensorParamViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentMr702Rs485Port3SensorParamBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: MR702RS485Port3SensorParamViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private var sensorType: Int = 0
@@ -63,6 +63,13 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
     private val ledTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_port3_led_type) }
 
     private val decimalFormat = DecimalFormat("#.#")
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -75,6 +82,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702Rs485Port3SensorParamBinding
         binding.llToolbar.toolbar.title = "RS485-3"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)

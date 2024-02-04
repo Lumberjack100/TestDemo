@@ -2,8 +2,6 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
 import android.widget.CompoundButton
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -12,6 +10,8 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS232Port1ParamEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS232Port2ParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -35,9 +35,9 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702Rs232Port1Binding by lazy { getBinding() as FragmentMr702Rs232Port1Binding }
-    private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
-    private val mStates: MR702RS232Port1ViewModel by viewModels()
+    private lateinit var binding: FragmentMr702Rs232Port1Binding
+    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
+    private lateinit var mStates: MR702RS232Port1ViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val cameraModelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_camera_model) }
@@ -46,6 +46,13 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+        mInterfaceHomeViewModel = getActivityScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rs232_port1, BR.stateVM, mStates)
             .addBindingParam(BR.homeVM, mInterfaceHomeViewModel)
@@ -53,6 +60,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702Rs232Port1Binding
         initRefresh()
     }
 
@@ -261,7 +269,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)

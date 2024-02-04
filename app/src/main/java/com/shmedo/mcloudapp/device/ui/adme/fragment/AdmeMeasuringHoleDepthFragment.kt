@@ -5,7 +5,6 @@ import android.text.Editable
 import android.view.View
 import android.widget.CompoundButton
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -16,6 +15,7 @@ import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeAutoMeasuringHoleDepthEntity
@@ -50,9 +50,9 @@ import timber.log.Timber
 import kotlin.math.abs
 
 class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeMeasuringHoleDepthBinding by lazy { getBinding() as FragmentAdmeMeasuringHoleDepthBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeMeasuringHoleDepthViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeMeasuringHoleDepthBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeMeasuringHoleDepthViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureWayList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_hole_depth_method) }
@@ -68,6 +68,13 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         null
 
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_adme_measuring_hole_depth,
@@ -79,6 +86,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeMeasuringHoleDepthBinding
         binding.llToolbar.toolbar.title = "孔深测量"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

@@ -3,12 +3,12 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasDigitalPiezometerEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -35,11 +35,18 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentDasDigitalOsmometerBinding by lazy { getBinding() as FragmentDasDigitalOsmometerBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: DasDigitalOsmometerViewModel by viewModels()
+    private lateinit var binding: FragmentDasDigitalOsmometerBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: DasDigitalOsmometerViewModel
     private val iotParseManager: IOTParserManager by inject()
     val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel =getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -52,6 +59,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDasDigitalOsmometerBinding
         binding.llToolbar.toolbar.title = "数字式水位计"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

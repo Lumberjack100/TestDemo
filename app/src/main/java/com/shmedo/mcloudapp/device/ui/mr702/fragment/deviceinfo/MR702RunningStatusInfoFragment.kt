@@ -1,13 +1,13 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRCommunicationData
@@ -30,16 +30,23 @@ import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 
 class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702RunningStatusInfoBinding by lazy { getBinding() as FragmentMr702RunningStatusInfoBinding }
-    private val mStates: MR702DeviceInfoViewModel by viewModels()
+    private lateinit var binding: FragmentMr702RunningStatusInfoBinding
+    private lateinit var mStates: MR702DeviceInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
     private val tableAdapter: CommunicationDataTableAdapter by lazy { CommunicationDataTableAdapter() }
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_running_status_info, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702RunningStatusInfoBinding
         refreshLayout = binding.refreshLayout
         initRefresh()
         initCommunicateDataTableView()

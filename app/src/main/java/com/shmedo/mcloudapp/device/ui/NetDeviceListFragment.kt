@@ -6,7 +6,6 @@ import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
 import android.view.LayoutInflater
 import android.widget.TextView
-import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
@@ -17,6 +16,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.model.UserInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.withArguments
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
@@ -31,9 +31,9 @@ import com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel
 import java.text.DecimalFormat
 
 class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private val binding: FragmentNetDeviceListBinding by lazy { getBinding() as FragmentNetDeviceListBinding }
-    private val mStates: NetDeviceListViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
+    private lateinit var binding: FragmentNetDeviceListBinding
+    private lateinit var mStates: NetDeviceListViewModel
+    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private val activeBg: Int = R.drawable.bg_product_tab_checked
@@ -47,13 +47,19 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private var companyID = -100
     private var productID = -1
 
+
+    override fun initViewModel() {
+        mStates =  getFragmentScopeViewModel()
+        deviceRequestViewModel =  getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_net_device_list, BR.stateVM, mStates)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        binding = getBinding() as FragmentNetDeviceListBinding
     }
 
     override fun initData() {

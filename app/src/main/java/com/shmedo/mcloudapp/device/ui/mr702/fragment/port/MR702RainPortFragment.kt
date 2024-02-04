@@ -2,8 +2,6 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
 import android.widget.CompoundButton
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -12,6 +10,8 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRainGaugeParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -34,12 +34,19 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MR702RainPortFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702RainPortBinding by lazy { getBinding() as FragmentMr702RainPortBinding }
-    private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
-    private val mStates: MR702RainPortViewModel by viewModels()
+    private lateinit var binding: FragmentMr702RainPortBinding
+    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
+    private lateinit var mStates: MR702RainPortViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val rainResolutionList by lazy { Utils.getApp().resources.getStringArray(R.array.rain_value) }
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+        mInterfaceHomeViewModel = getActivityScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rain_port, BR.stateVM, mStates)
@@ -48,6 +55,7 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702RainPortBinding
         initRefresh()
     }
 

@@ -9,12 +9,11 @@ import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
@@ -24,7 +23,6 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.RequestSearchViewModel
 
@@ -38,17 +36,22 @@ import com.shmedo.mcloudapp.device.viewmodel.request.RequestSearchViewModel
  *
  */
 class DeviceSearchFragment : BaseFragment() {
-    private val binding: FragmentDeviceSearchBinding by lazy { getBinding() as FragmentDeviceSearchBinding }
-    private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: EmptyViewModel by viewModels()
-    private val requestSearchViewModel: RequestSearchViewModel by viewModels()
+    private lateinit var binding: FragmentDeviceSearchBinding
+    private lateinit var mStates: EmptyViewModel
+    private lateinit var requestSearchViewModel: RequestSearchViewModel
 
+
+    override fun initViewModel() {
+        mStates =  getFragmentScopeViewModel()
+        requestSearchViewModel =  getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_device_search, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDeviceSearchBinding
         //设置menu 关键代码
         mActivity.setSupportActionBar(binding.llToolbar.toolbar)
         addMenu()

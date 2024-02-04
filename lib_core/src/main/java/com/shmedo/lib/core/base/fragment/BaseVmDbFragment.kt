@@ -36,8 +36,6 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
     //是否第一次加载
     protected var isFirst = true
 
-    override fun initViewModel() {}
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.i("onViewCreated,Fragment=%s", javaClass.simpleName)
         super.onViewCreated(view, savedInstanceState)
@@ -60,7 +58,7 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
     /**
      * 创建观察者
      */
-    open fun createObserver() {}
+    abstract fun createObserver()
 
     override fun onResume() {
         Timber.i("onResume,Fragment=%s", javaClass.simpleName)

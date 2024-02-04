@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -21,11 +20,12 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.ble.scanner.repository.ScanningState
 import com.shmedo.lib.ble.scanner.viewmodel.ScannerViewModel
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.PermissionInterceptor
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentBleScannerListBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -36,11 +36,11 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 class BleScannerListFragment : BaseFragment() {
-    private val binding: FragmentBleScannerListBinding by lazy { getBinding() as FragmentBleScannerListBinding }
-    private val mStates: BleScannerListViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
-    private val permissionViewModel: PermissionViewModel by viewModels()
-    private val scannerViewModel: ScannerViewModel by viewModels()
+    private lateinit var binding: FragmentBleScannerListBinding
+    private lateinit var mStates: BleScannerListViewModel
+    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
+    private lateinit var permissionViewModel: PermissionViewModel
+    private lateinit var scannerViewModel: ScannerViewModel
 
     private val scanResultList = mutableListOf<DiscoveredBluetoothDevice>()
     private var discoveredBluetoothDevice: DiscoveredBluetoothDevice? = null
@@ -59,12 +59,20 @@ class BleScannerListFragment : BaseFragment() {
             arrayOf()
     }
 
+    override fun initViewModel() {
+        mStates = getFragmentScopeViewModel()
+        deviceRequestViewModel = getFragmentScopeViewModel()
+        permissionViewModel = getFragmentScopeViewModel()
+        scannerViewModel = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_ble_scanner_list, BR.vm, mStates)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentBleScannerListBinding
         initAdapter()
         initRefresh()
     }

@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -12,6 +11,7 @@ import com.jaygoo.widget.RangeSeekBar
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInfo
@@ -41,9 +41,9 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeLockedRotorDetectionBinding by lazy { getBinding() as FragmentAdmeLockedRotorDetectionBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeLockedRotorDetectionViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeLockedRotorDetectionBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeLockedRotorDetectionViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private var admeLockedRotorDetectionInfo: AdmeLockedRotorDetectionInfo? = null
@@ -51,6 +51,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
     private var measpacing = 0//上拉测量间距
     val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -63,6 +69,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeLockedRotorDetectionBinding
         binding.llToolbar.toolbar.title = "堵转缓停参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

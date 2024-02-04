@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.setup
@@ -9,6 +8,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.UserInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -20,18 +20,24 @@ import com.shmedo.mcloudapp.databinding.FragmentNetProductDeviceListBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 
 class NetProductDeviceListFragment : BaseFragment() {
-    private val binding: FragmentNetProductDeviceListBinding by lazy { getBinding() as FragmentNetProductDeviceListBinding }
-    private val mStates: EmptyViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
+    private lateinit var binding: FragmentNetProductDeviceListBinding
+    private lateinit var mStates: EmptyViewModel
+    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private var productID = -1
+
+    override fun initViewModel() {
+        mStates =  getFragmentScopeViewModel()
+        deviceRequestViewModel = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_net_product_device_list, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentNetProductDeviceListBinding
         initDeviceInfoAdapter()
         initRefresh()
     }

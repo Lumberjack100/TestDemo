@@ -3,6 +3,7 @@ package com.shmedo.lib.core.ext
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.shmedo.lib.core.base.BaseApp
 import java.lang.reflect.ParameterizedType
 
@@ -37,10 +38,31 @@ inline fun <reified VM : ViewModel> Fragment.getAppViewModel(): VM {
         if (it == null) {
             throw NullPointerException("你的Application没有继承框架自带的BaseApp类，暂时无法使用getAppViewModel该方法")
         } else {
-            return it.getAppViewModelProvider().get(VM::class.java)
+            return it.getAppViewModelProvider()[VM::class.java]
         }
     }
 }
+
+/**
+ * 得到当前Activity上下文的ViewModel
+ */
+inline fun <reified VM : ViewModel> AppCompatActivity.getActivityScopeViewModel(): VM =
+    ViewModelProvider(this)[VM::class.java]
+
+/**
+ * 得到当前Fragment上下文的ViewModel
+ * 提示，在fragment中调用该方法时，请在该Fragment onCreate以后调用或者请用by lazy方式懒加载初始化调用
+ */
+inline fun <reified VM : ViewModel> Fragment.getFragmentScopeViewModel(): VM =
+    ViewModelProvider(this)[VM::class.java]
+
+/**
+ * 在Fragment中得到父类Activity的共享ViewModel
+ * 提示，在fragment中调用该方法时，请在该Fragment onCreate以后调用或者请用by lazy方式懒加载初始化调用，不然会提示requireActivity没有导致错误
+ */
+inline fun <reified VM : ViewModel> Fragment.getActivityScopeViewModel(): VM =
+    ViewModelProvider(requireActivity())[VM::class.java]
+
 
 
 

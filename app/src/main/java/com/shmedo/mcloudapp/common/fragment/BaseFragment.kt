@@ -21,6 +21,10 @@ abstract class BaseFragment : BaseVmDbFragment() {
 
     }
 
+    override fun createObserver() {
+
+    }
+
     override fun onPause() {
         super.onPause()
         activity?.window?.let { KeyboardUtils.hideSoftInput(it.decorView) }

@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.PageRefreshLayout
@@ -22,19 +21,20 @@ import com.shmedo.lib.core.base.model.LogInfo
 import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
 
 class LogDataFragment : BaseFragment() {
-    private val binding: FragmentLogDataBinding by lazy { getBinding() as FragmentLogDataBinding }
-    private val mStates: EmptyViewModel by viewModels()
-    private val loginViewModel: LogViewModel by viewModels()
+    private lateinit var binding: FragmentLogDataBinding
+    private lateinit var mStates: EmptyViewModel
+    private lateinit var loginViewModel: LogViewModel
 
     private var statusBarColor = 0
     private lateinit var sessionInfo: SessionInfo
@@ -42,11 +42,17 @@ class LogDataFragment : BaseFragment() {
     private val logLevelList by lazy { Utils.getApp().resources.getStringArray(R.array.log_levels) }
 
 
+    override fun initViewModel() {
+        mStates = getFragmentScopeViewModel()
+        loginViewModel = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_log_data, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentLogDataBinding
         //设置menu 关键代码
         mActivity.setSupportActionBar(binding.toolbar)
         addMenu()

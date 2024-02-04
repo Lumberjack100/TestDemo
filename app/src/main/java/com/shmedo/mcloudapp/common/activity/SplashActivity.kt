@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import androidx.activity.viewModels
 import androidx.lifecycle.viewModelScope
 import com.amap.api.maps.MapsInitializer
 import com.gyf.immersionbar.ktx.immersionBar
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.addSystemLogSession
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil.getPassword
 import com.shmedo.lib.core.util.MmkvCacheUtil.getUserName
@@ -27,23 +26,29 @@ import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.tencent.bugly.crashreport.CrashReport
 
 class SplashActivity : BaseActivity() {
-    private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: EmptyViewModel by viewModels()
-    private val loginRequestViewModel: LoginRequestViewModel by viewModels()
-    private val logViewModel: LogViewModel by viewModels()
+    private lateinit var mMessenger: PageMessenger
+    private lateinit var mStates: EmptyViewModel
+    private lateinit var loginRequestViewModel: LoginRequestViewModel
+
+
+    override fun initViewModel() {
+        mMessenger = getAppViewModel()
+        mStates = getActivityScopeViewModel()
+        loginRequestViewModel = getActivityScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_splash, BR.vm, mStates)
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        initImmersionBar()
     }
 
     private fun initImmersionBar() {
         immersionBar {
             transparentBar()
         }
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        initImmersionBar()
     }
 
     override fun initData() {

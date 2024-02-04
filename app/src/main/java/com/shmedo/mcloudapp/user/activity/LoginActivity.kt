@@ -14,7 +14,6 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
-import androidx.activity.viewModels
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.RegexUtils
@@ -22,6 +21,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.addSystemLogSession
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -39,9 +39,15 @@ import com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel
 import com.tencent.bugly.crashreport.CrashReport
 
 class LoginActivity : BaseActivity() {
-    private val binding: ActivityLoginBinding by lazy { getBinding() as ActivityLoginBinding }
-    private val mStates: LoginViewModel by viewModels()
-    private val loginRequestViewModel: LoginRequestViewModel by viewModels()
+    private lateinit var binding: ActivityLoginBinding
+    private lateinit var mStates: LoginViewModel
+    private lateinit var loginRequestViewModel: LoginRequestViewModel
+
+
+    override fun initViewModel() {
+        mStates = getActivityScopeViewModel()
+        loginRequestViewModel = getActivityScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_login, BR.vm, mStates)
@@ -49,6 +55,7 @@ class LoginActivity : BaseActivity() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as ActivityLoginBinding
         initImmersionBar(binding.statusBarView, false)
     }
 

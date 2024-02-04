@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.RegexUtils
@@ -12,6 +11,7 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.IOTRegexContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeInclinometerEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -45,15 +45,21 @@ import java.util.Locale
  *
  */
 class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeInclinometerBinding by lazy { getBinding() as FragmentAdmeInclinometerBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeInclinometerViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeInclinometerBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeInclinometerViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val versionList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_inclinometer_version) }
     private val modeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_inclinometer_work_mode) }
     private val communicateWayList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_inclinometer_twist_angle_compensation) }
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -66,6 +72,7 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeInclinometerBinding
         binding.llToolbar.toolbar.title = "测斜仪参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

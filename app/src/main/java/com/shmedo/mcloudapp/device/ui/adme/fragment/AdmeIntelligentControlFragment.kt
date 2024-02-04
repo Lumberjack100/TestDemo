@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -12,6 +11,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeAnthropomorphicMovementInfo
@@ -45,13 +45,19 @@ import timber.log.Timber
  *
  */
 class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeIntelligentControlBinding by lazy { getBinding() as FragmentAdmeIntelligentControlBinding }
-    private val mStates: AdmeIntelligentControlViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeIntelligentControlBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeIntelligentControlViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val brakePadControlList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_brakepad_control) }
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -64,6 +70,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeIntelligentControlBinding
         binding.llToolbar.toolbar.title = "智能控制"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

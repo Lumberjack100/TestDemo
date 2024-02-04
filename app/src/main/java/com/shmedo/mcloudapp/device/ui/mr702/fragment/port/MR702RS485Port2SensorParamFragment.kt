@@ -3,12 +3,12 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port2SensorParamEntity
@@ -40,15 +40,22 @@ import timber.log.Timber
 import java.text.DecimalFormat
 
 class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702Rs485Port2SensorParamBinding by lazy { getBinding() as FragmentMr702Rs485Port2SensorParamBinding }
-    private val mStates: MR702RS485Port2SensorParamViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentMr702Rs485Port2SensorParamBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: MR702RS485Port2SensorParamViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private var isAdd: Boolean = false
     private lateinit var sensorItem: MRSensorItem
 
     private val decimalFormat = DecimalFormat("#.#")
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -61,6 +68,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702Rs485Port2SensorParamBinding
         binding.llToolbar.toolbar.title = "RS485-2"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
@@ -140,7 +148,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         }
         try {
             val value = mStates.channelNumber.get().toInt()
-            if (value < 1 || value >16) {
+            if (value < 1 || value > 16) {
                 showMessageDialog("通道编号数值范围[1,16]!")
                 return
             }

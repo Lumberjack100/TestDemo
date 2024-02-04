@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
@@ -9,6 +8,7 @@ import com.drake.brv.utils.setup
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.WorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -52,11 +52,17 @@ import timber.log.Timber
  * 描述：   配置主页
  */
 class MR702HomeFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702HomeBinding by lazy { getBinding() as FragmentMr702HomeBinding }
-    private val mHeadStates: MR702HomeViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentMr702HomeBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mHeadStates: MR702HomeViewModel
     private val iotParseManager: IOTParserManager by inject()
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mHeadStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_home, BR.stateVM, mHeadStates)
@@ -65,6 +71,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702HomeBinding
         toolbarViewModel.toolbarIvActionVisible.set(true)
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {

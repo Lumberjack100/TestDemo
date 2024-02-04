@@ -1,8 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -11,6 +9,8 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port1CollectionParamEntity
@@ -43,12 +43,19 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702Rs485Port1Binding by lazy { getBinding() as FragmentMr702Rs485Port1Binding }
-    private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
-    private val mStates: MR702RS485Port1ViewModel by viewModels()
+    private lateinit var binding: FragmentMr702Rs485Port1Binding
+    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
+    private lateinit var mStates: MR702RS485Port1ViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private var deleteItemIndex = 0
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+        mInterfaceHomeViewModel = getActivityScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rs485_port1, BR.stateVM, mStates)
@@ -57,6 +64,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702Rs485Port1Binding
         initRefresh()
         initSensorAdapter()
     }

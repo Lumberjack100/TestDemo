@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.common
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -14,6 +13,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.scwang.smart.refresh.layout.constant.RefreshState
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -32,10 +32,10 @@ import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 
 
 class QueryDeviceDataFragment : BaseFragment() {
-    private val binding: FragmentQueryDeviceDataBinding by lazy { getBinding() as FragmentQueryDeviceDataBinding }
-    private val mHeadStates: QueryDeviceDataViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
+    private lateinit var binding: FragmentQueryDeviceDataBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mHeadStates: QueryDeviceDataViewModel
+    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
 
     private val platformList: MutableList<String> =
         arrayListOf("物联网平台", "MDNET平台")
@@ -61,6 +61,13 @@ class QueryDeviceDataFragment : BaseFragment() {
     private var statusBarColor = 0
     private var keyWord: String = ""
 
+
+    override fun initViewModel() {
+        toolbarViewModel = getFragmentScopeViewModel()
+        mHeadStates = getFragmentScopeViewModel()
+        deviceRequestViewModel = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_query_device_data, BR.stateVM, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
@@ -68,6 +75,7 @@ class QueryDeviceDataFragment : BaseFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentQueryDeviceDataBinding
         binding.llToolbar.toolbar.title = "数据查询"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -12,6 +11,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeEquipModelEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -54,12 +54,18 @@ import timber.log.Timber
  *
  */
 class AdmeHomeFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeHomeBinding by lazy { getBinding() as FragmentAdmeHomeBinding }
-    private val mHeadStates: AdmeHomeViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeHomeBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mHeadStates: AdmeHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
     private val modeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_device_mode) }
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mHeadStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_adme_home, BR.stateVM, mHeadStates)
@@ -68,6 +74,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeHomeBinding
         toolbarViewModel.toolbarIvActionVisible.set(true)
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {

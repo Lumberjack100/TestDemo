@@ -10,6 +10,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -54,13 +55,20 @@ import timber.log.Timber
  *
  */
 class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702EquipmentOperationBinding by lazy { getBinding() as FragmentMr702EquipmentOperationBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: MR702EquipmentOperationViewModel by viewModels()
+    private lateinit var binding: FragmentMr702EquipmentOperationBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: MR702EquipmentOperationViewModel
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val monitoringElementList = arrayListOf<MonitoringElement>()
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -72,6 +80,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702EquipmentOperationBinding
         binding.llToolbar.toolbar.title = "设备操作"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

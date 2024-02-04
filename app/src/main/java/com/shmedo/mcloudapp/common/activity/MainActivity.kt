@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -14,15 +14,20 @@ import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity() {
-    private val binding: ActivityMainBinding by lazy { getBinding() as ActivityMainBinding }
-    private val mStates: EmptyViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var mStates: EmptyViewModel
+
+
+    override fun initViewModel() {
+        mStates = getActivityScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_main, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-//        initImmersionBar()
+        binding = getBinding() as ActivityMainBinding
         processBackPressed()
     }
 

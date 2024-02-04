@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -14,6 +13,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRWiredNetEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRWirelessNetEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -46,12 +46,19 @@ import timber.log.Timber
  * 描述：   网络与通信页面
  */
 class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702NetworkCommunicationBinding by lazy { getBinding() as FragmentMr702NetworkCommunicationBinding }
-    private val mStates: MR702NetworkCommunicationViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentMr702NetworkCommunicationBinding
+    private lateinit var mStates: MR702NetworkCommunicationViewModel
+    private lateinit var toolbarViewModel: ToolbarViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val ipModeList by lazy { Utils.getApp().resources.getStringArray(R.array.ip_mode) }
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_network_communication, BR.stateVM, mStates)
@@ -60,6 +67,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702NetworkCommunicationBinding
         binding.llToolbar.toolbar.title = "网络与通信"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

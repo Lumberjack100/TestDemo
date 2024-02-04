@@ -3,8 +3,6 @@ package com.shmedo.mcloudapp.device.ui
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.CallSuper
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
@@ -22,7 +20,9 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.addIOTDeviceLogItem
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.R
@@ -54,11 +54,10 @@ import java.util.LinkedList
  * 描述：     TODO
  */
 abstract class BaseIOTDeviceFragment : BaseFragment() {
-    private val fragmentName by lazy { javaClass.simpleName }
-    protected val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModels()
-    protected val bleViewModel: BleViewModel by viewModels()
-    protected val logViewModel: LogViewModel by activityViewModels()
+    protected lateinit var mMessenger: PageMessenger
+    protected lateinit var netIotCommandViewModel: NetIOTCommandViewModel
+    protected lateinit var bleViewModel: BleViewModel
+    protected lateinit var logViewModel: LogViewModel
 
     protected var refreshLayout: PageRefreshLayout? = null
 
@@ -70,6 +69,13 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     protected var commandItems = LinkedList<String>()
 
+    @CallSuper
+    override fun initViewModel() {
+        mMessenger = getAppViewModel()
+        netIotCommandViewModel = getFragmentScopeViewModel()
+        bleViewModel = getFragmentScopeViewModel()
+        logViewModel = getActivityScopeViewModel()
+    }
 
     @CallSuper
     override fun initData() {
@@ -83,10 +89,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     @CallSuper
     override fun createObserver() {
-        launchWithViewLifecycle{
+        launchWithViewLifecycle {
             collectNetData()
         }
-        launchWithViewLifecycle{
+        launchWithViewLifecycle {
             collectBleData()
         }
     }
@@ -141,7 +147,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     private suspend fun collectBleData() {
         bleViewModel.state.collect { state ->
-            Timber.v("$fragmentName MedoBle: $state")
+            Timber.v("${javaClass.simpleName} MedoBle: $state")
 //                if (isRestrictHiddenMode() && isHidden) {
 //                    return@collect
 //                }
@@ -283,7 +289,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         isShowMsg: Boolean = true,
         msg: String = ""
     ) {
-        Timber.i("$fragmentName 发送指令超时")
+        Timber.i("${javaClass.simpleName} 发送指令超时")
         addIOTDeviceLogItem(
             priority = Log.ERROR,
             data = "Response TimeOut",

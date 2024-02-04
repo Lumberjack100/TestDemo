@@ -4,25 +4,31 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.activity.viewModels
 import com.just.agentweb.AgentWeb
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityWebviewBinding
 
 class WebviewActivity : BaseActivity() {
-    private val binding: ActivityWebviewBinding by lazy { getBinding() as ActivityWebviewBinding }
-    private val mStates: EmptyViewModel by viewModels()
+    private lateinit var binding: ActivityWebviewBinding
+    private lateinit var mStates: EmptyViewModel
 
     private lateinit var mAgentWeb: AgentWeb
+
+
+    override fun initViewModel() {
+        mStates = getActivityScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_webview, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as ActivityWebviewBinding
         setToolBar(binding.llToolbar.toolbar)
         if (intent.extras != null) {
             val title = intent.getStringExtra(ARG_TITLE)

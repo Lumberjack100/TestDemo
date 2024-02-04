@@ -2,8 +2,8 @@ package com.shmedo.mcloudapp.device.ui
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.Parcelable
-import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.blankj.utilcode.util.TimeUtils
@@ -13,6 +13,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
+import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
@@ -28,9 +29,9 @@ import com.shmedo.mcloudapp.device.model.TcpConnect
 import kotlinx.coroutines.launch
 
 class DeviceHomeActivity : BaseActivity() {
-    private val binding: ActivityDeviceHomeBinding by lazy { getBinding() as ActivityDeviceHomeBinding }
-    private val mStates: EmptyViewModel by viewModels()
-    private val logViewModel: LogViewModel by viewModels()
+    private lateinit var binding: ActivityDeviceHomeBinding
+    private lateinit var mStates: EmptyViewModel
+    private lateinit var logViewModel: LogViewModel
 
     private var productType = ProductType.UnKnown
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -38,8 +39,17 @@ class DeviceHomeActivity : BaseActivity() {
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
 
+    override fun initViewModel() {
+        mStates = getActivityScopeViewModel()
+        logViewModel = getActivityScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_device_home, BR.vm, mStates)
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as ActivityDeviceHomeBinding
     }
 
     override fun initData() {

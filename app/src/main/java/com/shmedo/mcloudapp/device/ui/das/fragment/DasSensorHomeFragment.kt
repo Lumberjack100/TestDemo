@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -23,8 +23,8 @@ import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 
 class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private val binding: FragmentMr702PortHomeBinding by lazy { getBinding() as FragmentMr702PortHomeBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentMr702PortHomeBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
 
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -32,11 +32,17 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
 
+    override fun initViewModel() {
+        toolbarViewModel = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_das_sensor_home, BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, BaseClickProxy())
     }
+
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702PortHomeBinding
         binding.llToolbar.toolbar.title = "传感器配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

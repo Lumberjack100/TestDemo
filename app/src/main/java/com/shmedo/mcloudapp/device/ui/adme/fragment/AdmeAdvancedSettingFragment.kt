@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -10,6 +9,7 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeWorkModeEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeWorkModeInfo
@@ -39,12 +39,19 @@ import timber.log.Timber
  *
  */
 class AdmeAdvancedSettingFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeAdvancedSettingBinding by lazy { getBinding() as FragmentAdmeAdvancedSettingBinding }
-    private val mStates: AdmeAdvancedSettingViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeAdvancedSettingBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeAdvancedSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureWorkModeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_work_mode) }
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -57,6 +64,7 @@ class AdmeAdvancedSettingFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeAdvancedSettingBinding
         binding.llToolbar.toolbar.title = "设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

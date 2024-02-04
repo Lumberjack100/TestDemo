@@ -8,12 +8,10 @@ import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.showMessage
-import com.shmedo.mcloudapp.databinding.FragmentAdmeMotorMotionAngleBottomDialogBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeGuideGrooveCalibrationViewModel
 
 class AdmeMotorMotionAngleBottomDialog : BaseVmDbDialogFragment() {
-    private val binding: FragmentAdmeMotorMotionAngleBottomDialogBinding by lazy { mDatabind as FragmentAdmeMotorMotionAngleBottomDialogBinding }
     private val mStates: AdmeGuideGrooveCalibrationViewModel by viewModels({ requireParentFragment() })
     private val bleViewModel: BleViewModel by viewModels()
 

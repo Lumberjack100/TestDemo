@@ -2,12 +2,12 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeCurrentStateInfo
@@ -39,12 +39,19 @@ import kotlin.math.abs
  *
  */
 class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeCurrentStateBinding by lazy { getBinding() as FragmentAdmeCurrentStateBinding }
-    private val mStates: AdmeCurrentStateViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeCurrentStateBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeCurrentStateViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private var currentStateInfo: AdmeCurrentStateInfo? = null
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_adme_current_state, BR.stateVM, mStates)
@@ -53,6 +60,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeCurrentStateBinding
         binding.llToolbar.toolbar.title = "运行状态"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

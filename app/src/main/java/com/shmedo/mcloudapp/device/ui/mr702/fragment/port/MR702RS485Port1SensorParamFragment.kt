@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -17,6 +16,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
@@ -52,9 +52,9 @@ import java.text.DecimalFormat
 
 class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     TabLayout.OnTabSelectedListener {
-    private val binding: FragmentMr702Rs485Port1SensorParamBinding by lazy { getBinding() as FragmentMr702Rs485Port1SensorParamBinding }
-    private val mStates: MR702RS485Port1SensorParamViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentMr702Rs485Port1SensorParamBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: MR702RS485Port1SensorParamViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
@@ -74,6 +74,12 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private val decimalFormat = DecimalFormat("#.#")
 
 
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_mr702_rs485_port1_sensor_param,
@@ -85,6 +91,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702Rs485Port1SensorParamBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }

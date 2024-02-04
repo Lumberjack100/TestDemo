@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
@@ -14,6 +14,7 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRDeviceInfo
@@ -36,15 +37,22 @@ import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 
 class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702PortStatusInfoBinding by lazy { getBinding() as FragmentMr702PortStatusInfoBinding }
-    private val mStates: MR702DeviceInfoViewModel by viewModels()
+    private lateinit var binding: FragmentMr702PortStatusInfoBinding
+    private lateinit var mStates: MR702DeviceInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_port_status_info, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702PortStatusInfoBinding
         initRefresh()
         initSerialPortStatusAdapter()
         initAnalogInterfaceStatusAdapter()

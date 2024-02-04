@@ -5,27 +5,24 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.model.UserInfo
-import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
 import com.shmedo.mcloudapp.device.ui.BleScannerListFragment
 import com.shmedo.mcloudapp.device.ui.NetDeviceListFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DeviceManageHomeViewModel
 
 class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private val binding: FragmentDeviceManageHomeBinding by lazy { getBinding() as FragmentDeviceManageHomeBinding }
-    private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: DeviceManageHomeViewModel by viewModels()
+    private lateinit var binding: FragmentDeviceManageHomeBinding
+    private lateinit var mStates: DeviceManageHomeViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private val activeColor: Int = ColorUtils.getColor(R.color.title_text_color)
@@ -34,12 +31,18 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private val normalSize: Float = 16f
     private val tabs = arrayOf("4G", "蓝牙")
 
+
+    override fun initViewModel() {
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_device_manage_home, BR.vm, mStates)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDeviceManageHomeBinding
         initViewPager()
     }
 

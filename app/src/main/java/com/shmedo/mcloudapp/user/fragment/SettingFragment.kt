@@ -2,16 +2,16 @@ package com.shmedo.mcloudapp.user.fragment
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.CleanUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
@@ -19,10 +19,17 @@ import com.shmedo.mcloudapp.databinding.FragmentSettingBinding
 import com.shmedo.mcloudapp.user.viewmodel.state.SettingViewModel
 
 class SettingFragment : BaseFragment() {
-    private val binding: FragmentSettingBinding by lazy { getBinding() as FragmentSettingBinding }
-    private val mMessenger: PageMessenger by lazy { getAppViewModel() }
-    private val mStates: SettingViewModel by viewModels()
-    private val loginViewModel: LogViewModel by viewModels()
+    private lateinit var binding: FragmentSettingBinding
+    private lateinit var mMessenger: PageMessenger
+    private lateinit var mStates: SettingViewModel
+    private lateinit var loginViewModel: LogViewModel
+
+
+    override fun initViewModel() {
+        mMessenger = getAppViewModel()
+        mStates = getFragmentScopeViewModel()
+        loginViewModel = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_setting, BR.vm, mStates)
@@ -30,6 +37,7 @@ class SettingFragment : BaseFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentSettingBinding
         binding.llToolbar.toolbar.title = "设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             mMessenger.requestStatusBarColor(R.color.colorPrimary)

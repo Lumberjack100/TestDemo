@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -17,6 +16,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasBdTerminalEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasReportEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -43,9 +43,9 @@ import timber.log.Timber
 import java.util.Locale
 
 class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSelectedListener {
-    private val binding: FragmentDasTerminalParameterBinding by lazy { getBinding() as FragmentDasTerminalParameterBinding }
-    private val mStates: DasTerminalParameterViewModel by viewModels()
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private lateinit var binding: FragmentDasTerminalParameterBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: DasTerminalParameterViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
@@ -58,6 +58,12 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
     private val baudRateList: MutableList<String> = arrayListOf("9600", "115200")
 
 
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_das_terminal_parameter, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
@@ -65,6 +71,7 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDasTerminalParameterBinding
         binding.llToolbar.toolbar.title = "终端参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -132,11 +139,11 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSel
 
     override fun onTabReselected(tab: TabLayout.Tab) {}
 
-   /* private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }*/
+    /* private fun setEditable(editable: Boolean) {
+         toolbarViewModel.toolbarIvActionVisible.set(!editable)
+         toolbarViewModel.toolbarTvActionVisible.set(editable)
+         mStates.isEditable.set(editable)
+     }*/
 
     inner class ClickProxy : BaseClickProxy() {
 //        override fun onToolbarIvClick() {

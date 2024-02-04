@@ -3,9 +3,9 @@ package com.shmedo.mcloudapp.user.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.AppUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -14,8 +14,13 @@ import com.shmedo.mcloudapp.databinding.FragmentAboutBinding
 import com.shmedo.mcloudapp.user.viewmodel.state.AboutViewModel
 
 class AboutFragment : BaseFragment() {
-    private val binding: FragmentAboutBinding by lazy { getBinding() as FragmentAboutBinding }
-    private val mStates: AboutViewModel by viewModels()
+    private lateinit var binding: FragmentAboutBinding
+    private lateinit var mStates: AboutViewModel
+
+
+    override fun initViewModel() {
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_about, BR.vm, mStates)
@@ -23,6 +28,7 @@ class AboutFragment : BaseFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAboutBinding
         binding.llToolbar.toolbar.title = "关于"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

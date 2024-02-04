@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.das.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItems
@@ -14,6 +13,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -52,12 +52,19 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class DasHomeFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentDasHomeBinding by lazy { getBinding() as FragmentDasHomeBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mHeadStates: CommonDeviceHomeViewModel by viewModels()
-    private val mCommandResponseStates: CommandResponseViewModel by viewModels()
+    private lateinit var binding: FragmentDasHomeBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mHeadStates: CommonDeviceHomeViewModel
+    private lateinit var mCommandResponseStates: CommandResponseViewModel
     private val iotParseManager: IOTParserManager by inject()
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mHeadStates = getFragmentScopeViewModel()
+        mCommandResponseStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_das_home, BR.stateVM, mHeadStates)
@@ -66,6 +73,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDasHomeBinding
         toolbarViewModel.toolbarIvActionVisible.set(true)
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {

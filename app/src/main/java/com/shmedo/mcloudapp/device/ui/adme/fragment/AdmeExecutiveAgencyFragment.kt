@@ -4,7 +4,6 @@ import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
@@ -18,6 +17,7 @@ import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeExecutiveAgencyInfoEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeExecutiveAgencyInfo
@@ -48,9 +48,9 @@ import java.util.Date
 import java.util.Locale
 
 class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentAdmeExecutiveAgencyBinding by lazy { getBinding() as FragmentAdmeExecutiveAgencyBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: AdmeExecutiveAgencyViewModel by viewModels()
+    private lateinit var binding: FragmentAdmeExecutiveAgencyBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeExecutiveAgencyViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_method) }
@@ -67,6 +67,12 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     }
 
 
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_adme_executive_agency,
@@ -78,6 +84,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeExecutiveAgencyBinding
         binding.llToolbar.toolbar.title = "执行机构参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

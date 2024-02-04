@@ -1,10 +1,10 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -24,16 +24,24 @@ import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 
 class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentMr702BaseInfoBinding by lazy { getBinding() as FragmentMr702BaseInfoBinding }
-    private val mStates: MR702DeviceInfoViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
+    private lateinit var binding: FragmentMr702BaseInfoBinding
+    private lateinit var mStates: MR702DeviceInfoViewModel
+    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val iotParseManager: IOTParserManager by inject()
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+        deviceRequestViewModel = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_base_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702BaseInfoBinding
         initRefresh()
     }
 
@@ -94,7 +102,7 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initBaseInfo(result.data.baseInfo)
@@ -117,7 +125,7 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
                 if (deviceInfo.createTime.isNotEmpty())
                     regtime = deviceInfo.createTime
                 sn = deviceInfo.deviceToken
-                ver= baseInfo.ver
+                ver = baseInfo.ver
                 imei = baseInfo.imei
                 temp = decimalFormat.format(baseInfo.temp.toDouble())
                 hum = decimalFormat.format(baseInfo.hum.toDouble())
