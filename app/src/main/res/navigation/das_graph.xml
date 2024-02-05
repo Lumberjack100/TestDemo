@@ -47,23 +47,8 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_dasHomeFragment_to_dasExternalSensorListFragment"
-            app:destination="@id/dasExternalSensorListFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_dasHomeFragment_to_dasIOSensorFragment"
-            app:destination="@id/dasIOSensorFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-        <action
-            android:id="@+id/action_dasHomeFragment_to_dasDigitalOsmometerFragment"
-            app:destination="@id/dasDigitalOsmometerFragment"
+            android:id="@+id/action_dasHomeFragment_to_dasSensorHomeFragment"
+            app:destination="@id/dasSensorHomeFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -105,20 +90,24 @@
         tools:layout="@layout/fragment_data_center_param" />
 
     <fragment
-        android:id="@+id/dasExternalSensorListFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalSensorListFragment"
-        android:label="DasExternalSensorListFragment"
-        tools:layout="@layout/fragment_das_external_sensor_list" />
+        android:id="@+id/dasSensorHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasSensorHomeFragment"
+        android:label="DasSensorHomeFragment"
+        tools:layout="@layout/fragment_das_sensor_home">
+
+        <action
+            android:id="@+id/action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment"
+            app:destination="@id/dasExternalDigitalSensorFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+    </fragment>
 
     <fragment
-        android:id="@+id/dasIOSensorFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasIOSensorFragment"
-        android:label="DasIOSensorFragment"
-        tools:layout="@layout/fragment_das_io_sensor" />
+        android:id="@+id/dasExternalDigitalSensorFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalDigitalSensorFragment"
+        android:label="DasExternalDigitalSensorFragment"
+        tools:layout="@layout/fragment_das_external_digital_sensor" />
 
-    <fragment
-        android:id="@+id/dasDigitalOsmometerFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasDigitalOsmometerFragment"
-        android:label="DasDigitalOsmometerFragment"
-        tools:layout="@layout/fragment_das_digital_osmometer" />
 </navigation>

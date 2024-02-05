@@ -55,6 +55,13 @@
                 app:tabIndicatorHeight="3dp"
                 app:tabMode="scrollable"
                 app:tabRippleColor="@color/transparent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_gravity="bottom"
+                android:layout_marginHorizontal="@dimen/dimen_size_16"
+                android:background="@color/divider_line_bg" />
         </FrameLayout>
 
         <androidx.viewpager2.widget.ViewPager2

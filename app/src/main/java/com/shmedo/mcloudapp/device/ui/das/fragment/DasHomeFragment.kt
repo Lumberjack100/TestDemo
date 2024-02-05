@@ -1,10 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.afollestad.materialdialogs.list.listItems
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -34,7 +30,6 @@ import com.shmedo.mcloudapp.device.model.CollectorConfigModule
 import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
-import com.shmedo.mcloudapp.device.model.InternalSensorConfigModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
@@ -216,10 +211,6 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
                 }, "取消")
             }
 
-            is InternalSensorConfigModule -> {//内置传感器配置
-                showChooseInternalSensorDialog()
-            }
-
             else -> {
                 if (module.configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
@@ -287,33 +278,6 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    @SuppressLint("CheckResult")
-    private fun showChooseInternalSensorDialog() {
-        MaterialDialog(requireContext()).show {
-            lifecycleOwner(viewLifecycleOwner)
-            title(text = "请选择传感器")
-            listItems(R.array.internal_sensor_type) { dialog, index, text ->
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-
-                if (index == 0) {
-                    nav().navigate(
-                        R.id.action_dasHomeFragment_to_dasIOSensorFragment,
-                        bundle
-                    )
-                } else {
-                    nav().navigate(
-                        R.id.action_dasHomeFragment_to_dasDigitalOsmometerFragment,
-                        bundle
-                    )
-                }
-            }
-        }
     }
 
     override fun lazyLoadData() {
@@ -523,12 +487,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(DataCenterModule(navId = R.id.action_dasHomeFragment_to_dasDataCenterHomeFragment))
         )
         moduleList.add(
-            ConfigModule(SensorConfigModule(navId = R.id.action_dasHomeFragment_to_dasExternalSensorListFragment))
-        )
-        moduleList.add(
-            ConfigModule(
-                InternalSensorConfigModule()
-            )
+            ConfigModule(SensorConfigModule(navId = R.id.action_dasHomeFragment_to_dasSensorHomeFragment))
         )
         moduleList.add(
             ConfigModule(

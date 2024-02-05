@@ -91,15 +91,8 @@ class CollectorConfigModule(
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
-class InternalSensorConfigModule(
-    name: String = "内置传感器配置",
-    desc: String = "雨量计、断线报警器等参数配置",
-    resID: Int =  R.drawable.ic_device_sensor_config,
-    navId: Int = 0,
-) : DeviceFunctionModule(name, desc, resID, navId)
-
 class SensorConfigModule(
-    name: String = "外接传感器配置",
+    name: String = "传感器配置",
     desc: String = "传感器参数配置",
     resID: Int = R.drawable.ic_device_sensor_config,
     navId: Int = 0,

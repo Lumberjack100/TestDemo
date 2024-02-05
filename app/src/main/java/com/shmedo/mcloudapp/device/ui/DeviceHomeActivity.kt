@@ -189,9 +189,9 @@ class DeviceHomeActivity : BaseActivity() {
         ) {
             var type: ProductType = ProductType.valueByPrefix(deviceInfo.productToken.uppercase())
             //双重判断设备产品类型，先根据设备产品标识判断所属产品类型，若未判断出再根据 SN 号判断，若还未判断出来，提示不支持
-            if (type === ProductType.UnKnown) {
+            if (type == ProductType.UnKnown) {
                 type = ProductType.valueBySuffix(deviceInfo.deviceToken)
-                if (type === ProductType.UnKnown) {
+                if (type == ProductType.UnKnown) {
                     Toaster.show("暂不支持此设备类型!")
                     return
                 }

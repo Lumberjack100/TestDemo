@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor
 
 import android.os.Bundle
-import android.view.View
 import android.widget.CompoundButton
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
@@ -18,8 +17,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasDigitalOsmometerBinding
@@ -27,7 +24,6 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasDigitalOsmometerViewModel
-import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -36,15 +32,13 @@ import java.util.Locale
 
 class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDigitalOsmometerBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasDigitalOsmometerViewModel
     private val iotParseManager: IOTParserManager by inject()
-    val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel =getFragmentScopeViewModel()
         mStates = getFragmentScopeViewModel()
     }
 
@@ -54,22 +48,11 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             BR.stateVM,
             mStates
         )
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDasDigitalOsmometerBinding
-        binding.llToolbar.toolbar.title = "数字式水位计"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
-        registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
-        toolbarViewModel.toolbarIvActionVisible.set(false)
         initRefresh()
     }
 
@@ -283,8 +266,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
+    companion object {
+        fun newInstance() = DasDigitalOsmometerFragment()
     }
 }

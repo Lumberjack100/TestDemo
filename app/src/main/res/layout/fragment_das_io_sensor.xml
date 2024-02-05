@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
-
-        <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.DasIOSensorViewModel" />
 
@@ -24,26 +20,16 @@
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray">
 
-        <include
-            android:id="@+id/ll_toolbar"
-            layout="@layout/include_device_config_toolbar_white"
-            app:click="@{click}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:vm="@{toolbarVM}" />
-
         <com.drake.brv.PageRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_1"
                 android:background="@color/white"
                 android:orientation="vertical">
 
@@ -169,6 +155,7 @@
 
                     <Button
                         android:id="@+id/radio_break_alarm_open"
+                        onClickWithDebouncing="@{(view)->click.onBreakAlarmCheckedChanged(view)}"
                         android:layout_width="0dp"
                         android:layout_height="38dp"
                         android:layout_weight="1"
@@ -176,21 +163,20 @@
                         android:text="常开"
                         android:textColor='@{stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
                         tools:background="@drawable/bg_corner_19dp_blue_stroke"
-                        tools:textColor="@color/colorPrimary"
-                        onClickWithDebouncing="@{(view)->click.onBreakAlarmCheckedChanged(view)}"/>
+                        tools:textColor="@color/colorPrimary" />
 
                     <Button
                         android:id="@+id/radio_break_alarm_close"
+                        onClickWithDebouncing="@{(view)->click.onBreakAlarmCheckedChanged(view)}"
                         android:layout_width="0dp"
                         android:layout_height="38dp"
-                        android:layout_weight="1"
                         android:layout_marginStart="@dimen/dimen_size_15"
+                        android:layout_weight="1"
                         android:background='@{!stateVM.isBreakAlarmOpen?@drawable/bg_corner_19dp_blue_stroke:@drawable/bg_corner_19dp_gray_stroke}'
                         android:text="常闭"
                         android:textColor='@{!stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
                         tools:background="@drawable/bg_corner_19dp_gray_stroke"
-                        tools:textColor="@color/title_text_color"
-                        onClickWithDebouncing="@{(view)->click.onBreakAlarmCheckedChanged(view)}"/>
+                        tools:textColor="@color/title_text_color" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>

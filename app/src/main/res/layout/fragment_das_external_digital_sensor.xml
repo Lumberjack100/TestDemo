@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.DasExternalDigitalSensorViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalDigitalSensorFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="110dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    onClickWithDebouncing="@{()->click.onModelSwitchClick()}"
+                    visible="@{stateVM.isModelSwitchSupport}"
+                    android:layout_marginTop="@dimen/dimen_size_1"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="模型切换" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@drawable/ic_arrow_down"
+                        android:text="@{stateVM.modelType }"
+                        tools:text="坐标模型" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    onClickWithDebouncing="@{()->click.onChildSensorTypeSwitchClick()}"
+                    visible="@{stateVM.isChildSensorTypeSupport}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="@{stateVM.childSensorTypeTitle}"
+                        tools:text="传感器类型" />
+
+                    <TextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@drawable/ic_arrow_down"
+                        android:text="@{stateVM.childSensorType }"
+                        tools:text="雷达物位计" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    android:layout_marginTop="@dimen/dimen_size_1"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="传感器地址" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:text="@={stateVM.address}"
+                        app:inputTypeFilter='@{"number"}'
+                        app:lengthFilter="@{3}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    visible="@{stateVM.isTriggerSupport}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="@{stateVM.triggerTitle}"
+                        tools:text="触发值"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入"
+                        android:text="@={stateVM.triggerValue}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{10}" />
+
+                    <ImageView
+                        onClickWithDebouncing="@{()->click.onTriggerTipBtnClick()}"
+                        visible="@{stateVM.isTriggerTipBtnSupport}"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/dimen_size_15"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icon_userinfo_about"
+                        app:tint="@color/red" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    visible="@{stateVM.isCorrectSupport}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="@{stateVM.correctTitle}"
+                        tools:text="修正值"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入"
+                        android:text="@={stateVM.correctValue}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{10}" />
+
+                    <ImageView
+                        onClickWithDebouncing="@{()->click.onCorrectTipBtnClick()}"
+                        visible="@{stateVM.isCorrectTipBtnSupport}"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/dimen_size_15"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icon_userinfo_about"
+                        app:tint="@color/red" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    visible="@{stateVM.isExtension1Support}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="@{stateVM.extension1Title}"
+                        tools:text="扩展1"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.extension1ValueEnable }"
+                        android:hint="请输入"
+                        android:text="@={stateVM.extension1Value}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{10}" />
+
+                    <ImageView
+                        onClickWithDebouncing="@{()->click.onExtension1TipBtnClick()}"
+                        visible="@{stateVM.isExtension1TipBtnSupport}"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/dimen_size_15"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icon_userinfo_about"
+                        app:tint="@color/red" />
+
+                    <TextView
+                        android:id="@+id/btn_extension1"
+                        onClickWithDebouncing="@{()->click.onExtension1ButtonClick()}"
+                        visible="@{stateVM.isExtension1ButtonSupport}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dimen_size_15"
+                        android:background="@drawable/selector_button_bg"
+                        android:paddingHorizontal="@dimen/dimen_size_10"
+                        android:paddingVertical="@dimen/dimen_size_3"
+                        android:text="重置"
+                        android:textColor="@color/white" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    visible="@{stateVM.isExtension2Support}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="@{stateVM.extension2Title}"
+                        tools:text="扩展2"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.extension2ValueEnable }"
+                        android:hint="请输入"
+                        android:text="@={stateVM.extension2Value}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{10}" />
+
+                    <ImageView
+                        onClickWithDebouncing="@{()->click.onExtension2TipBtnClick()}"
+                        visible="@{stateVM.isExtension2TipBtnSupport}"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/dimen_size_15"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icon_userinfo_about"
+                        app:tint="@color/red" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    visible="@{stateVM.isExtension3Support}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="@{stateVM.extension3Title}"
+                        tools:text="扩展3"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.extension3ValueEnable }"
+                        android:hint="请输入"
+                        android:text="@={stateVM.extension3Value}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{10}" />
+
+                    <ImageView
+                        onClickWithDebouncing="@{()->click.onExtension3TipBtnClick()}"
+                        visible="@{stateVM.isExtension3TipBtnSupport}"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/dimen_size_15"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icon_userinfo_about"
+                        app:tint="@color/red" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    visible="@{stateVM.isExtension4Support}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="@{stateVM.extension4Title}"
+                        tools:text="扩展4"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.extension4ValueEnable }"
+                        android:hint="请输入"
+                        android:text="@={stateVM.extension4Value}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{10}" />
+
+                    <ImageView
+                        onClickWithDebouncing="@{()->click.onExtension4TipBtnClick()}"
+                        visible="@{stateVM.isExtension4TipBtnSupport}"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/dimen_size_15"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icon_userinfo_about"
+                        app:tint="@color/red" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    visible="@{stateVM.isExtension5Support}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="@{stateVM.extension5Title}"
+                        tools:text="扩展5"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入"
+                        android:text="@={stateVM.extension5Value}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{10}" />
+
+                    <ImageView
+                        onClickWithDebouncing="@{()->click.onExtension5TipBtnClick()}"
+                        visible="@{stateVM.isExtension5TipBtnSupport}"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="@dimen/dimen_size_15"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icon_userinfo_about"
+                        app:tint="@color/red" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/btn_confirm"
+            style="@style/SubmitButton_ColorPrimary"
+            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="50dp"
+            android:text="确定"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scrollView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -24,6 +24,7 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702DeviceInfoBinding
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.DasSensorHomeFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 
 class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
@@ -34,12 +35,6 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
     private var communicateWay: CommunicateWay = NetPlatformConnect
     private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
-
-    private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
-    private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
-    private val activeSize: Float = 17f
-    private val normalSize: Float = 15f
-    private val tabs = arrayOf("基本信息", "运行状态", "接口状态", "模块状态")
 
 
     override fun initViewModel() {
@@ -145,5 +140,15 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.toolbar)
+    }
+
+    companion object {
+        private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
+        private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
+        private const val activeSize: Float = 17f
+        private const val normalSize: Float = 15f
+        private val tabs = arrayOf("基本信息", "运行状态", "接口状态", "模块状态")
+
+        fun newInstance() = DasSensorHomeFragment()
     }
 }

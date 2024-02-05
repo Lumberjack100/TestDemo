@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
@@ -11,6 +10,7 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasIOSensorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -21,15 +21,12 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasIOSensorViewModel
-import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -37,13 +34,17 @@ import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 class DasIOSensorFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentDasIoSensorBinding by lazy { getBinding() as FragmentDasIoSensorBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: DasIOSensorViewModel by viewModels()
+    private lateinit var binding: FragmentDasIoSensorBinding
+    private lateinit var mStates: DasIOSensorViewModel
     private val iotParseManager: IOTParserManager by inject()
     val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
     private val rainResolutionList by lazy { Utils.getApp().resources.getStringArray(R.array.rain_value) }
 
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -51,21 +52,11 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
             BR.stateVM,
             mStates
         )
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.title = "开关量传感器"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
-        registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
-        toolbarViewModel.toolbarIvActionVisible.set(false)
+        binding = getBinding() as FragmentDasIoSensorBinding
         initRefresh()
     }
 
@@ -262,8 +253,8 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
+
+    companion object {
+        fun newInstance() = DasIOSensorFragment()
     }
 }
