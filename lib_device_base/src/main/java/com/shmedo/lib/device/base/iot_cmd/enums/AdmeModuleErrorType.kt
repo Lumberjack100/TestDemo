@@ -31,7 +31,7 @@ enum class AdmeModuleErrorType(val code: String, val description: String) {
         @JvmStatic
         fun valueByCode(code: String): AdmeModuleErrorType? {
             if (TextUtils.isEmpty(code)) return null
-            for (errorType in values()) {
+            for (errorType in entries) {
                 if (errorType.code == code) return errorType
             }
             return null

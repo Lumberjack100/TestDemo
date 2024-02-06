@@ -137,20 +137,21 @@ enum class IOTSensorType(val code: String, val description: String) {
         @JvmStatic
         fun value(code: String): IOTSensorType {
             if (TextUtils.isEmpty(code)) return UNKNOWN_TYPE
-            for (sensorType in values()) {
+            for (sensorType in entries) {
                 if (sensorType.code == code) return sensorType
             }
             return UNKNOWN_TYPE
         }
 
-        fun isValidSensor(coll: String?): Boolean {
-            if (TextUtils.isEmpty(coll))
-                return false
-
-            return values().any { it.code == coll }
-        }
-
         @JvmStatic
         fun getSensorTypeByCollectorCode(code: String) = value(code)
+
+        @JvmStatic
+        fun getSensorTypeByDescription(desc: String): IOTSensorType {
+            for (sensorType in entries) {
+                if (sensorType.description == desc) return sensorType
+            }
+            return UNKNOWN_TYPE
+        }
     }
 }

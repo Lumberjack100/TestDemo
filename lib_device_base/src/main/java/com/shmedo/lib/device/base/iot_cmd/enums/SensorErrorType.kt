@@ -31,7 +31,7 @@ enum class SensorErrorType(val code: String, val description: String) {
         @JvmStatic
         fun getErrorMessageByCode(errorCode: String): String {
             if (TextUtils.isEmpty(errorCode)) return AdmeCTRMotionState.UNKNOWN_ERROR.description
-            for (sensorErrorType in values()) {
+            for (sensorErrorType in entries) {
                 if (sensorErrorType.code == errorCode) return sensorErrorType.description
             }
             return AdmeCTRMotionState.UNKNOWN_ERROR.description

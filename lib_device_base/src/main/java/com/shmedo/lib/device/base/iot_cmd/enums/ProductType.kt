@@ -46,7 +46,7 @@ enum class ProductType(
         fun valueByPrefix(productToken: String): ProductType {
             if (TextUtils.isEmpty(productToken))
                 return UnKnown
-            for (productType in values()) {
+            for (productType in entries) {
                 val tags = productType.prefix.split(",").toTypedArray()
                 for (tag in tags) {
                     if (productToken.uppercase(Locale.getDefault()).startsWith(tag))
@@ -69,7 +69,7 @@ enum class ProductType(
             if (deviceToken.endsWith("T")) {
                 return if (deviceToken.startsWith("M20")) M20 else ADME
             }
-            for (productType in values()) {
+            for (productType in entries) {
                 if (deviceToken.endsWith(productType.suffix)) return productType
             }
             return UnKnown

@@ -31,7 +31,7 @@ enum class StationCode(val description: String, val code: String) {
         @JvmStatic
         fun valueByDescription(name: String): StationCode {
             if (TextUtils.isEmpty(name)) return CUSTOM
-            for (errorType in values()) {
+            for (errorType in entries) {
                 if (errorType.description == name) return errorType
             }
             return CUSTOM
@@ -40,7 +40,7 @@ enum class StationCode(val description: String, val code: String) {
         @JvmStatic
         fun valueByCode(code: String): StationCode {
             if (TextUtils.isEmpty(code)) return CUSTOM
-            for (errorType in values()) {
+            for (errorType in entries) {
                 if (errorType.code == code) return errorType
             }
             return CUSTOM
@@ -48,6 +48,6 @@ enum class StationCode(val description: String, val code: String) {
 
         @JvmStatic
         val descriptions: List<String>
-            get() = values().map { it.description }
+            get() = entries.map { it.description }
     }
 }

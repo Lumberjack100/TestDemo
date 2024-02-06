@@ -62,7 +62,7 @@ enum class MonitoringType(val code: String, val description: String) {
                 val strs = code.split("_").toTypedArray()
                 code = strs[0]
             }
-            for (sensorType in values()) {
+            for (sensorType in entries) {
                 if (sensorType.code == code) return sensorType
             }
             return UNKNOWN_TYPE
@@ -71,7 +71,7 @@ enum class MonitoringType(val code: String, val description: String) {
         @JvmStatic
         fun valueByDesc(desc: String): MonitoringType {
             if (TextUtils.isEmpty(desc)) return UNKNOWN_TYPE
-            for (sensorType in values()) {
+            for (sensorType in entries) {
                 if (sensorType.description == desc) return sensorType
             }
             return UNKNOWN_TYPE

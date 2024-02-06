@@ -28,7 +28,7 @@ data class DasExternalSensorInfo(
     var temp_t0: String = "",//初始温度T0
     var sens_k: String = "",//灵敏度K
     var temp_b: String = "",//温度系数b
-    var referval_f: String = "",//基准值F
+    var referval_f: String = "0",//基准值F
     var elastic_mod: String = "",//膨胀系数(应力计)
 
     //量水堰计特有

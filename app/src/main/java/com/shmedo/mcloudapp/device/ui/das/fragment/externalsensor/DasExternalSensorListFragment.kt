@@ -21,7 +21,6 @@ import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -112,7 +111,16 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bundle
                             )
                         } else {
-
+                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                                communicateWay,
+                                deviceInfo,
+                                bleDevice,
+                                item.addr
+                            )
+                            nav().navigate(
+                                R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
+                                bundle
+                            )
                         }
                     }
 
@@ -130,7 +138,16 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bundle
                             )
                         } else {
-
+                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                                communicateWay,
+                                deviceInfo,
+                                bleDevice,
+                                "-1"
+                            )
+                            nav().navigate(
+                                R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
+                                bundle
+                            )
                         }
                     }
                 }
@@ -155,7 +172,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-//            initSaveCommand()
+            initSaveCommand()
         }
     }
 
@@ -201,104 +218,104 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
      * 设置采集器接入的传感器配置信息
      */
     private fun initExtendSensorConfigInfoCommand() {
-        mStates.sensorModelMap.values.forEachIndexed { mIndex, dasExternalSensorInfo ->
-            val entity = DasExternalSensorEntity().apply {
-                index = mIndex.toString()
-                type = dasExternalSensorInfo.type
-                addr = dasExternalSensorInfo.addr
-                threshold = dasExternalSensorInfo.threshold
-                corrval = dasExternalSensorInfo.corrval
-                when (IOTSensorType.value(dasExternalSensorInfo.type)) {
-                    IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
-                        tubealti = dasExternalSensorInfo.tubealti
-                        ropelen = dasExternalSensorInfo.ropelen
-                        poly_a = dasExternalSensorInfo.poly_a
-                        poly_b = dasExternalSensorInfo.poly_b
-                        poly_c = dasExternalSensorInfo.poly_c
-                        temp_k = dasExternalSensorInfo.temp_k
-                        temp_t0 = dasExternalSensorInfo.temp_t0
-                    }
-
-                    IOTSensorType.GUDAN_PERCOLATE -> {//葛南渗压计
-                        tubealti = dasExternalSensorInfo.tubealti
-                        ropelen = dasExternalSensorInfo.ropelen
-                        sens_k = dasExternalSensorInfo.sens_k
-                        temp_b = dasExternalSensorInfo.temp_b
-                        temp_t0 = dasExternalSensorInfo.temp_t0
-                        referval_f = dasExternalSensorInfo.referval_f
-                    }
-
-                    IOTSensorType.GUDAN_SOIL_PRESSURE -> {//葛南土压力计
-                        sens_k = dasExternalSensorInfo.sens_k
-                        temp_b = dasExternalSensorInfo.temp_b
-                        temp_t0 = dasExternalSensorInfo.temp_t0
-                        referval_f = dasExternalSensorInfo.referval_f
-                    }
-
-                    IOTSensorType.GUDAN_STRESS -> {//葛南应力计
-                        sens_k = dasExternalSensorInfo.sens_k
-                        temp_b = dasExternalSensorInfo.temp_b
-                        temp_t0 = dasExternalSensorInfo.temp_t0
-                        referval_f = dasExternalSensorInfo.referval_f
-                        elastic_mod = dasExternalSensorInfo.elastic_mod
-                    }
-
-                    IOTSensorType.JUNXING_ZLJ_300T -> {//轴力计
-                        sens_k = dasExternalSensorInfo.sens_k
-                        temp_b = dasExternalSensorInfo.temp_b
-                        temp_t0 = dasExternalSensorInfo.temp_t0
-                        referval_f = dasExternalSensorInfo.referval_f
-                    }
-
-                    IOTSensorType.INCLINOMETER -> {//固定测斜仪
-                        spacing = dasExternalSensorInfo.spacing
-                        model_type = dasExternalSensorInfo.model_type
-                    }
-
-                    IOTSensorType.LUYAN_INCLINOMETER -> {//倾角仪
-                        initvalx = dasExternalSensorInfo.initvalx
-                        initvaly = dasExternalSensorInfo.initvaly
-                        initvalz = dasExternalSensorInfo.initvalz
-                    }
-
-                    IOTSensorType.WEIR -> {//量水堰计
-                        lsycsds = dasExternalSensorInfo.lsycsds
-                        lsyysst = dasExternalSensorInfo.lsyysst
-                    }
-
-                    IOTSensorType.STATIC_LEVEL,//静力水准
-                    IOTSensorType.SEDIMENTATION_METER -> {//沉降仪
-                        initval = dasExternalSensorInfo.initval
-                    }
-
-                    IOTSensorType.VW08 -> {//MCU 振弦传感器
-                        if (dasExternalSensorInfo.sens_k != IOTConstants.NULL_KEY) {
-                            sens_k = dasExternalSensorInfo.sens_k
-                            temp_b = dasExternalSensorInfo.temp_b
-                            temp_t0 = dasExternalSensorInfo.temp_t0
-                            referval_f = dasExternalSensorInfo.referval_f
+        mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }
+            .forEachIndexed { mIndex, key ->
+                val sensorInfo = mStates.sensorModelMap[key]!!
+                val entity = DasExternalSensorEntity().apply {
+                    index = mIndex.toString()
+                    type = sensorInfo.type
+                    addr = sensorInfo.addr
+                    threshold = sensorInfo.threshold
+                    corrval = sensorInfo.corrval
+                    when (IOTSensorType.value(sensorInfo.type)) {
+                        IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
+                            tubealti = sensorInfo.tubealti
+                            ropelen = sensorInfo.ropelen
+                            poly_a = sensorInfo.poly_a
+                            poly_b = sensorInfo.poly_b
+                            poly_c = sensorInfo.poly_c
+                            temp_k = sensorInfo.temp_k
+                            temp_t0 = sensorInfo.temp_t0
                         }
-                    }
 
-                    IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE,//数字式水位计
-                    IOTSensorType.WATER_LEVEL_GAUGE -> {//MCU 水位(液位)计
-                        tubealti = dasExternalSensorInfo.tubealti
-                        ropelen = dasExternalSensorInfo.ropelen
-                    }
+                        IOTSensorType.GUDAN_PERCOLATE -> {//葛南渗压计
+                            tubealti = sensorInfo.tubealti
+                            ropelen = sensorInfo.ropelen
+                            sens_k = sensorInfo.sens_k
+                            temp_b = sensorInfo.temp_b
+                            temp_t0 = sensorInfo.temp_t0
+                            referval_f = sensorInfo.referval_f
+                        }
 
-                    IOTSensorType.RADAR_LEVEL_GAUGE -> {//雷达液(物)位计 设置子雷达传感器型号
-                        child_type = dasExternalSensorInfo.child_type
-                    }
+                        IOTSensorType.GUDAN_SOIL_PRESSURE -> {//葛南土压力计
+                            sens_k = sensorInfo.sens_k
+                            temp_b = sensorInfo.temp_b
+                            temp_t0 = sensorInfo.temp_t0
+                            referval_f = sensorInfo.referval_f
+                        }
 
-                    else -> {}
+                        IOTSensorType.GUDAN_STRESS -> {//葛南应力计
+                            sens_k = sensorInfo.sens_k
+                            temp_b = sensorInfo.temp_b
+                            temp_t0 = sensorInfo.temp_t0
+                            referval_f = sensorInfo.referval_f
+                            elastic_mod = sensorInfo.elastic_mod
+                        }
+
+                        IOTSensorType.JUNXING_ZLJ_300T -> {//轴力计
+                            sens_k = sensorInfo.sens_k
+                            temp_b = sensorInfo.temp_b
+                            temp_t0 = sensorInfo.temp_t0
+                            referval_f = sensorInfo.referval_f
+                        }
+
+                        IOTSensorType.INCLINOMETER -> {//固定测斜仪
+                            spacing = sensorInfo.spacing
+                            model_type = sensorInfo.model_type
+                        }
+
+                        IOTSensorType.LUYAN_INCLINOMETER -> {//倾角仪
+                            initvalx = sensorInfo.initvalx
+                            initvaly = sensorInfo.initvaly
+                            initvalz = sensorInfo.initvalz
+                        }
+
+                        IOTSensorType.WEIR -> {//量水堰计
+                            lsycsds = sensorInfo.lsycsds
+                            lsyysst = sensorInfo.lsyysst
+                        }
+
+                        IOTSensorType.STATIC_LEVEL,//静力水准
+                        IOTSensorType.SEDIMENTATION_METER -> {//沉降仪
+                            initval = sensorInfo.initval
+                        }
+
+                        IOTSensorType.VW08 -> {//MCU 振弦传感器
+                            sens_k = sensorInfo.sens_k
+                            temp_b = sensorInfo.temp_b
+                            temp_t0 = sensorInfo.temp_t0
+                            referval_f = sensorInfo.referval_f
+                        }
+
+                        IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE,//数字式水位计
+                        IOTSensorType.WATER_LEVEL_GAUGE -> {//MCU 水位(液位)计
+                            tubealti = sensorInfo.tubealti
+                            ropelen = sensorInfo.ropelen
+                        }
+
+                        IOTSensorType.RADAR_LEVEL_GAUGE -> {//雷达液(物)位计 设置子雷达传感器型号
+                            child_type = sensorInfo.child_type
+                        }
+
+                        else -> {}
+                    }
                 }
+                val command = IOTCommandUtil.getCommand(
+                    IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR,
+                    entity.toCommandString()
+                )
+                commandItems.add(command)
             }
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR,
-                entity.toCommandString()
-            )
-            commandItems.add(command)
-        }
     }
 
     override fun createObserver() {
@@ -311,7 +328,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     val item = DASSensorItem(
                         isPlugin = true,
                         addr = sensorInfo.addr,
-                        addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr}" else "地址-${sensorInfo.addr}",
+                        addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
                         sensorType = sensorInfo.type,
                         sensorName = IOTSensorType.value(sensorInfo.type).description,
                     )
@@ -506,35 +523,35 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
         val item = DASSensorItem(
             isPlugin = true,
             addr = sensorInfo.addr,
-            addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr}" else "地址-${sensorInfo.addr}",
+            addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
             sensorType = sensorInfo.type,
             sensorName = IOTSensorType.value(sensorInfo.type).description,
         )
         if (binding.rv.models.isNullOrEmpty())
             binding.rv.models = arrayListOf()
         binding.rv.mutable.add(item)
-        binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.itemCount - 1)
+        binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
     }
 
     private fun initEmptySensor() {
-        val list = arrayListOf<DASSensorItem>()
-        binding.rv.models = list
+        binding.rv.models = arrayListOf<DASSensorItem>()
         updateFooter()
     }
 
     private fun updateFooter() {
         if (binding.rv.bindingAdapter.modelCount < MAX_SENSOR_COUNT) {
             if (binding.rv.bindingAdapter.footerCount == 0)
-                binding.rv.bindingAdapter.addFooter(RVEmptyFooter(), animation = true)
+                binding.rv.bindingAdapter.addFooter(RVEmptyFooter())
         } else {
-            binding.rv.bindingAdapter.removeFooterAt(animation = true)
+            binding.rv.bindingAdapter.removeFooterAt()
         }
     }
 
     private fun resetData() {
         deleteItemIndex = 0
         mStates.sensorModelMap.clear()
-        binding.rv.models = arrayListOf()
+        binding.rv.bindingAdapter.clearFooter()
+        binding.rv.models = arrayListOf<DASSensorItem>()
         mStates.isSubmitBtnVisible.set(false)
     }
 

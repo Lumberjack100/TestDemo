@@ -110,7 +110,7 @@ enum class IOTCollectorModel(val code: String, val description: String) {
     companion object {
         fun value(code: String): IOTCollectorModel {
             if (TextUtils.isEmpty(code)) return VW08
-            for (collectorModel in values()) {
+            for (collectorModel in entries) {
                 if (collectorModel.code == code) return collectorModel
             }
             return UNKNOWN_TYPE
@@ -119,7 +119,7 @@ enum class IOTCollectorModel(val code: String, val description: String) {
         fun isValidCollector(coll: String?): Boolean {
             if (TextUtils.isEmpty(coll)) return false
             val allCollectors: MutableList<String?> = ArrayList()
-            for (modle in values()) {
+            for (modle in entries) {
                 allCollectors.add(modle.code)
             }
             return allCollectors.contains(coll)

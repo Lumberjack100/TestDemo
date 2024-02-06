@@ -39,7 +39,7 @@
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -61,7 +61,7 @@
                     <TextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
-                        android:text="@{stateVM.sensorType }"
+                        android:text="@{stateVM.sensorTypeName }"
                         tools:text="4g" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -83,23 +83,17 @@
 
                 <include
                     layout="@layout/vibrating_sensor_extension_items"
-                    app:stateVM="@{stateVM}"
-                    app:click="@{click}"/>
+                    app:click="@{click}"
+                    app:stateVM="@{stateVM}" />
+
+                <TextView
+                    android:id="@+id/btn_confirm"
+                    style="@style/SubmitButton_ColorPrimary"
+                    onClickWithDebouncing="@{()->click.onSubmitClick()}"
+                    android:layout_marginTop="@dimen/dimen_size_35"
+                    android:text="确定" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
-
-        <TextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="50dp"
-            android:text="确定"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scrollView" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

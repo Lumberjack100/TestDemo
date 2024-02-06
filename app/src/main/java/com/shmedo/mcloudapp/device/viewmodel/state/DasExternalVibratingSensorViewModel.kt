@@ -2,10 +2,11 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 
 class DasExternalVibratingSensorViewModel : ViewModel() {
-    val sensorTypeCode = NonNullObservableField("")//
-    val sensorType = NonNullObservableField("")//传感器类型
+    val sensorType = NonNullObservableField(IOTSensorType.UNKNOWN_TYPE)//
+    val sensorTypeName = NonNullObservableField("")//传感器类型
     val channel = NonNullObservableField("")//通道
 
 

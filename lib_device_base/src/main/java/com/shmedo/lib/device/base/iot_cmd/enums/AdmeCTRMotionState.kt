@@ -25,7 +25,7 @@ enum class AdmeCTRMotionState(val code: String, val description: String, val sim
         @JvmStatic
         fun valueByCode(code: String): AdmeCTRMotionState {
             if (TextUtils.isEmpty(code)) return UNKNOWN_ERROR
-            for (motionState in values()) {
+            for (motionState in entries) {
                 if (motionState.code == code) return motionState
             }
             return UNKNOWN_ERROR
