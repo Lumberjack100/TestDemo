@@ -370,7 +370,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
 
     private fun initWirelessData(mrWirelessNet: MRWirelessNet) {
         mStates.isWirelessOpened.set(mrWirelessNet.switch == "1")
-        binding.mobileCommunicationSB.setCheckedImmediatelyNoEvent(mrWirelessNet.switch == "1")
         mStates.apnName.set(mrWirelessNet.apn)
         mStates.userName.set(mrWirelessNet.username)
         mStates.pwd.set(mrWirelessNet.password)
@@ -378,7 +377,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
 
     private fun initWiredData(mrWiredNet: MRWiredNet) {
         mStates.isEthernetOpened.set(mrWiredNet.switch == "1")
-        binding.ethernetAccessSB.setCheckedImmediatelyNoEvent(mrWiredNet.switch == "1")
         mStates.ipMode.set(ipModeList[if (mrWiredNet.dhcp == "0") 0 else 1])
         mStates.isManualVisible.set(mrWiredNet.dhcp == "1")
         mStates.ip.set(mrWiredNet.ipaddr)

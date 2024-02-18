@@ -302,7 +302,6 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
     private fun initParamData(sensorParam: MRRS232Port1Param) {
         try {
             mStates.status.set(if (sensorParam.status == "1") "已接入" else "未接入")
-            binding.sensorSB.setCheckedImmediatelyNoEvent(sensorParam.switch == "1")
             mStates.isOpened.set(sensorParam.switch == "1")
             mStates.cameraModel.set(cameraModelList[sensorParam.type.toInt()])
             mStates.cameraResolution.set(cameraResolutionList[sensorParam.resolut.toInt()])

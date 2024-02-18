@@ -219,7 +219,6 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
     private fun initParamData(rainGaugeParam: MRRainGaugeParam) {
         try {
             mStates.status.set(if (rainGaugeParam.status == "1") "已接入" else "未接入")
-            binding.sensorSB.setCheckedImmediatelyNoEvent(rainGaugeParam.switch == "1")
             mStates.isOpened.set(rainGaugeParam.switch == "1")
             mStates.rainResolution.set(rainGaugeParam.rainaccuracy)
             mStates.debounceCoefficient.set(rainGaugeParam.rainelim)

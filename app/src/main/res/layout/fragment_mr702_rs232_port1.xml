@@ -69,6 +69,7 @@
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/sensorSB"
                         style="@style/SwitchButton_ButtonStyle"
+                        checkedImmediatelyNoEvent="@{stateVM.isOpened}"
                         android:enabled="@{homeVM.isEditable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"

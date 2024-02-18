@@ -64,6 +64,7 @@
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/mobileCommunicationSB"
                         style="@style/SwitchButton_ButtonStyle"
+                        checkedImmediatelyNoEvent="@{stateVM.isWirelessOpened}"
                         android:enabled="@{!stateVM.isWirelessDisabled &amp;&amp; stateVM.isEditable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"
@@ -146,6 +147,7 @@
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/ethernetAccessSB"
                         style="@style/SwitchButton_ButtonStyle"
+                        checkedImmediatelyNoEvent="@{stateVM.isEthernetOpened}"
                         android:enabled="@{stateVM.isEditable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"

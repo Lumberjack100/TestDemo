@@ -492,7 +492,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
         moduleList.add(
             ConfigModule(
                 CommonModule(
-                    name = "终端参数",
+                    name = "上报方式",
                     desc = "上报规则设置",
                     resID = R.drawable.ic_device_data_center,
                     navId = R.id.action_dasHomeFragment_to_dasTerminalParameterFragment

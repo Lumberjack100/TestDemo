@@ -2,25 +2,31 @@ package com.shmedo.mcloudapp.device.ui.das.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.kyleduo.switchbutton.SwitchButton
+import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasBdTerminalEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerOne
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerThree
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerTwo
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.common.DataCenterStatus
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasBdTerminalInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -29,6 +35,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -36,6 +44,7 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -43,21 +52,24 @@ import timber.log.Timber
 class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: DasSensorHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
+    private val baudRateList: MutableList<String> = arrayListOf("9600", "115200")
 
 
     override fun initViewModel() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_das_data_center_home,
-            BR.toolbarVM,
-            toolbarViewModel
+            BR.stateVM, mStates
         )
-            .addBindingParam(BR.click, BaseClickProxy())
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -129,8 +141,86 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
             showLoadingDialog(StringUtils.getString(R.string.loading))
             sendCommandFromCmdList(isStartTimeoutJob = true)
-
         }
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
+                return
+            }
+            mStates.isBdOpened.set(isChecked)
+            if (!isChecked) {
+                showMessage("确定要关闭吗？", "温馨提示", "确定", {
+                    closeBdTerminal()
+                }, "取消", {
+                    mStates.isBdOpened.set(true)
+                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
+                })
+            }
+        }
+
+        fun onBaudRateChooseClick() {
+            val selectedIndex = baudRateList.indexOf(mStates.baudRate.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", baudRateList.toTypedArray(),
+                    null, selectedIndex,
+                    { _, text ->
+                        mStates.baudRate.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onSubmitClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initSaveCommand()
+        }
+    }
+
+    private fun closeBdTerminal() {
+        commandItems.clear()
+        val entity = DasBdTerminalEntity(
+            sw = "0"
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_SET_BD_TERMINAL,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    private fun initSaveCommand() {
+        commandItems.clear()
+        if (mStates.address.get().isEmpty()) {
+            showMessageDialog("请输入目标地址!")
+            return
+        }
+        val entity = DasBdTerminalEntity(
+            sw = "1",
+            dstaddr = mStates.address.get(),
+            baud = mStates.baudRate.get()
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_SET_BD_TERMINAL,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -140,8 +230,11 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
+        var command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_BD_TERMINAL)
+        commandItems.add(command)
+
         var entity = CenterNumberEntity(ServerOne.centerid.toString())
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
         commandItems.add(command)
 
         entity = CenterNumberEntity(ServerTwo.centerid.toString())
@@ -155,23 +248,29 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, isShowMsg, msg)
-        binding.refreshLayout.finish(false)
-    }
-
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.DAS_MD_GET_BD_TERMINAL -> {
+                val result = iotParseManager.parse<DasBdTerminalInfo>(
+                    cmdStr,
+                    IOTCommandType.DAS_MD_GET_BD_TERMINAL
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询北斗参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList()
+                        initBdTerminal(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.MD_GET_DATA_CENTER_STATUS -> {
                 val result = iotParseManager.parse<DataCenterStatus>(
                     cmdStr,
@@ -195,8 +294,39 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.DAS_MD_SET_BD_TERMINAL -> {
+//                setEditable(false)
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "北斗参数设置出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
             else -> {}
         }
+    }
+
+    private fun initBdTerminal(info: DasBdTerminalInfo) {
+        mStates.isBdOpened.set(info.sw.toInt() == 1)
+        mStates.address.set(info.dstaddr)
+        mStates.baudRate.set(
+            if (info.baud.isEmpty()) {
+                baudRateList[0]
+            } else {
+                baudRateList[baudRateList.indexOf(info.baud)]
+            }
+        )
     }
 
     private fun initDataCenterStatus(dataCenterStatus: DataCenterStatus) {
@@ -216,8 +346,6 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     .refreshStatus(dataCenterStatus.status)
             }
         }
-
-
     }
 
     private fun getAdapterData() = mutableListOf(

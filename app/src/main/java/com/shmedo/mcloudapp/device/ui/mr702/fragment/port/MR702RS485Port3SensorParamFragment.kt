@@ -429,7 +429,6 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
     private fun initParamData(sensorParam: MRRS485Port3SensorParam) {
         try {
             mStates.status.set(if (sensorParam.status == "1") "已接入" else "未接入")
-            binding.sensorSB.setCheckedImmediatelyNoEvent(sensorParam.switch == "1")
             mStates.isOpened.set(sensorParam.switch == "1")
             mStates.address.set(sensorParam.addr)
             mStates.baudRate.set(sensorParam.baud)
