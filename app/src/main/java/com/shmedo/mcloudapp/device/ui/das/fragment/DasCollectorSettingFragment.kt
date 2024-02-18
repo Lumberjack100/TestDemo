@@ -74,7 +74,6 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarIvActionVisible.set(false)
         initRefresh()
     }
 

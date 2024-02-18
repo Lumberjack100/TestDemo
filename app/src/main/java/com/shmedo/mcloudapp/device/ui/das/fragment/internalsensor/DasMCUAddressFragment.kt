@@ -1,0 +1,165 @@
+package com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor
+
+import android.os.Bundle
+import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.StringUtils
+import com.hjq.toast.Toaster
+import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.model.das.McuAddressInfo
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
+import com.shmedo.mcloudapp.databinding.FragmentDasMcuAddressBinding
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.DasMCUAddressViewModel
+import org.koin.android.ext.android.inject
+import timber.log.Timber
+
+class DasMCUAddressFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentDasMcuAddressBinding
+    private lateinit var mStates: DasMCUAddressViewModel
+    private val iotParseManager: IOTParserManager by inject()
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
+    override fun getDataBindingConfig(): DataBindingConfig {
+        return DataBindingConfig(
+            R.layout.fragment_das_mcu_address,
+            BR.stateVM,
+            mStates
+        )
+            .addBindingParam(BR.click, ClickProxy())
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDasMcuAddressBinding
+        initRefresh()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            queryData()
+        }
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        fun onSubmitClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initSaveCommand()
+        }
+    }
+
+    private fun initSaveCommand() {
+        if (mStates.address.get().isEmpty()) {
+            showMessageDialog("请输入 MCU 地址!")
+            return
+        }
+        try {
+            val value = mStates.address.get().toDouble()
+            if (value < 0 || value > 255) {
+                showMessageDialog("MCU 地址数值范围[0,255]!")
+                return
+            }
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的 MCU 地址!")
+            return
+        }
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_SET_MCU_ADDRESS,
+            "mcuaddr=${mStates.address.get()}"
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
+    }
+
+    private fun queryData() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_GET_MCU_ADDRESS
+        )
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun setResultData(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.DAS_MD_GET_MCU_ADDRESS -> {//
+                val result = iotParseManager.parse<McuAddressInfo>(
+                    cmdStr,
+                    IOTCommandType.DAS_MD_GET_MCU_ADDRESS
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询 MCU 地址出错!: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        mStates.address.set(result.data.mcuaddr)
+                    }
+                }
+            }
+
+            IOTCommandType.DAS_MD_SET_MCU_ADDRESS -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置 MCU 地址出错!: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
+            else -> {}
+        }
+    }
+
+
+    companion object {
+        fun newInstance() = DasMCUAddressFragment()
+    }
+}

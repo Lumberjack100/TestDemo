@@ -28,12 +28,14 @@ import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TimeCalibrationDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.AudibleAlarmParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasBdTerminalInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasCollectorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasDigitalPiezometerInfoParserr
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasExternalSensorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasIOSensorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasReportInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.McuAddressInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDOPortParamParser
@@ -96,6 +98,8 @@ val appModule = module {
     factory { DasIOSensorInfoParser() }
     factory { DasDigitalPiezometerInfoParserr() }
     factory { DasExternalSensorInfoParser() }
+    factory { AudibleAlarmParser() }
+    factory { McuAddressInfoParser() }
 
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -156,6 +160,8 @@ val appModule = module {
             get<DasIOSensorInfoParser>(),
             get<DasDigitalPiezometerInfoParserr>(),
             get<DasExternalSensorInfoParser>(),
+            get<AudibleAlarmParser>(),
+            get<McuAddressInfoParser>(),
 
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),

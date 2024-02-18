@@ -500,7 +500,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
             )
         )
         moduleList.add(
-            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment))
+            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_dasAdvancedSettingFragment))
         )
         binding.recyclerview.models = moduleList
     }

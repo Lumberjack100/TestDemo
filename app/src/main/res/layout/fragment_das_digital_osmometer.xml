@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingBottom="100dp">
 
                     <RelativeLayout
                         style="@style/SwitchButton_LayoutStyle"
@@ -157,7 +157,7 @@
             onClickWithDebouncing="@{()->click.onSubmitClick()}"
             visible="@{stateVM.isOpened }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="50dp"
             android:text="保存"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalSensorListFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasIOSensorFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasMCUAddressFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 
 class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
@@ -39,8 +40,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
-
-    private val tabs = arrayOf("开关量", "数字式水位计", "扩展传感器")
+    private val tabNames = arrayListOf<String>("开关量", "数字式水位计", "扩展传感器")
 
 
     override fun initViewModel() {
@@ -74,6 +74,9 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
         }
+        if (deviceInfo.productName.contains("MR701")) {
+            tabNames.add(2, "MCU地址")
+        }
         initViewPager()
     }
 
@@ -91,19 +94,22 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 DasDigitalOsmometerFragment.newInstance().apply {
                     arguments = bundle
                 },
+                DasMCUAddressFragment.newInstance().apply {
+                    arguments = bundle
+                },
                 DasExternalSensorListFragment.newInstance().apply {
                     arguments = bundle
                 }
             )
         binding.viewpager.adapter = PageAdapter(this, mFragments)
-        binding.viewpager.offscreenPageLimit = 1
+        binding.viewpager.offscreenPageLimit = tabNames.size
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)
 
         TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
             val textView = TextView(requireContext())
 
-            textView.text = tabs[position]
+            textView.text = tabNames[position]
             if (position == 0) { // 第一个为默认选中
                 textView.textSize = activeSize
                 textView.typeface = Typeface.DEFAULT_BOLD
