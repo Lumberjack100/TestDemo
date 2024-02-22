@@ -42,6 +42,8 @@ def getReversion() {
 }
 
 android {
+    namespace "com.shmedo.mcloudapp"
+
     compileSdk libs.versions.compileSdk.get().toInteger()
     defaultConfig {
         applicationId "com.shmedo.mcloudapp.iot"
@@ -110,8 +112,6 @@ android {
             manifestPlaceholders = ["mapApikey"  : "61b252e0afae07eebf71fd8b519b511c",
                                     "buglyAppId" : "09b15cd6a7",
                                     "umengAppkey": "6209cd80226836222738b72b"]
-
-            buildConfigField "String", "Dingding_APP_ID", "\"dingoa6lbfnghbtn0xeju0\""
         }
     }
     applicationVariants.all { variant ->
