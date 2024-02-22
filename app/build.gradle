@@ -52,7 +52,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters  "arm64-v8a","armeabi-v7a"//"x86_64","x86", "armeabi", "armeabi-v7a"
+            abiFilters "arm64-v8a", "armeabi-v7a"//"x86_64","x86", "armeabi", "armeabi-v7a"
         }
     }
     signingConfigs {
@@ -101,12 +101,12 @@ android {
     }
 
     // Specifies one flavor dimension.
-    flavorDimensions "version"
+    flavorDimensions = ["version"]
     productFlavors {
         production {//正式发布版本
             dimension "version"
-            applicationId "com.shmedo.mcloudapp.iot"
-            resValue "string", "app_name", "米易通物联网"   // 设置默认的app_name
+            applicationId "com.shmedo.mcloudapp.iot.v5"
+            resValue "string", "app_name", "米易通V5"   // 设置默认的app_name
             manifestPlaceholders = ["mapApikey"  : "61b252e0afae07eebf71fd8b519b511c",
                                     "buglyAppId" : "09b15cd6a7",
                                     "umengAppkey": "6209cd80226836222738b72b"]
@@ -132,6 +132,7 @@ android {
             output.outputFileName = fileName
         }
     }
+
 }
 
 dependencies {
@@ -164,6 +165,8 @@ dependencies {
         exclude group: 'androidx.navigation', module: "navigation-fragment"
     }
 //    implementation libs.androidx.navigation.ui.ktx
+
+
     //依赖注入框架
     implementation libs.koin.android
 
