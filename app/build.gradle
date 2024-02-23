@@ -46,12 +46,16 @@ android {
 
     compileSdk libs.versions.compileSdk.get().toInteger()
     defaultConfig {
-        applicationId "com.shmedo.mcloudapp.iot"
+        applicationId "com.shmedo.mcloudapp.iot.v5"
         minSdk = libs.versions.minSdk.get().toInteger()
         targetSdk = libs.versions.targetSdk.get().toInteger()
         versionCode getReversion()
         versionName '3.3.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "app_name", "米易通V5"   // 设置默认的app_name
+        manifestPlaceholders = ["mapApikey"  : "61b252e0afae07eebf71fd8b519b511c",
+                                "buglyAppId" : "09b15cd6a7",
+                                "umengAppkey": "6209cd80226836222738b72b"]
         ndk {
             //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
             abiFilters "arm64-v8a", "armeabi-v7a"//"x86_64","x86", "armeabi", "armeabi-v7a"
@@ -102,19 +106,7 @@ android {
         exclude 'META-INF/*'
     }
 
-    // Specifies one flavor dimension.
-    flavorDimensions = ["version"]
-    productFlavors {
-        production {//正式发布版本
-            dimension "version"
-            applicationId "com.shmedo.mcloudapp.iot.v5"
-            resValue "string", "app_name", "米易通V5"   // 设置默认的app_name
-            manifestPlaceholders = ["mapApikey"  : "61b252e0afae07eebf71fd8b519b511c",
-                                    "buglyAppId" : "09b15cd6a7",
-                                    "umengAppkey": "6209cd80226836222738b72b"]
-        }
-    }
-    applicationVariants.all { variant ->
+    applicationVariants.configureEach { variant ->
         sourceSets {
             def name = variant.name
             getByName(name) {  //告知IDE，ksp生成的kotlin代码
@@ -127,12 +119,11 @@ android {
             if ('debug' == variant.buildType.name) {
                 fileName = "${getAppName()}_v${android.defaultConfig.versionName}_${gitShortCommitId()}_${getReversion()}_debug.apk"
             } else {
-                fileName = "${getAppName()}_v${android.defaultConfig.versionName}_${gitShortCommitId()}_${variant.productFlavors[0].name}.apk"
+                fileName = "${getAppName()}_v${android.defaultConfig.versionName}_${gitShortCommitId()}.apk"
             }
             output.outputFileName = fileName
         }
     }
-
 }
 
 dependencies {
@@ -150,7 +141,6 @@ dependencies {
     implementation libs.kotlin.stdlib.jdk8
     implementation libs.androidx.constraintlayout
     implementation libs.flexbox
-    implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
     implementation libs.androidx.activity.ktx

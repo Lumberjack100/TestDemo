@@ -36,7 +36,6 @@ dependencies {
     androidTestImplementation libs.androidx.espresso.core
 
     implementation project(":lib_core")
-    implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.androidx.lifecycle.viewmodel.ktx
 

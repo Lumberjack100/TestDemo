@@ -56,7 +56,7 @@ abstract class BaseActivity : BaseVmDbActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         //ActionBar Home按钮返回事件
-        if (item.itemId == R.id.home) {
+        if (item.itemId == android.R.id.home) {
             KeyboardUtils.hideSoftInput(this.window.decorView)
             onBackPressedDispatcher.onBackPressed()
             return true

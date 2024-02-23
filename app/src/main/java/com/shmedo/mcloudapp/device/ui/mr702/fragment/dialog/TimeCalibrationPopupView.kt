@@ -55,8 +55,9 @@ class TimeCalibrationPopupView(context: Context) : CenterPopupView(context) {
             dismiss()
         }
         binding.tvCalibration.setOnClickListener {
-            if(!stateVM.isCalibratingSuccess.get())
-            clickListener.onSettingClick()
+            if (!stateVM.isCalibratingSuccess.get()) {
+                clickListener.onSettingClick()
+            }
         }
     }
 

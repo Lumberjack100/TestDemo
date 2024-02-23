@@ -21,11 +21,12 @@
  */
 package com.shmedo.lib.ble.scanner.model
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import no.nordicsemi.android.support.v18.scanner.ScanResult
-
+@SuppressLint("MissingPermission")
 @Suppress("unused")
 @Parcelize
 data class DiscoveredBluetoothDevice(
