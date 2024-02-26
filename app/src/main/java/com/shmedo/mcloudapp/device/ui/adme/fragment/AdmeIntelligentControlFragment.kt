@@ -177,6 +177,100 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 )
                 .show()
         }
+
+        fun onClearDeviceDropNumberClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            showMessage("确定清空设备下降次数吗？", "温馨提示", "确定", {
+                commandItems.clear()
+                var command =
+                    IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_CLEAR_DEVICE_DROP_NUMBER)
+                commandItems.add(command)
+
+                command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+                commandItems.add(command)
+
+                showLoadingDialog(StringUtils.getString(R.string.processing))
+                sendCommandFromCmdList(isStartTimeoutJob = true)
+            }, "取消")
+        }
+
+        fun onClearDeviceMileageClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            showMessage("确定清空钢丝绳运行里程吗？", "温馨提示", "确定", {
+                commandItems.clear()
+                var command = IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_CLEAR_DEVICE_MILEAGE)
+                commandItems.add(command)
+
+                command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+                commandItems.add(command)
+
+                showLoadingDialog(StringUtils.getString(R.string.processing))
+                sendCommandFromCmdList(isStartTimeoutJob = true)
+            }, "取消")
+        }
+
+        fun onClearVerticalMagneticSwitchTriggerClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            showMessage("确定清空竖向磁开关触发次数吗？", "温馨提示", "确定", {
+                commandItems.clear()
+                var command =
+                    IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_CLEAR_VERTICAL_MAGNETIC_SWITCH_TRIGGER_NUMBER)
+                commandItems.add(command)
+
+                command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+                commandItems.add(command)
+
+                showLoadingDialog(StringUtils.getString(R.string.processing))
+                sendCommandFromCmdList(isStartTimeoutJob = true)
+            }, "取消")
+        }
+
+        fun onClearRotationMagneticSwitchTriggerClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            showMessage("确定清空旋转磁开关触发次数吗？", "温馨提示", "确定", {
+                commandItems.clear()
+                var command =
+                    IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_CLEAR_ROTATION_MAGNETIC_SWITCH_TRIGGER_NUMBER)
+                commandItems.add(command)
+
+                command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+                commandItems.add(command)
+
+                showLoadingDialog(StringUtils.getString(R.string.processing))
+                sendCommandFromCmdList(isStartTimeoutJob = true)
+            }, "取消")
+        }
+
+        fun onClearPadOpenCloseClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            showMessage("确定清空刹车片启闭次数吗？", "温馨提示", "确定", {
+                commandItems.clear()
+                var command =
+                    IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_CLEAR_BRAKE_PAD_OPEN_CLOSE_NUMBER)
+                commandItems.add(command)
+
+                command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+                commandItems.add(command)
+
+                showLoadingDialog(StringUtils.getString(R.string.processing))
+                sendCommandFromCmdList(isStartTimeoutJob = true)
+            }, "取消")
+        }
     }
 
     /**
@@ -532,6 +626,86 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置电机电源使能出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_CLEAR_DEVICE_DROP_NUMBER -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "清空设备下降次数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_CLEAR_DEVICE_MILEAGE -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "清空钢丝绳运行里程出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_CLEAR_VERTICAL_MAGNETIC_SWITCH_TRIGGER_NUMBER -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "清空竖向磁开关触发次数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_CLEAR_ROTATION_MAGNETIC_SWITCH_TRIGGER_NUMBER -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "清空旋转磁开关触发次数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_CLEAR_BRAKE_PAD_OPEN_CLOSE_NUMBER -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "清空刹车片启闭次数出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return

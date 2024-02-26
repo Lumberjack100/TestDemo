@@ -186,6 +186,85 @@
 
                     </RelativeLayout>
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onClearDeviceDropNumberClick()}"
+                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="清空设备下降次数" />
+
+                        <TextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            android:drawableEnd="@null" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onClearDeviceMileageClick()}"
+                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="清空钢丝绳运行里程" />
+
+                        <TextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            android:drawableEnd="@null" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onClearVerticalMagneticSwitchTriggerClick()}"
+                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="清空竖向磁开关触发记录" />
+
+                        <TextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            android:drawableEnd="@null" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onClearRotationMagneticSwitchTriggerClick()}"
+                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="清空旋转磁开关触发记录" />
+
+                        <TextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            android:drawableEnd="@null" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onClearPadOpenCloseClick()}"
+                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="清空刹车片启闭记录" />
+
+                        <TextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            android:drawableEnd="@null" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>

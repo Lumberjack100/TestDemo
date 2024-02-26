@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.RegexUtils
@@ -20,6 +21,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -160,6 +162,19 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+//            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+//                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+//                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
+//                return
+//            }
+            when (button.id) {
+                R.id.twistAngleSB -> {
+                    mStates.twistAngle.set(isChecked)
+                }
+            }
+        }
+
         fun onCompensateWayChooseClick() {
             val selectedIndex = communicateWayList.indexOf(mStates.compensateWay.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -289,7 +304,10 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
                 else -> "5"
             },
             compenway = if (mStates.compensateWay.get() == communicateWayList[0]) "0" else "1",
-            torangle = mStates.torsionAngle.get()
+            torangle = mStates.torsionAngle.get(),
+            swtor_angle = if (mStates.isTwistAngleSupport.get()) {
+                if (mStates.twistAngle.get()) "1" else "0"
+            } else IOTConstants.NULL_KEY,
         )
         commandItems.clear()
         var command = IOTCommandUtil.getCommand(
@@ -337,7 +355,7 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList{
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initParamData(result.data)
@@ -396,6 +414,10 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
                     else -> modeList[0]
                 }
             )
+            mStates.isTwistAngleSupport.set(info.swtor_angle != IOTConstants.NULL_KEY)
+            if (mStates.isTwistAngleSupport.get()) {
+                mStates.twistAngle.set(info.swtor_angle == "1")
+            }
             mStates.isCompensateWayVisible.set(info.incversion == "1")
             mStates.isTorsionAngleVisible.set(info.compenway == "1")
             mStates.compensateWay.set(if (info.compenway == "1") communicateWayList[1] else communicateWayList[0])

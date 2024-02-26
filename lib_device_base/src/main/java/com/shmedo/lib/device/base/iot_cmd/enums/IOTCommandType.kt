@@ -539,6 +539,42 @@ enum class IOTCommandType(private val value: String) {
      * 设置ADME的电机电源使能
      */
     ADME_MD_SET_MOTOR_POWER("md_setmotorpower"),
+
+    /**
+     * 获取ADME的检校、数据处理信息
+     */
+    ADME_MD_GET_CALIBRATION_PROCESSING("md_getaccuracy"),
+
+    /**
+     * 设置ADME的检校、数据处理信息
+     */
+    ADME_MD_SET_CALIBRATION_PROCESSING("md_setaccuracy"),
+
+    /**
+     * 清空设备下降次数
+     */
+    ADME_MD_CLEAR_DEVICE_DROP_NUMBER("md_cleardownnum"),
+
+    /**
+     * 清空钢丝绳运行里程
+     */
+    ADME_MD_CLEAR_DEVICE_MILEAGE("md_clearmileage"),
+
+    /**
+     * 清空竖向磁开关触发次数
+     */
+    ADME_MD_CLEAR_VERTICAL_MAGNETIC_SWITCH_TRIGGER_NUMBER("md_clearverticalswitchnum"),
+
+    /**
+     * 清空旋转磁开关触发次数
+     */
+    ADME_MD_CLEAR_ROTATION_MAGNETIC_SWITCH_TRIGGER_NUMBER("md_clearrotaryswitchnum"),
+
+    /**
+     * 清空刹车片启闭次数
+     */
+    ADME_MD_CLEAR_BRAKE_PAD_OPEN_CLOSE_NUMBER("md_clearbrakepadnum"),
+
     // </editor-fold>
 
     //<editor-fold desc="ADME HAC 指令">

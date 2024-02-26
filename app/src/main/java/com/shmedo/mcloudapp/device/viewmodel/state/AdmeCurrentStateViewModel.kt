@@ -35,4 +35,14 @@ class AdmeCurrentStateViewModel : ViewModel() {
     val inclinometerTemperature = NonNullObservableField("")
     val inclinometerBluetoothSignal = NonNullObservableField("")
     val inclinometerBluetoothSignalValue = NonNullObservableField(0)
+
+    //竖向磁开关触发次数
+    val isVerticalMagneticSwitchTriggerCountSupport = NonNullObservableField(false)//设备固件是否支持
+    val verticalMagneticSwitchTriggerCount= NonNullObservableField("0")
+    //旋转磁开关触发次数
+    val isRotationMagneticSwitchTriggerCountSupport = NonNullObservableField(false)//设备固件是否支持
+    val rotationMagneticSwitchTriggerCount= NonNullObservableField("0")
+    //刹车片启闭次数
+    val isBrakePadOpenCloseCountSupport = NonNullObservableField(false)//设备固件是否支持
+    val brakePadOpenCloseCount= NonNullObservableField("0")
 }

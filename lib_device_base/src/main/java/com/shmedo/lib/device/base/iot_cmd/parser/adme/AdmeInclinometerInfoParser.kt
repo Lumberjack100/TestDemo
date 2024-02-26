@@ -3,6 +3,7 @@ package com.shmedo.lib.device.base.iot_cmd.parser.adme
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeInclinometerInfo
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 
 /**
  * 创建者：gonghe
@@ -26,6 +27,7 @@ class AdmeInclinometerInfoParser: IOTCommandParser<AdmeInclinometerInfo> {
             incversion = keyValueMap.getOrDefault("incversion", incversion)
             compenway = keyValueMap.getOrDefault("compenway", compenway)
             torangle = keyValueMap.getOrDefault("torangle", torangle)
+            swtor_angle = keyValueMap.getOrDefault("torangle", IOTConstants.NULL_KEY)
         }
     }
 

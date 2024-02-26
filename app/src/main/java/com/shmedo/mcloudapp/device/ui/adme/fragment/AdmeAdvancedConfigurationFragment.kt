@@ -185,6 +185,16 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
+        moduleList.add(
+            ConfigModule(
+                CommonModule(
+                    name = "运动检校处理",
+                    desc = "参数配置",
+                    resID = R.drawable.ic_basic_config,
+                    navId = R.id.action_admeAdvancedConfigurationFragment_to_admeSportsCalibrationProcessingFragment
+                )
+            )
+        )
         binding.rvModule.models = moduleList
     }
 

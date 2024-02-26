@@ -15,6 +15,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMotionState
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -248,6 +249,19 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
             )
             mStates.inclinometerBluetoothSignal.set(String.format("%sdBm", currentStateInfo.bcsq))
             mStates.inclinometerBluetoothSignalValue.set(abs(currentStateInfo.bcsq.toInt()))
+
+            mStates.isVerticalMagneticSwitchTriggerCountSupport.set(currentStateInfo.verticalswitchnum != IOTConstants.NULL_KEY)
+            if (currentStateInfo.verticalswitchnum != IOTConstants.NULL_KEY) {
+                mStates.verticalMagneticSwitchTriggerCount.set(currentStateInfo.verticalswitchnum)
+            }
+            mStates.isRotationMagneticSwitchTriggerCountSupport.set(currentStateInfo.rotaryswitchnum != IOTConstants.NULL_KEY)
+            if (currentStateInfo.rotaryswitchnum != IOTConstants.NULL_KEY) {
+                mStates.rotationMagneticSwitchTriggerCount.set(currentStateInfo.rotaryswitchnum)
+            }
+            mStates.isBrakePadOpenCloseCountSupport.set(currentStateInfo.brakepadnum != IOTConstants.NULL_KEY)
+            if (currentStateInfo.brakepadnum != IOTConstants.NULL_KEY) {
+                mStates.brakePadOpenCloseCount.set(currentStateInfo.brakepadnum)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

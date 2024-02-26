@@ -28,4 +28,8 @@ data class AdmeCurrentStateInfo(
     var testway: String = "", //工作模式(0:常规测量模式，1：特定点位模式，2：静态测量模式，3：设备停用模式)）
     var scsq: String = "0", //4G信号强度
     var bcsq: String = "0", //测斜仪蓝牙信号强度
+
+    var verticalswitchnum: String = "0",//竖向磁开关触发次数
+    var rotaryswitchnum: String = "0", //旋转磁开关触发次数
+    var brakepadnum: String = "0", //刹车片启闭次数
 )

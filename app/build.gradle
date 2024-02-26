@@ -7,14 +7,6 @@ plugins {
 }
 
 /**
- * 获取APP名字
- * @return
- */
-def getAppName() {
-    return 'mcloudapp_iot'
-}
-
-/**
  * 获取Git库HEAD的SHA1码前5位
  */
 def gitShortCommitId() {
@@ -28,12 +20,22 @@ def gitShortCommitId() {
 def getReversion() {
     def buildnum = 1
     try {
-        //底层使用的是 Runtime.getRuntime().exec()去执行
-        def getGit = 'git rev-list --count HEAD'.execute()
-        if (getGit.text.trim() == '')
+        // 使用 ProcessBuilder 更可靠地执行命令
+        def processBuilder = new ProcessBuilder("git", "rev-list", "--count", "HEAD")
+        processBuilder.redirectErrorStream(true) // 将错误输出和标准输出合并
+        def process = processBuilder.start()
+        def output = process.text.trim() // 读取命令输出
+
+        // 确保正确地关闭了进程的输入输出流
+        process.inputStream.close()
+        process.outputStream.close()
+        process.errorStream.close()
+        process.waitFor() // 等待进程结束
+
+        if (output == '') {
             buildnum = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
-        else {
-            buildnum = getGit.text.trim().toInteger()
+        } else {
+            buildnum = output.toInteger()
         }
     } catch (e) {
         e.printStackTrace()
@@ -106,22 +108,25 @@ android {
         exclude 'META-INF/*'
     }
 
-    applicationVariants.configureEach { variant ->
+    android.applicationVariants.all { variant ->
         sourceSets {
             def name = variant.name
             getByName(name) {  //告知IDE，ksp生成的kotlin代码
                 kotlin.srcDir("build/generated/ksp/$name/kotlin")
             }
         }
-        variant.outputs.each { output ->
-            def fileName
-            //输出文件夹
-            if ('debug' == variant.buildType.name) {
-                fileName = "${getAppName()}_v${android.defaultConfig.versionName}_${gitShortCommitId()}_${getReversion()}_debug.apk"
-            } else {
-                fileName = "${getAppName()}_v${android.defaultConfig.versionName}_${gitShortCommitId()}.apk"
-            }
-            output.outputFileName = fileName
+        variant.outputs.all {
+            // 通过 variant 获取版本信息和构建类型
+            def appName = project.hasProperty("appName") ? project.property("appName") : "米易通"
+            def versionName = variant.versionName
+            def buildType = variant.buildType.name
+//            def flavorName = variant.flavorName // 或者使用 variant.productFlavors*.name.join("-") 获取具有多个 flavor 维度的情况
+            def commitId = gitShortCommitId() // 获取 Git 提交 ID 的方法
+            def buildNumber = getReversion() // 获取版本号的方法
+
+            // 设置输出文件名
+            def fileName = "${appName}_v${versionName}_${commitId}_${buildNumber}_${buildType}.apk"
+            outputFileName = fileName
         }
     }
 }

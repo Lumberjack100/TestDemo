@@ -3,6 +3,7 @@ package com.shmedo.lib.device.base.iot_cmd.parser.adme
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeCurrentStateInfo
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 
 /**
  * 创建者：gonghe
@@ -38,6 +39,9 @@ class AdmeCurrentStateInfoParser: IOTCommandParser<AdmeCurrentStateInfo> {
             testway = keyValueMap.getOrDefault("testway", testway)
             scsq = keyValueMap.getOrDefault("scsq", scsq)
             bcsq = keyValueMap.getOrDefault("bcsq", bcsq)
+            verticalswitchnum = keyValueMap.getOrDefault("verticalswitchnum", IOTConstants.NULL_KEY)
+            rotaryswitchnum = keyValueMap.getOrDefault("rotaryswitchnum", IOTConstants.NULL_KEY)
+            brakepadnum = keyValueMap.getOrDefault("brakepadnum", IOTConstants.NULL_KEY)
         }
     }
 

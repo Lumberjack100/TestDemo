@@ -6,6 +6,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeAnthropomorphicMovemen
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBasicConfigInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBrakePadControlInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeCalibrationProcessingInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeCurrentStateInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeExecutiveAgencyInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeGuideGrooveCalibrationInfoParser
@@ -92,6 +93,7 @@ val appModule = module {
     factory { AdmeGuideGrooveCalibrationInfoParser() }
     factory { AdmeMotorMotionAngleInfoParser() }
     factory { AdmeWorkModeInfoParser() }
+    factory { AdmeCalibrationProcessingInfoParser() }
     factory { DasCollectorInfoParser() }
     factory { DasReportInfoParser() }
     factory { DasBdTerminalInfoParser() }
@@ -154,6 +156,7 @@ val appModule = module {
             get<AdmeGuideGrooveCalibrationInfoParser>(),
             get<AdmeMotorMotionAngleInfoParser>(),
             get<AdmeWorkModeInfoParser>(),
+            get<AdmeCalibrationProcessingInfoParser>(),
             get<DasCollectorInfoParser>(),
             get<DasReportInfoParser>(),
             get<DasBdTerminalInfoParser>(),

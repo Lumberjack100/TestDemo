@@ -327,13 +327,56 @@
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                            android:text="设备里程" />
+                            android:text="钢丝绳运行里程" />
 
                         <TextView
                             android:id="@+id/tv_device_mileage"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             android:text="@{stateVM.deviceMileage}"
                             tools:text="12.1m" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible="@{stateVM.isVerticalMagneticSwitchTriggerCountSupport}">
+
+                        <TextView
+                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                            android:text="竖向磁开关触发次数" />
+
+                        <TextView
+                            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                            android:text="@{stateVM.verticalMagneticSwitchTriggerCount}"
+                            tools:text="1222" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible="@{stateVM.isRotationMagneticSwitchTriggerCountSupport}">
+
+                        <TextView
+                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                            android:text="旋转磁开关触发次数" />
+
+                        <TextView
+                            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                            android:text="@{stateVM.rotationMagneticSwitchTriggerCount}"
+                            tools:text="1222" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible="@{stateVM.isBrakePadOpenCloseCountSupport}">
+
+                        <TextView
+                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                            android:text="刹车片启闭次数" />
+
+                        <TextView
+                            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                            android:text="@{stateVM.brakePadOpenCloseCount}"
+                            tools:text="1222" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

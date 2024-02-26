@@ -490,6 +490,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                 moduleList.add(
                     ConfigModule(
                         DeviceOperationModule(
+                            name = "高级配置",
                             desc = "计米轮、测斜议、执行机构等",
                             navId = R.id.action_global_to_admeAdvancedConfigurationFragment
                         )
@@ -510,6 +511,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                 moduleList.add(
                     ConfigModule(
                         DeviceOperationModule(
+                            name = "高级配置",
                             desc = "计米轮、测斜议、执行机构等",
                             navId = R.id.action_global_to_admeAdvancedConfigurationFragment
                         )
