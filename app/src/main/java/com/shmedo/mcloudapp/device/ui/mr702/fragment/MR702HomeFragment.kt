@@ -168,7 +168,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 deviceInfo.deviceToken
             )
             nav(binding.llToolbar.ivAction).navigate(
-                R.id.action_mR702HomeFragment_to_querydevicedata_graph, bundle
+                R.id.action_global_to_queryDeviceDataFragment, bundle
             )
         }
 

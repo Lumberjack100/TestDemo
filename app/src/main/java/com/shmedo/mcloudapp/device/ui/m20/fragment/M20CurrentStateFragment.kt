@@ -9,7 +9,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.m20.M20CurrentStateInfo
+import com.shmedo.lib.device.base.iot_cmd.model.CommonCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -123,11 +123,11 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
 
     private fun initStatusInfo(content: String) {
         try {
-            val m20CurrentStateInfo = MoshiUtil.fromJson<M20CurrentStateInfo>(content) ?: return
-            mStates.wrapStateInfo.set(m20CurrentStateInfo)
+            val commonCurrentStateInfo = MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
+            mStates.wrapStateInfo.set(commonCurrentStateInfo)
 
             var sensorAbnormal = false
-            m20CurrentStateInfo.sensor_errno?.forEach { errnoBean ->
+            commonCurrentStateInfo.sensor_errno?.forEach { errnoBean ->
                 sensorAbnormal = errnoBean.errno != 0
             }
             binding.tvSensorStatus.text = if (sensorAbnormal) "未接入" else "正常"
@@ -138,21 +138,21 @@ class M20CurrentStateFragment : BaseIOTDeviceFragment() {
 
             binding.tvInclination.text = String.format(
                 "%s°,%s°,%s°",
-                m20CurrentStateInfo.x_Angle,
-                m20CurrentStateInfo.y_Angle,
-                m20CurrentStateInfo.z_Angle
+                commonCurrentStateInfo.x_Angle,
+                commonCurrentStateInfo.y_Angle,
+                commonCurrentStateInfo.z_Angle
             )
             binding.tvInternalVoltage.text =
-                String.format("%sV", m20CurrentStateInfo.inner_power_volt)
+                String.format("%sV", commonCurrentStateInfo.inner_power_volt)
             binding.tvExternalVoltage.text =
-                String.format("%sV", m20CurrentStateInfo.ext_power_volt)
-            binding.tvSolarPanelVoltage.text = String.format("%sV", m20CurrentStateInfo.solar_volt)
-            binding.tvAmbientTemperature.text = String.format("%s℃", m20CurrentStateInfo.temp)
-            binding.tvAmbientHumidity.text = String.format("%s%%", m20CurrentStateInfo.humidity)
+                String.format("%sV", commonCurrentStateInfo.ext_power_volt)
+            binding.tvSolarPanelVoltage.text = String.format("%sV", commonCurrentStateInfo.solar_volt)
+            binding.tvAmbientTemperature.text = String.format("%s℃", commonCurrentStateInfo.temp)
+            binding.tvAmbientHumidity.text = String.format("%s%%", commonCurrentStateInfo.humidity)
             binding.tvSupplementaryPower.text =
-                String.format("%sV", m20CurrentStateInfo.supply_power)
+                String.format("%sV", commonCurrentStateInfo.supply_power)
             binding.tvPowerConsumption.text =
-                String.format("%sV", m20CurrentStateInfo.consume_power)
+                String.format("%sV", commonCurrentStateInfo.consume_power)
 
         } catch (e: Exception) {
             e.printStackTrace()

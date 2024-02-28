@@ -1,5 +1,6 @@
-package com.shmedo.lib.device.base.iot_cmd.model.m20
+package com.shmedo.lib.device.base.iot_cmd.model
 
+import com.shmedo.lib.device.base.iot_cmd.model.m20.SensorErrnoBean
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -39,15 +40,15 @@ import com.squareup.moshi.JsonClass
  * self_check : GPS:1,eMMC:1,4g:1,RTC:1,solar485:0,G-Sensor:1
  */
 @JsonClass(generateAdapter = true)
-data class M20CurrentStateInfo(
+data class CommonCurrentStateInfo(
     val ext_power_volt: Double = 0.0, //外接电源电压
-    val inner_power_volt: Double = 0.0, //内部电源电压
+    val inner_power_volt: String = "", //内部电源电压
     val temp: Double = 0.0, //设备内部环境温度，单位摄氏度
     val humidity: Double = 0.0, //设备内部湿度，单位 RH%
     val temp_out: Double = 0.0, //设备外部环境温度，单位摄氏度
     val humidity_out: Double = 0.0, //设备外部环境湿度，单位RH%
     @Json(name = "4g_signal")
-    val _4g_signal: Double = 0.0, //4g信号强度
+    val _4g_signal: Int = 0, //4g信号强度
     val bd_signal: Double = 0.0, //北斗信号强度
     val sw_version: String = "", //固件版本
     val location: String = "", //设备位置-经纬度，经度在前,纬度在后。E表示东经，W表示西经，N表示北纬，S表示南纬。
@@ -82,6 +83,6 @@ data class M20CurrentStateInfo(
     val dataCenter3: Int = 0, //数据中心3
     val dataCenter4: Int = 0, //数据中心4
     val starNum: Int = 0, //星数
-    val gpsCard: Int = 0, //板卡
+    val gpsCard: String = "", //板卡
     val self_check: String = "" //设备自检
 )

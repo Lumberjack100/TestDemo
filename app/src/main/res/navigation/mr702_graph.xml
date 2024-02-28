@@ -5,22 +5,15 @@
     android:id="@+id/mr702_graph"
     app:startDestination="@id/mR702HomeFragment">
 
-    <include app:graph="@navigation/included_querydevicedata_graph" />
-    <include app:graph="@navigation/included_firmware_upgrade_graph" />
+    <include app:graph="@navigation/query_data_graph" />
+    <include app:graph="@navigation/firmware_upgrade_graph" />
+    <include app:graph="@navigation/data_center_graph" />
 
     <fragment
         android:id="@+id/mR702HomeFragment"
         android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702HomeFragment"
         android:label="MR702HomeFragment"
         tools:layout="@layout/fragment_mr702_home">
-
-        <action
-            android:id="@+id/action_mR702HomeFragment_to_querydevicedata_graph"
-            app:destination="@id/querydevicedata_graph"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
 
         <action
             android:id="@+id/action_mR702HomeFragment_to_mR702DeviceInfoFragment"
@@ -184,6 +177,14 @@
     <action
         android:id="@+id/action_global_to_firmwareUpgradeFragment"
         app:destination="@id/firmware_upgrade_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_queryDeviceDataFragment"
+        app:destination="@id/query_data_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

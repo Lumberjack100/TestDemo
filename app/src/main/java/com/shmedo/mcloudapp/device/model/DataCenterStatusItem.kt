@@ -15,6 +15,7 @@ data class DataCenterStatusItem(
     val name: String = "",
     var status: String = "",
 ) : Parcelable, BaseObservable() {
+
     fun refreshStatus(status: String) {
         this.status = status
         notifyChange()

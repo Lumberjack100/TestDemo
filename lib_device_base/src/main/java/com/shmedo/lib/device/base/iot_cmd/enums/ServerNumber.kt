@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
  */
 
 @Parcelize
-sealed class ServerNumber(val centerid: Int) : Parcelable
+sealed class ServerNumber(val centerId: Int) : Parcelable
 
 data object ServerOne : ServerNumber(1)
 data object ServerTwo : ServerNumber(2)

@@ -131,7 +131,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
         //从编辑页面返回需要刷新事件详情页面
         setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
             val centerNumber =
-                bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerid)
+                bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
             commandItems.clear()
 
             val entity = CenterNumberEntity(centerNumber.toString())
@@ -233,15 +233,15 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
         var command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_BD_TERMINAL)
         commandItems.add(command)
 
-        var entity = CenterNumberEntity(ServerOne.centerid.toString())
+        var entity = CenterNumberEntity(ServerOne.centerId.toString())
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
         commandItems.add(command)
 
-        entity = CenterNumberEntity(ServerTwo.centerid.toString())
+        entity = CenterNumberEntity(ServerTwo.centerId.toString())
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
         commandItems.add(command)
 
-        entity = CenterNumberEntity(ServerThree.centerid.toString())
+        entity = CenterNumberEntity(ServerThree.centerId.toString())
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
         commandItems.add(command)
 
@@ -331,17 +331,17 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initDataCenterStatus(dataCenterStatus: DataCenterStatus) {
         when (dataCenterStatus.centerid) {
-            ServerOne.centerid -> {
+            ServerOne.centerId -> {
                 binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(0)
                     .refreshStatus(dataCenterStatus.status)
             }
 
-            ServerTwo.centerid -> {
+            ServerTwo.centerId -> {
                 binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(1)
                     .refreshStatus(dataCenterStatus.status)
             }
 
-            ServerThree.centerid -> {
+            ServerThree.centerId -> {
                 binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(2)
                     .refreshStatus(dataCenterStatus.status)
             }

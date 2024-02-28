@@ -41,6 +41,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
     }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_mr702_data_center_home,

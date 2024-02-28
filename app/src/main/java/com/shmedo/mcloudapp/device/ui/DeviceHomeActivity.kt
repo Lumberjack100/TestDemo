@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.BaseActivity
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
+import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.TcpConnect
@@ -129,7 +130,13 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             ProductType.LR200 -> {
-
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo!!,
+                    bleDevice
+                )
+                findNavController(R.id.device_home_host_fragment)
+                    .setGraph(R.navigation.lr200_graph, bundle)
             }
 
             ProductType.M20 -> {
@@ -164,6 +171,10 @@ class DeviceHomeActivity : BaseActivity() {
             else -> {
                 when (communicateWay) {
                     NetPlatformConnect -> {
+
+                    }
+
+                    BleConnect -> {
 
                     }
 

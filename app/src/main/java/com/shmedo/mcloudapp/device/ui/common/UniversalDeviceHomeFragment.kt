@@ -1,10 +1,9 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment
+package com.shmedo.mcloudapp.device.ui.common
 
 import android.os.Bundle
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
-import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -22,22 +21,16 @@ import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentDasHomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.model.CollectorConfigModule
-import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
-import com.shmedo.mcloudapp.device.model.DataCenterModule
+import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RebootModule
-import com.shmedo.mcloudapp.device.model.RunningStatusModule
-import com.shmedo.mcloudapp.device.model.SensorConfigModule
 import com.shmedo.mcloudapp.device.model.TelemetryDataModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel
@@ -46,13 +39,12 @@ import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class DasHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentDasHomeBinding
+abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
+    protected lateinit var binding: FragmentUniversalDeviceHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mHeadStates: CommonDeviceHomeViewModel
     private lateinit var mCommandResponseStates: CommandResponseViewModel
-    private val iotParseManager: IOTParserManager by inject()
-
+    protected val iotParseManager: IOTParserManager by inject()
 
     override fun initViewModel() {
         super.initViewModel()
@@ -62,13 +54,13 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_das_home, BR.stateVM, mHeadStates)
+        return DataBindingConfig(R.layout.fragment_universal_device_home, BR.stateVM, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDasHomeBinding
+        binding = getBinding() as FragmentUniversalDeviceHomeBinding
         toolbarViewModel.toolbarIvActionVisible.set(true)
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
@@ -212,17 +204,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                if (module.configModule.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                    nav().navigate(
-                        module.configModule.navId,
-                        bundle
-                    )
-                }
+                processOtherItemClick(module.configModule)
             }
         }
     }
@@ -462,55 +444,32 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                processOtherCmdResult(
+                    IOTCommandUtil.extractCommandType(cmdStr),
+                    cmdStr
+                )
+            }
         }
     }
 
-    private fun updateConfigModuleData() {
-        val moduleList = arrayListOf<ConfigModule>()
-        moduleList.add(
-            ConfigModule(
-                RunningStatusModule(
-                    "关于设备",
-                    "设备基本信息、运行数据",
-                    R.drawable.ic_device_running_info,
-                    navId = R.id.action_dasHomeFragment_to_dasDeviceInfoFragment
-                )
+    protected abstract fun updateConfigModuleData()
+
+    protected open fun processOtherItemClick(configModule: DeviceFunctionModule) {
+        if (configModule.navId != 0) {
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                communicateWay,
+                deviceInfo,
+                bleDevice
             )
-        )
-        moduleList.add(
-            ConfigModule(TimeCalibrationModule())
-        )
-        moduleList.add(
-            ConfigModule(TelemetryDataModule())
-        )
-        moduleList.add(
-            ConfigModule(RebootModule())
-        )
-        moduleList.add(
-            ConfigModule(CollectorConfigModule(navId = R.id.action_dasHomeFragment_to_dasCollectorSettingFragment))
-        )
-        moduleList.add(
-            ConfigModule(DataCenterModule(navId = R.id.action_dasHomeFragment_to_dasDataCenterHomeFragment))
-        )
-        moduleList.add(
-            ConfigModule(SensorConfigModule(navId = R.id.action_dasHomeFragment_to_dasSensorHomeFragment))
-        )
-        moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "上报方式",
-                    desc = "上报规则设置",
-                    resID = R.drawable.ic_device_data_center,
-                    navId = R.id.action_dasHomeFragment_to_dasTerminalParameterFragment
-                )
+            nav().navigate(
+                configModule.navId,
+                bundle
             )
-        )
-        moduleList.add(
-            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_dasAdvancedSettingFragment))
-        )
-        binding.recyclerview.models = moduleList
+        }
     }
+
+    protected open fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {}
 
     override fun onResume() {
         super.onResume()

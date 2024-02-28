@@ -165,7 +165,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
                 deviceInfo.deviceToken
             )
             nav(binding.llToolbar.ivAction).navigate(
-                R.id.action_admeHomeFragment_to_querydevicedata_graph, bundle
+                R.id.action_global_to_queryDeviceDataFragment, bundle
             )
         }
 
