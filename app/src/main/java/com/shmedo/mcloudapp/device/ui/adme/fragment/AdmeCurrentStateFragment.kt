@@ -31,7 +31,6 @@ import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
-import kotlin.math.abs
 
 /**
  * @author：gonghe
@@ -172,7 +171,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
             mStates.imei.set(currentStateInfo.imeid)
             mStates.firmwareVersion.set(currentStateInfo.firversion)
             mStates.signal.set(String.format("%sdBm", currentStateInfo.scsq))
-            mStates.signalValue.set(abs(currentStateInfo.scsq.toInt()))
+            mStates.signalValue.set(currentStateInfo.scsq.toInt())
 
             if (currentStateInfo.abndiasis == "0") {
                 mStates.deviceNormal.set(true)
@@ -248,7 +247,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 )
             )
             mStates.inclinometerBluetoothSignal.set(String.format("%sdBm", currentStateInfo.bcsq))
-            mStates.inclinometerBluetoothSignalValue.set(abs(currentStateInfo.bcsq.toInt()))
+            mStates.inclinometerBluetoothSignalValue.set(currentStateInfo.bcsq.toInt())
 
             mStates.isVerticalMagneticSwitchTriggerCountSupport.set(currentStateInfo.verticalswitchnum != IOTConstants.NULL_KEY)
             if (currentStateInfo.verticalswitchnum != IOTConstants.NULL_KEY) {

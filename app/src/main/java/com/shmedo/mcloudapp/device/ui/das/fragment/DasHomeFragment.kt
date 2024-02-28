@@ -469,7 +469,14 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     private fun updateConfigModuleData() {
         val moduleList = arrayListOf<ConfigModule>()
         moduleList.add(
-            ConfigModule(RunningStatusModule(navId = R.id.action_admeHomeFragment_to_admeCurrentStateFragment))
+            ConfigModule(
+                RunningStatusModule(
+                    "关于设备",
+                    "设备基本信息、运行数据",
+                    R.drawable.ic_device_running_info,
+                    navId = R.id.action_dasHomeFragment_to_dasDeviceInfoFragment
+                )
+            )
         )
         moduleList.add(
             ConfigModule(TimeCalibrationModule())

@@ -108,11 +108,9 @@ class DeviceHomeActivity : BaseActivity() {
                     .setGraph(R.navigation.adme_graph, bundle)
             }
 
-            ProductType.BHY -> {
-
-            }
-
-            ProductType.DAS -> {
+            ProductType.DAS,
+            ProductType.BHY
+            -> {
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     communicateWay,
                     deviceInfo!!,

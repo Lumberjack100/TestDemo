@@ -200,7 +200,7 @@
                             android:id="@+id/signal"
                             android:layout_width="wrap_content"
                             android:layout_height="22dp"
-                            android:layout_marginStart="3dp"
+                            android:layout_marginStart="10dp"
                             app:bind_signal_value="@{stateVM.signalValue}"
                             app:connected="true"
                             app:primary_color="@color/text_color_cccccc"
@@ -481,7 +481,7 @@
                         <com.shmedo.mcloudapp.common.widget.SignalView
                             android:layout_width="wrap_content"
                             android:layout_height="22dp"
-                            android:layout_marginStart="3dp"
+                            android:layout_marginStart="10dp"
                             app:bind_signal_value="@{stateVM.inclinometerBluetoothSignalValue}"
                             app:connected="true"
                             app:primary_color="@color/text_color_cccccc"

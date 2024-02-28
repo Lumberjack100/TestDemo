@@ -551,29 +551,10 @@ enum class IOTCommandType(private val value: String) {
     ADME_MD_SET_CALIBRATION_PROCESSING("md_setaccuracy"),
 
     /**
-     * 清空设备下降次数
+     * 清空设备运行数据
+     * type=1 清空设备下降次数  type=2 清空设备里程 type=3 清空竖向磁开关触发次数 type=4 旋转磁开关触发次数 type=5 清空刹车片启闭次数
      */
-    ADME_MD_CLEAR_DEVICE_DROP_NUMBER("md_cleardownnum"),
-
-    /**
-     * 清空钢丝绳运行里程
-     */
-    ADME_MD_CLEAR_DEVICE_MILEAGE("md_clearmileage"),
-
-    /**
-     * 清空竖向磁开关触发次数
-     */
-    ADME_MD_CLEAR_VERTICAL_MAGNETIC_SWITCH_TRIGGER_NUMBER("md_clearverticalswitchnum"),
-
-    /**
-     * 清空旋转磁开关触发次数
-     */
-    ADME_MD_CLEAR_ROTATION_MAGNETIC_SWITCH_TRIGGER_NUMBER("md_clearrotaryswitchnum"),
-
-    /**
-     * 清空刹车片启闭次数
-     */
-    ADME_MD_CLEAR_BRAKE_PAD_OPEN_CLOSE_NUMBER("md_clearbrakepadnum"),
+    ADME_MD_CLEAR_DEVICE_RUNNING_DATA("md_clearrundata"),
 
     // </editor-fold>
 

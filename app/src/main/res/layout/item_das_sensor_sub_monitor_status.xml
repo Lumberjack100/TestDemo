@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.device.model.DasSensorSubMonitorStatusItem" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        tools:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:text='@{m.monitorType+":"}'
+            android:textColor="@color/title_text_color"
+            android:textSize="15sp"
+            tools:text="X位移" />
+
+        <TextView
+            android:id="@+id/tv_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_size_5"
+            android:gravity="bottom"
+            android:text="@{m.monitorValue}"
+            android:textColor="@color/title_text_color"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            tools:text="3.6887" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

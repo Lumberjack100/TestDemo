@@ -30,12 +30,18 @@ import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TimeCalibrationDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.AudibleAlarmParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasBaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasBdTerminalInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasCollectorInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasDataCenterStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasDigitalPiezometerInfoParserr
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasExternalSensorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasIOSensorInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasInternalSensorStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasReportInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasSensorStatusParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasSolarStatusInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasTemperatureAndHumidityStatusInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.McuAddressInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
@@ -94,6 +100,7 @@ val appModule = module {
     factory { AdmeMotorMotionAngleInfoParser() }
     factory { AdmeWorkModeInfoParser() }
     factory { AdmeCalibrationProcessingInfoParser() }
+    factory { DasBaseInfoParser() }
     factory { DasCollectorInfoParser() }
     factory { DasReportInfoParser() }
     factory { DasBdTerminalInfoParser() }
@@ -102,6 +109,11 @@ val appModule = module {
     factory { DasExternalSensorInfoParser() }
     factory { AudibleAlarmParser() }
     factory { McuAddressInfoParser() }
+    factory { DasDataCenterStatusParser() }
+    factory { DasSolarStatusInfoParser() }
+    factory { DasTemperatureAndHumidityStatusInfoParser() }
+    factory { DasSensorStatusParser() }
+    factory { DasInternalSensorStatusParser() }
 
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
@@ -157,6 +169,7 @@ val appModule = module {
             get<AdmeMotorMotionAngleInfoParser>(),
             get<AdmeWorkModeInfoParser>(),
             get<AdmeCalibrationProcessingInfoParser>(),
+            get<DasBaseInfoParser>(),
             get<DasCollectorInfoParser>(),
             get<DasReportInfoParser>(),
             get<DasBdTerminalInfoParser>(),
@@ -165,6 +178,11 @@ val appModule = module {
             get<DasExternalSensorInfoParser>(),
             get<AudibleAlarmParser>(),
             get<McuAddressInfoParser>(),
+            get<DasDataCenterStatusParser>(),
+            get<DasSolarStatusInfoParser>(),
+            get<DasTemperatureAndHumidityStatusInfoParser>(),
+            get<DasSensorStatusParser>(),
+            get<DasInternalSensorStatusParser>(),
 
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),

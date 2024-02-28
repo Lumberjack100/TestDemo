@@ -3,13 +3,13 @@ package com.shmedo.lib.device.base.iot_cmd.model.das
 import com.squareup.moshi.JsonClass
 
 /**
- * 创建者:   gonghe <br></br>
- * 创建时间:  2021/4/16 <br></br>
- * 描述：     DAS 状态页面开关量传感器状态
+ * 创建者：gonghe
+ * 创建时间：2024/2/27
+ * 描述： TODO
  */
 @JsonClass(generateAdapter = true)
-data class IoBean(
+data class VwpBean(
     var type: Int = 0,
-    var vaule: Float = 0f,
+    var vaule: String = "",
     var errno: Int = 0,
 )
