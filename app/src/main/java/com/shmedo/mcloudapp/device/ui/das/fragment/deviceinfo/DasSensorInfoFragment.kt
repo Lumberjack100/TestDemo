@@ -732,19 +732,19 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     decimalFormat.applyPattern("#.###")
                     mStates.vwpValue1.set(dataList[0].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
                 if (dataList.size >= 2) {
                     decimalFormat.applyPattern("#.###")
                     mStates.vwpValue2.set(dataList[1].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
                 if (dataList.size >= 3) {
                     decimalFormat.applyPattern("#.#")
                     mStates.vwpValue3.set(dataList[2].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
             }
 
@@ -758,37 +758,37 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     decimalFormat.applyPattern("#.#")
                     mStates.memsAxisX.set(dataList[0].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
                 if (dataList.size >= 2) {
                     decimalFormat.applyPattern("#.#")
                     mStates.memsAxisY.set(dataList[1].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
                 if (dataList.size >= 3) {
                     decimalFormat.applyPattern("#.#")
                     mStates.memsAxisZ.set(dataList[2].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
                 if (dataList.size >= 4) {
                     decimalFormat.applyPattern("#.#")
                     mStates.memsAccelerationX.set(dataList[3].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
                 if (dataList.size >= 5) {
                     decimalFormat.applyPattern("#.#")
                     mStates.memsAccelerationY.set(dataList[4].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
                 if (dataList.size >= 6) {
                     decimalFormat.applyPattern("#.#")
                     mStates.memsAccelerationZ.set(dataList[5].toFloatOrNull()?.let {
                         decimalFormat.format(it)
-                    } ?: "-1")
+                    } ?: "--")
                 }
             }
         } catch (e: Exception) {

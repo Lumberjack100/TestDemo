@@ -76,7 +76,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="电池电压" />
+                        android:text="蓄电池电压" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"

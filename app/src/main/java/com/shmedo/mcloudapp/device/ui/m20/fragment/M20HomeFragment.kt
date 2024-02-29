@@ -24,9 +24,18 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
     override fun updateConfigModuleData() {
         val moduleList = arrayListOf<ConfigModule>()
         moduleList.add(ConfigModule(SetupWizard()))
-        moduleList.add(ConfigModule(RunningStatusModule(navId = R.id.action_m20HomeFragment_to_m20CurrentStateFragment)))
+        moduleList.add(
+            ConfigModule(
+                RunningStatusModule(
+                    "关于设备",
+                    "设备基本信息、运行数据",
+                    R.drawable.ic_device_running_info,
+                    navId = R.id.action_m20HomeFragment_to_m20DeviceInfoFragment
+                )
+            )
+        )
         moduleList.add(ConfigModule(DataCenterModule(navId = R.id.action_global_universalDataCenterHomeFragment)))
-        moduleList.add(ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_universalDataCenterHomeFragment)))
+        moduleList.add(ConfigModule(AdvancedSettingsModule(navId = R.id.action_m20HomeFragment_to_m20AdvancedSettingFragment)))
 
         binding.recyclerview.models = moduleList
     }

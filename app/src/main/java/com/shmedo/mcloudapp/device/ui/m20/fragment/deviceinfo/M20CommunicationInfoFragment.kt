@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.lr200.fragment.deviceinfo
+package com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo
 
 import android.os.Bundle
 import com.blankj.utilcode.util.StringUtils
@@ -13,17 +13,17 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.databinding.FragmentLr200CommunicationInfoBinding
+import com.shmedo.mcloudapp.databinding.FragmentM20CommunicationInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.model.CommunicationDataCellModel
+import com.shmedo.mcloudapp.device.viewmodel.state.M20CommunicationInfoViewModel
 import org.koin.android.ext.android.inject
 
-class LR200CommunicationInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentLr200CommunicationInfoBinding
-    private lateinit var mStates: EmptyViewModel
+class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentM20CommunicationInfoBinding
+    private lateinit var mStates: M20CommunicationInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
     private val tableAdapter: CommunicationDataTableAdapter by lazy { CommunicationDataTableAdapter() }
 
@@ -33,11 +33,11 @@ class LR200CommunicationInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_lr200_communication_info, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_m20_communication_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentLr200CommunicationInfoBinding
+        binding = getBinding() as FragmentM20CommunicationInfoBinding
         refreshLayout = binding.refreshLayout
         initRefresh()
         initCommunicateDataTableView()
@@ -104,6 +104,7 @@ class LR200CommunicationInfoFragment : BaseIOTDeviceFragment() {
         try {
             val commonCurrentStateInfo =
                 MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
+            mStates.wrapStateInfo.set(commonCurrentStateInfo)
 
             tableAdapter.setAllItems(
                 getColumnHeaderList(),
@@ -170,6 +171,6 @@ class LR200CommunicationInfoFragment : BaseIOTDeviceFragment() {
 
     companion object {
         const val centerNum = 4
-        fun newInstance() = LR200CommunicationInfoFragment()
+        fun newInstance() = M20CommunicationInfoFragment()
     }
 }

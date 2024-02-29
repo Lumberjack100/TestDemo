@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.lr200.fragment.deviceinfo
+package com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo
 
 import android.os.Bundle
 import com.blankj.utilcode.util.StringUtils
@@ -13,15 +13,15 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentLr200SensorInfoBinding
+import com.shmedo.mcloudapp.databinding.FragmentM20SensorInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.LR200SensorInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.M20SensorInfoViewModel
 import org.koin.android.ext.android.inject
 
-class LR200SensorInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentLr200SensorInfoBinding
-    private lateinit var mStates: LR200SensorInfoViewModel
+class M20SensorInfoFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentM20SensorInfoBinding
+    private lateinit var mStates: M20SensorInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     override fun initViewModel() {
@@ -30,11 +30,11 @@ class LR200SensorInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_lr200_sensor_info, BR.stateVM, mStates)
+        return DataBindingConfig(R.layout.fragment_m20_sensor_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentLr200SensorInfoBinding
+        binding = getBinding() as FragmentM20SensorInfoBinding
         refreshLayout = binding.refreshLayout
         initRefresh()
     }
@@ -108,6 +108,6 @@ class LR200SensorInfoFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        fun newInstance() = LR200SensorInfoFragment()
+        fun newInstance() = M20SensorInfoFragment()
     }
 }

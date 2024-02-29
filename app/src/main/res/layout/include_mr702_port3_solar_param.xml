@@ -37,7 +37,7 @@
 
             <TextView
                 style="@style/Common_ClickableItem_TitleStyle"
-                android:text="电池电压(V)" />
+                android:text="蓄电池电压(V)" />
 
             <TextView
                 style="@style/Common_ClickableItem_ValueStyle"

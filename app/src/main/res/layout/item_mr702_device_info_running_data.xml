@@ -18,17 +18,19 @@
         android:orientation="vertical"
         android:paddingTop="@dimen/dimen_size_20"
         android:paddingBottom="@dimen/dimen_size_20"
-        app:drawable_radiusRT="@{2}"
+        app:drawable_radiusRT="@{4}"
         app:drawable_solidColor="@{@color/gray_f5f6f8}"
         tools:background="@color/gray_f5f6f8">
 
         <TextView
+            visible="@{!m.num1.empty}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:maxLines="1"
             android:text="@{m.num1}"
             android:textColor="@color/colorPrimary"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             tools:text="32.5%" />
 
@@ -39,6 +41,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dimen_size_4"
             android:text="@{m.num2}"
+            android:maxLines="2"
             android:textColor="@color/colorPrimary"
             android:textSize="15sp"
             tools:text="已用5.2GB/16GB" />
@@ -50,7 +53,7 @@
             android:layout_marginTop="@dimen/dimen_size_4"
             android:text="@{m.name}"
             android:textColor="@color/text_color_666666"
-            android:textSize="16sp"
+            android:textSize="15sp"
             tools:text="单次运行时长(小时)" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

@@ -12,19 +12,19 @@ class DasSensorInfoViewModel : ViewModel() {
     //数字水位计
     val isVWPSensorVisible = NonNullObservableField(false)
     val vwpErrNo = NonNullObservableField(0)//
-    val vwpValue1 = NonNullObservableField("-1")//
-    val vwpValue2 = NonNullObservableField("-1")//
-    val vwpValue3 = NonNullObservableField("-1")//
+    val vwpValue1 = NonNullObservableField("")//
+    val vwpValue2 = NonNullObservableField("")//
+    val vwpValue3 = NonNullObservableField("")//
 
     //MEMS传感器
     val isMEMSSensorVisible = NonNullObservableField(false)
     val memsErrNo = NonNullObservableField(0)//
-    val memsAxisX = NonNullObservableField("-1")//X 轴角度
-    val memsAxisY = NonNullObservableField("-1")//Y 轴角度
-    val memsAxisZ = NonNullObservableField("-1")//Z 轴角度
-    val memsAccelerationX = NonNullObservableField("-1")//X 轴加速度
-    val memsAccelerationY = NonNullObservableField("-1")//Y 轴加速度
-    val memsAccelerationZ = NonNullObservableField("-1")//Z 轴加速度
+    val memsAxisX = NonNullObservableField("")//X 轴角度
+    val memsAxisY = NonNullObservableField("")//Y 轴角度
+    val memsAxisZ = NonNullObservableField("")//Z 轴角度
+    val memsAccelerationX = NonNullObservableField("")//X 轴加速度
+    val memsAccelerationY = NonNullObservableField("")//Y 轴加速度
+    val memsAccelerationZ = NonNullObservableField("")//Z 轴加速度
 
     val isExternalSensorVisible = NonNullObservableField(false)
 }

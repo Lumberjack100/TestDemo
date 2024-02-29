@@ -21,6 +21,13 @@ import com.shmedo.mcloudapp.device.viewmodel.state.DasOtherInfoViewModel
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
 
+/**
+ * @author：gonghe
+ * @time: 2024/2/29
+ * @desc:
+ *
+ */
+@Deprecated("")
 class DasOtherInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasOtherInfoBinding
     private lateinit var mStates: DasOtherInfoViewModel

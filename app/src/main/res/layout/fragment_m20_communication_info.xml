@@ -5,7 +5,9 @@
 
     <data>
 
-
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.M20CommunicationInfoViewModel" />
     </data>
 
     <com.drake.brv.PageRefreshLayout
@@ -23,6 +25,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="4G信号强度" />
+
+                    <TextView
+                        android:id="@+id/tv_4g_signal_strength"
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.wrapStateInfo._4g_signal+" dBm"}'
+                        tools:text="-51dBm" />
+
+                    <com.shmedo.mcloudapp.common.widget.SignalView
+                        android:id="@+id/signal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="10dp"
+                        app:bind_signal_value="@{stateVM.wrapStateInfo._4g_signal}"
+                        app:connected="true"
+                        app:primary_color="@color/text_color_cccccc"
+                        app:shadow_color="@color/text_color_3AD094"
+                        app:shadow_open="false"
+                        app:signal_maximum="4"
+                        app:spacing="1"
+                        app:unit_width="8" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <TextView
                     android:layout_width="wrap_content"

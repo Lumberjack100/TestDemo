@@ -143,19 +143,19 @@ class DasCommunicationInfoFragment : BaseIOTDeviceFragment() {
 
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (dataList[0].errno.toString() == "0") "未接入" else if (dataList[0].errno.toString() == "1") "在线" else "离线",
+                            mData = if (dataList[0].errno.toString() == "0") "未开启" else if (dataList[0].errno.toString() == "1") "在线" else "离线",
                             textColorResId = if (dataList[0].errno.toString() == "1") R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (dataList[1].errno.toString() == "0") "未接入" else if (dataList[1].errno.toString() == "1") "在线" else "离线",
+                            mData = if (dataList[1].errno.toString() == "0") "未开启" else if (dataList[1].errno.toString() == "1") "在线" else "离线",
                             textColorResId = if (dataList[1].errno.toString() == "1") R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (dataList[2].errno.toString() == "0") "未接入" else if (dataList[2].errno.toString() == "1") "在线" else "离线",
+                            mData = if (dataList[2].errno.toString() == "0") "未开启" else if (dataList[2].errno.toString() == "1") "在线" else "离线",
                             textColorResId = if (dataList[2].errno.toString() == "1") R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )

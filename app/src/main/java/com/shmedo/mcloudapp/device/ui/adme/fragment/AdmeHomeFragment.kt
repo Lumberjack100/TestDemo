@@ -124,6 +124,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
+        mHeadStates.isRunningStateVisible.set(true)
 
         when (communicateWay) {
             NetPlatformConnect -> {

@@ -24,7 +24,7 @@ data class MRRS485Port3SensorParamEntity(
 
     //太阳能控制器
     var svolt: String = IOTConstants.NULL_KEY,//太阳能板电压  V 数字
-    var bvolt: String = IOTConstants.NULL_KEY,//电池电压   V 数字
+    var bvolt: String = IOTConstants.NULL_KEY,//蓄电池电压   V 数字
     var spower: String = IOTConstants.NULL_KEY,//太阳能板功率   W 数字
     var lpower: String = IOTConstants.NULL_KEY,//负载功率  W 数字
 

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo
+package com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo
 
 import android.graphics.Typeface
 import android.os.Bundle
@@ -20,16 +20,16 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentDasDeviceInfoBinding
+import com.shmedo.mcloudapp.databinding.FragmentM20DeviceInfoBinding
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.DasSensorHomeFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.DasDeviceInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.M20DeviceInfoViewModel
 
-class DasDeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private lateinit var binding: FragmentDasDeviceInfoBinding
-    private lateinit var mStates: DasDeviceInfoViewModel
+class M20DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
+    private lateinit var binding: FragmentM20DeviceInfoBinding
+    private lateinit var mStates: M20DeviceInfoViewModel
 
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -42,11 +42,11 @@ class DasDeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_das_device_info, BR.stateVM, mStates)
+        return DataBindingConfig(R.layout.fragment_m20_device_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDasDeviceInfoBinding
+        binding = getBinding() as FragmentM20DeviceInfoBinding
         binding.toolbar.title = "关于设备"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -80,13 +80,13 @@ class DasDeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         )
         val mFragments =
             listOf<Fragment>(
-                DasBaseInfoFragment.newInstance().apply {
+                M20BaseInfoFragment.newInstance().apply {
                     arguments = bundle
                 },
-                DasCommunicationInfoFragment.newInstance().apply {
+                M20CommunicationInfoFragment.newInstance().apply {
                     arguments = bundle
                 },
-                DasSensorInfoFragment.newInstance().apply {
+                M20SensorInfoFragment.newInstance().apply {
                     arguments = bundle
                 }
             )

@@ -126,7 +126,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="外部电压" />
+                        android:text="外接电源电压" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"

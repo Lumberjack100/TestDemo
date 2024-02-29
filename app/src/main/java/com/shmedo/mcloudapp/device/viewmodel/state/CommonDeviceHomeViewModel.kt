@@ -14,10 +14,14 @@ open class CommonDeviceHomeViewModel : ViewModel() {
 
     val isDeviceStateTagHighLight = NonNullObservableField(true)
     val deviceStateTagText = NonNullObservableField("在线")
+
     val isConnectOperateVisible = NonNullObservableField(false)
     val connectOperateText = NonNullObservableField("蓝牙连接")
+
     val isPlatformConnectionStateVisible = NonNullObservableField(false)
     val platformConnectionStateText = NonNullObservableField("")
-    val runningStateText = NonNullObservableField("")
+
+    val isRunningStateVisible = NonNullObservableField(false)
     val isRunningStateNormal = NonNullObservableField(false)
+    val runningStateText = NonNullObservableField("")
 }

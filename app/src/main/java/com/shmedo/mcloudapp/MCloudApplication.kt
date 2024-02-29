@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp
 
 import cat.ereza.customactivityoncrash.config.CaocConfig
-import com.blankj.utilcode.BuildConfig
 import com.blankj.utilcode.util.DeviceUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.BRV
