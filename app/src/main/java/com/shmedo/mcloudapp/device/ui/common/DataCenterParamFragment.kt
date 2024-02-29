@@ -6,7 +6,6 @@ import android.widget.CompoundButton
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -17,6 +16,7 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
@@ -49,9 +49,9 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class DataCenterParamFragment : BaseIOTDeviceFragment() {
-    private val binding: FragmentDataCenterParamBinding by lazy { getBinding() as FragmentDataCenterParamBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: DataCenterParamViewModel by viewModels()
+    private lateinit var binding: FragmentDataCenterParamBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: DataCenterParamViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private var productType = ProductType.UnKnown
@@ -64,6 +64,12 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_data_center_param, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
@@ -71,6 +77,7 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentDataCenterParamBinding
         binding.llToolbar.toolbar.title = "数据中心"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
@@ -114,11 +121,11 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.platformType.set(platformList[0])
     }
 
-   /* private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }*/
+    /* private fun setEditable(editable: Boolean) {
+         toolbarViewModel.toolbarIvActionVisible.set(!editable)
+         toolbarViewModel.toolbarTvActionVisible.set(editable)
+         mStates.isEditable.set(editable)
+     }*/
 
     inner class ClickProxy : BaseClickProxy() {
 //        override fun onToolbarIvClick() {

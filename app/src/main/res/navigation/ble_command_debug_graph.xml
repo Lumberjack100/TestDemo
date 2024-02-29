@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ble_command_debug_graph"
+    app:startDestination="@id/bleCustomCommandLogPrintFragment">
+
+    <fragment
+        android:id="@+id/bleCustomCommandLogPrintFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment"
+        android:label="BleCustomCommandLogPrintFragment"
+        tools:layout="@layout/fragment_ble_custom_command_log_print" />
+
+</navigation>

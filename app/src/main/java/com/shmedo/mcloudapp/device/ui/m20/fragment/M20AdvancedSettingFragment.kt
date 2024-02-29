@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.databinding.FragmentM20AdvancedSettingBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.M20AdvancedSettingViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -28,12 +29,14 @@ import timber.log.Timber
 class M20AdvancedSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM20AdvancedSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: M20AdvancedSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
 
     override fun initViewModel() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -42,6 +45,7 @@ class M20AdvancedSettingFragment : BaseIOTDeviceFragment() {
             BR.toolbarVM,
             toolbarViewModel
         )
+            .addBindingParam(BR.stateVM, mStates)
             .addBindingParam(BR.click, ClickProxy())
     }
 
@@ -58,6 +62,11 @@ class M20AdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        mStates.isCmdLogVisible.set(communicateWay is BleConnect)
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         fun onFirmWareSelectClick() {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
@@ -68,7 +77,7 @@ class M20AdvancedSettingFragment : BaseIOTDeviceFragment() {
             nav().navigate(R.id.action_global_to_firmwareUpgradeFragment, bundle)
         }
 
-        fun onRebootClick() {
+        fun onGotoCmdLogClick() {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return

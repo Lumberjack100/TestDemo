@@ -23,13 +23,6 @@
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
-        <action
-            android:id="@+id/action_lR200HomeFragment_to_m20AdvancedSettingFragment"
-            app:destination="@id/m20AdvancedSettingFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
 
     </fragment>
 
@@ -39,11 +32,6 @@
         android:label="LR200DeviceInfoFragment"
         tools:layout="@layout/fragment_lr200_device_info" />
 
-    <fragment
-        android:id="@+id/m20AdvancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.M20AdvancedSettingFragment"
-        android:label="m20AdvancedSettingFragment"
-        tools:layout="@layout/fragment_m20_advanced_setting" />
 
     <action
         android:id="@+id/action_global_to_firmwareUpgradeFragment"

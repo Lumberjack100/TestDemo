@@ -223,6 +223,15 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     abstract fun setResultData(cmdStr: String)
 
+    /**
+     * 发送调试指令
+     */
+    protected fun sendDebugCommand(
+        command: String
+    ) {
+        addIOTDeviceLogItem(priority = Log.INFO, data = command, logViewModel.viewModelScope)
+        bleViewModel.sendCommand(command, false, deviceInfo.apikey)
+    }
 
     /**
      * 发送指令队列中的第一条指令
