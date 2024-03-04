@@ -6,13 +6,12 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
+import com.shmedo.lib.core.ext.addIOTDeviceLogSession
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
@@ -59,25 +58,13 @@ class DeviceHomeActivity : BaseActivity() {
             communicateWay = bundle.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
             deviceInfo = bundle.getParcelable(AppContants.Extras.DEVICE_INFO)
             bleDevice = bundle.getParcelable(AppContants.Extras.BLE_DEVICE)
-            addLogSession()
         }
         addHistoryList()
+        deviceInfo?.let {
+            addIOTDeviceLogSession(it.firmwareVersion, it.deviceToken, lifecycleScope)
+        }
         binding.deviceHomeHostFragment.post {
             setGraph()
-        }
-    }
-
-    private fun addLogSession() {
-        deviceInfo?.let {
-            val sessionInfo = SessionInfo(
-                key = it.firmwareVersion,
-                name = it.deviceToken,
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            )
-            logViewModel.insertSession(sessionInfo)
-            MmkvCacheUtil.setIOTDeviceLogSessionId(sessionInfo.id)
         }
     }
 

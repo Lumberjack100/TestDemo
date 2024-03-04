@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.user.fragment
 
+import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -8,9 +9,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
+import com.blankj.utilcode.util.FileIOUtils
+import com.blankj.utilcode.util.IntentUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.models
@@ -30,6 +34,10 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class LogDataFragment : BaseFragment() {
     private lateinit var binding: FragmentLogDataBinding
@@ -136,7 +144,8 @@ class LogDataFragment : BaseFragment() {
                 return when (menuItem.itemId) {
                     R.id.action_share -> {
                         //分享
-                        shareLog()
+//                        shareLog()
+                        shareLogToFile()
                         true
                     }
 
@@ -163,13 +172,70 @@ class LogDataFragment : BaseFragment() {
                         logContent.append("\n")
                     }
                 }
-                startActivity(Intent.createChooser(Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, logContent.toString())
-                    type = "text/plain"
-                }, "分享到"))
+                startActivity(IntentUtils.getShareTextIntent(logContent.toString()))
             }
         }
+    }
+
+    /**
+     * 分享日志到文件
+     */
+    private fun shareLogToFile() {
+        launchAndRepeatWithViewLifecycle {
+            binding.recyclerview.models?.let { logList ->
+                val logContent = StringBuilder()
+                logList.forEach { logInfo ->
+                    (logInfo as LogInfo).apply {
+                        logContent.append(LogLevel.getTag(logLevel))
+                        logContent.append(" ")
+                        logContent.append(createTime)
+                        logContent.append(" ")
+                        logContent.append(data)
+                        logContent.append("\n")
+                    }
+                }
+
+                // 创建文件并写入日志内容
+                val fileName = "${getString(R.string.app_name)}_realtime_log_${
+                    SimpleDateFormat(
+                        "yyyyMMddHHmmss",
+                        Locale.getDefault(Locale.Category.FORMAT)
+                    ).format(
+                        Date()
+                    )
+                }.txt"
+
+                val file = File(Utils.getApp().cacheDir.path, fileName)
+                if (FileIOUtils.writeFileFromString(file, logContent.toString())) {
+                    // 分享文件
+                    shareFile(file)
+                }
+            }
+        }
+    }
+
+    /**
+     * 分享文件
+     */
+    private fun shareFile(file: File) {
+        val uri = FileProvider.getUriForFile(
+            Utils.getApp(),
+            "${Utils.getApp().packageName}.fileprovider",
+            file
+        )
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            //设置剪贴板数据以授予接收应用对URI的访问权限
+            val clip = ClipData.newRawUri("", uri)
+            clipData = clip
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        startActivity(Intent.createChooser(shareIntent, "分享到"))
     }
 
     override fun onResume() {

@@ -1,21 +1,34 @@
 package com.shmedo.mcloudapp.device.ui.common
 
+import android.content.ClipData
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.FileIOUtils
+import com.blankj.utilcode.util.IntentUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.blankj.utilcode.util.UriUtils
+import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DebugCmdLogInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -26,14 +39,16 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleCustomCommandLogPrintViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
-import org.koin.android.ext.android.inject
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleCustomCommandLogPrintBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: BleCustomCommandLogPrintViewModel
-    private val iotParseManager: IOTParserManager by inject()
 
     private val debugModelList: MutableList<String> =
         arrayListOf("关", "debug模式", "info模式")
@@ -57,14 +72,17 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentBleCustomCommandLogPrintBinding
+        //设置menu 关键代码
+        mActivity.setSupportActionBar(binding.toolbar)
+        addMenu()
         binding.toolbar.title = "指令调试"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
-            //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+                //mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
         })
@@ -152,8 +170,112 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun addMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+                super.onPrepareMenu(menu)
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.debug_cmd_log_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_share -> {
+                        //分享
+//                        shareLogText()
+//
+                        shareLogToFile()
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    /**
+     * 分享日志
+     */
+    private fun shareLogText() {
+        launchAndRepeatWithViewLifecycle {
+            binding.recyclerview.models?.let { logList ->
+                val logContent = StringBuilder()
+                logList.forEach { logInfo ->
+                    (logInfo as DebugCmdLogInfo).apply {
+                        logContent.append(logTime)
+                        logContent.append(" ")
+                        logContent.append(content)
+                        logContent.append("\n")
+                    }
+                }
+                startActivity(IntentUtils.getShareTextIntent(logContent.toString()))
+            }
+        }
+    }
+
+    /**
+     * 分享日志到文件
+     */
+    private fun shareLogToFile() {
+        launchAndRepeatWithViewLifecycle {
+            binding.recyclerview.models?.let { logList ->
+                val logContent = StringBuilder()
+                logList.forEach { logInfo ->
+                    (logInfo as DebugCmdLogInfo).apply {
+                        logContent.append(logTime)
+                        logContent.append(" ")
+                        logContent.append(content)
+                        logContent.append("\n")
+                    }
+                }
+
+                // 创建文件并写入日志内容
+                val fileName = "${getString(R.string.app_name)}_ble_realtime_log_${
+                    SimpleDateFormat(
+                        "yyyyMMddHHmmss",
+                        Locale.getDefault(Locale.Category.FORMAT)
+                    ).format(
+                        Date()
+                    )
+                }.txt"
+                val file = File(Utils.getApp().cacheDir.path, fileName)
+                if (FileIOUtils.writeFileFromString(file, logContent.toString())) {
+                    // 分享文件
+                    shareFile(file)
+                }
+            }
+        }
+    }
+
+    /**
+     * 分享文件
+     */
+    private fun shareFile(file: File) {
+        val uri = UriUtils.file2Uri(file)
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            //设置剪贴板数据以授予接收应用对URI的访问权限
+            val clip = ClipData.newRawUri("", uri)
+            clipData = clip
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        startActivity(Intent.createChooser(shareIntent, "分享到"))
+    }
+
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.toolbar)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 }

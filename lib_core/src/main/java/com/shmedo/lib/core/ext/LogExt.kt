@@ -44,6 +44,21 @@ fun addSystemLogItem(priority: Int, data: String, scope: CoroutineScope) {
     }
 }
 
+
+fun addIOTDeviceLogSession(mKey: String, mName: String, scope: CoroutineScope) {
+    scope.launch {
+        val sessionInfo = SessionInfo(
+            key = mKey,
+            name = mName,
+            createBy = MmkvCacheUtil.getUserName(),
+            createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
+            createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
+        )
+        LocalDataRepository.instance.insertSession(sessionInfo)
+        MmkvCacheUtil.setIOTDeviceLogSessionId(sessionInfo.id)
+    }
+}
+
 fun addIOTDeviceLogItem(priority: Int, data: String, scope: CoroutineScope) {
     scope.launch {
         val logInfo = LogInfo(

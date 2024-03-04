@@ -134,7 +134,7 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".common.activity.WebviewActivity"
@@ -148,8 +148,8 @@
             android:theme="@style/LightStatusBarActivity" />
 
         <provider
-            android:name="com.shmedo.lib.core.base.GenericFileProvider"
-            android:authorities="${applicationId}.fileProvider"
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -157,6 +157,7 @@
                 android:resource="@xml/file_paths"
                 tools:replace="android:resource" />
         </provider>
+
         <provider
             android:name="com.shmedo.lib.core.base.AppContentProvider"
             android:authorities="${applicationId}.appContentProvider"
