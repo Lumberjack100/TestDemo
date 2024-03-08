@@ -40,6 +40,7 @@ import com.shmedo.lib.ble.communicate.spec.ESP32ASpec
 import com.shmedo.lib.ble.communicate.spec.ESP32BSpec
 import com.shmedo.lib.ble.communicate.spec.GOC400Spec
 import com.shmedo.lib.ble.communicate.spec.GOCW91200Spec
+import com.shmedo.lib.ble.communicate.spec.MS52SF1Spec
 import com.shmedo.lib.ble.communicate.spec.PacketMerger
 import com.shmedo.lib.ble.communicate.spec.USRSpec
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
@@ -142,6 +143,14 @@ class MedoBleManager(
             )
             writeCharacteristic = getCharacteristic(
                 USRSpec.USR_WRITABLE_CHARACTERISTIC_UUID
+            )
+        }
+        gatt.getService(MS52SF1Spec.MS52SF1_SERVICE_UUID)?.run {
+            notifyCharacteristic = getCharacteristic(
+                MS52SF1Spec.MS52SF1_NOTIFY_CHARACTERISTIC_UUID
+            )
+            writeCharacteristic = getCharacteristic(
+                MS52SF1Spec.MS52SF1_WRITABLE_CHARACTERISTIC_UUID
             )
         }
 

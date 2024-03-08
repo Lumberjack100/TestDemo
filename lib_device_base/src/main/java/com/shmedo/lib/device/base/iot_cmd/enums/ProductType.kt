@@ -29,6 +29,7 @@ enum class ProductType(
     RN20("RN20", "Y", "轴力计"),
     VMS("VMS,GW300", "G", "振弦式采集仪"),
 
+    TEST_DEVICE("TEST", "#", "测试设备"),
     UnKnown("UnKnown", "#", "未知类型");
 
     override fun toString(): String {

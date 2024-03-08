@@ -140,7 +140,22 @@ class BleScannerListFragment : BaseFragment() {
         }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
-                Toaster.show("不支持此设备!${dataResult.responseStatus.errorMessage}")
+                if (discoveredBluetoothDevice!!.name.isNullOrEmpty()) {
+                    Toaster.show("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
+                    return@observe
+                }
+                discoveredBluetoothDevice!!.name?.let { token ->
+                    if (!token.startsWith("MD-TEST")) {//MD-TEST
+                        Toaster.show("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
+                        return@observe
+                    }
+                    DeviceHomeActivity.start(
+                        mActivity,
+                        DeviceInfo(deviceToken = token, productToken = "TEST",productName = "测试设备"),
+                        discoveredBluetoothDevice,
+                        BleConnect
+                    )
+                }
                 return@observe
             }
             DeviceHomeActivity.start(

@@ -155,6 +155,17 @@ class DeviceHomeActivity : BaseActivity() {
 
             }
 
+            ProductType.TEST_DEVICE -> {
+                val bundle =
+                    BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo!!,
+                        bleDevice
+                    )
+                findNavController(R.id.device_home_host_fragment)
+                    .setGraph(R.navigation.test_device_graph, bundle)
+            }
+
             else -> {
                 when (communicateWay) {
                     NetPlatformConnect -> {
