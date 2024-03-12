@@ -140,7 +140,27 @@ class MR702DeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener 
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.toolbar)
+
+//        mActivity.window.statusBarColor = Color.TRANSPARENT
+//        val windowInsetsController = WindowCompat.getInsetsController(mActivity.window, mActivity.window.decorView)
+//        windowInsetsController.isAppearanceLightStatusBars = false
+//        WindowCompat.setDecorFitsSystemWindows(mActivity.window, false)
+//        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, insets: WindowInsetsCompat ->
+//            val systemWindow = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+//            val params = view.layoutParams as ConstraintLayout.LayoutParams
+//            params.topMargin = systemWindow.top
+//
+//            insets
+//        }
     }
+
+//    override fun onDestroyView() {
+//        mActivity.window.statusBarColor = Color.WHITE
+//        val windowInsetsController = WindowCompat.getInsetsController(mActivity.window, mActivity.window.decorView)
+//        windowInsetsController.isAppearanceLightStatusBars = true
+//        WindowCompat.setDecorFitsSystemWindows(mActivity.window, true)
+//        super.onDestroyView()
+//    }
 
     companion object {
         private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)

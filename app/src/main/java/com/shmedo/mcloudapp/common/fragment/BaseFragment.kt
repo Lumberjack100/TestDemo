@@ -35,8 +35,10 @@ abstract class BaseFragment : BaseVmDbFragment() {
         isStatusBarDarkFont: Boolean = true,
         isNavigationBarDarkIcon: Boolean = true,
         navigationBarColor: Int = R.color.white,
-        statusBarColor: Int = -1
-    ) {
+        statusBarColor: Int = -1,
+        isKeyboardEnable: Boolean = false,
+
+        ) {
         immersionBar {
             titleBar(statusBar)
             statusBarDarkFont(isStatusBarDarkFont)
@@ -44,6 +46,7 @@ abstract class BaseFragment : BaseVmDbFragment() {
             navigationBarColor(navigationBarColor)
             if (statusBarColor != -1)
                 statusBarColor(statusBarColor)
+            keyboardEnable(isKeyboardEnable)
         }
     }
 }

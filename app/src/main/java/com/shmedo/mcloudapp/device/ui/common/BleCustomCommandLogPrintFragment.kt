@@ -272,10 +272,9 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.toolbar)
+        initImmersionBar(binding.toolbar, isKeyboardEnable = true)
+//        val windowInsetsController = WindowCompat.getInsetsController(mActivity.window, mActivity.window.decorView)
+//        windowInsetsController.isAppearanceLightStatusBars = true
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }
