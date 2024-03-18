@@ -465,8 +465,8 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         }
         try {
             val value = mStates.downTorqueStallThreshold.get().toDouble()
-            if (value < 0.00 || value > 2.00) {
-                showMessageDialog("下放力矩堵转阈值不能小于0或大于2!")
+            if (value < 0.00 || value > 8.00) {
+                showMessageDialog("下放力矩堵转阈值不能小于0或大于8!")
                 return
             }
         } catch (ex: Exception) {
