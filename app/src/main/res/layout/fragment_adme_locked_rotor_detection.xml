@@ -271,7 +271,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:hint="数值范围[0.00,8.00]"
+                            android:hint="数值范围[0.00,2.00]"
                             android:text="@={stateVM.downTorqueStallThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{8}" />
@@ -422,10 +422,10 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:hint="数值范围[1.00,6.00]"
+                            android:hint="数值范围[1.00,8.00]"
                             android:text="@={stateVM.pullUpTorqueStallThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{6}" />
+                            app:lengthFilter="@{8}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
