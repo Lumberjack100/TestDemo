@@ -29,6 +29,7 @@ data class AdmeExecutiveAgencyInfoEntity(
     val interdeep: String = IOTConstants.NULL_KEY, //测斜管孔深
     val downwaitetime: String = IOTConstants.NULL_KEY,//下放等待时间
     val upspeed: String = IOTConstants.NULL_KEY,//电机上拉速度
+    val pzspeed: String = IOTConstants.NULL_KEY,//上拉归零速度
     val measpacing: String =IOTConstants.NULL_KEY, //测量间距
     val meaintertime: String = IOTConstants.NULL_KEY, //测量间隔时间
     val meabaseth: String = IOTConstants.NULL_KEY, //测量基准深度

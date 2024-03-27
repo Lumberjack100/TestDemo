@@ -25,6 +25,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -528,6 +529,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             downspeed = mStates.decentralizationSpeed.get(),
             downwaitetime = mStates.decentralizationWaitingTime.get(),
             upspeed = mStates.pullUpSpeed.get(),
+            pzspeed = if (mStates.isPullUpZeroSpeedSupport.get()) mStates.pullUpZeroSpeed.get() else IOTConstants.NULL_KEY,
             measpacing = mStates.measuringDistance.get(),
             meaintertime = mStates.measurementIntervalTime.get(),
             meabaseth = mStates.measuringReferenceDepth.get(),
@@ -681,6 +683,10 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
             mStates.pullUpSpeed.set(info.upspeed)
+            mStates.isPullUpZeroSpeedSupport.set(info.pzspeed != IOTConstants.NULL_KEY)
+            if (mStates.isPullUpZeroSpeedSupport.get()) {
+                mStates.pullUpZeroSpeed.set(info.pzspeed)
+            }
             decimalFormat.applyPattern("#.##")
             mStates.measuringDistance.set(decimalFormat.format(info.measpacing.toDouble()))
             mStates.measurementIntervalTime.set(info.meaintertime)

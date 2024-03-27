@@ -5,6 +5,7 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 class AdmeExecutiveAgencyViewModel : ViewModel() {
     val isEditable = NonNullObservableField(false)
+    val isPullUpZeroSpeedSupport = NonNullObservableField(false)
 
     val measureMethodText = NonNullObservableField("")
     val measureMethod = NonNullObservableField(0)//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)
@@ -22,6 +23,7 @@ class AdmeExecutiveAgencyViewModel : ViewModel() {
     val decentralizationSpeed = NonNullObservableField("")//下放速度(r/min)
     val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(min)
     val pullUpSpeed = NonNullObservableField("")//电机上拉速度
+    val pullUpZeroSpeed = NonNullObservableField("")//上拉归零速度
     val measuringDistance = NonNullObservableField("")//测量间距
     val measurementIntervalTime = NonNullObservableField("")//测量间隔时间
     val measuringReferenceDepth = NonNullObservableField("")//测量基准深度

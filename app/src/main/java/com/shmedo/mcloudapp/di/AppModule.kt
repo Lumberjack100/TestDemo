@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.di
 
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeAndNegativeTestExceptionHandlingInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeAnthropomorphicMovementInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeBasicConfigInfoParser
@@ -100,6 +101,7 @@ val appModule = module {
     factory { AdmeMotorMotionAngleInfoParser() }
     factory { AdmeWorkModeInfoParser() }
     factory { AdmeCalibrationProcessingInfoParser() }
+    factory { AdmeAndNegativeTestExceptionHandlingInfoParser() }
     factory { DasBaseInfoParser() }
     factory { DasCollectorInfoParser() }
     factory { DasReportInfoParser() }
@@ -169,6 +171,7 @@ val appModule = module {
             get<AdmeMotorMotionAngleInfoParser>(),
             get<AdmeWorkModeInfoParser>(),
             get<AdmeCalibrationProcessingInfoParser>(),
+            get<AdmeAndNegativeTestExceptionHandlingInfoParser>(),
             get<DasBaseInfoParser>(),
             get<DasCollectorInfoParser>(),
             get<DasReportInfoParser>(),

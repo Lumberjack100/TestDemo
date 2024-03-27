@@ -608,6 +608,16 @@ enum class IOTCommandType(private val value: String) {
      * 查询电机当前运动状态
      */
     ADME_HAC_MD_GET_MOTION_STATE("md_hac_getmotionstate"),
+
+    /**
+     * 获取ADME的正反测异常智能处理参数
+     */
+    ADME_MD_GET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING("md_getintelsw"),
+
+    /**
+     * 设置ADME的正反测异常智能处理
+     */
+    ADME_MD_SET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING("md_setintelsw"),
     // </editor-fold>
 
     //<editor-fold desc="M20 指令">

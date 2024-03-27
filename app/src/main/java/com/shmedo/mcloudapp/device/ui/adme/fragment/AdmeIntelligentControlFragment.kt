@@ -14,6 +14,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeAndNegativeTestExceptionHandlingInfo
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeAnthropomorphicMovementInfo
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeBrakePadControlInfo
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeLowEnergyModeInfo
@@ -127,6 +128,9 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             when (button.id) {
                 R.id.positiveAndNegativeSB -> { //正反测使能
                     enableOrDisableStepperMotorParam(isChecked)
+                }
+                R.id.positiveAndNegativeTestExceptionHandlingSB -> { //正反测异常智能处理
+                    enableOrDisableAndNegativeTestExceptionHandling(isChecked)
                 }
 
                 R.id.lowPowerEnableSBtn -> { //低功耗使能
@@ -296,6 +300,27 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
     }
 
     /**
+     * 正反测异常智能处理 使能
+     */
+    private fun enableOrDisableAndNegativeTestExceptionHandling(isChecked: Boolean) {
+        commandItems.clear()
+        val entity = AdmeStepperMotorEntity(
+            posnegtest = if (isChecked) "1" else "0",
+        )
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_SET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
      * 力矩电机继电器低功耗使能
      */
     private fun enableOrDisableLowEnergy(isChecked: Boolean) {
@@ -381,6 +406,12 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
 
+        //获取正反测异常智能处理使能信息
+        command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_GET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING
+        )
+        commandItems.add(command)
+
         //获取低功耗使能信息
         command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE
@@ -429,6 +460,32 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Success -> {
                         val admeStepperMotorInfo = result.data
                         mStates.positiveAndNegativeTest.set(admeStepperMotorInfo.posnegtest == "1")
+                    }
+                }
+                sendCommandFromCmdList {
+                    binding.refreshLayout.finish()
+                }
+            }
+
+            IOTCommandType.ADME_MD_GET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING -> {
+                val result = iotParseManager.parse<AdmeAndNegativeTestExceptionHandlingInfo>(
+                    cmdStr,
+                    IOTCommandType.ADME_MD_GET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询正反测异常智能处理使能状态出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        //设备版本不支持，隐藏正反测异常智能处理使能
+                        mStates.isPositiveAndNegativeTestExceptionHandlingSupport.set(!errMsg.contains("设备版本不支持"))
+                        //return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        val info = result.data
+                        mStates.isPositiveAndNegativeTestExceptionHandling.set(info.mode == "1")
                     }
                 }
                 sendCommandFromCmdList {
@@ -545,6 +602,22 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置正反测使能出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_MD_SET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置正反测异常智能处理使能出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return

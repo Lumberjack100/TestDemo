@@ -21,6 +21,7 @@ data class AdmeExecutiveAgencyInfo(
     var interdeep: String = "", //测斜管孔深
     var downwaitetime: String = "",//下放等待时间
     var upspeed: String = "",//电机上拉速度
+    var pzspeed: String = "",//上拉归零速度
     var measpacing: String = "", //测量间距
     var meaintertime: String = "", //测量间隔时间
     var meabaseth: String = "", //测量基准深度

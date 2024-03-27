@@ -31,6 +31,7 @@ class AdmeExecutiveAgencyInfoParser : IOTCommandParser<AdmeExecutiveAgencyInfo> 
             interdeep = keyValueMap.getOrDefault("interdeep", interdeep)
             downwaitetime = keyValueMap.getOrDefault("downwaitetime", downwaitetime)
             upspeed = keyValueMap.getOrDefault("upspeed", upspeed)
+            pzspeed = keyValueMap.getOrDefault("pzspeed", pzspeed)
             measpacing = keyValueMap.getOrDefault("measpacing", measpacing)
             meaintertime = keyValueMap.getOrDefault("meaintertime", meaintertime)
             meabaseth = keyValueMap.getOrDefault("meabaseth", meabaseth)
