@@ -304,12 +304,9 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
      */
     private fun enableOrDisableAndNegativeTestExceptionHandling(isChecked: Boolean) {
         commandItems.clear()
-        val entity = AdmeStepperMotorEntity(
-            posnegtest = if (isChecked) "1" else "0",
-        )
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_SET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING,
-            entity.toCommandString()
+            "model=${if (isChecked) "1" else "0"}"
         )
         commandItems.add(command)
 
