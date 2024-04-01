@@ -8,7 +8,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
@@ -63,7 +63,7 @@ class SettingFragment : BaseFragment() {
          * 清除缓存和历史日志
          */
         fun onClearLogClick() {
-            launchAndRepeatWithViewLifecycle {
+            launchWithViewLifecycle {
                 //清除缓存
                 CleanUtils.cleanInternalCache()
                 CleanUtils.cleanExternalCache()
