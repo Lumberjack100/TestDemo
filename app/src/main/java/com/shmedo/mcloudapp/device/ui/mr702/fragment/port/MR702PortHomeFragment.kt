@@ -19,6 +19,7 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
@@ -188,13 +189,13 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     private fun loadSensorModeConfig() {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             try {
                 val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
                 val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
 //            Timber.d("configPara = $jsonStr")
                 val appConfigContent: AppConfigContent =
-                    MoshiUtil.fromJson(jsonStr) ?: return@launchAndRepeatWithViewLifecycle
+                    MoshiUtil.fromJson(jsonStr) ?: return@launchWithViewLifecycle
                 appConfigContent.mr702.forEach { mPort ->
                     mStates.portSensorModelListMap[mPort.portName] = mPort.sensors.toMutableList()
                     mPort.sensors.forEach { model ->

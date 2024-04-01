@@ -17,6 +17,7 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
@@ -391,11 +392,11 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processBack(isPressBackBtn: Boolean = false) {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             if (isPressBackBtn) {
                 mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
                 nav().navigateUp()
-                return@launchAndRepeatWithViewLifecycle
+                return@launchWithViewLifecycle
             }
             updateSensorModeConfig()
             delay(500)

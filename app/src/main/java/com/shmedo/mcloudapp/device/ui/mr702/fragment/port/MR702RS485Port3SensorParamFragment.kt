@@ -18,6 +18,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port3SensorParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -488,11 +489,11 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processBack(isPressBackBtn: Boolean = false) {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             if (isPressBackBtn) {
                 mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
                 nav().navigateUp()
-                return@launchAndRepeatWithViewLifecycle
+                return@launchWithViewLifecycle
             }
             delay(1000)
             //巡护事件需要给上一级浏览页面传递最新的事件信息

@@ -28,7 +28,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DebugCmdLogInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -200,7 +200,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
      * 分享日志
      */
     private fun shareLogText() {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
@@ -220,7 +220,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
      * 分享日志到文件
      */
     private fun shareLogToFile() {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->

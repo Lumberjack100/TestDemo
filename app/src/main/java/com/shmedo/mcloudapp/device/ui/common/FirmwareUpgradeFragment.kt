@@ -14,6 +14,7 @@ import com.lxj.xpopup.XPopup
 import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -157,7 +158,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun applyFirmwareUpgrade(firmwareID: Int) {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             showLoadingDialog(StringUtils.getString(R.string.processing))
             val msgID = deviceRequestViewModel.applyFirmwareUpgrade(
                 deviceToken = deviceInfo.deviceToken,
@@ -165,7 +166,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
             ) { error: Throwable ->
                 dismissLoadingDialog()
                 Toaster.show("升级失败：${error.message}")
-            } ?: return@launchAndRepeatWithViewLifecycle
+            } ?: return@launchWithViewLifecycle
             netIotCommandViewModel.processCmdResult("", arrayListOf(msgID))
         }
     }

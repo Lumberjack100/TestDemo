@@ -12,6 +12,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -318,7 +319,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun applyBackup(backupID: String = "") {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             val msgID = deviceRequestViewModel.applyBackup(
                 backupID,
                 deviceInfo.id.toString()
@@ -326,7 +327,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 mStates.isResponseLoading.set(false)
                 mStates.isResponseSuccess.set(false)
                 mStates.responseContent.set(error.errorMsg)
-            } ?: return@launchAndRepeatWithViewLifecycle
+            } ?: return@launchWithViewLifecycle
 
             mStates.isParamImporting.set(true)
             mStates.isResponseLoading.set(true)
