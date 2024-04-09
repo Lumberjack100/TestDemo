@@ -28,6 +28,9 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -44,9 +47,8 @@ dependencies {
     implementation libs.utilcodex
     implementation libs.mmkv
 
-    implementation libs.okhttp3.logging.interceptor
-//    api libs.rxjava
-//    api libs.rxandroid
+    implementation libs.okhttp
+    implementation libs.okhttp.logging.interceptor
     api libs.rxhttp
     ksp libs.rxhttp.compiler
     implementation libs.rxhttp.converter.moshi
@@ -56,5 +58,4 @@ dependencies {
 
     // 一个轻量级、高可用性的Android版本更新框架
     api libs.xuexiangjys.xupdate
-    implementation libs.okhttputils
 }

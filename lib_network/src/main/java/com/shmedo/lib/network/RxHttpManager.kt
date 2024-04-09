@@ -2,14 +2,12 @@ package com.shmedo.lib.network
 
 import android.app.Application
 import com.blankj.utilcode.util.ToastUtils
-import com.shmedo.lib.network.converter.MyMoshiConverter
-import com.shmedo.lib.network.util.OKHttpUpdateHttpService
+import com.shmedo.lib.network.interceptor.MyMoshiConverter
+import com.shmedo.lib.network.interceptor.OKHttpUpdateHttpService
 import com.xuexiang.xupdate.XUpdate
 import com.xuexiang.xupdate.entity.UpdateError
 import com.xuexiang.xupdate.utils.UpdateUtils
-import com.zhy.http.okhttp.OkHttpUtils
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import rxhttp.RxHttpPlugins
 import java.util.concurrent.TimeUnit
 
@@ -24,34 +22,23 @@ object RxHttpManager {
 
     fun initial(application: Application) {
         initRxHttp()
-        initOKHttpUtils()
         initUpdate(application)
     }
 
     private fun initRxHttp() {
-        val logging = HttpLoggingInterceptor()
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
         //设置读、写、连接超时时间为15s
         val client: OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
-            .addInterceptor(logging) // 日志拦截器
             .build()
 
         RxHttpPlugins.init(client)
+            .setDebug(BuildConfig.DEBUG, false, -1)      //调试模式/分段打印/json数据缩进空间
             .setConverter(MyMoshiConverter.create()) //设置数据解析器，非必须
 //            .setOnParamAssembly { p: Param<*> ->                  //设置公共参数，非必须
 //                p.addHeader("Authorization", MmkvCacheUtil.getToken()) //添加公共请求头
 //            }
-    }
-
-    private fun initOKHttpUtils() {
-        val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-            .connectTimeout(20000L, TimeUnit.MILLISECONDS)
-            .readTimeout(20000L, TimeUnit.MILLISECONDS)
-            .build()
-        OkHttpUtils.initClient(okHttpClient)
     }
 
     /**

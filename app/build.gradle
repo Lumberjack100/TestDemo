@@ -33,7 +33,7 @@ def getReversion() {
         process.waitFor() // 等待进程结束
 
         if (output == '') {
-            buildnum = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
+            buildnum = 0 * 10000 + 0 * 1000 + 0 * 100
         } else {
             buildnum = output.toInteger()
         }

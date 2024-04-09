@@ -1,4 +1,4 @@
-package com.shmedo.lib.network.converter;
+package com.shmedo.lib.network.interceptor;
 
 import com.shmedo.lib.core.util.NullBooleanAdapter;
 import com.shmedo.lib.core.util.NullDoubleAdapter;
