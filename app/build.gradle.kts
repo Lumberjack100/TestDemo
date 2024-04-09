@@ -1,0 +1,239 @@
+import java.io.FileInputStream
+import java.util.Properties
+
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.parcelize)
+}
+
+val majorVersion = 3
+val minorVersion = 3
+val patchVersion = 0
+
+/**
+ * 获取Git库HEAD的SHA1码前5位
+ */
+fun gitShortCommitId(): String {
+    val cmd = "git rev-parse --short HEAD"
+    return Runtime.getRuntime().exec(cmd).inputStream.reader().use { it.readText().trim() }
+}
+
+fun getReversion(): Int {
+    var buildnum = 1
+    try {
+        // 使用 ProcessBuilder 更可靠地执行命令
+        val processBuilder = ProcessBuilder("git", "rev-list", "--count", "HEAD")
+        processBuilder.redirectErrorStream(true) // 将错误输出和标准输出合并
+        val process = processBuilder.start()
+        val output = process.inputStream.reader().use { it.readText().trim() } // 读取命令输出
+
+        // 确保正确地关闭了进程的输入输出流
+        process.inputStream.close()
+        process.outputStream.close()
+        process.errorStream.close()
+        process.waitFor() // 等待进程结束
+
+        if (output == "") {
+            buildnum = majorVersion * 10000 + minorVersion * 1000 + patchVersion * 100
+        } else {
+            buildnum = output.toInt()
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return buildnum
+}
+
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+// Initialize a new Properties() object called keystoreProperties.
+val keystoreProperties = Properties()
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+android {
+    namespace = "com.shmedo.mcloudapp"
+    compileSdk = libs.versions.compileSdk.get().toInt()
+
+    defaultConfig {
+        applicationId = "com.shmedo.mcloudapp.iot"
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = getReversion()
+        versionName = "$majorVersion.$minorVersion.$patchVersion"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
+            abiFilters.add("arm64-v8a")
+            abiFilters.add("armeabi-v7a")
+        }
+        manifestPlaceholders["buglyAppId"] = "ba15ad4815"
+        manifestPlaceholders["umengAppkey"] = "6209cd80226836222738b72b"
+    }
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+        buildConfig = true
+    }
+
+    sourceSets {
+        named("main") {
+            jniLibs.srcDirs("libs")
+        }
+        configureEach {
+            kotlin.srcDir(layout.buildDirectory.files("generated/ksp/$name/kotlin/"))
+        }
+    }
+
+    flavorDimensions += "version"
+    productFlavors {
+        create("production") {//正式发布版本
+            dimension = "version"
+            resValue("string", "app_name", "米易通物联网")   // 设置默认的app_name
+            buildConfigField("String", "APP_NAME", "\"米易通物联网\"")
+            manifestPlaceholders["mapApikey"] = "61b252e0afae07eebf71fd8b519b511c"
+        }
+        create("demo") {//测试版本
+            dimension = "version"
+            applicationIdSuffix = ".v5"
+            resValue("string", "app_name", "米易通V5")   // 设置默认的app_name
+            buildConfigField("String", "APP_NAME", "\"米易通V5\"")
+            manifestPlaceholders["mapApikey"] = "61b252e0afae07eebf71fd8b519b511c"
+        }
+    }
+
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .onEach { output ->
+                val appName =
+                    productFlavors.first().buildConfigFields["APP_NAME"]?.value?.toString()
+                        ?.replace("\"", "")
+
+                // 设置输出文件名
+                val outputFileName =
+                    "${appName}_${variant.versionName}_${gitShortCommitId()}_${getReversion()}_${variant.flavorName}_${variant.buildType.name}.apk"
+                output.outputFileName = outputFileName
+            }
+    }
+}
+
+dependencies {
+    implementation(libs.androidx.legacy.support)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+    implementation(project(":lib_device_base"))
+    implementation(project(":lib_ble"))
+    implementation(project(":lib_tcp"))
+    implementation(project(":lib_network"))
+    implementation(project(":lib_core"))
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.flexbox)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    //通过 exclude 把对官方 java 包的依赖排除了，引用默认指向 smooth-Navigation
+    implementation(libs.androidx.navigation.fragment.ktx) {
+        exclude(group = "androidx.navigation", module = "navigation-fragment")
+    }
+
+    implementation(libs.kunminx.unpeek.livedata)
+    implementation(libs.kunminx.strict.databinding)
+    implementation(libs.kunminx.smooth.navigation)
+
+    //依赖注入框架
+    implementation(libs.koin.android)
+
+    //透明系统栏设置基础依赖包，必须要依赖
+    implementation(libs.immersionbar)
+    implementation(libs.immersionbar.ktx)
+
+    // 权限请求框架：https://github.com/getActivity/XXPermissions
+    implementation(libs.getActivity.xxpermission)
+    //Material Dialog
+    implementation(libs.bundles.material.dialogs)
+    //Powerful and Beautiful Popup for Android，can absolutely replace Dialog，PopupWindow，PopupMenu，BottomSheet，DrawerLayout，Spinner...
+    implementation(libs.xpopup)
+    implementation(libs.dialogx)
+    //Toast 吐司
+    implementation(libs.toastutils)
+    implementation(libs.datetime.picker)
+
+    //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
+    implementation(libs.liangjingkanji.brv)
+    implementation(libs.tableview)
+
+    implementation(libs.agentweb.core)
+
+    //开关 Button
+    implementation(libs.switchbutton.library)
+    implementation(libs.progressbutton)
+    // 一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
+    implementation(libs.rangeSeekBar)
+    //Android Library to handle software keyboard visibility change event.
+    implementation(libs.keyboardvisibilityevent)
+
+    //华为扫码服务
+    implementation(libs.hms.scan)
+
+    //利用了 Android 系统的原生 API 实现了分享功能
+    implementation(libs.share2)
+
+    //高德地图导航
+    implementation(libs.amap3dmap)
+
+    implementation(libs.customactivityoncrash)
+    implementation(libs.bugly.crashreport)
+
+    // For debug builds only
+    debugImplementation(libs.leakcanary.android)
+    debugImplementation(libs.getActivity.logcat)
+
+    implementation(libs.glide)
+    implementation(libs.bundles.pictureselector)
+
+    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
+    implementation(libs.timber)
+    implementation(libs.utilcodex)
+    implementation(libs.mmkv)
+
+    implementation(libs.moshi)
+    ksp(libs.moshi.kotlin.codegen)
+}

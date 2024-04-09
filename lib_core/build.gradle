@@ -1,9 +1,10 @@
+
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'kotlin-parcelize'
-    id 'kotlin-kapt'
-    alias(libs.plugins.android.ksp)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -62,7 +63,7 @@ dependencies {
     implementation libs.getActivity.xxpermission
 
     //Toast 吐司
-    implementation libs.getActivity.toastutils
+    implementation libs.toastutils
     //Material Dialog
     implementation libs.bundles.material.dialogs
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
