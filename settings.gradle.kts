@@ -21,7 +21,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "WYS-BiologicalSurvey"
+rootProject.name = "mCloudapp_Kotlin"
 include(":app")
 include(":lib_tcp")
 include(":lib_core")

@@ -49,7 +49,7 @@ class BleViewModel : BaseViewModel() {
         return MedoBleRepository.instance.isConnected()
     }
 
-    fun sendCommand(
+    fun sendIOTCommand(
         cmdStr: String,
         needApiKey: Boolean = false,
         apiKey: String = "",
@@ -64,7 +64,19 @@ class BleViewModel : BaseViewModel() {
                     }"
                 )
             } else cmdStr
-            MedoBleRepository.instance.sendData(command + "\r\n")
+
+            MedoBleRepository.instance.sendData(command+ "\r\n")
+        }
+    }
+
+    fun sendMDCommand(
+        cmdStr: String,
+        timeMillis: Long = 0
+    ) {
+        viewModelScope.launch {
+            delay(timeMillis)
+
+            MedoBleRepository.instance.sendData(cmdStr)
         }
     }
 }

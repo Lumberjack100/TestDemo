@@ -74,7 +74,7 @@ import org.koin.dsl.module
  * 描述：     TODO
  */
 
-val appModule = module {
+val iotCommandModule = module {
     factory { CommonSettingCmdCommandResponseParser() }
     factory { TelemetryDataParser() }
     factory { TimeCalibrationDataParser() }

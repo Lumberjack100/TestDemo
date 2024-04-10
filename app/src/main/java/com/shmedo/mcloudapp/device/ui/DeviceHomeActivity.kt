@@ -104,8 +104,13 @@ class DeviceHomeActivity : BaseActivity() {
                     deviceInfo!!,
                     bleDevice
                 )
-                findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.das_graph, bundle)
+                if (communicateWay == BleConnect) {
+                    findNavController(R.id.device_home_host_fragment)
+                        .setGraph(R.navigation.ble_das_graph, bundle)
+                } else {
+                    findNavController(R.id.device_home_host_fragment)
+                        .setGraph(R.navigation.das_graph, bundle)
+                }
             }
 
             ProductType.E40 -> {

@@ -16,7 +16,8 @@ import com.shmedo.lib.core.util.CrashReportingTree
 import com.shmedo.lib.network.RxHttpManager
 import com.shmedo.mcloudapp.common.activity.ErrorActivity
 import com.shmedo.mcloudapp.common.activity.SplashActivity
-import com.shmedo.mcloudapp.di.appModule
+import com.shmedo.mcloudapp.di.iotCommandModule
+import com.shmedo.mcloudapp.di.mdCommandModule
 import com.tencent.bugly.crashreport.CrashReport
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -38,7 +39,8 @@ class MCloudApplication : BaseApp() {
         startKoin {
             androidContext(this@MCloudApplication)
             androidLogger()
-            modules(appModule)
+            modules(iotCommandModule)
+            modules(mdCommandModule)
         }
 
         //异常上报和升级

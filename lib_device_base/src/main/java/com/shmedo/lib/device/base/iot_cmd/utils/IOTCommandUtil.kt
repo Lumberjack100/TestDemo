@@ -22,9 +22,11 @@ object IOTCommandUtil {
             return IOTCommandType.LENGTH_INVALID
         }
 
-        val cmd = result.substringBefore("&").removePrefix(IOTConstants.COMMAND_HEADER).trim()
+        val cmd = result.substringBefore(IOTConstants.COMMAND_SPLICER)
+            .removePrefix(IOTConstants.COMMAND_HEADER).trim()
 
-        return IOTCommandType.entries.firstOrNull { it.toString() == cmd } ?: IOTCommandType.UNKNOWN_TYPE
+        return IOTCommandType.entries.firstOrNull { it.toString() == cmd }
+            ?: IOTCommandType.UNKNOWN_TYPE
     }
 
     fun getCommand(commandType: IOTCommandType): String {

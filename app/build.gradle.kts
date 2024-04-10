@@ -72,7 +72,7 @@ android {
             abiFilters.add("arm64-v8a")
             abiFilters.add("armeabi-v7a")
         }
-        manifestPlaceholders["buglyAppId"] = "ba15ad4815"
+        manifestPlaceholders["buglyAppId"] = "09b15cd6a7"
         manifestPlaceholders["umengAppkey"] = "6209cd80226836222738b72b"
     }
     signingConfigs {
@@ -218,13 +218,14 @@ dependencies {
 
     //高德地图导航
     implementation(libs.amap3dmap)
-
+    //异常处理页面
     implementation(libs.customactivityoncrash)
+    //异常信息上报组件
     implementation(libs.bugly.crashreport)
 
     // For debug builds only
-    debugImplementation(libs.leakcanary.android)
-    debugImplementation(libs.getActivity.logcat)
+//    debugImplementation(libs.leakcanary.android)
+//    debugImplementation(libs.getActivity.logcat)
 
     implementation(libs.glide)
     implementation(libs.bundles.pictureselector)

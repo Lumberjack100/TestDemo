@@ -4,6 +4,8 @@ import com.blankj.utilcode.util.TimeUtils
 import com.shmedo.lib.core.base.model.LogInfo
 import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.data.dao.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * 创建者：gonghe
@@ -17,22 +19,30 @@ import com.shmedo.lib.core.data.dao.AppDatabase
 class LocalDataRepository private constructor() {
 
     //<editor-fold desc="日志会话信息">
-    suspend fun getAllSessionList(): List<SessionInfo>? =
+    suspend fun getAllSessionList(): List<SessionInfo>? = withContext(Dispatchers.IO) {
         AppDatabase.INSTANCE.sessionInfoDao().getAllSessionList()
+    }
 
     suspend fun getSessionListByUser(userId: String): List<SessionInfo>? =
-        AppDatabase.INSTANCE.sessionInfoDao().getSessionListByUser(userId)
+        withContext(Dispatchers.IO) {
+            AppDatabase.INSTANCE.sessionInfoDao().getSessionListByUser(userId)
+        }
 
-    suspend fun getSessionById(id: String): SessionInfo? =
+    suspend fun getSessionById(id: String): SessionInfo? = withContext(Dispatchers.IO) {
         AppDatabase.INSTANCE.sessionInfoDao().getSessionById(id)
+    }
 
-    suspend fun insertSession(info: SessionInfo) =
+    suspend fun insertSession(info: SessionInfo) = withContext(Dispatchers.IO) {
         AppDatabase.INSTANCE.sessionInfoDao().insertSession(info)
+    }
 
-    suspend fun insertSessionList(list: List<SessionInfo>) =
+    suspend fun insertSessionList(list: List<SessionInfo>) = withContext(Dispatchers.IO) {
         AppDatabase.INSTANCE.sessionInfoDao().insertSessionList(list)
+    }
 
-    suspend fun deleteSessionById(id: String) = AppDatabase.INSTANCE.sessionInfoDao().deleteById(id)
+    suspend fun deleteSessionById(id: String) = withContext(Dispatchers.IO) {
+        AppDatabase.INSTANCE.sessionInfoDao().deleteById(id)
+    }
     // </editor-fold>
 
 
@@ -40,23 +50,34 @@ class LocalDataRepository private constructor() {
     suspend fun getLogListBySessionId(
         sessionId: String,
         level: Int
-    ): List<LogInfo>? = AppDatabase.INSTANCE.logInfoDao().getLogListBySessionId(sessionId, level)
+    ): List<LogInfo>? = withContext(Dispatchers.IO) {
+        AppDatabase.INSTANCE.logInfoDao().getLogListBySessionId(sessionId, level)
+    }
 
-    suspend fun insertLog(info: LogInfo) = AppDatabase.INSTANCE.logInfoDao().insertLog(info)
+    suspend fun insertLog(info: LogInfo) = withContext(Dispatchers.IO) {
+        AppDatabase.INSTANCE.logInfoDao().insertLog(info)
+    }
 
-    suspend fun insertLogList(list: List<LogInfo>) =
+    suspend fun insertLogList(list: List<LogInfo>) = withContext(Dispatchers.IO) {
         AppDatabase.INSTANCE.logInfoDao().insertLogList(list)
+    }
 
-    suspend fun deleteLogById(id: String) = AppDatabase.INSTANCE.logInfoDao().deleteById(id)
+    suspend fun deleteLogById(id: String) = withContext(Dispatchers.IO) {
+        AppDatabase.INSTANCE.logInfoDao().deleteById(id)
+    }
 
-    suspend fun deleteLogBySessionId(session_id: String) =
+    suspend fun deleteLogBySessionId(session_id: String) = withContext(Dispatchers.IO) {
         AppDatabase.INSTANCE.logInfoDao().deleteBySessionId(session_id)
+    }
     // </editor-fold>
 
     /**
      * 清除历史日志,保留当天的日志
      */
-    suspend fun clearHistoryLog() {
+    /**
+     * 清除历史日志,保留当天的日志
+     */
+    suspend fun clearHistoryLog() = withContext(Dispatchers.IO) {
         AppDatabase.INSTANCE.logInfoDao()
             .clearHistoryData(TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")))
         AppDatabase.INSTANCE.sessionInfoDao()

@@ -160,11 +160,12 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     }
 
                     is ConnectedResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(true)
+//                        dismissLoadingDialog()
+//                        onConnectionStateChanged(true)
                     }
 
                     is ReadyResult -> {
+                        onConnectionStateChanged(true)
                         onBleDeviceReady()
                     }
 
@@ -218,8 +219,13 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         refreshLayout?.finish(false)
     }
 
-    open fun onConnectionStateChanged(isConnected: Boolean) {}
-    open fun onBleDeviceReady() {}
+    open fun onConnectionStateChanged(isConnected: Boolean) {
+
+    }
+
+    open fun onBleDeviceReady() {
+        dismissLoadingDialog()
+    }
 
     abstract fun setResultData(cmdStr: String)
 
@@ -230,7 +236,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         command: String
     ) {
         addIOTDeviceLogItem(priority = Log.INFO, data = command, logViewModel.viewModelScope)
-        bleViewModel.sendCommand(command, false, deviceInfo.apikey)
+        bleViewModel.sendIOTCommand(command, false, deviceInfo.apikey)
     }
 
     /**
@@ -254,10 +260,34 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
-            bleViewModel.sendCommand(command, true, deviceInfo.apikey, delaySendMillis)
+            bleViewModel.sendIOTCommand(command, true, deviceInfo.apikey, delaySendMillis)
             if (isStartTimeoutJob)
                 startNearbyCommunicationTimeoutJob(command, timeoutMillis)
         }
+    }
+
+    /**
+     * 发送指令队列中的第一条指令
+     */
+    protected inline fun sendMDCommandFromCmdList(
+        delaySendMillis: Long = 0,//默认不延迟发送
+        isStartTimeoutJob: Boolean = false,//默认不启动超时Job
+        timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
+        crossinline finishAction: () -> Unit = {}
+    ) {
+        if (commandItems.size <= 0) {
+            cancelNearbyCommunicationTimeoutJob()
+            finishAction()
+            return
+        }
+
+        val command = commandItems.first
+        commandItems.removeFirst()
+        addIOTDeviceLogItem(priority = Log.INFO, data = command, logViewModel.viewModelScope)
+
+        bleViewModel.sendMDCommand(command, delaySendMillis)
+        if (isStartTimeoutJob)
+            startNearbyCommunicationTimeoutJob(command, timeoutMillis)
     }
 
     /**

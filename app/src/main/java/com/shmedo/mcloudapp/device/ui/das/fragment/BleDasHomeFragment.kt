@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment
 
 import android.os.Bundle
+import android.widget.CompoundButton
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -8,13 +9,20 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.md_cmd.assemble.entity.das.AuthenticationEntity
+import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.device.base.md_cmd.model.das.AuthenticationInfo
+import com.shmedo.lib.device.base.md_cmd.model.das.AuthenticationResultInfo
+import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.device.base.md_cmd.utils.DesUtil
+import com.shmedo.lib.device.base.md_cmd.utils.HexUtils
+import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -22,7 +30,7 @@ import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentDasHomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentBleDasHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -30,7 +38,6 @@ import com.shmedo.mcloudapp.device.model.CollectorConfigModule
 import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
-import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.model.SensorConfigModule
@@ -40,18 +47,19 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.device.viewmodel.state.BleDasHomeFragmentViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel
-import com.shmedo.mcloudapp.device.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.nio.charset.StandardCharsets
 
-class DasHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentDasHomeBinding
+class BleDasHomeFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentBleDasHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mHeadStates: CommonDeviceHomeViewModel
+    private lateinit var mHeadStates: BleDasHomeFragmentViewModel
     private lateinit var mCommandResponseStates: CommandResponseViewModel
-    private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
 
 
     override fun initViewModel() {
@@ -62,13 +70,13 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_das_home, BR.stateVM, mHeadStates)
+        return DataBindingConfig(R.layout.fragment_ble_das_home, BR.stateVM, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDasHomeBinding
+        binding = getBinding() as FragmentBleDasHomeBinding
         toolbarViewModel.toolbarIvActionVisible.set(true)
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
@@ -118,25 +126,13 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
-        when (communicateWay) {
-            NetPlatformConnect -> {
-                mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
-                mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
-                mHeadStates.isConnectOperateVisible.set(false)
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
-            }
+        mHeadStates.isDeviceStateTagHighLight.set(false)
+        mHeadStates.deviceStateTagText.set("未连接")
+        mHeadStates.isConnectOperateVisible.set(true)
+        mHeadStates.connectOperateText.set("蓝牙连接")
+        mHeadStates.isPlatformConnectionStateVisible.set(true)
+        mHeadStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
 
-            BleConnect -> {
-                mHeadStates.isDeviceStateTagHighLight.set(false)
-                mHeadStates.deviceStateTagText.set("未连接")
-                mHeadStates.isConnectOperateVisible.set(true)
-                mHeadStates.connectOperateText.set("蓝牙连接")
-                mHeadStates.isPlatformConnectionStateVisible.set(true)
-                mHeadStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
-            }
-
-            else -> {}
-        }
         updateConfigModuleData()
     }
 
@@ -169,6 +165,18 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
                 }, "取消")
             } else {
                 bleViewModel.launch(bleDevice!!)
+            }
+        }
+
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
+                return
+            }
+            mHeadStates.isActived.set(isChecked)
+            if (!isChecked) {
+//                disableDigitalPiezometer()
             }
         }
     }
@@ -212,20 +220,23 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                if (module.configModule.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                    nav().navigate(
-                        module.configModule.navId,
-                        bundle
-                    )
-                }
+//                if (module.configModule.navId != 0) {
+//                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+//                        communicateWay,
+//                        deviceInfo,
+//                        bleDevice
+//                    )
+//                    nav().navigate(
+//                        module.configModule.navId,
+//                        bundle
+//                    )
+//                }
+
+                setAuthenticateWay()
             }
         }
     }
+
 
     /**
      * 显示时间校准弹窗
@@ -286,60 +297,53 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        super.doNetDispatchSuccess(cmdStr)
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME -> {
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                showTimeCalibrationPopup()
-            }
-
-            IOTCommandType.SET_TERMINAL_TIME -> {
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-            }
-
-            IOTCommandType.QUERY_SAMPLE -> {
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                showTelemetryDataPopup()
-            }
-
-            else -> {}
-        }
+    override fun onBleDeviceReady() {
+//        super.onBleDeviceReady()
+        setAuthenticateWay()
     }
 
-    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
-            IOTCommandType.QUERY_SAMPLE -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set(errorMsg)
-            }
+    /**
+     * 蓝牙连接成功,发送认证方式
+     */
+    private fun setAuthenticateWay() {
+        commandItems.clear()
+        val entity = AuthenticationEntity(deviceInfo.deviceToken, "0")
+        val command =
+            MDCommandUtil.getCommand(MDCommandType.AUTHENTICATION_CONFIG, entity.toCommandString())
+        commandItems.add("\r\n" + command)
 
-            else -> {
-                super.doCmdResponseResultError(cmdStr, errorMsg)
-            }
-        }
+        Timber.d("设置认证类型指令===%s", command)
+        sendMDCommandFromCmdList(isStartTimeoutJob = false)
     }
 
-    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
-            IOTCommandType.QUERY_SAMPLE -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
-            }
+    /**
+     * 开始认证流程
+     */
+    private fun sendAuthenticateCodeCmd(authenticateParam: String) {
+         Timber.d("解密前:%s", authenticateParam)
+        val resultData = HexUtils.hexStringToBytes(authenticateParam)
+        try {
+            val deskey = "12345678"
+            // 解密后认证码
+            val strDecrypt = String(DesUtil.decrypt(resultData, deskey)!!, StandardCharsets.UTF_8)
+             Timber.d("解密后:%s", strDecrypt)
 
-            else -> {
-                super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
+            if (strDecrypt.isNotEmpty()) {
+                // 反转6位随机码
+                val reverseRandomCode = strDecrypt.substring(0, 6).reversed()
+                val byteEncrypt =
+                    DesUtil.encrypt(reverseRandomCode.toByteArray() + deskey.toByteArray(), deskey)
+                // 加密后认证码
+                val strEncrypt = HexUtils.bytesToHexString(byteEncrypt!!)!!
+                val command = "##222,${deviceInfo.deviceToken},0,${strEncrypt.uppercase()}\r\n"
+                Timber.d("设备登录验证指令===%s", command)
+
+                commandItems.clear()
+                commandItems.add(command)
+                sendMDCommandFromCmdList(isStartTimeoutJob = false)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -366,100 +370,71 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME -> {
-                val result = iotParseManager.parse<String>(
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.AUTHENTICATION_CONFIG -> {
+                val result = mdParseManager.parse<AuthenticationInfo>(
                     cmdStr,
-                    IOTCommandType.QUERY_TERMINAL_TIME
+                    MDCommandType.AUTHENTICATION_CONFIG
                 )
                 when (result) {
-                    is IOTCommandResult.Failure -> {
+                    is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        Timber.e(result.message)
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(result.message)
+                        setAuthenticateWay()//重新认证
                         return
                     }
 
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(false)
-                        mCommandResponseStates.deviceTime.set(result.data)
-                        mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
+                    is MDCommandResult.Success -> {
+                        val authenticationInfo: AuthenticationInfo = result.data
+                        sendAuthenticateCodeCmd(authenticationInfo.publicKey)
                     }
                 }
             }
 
-            IOTCommandType.SET_TERMINAL_TIME -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        Timber.e(result.message)
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(result.message)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(true)
-                    }
-                }
-            }
-
-            IOTCommandType.QUERY_SAMPLE -> {
-                val result = iotParseManager.parse<String>(
+            MDCommandType.DAS_SEND_AUTHENTICATION_RESULT -> {
+                val result = mdParseManager.parse<AuthenticationResultInfo>(
                     cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
+                    MDCommandType.DAS_SEND_AUTHENTICATION_RESULT
                 )
                 when (result) {
-                    is IOTCommandResult.Failure -> {
+                    is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        Timber.e(result.message)
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(result.message)
+                        setAuthenticateWay()//重新认证
                         return
                     }
 
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        try {
-                            mCommandResponseStates.responseContent.set(result.data)
-                        } catch (ex: Exception) {
-                            ex.printStackTrace()
+                    is MDCommandResult.Success -> {
+                        val authenticationInfo: AuthenticationResultInfo = result.data
+                        if (authenticationInfo.result == "1") {
+                            onAuthenticateResult(true)
+                        } else {
+                            Toaster.show("设备认证失败!")
+                            bleViewModel.disconnect()
+                            onAuthenticateResult(false)
                         }
                     }
                 }
             }
 
-            IOTCommandType.REBOOT -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
-                        return
-                    }
+            else -> {
+                if (cmdStr.contains("Please verify the equipment.")) {
+                    Toaster.show("设备认证失败!")
+                    bleViewModel.disconnect()
+                    onAuthenticateResult(false)
 
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
-                        }
-                    }
+                } else if (cmdStr.contains("Equipment Verify OK.")) {
+                    onAuthenticateResult(true)
+
+                } else {
+
                 }
             }
+        }
+    }
 
-            else -> {}
+    private fun onAuthenticateResult(isSuccess: Boolean) {
+        cancelNearbyCommunicationTimeoutJob()
+        if (isSuccess) {
+
         }
     }
 

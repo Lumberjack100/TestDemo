@@ -269,7 +269,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onBleDeviceReady() {
-
+        super.onBleDeviceReady()
     }
 
     override fun doNetDispatchSuccess(cmdStr: String) {

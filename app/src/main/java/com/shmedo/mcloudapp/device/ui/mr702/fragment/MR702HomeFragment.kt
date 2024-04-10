@@ -247,6 +247,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onBleDeviceReady() {
+        super.onBleDeviceReady()
         launchWithViewLifecycle {
 //            delay(2000) //延迟 timeMillis 秒后，提示超时
             //蓝牙模式下，等蓝牙建立连接后查询设备工作模式

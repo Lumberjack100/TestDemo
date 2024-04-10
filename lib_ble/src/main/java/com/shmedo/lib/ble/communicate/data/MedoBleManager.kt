@@ -95,6 +95,7 @@ class MedoBleManager(
             .asValidResponseFlow<CommandResponse>()
             .onEach {
                 val cmdList = data.value.responseList.toMutableList().apply {
+                    clear()
                     addAll(it.responseList)
                 }
                 data.tryEmit(data.value.copy(response = it.response, responseList = cmdList))

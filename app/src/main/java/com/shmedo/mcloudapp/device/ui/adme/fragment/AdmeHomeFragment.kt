@@ -256,6 +256,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onBleDeviceReady() {
+        super.onBleDeviceReady()
         //蓝牙模式下，等蓝牙建立连接后查询设备工作模式
         queryEquipmentBaseInfo()
     }
