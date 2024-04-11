@@ -9,7 +9,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
  * 创建时间:  2020/9/2 <br></br>
  * 描述：     解析通用的设置指令响应结果
  */
-class CommonSettingCmdCommandResponseParser : IOTCommandParser<CommonSettingCmdResult> {
+class CommonSettingIOTCommandResponseParser : IOTCommandParser<CommonSettingCmdResult> {
     override fun parseInstance(keyValueMap: Map<String, String>): CommonSettingCmdResult {
         return CommonSettingCmdResult().apply {
             isSucceed = keyValueMap["result"].equals("succ")

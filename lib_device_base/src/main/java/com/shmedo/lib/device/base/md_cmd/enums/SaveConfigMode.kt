@@ -7,23 +7,22 @@ package com.shmedo.lib.device.base.md_cmd.enums
  * 创建时间:  2020/4/23 <br></br>
  * 描述：    保存设备配置参数方式
  */
-enum class SaveConfigMode(private val model: Int) {
+enum class SaveConfigMode(private val model: String) {
     //保存并重启
-    SAVE_REBOOT(1),
+    SAVE_REBOOT("1"),
 
     //保存
-    SAVE_NO_REBOOT(2);
+    SAVE_NO_REBOOT("2");
 
-    fun toInt(): Int {
+    override fun toString(): String {
         return model
     }
 
     companion object {
-        fun value(model: Int): SaveConfigMode {
-            return when (model) {
-                2 -> SAVE_NO_REBOOT
-                else -> SAVE_REBOOT
-            }
+        @JvmStatic
+        fun value(value: String) = when (value) {
+            "2" -> SAVE_NO_REBOOT
+            else -> SAVE_REBOOT
         }
     }
 }

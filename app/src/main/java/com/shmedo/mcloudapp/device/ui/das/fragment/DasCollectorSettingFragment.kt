@@ -104,7 +104,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
             setEditable(false)
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))

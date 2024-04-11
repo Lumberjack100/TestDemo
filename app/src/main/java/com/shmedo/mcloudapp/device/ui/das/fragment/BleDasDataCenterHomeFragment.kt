@@ -1,0 +1,231 @@
+package com.shmedo.mcloudapp.device.ui.das.fragment
+
+import android.os.Bundle
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.utils.setup
+import com.hjq.toast.Toaster
+import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.device.base.md_cmd.model.das.DasBaseConfigInfo
+import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.common.ext.showMessageDialog
+import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
+import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterHomeBinding
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.BleDasDataCenterHomeViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import org.koin.android.ext.android.inject
+import timber.log.Timber
+
+class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
+    private lateinit var binding: FragmentBleDasDataCenterHomeBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: BleDasDataCenterHomeViewModel
+    private val mdParseManager: MDParserManager by inject()
+    private val communicatModeList: MutableList<String> = arrayListOf("4G", "SMS", "BD", "BD+4G")
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
+    override fun getDataBindingConfig(): DataBindingConfig {
+        return DataBindingConfig(
+            R.layout.fragment_ble_das_data_center_home,
+            BR.stateVM, mStates
+        )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentBleDasDataCenterHomeBinding
+        binding.llToolbar.toolbar.title = "数据中心"
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            nav().navigateUp()
+        }
+        registerOnBackPressedDispatcher {
+//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            nav().navigateUp()
+        }
+        initRefresh()
+        initAdapter()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            queryData()
+        }
+    }
+
+    private fun initAdapter() {
+        binding.recyclerView.setup { rv ->
+            rv.addItemDecoration(
+                RecycleViewDivider(
+                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
+                        R.color.transparent
+                    )
+                )
+            )
+            addType<DataCenterStatusItem>(R.layout.data_center_status_item)
+            R.id.item.onClick {
+                val item = getModel<DataCenterStatusItem>()
+                val bundle = DataCenterParamFragment.newBundleArguments(
+                    item,
+                    ProductType.DAS,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(
+                    R.id.action_dasDataCenterHomeFragment_to_dataCenterParamFragment,
+                    bundle
+                )
+            }
+        }.models = getAdapterData()
+    }
+
+    override fun initData() {
+        super.initData()
+        mStates.dataCommunicationMode.set(communicatModeList[0])
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        fun onBaudRateChooseClick() {
+            val selectedIndex = communicatModeList.indexOf(mStates.dataCommunicationMode.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", communicatModeList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.dataCommunicationMode.set(text)
+                        mStates.isBdCardNumberVisible.set(position == 2 || position == 3)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onSubmitClick() {
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initSaveCommand()
+        }
+    }
+
+
+    private fun initSaveCommand() {
+        commandItems.clear()
+        if (mStates.reportingInterval.get().isEmpty()) {
+            showMessageDialog("请输入上报间隔!")
+            return
+        }
+//        val entity = DasBdTerminalEntity(
+//            sw = "1",
+//            dstaddr = mStates.address.get(),
+//            baud = mStates.baudRate.get()
+//        )
+//        val command = MDCommandUtil.getCommand(
+//            IOTCommandType.DAS_MD_SET_BD_TERMINAL,
+//            entity.toCommandString()
+//        )
+//        commandItems.add(command)
+//
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
+    }
+
+    private fun queryData() {
+        commandItems.clear()
+
+        val command =
+            MDCommandUtil.getCommand(MDCommandType.BASE_CONFIG)
+        commandItems.add(command)
+
+        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun setResultData(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.BASE_CONFIG -> {
+                val result = mdParseManager.parse<DasBaseConfigInfo>(
+                    cmdStr,
+                    MDCommandType.BASE_CONFIG
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询基础配置信息出错"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendMDCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initBaseConfigInfo(result.data)
+                    }
+                }
+            }
+
+
+            else -> {}
+        }
+    }
+
+    private fun initBaseConfigInfo(info: DasBaseConfigInfo) {
+        mStates.dataCommunicationMode.set(communicatModeList[info.dataCommunicateMode.toInt() - 1])
+        mStates.isBdCardNumberVisible.set(info.dataCommunicateMode == "3" || info.dataCommunicateMode == "4")
+        mStates.reportingInterval.set(info.dataReportInterval)
+        mStates.bdCardNumber.set(info.targetBGNum)
+    }
+
+    private fun getAdapterData() = mutableListOf(
+        DataCenterStatusItem(1, "数据中心01", "0"),
+        DataCenterStatusItem(2, "数据中心02", "0"),
+        DataCenterStatusItem(3, "数据中心03", "0"),
+    )
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+}

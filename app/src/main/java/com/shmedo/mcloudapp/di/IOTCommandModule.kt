@@ -23,7 +23,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeMotorPowerInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeStepperMotorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeVoltageConfigInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeWorkModeInfoParser
-import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingCmdCommandResponseParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingIOTCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
@@ -75,7 +75,7 @@ import org.koin.dsl.module
  */
 
 val iotCommandModule = module {
-    factory { CommonSettingCmdCommandResponseParser() }
+    factory { CommonSettingIOTCommandResponseParser() }
     factory { TelemetryDataParser() }
     factory { TimeCalibrationDataParser() }
     factory { WorkModeParser() }
@@ -145,7 +145,7 @@ val iotCommandModule = module {
     // 提供 IOTParseManager 的实例
     single {
         val parsers: List<IOTCommandParser<*>> = listOf(
-            get<CommonSettingCmdCommandResponseParser>(),
+            get<CommonSettingIOTCommandResponseParser>(),
             get<TelemetryDataParser>(),
             get<TimeCalibrationDataParser>(),
             get<WorkModeParser>(),

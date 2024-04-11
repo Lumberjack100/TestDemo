@@ -5,20 +5,20 @@ package com.shmedo.lib.device.base.md_cmd.enums
  * 创建时间：2024/4/10
  * 描述：  DAS低功耗模式
  */
-enum class LowEnergyModel(private val model: Int) {
+enum class LowEnergyModel(private val model: String) {
 
-    STANDBY(1),  //待机
-    ACTIVATE(2); //激活
+    STANDBY("1"),  //待机
+    ACTIVATE("2"); //激活
 
-    fun toInt(): Int {
+    override fun toString(): String {
         return model
     }
 
     companion object {
         @JvmStatic
-        fun value(port: Int) = when (port) {
-            1 -> STANDBY
-            else -> ACTIVATE
+        fun value(value: String) = when (value) {
+            "2" -> ACTIVATE
+            else -> STANDBY
         }
     }
 }

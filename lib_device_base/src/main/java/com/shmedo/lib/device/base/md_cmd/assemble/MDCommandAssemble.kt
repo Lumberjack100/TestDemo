@@ -13,7 +13,7 @@ class MDCommandAssemble<T>(val commandType: MDCommandType, private val parameter
 
     override fun toString(): String {
         return if (parameters == null) {
-            MDConstants.SEND_COMMAND_HEADER + commandType
+            "${MDConstants.SEND_COMMAND_HEADER}$commandType${MDConstants.COMMAND_FOOTER}"
         } else {
             "${MDConstants.SEND_COMMAND_HEADER}$commandType$parameters${MDConstants.COMMAND_FOOTER}"
         }

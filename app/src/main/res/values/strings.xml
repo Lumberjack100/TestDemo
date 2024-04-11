@@ -63,7 +63,8 @@
     <string name="ble_config_disconnect_warn">蓝牙连接已断开，暂无法进行操作</string>
     <string name="tcp_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
     <string name="usb_config_disconnect_warn">USB连接已断开，暂无法进行操作</string>
-    <string name="disconnect_device">确定要断开连接？</string>
+    <string name="disactive_device_warn">确定要待机吗？</string>
+    <string name="disconnect_device_warn">确定要断开连接？</string>
     <string name="finish_activity_disconnect_bluetooth_device">确定要退出该页面，并断开蓝牙连接吗？</string>
     <string name="finish_activity_disconnect_tcp_device">确定要退出该页面，并断开连接吗？</string>
     <string name="finish_activity_disconnect_usb_device">确定要退出该页面，并断开连接吗？</string>
@@ -71,6 +72,7 @@
     <string name="ble_state_initializing">初始化中…</string>
     <string name="device_enable_state_close_warn">关闭系统激活状态，将导致设备自动关机进入休眠状态。请确认是否关闭【激活状态】？</string>
     <string name="device_config_module_current_state">状态</string>
+    <string name="cmd_dispatch_loading_tip">指令下发中…</string>
     <string name="cmd_response_loading_tip">等待设备响应…</string>
     <string name="refresh_failed_while_device_disconnected">设备已断开连接，刷新失败</string>
     <string name="empty_no_usb_device">没有 USB 设备</string>

@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.DasCollectorSettingFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseClickProxy" />
 
     </data>
 
@@ -152,7 +152,7 @@
         <TextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="15dp"

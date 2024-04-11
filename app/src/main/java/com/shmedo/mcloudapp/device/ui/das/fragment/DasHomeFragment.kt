@@ -74,7 +74,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
+                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                     mActivity.finish()
                 }, "取消")
@@ -84,7 +84,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
+                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                     mActivity.finish()
                 }, "取消")
@@ -164,7 +164,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
 
         override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device), "温馨提示", "确定", {
+                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
                     bleViewModel.disconnect()
                 }, "取消")
             } else {

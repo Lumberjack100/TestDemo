@@ -23,9 +23,9 @@ interface MDCommandParser<T> {
 
     fun parse(result: String): ParseResult<T> {
         return try {
-            val keyValueMap = result.replace("\r\n", "").split(MDConstants.COMMAND_SPLICER)
+            val values = result.replace("\r\n", "").split(MDConstants.COMMAND_SPLICER)
             // 子类实现
-            ParseResult.Success(parseInstance(keyValueMap))
+            ParseResult.Success(parseInstance(values))
         } catch (ex: Exception) {
             ParseResult.Failure("解析错误: ${ex.message ?: "Unknown error"}")
         }

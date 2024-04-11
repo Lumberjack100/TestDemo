@@ -23,4 +23,8 @@ open class BaseClickProxy {
     open fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
 
     }
+
+    open fun onSubmitButtonClick() {
+
+    }
 }

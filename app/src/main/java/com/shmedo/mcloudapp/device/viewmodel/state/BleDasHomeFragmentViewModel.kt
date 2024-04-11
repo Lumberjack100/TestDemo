@@ -8,7 +8,6 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
  * 描述： TODO
  */
 class BleDasHomeFragmentViewModel : CommonDeviceHomeViewModel() {
-    val isActived = NonNullObservableField(false)//设备是否激活
-    val activeStateText = NonNullObservableField("已激活")
-
+    val isActivated = NonNullObservableField(false)//设备是否激活
+    val collectorModel = NonNullObservableField("")
 }

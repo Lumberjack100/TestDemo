@@ -48,6 +48,7 @@
             android:id="@+id/rl_active"
             style="@style/SwitchButton_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider"
+            android:layout_marginTop="0.5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_device_info">
@@ -65,13 +66,13 @@
                 android:layout_toStartOf="@id/activeStateSwBtn"
                 android:textColor="@color/text_color_b3b3b3"
                 android:textSize="@dimen/text_size_15"
-                android:text="@{stateVM.activeStateText}"
+                android:text="@{stateVM.isActivated ? `已激活` : `已待机`}"
                 tools:text="已激活" />
 
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/activeStateSwBtn"
                 style="@style/SwitchButton_ButtonStyle"
-                checkedImmediatelyNoEvent="@{stateVM.isActived}"
+                checkedImmediatelyNoEvent="@{stateVM.isActivated}"
                 android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                 app:kswAnimationDuration="100"
                 app:kswBackDrawable="@drawable/sl_switchbutton_back"
