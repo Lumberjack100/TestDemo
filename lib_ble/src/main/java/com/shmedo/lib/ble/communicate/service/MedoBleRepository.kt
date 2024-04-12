@@ -69,7 +69,7 @@ class MedoBleRepository private constructor(
         val manager = MedoBleManager(context, scope)
         this.medoBleManager = manager
 
-        manager.dataHolder.status.onEach {
+        manager.data.onEach {
 //            _data.value = it
             _data.emit(it)
 
